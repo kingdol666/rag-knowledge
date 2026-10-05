@@ -1,0 +1,71 @@
+{
+ "track": "c",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "answer": "Based on the retrieved chunks, **MAMELOSHNLM** is described as \"the first open-source large language model for Yiddish,\" trained on a Yiddish corpus, and named after the traditional Yiddish term \"Mame-Loshn\" (\"mother tongue\"). Its parameter scale is **8B**: the paper states that \"MAMELOSHNLM was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus using a causal language modeling objective.\" The paper reports that it outperforms \"baselines of similar scale\" across Yiddish evaluation benchmarks, with training conducted for one epoch at a maximum sequence length of 1,024 tokens.\n\nSources: `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md`, `...__k13.md`, `...__k00.md`, `...__k60.md`.",
+ "is_error": false,
+ "latency_s": 39.8,
+ "sdk_duration_ms": 38056,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM model parameters scale",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 30621,
+  "output": 380,
+  "cache_read": 88256,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.20673299999999997,
+ "timeline": [
+  {
+   "t": 1.81,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 19.35,
+   "event": "text",
+   "detail": "57"
+  },
+  {
+   "t": 19.38,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 26.3,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 39.8,
+   "event": "text",
+   "detail": "745"
+  },
+  {
+   "t": 39.82,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll run dense vector retrieval on the specified index.\n\n",
+  "Based on the retrieved chunks, **MAMELOSHNLM** is described as \"the first open-source large language model for Yiddish,\" trained on a Yiddish corpus, and named after the traditional Yiddish term \"Mame-Loshn\" (\"mother tongue\"). Its parameter scale is **8B**: the paper states that \"MAMELOSHNLM was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus using a causal language modeling objective.\" The paper reports that it outperforms \"baselines of similar scale\" across Yiddish evaluation benchmarks, with training conducted for one epoch at a maximum sequence length of 1,024 tokens.\n\nSources: `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md`, `...__k13.md`, `...__k00.md`, `...__k60.md`."
+ ],
+ "qid": "BQ07",
+ "via": "chat"
+}

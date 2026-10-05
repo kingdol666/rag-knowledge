@@ -1,0 +1,50 @@
+{
+ "qid": "QK09",
+ "method": "rrf",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "ranked": [
+  "2110.08918",
+  "2212.13138",
+  "2502.00306",
+  "2412.15058",
+  "1904.11280",
+  "2310.10981",
+  "2409.09639",
+  "1503.07557",
+  "2203.15752",
+  "2007.10574"
+ ],
+ "ranked_paths": [
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md",
+  "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference.md",
+  "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio.md",
+  "clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer.md",
+  "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma.md",
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change.md",
+  "social-networks__2203.15752__information-consumption-and-boundary-spannin__k29",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on.md"
+ ],
+ "evidence_sources": [
+  "2110.08918",
+  "2212.13138",
+  "2502.00306"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.1,
+ "latency_s": 10.2,
+ "answer": "The evidence is insufficient to answer this question. I reviewed all three provided sources: [2110.08918] covers ICU length-of-stay and mortality prediction from clinical notes and time-series data; [2212.13138] contains biology/chemistry exam-style QA pairs (pharyngeal arches, Hardy-Weinberg equilibrium, gas laws); and [2502.00306] estimates generation costs for yes/no questions, descriptions, and ground-truth answers in a retrieval dataset pipeline. None of them mention metformin, cats, feline diabetes, or any veterinary dosing information. Since the evidence does not contain the answer, I am stopping here and not falling back on prior knowledge.\n\nSources reviewed: [2110.08918], [2212.13138], [2502.00306] — none relevant.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38262,
+  "output": 1055,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.217685,
+ "extra": {},
+ "track": "rrf",
+ "via": "baseline+closed-book"
+}

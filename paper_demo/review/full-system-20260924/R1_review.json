@@ -1,0 +1,71 @@
+{
+  "seat": "R1",
+  "score": 8.3,
+  "verdict": "minor",
+  "summary": "A genuinely coherent demo paper: one problem, three named design decisions, three demo scenarios that explicitly trace those decisions in order, and a measured run framed honestly as operational evidence rather than a controlled comparison. I spot-checked the locked numbers against the saved traces (0.75/0.66 BQ04 scores, part 1 of 2 address, 1602.01876, three-mode aggregates, cost figures) and found no factual errors; the hedged novelty claim ('to our knowledge, none manages the collection that retrieval consumes through the addresses that answers cite') is sharp and believable against Self-RAG/CRAG/DeepRead/CyberBOT. Remaining work is a terminology collision in the paper's own central vocabulary ('parts' vs 'documents' for the 322 split units), one ambiguous cross-reference and gate-threshold clause, and light abstract polish.",
+  "strengths": [
+    "The story is single-threaded and signposted: the intro names three design decisions (one address space; ranking proposes/reading disposes; failure as first-class output), Section 3's three scenarios map onto them one-to-one 'in order', and Section 4 reads the run as operational evidence. A reader gets the pitch from figures alone: Fig 1 is a contrast storyboard with a takeaway strip, Fig 2 shows the gate's three-way exit plus librarian fallback, Fig 3 replays verbatim traces with the aggregate strip.",
+    "Honesty is a feature, not a hedge: the BQ02 grounding failure is disclosed as-is, BQ08's conservative 0/2 word-boundary grading is explained, 'content-verified' is explicitly defined as prompted judgment rather than correctness, cache state is called uncontrolled, and Fig 1's baseline row is labeled 'shown for contrast'.",
+    "The novelty position is precise and defensible: none of the four cited systems does collection management through the same address space that answers cite, and the claim is scoped with 'to our knowledge' and grounded in the 7-4-1 citation split, which is exactly the design difference the demo exists to show.",
+    "Numbers are artifact-faithful: abstract, Table 1, Section 4, and the Fig 3 strip all match the fact sheet and the underlying traces (I verified 0.75/0.66/part-1-of-2 in track_a_BQ04.json and the cost per question in the Fig 3 strip).",
+    "Demo-track fit is right: demonstrable software with a contribution, live-plus-replay plan (10 s to 2 min latency disclosed), verified video URL, repository with the full rubric, and a GenAI disclosure that cleanly separates deterministic checks from model outputs."
+  ],
+  "issues": [
+    {
+      "id": "R1-1",
+      "priority": "P1",
+      "location": "Section 4, 'Ingest and organization' paragraph (p. 3); collides with Section 2.2, Table 1, and Section 3",
+      "issue": "The paper's own address space defines document = the paper and part = the split unit, but Section 4 calls the 322 split units 'documents', contradicting the rest of the paper.",
+      "evidence": "sec4_eval.tex: 'the 30k-character ceiling split long texts into 322 stored documents' and 'A later organization pass re-read all 322 documents' — versus Table 1 'Stored parts after 30k split ceiling — 322', Section 3 '322 stored parts', and Section 2.2 'split into parts'. Under base/document/part/section, the 100 papers are the documents.",
+      "suggestion": "Replace 'documents' with 'parts' in both sentences of the Section 4 ingest paragraph so the 322 units are 'parts' everywhere."
+    },
+    {
+      "id": "R1-2",
+      "priority": "P1",
+      "location": "Page 1 title block and running heads",
+      "issue": "Reminder (flagged once, known user-pending item): author, affiliation, and email are draft placeholders; CIKM Demo is single-blind, so real names are expected on the submitted PDF.",
+      "evidence": "Rendered p. 1: 'Author Name / Affiliation / City, Country / author@example.com'; running heads on pp. 2-4 also read 'Author Name'.",
+      "suggestion": "Fill in real authors and affiliations before submission; no other action needed."
+    },
+    {
+      "id": "R1-3",
+      "priority": "P2",
+      "location": "Abstract, final cost sentence (p. 1)",
+      "issue": "'Roughly three times the baseline cost' is ambiguous about which mode is the baseline. Fig 1 labels the dense configuration 'BASELINE: DENSE RAG', but 0.4911/0.1803 = 2.7x; the 3x figure holds against the bare agent (0.4911/0.1631 = 3.0x).",
+      "evidence": "Abstract: 'The platform trades roughly three times the baseline cost for this verified, addressable evidence.' Fact sheet: the 3x claim refers to platform vs bare agent.",
+      "suggestion": "Name the comparator: 'roughly three times the bare agent's cost per question' (or 'roughly three times either baseline's', accepting 2.7x rounding for dense)."
+    },
+    {
+      "id": "R1-4",
+      "priority": "P2",
+      "location": "Figure 2 caption vs Section 2.3 (p. 2-3)",
+      "issue": "Ambiguity about whether an initial rubric score of 5 exits directly as a qualified backstop or first invokes the librarian. The caption's 'lower initial scores invoke the librarian' can be read as including 5; Section 2.3 lists score-5 backstop retention before introducing the browsing fallback, so the control flow has to be reconstructed.",
+      "evidence": "Fig 2 caption: 'Scores of at least six permit a direct answer; lower initial scores invoke the librarian.' sec2_system.tex: 'a score-5 candidate is retained as an explicitly attributed backstop; candidates scoring at most 4 are discarded. A failed gate is information, not noise: the skill switches from ranking to browsing'.",
+      "suggestion": "One clarifying clause in Section 2.3, e.g. 'initial scores of 4 or below invoke the librarian; a score-5 candidate, initial or found on re-reading, is retained as an explicitly attributed backstop.'"
+    },
+    {
+      "id": "R1-5",
+      "priority": "P2",
+      "location": "Figure 2(a), 'Nine-point final check' banner (p. 3); cf. Table 1 row 3",
+      "issue": "The figure names a 'nine-point final check' but itemizes only seven checks beneath it; Table 1 says 'nine recorded checks'. The count is load-bearing (it recurs in Section 4 as 'nine-point ingest final check'), so the visible 7-vs-9 gap invites a trust question in a paper about auditable claims.",
+      "evidence": "Fig 2(a) sub-items: 'read-back / base fit / tags / vector probe / graph node / storage consistency / metadata hits' = 7 items under 'Nine-point final check — all pass'.",
+      "suggestion": "Either itemize all nine checks in the figure or drop the count from the figure banner and let Table 1 carry it."
+    },
+    {
+      "id": "R1-6",
+      "priority": "P2",
+      "location": "Section 3, opening sentence (p. 2)",
+      "issue": "The demo scenarios are said to trace 'Section 2's three decisions', but the three decisions are enumerated in Section 1, not Section 2; a reader flipping back to Section 2 finds mechanism, not a list of three.",
+      "evidence": "sec3_demo.tex: 'its scenarios trace Section~\\ref{sec:system}'s three decisions in order.' The enumeration ('One address space... Ranking proposes, reading disposes... Failure is a first-class output') lives in Section 1.",
+      "suggestion": "Retarget the pointer to Section 1 ('the three design decisions of Section 1') or open Section 2 with a one-line recap naming the three decisions."
+    },
+    {
+      "id": "R1-7",
+      "priority": "P2",
+      "location": "Abstract (p. 1)",
+      "issue": "The abstract is tight in content but runs long (~260 words) for a demo slot, and the 60-plus-word mechanism sentence asks a lot of a first-pass reader.",
+      "evidence": "Second sentence spans 'Packaged agent skills call tool APIs to parse documents... returning a scoped not-found report instead of answering from the nearest neighbor.'",
+      "suggestion": "Split that sentence in two and consider trimming the relative clause 'whose citations name files and chunks rather than the full base/document/part/section address', which Section 4 already earns."
+    }
+  ]
+}

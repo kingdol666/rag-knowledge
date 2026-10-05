@@ -1,0 +1,110 @@
+{
+ "track": "b",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "answer": "**Answer** (from `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md` — the MLP-SLAM paper):\n\nMLP-SLAM addresses the degradation of visual SLAM in dynamic outdoor environments (pedestrians, cars, buses), where static-world assumptions fail: existing geometric methods require laborious manual parameter tuning and lack generality, while semantic approaches like DynaSLAM discard all features inside dynamic-class masks, wrongly removing static points on parked cars and guardrails (information loss) and incurring high latency. To solve this, it introduces the first machine-learning discriminator for dynamic vs. static feature points: a Multilayer Perceptron trained on a purpose-built public dataset of 50,000+ labeled KITTI feature points (1:1 static/dynamic, 70/20/10 split). The MLP takes three geometric inputs — image intensity error, epipolar error, and re-projection error — thereby using *complete* geometric information instead of the partial cues used by prior work, and needs no manual parameter configuration. Feature points classified as static (plus those outside bounding boxes) are used in coarse-to-fine camera pose estimation by minimizing re-projection error, yielding higher average precision and faster speed on KITTI Odometry/KITTI360 than other dynamic SLAM systems.",
+ "is_error": false,
+ "latency_s": 37.1,
+ "sdk_duration_ms": 35223,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MLP-SLAM|MLP SLAM"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "dynamic|Dynamic",
+    "path": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 9210,
+  "output": 715,
+  "cache_read": 201664,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.16475700000000001,
+ "timeline": [
+  {
+   "t": 1.93,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 10.07,
+   "event": "text",
+   "detail": "60"
+  },
+  {
+   "t": 10.09,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 10.11,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 15.12,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 23.33,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 27.2,
+   "event": "text",
+   "detail": "62"
+  },
+  {
+   "t": 27.2,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 37.09,
+   "event": "text",
+   "detail": "1315"
+  },
+  {
+   "t": 37.11,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the markdown files for content about MLP-SLAM.\n\n",
+  "Let me read the method section for implementation specifics.\n\n",
+  "**Answer** (from `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md` — the MLP-SLAM paper):\n\nMLP-SLAM addresses the degradation of visual SLAM in dynamic outdoor environments (pedestrians, cars, buses), where static-world assumptions fail: existing geometric methods require laborious manual parameter tuning and lack generality, while semantic approaches like DynaSLAM discard all features inside dynamic-class masks, wrongly removing static points on parked cars and guardrails (information loss) and incurring high latency. To solve this, it introduces the first machine-learning discriminator for dynamic vs. static feature points: a Multilayer Perceptron trained on a purpose-built public dataset of 50,000+ labeled KITTI feature points (1:1 static/dynamic, 70/20/10 split). The MLP takes three geometric inputs — image intensity error, epipolar error, and re-projection error — thereby using *complete* geometric information instead of the partial cues used by prior work, and needs no manual parameter configuration. Feature points classified as static (plus those outside bounding boxes) are used in coarse-to-fine camera pose estimation by minimizing re-projection error, yielding higher average precision and faster speed on KITTI Odometry/KITTI360 than other dynamic SLAM systems."
+ ],
+ "qid": "BQ09",
+ "via": "chat"
+}

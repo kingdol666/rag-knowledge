@@ -1,0 +1,555 @@
+[
+  {
+    "mode": "A_vector",
+    "id": "T1",
+    "scenario": "enumeration/instance",
+    "seconds": 54.6,
+    "_gold": {
+      "2310.10981": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8893
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T1",
+    "scenario": "enumeration/instance",
+    "seconds": 546.7,
+    "scan": {
+      "shelves_scanned": 6,
+      "descriptions_scanned": 329,
+      "description_overlap_docs": 69,
+      "stem_completion_docs": 0,
+      "zero_overlap_docs_unread": 260,
+      "docs_read": 30,
+      "peek_docs": 299,
+      "peek_seconds": 80.9,
+      "peek_empty": 0
+    },
+    "_gold": {
+      "2310.10981": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9189
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 9,
+        "seconds": 2.6,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 69,
+        "stem_completion_docs": 0,
+        "zero_overlap_docs_unread": 260,
+        "docs_read": 30,
+        "seconds": 15.8,
+        "peek_docs": 299,
+        "peek_empty": 0,
+        "peek_seconds": 80.7,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 332,
+      "from_both": 6,
+      "from_vector_only": 3,
+      "from_catalog_only": 323
+    },
+    "reread": {
+      "docs_to_reread": 3,
+      "docs_reread": 2,
+      "reread_errors": []
+    },
+    "seconds": 576.8,
+    "cli_exit_code": 2,
+    "seconds_cli_wall": 578.9,
+    "mode": "C_hybrid",
+    "id": "T1",
+    "scenario": "enumeration/instance",
+    "_gold": {
+      "2310.10981": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9189
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "T2",
+    "scenario": "multi-doc synthesis",
+    "seconds": 40.4,
+    "_gold": {
+      "2502.00306": {
+        "judged": false,
+        "kept": false,
+        "in_evidence": false,
+        "score": null
+      },
+      "2402.12317": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9137
+      },
+      "2411.18583": {
+        "judged": false,
+        "kept": false,
+        "in_evidence": false,
+        "score": null
+      },
+      "_summary": {
+        "golds_total": 3,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T2",
+    "scenario": "multi-doc synthesis",
+    "seconds": 585.7,
+    "scan": {
+      "shelves_scanned": 6,
+      "descriptions_scanned": 329,
+      "description_overlap_docs": 303,
+      "stem_completion_docs": 0,
+      "zero_overlap_docs_unread": 26,
+      "docs_read": 30,
+      "peek_docs": 299,
+      "peek_seconds": 83.9,
+      "peek_empty": 0
+    },
+    "_gold": {
+      "2502.00306": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9225
+      },
+      "2402.12317": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9162
+      },
+      "2411.18583": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8743
+      },
+      "_summary": {
+        "golds_total": 3,
+        "golds_judged": 3,
+        "golds_kept": 3,
+        "golds_in_evidence": 3
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 10,
+        "seconds": 2.7,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 303,
+        "stem_completion_docs": 0,
+        "zero_overlap_docs_unread": 26,
+        "docs_read": 30,
+        "seconds": 16.0,
+        "peek_docs": 299,
+        "peek_empty": 0,
+        "peek_seconds": 81.2,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 333,
+      "from_both": 6,
+      "from_vector_only": 4,
+      "from_catalog_only": 323
+    },
+    "reread": {
+      "docs_to_reread": 4,
+      "docs_reread": 3,
+      "reread_errors": []
+    },
+    "seconds": 755.3,
+    "cli_exit_code": 2,
+    "seconds_cli_wall": 758.0,
+    "mode": "C_hybrid",
+    "id": "T2",
+    "scenario": "multi-doc synthesis",
+    "_gold": {
+      "2502.00306": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9225
+      },
+      "2402.12317": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9162
+      },
+      "2411.18583": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8743
+      },
+      "_summary": {
+        "golds_total": 3,
+        "golds_judged": 3,
+        "golds_kept": 3,
+        "golds_in_evidence": 3
+      }
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "T3",
+    "scenario": "paraphrase zero-overlap",
+    "seconds": 67.4,
+    "_gold": {
+      "2508.05896": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8598
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T3",
+    "scenario": "paraphrase zero-overlap",
+    "seconds": 737.7,
+    "scan": {
+      "shelves_scanned": 6,
+      "descriptions_scanned": 329,
+      "description_overlap_docs": 33,
+      "stem_completion_docs": 0,
+      "zero_overlap_docs_unread": 296,
+      "docs_read": 30,
+      "peek_docs": 299,
+      "peek_seconds": 85.1,
+      "peek_empty": 0
+    },
+    "_gold": {
+      "2508.05896": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8937
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 10,
+        "seconds": 6.3,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 33,
+        "stem_completion_docs": 0,
+        "zero_overlap_docs_unread": 296,
+        "docs_read": 30,
+        "seconds": 19.4,
+        "peek_docs": 299,
+        "peek_empty": 0,
+        "peek_seconds": 83.2,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 333,
+      "from_both": 6,
+      "from_vector_only": 4,
+      "from_catalog_only": 323
+    },
+    "reread": {
+      "docs_to_reread": 4,
+      "docs_reread": 2,
+      "reread_errors": []
+    },
+    "seconds": 748.8,
+    "cli_exit_code": 2,
+    "seconds_cli_wall": 751.6,
+    "mode": "C_hybrid",
+    "id": "T3",
+    "scenario": "paraphrase zero-overlap",
+    "_gold": {
+      "2508.05896": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8937
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "T4",
+    "scenario": "part targeting",
+    "seconds": 54.9,
+    "_gold": {
+      "2503.21676": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.892
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T4",
+    "scenario": "part targeting",
+    "seconds": 563.0,
+    "scan": {
+      "shelves_scanned": 6,
+      "descriptions_scanned": 329,
+      "description_overlap_docs": 114,
+      "stem_completion_docs": 0,
+      "zero_overlap_docs_unread": 215,
+      "docs_read": 30,
+      "peek_docs": 299,
+      "peek_seconds": 83.0,
+      "peek_empty": 0
+    },
+    "_gold": {
+      "2503.21676": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8605
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 10,
+        "seconds": 2.8,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 114,
+        "stem_completion_docs": 0,
+        "zero_overlap_docs_unread": 215,
+        "docs_read": 30,
+        "seconds": 16.2,
+        "peek_docs": 299,
+        "peek_empty": 0,
+        "peek_seconds": 83.6,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 333,
+      "from_both": 6,
+      "from_vector_only": 4,
+      "from_catalog_only": 323
+    },
+    "reread": {
+      "docs_to_reread": 4,
+      "docs_reread": 3,
+      "reread_errors": []
+    },
+    "seconds": 621.3,
+    "cli_exit_code": 2,
+    "seconds_cli_wall": 624.0,
+    "mode": "C_hybrid",
+    "id": "T4",
+    "scenario": "part targeting",
+    "_gold": {
+      "2503.21676": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8605
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "T5",
+    "scenario": "not-in-library",
+    "seconds": 41.1,
+    "_gold": {
+      "_summary": {
+        "golds_total": 0,
+        "golds_judged": 0,
+        "golds_kept": 0,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T5",
+    "scenario": "not-in-library",
+    "seconds": 590.4,
+    "scan": {
+      "shelves_scanned": 6,
+      "descriptions_scanned": 329,
+      "description_overlap_docs": 23,
+      "stem_completion_docs": 7,
+      "zero_overlap_docs_unread": 306,
+      "docs_read": 30,
+      "peek_docs": 299,
+      "peek_seconds": 83.8,
+      "peek_empty": 0
+    },
+    "_gold": {
+      "_summary": {
+        "golds_total": 0,
+        "golds_judged": 0,
+        "golds_kept": 0,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 10,
+        "seconds": 3.2,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 23,
+        "stem_completion_docs": 7,
+        "zero_overlap_docs_unread": 306,
+        "docs_read": 30,
+        "seconds": 16.5,
+        "peek_docs": 299,
+        "peek_empty": 0,
+        "peek_seconds": 85.7,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 333,
+      "from_both": 6,
+      "from_vector_only": 4,
+      "from_catalog_only": 323
+    },
+    "reread": {
+      "docs_to_reread": 4,
+      "docs_reread": 3,
+      "reread_errors": []
+    },
+    "seconds": 664.8,
+    "cli_exit_code": 2,
+    "seconds_cli_wall": 667.6,
+    "mode": "C_hybrid",
+    "id": "T5",
+    "scenario": "not-in-library",
+    "_gold": {
+      "_summary": {
+        "golds_total": 0,
+        "golds_judged": 0,
+        "golds_kept": 0,
+        "golds_in_evidence": 0
+      }
+    }
+  }
+]

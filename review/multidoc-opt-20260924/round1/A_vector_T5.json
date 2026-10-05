@@ -1,0 +1,63 @@
+{
+  "mode": "A_vector",
+  "id": "T5",
+  "scenario": "not-in-library",
+  "query": "What does the library say about federated learning for privacy-preserving machine learning training?",
+  "seconds": 47.2,
+  "docs_read": 5,
+  "judge": {
+    "abs_kept": [
+      1,
+      3,
+      4
+    ],
+    "relative_cut": 0.805,
+    "global_best": 0.905,
+    "doc_scores": [
+      {
+        "doc": "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8137,
+        "kept": true
+      },
+      {
+        "doc": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 4 of 4).md",
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "score": 0.2835,
+        "kept": false
+      },
+      {
+        "doc": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.8725,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.9048,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 32,
+    "total_segments": 32
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+    "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md"
+  ],
+  "evidence_pack": "[计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md]\n# large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference（第 3/4 部分）\n章节: An Example of Our Generated Queries > 7.1 Assumptions on RAG Documents\n## 7.1 Assumptions on RAG Documents\n\n\nWhile we observe impressive inference performance with our attack, even under the presence of detection schemes, we now discuss the list of assumptions made related to the nature of documents in a RAG setup.\n\nLength Dependency. The documents targeted by our attack must be sufficiently long to provide enough information for generating meaningful questions. Applications involving short documents (e.g. 2-3 lines) may lack the necessary content to generate 30 distinct and effective questions. This limitation is less critical in domain-specific RAG applications, where documents are typically longer and rich enough in content to justify the use of a RAG system.\n\nGeneric Documents. In addition to length, the targeted documents must contain information that the base LLM is unaware of or not very good at. The attack may perform poorly on highly generic documents, as they do not contain enough specific details to craft unique and distinguishable questions, and correspond to content that the base LLM may be familiar with. However, it is worth noting that in such cases, the utility of RAG might be limited, as generic documents provide less value for retrieval-based systems and the RAG owner might benefit in efficiency from discarding such documents from their datastore.\n\n## 7.2 Analyzing Failure Cases\n\n\nAlthough our attack achieves a higher AUC in all settings compared to the baselines, its TPR@low FPR leaves room for improvement in some cases. Examining the failed examples can shed light on why this happens. We begin by visualizing the distribution of MIA scores for member and non-members documents with our attack. In Figure 8, we observe the distribution of the member and nonmember scores to be mostly separable but do note some overlap between them. This overlap between distributions can be attributed to two reasons: (1) members with low MIA scores, and (2) nonmembers with high MIA scores.\n\nFalse Negatives. The fact that we observe high retrieval recall for our attack rules out the possibility of the target document being absent from the context provided to the RAG generator. The RAG's inability to answer the question properly can thus have two potential reasons. On rare occasions, GPT-4o fails to paraphrase the user's query accurately (see Appendix G for an exampl\n\n[工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md]\n# mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md.md（第 5/5 部分）\n章节: Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications > 7.2.1  Problem Formulation\n## 7.2.1  Problem Formulation\n\n\nThe cart-pole system with soft walls is often used as a benchmark problem for mixed-integer optimal control, $\\mathrm { e . g . , s e e ^ { 4 5 , 2 3 } }$ . This standard hybrid control problem results in an MIQP of the form in (1), which is solved at each sampling time step of the MI-MPC controller. Given the current state of the cart-pole system $\\hat { x } _ { 0 } ,$ the aim is to use the horizontal forces of the cart to effectively regulate an inverted pendulum towards the unstable equilibrium at the origin. The state vector is defined as $x = [ p ^ { \\mathrm { c } } \\ \\theta ^ { \\mathrm { p } } \\ v ^ { \\mathrm { c } } \\ \\omega ^ { \\mathrm { p } } ] ^ { \\top }$ i.e., ${ n _ { \\mathrm { x } } } = 4$ , including the position $p ^ { \\mathrm { c } }$ and velocity $v ^ { \\mathrm { { c } } }$ of the cart, and the angle $\\theta ^ { \\mathrm { p } }$ and angular velocity $\\omega ^ { \\mathrm { p } }$ of the pendulum. The force input applied to the cart is $F ^ { \\mathrm { i n } } \\in \\mathbb { R }$ and $F ^ { 1 } , F ^ { \\mathrm { r } } \\in \\mathbb { R }$ are the contact forces transmitted by the soft walls on the left and right of the cart-pole system, see $\\mathrm { F i g }$ 6a. The discrete-time state dynamics in (1b) read as\n\n$$\nx _ { i + 1 } = { \\left[ \\begin{array} { l } { p _ { i + 1 } ^ { \\mathrm { { c } } } } \\\\ { \\theta _ { i + 1 } ^ { \\mathrm { { p } } } } \\\\ { v _ { i + 1 } ^ { \\mathrm { { c } } } } \\\\ { \\omega _ { i + 1 } ^ { \\mathrm { { p } } } } \\end{array} \\right] } = { \\left[ \\begin{array} { l l l } { 1 } & { 0 } & { T _ { \\mathrm { { s } } } } & { 0 } \\\\ { 0 } & { 1 } & { 0 } & { T _ { \\mathrm { { s } } } } \\\\ { 0 } & { g { \\frac { m ^ { \\mathrm { { p } } } } { m ^ { \\mathrm { { c } } } } } } & { 1 } & { 0 } \\\\ { 0 } & { g { \\frac { m ^ { \\mathrm { { c } } } + m ^ { \\mathrm { { p } } } } { m ^ { \\mathrm { { c } } } l } } } & { 0 } & { 1 } \\end{array} \\right] } { \\left[ \\begin{array} { l } { p _ { i } ^ { \\mathrm { { c } } } } \\\\ { \\theta _ { i } ^ { \\mathrm { { p } } } } \\\\ { v _ { i } ^ { \\mathrm { { c } } } } \\\\ { \\omega _ { i } ^ { \\mathrm { { p } } } } \\end{array} \\right] } + { \\left[ \\begin{array} { l l l } { 0 } & { 0 } & { 0 } \\\\ { 0 } & { 0 } & { 0 } \\\\ { { \\frac { 1 } { m ^ { \\ma\n\n[生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md]\n# genomics__2602.10156__strand-sequence-conditioned-transport-for-si（第 2/6 部分）\n章节: STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations > 4. Experimental Setup\n## 4. Experimental Setup\n\n\nData Source and Preprocessing. We utilize single-cell perturbation datasets from PerturbQA (Wu et al., 2025), spanning four cell lines. We restrict our analysis to K562, Jurkat, and RPE1, excluding HepG2 due to low statistical power for differential expression evaluation arising from reduced cell counts per perturbation (median 45 cells in HepG2 versus 72 in RPE1, 83 in Jurkat, and 121 in K562 (Nadig et al. 2025)). We further constructed a cross-cell-line dataset (termed Combined) using the three cell lines, with details at App. H.1. For STRAND, we couple control and perturbed cells using Optimal Transport (OT), with details at App. A.\n\nState-of-the-Art Methods. Perturbation prediction remains a challenging problem where no method consistently dominates across evaluation settings (Viñas Torné et al., 2025; Ahlmann-Eltze et al., 2025; Wu et al., 2024). We therefore structure our evaluation around five complementary baselines: GEARS (Roohani et al., 2023), BioLord (Piran et al. 2024), STATE (Adduri et al., 2025b), Linear (Linder et al., 2025), and PerturbMean (Viñas Torné et al., 2025). Implementation details for all baselines are provided in App H.\n\nEvaluation Metrics. We adopt evaluation protocols tailored to each experimental setting.\n\nFor models trained and evaluated on individual cell lines, we adhere to the benchmarking standards established by the Virtual Cell Challenge and the STATE framework (Adduri et al., 2025b). For each test perturbation, we sample $N \\ = \\ 2 5 6$ random control cells from the corresponding cell line. Each model will generate the predicted perturbed population $\\hat { p } _ { 1 }$ , with the same sample size, which is compared against the ground-truth distribution. Following the CellEval framework (Adduri et al., 2025b), we evaluate performance along three complementary axes: (i) Global Fit (MSE, ∆Pearson), (ii) DE Signal (Dir. Match, Prec. @N, Ov.@N), and (iii) Distributional Fidelity (Discr. Cos (Wu et al., 2024)). We exclude metrics that treat Wilcoxon-based DE calls as hard ground-truth labels (e.g., DE classification or recall-based metrics), which have been shown to produce severely inflated false discoveries (Squair et al., 2021; Murphy et al., 2023).\n\nFor joint-cell-line (Combined), we additionally reported metrics assess",
+  "_gold": {
+    "_summary": {
+      "golds_total": 0,
+      "golds_judged": 0,
+      "golds_kept": 0,
+      "golds_in_evidence": 0
+    }
+  }
+}

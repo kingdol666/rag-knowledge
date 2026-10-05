@@ -7,7 +7,7 @@
  * thin pass-through that normalizes the query parameters and wires the
  * permission callback + abort signal.
  */
-import { query as claudeQuery } from '@anthropic-ai/claude-agent-sdk'
+import { query as claudeQuery, type PermissionMode } from '@anthropic-ai/claude-agent-sdk'
 import type {
   ChatEngine,
   QueryRequest,
@@ -53,13 +53,48 @@ export class ClaudeEngine implements ChatEngine {
       prompt: promptArg,
       options: {
         cwd: req.cwd,
-        permissionMode: req.permissionMode,
+        // QueryRequest.permissionMode is a plain string (engines expose their
+        // own mode sets); the SDK only accepts its canonical mode union.
+        permissionMode: req.permissionMode as PermissionMode,
         model: req.model || undefined,
         allowedTools: req.allowedTools,
         resume: req.resume || undefined,
         maxTurns: req.maxTurns || 50,
         settingSources: ['user', 'project'],
-        env: { ...process.env },
+        // Deterministic tool loading: the user-level settings env sets
+        // ENABLE_TOOL_SEARCH=true, which forces ≥1 ToolSearch LLM turn before
+        // any real MCP call (measured 2026-09-28: 4 ToolSearch turns ≈ +21s on
+        // a kb retrieval). The web chat agent's tools are few and named
+        // explicitly in the kb instruction, so load them upfront instead of
+        // making the model search for them.
+        env: {
+          ...process.env,
+          ENABLE_TOOL_SEARCH: 'false',
+          // Loopback must bypass any ambient proxy: measured 2026-09-28 — the
+          // web process inherits HTTPS_PROXY=127.0.0.1:7890 from its launching
+          // shell, and the CLI's MCP client then routes even 127.0.0.1 MCP
+          // connections through the proxy, which fails the kb-mcp mount
+          // silently (model is left with zero kb tools).
+          NO_PROXY: '127.0.0.1,localhost',
+          no_proxy: '127.0.0.1,localhost',
+          // Experimental agent-teams surface exposes SendMessage & co. — a
+          // measured +10s opening detour on kb turns (session b00004e7).
+          CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: '0',
+        },
+        // Kill the ToolSearch detour at the root: the settings-env override
+        // alone was measured as insufficient (2026-09-28: 1-3 ToolSearch
+        // calls ≈ +14-21s per kb turn even with ENABLE_TOOL_SEARCH=false in
+        // three places — the deferred tool-loading tool still spawned).
+        // Removing the tool outright forces eager tool use. Callers may add
+        // more bans (e.g. the subagent delegator for kb lanes) — only
+        // disallowedTools gates harness-internal tools; allowedTools doesn't.
+        disallowedTools: ['ToolSearch', ...(req.disallowedTools ?? [])],
+        // Session-scoped MCP isolation (kb retrieval turns): load ONLY the
+        // explicitly passed servers, ignoring user-scope MCP, plugins and
+        // project .mcp.json discovery. See QueryRequest.mcpServers.
+        ...(req.mcpServers
+          ? { mcpServers: req.mcpServers, strictMcpConfig: req.strictMcpConfig === true }
+          : {}),
         // Pass reasoning_effort if set
         ...(req.reasoningEffort && req.reasoningEffort !== 'auto'
           ? {

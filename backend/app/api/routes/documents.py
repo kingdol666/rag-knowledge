@@ -32,6 +32,7 @@ async def split_document(body: dict = None):
     title = str(body.get("title") or "").strip() or "untitled"
     # 请求级覆盖 > config.yml > 服务默认
     cfg = dict(config.large_doc_split)
+    cfg.update(config.large_doc_split_planner)
     for key in ("max_chars", "overlap_chars"):
         if body.get(key) is not None:
             try:
@@ -40,6 +41,14 @@ async def split_document(body: dict = None):
                 pass
     if body.get("auto_split") is not None:
         cfg["auto_split"] = bool(body["auto_split"])
+    for key in ("target_utilization", "strategy"):
+        if body.get(key) is not None:
+            cfg[key] = body[key]
+    for key in ("allow_oversized_atomic_unit", "allow_hard_fallback"):
+        if body.get(key) is not None:
+            cfg[key] = bool(body[key])
+    if body.get("agent_plan") is not None:
+        cfg["agent_plan"] = body["agent_plan"]
 
     plan = document_splitter.plan_split(content, title, cfg)
     plan["success"] = True

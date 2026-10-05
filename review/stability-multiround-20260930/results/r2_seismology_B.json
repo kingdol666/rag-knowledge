@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "seismology",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 46.4,
+ "success": true,
+ "session_id": "91950087-16de-4538-beb6-83cd3f910f6e",
+ "turns": 8,
+ "cost": 0.309991,
+ "duration_ms": 44940,
+ "answer": "**知识库中没有任何文档介绍「地震波分为哪几类」这一地震学基础分类知识。**\n\n扫描范围与结果（本次检索固定顺序执行，无任何命中）：\n\n| 层级 | 动作 | 结果 |\n|---|---|---|\n| 目录层 | `kb_list(lightweight=true)` — 19 个库 | 仅「自然科学与地球科学」（75 篇，描述含 *seismology*）在领域上相关 |\n| 描述层 | `kb_get_documents(lightweight=true)` | 该库地震学文档仅 2 篇（各分 3–4 个 part）：`seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p`（超剪切破裂判定）、`seismology__1308.1846__developing-and-testing-the-automated-post-ev`（震后损失估计 APE-ELEV）；其余为量子物理/气候/天文/化学/海洋/数学 |\n| 泛化库抽查 | `demo-qa-20260927`（random real-world content）描述层 5 篇 | 万里长城、Voyager 1、光合作用、Attention Is All You Need、检索模式速查卡 — 均无关 |\n| 证据门 | `kb_laya_judge`（≤6 refs/批，串行） | 两篇地震学文档共 6 段进入评分，survivor 均来自上述 2 篇 |\n| 正文核验 | `kb_doc_read` 两名幸存者 | 见下 |\n\n正文核验（kb_doc_read）确认：\n\n- **Supershear 一文**（P1 参考）只讨论**破裂速度**分类——\"subshear rupture\"（亚剪切）与 \"supershear rupture\"（超剪切），并用质点运动特征区分（亚剪切呈 FN-FP-FN，超剪切呈 FP-FN，`seismology__2606.10843` part 1）。它提到剪切波速（shear wave speed）作为判据，但**未展开 P 波/S 波/面波这一「地震波类型」分类**。\n- **APE-ELEV 一文**（P2 弱，领域偏移）实为地震**损失模型**分类：probabilistic / deterministic / real-time 三类模型（`seismology__1308.1846` part 1），与地震波类型无关。\n\n**盲点声明**：以上为对 19 个库目录层 + 领域相关库与泛化库文档描述层的完整扫描，未做全库 75+ 篇正文逐篇通读；但就\"地震波分类（体波 P/S、面波 Love/Rayleigh 等）\"这一主题，描述层未出现任何候选，属**真实未覆盖**，非检索遗漏。如需该知识，建议入库地震学教材相应章节后重试。"
+}

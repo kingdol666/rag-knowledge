@@ -1,0 +1,23 @@
+paper(demo): R3 fresh-panel revision - judgment engine concretized, contract honesty, editorial pass
+
+- 3.3: judgment engine specified (compact local model on the platform GPU,
+  ~50-80 ms per verdict warm; topical similarity alone does not earn a
+  positive verdict); fail-closed softened from absolute to design intent
+  with a pointer to the measured fallback cells
+- 5: deviation disclosure - no engine call in 3 of 10 platform questions
+  (confirmed by direct reads), read-fallbacks in 2 more (slow/unavailable
+  engine); engine completed in the remaining 5
+- demo: BQ04's second search corrected to keyword-metadata cross-check
+  (kb_search, not the BM25 two-stage pass); "verbatim quotation" narrowed
+  to the section title actually quoted; graded-path pointer re-anchored to
+  panel 2 (BQ06)
+- editorial round: intro/related-work repetition deduplicated; L2 renamed
+  recall (reconciling the abstract's catalog/descriptions/recall triple
+  with the L0-L5 rungs); shelf vs base terminology fixed; one-neutral-prompt
+  contradiction resolved; ladder->librarian lane-name drift fixed; Table 1
+  cited from its own section, 33/33 explained; abstract "with 1" fragment
+  fixed; fig captions trimmed (stale bottom-strip reference removed,
+  panel-2 bare-agent omission explained)
+- layout: body (through Conclusion) still ends on page 4; references +
+  GenAI disclosure on page 5 (5 pages total); 0 overfull, 0 undefined
+- visual judge 5/5 pass on the final render

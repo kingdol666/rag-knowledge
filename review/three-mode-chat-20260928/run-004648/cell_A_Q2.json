@@ -1,0 +1,65 @@
+{
+ "qid": "Q2",
+ "mode": "A",
+ "question": "CoRoT 卫星的系外行星计划有哪些科学目标？它何时开始科学观测、任务延长到什么时候？截至 2010 年夏共收集了多少条光变曲线？为什么 CoRoT-7b 这类超级地球只能在较亮恒星的光变曲线中发现？(CoRoT exoplanet program status results transit asteroseismology)",
+ "track": "mode_A",
+ "via": "retrieval-mode+closed-book-chat-api",
+ "retrieval": {
+  "ok": true,
+  "real_engine": true,
+  "status": "ok",
+  "seconds": 22.5,
+  "wall_s": 24.0,
+  "n_result_docs": 17,
+  "judge": {
+   "status": "ok",
+   "engine": "laya",
+   "backend": "laya_sdk",
+   "real_engine": true,
+   "criterion": "instance",
+   "threshold": 0.5,
+   "global_best": 0.9298,
+   "scored_segments": 78,
+   "total_segments": 78,
+   "errors": []
+  }
+ },
+ "gold_hit": true,
+ "gold_hits": {
+  "1105.1887": true
+ },
+ "ranked": [
+  "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+  "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+  "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 2 of 5).md",
+  "demo-qa-20260927/voyager-1.md",
+  "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+  "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md",
+  "e2e-flow-20260926-022340/harness-handbook.md",
+  "AI 基础设施/vector-index-tuning-guide (part 2 of 2).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-demo-qa/memory-conventions.md",
+  "AI 基础设施/tracelens-deployment-notes.md"
+ ],
+ "pack_protocol": "native:24000",
+ "evidence_chars": 24000,
+ "answer": "The retrieved evidence does not answer this question.\n\nThe strongest match, `自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md`, states CoRoT's two scientific objectives (transit detection of extrasolar planets and asteroseismology of stellar interiors), that scientific observations began on February 2nd 2007, and that the mission was extended by three additional years \"till March 2013.\" However, this chunk contains no figure for the number of light curves collected by summer 2010, and it contains no discussion of CoRoT-7b or of why super-Earths are found only in light curves of brighter stars. The remaining evidence (stroke prediction, unified growth theory, Pride and Prejudice, bitvector query optimization, solar cells, global RAG benchmark, isotropic covariance estimation, spatial transcriptomics) is unrelated. The specific count and the CoRoT-7b observational-selection explanation are therefore insufficient in the provided evidence, and I cannot supply them from prior knowledge.",
+ "is_error": false,
+ "latency_total_s": 30.8,
+ "answer_latency_s": 6.8,
+ "tokens": {
+  "input": 5822,
+  "output": 218,
+  "cache_read": 37312,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.053216,
+ "timeline_events": 3,
+ "recorded_utc": "2026-09-27T16:47:53.000319+00:00"
+}

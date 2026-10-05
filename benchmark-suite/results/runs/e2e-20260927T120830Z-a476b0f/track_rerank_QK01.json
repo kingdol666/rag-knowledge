@@ -1,0 +1,47 @@
+{
+ "qid": "QK01",
+ "method": "rerank",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "2110.07844",
+  "1706.03762",
+  "2503.21676",
+  "1810.04805",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "ranked_paths": [
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55"
+ ],
+ "evidence_sources": [
+  "2110.07844",
+  "1706.03762",
+  "2503.21676",
+  "1810.04805",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 8.1,
+ "latency_s": 19.6,
+ "answer": "**Answer (from the provided evidence only):**\n\nAccording to [2110.07844], the attention head transforms the j-th decoder state and i-th encoder state into query, key, and value vectors, computes attention weights as a normalized dot product between the query and key vectors, and produces an output that is a weighted sum of the value vectors. [1706.03762] states the Transformer is \"the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention.\" However, that passage asserts the replacement without giving a *reason* for it, and convolution is never mentioned anywhere in the retrieved evidence. [1810.04805] only defines notational quantities (number of layers L, hidden size H, number of self-attention heads), and [2510.13343] only says attention \"learns to focus on relevant parts of the input data.\" The remaining passages ([2503.21676], [1906.10015]) address model-internal learning dynamics, not attention computation or the choice of attention over recurrence/convolution. Therefore the evidence is **insufficient** to answer why the Transformer replaces recurrence and convolution; only the mechanism (query–key–value, normalized dot-product weights, weighted sum of values) and the bare fact of replacing recurrence are supported.\n\n**Sources used:** [2110.07844]; [1706.03762]; [1810.04805]; [2510.13343]. (Passages [2503.21676] and [1906.10015] were reviewed and found not to answer the question.)",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37928,
+  "output": 1619,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.23011500000000001,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "track": "rerank",
+ "via": "baseline+closed-book"
+}

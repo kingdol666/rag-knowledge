@@ -1,0 +1,106 @@
+{
+ "track": "b",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "answer": "MLP-SLAM addresses the degradation of visual SLAM accuracy in dynamic outdoor environments (pedestrians, cars, buses), where classic systems like ORB-SLAM2 rely on a static-world assumption. Prior dynamic-SLAM approaches (Type I geometric, Type II semantic-mask like DynaSLAM, Type III hybrids) either need laborious manual parameter tuning, lack generality, or discard valid static points — e.g. DynaSLAM wrongly removes features on parked cars and guardrails, causing information loss and high latency from MaskRCNN. MLP-SLAM's solution is a Multilayer Perceptron classifier that labels each feature point as static or dynamic using complete geometric information (no manual parameters), so camera pose is estimated only from static correspondences via re-projection-error minimization. It also contributes a public 50,000+ feature-point dataset from KITTI Odometry for direct discriminator evaluation, and reports the highest average precision and fastest speed among dynamic SLAM systems on KITTI Odometry and KITTI360.\n\nSource: `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md`.",
+ "is_error": false,
+ "latency_s": 125.2,
+ "sdk_duration_ms": 123772,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MLP-SLAM|MLP SLAM"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "dynamic",
+    "path": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\robotics__2410.10669__mlp-slam-multilayer-pe"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 79410,
+  "output": 701,
+  "cache_read": 127168,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.478159,
+ "timeline": [
+  {
+   "t": 1.47,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 34.32,
+   "event": "text",
+   "detail": "47"
+  },
+  {
+   "t": 34.32,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 34.34,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 73.19,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 91.34,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 102.2,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 125.18,
+   "event": "text",
+   "detail": "1109"
+  },
+  {
+   "t": 125.21,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the directory for relevant files.\n\n",
+  "MLP-SLAM addresses the degradation of visual SLAM accuracy in dynamic outdoor environments (pedestrians, cars, buses), where classic systems like ORB-SLAM2 rely on a static-world assumption. Prior dynamic-SLAM approaches (Type I geometric, Type II semantic-mask like DynaSLAM, Type III hybrids) either need laborious manual parameter tuning, lack generality, or discard valid static points — e.g. DynaSLAM wrongly removes features on parked cars and guardrails, causing information loss and high latency from MaskRCNN. MLP-SLAM's solution is a Multilayer Perceptron classifier that labels each feature point as static or dynamic using complete geometric information (no manual parameters), so camera pose is estimated only from static correspondences via re-projection-error minimization. It also contributes a public 50,000+ feature-point dataset from KITTI Odometry for direct discriminator evaluation, and reports the highest average precision and fastest speed among dynamic SLAM systems on KITTI Odometry and KITTI360.\n\nSource: `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md`."
+ ],
+ "retried_after_restart": true,
+ "first_error": "ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+ "qid": "BQ09",
+ "via": "chat"
+}

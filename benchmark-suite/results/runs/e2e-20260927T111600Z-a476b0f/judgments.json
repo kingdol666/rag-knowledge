@@ -1,0 +1,352 @@
+{
+ "mode_A|QK01": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The question is answerable — the gold points (scaled dot-product attention, multi-head projection, replacing recurrence via parallelism/global dependencies, and replacing convolution) are established knowledge — yet the answer refuses to answer on grounds of insufficient evidence and thus contains none of the gold points or keywords."
+ },
+ "mode_B|QK01": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The question is answerable, but the answer declined to provide any content, stating that no evidence was retrieved."
+ },
+ "mode_C|QK01": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer correctly covers why recurrence is replaced (parallelization, global dependencies) and notes convolutions are dispensed with, but omits scaled dot-product attention and multi-head projection, explicitly leaving the \"how\" half unanswered, so it matches only part of the gold points."
+ },
+ "bm25|QK01": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer correctly reports the multi-head attention details present in the evidence (one of four gold points) but explicitly states it lacks the scaled dot-product formulation and the parallelization/global-dependency rationale for replacing recurrence and convolution, covering only part of the question."
+ },
+ "vector|QK01": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer correctly describes query/key/value dot-product attention with a weighted value sum and mentions multi-headed replacement of recurrent layers, but omits the scaling factor, the parallelism/global-dependency rationale for dropping recurrence, and any replacement of convolution, so it covers only about half the gold points."
+ },
+ "rrf|QK01": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer correctly and substantively covers multi-head attention but omits scaled dot-product attention and explicitly declines the recurrence/convolution replacement half, so it earns partial credit (roughly 1 of 4 gold points fully, plus honest evidence-bound abstention) rather than wrong or complete."
+ },
+ "rerank|QK01": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer captures the attention computation (query/key dot product with a weighted sum of values) and mentions multi-headed self-attention and the replacement of recurrent layers, but it omits the scaled dot-product naming, the parallelization/global-dependency rationale, and any mention of replacing convolution, covering only part of the gold points."
+ },
+ "mode_A|QK02": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer declines to answer and names none of the three gold sub-ontologies (Molecular Function, Biological Process, Cellular Component), so it is a refusal on an answerable question."
+ },
+ "mode_B|QK02": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer declines to name the three Gene Ontology sub-ontologies despite the question being answerable, supplying none of the gold points (Molecular Function, Biological Process, Cellular Component)."
+ },
+ "mode_C|QK02": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer declined to name the three Gene Ontology subdivisions, so although it is an answerable question, no gold point (Molecular Function, Biological Process, Cellular Component) was provided."
+ },
+ "bm25|QK02": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer explicitly declines to name the three GO sub-ontologies, so it contains none of the gold points (Molecular Function, Biological Process, Cellular Component) — a refusal on an answerable question."
+ },
+ "vector|QK02": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer names all three gold points — Molecular Function, Biological Process, and Cellular Component — and correctly identifies them as the three GO sub-ontologies."
+ },
+ "rrf|QK02": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The question is answerable (gold: Molecular Function, Biological Process, Cellular Component), but the answer declined on grounds of insufficient evidence."
+ },
+ "rerank|QK02": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer names all three Gene Ontology sub-ontologies — Molecular Function, Biological Process, and Cellular Component — matching the gold points exactly and completely."
+ },
+ "mode_A|QK03": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer declined to respond, reporting insufficient evidence, and thus contains none of the gold-point content (polarization effect explaining J-V hysteresis) required for this answerable question."
+ },
+ "mode_B|QK03": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer refused due to missing evidence and never mentions polarization or its slow relaxation as the mechanism, so it scores zero against the gold points on an answerable question."
+ },
+ "mode_C|QK03": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly identifies polarization (relaxation) as the mechanism, stating hysteresis arises from time-dependent polarization/slow relaxation reproduced across scan rates, fully matching both gold points and the required keyword."
+ },
+ "bm25|QK03": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly attributes the hysteretic J-V behavior to polarization effects via time-dependent polarization relaxation across different relaxation time scales, matching both gold points (polarization mechanism + time-varying/slow relaxation origin)."
+ },
+ "vector|QK03": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer correctly identifies polarization (relaxation) as the mechanism the dynamic electrical model uses to explain hysteretic J-V characteristics, matching both gold points and the required keyword."
+ },
+ "rrf|QK03": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly states that hysteretic J-V behavior is explained by the variation of polarization in time governed by a characteristic relaxation time scale, matching both gold points and the gold keyword 'polarization'."
+ },
+ "rerank|QK03": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer correctly identifies polarization relaxation as the mechanism by which the dynamic electrical model explains hysteretic J–V characteristics, matching both gold points (polarization effect and slow/time-dependent polarization relaxation)."
+ },
+ "mode_A|QK04": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer is a refusal stating the evidence is insufficient, while the question is answerable with gold facts (acoustic-only input, ~94% accuracy) that the response never provides."
+ },
+ "mode_B|QK04": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer explicitly declines to answer and supplies neither gold fact (acoustic-only information, ~94% accuracy), so it scores 0 as a refusal on an answerable question."
+ },
+ "mode_C|QK04": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer states both gold points exactly: detection using only acoustic information (no transcripts/text) with 94% accuracy on Czech broadcast news."
+ },
+ "bm25|QK04": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer states detection uses only acoustic information (no text/transcripts) and reports 94% accuracy on within-sentence prosodic boundaries in Czech broadcast news, matching both gold points."
+ },
+ "vector|QK04": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer matches both gold points — it explicitly states detection uses only acoustic information (no text) and reports ~94% accuracy on Czech broadcast news."
+ },
+ "rrf|QK04": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly states the approach uses only acoustic information (no text/transcripts) and achieves 94% accuracy on within-sentence prosodic boundaries in Czech broadcast news, matching both gold points."
+ },
+ "rerank|QK04": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer states the wav2vec 2.0 model uses only acoustic information without transcripts and reaches 94% accuracy, matching both gold points exactly."
+ },
+ "mode_A|QK05": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The question has a gold answer (trap plants ~7%–10% of the field), but the response only declares the evidence insufficient and provides no allocation figure, so it is a refusal on an answerable question."
+ },
+ "mode_B|QK05": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer is a refusal on an answerable question, providing no share figure (gold: ~7%–10%) and citing no sources."
+ },
+ "mode_C|QK05": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer explicitly declares the evidence insufficient and gives no field-share figure, refusing a question that is answerable with the gold value of roughly 7%–10%."
+ },
+ "bm25|QK05": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer states that roughly 7–10% of the field should be allocated to trap plants when they are 5–25 times more attractive, exactly matching the gold points."
+ },
+ "vector|QK05": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer states trap plants should occupy roughly 7–10% of the field, exactly matching the gold point and both gold keywords (7, 10)."
+ },
+ "rrf|QK05": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer states that roughly 7–10% of the field should be allocated to trap plants at 5–25× attractiveness, exactly matching the gold point (诱虫植物占田块约 7%–10%)."
+ },
+ "rerank|QK05": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly states the trap plants should occupy roughly 7–10% of the field, matching the gold point (and its '7'/'10' keywords), with only an added caveat about the 25x end that does not contradict the required figure."
+ },
+ "mode_A|QK06": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The question is answerable per the gold points (precipitation efficiency plus thermodynamic moisture increase), but the answer declined to answer and provided no content."
+ },
+ "mode_B|QK06": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer declined to answer an answerable question, omitting the gold-controlling factor precipitation efficiency (and the accompanying thermodynamic moisture increase) entirely."
+ },
+ "mode_C|QK06": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The response declines to answer an answerable question and contains none of the gold content, so per the rubric (0 = refusal on answerable) it scores zero."
+ },
+ "bm25|QK06": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer matches the thermodynamic-contribution half of the gold points but never names precipitation efficiency as the primary controlling factor (indeed it denies a single primary factor), so it captures only one of the two required elements."
+ },
+ "vector|QK06": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The question is answerable (gold: precipitation efficiency plus thermodynamic moisture increase), but the answer explicitly declines to identify the controlling factor, naming neither 'precipitation efficiency' nor any gold point as the answer, so it is a refusal on an answerable question."
+ },
+ "rrf|QK06": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer correctly identifies the thermodynamic contribution (matching one gold point) but never names precipitation efficiency, the key primary controlling factor, and declares the evidence insufficient on the primary-control question, so it is only partially correct."
+ },
+ "rerank|QK06": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer explicitly declines to identify any controlling factor and never mentions precipitation efficiency (the required gold keyword), so it is a refusal on an answerable question, with at most a vague nod to thermodynamic moisture."
+ },
+ "mode_A|QK07": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer states MameLoshnLM is the first open-source Yiddish language model at 8B parameters and notes the accompanying Kashes multi-task benchmark, matching all three gold points and both gold keywords."
+ },
+ "mode_B|QK07": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer is a pure refusal that supplies none of the gold points (Yiddish-language model, 8B parameters, benchmark) for a question that has an answerable gold answer."
+ },
+ "mode_C|QK07": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer explicitly declines to answer, providing none of the gold points (first open-source Yiddish language model, 8B parameters, benchmark), which is a refusal on an answerable question."
+ },
+ "bm25|QK07": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The model declined to answer an answerable question and supplied none of the gold points (first open-source Yiddish language model, 8B parameters, accompanying benchmark); the incidental \"8B\" refers to Llama 3.1, not MameLoshnLM."
+ },
+ "vector|QK07": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer correctly identifies MameLoshnLM as the first open-source Yiddish language model but explicitly declines to give the parameter scale (gold: 8B) and only alludes to evaluation benchmarks rather than the attached benchmark deliverable, so it covers only one of three gold points."
+ },
+ "rrf|QK07": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer is a refusal that explicitly declines to state what MameLoshnLM is or its parameter scale (it even attributes the only '8B' to Llama 3.1, not the target) and therefore matches none of the gold points — no Yiddish-LM identification, no 8B scale, no benchmark."
+ },
+ "rerank|QK07": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer correctly identifies MameLoshnLM as the first open-source Yiddish language model and alludes to Yiddish evaluation benchmarks, but it explicitly omits the 8B parameter scale (a required gold point and keyword), so it is only partially complete."
+ },
+ "mode_A|QK08": {
+  "score": null,
+  "verdict": "error",
+  "rationale": "Expecting ',' delimiter: line 1 column 168 (char 167)"
+ },
+ "mode_B|QK08": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer explicitly declines to answer due to empty retrieval, but the question is answerable with the gold fact (beyond the 95th percentile), so a refusal scores 0."
+ },
+ "mode_C|QK08": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly states the GAN substantially better captured the wetting signal beyond the 95th percentile, matching the gold point (超过 95th percentile 之后 GAN 明显优于确定性基线)."
+ },
+ "bm25|QK08": {
+  "score": 3,
+  "verdict": "partial",
+  "rationale": "The answer captures the correct qualitative claim that the GAN outperforms deterministic baselines at extreme precipitation percentiles, but it reports the 99.5th percentile instead of the gold's 95th percentile threshold and explicitly denies a 'beyond which' boundary is stated."
+ },
+ "vector|QK08": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer names the 95th percentile as the threshold beyond which the GAN substantially better captures the wetting signal, exactly matching the gold point and containing both gold keywords (gan, 95)."
+ },
+ "rrf|QK08": {
+  "score": 0,
+  "verdict": "refusal",
+  "rationale": "The answer never states the gold's 95th-percentile threshold, concluding instead that the evidence cannot determine any cutoff — a refusal on an answerable question."
+ },
+ "rerank|QK08": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer states 'Beyond the 95th percentile of precipitation' and that the GAN substantially better captures the wetting signal than the deterministic baseline, matching the gold point exactly."
+ },
+ "mode_A|QK09": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer correctly reports that the evidence is insufficient, explicitly notes the retrieved clinical-LLM-evaluation source contains no metformin/cat/dosage information, and refrains from giving any dosage number — exactly the not-found behavior the gold points require."
+ },
+ "mode_B|QK09": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly reports that no evidence was retrieved and gives no dosage number, which matches the gold requirement of an explicit not-found report with no fabricated dose."
+ },
+ "mode_C|QK09": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer correctly reports that the evidence is insufficient and gives no dosage number, exactly matching both gold points (no veterinary pharmacology source in the corpus; required behavior is an explicit not-found report)."
+ },
+ "bm25|QK09": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly reports the evidence is insufficient for an unanswerable veterinary-pharmacology question, correctly notes none of the retrieved sources mention metformin, diabetes, cats, or dosing, and gives no dosage number, fully satisfying both gold points."
+ },
+ "vector|QK09": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly reports the evidence is insufficient (no metformin, feline-patient, or dosing content in any retrieved chunk) and gives no dosage number, exactly matching the gold not-found behavior required for this unanswerable question."
+ },
+ "rrf|QK09": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly reports a not-found/insufficient-evidence result and provides no dosage number, exactly matching the gold behavior for this unanswerable question."
+ },
+ "rerank|QK09": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer correctly reports the evidence as insufficient for a veterinary dosage question and explicitly declines to give any metformin dose number, exactly matching both gold points."
+ },
+ "mode_A|QK10": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer correctly reports insufficient evidence for the non-existent Herbert-Moulton collider benchmark, explicitly declines to fabricate its method or numbers, and states it will not fall back on prior knowledge, matching both gold points for an out-of-corpus question."
+ },
+ "mode_B|QK10": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly reports that no evidence was retrieved and declines to describe or invent the Herbert-Moulton benchmark's method — exactly the required not-found behavior for this out-of-corpus question, with no fabrication or prior-knowledge fallback."
+ },
+ "mode_C|QK10": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The answer explicitly reports the evidence is insufficient, correctly identifies that the Herbert-Moulton collider benchmark and particle physics detector drift are absent from the retrieved corpus, and fabricates no methods or numbers, matching both gold points."
+ },
+ "bm25|QK10": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The question is out-of-corpus, and the answer correctly reports that the evidence is insufficient, explicitly notes no source addresses the Herbert-Moulton collider benchmark, and fabricates no methods or numbers."
+ },
+ "vector|QK10": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The question is out-of-corpus and the answer explicitly reports insufficient evidence without fabricating any methods or numbers, exactly matching the gold points' required not-found behavior."
+ },
+ "rrf|QK10": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The evidence is empty/out-of-corpus for the nonexistent Herbert-Moulton benchmark, and the answer correctly gives an explicit not-found report naming the chunks examined without fabricating any methodology or numbers, exactly matching the gold behavior."
+ },
+ "rerank|QK10": {
+  "score": 5,
+  "verdict": "correct",
+  "rationale": "The out-of-corpus question has no supporting evidence, and the answer exactly matches both gold points by explicitly reporting not-found and declaring no prior-knowledge fallback, fabricating no methods or numbers."
+ }
+}

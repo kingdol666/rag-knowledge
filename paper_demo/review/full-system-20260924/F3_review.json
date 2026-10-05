@@ -1,0 +1,71 @@
+{
+  "seat": "F3",
+  "score": 7.5,
+  "verdict": "minor",
+  "summary": "The expanded body mostly keeps its claims leashed to the artifacts. Every shared number cross-checks against the locked FACTSHEET: 9/10-10/10-9 grounded, 9-6-6 keyword-verified, 7-4-1 part/section citations, 113.0/42.7/48.0 s, $0.4911/0.1631/0.1803 per question, 7.6/4.4/2.4 tool calls, 100 papers/322 parts/4,528 chunks are identical across abstract, Section 4, the Figure 3 strip, and the new Section 5, with no contradictions. Honest hedges are present where they matter ('always locates ... (10/10 grounded) --- in this run', 'Content-verified denotes this prompted judgment, not guaranteed correctness', 'the comparison is operational, not controlled; cache state was uncontrolled', 'bounds only this collection'), and the Section 5 claim that grounding and verification 'travel together only for the platform's gated reading route (9/10 each)' is strictly true against the 9-10-9 / 9-6-6 grid. Three precision defects survive in the new text: the Section 2.2 misroute sentence names three checks that do not include base fit, the one check that actually validates category placement; the Section 5 librarian sentence compresses three post-failure exits into two; and 'every number this paper reports re-derives from saved artifacts' is a universal provenance claim the paper's own configuration constants (41 tools, 94-tool inventory, 30,000-character ceiling) falsify. All are one-sentence fixes; none threatens the empirical core.",
+  "strengths": [
+    "Full numeric consistency: all numbers shared by abstract, Section 4, Figure 3 bottom strip, and Section 5 match the locked artifacts exactly (9/10-10/10-9 grounded; 9-6-6 keyword-verified; 7-4-1 citations; 113.0/42.7/48.0 s; $0.49/$0.16/$0.18 per question rounding the strip's 0.4911/0.1631/0.1803; 7.6/4.4/2.4 tool calls), with rounding applied consistently (42.7 s rendered as 43 s).",
+    "Disciplined bounding of strong words: 'always' is immediately scoped ('in this run, file search was not the bottleneck'); 'guaranteed' appears only in negation ('not guaranteed correctness'); every 'only' (7-4-1 split, gated route, packaged-skill gate, collection scope) is verifiable from the traces or the rubric.",
+    "The Section 5 pairing claim is strictly true, not loose: platform is the only mode where grounding and keyword verification are both 9/10 (bare is 10/10 with 6/10; dense is 9/10 with 6/10), and 'roughly three times the bare agent's cost' is exact (0.4911/0.1631 = 3.0x).",
+    "Future work is consistent with the system section: 'graph navigation is optional, not the evaluated route' (Section 2.1) matches 'Future work adds graph navigation as a second retrieval route' (Section 5), so the unevaluated route is never implicitly claimed as an evaluated one.",
+    "Failure reporting is unusually candid for a demo track: the BQ02 wrong-survey grounding is shown as-is, conservative word-boundary grading penalties against the bare agent (BQ06, BQ08) are self-reported, and the metadata caveat ('not an append-only audit log') pre-empts an obvious attack."
+  ],
+  "issues": [
+    {
+      "id": "F3-1",
+      "priority": "P1",
+      "location": "Section 2.2 (sec2_system.tex, Ingest paragraph)",
+      "issue": "The sentence names read-back, vector probe, and three-layer consistency as the evidence that 'a misroute is caught at ingest time', but none of those three validates routing. Read-back verifies storage fidelity, the vector probe verifies retrievability (semantic fit), and three-layer consistency verifies agreement across stores; the check that validates category validity -- i.e., the one that would catch a document placed in the wrong base -- is 'base fit', which Figure 2's final-check banner lists ('read-back / description / base fit / tags / vector probe (x2) / graph node / three-layer / metadata') but the sentence omits. As written, the claim's witnesses cannot support it, and 'is caught' states as fact a capability no run ever exercised (all 100 papers passed; zero misroutes observed).",
+      "evidence": "Each placement ends in a final check --- read-back, vector probe, and three-layer consistency are three of the nine recorded checks --- so a misroute is caught at ingest time, not at answer time.",
+      "suggestion": "Each placement ends in a final check --- base fit, vector probe, and three-layer consistency are three of the nine recorded checks --- so a misroute is flagged at ingest time, not at answer time. (Swapping read-back for base fit aligns the named checks with the routing claim; 'flagged' softens the unexercised capability, though 'caught' is acceptable once base fit is the witness.)"
+    },
+    {
+      "id": "F3-2",
+      "priority": "P1",
+      "location": "Section 5, first sentence (sec5_conclusion.tex)",
+      "issue": "The conclusion still compresses three post-failure exits into two. Per Section 2.3 and Figure 2, a failed initial gate invokes librarian browsing 'then re-assessment', and re-assessment feeds the same 0-8 gate -- so a failed gate can end in a re-assessed cited answer (score >= 6), an attributed backstop (score 5 surfaced while browsing), or a scoped not-found report. 'Ends a failed gate in X or Y' silently drops the third terminal that the paper's own workflow diagram draws.",
+      "evidence": "the librarian fallback ends a failed gate in an attributed backstop or a scoped not-found report instead of a silent pass",
+      "suggestion": "the librarian fallback routes a failed gate to re-assessment, an attributed backstop, or a scoped not-found report instead of a silent pass"
+    },
+    {
+      "id": "F3-3",
+      "priority": "P1",
+      "location": "Section 5, third sentence (sec5_conclusion.tex)",
+      "issue": "Universal provenance claim outruns its scope. Section 4's hedges ('the comparison is operational, not controlled') concern interpretation, not provenance, and do not license 'every number this paper reports'. Configuration constants -- 41 kb_* tools, the 94-tool inventory, the 30,000-character ceiling, 800-character chunks -- are repo-verified design parameters, not values re-derived from saved run artifacts (the FACTSHEET itself separates 'Authoritative artifacts' from 'System facts (verifiable in repo)'), and Section 3's 'from ten seconds to about three minutes' is presenter observation. A hostile reader can falsify the universal from the paper's own body, which is self-undermining for a paper whose selling point is auditability.",
+      "evidence": "The demonstration instance --- 100 papers, five bases, 322 stored parts --- was built and audited by the platform's own skills; every number this paper reports re-derives from saved artifacts.",
+      "suggestion": "The demonstration instance --- 100 papers, five bases, 322 stored parts --- was built and audited by the platform's own skills; every number in the measured run (Section 4) re-derives from saved artifacts."
+    },
+    {
+      "id": "F3-4",
+      "priority": "P2",
+      "location": "Section 2.1 (sec2_system.tex, Services and Interfaces)",
+      "issue": "The core design claim is fair -- one shared store behind one tool set means a retag genuinely has no second copy to synchronize -- but 'visible identically' slides from state identity to presentation identity. A console render and an MCP JSON payload are necessarily different presentations of the same record; 'identically' is the one word a skeptical reader can poke at without any replication existing to attack.",
+      "evidence": "A retag or a move therefore lands once, visible identically to an administrator in the console and to an agent over MCP.",
+      "suggestion": "A retag or a move therefore lands once in the shared store: an administrator in the console and an agent over MCP read the same updated record."
+    },
+    {
+      "id": "F3-5",
+      "priority": "P2",
+      "location": "Section 2.3 (sec2_system.tex, Retrieve paragraph)",
+      "issue": "This is design rationale stated in capability terms, and the evaluation contains no instance of the capability: every measured gate failure (the three scripted out-of-corpus probes at 1/8, 1/8, 0/8) ended in a scoped not-found report, and no reported trace shows browsing surfacing a passage the vector index missed. The sentence does not claim it happened, so this is not an overclaim -- but labeling the rationale as rationale would cost nothing and preempt the 'where is your librarian-rescue evidence?' question.",
+      "evidence": "a failed gate is information, not noise: a ranking step cannot repair an absent passage; browsing can still surface one the index missed.",
+      "suggestion": "a failed gate is information, not noise: a ranking step cannot repair an absent passage; browsing is the designed route for surfacing a passage the index missed. (Or keep the sentence and add one clause in Section 4 noting no librarian rescue occurred in this run.)"
+    },
+    {
+      "id": "F3-6",
+      "priority": "P2",
+      "location": "Section 4, Retrieval paragraph (sec4_eval.tex)",
+      "issue": "The numbers are correct (7.6/4.4/2.4 tool calls match the artifacts), but the sentence is placed inside the 'First' finding, between its evidence ('locating evidence and synthesizing a complete answer are different skills') and its conclusion ('The platform alone pairs high grounding...'), breaking the finding's arc -- and it duplicates the function of the Costs paragraph's 'the gap buys multi-step reading, visible in the traces', which is its natural home.",
+      "evidence": "The tool-call counts (7.6 platform, 4.4 bare, 2.4 dense) make the extra reading visible.",
+      "suggestion": "Delete from the Retrieval paragraph and fold into Costs: 'the gap buys multi-step reading (7.6 tool calls per question versus 4.4 bare and 2.4 dense), visible in the traces.'"
+    },
+    {
+      "id": "F3-7",
+      "priority": "P2",
+      "location": "Section 3, Scenario 2 (sec3_demo.tex)",
+      "issue": "Accurate given Section 2.1's same-tools architecture, but 'the same tools' has no local antecedent in Section 3, and since the console is itself one of the tool clients, the two-clause split reads as if console and tools were parallel routes rather than two clients of one route.",
+      "evidence": "the attendee can open the cited part in the console; the same tools read it at its line offset.",
+      "suggestion": "the attendee can open the cited part in the console, and the agent's kb_* tools read the same text at its line offset."
+    }
+  ]
+}

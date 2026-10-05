@@ -1,0 +1,57 @@
+{
+ "qid": "Q3",
+ "mode": "C",
+ "question": "在分子科学的机器学习中,Noé 等人的综述《Machine learning for molecular simulation》与“深度空间学习 + 分子振动”数据增强方法各自如何应对数据稀缺与建模挑战？后者在聚酰胺纳滤膜实验中把相对误差和决定系数分别改善到多少？(machine learning molecular simulation molecular vibration data augmentation nanofiltration)",
+ "track": "mode_C",
+ "via": "retrieval-mode+closed-book-chat-api",
+ "retrieval": {
+  "ok": true,
+  "real_engine": true,
+  "status": "parallel-A+B",
+  "seconds": 35.0,
+  "wall_s": 35.0,
+  "n_result_docs": 12,
+  "judge": {
+   "backend": "laya_sdk",
+   "engine": "laya",
+   "worker_A_real": true,
+   "worker_B_real": true,
+   "scored_segments": null,
+   "errors": []
+  }
+ },
+ "gold_hit": false,
+ "gold_hits": {
+  "1911.02792": false,
+  "2011.07200": false
+ },
+ "ranked": [
+  "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "e2e-flow-20260926-022340/harness-handbook.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/thinking-style.md",
+  "soul-demo-qa/thinking-style.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-e2e-tester-024115/thinking-style.md"
+ ],
+ "pack_protocol": "native:60000",
+ "evidence_chars": 60000,
+ "answer": "The retrieved evidence does not contain the answer. None of the four documents address Noé et al.'s review *Machine learning for molecular simulation*, deep-space learning with molecular vibration data augmentation, or polyamide nanofiltration membrane experiments. The available sources are an HNSW vector-index tuning guide, two portions of *Pride and Prejudice*, an industrial temperature-diagnostics smoke-test report, and the Transformer paper (*Attention Is All You Need*). Accordingly, the evidence is insufficient and I cannot supply the relative error or R² figures requested.\n\nSources consulted: `AI 基础设施/vector-index-tuning-guide (part 1 of 2).md`; `Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md`; `Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md`; `aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md`; `demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md`.",
+ "is_error": false,
+ "latency_total_s": 41.4,
+ "answer_latency_s": 6.1,
+ "tokens": {
+  "input": 19772,
+  "output": 238,
+  "cache_read": 37376,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.123498,
+ "timeline_events": 3,
+ "recorded_utc": "2026-09-27T16:51:56.604154+00:00"
+}

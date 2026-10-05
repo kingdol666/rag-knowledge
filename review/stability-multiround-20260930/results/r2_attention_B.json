@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "attention",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 72.7,
+ "success": true,
+ "session_id": "551cdb58-deb7-41f7-b74a-c86b6993e095",
+ "turns": 17,
+ "cost": 0.3920906,
+ "duration_ms": 71165,
+ "answer": "**Transformer 自注意力（Scaled Dot-Product Attention）的公式为：**\n\n$$\\mathrm{Attention}(Q,K,V) = \\mathrm{softmax}\\!\\left(\\frac{QK^{T}}{\\sqrt{d_k}}\\right)V$$\n\n**出处（P0 强相关）**\n- 文档：《Attention Is All You Need》(Vaswani et al., 2017)，即原论文 arXiv:1706.03762\n- 来源库：`demo-qa-20260927`（KB ID `455137b4-a0be-46ed-acf5-d8b475dc5d70`）\n- 文档路径：`demo-qa-20260927\\artificial-intelligence__1706.03762__attention-is-all-you-need.md`（doc_id `265a9b1e-430d-4782-8b79-864c93804267`）\n\n**原文逐字引证（论文 §3.2.1 Scaled Dot-Product Attention）**\n> \"We compute the matrix of outputs as: Attention(Q, K, V) = softmax( QK^T / √d_k ) V  **(1)**\"\n\n**关键要点（均出自该文档）**\n1. **输入构成**：\"The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.\"\n2. **矩阵并行计算**：查询打包为矩阵 $Q$，键、值分别打包为 $K$、$V$——即上式是\"同时计算一组查询\"的矩阵形式。\n3. **缩放因子的动机**：\"for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients... To counteract this effect, we scale the dot products by $1/\\sqrt{d_k}$.\"\n4. **自注意力的定义**（§2 Background 原文）：\"Self-attention, sometimes called intra-attention is an attention mechanism relating different positions of a single sequence\"——即 $Q$、$K$、$V$ 同源。\n5. **多头扩展（§3.2.2）**：$\\mathrm{MultiHead}(Q,K,V) = \\mathrm{Concat}(\\mathrm{head}_1,...,\\mathrm{head}_h)W^O$，其中 $\\mathrm{head}_i = \\mathrm{Attention}(QW_i^Q, KW_i^K, VW_i^V)$；论文中 $h=8$，$d_k=d_v=d_{model}/h=64$。\n6. **计算复杂度**：自注意力每层 $O(n^2 \\cdot d)$，顺序操作 $O(1)$（原文 Table 1）。\n\n**盲区说明**：本轮为全库目录层+描述层逐级检索（含泛化库抽查），21 个库中仅 `demo-qa-20260927` 命中该主题原文；其他库（计算机与人工智能 131 篇、AI 基础设施 3 篇等）的描述层未见 self-attention 公式相关文档。公式本身引用自原论文，可信度 **P0（一手原文，非二手转述）**。"
+}

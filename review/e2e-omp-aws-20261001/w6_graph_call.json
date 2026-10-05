@@ -1,0 +1,17 @@
+{
+ "tag": "w6_graph_call",
+ "mode": "async",
+ "request_prompt": "为知识库「e2e-agent-20261001」构建知识图谱（基于文档元数据/标签），然后查询：《E2E-Agent 产线温控验证报告》和《E2E-Agent 产线良率优化经验》在图谱中是什么关系？回报图的节点数与边数。不要派发子 agent，直接在本会话执行。",
+ "http": 200,
+ "wall_s": 0.0,
+ "response": {
+  "success": true,
+  "mode": "async",
+  "task_id": "kbt_mup1cfc6_1c254f72",
+  "status": "running",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "poll": "GET /api/kb/agent/tasks/kbt_mup1cfc6_1c254f72"
+ },
+ "task_id": "kbt_mup1cfc6_1c254f72"
+}

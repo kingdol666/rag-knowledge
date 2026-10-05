@@ -1,0 +1,83 @@
+{
+ "track": "c",
+ "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+ "answer": "The retrieved chunks answer both parts of the question directly.\n\n**What MultiMedQA is:** The paper's own summary states, \"We curated MultiMedQA, a benchmark for medical question answering spanning medical exam, medical research, and consumer medical questions.\" It was built to assess LLMs, and the authors \"newly introduce the seventh dataset, HealthSearchQA, which consists of commonly searched health questions,\" evaluated using PaLM and its instruction-tuned variant Flan-PaLM (Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k01.md, k04.md).\n\n**Flan-PaLM's MedQA performance:** Using a combination of few-shot, chain-of-thought, and self-consistency prompting, \"Flan-PaLM achieves state-of-the-art accuracy on every MultiMedQA multiple-choice dataset (MedQA, MedMCQA, PubMedQA, MMLU clinical topics), including 67.6% accuracy on MedQA (US Medical License Exam questions), surpassing prior state-of-the-art by over 17%.\" A results table lists Flan-PaLM (540B) at 67.6% on MedQA (USMLE), ahead of PubMedGPT (50.3%), DRAGON (47.5%), BioLinkBERT (45.1%), and Galactica (44.4%) (k00.md, k01.md, k31.md, k30.md).\n\nAn ablation chunk also notes that instruction prompt tuning produced a model reaching 67.2% accuracy on MedQA with chain-of-thought and self-consistency, \"roughly matching the corresponding result with Flan-PaLM\" (k76.md).\n\n**Chunk files cited:** `clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k00.md`, `__k01.md`, `__k02.md`, `__k04.md`, `__k30.md`, `__k31.md`, `__k76.md` (all from the Corpus-Chunks800 index).",
+ "is_error": false,
+ "latency_s": 97.5,
+ "sdk_duration_ms": 95070,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MultiMedQA benchmark MedQA Flan-PaLM",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "Flan-PaLM medical question answering MedQA accuracy",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 49833,
+  "output": 725,
+  "cache_read": 71680,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.30313,
+ "timeline": [
+  {
+   "t": 2.41,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 29.45,
+   "event": "text",
+   "detail": "53"
+  },
+  {
+   "t": 29.45,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 60.65,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 60.66,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 97.46,
+   "event": "text",
+   "detail": "1609"
+  },
+  {
+   "t": 97.46,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll retrieve evidence from the dense vector index.\n\n",
+  "The retrieved chunks answer both parts of the question directly.\n\n**What MultiMedQA is:** The paper's own summary states, \"We curated MultiMedQA, a benchmark for medical question answering spanning medical exam, medical research, and consumer medical questions.\" It was built to assess LLMs, and the authors \"newly introduce the seventh dataset, HealthSearchQA, which consists of commonly searched health questions,\" evaluated using PaLM and its instruction-tuned variant Flan-PaLM (Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k01.md, k04.md).\n\n**Flan-PaLM's MedQA performance:** Using a combination of few-shot, chain-of-thought, and self-consistency prompting, \"Flan-PaLM achieves state-of-the-art accuracy on every MultiMedQA multiple-choice dataset (MedQA, MedMCQA, PubMedQA, MMLU clinical topics), including 67.6% accuracy on MedQA (US Medical License Exam questions), surpassing prior state-of-the-art by over 17%.\" A results table lists Flan-PaLM (540B) at 67.6% on MedQA (USMLE), ahead of PubMedGPT (50.3%), DRAGON (47.5%), BioLinkBERT (45.1%), and Galactica (44.4%) (k00.md, k01.md, k31.md, k30.md).\n\nAn ablation chunk also notes that instruction prompt tuning produced a model reaching 67.2% accuracy on MedQA with chain-of-thought and self-consistency, \"roughly matching the corresponding result with Flan-PaLM\" (k76.md).\n\n**Chunk files cited:** `clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k00.md`, `__k01.md`, `__k02.md`, `__k04.md`, `__k30.md`, `__k31.md`, `__k76.md` (all from the Corpus-Chunks800 index)."
+ ],
+ "qid": "BQ03",
+ "via": "chat"
+}

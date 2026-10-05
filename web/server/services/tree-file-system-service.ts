@@ -1237,6 +1237,24 @@ export class TreeFileSystemService {
   }
 
   /**
+   * getFileByPath with one forced disk reload on a miss.
+   *
+   * The in-memory index is authoritative only within THIS worker process
+   * (module-level singleton + _dirty never re-armed). In multi-worker dev
+   * deployments another worker may have created/renamed the file after our
+   * last load, so a miss here would report a false 404 — observed as
+   * "Document not found" when kb_doc_move followed kb_doc_update_meta ~0.3s
+   * later and landed on a different worker. Genuine misses pay one extra
+   * disk read; hits keep the fast path.
+   */
+  async getFileByPathWithReload(path: string): Promise<FileResponse | null> {
+    const hit = await this.getFileByPath(path)
+    if (hit) return hit
+    await withTreeLock(() => this._loadFromDisk())
+    return this.getFileByPath(path)
+  }
+
+  /**
    * Resolve a docPath to its full storage-relative path.
    *
    * If *docPath* already contains a path separator it is treated as a

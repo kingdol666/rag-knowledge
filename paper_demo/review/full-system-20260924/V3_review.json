@@ -1,0 +1,65 @@
+{
+  "seat": "V3",
+  "score": 9,
+  "verdict": "accept",
+  "summary": "Round-3 mechanical verification: all 9 fix-verification items landed in the current build and no regressions were found. Build freshness confirmed (main.pdf 2026-09-24 01:17:25 postdates every tex source; page PNGs 01:18:08 rendered from it; figure PNGs 01:10 predate the PDF; main.log has no undefined references). Page limit holds (Section 4 ends on page 4; page 5 carries only the GenAI disclosure + references). Abstract splits, conservatism qualifier, and bare-agent cost attribution are in place and reconcile with Section 4 and the Fig 3 strip (grounded 9/10/9, keyword-verified 9/6/6, citations 7/4/1). Fig 2 banner reads 'Per-part final check - all pass' with exactly nine countable checks matching Table 1's 'nine recorded checks'; Fig 3 navy banner carries right-aligned 'A Platform - B Bare agent - C Dense' with no collision and correct strip values; Fig 3 caption parenthetical, part-1-of-2 tie, and semicolon strip sentence verified, with BQ06 0/1 cross-checked against the run artifacts (track b kw=[] vs a single gold keyword 'precipitation efficiency'). Fig 1 caption and panel-4 pixels agree on 'a cited answer or a scoped not-found report' and the bolt glyph is clear of 'One generation'. Terminology sweep is clean; gate flow is consistent across Section 2.3, the Fig 2 caption, and knowledgebase-search/SKILL.md; the video pointer and backmatter closing are in place.",
+  "checks_passed": 9,
+  "checks_total": 9,
+  "issues": [],
+  "verification_details": [
+    {
+      "check": 1,
+      "item": "PAGE LIMIT",
+      "passed": true,
+      "evidence": "page-5.png: only the running head sits above the 'GenAI Usage Disclosure' heading; page contains disclosure, References heading, refs [1]-[8] only. page-4.png: Section 4 ends mid-column with '...receive scoped not-found reports (Section 3 shows one).' - body ends on page 4."
+    },
+    {
+      "check": 2,
+      "item": "ABSTRACT",
+      "passed": true,
+      "evidence": "sec0_abstract.tex rendered on page-1.png: '...and maintain tags. Retrieval rewrites each query...'; '...keyword-verifies 9 of 10. The bare agent locates the designated paper in all 10 cases yet passes conservative word-boundary verification in only 6, and dense retrieval grounds 9 and verifies 6.'; 'Part/section-level citations reach 7 of 10 for the platform versus 4 and 1.'; 'roughly three times the bare agent's cost per question'. Grammar intact after both splits; totals reconcile with Section 4 and Fig 3 strip."
+    },
+    {
+      "check": 3,
+      "item": "FIG2 BANNER",
+      "passed": true,
+      "evidence": "fig2-architecture.png crop _v3_crops/fig2_banner.png: banner text 'Per-part final check - all pass'; two lines 'read-back - description - base fit - tags / vector probe (x2) - graph node - three-layer - metadata' = 9 countable recordings (vector probe counts twice); banner and text clear of panel borders; crop _v3_crops/fig2_topbar.png shows visible padding in the 'ChromaDB - BGE-M3' pill. page-3.png: Table 1 row 'Per-paper ingest checks (nine recorded checks) 100/100 pass' on the same page as Fig 2 - a counting reader reconciles 9 items = nine recorded checks."
+    },
+    {
+      "check": 4,
+      "item": "FIG3 STRIP LABELS",
+      "passed": true,
+      "evidence": "fig3-answers-dual.png crop _v3_crops/fig3_banner.png: navy banner carries right-aligned 'A Platform - B Bare agent - C Dense' inside the figure, large whitespace before it, no collision with 'MONITORED RUN - 10 QUESTIONS x 3 MODES - ONE HARNESS AND MODEL'. Bottom strip values: Grounded 9/10 10/10 9/10; Keyword-verified 9/10 6/10 6/10; Part/section citations 7/10 4/10 1/10; Mean latency 113.0 42.7 48.0; Mean tool calls 7.6 4.4 2.4; Cost per question (USD) 0.4911 0.1631 0.1803."
+    },
+    {
+      "check": 5,
+      "item": "FIG3 CAPTION + conservatism",
+      "passed": true,
+      "evidence": "main.tex fig:threeway caption (rendered page-4.png): '(it located the file but matched no gold key fact under word-boundary grading)' - hyphen note gone; 'A quotes the source at part~1 of~2, section~2' ties to sec3_demo.tex 'ranks the primer's part~1 of~2 first' and the panel's 'part 1 of 2'; panel sentences use semicolons. sec4_eval.tex: 'word-boundary matching scores the bare agent's hyphenated ``precipitation-efficiency'' (BQ06) and its ``oxygen (anionic) redox'' and plural ``cathodes'' (BQ08) at 0/1 and 0/2'. Artifact cross-check: data/papers/qa_questions.json BQ06 has exactly one gold_keywords entry 'precipitation efficiency'; results/exp_r2_grade.json track b BQ06 row: kw=[], kw_ok=false (answer used hyphenated form) -> 0 of 1. Matches 0/1."
+    },
+    {
+      "check": 6,
+      "item": "FIG1 CAPTION",
+      "passed": true,
+      "evidence": "main.tex fig:teaser caption (rendered page-2.png): 'QDCVR at a glance, as two four-panel storyboards' and '...then a cited answer or a scoped not-found report'; no 'qualified answer' anywhere in main.tex caption text. fig1-core.png bottom-row panel 4: green pill 'cited answer - S3.2' + dashed 'or scoped not-found' + 'Cited answer - or a scoped not-found report' - exactly the two outcomes. Crop _v3_crops/fig1_panel4_top.png: bolt glyph sits clear of 'One generation -' with a visible gap."
+    },
+    {
+      "check": 7,
+      "item": "TERMINOLOGY SWEEP",
+      "passed": true,
+      "evidence": "grep over all tex files: no 'stored documents', no 'routing skill'; sec4_eval.tex uses 'the organization skill placed each by its content' (also page-3.png); 'out-of-corpus' in both abstract ('three scripted out-of-corpus probes') and Section 4 ('Three out-of-corpus questions'); sec3_demo.tex 'its scenarios trace Section~\\ref{sec:intro}'s three design decisions' renders as 'Section 1's three design decisions' (page-2.png) and sec1_intro.tex line 5 carries \\label{sec:intro}."
+    },
+    {
+      "check": 8,
+      "item": "GATE FLOW CONSISTENCY",
+      "passed": true,
+      "evidence": "sec2_system.tex 2.3: >=6 cited answer; 'Any lower initial score invokes the librarian'; 'A usable score-5 candidate, whether initial or surfaced while browsing, is retained as an explicitly attributed backstop and yields a qualified answer'; 'Candidates scoring at most 4 are discarded'; nothing usable -> not-found report with scope/near miss/reason/remedy. Fig 2 caption + Description and the figure's own boxes (>=6 cited answer / =5 qualified answer attributed backstop / <=4 not-found, 'After fallback: a usable score-5 backstop...') agree. .claude/skills/knowledgebase-search/SKILL.md agrees: gate decision table (>=6 fast exit; 5 'Keep as P1 backstop; run Phase 2'; <=4 'discarded'), iron rule 4 + quick rule 4 'Gate <=5 -> librarian fallback mandatory', 2d table 'Any recall path + content =5 -> P1 Confirmed - adopt with attribution' plus 'if Phase 2 produced nothing better, answer from the backstop and say so', Phase 3 honest report on total failure (what-was-tried / blind spots / suggestions = reason/near miss/scope/remedy)."
+    },
+    {
+      "check": 9,
+      "item": "VIDEO POINTER + BACKMATTER",
+      "passed": true,
+      "evidence": "sec3_demo.tex: 'the accompanying video walks through these scenarios in the web console' (page-2.png). sec4_backmatter.tex ends: 'Responsibility for the final claims... rests with the human authors. Competing interests: none declared. Demo video: <URL>. Code, traces, and scripts: <URL>.'; grep counts exactly one 'implementation' ('figure implementation') - no duplicated wording."
+    }
+  ]
+}

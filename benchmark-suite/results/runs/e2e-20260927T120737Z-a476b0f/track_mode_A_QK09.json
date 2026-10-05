@@ -1,0 +1,28 @@
+{
+ "qid": "QK09",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient to answer this question. The only retrieved chunk is from `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (part 2 of 8, vec≈0.482), and its content covers only the clinician-evaluation framework (Table 2) for assessing LLM answers to consumer medical questions — scientific consensus, harm, comprehension, retrieval, and reasoning axes. It contains no mention of metformin, dosing, cats, or veterinary diabetes management. I cannot provide the recommended daily dosage based on this evidence, and per the task constraints I will not fall back on prior knowledge. Source: `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md` — insufficient.",
+ "is_error": false,
+ "latency_s": 33.2,
+ "retrieval_s": 23.6,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38022,
+  "output": 1132,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.21841,
+ "ranked": [
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md"
+ ],
+ "evidence_sources": [
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md"
+ ],
+ "evidence_chars": 2634,
+ "real_engine": true,
+ "merge": null
+}

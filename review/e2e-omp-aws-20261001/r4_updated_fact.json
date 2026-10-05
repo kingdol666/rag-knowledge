@@ -1,0 +1,21 @@
+{
+ "reply": "Engine confirms: **survivor, Laya score 0.8308** (threshold 0.5, real_engine=true) → strong evidence. Answer is fully grounded in the named KB's latest content.\n\n## Result\n\n**答案：TT-90 的循环寿命追加验证结果为 —— 追加验证批次 `batch-e2e-a2` 通过，循环寿命上调至 15,000 次。**\n\n**检索与验证过程**\n- 范围：KB「e2e-agent-20261001」(`ce6f057a-0088-403c-a328-979c6cd360d9`，2 篇文档)，仅依据该库内容。\n- Phase 0 改写：`TT-90 循环寿命追加验证结果是多少` → 声明式查询。\n- Phase 1 向量宽网：`kb_search_vector(kb_id=ce6f057a…, top_k=10, score_threshold=0.3, slim=true)` → 命中 3 chunk；追加验证 chunk 得分 **0.6593**。\n- Phase 2 引擎门控：`kb_laya_judge(criterion=evidence)` 引用模式 → `real_engine=true`，**survivor_count=1，Laya 得分 0.8308**（阈值 0.5，verdict=yes）。\n- Phase 3 内容回读：`kb_doc_read` 逐字核验（content verification）。\n\n**证据出处（P0 直接证据）**\n- `e2e-agent-20261001/E2E-Agent 产线温控验证报告.md` — 原文 verbatim：\n\n  > ## 2026-10 追加验证\n  > 追加验证批次 batch-e2e-a2 通过，循环寿命上调至 15,000 次。\n\n  （同文档基线：设定 160 ℃、实测带宽 ±0.4 ℃、采样周期 5 s、验证批次 batch-e2e-a1、连续 72 h 无越限。）\n\n**可信度**：P0 强证据 — 向量 0.6593 + 引擎 0.8308 + 内容回读一致，单文档三通道互证。\n\n**盲点声明**：库内另一文档《E2E-Agent 产线良率优化经验.md》仅涉良率（91.2%→94.6%），与循环寿命无关，已排除。未发现任何其他\"循环寿命\"表述，该库对本题的唯一且最新答案为上述 15,000 次（对应追加批次 batch-e2e-a2）。只读操作，未做任何修改。\n\n- SCANNED queries=1 candidates=3 judged_segments=1 survivors=1 fallback=none",
+ "tools_used": [
+  "Read",
+  "Read",
+  "mcp__fetch__fetch",
+  "mcp__agentmemory__memory_recall",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_laya_judge"
+ ],
+ "session_id": "a241cf93-b1f9-41af-af55-c6529bffa997",
+ "wall_s": 50.5,
+ "http": 200,
+ "cost_usd": null,
+ "num_turns": null,
+ "pass": true,
+ "gold": "循环寿命 15,000 次（update→reindex→retrieve closed）"
+}

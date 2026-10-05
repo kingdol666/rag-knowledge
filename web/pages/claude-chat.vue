@@ -1870,6 +1870,7 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
       },
       body: JSON.stringify({
         prompt,
+        stream: true, // the API defaults to final-only JSON; the UI consumes SSE
         cwd: cwd.value.trim() || undefined,
         permissionMode: permissionMode.value,
         model: model.value.trim() || undefined,
@@ -2278,7 +2279,7 @@ watch(engine, (newEngine, oldEngine) => {
   const nextCatalog = harnessCatalog.value.find(h => h.id === newEngine)
   const validModes = nextCatalog?.permissionModes?.map(m => m.id) || []
   if (validModes.length && !validModes.includes(permissionMode.value)) {
-    permissionMode.value = nextCatalog?.defaultMode || 'default'
+    permissionMode.value = (nextCatalog?.defaultMode || 'default') as PermissionMode
   }
 
   // 4c. Model/effort are engine-specific — without a snapshot, a stale value

@@ -1,0 +1,33 @@
+{
+ "mode": "A",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 85.5,
+ "duration_ms": 81947,
+ "turns": 6,
+ "cost_usd": 0.446668,
+ "session_id": "95fa4615-7777-4767-8430-8c31f2c270c4",
+ "answer_chars": 1087,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**InstructDS 通过「三步合成法」从既有对话-摘要对自动构造查询-对话-摘要（QDS）三元组：摘要锚定的查询生成 → 查询过滤 → 查询式摘要生成，全程利用 LLM 的问题生成与问答能力，将人工标注降到最低，质量分从 45% 提升到 75%。**（P0 直接证据，来源：`nlp__2310.10981__instructive-dialogue-summarization-with-quer` (part 1 of 4)，SAMSum 专题库）\n\n具体流程（§3.2 Synthesize QDS Triples）：\n\n1. **摘要锚定的查询生成**：用在 Quoref、MC-TACO、CosmosQA 等问题上生成数据上训练过的 Flan-T5-XL（\"model X\"），基于参考摘要（而非冗长对话）生成候选问题——每个实例生成 5 个候选 query，以获得多样性。\n\n2. **查询双重过滤（保证有效性与多样性）**：\n   - **文本过滤**：以 model X 作二元分类器判断问题可答性，剔除 \"What will / How would\" 类易幻觉、无法确切回答的问题，淘汰约 **45%**；\n   - **语义过滤**：用 normalized BERTScore 计算相似度，同一对话下相似度 > 0.65 的近似问题只保留第一个（如 \"think abou",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

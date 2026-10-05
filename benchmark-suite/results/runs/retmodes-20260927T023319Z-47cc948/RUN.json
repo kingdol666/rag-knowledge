@@ -1,0 +1,30 @@
+{
+ "run_dir": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\runs\\retmodes-20260927T023319Z-47cc948",
+ "started_utc": "2026-09-27T02:35:33.552036+00:00",
+ "modes": [
+  "C"
+ ],
+ "questions": [
+  "q1",
+  "q2"
+ ],
+ "corpus": {
+  "kbs": 18,
+  "docs": 379
+ },
+ "arms": {
+  "C-q1": {
+   "file": "arm_C-q1.json",
+   "ok": true,
+   "wall_s": 71.0,
+   "gate_passed": true
+  },
+  "C-q2": {
+   "file": "arm_C-q2.json",
+   "ok": true,
+   "wall_s": 70.2,
+   "gate_passed": true
+  }
+ },
+ "updated_utc": "2026-09-27T02:37:57.879318+00:00"
+}

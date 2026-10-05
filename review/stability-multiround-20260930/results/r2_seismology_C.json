@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "seismology",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 69.3,
+ "success": true,
+ "session_id": "583e976d-5c75-4c7a-a12e-7ef2e8857aae",
+ "turns": 8,
+ "cost": 0.24762660000000003,
+ "duration_ms": 67715,
+ "answer": "## 结论\n\n**在这个指定库（`自然科学与地球科学`，KB `1e6199ea-…`，75 篇文献）中，没有找到关于\"地震波分为哪几类（体波/面波、P 波/S 波）及其区别\"的系统性教材式阐述——该问题的正面答案不在库内。** 库内相关文献只涉及**地震波中的 S 波（剪切波）与面波之一（Rayleigh 波）的局部物理特征**，可作为碎片化旁证，但不构成分类答案。\n\n## 检索事实\n\n已执行的检索（均为只读）：\n\n| 检索 | 结果 |\n|---|---|\n| `kb_search_two_stage`（\"地震波 分类 类型 区别\"，slim） | 命中 8 条，全部来自 2 篇地震学论文，无分类学内容 |\n| `kb_search_vector`（\"地震波 主要类型 P波 S波 面波 体波 区别\"） | 15 条，最高分 0.522，无分类定义 |\n| `kb_search_vector`（\"body waves surface waves Love wave Rayleigh wave …\"） | 15 条，最高分 0.577，无分类定义 |\n| `kb_laya_judge`（instance 判据，4 篇候选） | 33 段幸存，但幸存内容为破裂速度/粒子运动分析，非波类划分 |\n| `kb_doc_read`（seismology__2606.10843 part 1） | 全文通读，确认无地震波分类章节 |\n\n命中的相关库内文献仅 2 篇：\n- `seismology__2606.10843__supershear-rupture-indicator-in-near-fault-particle-motion`（1/3、2/3、3/3）\n- `seismology__1308.1846__developing-and-testing-the-automated-post-event-…`（1/4–4/4，地震损失评估模型）\n\n## 库内可用的碎片旁证（P1，非分类答案）\n\n从 `seismology__2606.10843` part 1 原文（kb_id `1e6199ea-…`）可提取以下与波类相关的**定义性片段**：\n\n1. **S 波（剪切波）的存在与传播速度** —— \"When the rupture speed exceeds the shear wave speed (supershear), coherent S waves produce high-amplitude Mach cones…\"；超剪切破裂即破裂速度 > 剪切波速 Vs，文内以 `0.8*Vs`（亚剪切）与 `1.6*Vs`（超剪切）为对照。\n2. **S 波的偏振/质点运动方向** —— \"the horizontal S motion is dominantly in the fault-normal (FN) component\"，随接收方位演化转入 fault-parallel (FP) 分量。\n3. **Rayleigh 面波** —— \"the particle motion separates into an initial supershear FP-dominant motion followed by a trailing Rayleigh FN-dominant motion\"，即 Rayleigh 波在尾随段占主导（该文仅此一处提及面波，未给定义）。\n\n## 诚实未找到声明\n\n对\"地震波分为**体波（P 波/S 波）与面波（Love 波/Rayleigh 波）**\"这一分类体系、以及各类波的传播介质、质点振动方向、速度大小、破坏性差异等**区别性内容**，**本库 0 命中**。上述 P 波（纵波）、Love 波在检索中完全未出现；S 波与 Rayleigh 波仅作为论文分析参数被顺带提及。库检索到此为止，不继续扩大检索，亦不对库外知识作推测性补充。"
+}

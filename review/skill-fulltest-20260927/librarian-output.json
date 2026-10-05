@@ -1,0 +1,92 @@
+{
+  "query": "Zephyr-7 coolant capacity specification",
+  "criterion": "evidence",
+  "catalog": [
+    {
+      "kb_id": "177ba7b4-a2e7-4169-9974-c65e12958235",
+      "name": "s-audit-a-20260927",
+      "description": "skill fulltest sandbox",
+      "catalog_status": "possible",
+      "query_overlap": 0,
+      "catalog_reason": "no_catalog_overlap; high-recall expansion"
+    }
+  ],
+  "documents": [
+    {
+      "kb_id": "177ba7b4-a2e7-4169-9974-c65e12958235",
+      "doc_id": "fbfb7283-d7f2-4349-9a34-c67a7929d812",
+      "doc_path": "s-audit-a-20260927\\zephyr7-spec.md",
+      "name": "zephyr7-spec.md",
+      "description": "Zephyr-7 widget spec with coolant 42 liters fact",
+      "content": "",
+      "description_trust": "trusted",
+      "description_trust_reasons": []
+    },
+    {
+      "kb_id": "177ba7b4-a2e7-4169-9974-c65e12958235",
+      "doc_id": "90f781d5-f007-4f47-8e0a-f5de07962af1",
+      "doc_path": "s-audit-a-20260927\\aurora9-protocol.md",
+      "name": "aurora9-protocol.md",
+      "description": "Aurora-9 handshake protocol",
+      "content": "",
+      "description_trust": "trusted",
+      "description_trust_reasons": []
+    },
+    {
+      "kb_id": "177ba7b4-a2e7-4169-9974-c65e12958235",
+      "doc_id": "127c7394-7a57-4cb8-bb5f-afafa9367f45",
+      "doc_path": "s-audit-a-20260927\\zephyr7-spec-copy.md",
+      "name": "zephyr7-spec-copy.md",
+      "description": "near-duplicate of spec (one line differs)",
+      "content": "",
+      "description_trust": "trusted",
+      "description_trust_reasons": []
+    }
+  ],
+  "candidates": [],
+  "unscanned": [
+    {
+      "kb_id": "177ba7b4-a2e7-4169-9974-c65e12958235",
+      "doc_id": "fbfb7283-d7f2-4349-9a34-c67a7929d812",
+      "doc_path": "s-audit-a-20260927\\zephyr7-spec.md",
+      "reason": "content_missing"
+    },
+    {
+      "kb_id": "177ba7b4-a2e7-4169-9974-c65e12958235",
+      "doc_id": "90f781d5-f007-4f47-8e0a-f5de07962af1",
+      "doc_path": "s-audit-a-20260927\\aurora9-protocol.md",
+      "reason": "content_missing"
+    },
+    {
+      "kb_id": "177ba7b4-a2e7-4169-9974-c65e12958235",
+      "doc_id": "127c7394-7a57-4cb8-bb5f-afafa9367f45",
+      "doc_path": "s-audit-a-20260927\\zephyr7-spec-copy.md",
+      "reason": "content_missing"
+    }
+  ],
+  "candidate_count": 0,
+  "engine": "laya",
+  "jev": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "none",
+    "real_engine": false,
+    "real_jev": false,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "scores": [],
+    "survivors": [],
+    "result_list": [],
+    "evidence_pack": "",
+    "provenance": [],
+    "deduped_count": 0,
+    "included_count": 0,
+    "truncated_candidate_ids": [],
+    "evidence_chars": 0,
+    "errors": []
+  },
+  "survivors": [],
+  "result_list": [],
+  "evidence_pack": "",
+  "provenance": []
+}

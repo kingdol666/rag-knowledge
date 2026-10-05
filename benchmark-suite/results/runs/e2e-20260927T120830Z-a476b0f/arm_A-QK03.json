@@ -1,0 +1,318 @@
+{
+  "status": "ok",
+  "query": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 18,
+    "vector_dedup_docs": 16,
+    "recall_seconds": 3.0,
+    "docs_read": 14,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs__k00.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs__k22.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 6.7
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9293,
+    "scored_segments": 95,
+    "total_segments": 95,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+      "vector_score": 0.4229046106338501,
+      "judge_score": 0.9293,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.42269814014434814,
+      "judge_score": 0.9053,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.36215198040008545,
+      "judge_score": 0.9053,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+      "vector_score": 0.42790091037750244,
+      "judge_score": 0.8954,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 2 of 3).md",
+      "vector_score": 0.444779634475708,
+      "judge_score": 0.885,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+      "vector_score": 0.4444761872291565,
+      "judge_score": 0.867,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+      "vector_score": 0.4579252004623413,
+      "judge_score": 0.8666,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+      "vector_score": 0.4722225069999695,
+      "judge_score": 0.8483,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/voyager-1.md",
+      "vector_score": 0.38123613595962524,
+      "judge_score": 0.8432,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.42525768280029297,
+      "judge_score": 0.8426,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+      "vector_score": 0.7284431457519531,
+      "judge_score": 0.833,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+      "vector_score": 0.781387209892273,
+      "judge_score": 0.8229,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.md.md",
+      "vector_score": 0.4790145754814148,
+      "judge_score": 0.8117,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/photosynthesis.md",
+      "vector_score": 0.379901647567749,
+      "judge_score": 0.6784,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+      "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+      "vector_score": 0.4229046106338501,
+      "judge_score": 0.9293,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.42269814014434814,
+      "judge_score": 0.9053,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.36215198040008545,
+      "judge_score": 0.9053,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+      "name": "robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+      "vector_score": 0.42790091037750244,
+      "judge_score": 0.8954,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 2 of 3).md",
+      "name": "genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 2 of 3).md",
+      "vector_score": 0.444779634475708,
+      "judge_score": 0.885,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+      "name": "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+      "vector_score": 0.4444761872291565,
+      "judge_score": 0.867,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+      "name": "neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+      "vector_score": 0.4579252004623413,
+      "judge_score": 0.8666,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+      "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+      "vector_score": 0.4722225069999695,
+      "judge_score": 0.8483,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/voyager-1.md",
+      "name": "voyager-1.md",
+      "vector_score": 0.38123613595962524,
+      "judge_score": 0.8432,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.42525768280029297,
+      "judge_score": 0.8426,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+      "name": "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+      "vector_score": 0.7284431457519531,
+      "judge_score": 0.833,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+      "name": "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+      "vector_score": 0.781387209892273,
+      "judge_score": 0.8229,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.md.md",
+      "name": "climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.md.md",
+      "vector_score": 0.4790145754814148,
+      "judge_score": 0.8117,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/photosynthesis.md",
+      "name": "photosynthesis.md",
+      "vector_score": 0.379901647567749,
+      "judge_score": 0.6784,
+      "truncated": false,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+    "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+    "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 2 of 3).md",
+    "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+    "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+    "demo-qa-20260927/voyager-1.md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+    "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+    "自然科学与地球科学/climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.md.md",
+    "demo-qa-20260927/photosynthesis.md"
+  ],
+  "evidence_pack": "[经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md · vec=0.4229046106338501]\n# finance__1909.07748__stock-market-microstructure-inference-via-mu（第 2/4 部分）\n章节: Stock market microstructure inference via multi-agent reinforcement learning > B. Agents parameters\n## B. Agents parameters\n\n\nLet $\\mathcal { U } ( ) , \\mathcal { U } \\{ \\} , \\mathcal { N } ( ) , \\mathcal { N } \\{ \\}$ respectively denote the continuous and discrete uniform distributions, and the continuous and discrete normal distributions. Each agent i is initialised at step 1 with the following parameters :\n\nRisk-free assets of value $A _ { \\mathrm { b o n d s } } ^ { i } ( t = 0 ) \\sim \\mathcal { N } ( 0 , 1 0 ^ { 4 } )$ This can be seen as bonds or a bank account out of which the agent may long equity, and that will increase when the agent shorts its stocks.\n\n– A number of stocks $Q ^ { i , j } ( t = 0 )$ , drawn from a discrete positive half-normal distribution $\\mathcal { N } ^ { + } \\{ 0 , 1 0 0 \\}$ amounting to a value of its stock holdings $\\begin{array} { r } { A _ { \\mathrm { e q u i t y } } ^ { i } ( t = 0 ) = \\sum _ { j = 0 } ^ { J } Q ^ { i , j } ( t = 0 ) P ^ { j } ( t = 0 ) } \\end{array}$ , which the agent may short on the market.\n\n– A drawdown limit $l ^ { i } \\sim \\mathcal { U } ( 5 0 \\% , 6 0 \\% )$ . If the peakto-bottom percentage decrease since the beginning of the year in the agent's portfolio net asset value exceeds this drawdown limit $l ^ { i }$ at any time step $t ,$ then the agent is listed as bankrupt and unable to interact with the market anymore.\n\n– A reflexivity amplitude parameter $\\rho ^ { i } \\sim \\mathcal { U } ( 0 , 1 0 0 \\% )$ which gauges how fundamental or chartist the agent is in its price valuation, via a weighted average of the agent's technical forecast of the market price $\\hat { P } ^ { i , j } ( t ) \\dot { }$ and its fundamental pricing $B ^ { i , j } ( t )$ The value of $\\rho ^ { i }$ modulates the amplitude of the action $a _ { 2 } ^ { \\mathcal { F } }$ of the first reinforcement learning algorithm $\\mathcal { F }$ (see below).\n\nAn investment horizon $\\tau ^ { i } \\sim \\mathcal { U } \\{ T _ { w } , 6 T _ { m } \\}$ , corresponding to the number of time steps after which the agent liquidates its position. Notice the bounds of this interval correspond to one week and six months in trading days.\n\n\\- A trading window $w ^ { i } \\sim \\mathcal { U } \\{ T _ { w } , \\tau ^ { i } \\}$ , which will enter as parameter to the function $\\mathcal { G } ^ { i }$ computing the optimal trading time for longing a certain quantity of stocks $j .$\n\n\\\n\n[经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md · vec=0.42269814014434814]\n# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 1/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n# On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n\n\nNiko HAUZENBERGER, Michael PFARRHOFER and Anna STELZER\\*\n\nUniversity of Salzburg\n\nIn this paper, we investigate the effectiveness of conventional and unconventional monetary policy measures by the European Central Bank (ECB) conditional on the prevailing level of uncertainty. To obtain exogenous variation in central bank policy, we rely on high-frequency surprises in financial market data for the euro area (EA) around policy announcement dates. We trace the dynamic effects of shocks to the short-term policy rate, forward guidance and quantitative easing on several key macroeconomic and financial quantities alongside survey-based measures of expectations. For this purpose, we propose a Bayesian smooth-transition vector autoregression (ST-VAR). Our results suggest that transmission channels are impaired when uncertainty is elevated. While conventional monetary policy is less effective during such periods, and sometimes also forward guidance, quantitative easing measures seem to work comparatively well in uncertain times.\n\nJEL: C32, E32, E52, E58\n\nKEYWORDS: Euro area, monetary policy, Bayesian smooth-transition vector autoregression, hierarchical global-local shrinkage\n\n## 1. Introduction\n\n\nConventional and unconventional monetary policies are widely used tools adopted in central banks to stimulate slacking economies and counteract disinflationary pressures stemming from recessionary episodes and economic uncertainty.¹ Research measuring the effects and transmission channels of monetary policy to the real and financial sectors has produced a voluminous body of literature (see, among many others, Kashyap and Stein, 2000; Kuttner, 2001; Bernanke et al., 2005; Gürkaynak et al., 2005; Sims and Zha, 2006; Tenreyro and Thwaites, 2016; Altavilla et al., 2019; Jarociński and Karadi, 2020). In this paper, we contribute to this line of work by assessing non-linear features in monetary transmission for the euro area (EA). We consider economic uncertainty as a key determinant of the effectiveness of policy measures enacted by the European Central Bank (ECB), and discuss factors that may render policy interventions in uncertain times less effective.\n\nA change in the m\n\n[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.36215198040008545]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md · vec=0.42790091037750244]\n# robotics__1709.02924__robust-object-manipulation-for-tactile-based（第 2/4 部分）\n章节: Robust Object Manipulation for Tactile-based Blind Grasping > 3.1. Proposed Controller\n## 3.1. Proposed Controller\n\n\nThe proposed control is defined as:\n\n$$\n\\pmb { u } = \\hat { J } _ { h } ^ { T } \\left( ( P ^ { T } \\hat { G } ) ^ { \\dagger } \\pmb { u } _ { m } + \\pmb { u } _ { f } \\right)\\tag{16}\n$$\n\nwhere $\\hat { J } _ { h } ^ { T }$ and $\\hat { G }$ are full rank approximations of $J _ { h }$ and G respectively, and $\\pmb { u } _ { m } \\in \\mathbb { R } ^ { m }$ is the PID-based manipulation controller:\n\n$$\n{ \\pmb u } _ { m } = - K _ { p } { \\pmb e } - K _ { i } \\int _ { 0 } ^ { t } { \\pmb e } d t - K _ { d } \\dot { \\pmb e }\\tag{17}\n$$\n\nwhere $K _ { p } , K _ { i } , K _ { d } \\in \\mathbb { R } ^ { 6 \\times 6 }$ are the respective proportional, integral, and derivative positive-definite gain matrices.\n\nThe approximations ${ \\hat { J } } _ { h }$ and $\\hat { G }$ are solely defined as functions of the joint angles $\\pmb q .$ The approximate hand Jacobian, $\\hat { J } _ { h } .$ , is a block diagonal matrix composed of $\\hat { J } _ { h _ { i } }$ for each i finger:\n\n$$\n\\hat { J } _ { h _ { i } } ( \\pmb q _ { i } ) = \\left[ \\begin{array} { l l } { I _ { 3 \\times 3 } } & { - ( \\pmb { p } _ { f t _ { i } } ) \\times } \\end{array} \\right] \\hat { J } _ { s _ { i } } ( \\pmb q _ { i } )\\tag{18}\n$$\n\nwhere $\\hat { J } _ { s _ { i } }$ refers to the approximate spatial Jacobian resulting from approximations in the link lengths and joint positions. The approximation $\\hat { G }$ is defined as:\n\n$$\n\\hat { G } ( \\pmb { q } ) = \\left[ \\begin{array} { c c c } { I _ { 3 \\times 3 } , } & { . . . , } & { I _ { 3 \\times 3 } , } \\\\ { ( \\pmb { p } _ { t _ { 1 } } - \\pmb { p } _ { a } ) \\times , } & { . . . , } & { ( \\pmb { p } _ { t _ { n } } - \\pmb { p } _ { a } ) \\times } \\end{array} \\right]\\tag{19}\n$$\n\nIt is important to emphasize that ${ \\pmb p } _ { f t _ { i } }$ is fixed with respect to the fingertip surface, such that $\\hat { J } _ { h _ { i } }$ is only a function of $\\pmb q$ and is not equal to $J _ { h } .$ Similarly, ${ \\pmb p } _ { t _ { i } }$ and $p _ { a }$ are solely dependent on ${ \\pmb q } ,$ such that $\\hat { G }$ is an erroneous approximation of $G .$ Thus the proposed control, apart from $\\scriptstyle { \\pmb { u } } _ { f } ,$ only requires the joint angles/velocities q, À and reference r. Also, the only model required by the control is the approximate hand kinematics $\\ha\n\n[生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 2 of 3).md · vec=0.444779634475708]\n# genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md.md（第 2/3 部分）\n章节: Analysis and visualization of spatial transcriptomic data > 4.1 Clustering\n## 4.1 Clustering\n\n\nThe selection of clustering techniques is critical for obtaining good clustering results. Certain methods with assumptions about cluster shapes may not be suitable for spatial genomic data. For example, Kmeans clustering assumes that the shapes of clusters are spherical and that clusters are of similar size (67), and Gaussian mixture models assume that points with each cluster follow a Gaussian distribution (68). These assumptions are rarely satisfied by spatial transcriptomic data.\n\nAgglomerative clustering methods are a class of methods that iteratively aggregate data points into clusters. These methods do not carry assumptions about the shape and size of clusters. At each iteration, data points are aggregated to optimize a pre-defined metric. Popular agglomerative clustering methods include hierarchical agglomerative clustering (69) and community detection methods such as Louvain (23) and Leiden (24) algorithms. Hierarchical agglomerative clustering is initialized by treating each point as its own cluster. Each iteration aggregates two clusters with the closest distance to form a new cluster until no clusters can be merged. Community detection methods, i.e., Louvain (23) and Leiden (24) algorithms, have seen wide adoption in the single-cell and the spatial transcriptomics community. Both algorithms try to iteratively maximize the modularity, which can be understood as the difference between the number of observed and expected edges. Intuitively, a tightly connected community or cluster should have a large number of observed edges relative to the expected number of edges. The Louvain algorithm is initialized by assigning each node to its own community. At each iteration, each node moves from its own community to all neighboring communities, and changes in modularity are calculated. The node is moved to the community, which results in the largest increase in H. At the end of each iteration, a new network is built by aggregating all nodes within the same community, and a new iteration begins. The procedure will terminate when the increase in H can no longer be achieved.\n\nThese general-purpose methods can be combined into more sophisticated pipelines tailored towards single-cell clustering. SC3 is an ensemble clustering method in which multiple clustering outcomes are merged i\n\n[生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md · vec=0.4444761872291565]\n# genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m（第 1/4 部分）\n章节: $\\mathrm { s c l ^ { 2 } C L }$ : Effectively Integrating Single-cell Multi-omics by Intra- and Inter-omics Contrastive Learning\n# $\\mathrm { s c l ^ { 2 } C L }$ : Effectively Integrating Single-cell Multi-omics by Intra- and Inter-omics Contrastive Learning\n\n\nWuchao Liu¹, Han Peng1, Wengen Li¹, Yichao Zhang1, Jihong Guan1,\\*, and Shuigeng Zhou2,\\*\n\n1School of Computer Science and Technology, Tongji University, Shanghai 201804, China   \n2College of Computer Science and Artificial Intelligence, Fudan University, Shanghai   \n200438, China\n\nCorresponding author. jhguan@tongji.edu.cn and sgzhou@fudan.edu.cn\n\nAugust 27, 2025\n\n## Abstract\n\n\nSingle-cell multi-omics data contain huge information of cellular states, and analyzing these data can reveal valuable insights into cellular heterogeneity, diseases, and biological processes. However, as cell differentiation & development is a continuous and dynamic process, it remains challenging to computationally model and infer cell interaction patterns based on single-cell multi-omics data. This paper presents scI2CL, a new single-cell multi-omics fusion framework based on intra- and inter-omics contrastive learning, to learn comprehensive and discriminative cellular representations from complementary multi-omics data for various downstream tasks. Extensive experiments of four downstream tasks validate the effectiveness of scI2CL and its superiority over existing peers. Concretely, in cell clustering, scI²CL surpasses eight state-of-the-art methods on four widelyused real-world datasets. In cell subtyping, scI2CL effectively distinguishes three latent monocyte cell subpopulations, which are not discovered by existing methods. Simultaneously, scI²CL is the only method that correctly constructs the cell developmental trajectory from hematopoietic stem and progenitor cells to Memory B cells. In addition, scI2CL resolves the misclassification of cell types between two subpopulations of CD4+ T cells, while existing methods fail to precisely distinguish the mixed cells In summary, scI2CL can accurately characterize cross-omics relationships among cells, thus effectively fuses multi-omics data and learns discriminative cellular representations to support various downstream analysis tasks.\n\n## 1 Introduction\n\n\nIn the past decade, single-cell sequencing technologies have achieved significant advances, enabling scientists to quantitatively measure\n\n[计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md · vec=0.4579252004623413]\n# neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md.md（第 1/2 部分）\n章节: Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n# Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n\n\nMingyuan Meng   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nmengmy3@mail.sysu.edu.cn   \nXingyu Yang   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nyangxy266@mail2.sysu.edu.cn   \nShanlin Xiao   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nxiaoshlin@mail.sysu.edu.cn   \nZhiyi Yu   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nyuzhiyi@mail.sysu.edu.cn\n\nAbstract—Spiking Neural Network (SNN), as a brain-inspired approach, is attracting attention due to its potential to produce ultra-high-energy-efficient hardware. Competitive learning based on Spike-Timing-Dependent Plasticity (STDP) is a popular method to train an unsupervised SNN. However, previous unsupervised SNNs trained through this method are limited to a shallow network with only one learnable layer and cannot achieve satisfactory results when compared with multi-layer SNNs. In this paper, we eased this limitation by: 1)We proposed a Spiking Inception (Sp-Inception) module, inspired by the Inception module in the Artificial Neural Network (ANN) literature. This module is trained through STDP-based competitive learning and outperforms the baseline modules on learning capability, learning efficiency, and robustness. 2)We proposed a Pooling-Reshape-Activate (PRA) layer to make the Sp-Inception module stackable. 3)We stacked multiple Sp-Inception modules to construct multilayer SNNs. Our algorithm outperforms the baseline algorithms on the hand-written digit classification task, and reaches state-ofthe-art results on the MNIST dataset among the existing unsupervised SNNs.\n\nKeywords—Spiking neural networks, Unsupervised learning, Inception module.\n\n## I. INTRODUCTION\n\n\nIn recent years, artificial intelligence, especially neural network, has made great progress in machine perception and pattern recognition, reaching or even surpassing human in some application scenarios. Artificial Neural Network (ANN) has shown good performance in pattern recognition with deep learning, but ANN is highly comput\n\n[自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md · vec=0.4722225069999695]\n# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 4/4 部分）\n章节: Machine learning for molecular simulation > References\n## References\n\n\n[1] P. A. M. Dirac. Quantum mechanics of many-electron systems. Proc. Royal Soc. A, 123(792):714–733, 1929. 1\n\n[2] K.-R. Müller, S. Mika, G. Rätsch, K. Tsuda, and B. Schölkopf. An introduction to kernel-based learning algorithms. IEEE Trans. Neural Netw., 12:181–201, 2001. 1, 4.2\n\n[3] V. N. Vapnik. An overview of statistical learning theory. IEEE Trans. Neur. Net., 10, 1999. 1\n\n[4] Christopher M. Bishop. Pattern Recognition and Machine Learning. Springer, 2006. 1\n\n[5] Y. LeCun, Y. Bengio, and G. Hinton. Deep learning. Nature, 521:436–444, 2015. 1\n\n[6] I. Goodfellow, Y. Bengio, and A. Courville. Deep Learning. MIT Press, 2016. 1\n\n[7] J. Behler and M. Parrinello. Generalized neural-network representation of high-dimensional potential-energy surfaces. Phys. Rev. Lett., 98:146401, 2007. 1, 2.1, 3.4.2, 4.1\n\n[8] M. Rupp, A. Tkatchenko, K.-R. Müller, and O. A. Von Lilienfeld. Fast and accurate modeling of molecular atomization energies with machine learning. Phys. Rev. Lett., 108:058301, 2012. 1, 4.2\n\n[9] A. P. Bartók, M. C. Payne, R. Kondor, and G. Csányi. Gaussian approximation potentials: The accuracy of quantum mechanics, without the electrons. Phys. Rev. Lett., 104:136403, 2010. 1, 2.1, 2.1\n\n[10] S. Chmiela, H. E. Sauceda, K.-R. Müller, and A. Tkatchenko. Towards exact molecular dynamics simulations with machine-learned force fields. Nat. Commun., 9:3887, 2018. 1, 2.1, 2.1, 1, 3.4.2, 3.4.3, 5.1\n\n[11] J. S. Smith, O. Isayev, and A. E. Roitberg. Ani-1: an extensible neural network potential with dft accuracy at force field computational cost. Chem. Sci., 8:3192–3203, 2017. 1, 2.1, 3.4.2, 4.1\n\n[12] J. S. Smith, B. T. Nebgen, R. Zubatyuk, N. Lubbers, C. Devereux, K. Barros, S. Tretiak, O. Isayev, and A. Roitberg. Outsmarting quantum chemistry through transfer learning. https://doi.org/10.26434/chemrxiv.6744440.v1, 2018. 1, 4.1\n\n[13] F. Brockherde, L. Vogt, L. Li, M. E. Tuckerman, K. Burke, and K.-R. Müller. Bypassing the kohn-sham equations with machine learning. Nat. Commun., 8:872, 2017. 1\n\n[14] K. T. Schütt, F. Arbabzadah, S. Chmiela, K.-R. Müller, and A. Tkatchenko. Quantum-chemical insights from deep tensor neural networks. Nat. Commun., 8:13890, 2017. 1, 2.1, 2.1, 4.2, 5.2, 5.8\n\n[15] T. Bereau, R. A. DiStasio Jr., A. Tkatchenko, and O. A. von Lilienfeld. Non-covalent interactions across organic and biologic\n\n[demo-qa-20260927/voyager-1.md · vec=0.38123613595962524]\n# Voyager 1\n\n> Source: https://en.wikipedia.org/wiki/Voyager_1 (retrieved 2026-09-27, plaintext extract)\n\nVoyager 1 is a space probe launched by NASA on September 5, 1977, as part of the Voyager program, to study the outer Solar System and the interstellar space beyond the Sun's heliosphere. It was launched 16 days after its twin, Voyager 2. It communicates through the NASA Deep Space Network (DSN) to receive routine commands and to transmit data to Earth. Real-time distance and velocity data are provided by NASA and JPL. At a distance of 171.19 AU (25.6 billion km; 15.9 billion mi) as of August 2026, it is the most distant human-made object from Earth. Voyager 1 is projected to reach a distance of one light day from Earth in November 2026. \nThe probe made flybys of Jupiter, Saturn, and Saturn's largest moon, Titan. NASA had a choice of either conducting a Pluto or Titan flyby. Exploration of Titan took priority because it was known to have a substantial atmosphere. Voyager 1 studied the weather, magnetic fields, and rings of the two gas giants and was the first probe to provide detailed images of their moons.\nAs part of the Voyager program and like its sister craft Voyager 2, the spacecraft's extended mission is to locate and study the regions and boundaries of the outer heliosphere and to begin exploring the interstellar medium. Voyager 1 crossed the heliopause and entered interstellar space on August 25, 2012, making it the first spacecraft to do so. Two years later, Voyager 1 began experiencing a third wave of coronal mass ejections from the Sun that continued to at least December 15, 2014, further confirming that the probe is in interstellar space.\nIn 2017, the Voyager team successfully fired the spacecraft's trajectory correction maneuver (TCM) thrusters for the first time since 1980, enabling the mission to be extended by two to three years. Voyager 1 experienced successful revivals of several thrusters in 2018, 2019, and 2025. \nVoyager 1's extended mission is expected to continue to return scientific data for several more years. Its radioisotope thermoelectric generators (RTGs) may supply enough electric power to return engineering data until 2036. As of 2026, only two instruments are operational, the Plasma Wave Subsystem and magnetometer.\n\n\n== Mission background ==\nA 1960s proposal for a Grand Tour to study the outer planets led NASA to begin work on a mission during the early 1970s. Initially, Voyager 1 was planned as Mariner 11 of the Mariner p\n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.42525768280029297]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Ev",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs__k00.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs__k22.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 19.6
+}

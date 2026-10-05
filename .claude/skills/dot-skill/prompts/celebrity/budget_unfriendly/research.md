@@ -45,7 +45,7 @@ Prioritize sources in this strict order:
 - 知乎 (Zhihu) — unverifiable anonymous answers, heavy hearsay
 - 微信公众号 (WeChat official accounts) — mostly repackaged secondhand content
 - 百度百科 (Baidu Baike) — unreliable, often outdated or promotional
-- 搜狐/网易/腾讯 auto-generated news aggregation pages
+- 搜狐/网易/腾讯 (Sohu/NetEase/Tencent) auto-generated news aggregation pages
 
 **General:**
 - Content farms and SEO-optimized summary sites
@@ -59,10 +59,10 @@ Prioritize sources in this strict order:
 **Chinese figures:**
 - B站 (Bilibili) original long-form videos and interviews
 - 小宇宙 (Xiaoyuzhou) full podcast episodes
-- Authoritative media: 36氪, 晚点LatePost, 财新, 极客公园, 虎嗅
+- Authoritative media: 36氪 (36Kr), 晚点LatePost (LatePost), 财新 (Caixin), 极客公园 (GeekPark), 虎嗅 (Huxiu)
 - Official Weibo (verified account, direct posts — not reposts or fan accounts)
 - Published books (via legitimate sources)
-- 混沌学园, 湖畔大学, 得到 lecture recordings (when publicly available)
+- 混沌学园 (Hundun Academy), 湖畔大学 (Hupan University), 得到 (Dedao) lecture recordings (when publicly available)
 
 **English figures:**
 - YouTube long-form interviews (Lex Fridman, Tim Ferriss, Joe Rogan, etc.)
@@ -103,7 +103,7 @@ Research MUST cover six independent dimensions. Each dimension produces its own 
 Do not merge dimensions or clone observations across files.
 Do not replace these six files with one merged scratchpad.
 
-### Dimension 1: Writings (著作与系统思考)
+### Dimension 1: Writings
 
 **File**: `01_writings.md`
 
@@ -118,7 +118,7 @@ Search for and document:
 
 **Extraction focus**: Core theses, reasoning chains, how they structure arguments, what they choose to write about repeatedly.
 
-### Dimension 2: Conversations (即兴对话与压力应对)
+### Dimension 2: Conversations
 
 **File**: `02_conversations.md`
 
@@ -133,7 +133,7 @@ Search for and document:
 
 **Extraction focus**: Improvised reasoning, how they handle surprises, what they return to when challenged, how they disagree.
 
-### Dimension 3: Expression DNA (语言指纹)
+### Dimension 3: Expression DNA
 
 **File**: `03_expression_dna.md`
 
@@ -151,7 +151,7 @@ Analyze across at least 5 different source instances:
 
 **Extraction focus**: Style markers that pass the "blind test" — would you recognize this person from 100 words with the name removed?
 
-### Dimension 4: Decisions (行为与选择)
+### Dimension 4: Decisions
 
 **File**: `04_decisions.md`
 
@@ -167,7 +167,7 @@ Search for and document:
 
 **Extraction focus**: Decision patterns, risk tolerance, what evidence moves them, gap between stated values and revealed preferences.
 
-### Dimension 5: External Views (他者视角与批评)
+### Dimension 5: External Views
 
 **File**: `05_external_views.md`
 
@@ -183,7 +183,7 @@ Search for and document:
 
 **Extraction focus**: Where the outside view diverges from the inside view. What others see that they don't.
 
-### Dimension 6: Timeline (认知轨迹)
+### Dimension 6: Timeline
 
 **File**: `06_timeline.md`
 

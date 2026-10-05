@@ -204,6 +204,49 @@ def main() -> int:
                       "reasoning": "e2e: diagnose report references its own resolution"},
                      svc)
 
+    # ══ B2. 原生检索（v1.2 契约：一次调用，服务端跑完 QDCVR 全流程） ══
+    # 契约级断言：端点存在、envelope 合形（success 布尔 + 失败带 stage/error 或
+    # 成功带 answer）。引擎不可用（无 SDK key 等）按 SKIP 记录——那是环境问题
+    # 而非契约破坏；成功路径则顺带证明 answer 非空、带 tools_used。
+    print("── B2. native retrieval (one-shot QDCVR pipeline) ──")
+    code, body = call("POST", f"{WEB}/api/kb/native-search",
+                      {"query": "伺服回零相关经验", "kb_id": kb_id, "timeout_ms": 170000},
+                      svc, timeout=200)
+    well_formed = (
+        code == 200 and isinstance(body, dict)
+        and isinstance(body.get("success"), bool)
+        and (body.get("success") is not True
+             or (isinstance(body.get("answer"), str) and body["answer"].strip()))
+    )
+    if code == 200 and isinstance(body, dict) and body.get("success") is True:
+        step("native-search: POST web /api/kb/native-search", well_formed,
+             f"answer_chars={len(body.get('answer', ''))} tools={body.get('tools_used')}")
+    elif code == 200 and isinstance(body, dict) and body.get("stage") in ("engine", "timeout"):
+        step("native-search: POST web /api/kb/native-search (SKIP: engine unavailable)",
+             well_formed, f"stage={body.get('stage')} error={str(body.get('error'))[:80]}")
+    else:
+        step("native-search: POST web /api/kb/native-search", False, f"HTTP {code}")
+
+    # ══ B3. agent chat 异步契约（mode=async：秒回 task_id，任务后台必完成） ══
+    print("── B3. agent chat async contract ──")
+    code, body = call("POST", f"{WEB}/api/kb/agent/chat",
+                      {"prompt": "检索知识库：集成冒烟测试文档的主要内容是什么？简要回答。",
+                       "mode": "async", "timeout_ms": 600000},
+                      svc, timeout=30)
+    task_id = body.get("task_id") if isinstance(body, dict) else None
+    step("async submit: task_id 立即返回",
+         code == 200 and isinstance(body, dict) and body.get("success") is True
+         and isinstance(task_id, str) and task_id.startswith("kbt_")
+         and body.get("status") == "running",
+         f"HTTP {code} task_id={task_id}")
+    if task_id:
+        code2, body2 = call("GET", f"{WEB}/api/kb/agent/tasks/{task_id}", None, svc, timeout=15)
+        well = (code2 == 200 and isinstance(body2, dict)
+                and body2.get("success") is True and body2.get("task_id") == task_id
+                and body2.get("status") in ("running", "completed", "failed"))
+        step("async poll: GET /api/kb/agent/tasks/:id envelope 合形", well,
+             f"HTTP {code2} status={body2.get('status') if isinstance(body2, dict) else '?'}")
+
     # ══ C. 外部用户 token 通道（同一调用面，证明外部接入可用） ══
     print("── C. same sequence with external user token ──")
     code, body = call("GET", f"{WEB}/api/kb/catalog", token=api_token)

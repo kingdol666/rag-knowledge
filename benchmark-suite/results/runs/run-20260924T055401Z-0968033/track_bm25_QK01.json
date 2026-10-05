@@ -1,0 +1,48 @@
+{
+ "qid": "QK01",
+ "method": "bm25",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "1911.02792",
+  "2110.08918",
+  "2109.14357",
+  "2009.10669",
+  "2110.07844",
+  "2212.13138",
+  "1405.4980"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md",
+  "mathematics__1405.4980__convex-optimization-algorithms-and-complexit.md"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 11.7,
+ "answer": "The evidence is insufficient to answer this question as posed.\n\nThe retrieved chunks cover adjacent topics but not the core claim: chunk [1706.03762] explains multi-head attention's dimensions (h=8 heads, d_k=d_v=64) and lists the three applications of attention in the Transformer, but it does not explain what attention computation is (scaled dot-product attention) nor the motivation for replacing recurrence and convolution. Chunk [1810.04805] describes BERT's span-prediction QA fine-tuning, not Transformer attention. Chunk [2503.21676] describes an attention-patching experimental technique using a twin architecture, unrelated to the Transformer's design rationale.\n\nSources retrieved: [1706.03762], [1810.04805], [2503.21676]. None of them state why recurrence and convolution were replaced, nor the mechanics of computing attention; that content would most likely be in the earlier sections of [1706.03762] (Section 3.1 and Section 4), which were not provided. I cannot answer from prior knowledge.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 973,
+  "output": 224,
+  "cache_read": 37120,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.029025000000000002,
+ "extra": {}
+}

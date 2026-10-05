@@ -1,0 +1,42 @@
+{
+ "qid": "QK06",
+ "method": "rerank",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2409.13934",
+  "2007.10574"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change__k00",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k05",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on__k14"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2409.13934",
+  "2007.10574"
+ ],
+ "evidence_chars": 1542,
+ "retrieval_s": 33.7,
+ "latency_s": 65.9,
+ "answer": "Based on the evidence, the only physical factor explicitly tied to the warming-driven intensification of extreme precipitation is the **Clausius-Clapeyron relation (~7%/°C)**, which [2409.13934] describes as the \"strong warming-driven signal\" for extreme precipitation indices such as the 99.5th percentile. The O'Gorman review [1503.07557] confirms that precipitation extremes intensify under warming and states the review focuses on \"the physical factors that control the response,\" but the provided abstract excerpt is truncated before naming which factor dominates, and it notes the sensitivity \"remains uncert[ain].\" The third source [2007.10574] discusses vertical moisture flux convergence and vertical advection of moisture, but only for MJO-induced extremes, not the climate-change response. Strictly, the evidence is insufficient to declare a single primary controlling factor from the O'Gorman paper itself; the closest explicit answer in the evidence is Clausius-Clapeyron scaling.\n\n**Sources:** [1503.07557] O'Gorman, *Precipitation extremes under climate change* (abstract); [2409.13934] (chunk citing Clausius-Clapeyron ~7%/°C); [2007.10574] §3.2 (MJO dynamical links).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 14858,
+  "output": 1181,
+  "cache_read": 32832,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.12118,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

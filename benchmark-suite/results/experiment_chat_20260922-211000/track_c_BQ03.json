@@ -1,0 +1,71 @@
+{
+ "track": "c",
+ "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+ "answer": "**Answer:**\n\nMultiMedQA is a benchmark curated for medical question answering that spans medical exam questions, medical research questions, and consumer medical questions; it comprises multiple-choice datasets — MedQA (USMLE), MedMCQA, PubMedQA, and MMLU clinical topics — plus the newly introduced seventh dataset, HealthSearchQA, which consists of commonly searched health questions (k01, k04). The authors evaluated PaLM (a 540-billion parameter LLM) and its instruction-tuned variant Flan-PaLM on MultiMedQA using few-shot, chain-of-thought, and self-consistency prompting strategies (k00, k04). On the MedQA (USMLE) benchmark, Flan-PaLM achieved 67.6% accuracy, which exceeded the previous state-of-the-art result by over 17% (k00, k01). This strong performance was reported as state-of-the-art across all MultiMedQA multiple-choice datasets, though its answers to consumer medical questions still revealed key gaps (k00, k04).",
+ "is_error": false,
+ "latency_s": 14.4,
+ "sdk_duration_ms": 11704,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector",
+   "input": {
+    "query": "What is MultiMedQA and how did Flan-PaLM perform on MedQA benchmark?",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 29863,
+  "output": 435,
+  "cache_read": 88128,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.204254,
+ "timeline": [
+  {
+   "t": 2.69,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.96,
+   "event": "text",
+   "detail": "74"
+  },
+  {
+   "t": 3.97,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 10.9,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 14.34,
+   "event": "text",
+   "detail": "933"
+  },
+  {
+   "t": 14.36,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll retrieve evidence using dense vector search on the specified index.\n\n",
+  "**Answer:**\n\nMultiMedQA is a benchmark curated for medical question answering that spans medical exam questions, medical research questions, and consumer medical questions; it comprises multiple-choice datasets — MedQA (USMLE), MedMCQA, PubMedQA, and MMLU clinical topics — plus the newly introduced seventh dataset, HealthSearchQA, which consists of commonly searched health questions (k01, k04). The authors evaluated PaLM (a 540-billion parameter LLM) and its instruction-tuned variant Flan-PaLM on MultiMedQA using few-shot, chain-of-thought, and self-consistency prompting strategies (k00, k04). On the MedQA (USMLE) benchmark, Flan-PaLM achieved 67.6% accuracy, which exceeded the previous state-of-the-art result by over 17% (k00, k01). This strong performance was reported as state-of-the-art across all MultiMedQA multiple-choice datasets, though its answers to consumer medical questions still revealed key gaps (k00, k04)."
+ ],
+ "qid": "BQ03",
+ "via": "chat"
+}

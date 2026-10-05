@@ -1,0 +1,134 @@
+{
+ "track": "a",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "answer": "I have consistent evidence from multiple chunks across two KBs. Here is the answer.\n\n## MameLoshnLM\n\n**What it is:** MAMELOSHNLM (styled \"Mame-Loshn\" — Yiddish for *\"mother tongue\"*) is described as **the first open-source large language model built specifically for Yiddish**. It was introduced together with two supporting resources:\n- **Oytser** — a new Yiddish pretraining corpus (designed as a higher-quality alternative to common open multilingual resources, combining contemporary web-native Yiddish with materials from Yiddish's literary tradition)\n- **Kashes** — a benchmark for evaluating Yiddish LMs\n\nThe paper addresses the gap that existing multilingual corpora and benchmarks are poor proxies for Yiddish, containing substantial amounts of noisy, machine-translated, and misclassified text.\n\n**Parameter scale: 8B parameters.** It is built by **continued pretraining of Llama-3.1-8B** on the Yiddish corpus using a causal language modeling objective. Reported training details: bfloat16 precision, 8-bit AdamW optimizer, learning rate 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens, per-device batch size 38, 4 gradient accumulation steps.\n\nIt is evaluated against five open-weight baselines of similar scale: Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, and EuroLLM 9B (Qwen3 being the only baseline explicitly listing Yiddish as supported).\n\n### Sources\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`\n  - Abstract chunk (~0.72 similarity): \"the first open-source 8B-parameter language model built specifically for Yiddish\"\n  - Section 5 \"MAMELOSHNLM\" + Training Details chunk: \"continued pretraining of Llama-3.1-8B\"\n  - Section 6 \"Experimental Setup\" chunk: baseline models\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md` — KB `0942f1a6-d81b-413b-a60b-b994680dcaac` (same paper, chunked corpus copy)\n\n**Certainty: high.** The 8B parameter scale and Yiddish-specific purpose are stated explicitly and verbatim in the abstract and repeated consistently across independent chunks in two separate knowledge bases. Note the arXiv ID 2608.05850 appears in the filename (a future/placeholder-style ID) — the content itself is internally consistent.",
+ "is_error": false,
+ "latency_s": 155.9,
+ "sdk_duration_ms": 153106,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_doc_read,mcp_"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb knowledge base search vector document read"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM Yiddish language model parameters"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MAMELOSHNLM continued pretraining base model Qwen parameters training details",
+    "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM 8B parameter Yiddish model size",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 58450,
+  "output": 1238,
+  "cache_read": 157632,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.402016,
+ "timeline": [
+  {
+   "t": 2.83,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.64,
+   "event": "text",
+   "detail": "67"
+  },
+  {
+   "t": 3.64,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 35.7,
+   "event": "text",
+   "detail": "67"
+  },
+  {
+   "t": 35.7,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 104.54,
+   "event": "text",
+   "detail": "36"
+  },
+  {
+   "t": 104.54,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 104.55,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 127.11,
+   "event": "text",
+   "detail": "104"
+  },
+  {
+   "t": 127.11,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 127.12,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 155.88,
+   "event": "text",
+   "detail": "2351"
+  },
+  {
+   "t": 155.89,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about MameLoshnLM.\n\n",
+  "The MCP server is still connecting. Let me retry the tool search.\n\n",
+  "Now let me search for MameLoshnLM.\n\n",
+  "I found the source document. Let me read the full text to verify the details and get complete context.\n\n",
+  "I have consistent evidence from multiple chunks across two KBs. Here is the answer.\n\n## MameLoshnLM\n\n**What it is:** MAMELOSHNLM (styled \"Mame-Loshn\" — Yiddish for *\"mother tongue\"*) is described as **the first open-source large language model built specifically for Yiddish**. It was introduced together with two supporting resources:\n- **Oytser** — a new Yiddish pretraining corpus (designed as a higher-quality alternative to common open multilingual resources, combining contemporary web-native Yiddish with materials from Yiddish's literary tradition)\n- **Kashes** — a benchmark for evaluating Yiddish LMs\n\nThe paper addresses the gap that existing multilingual corpora and benchmarks are poor proxies for Yiddish, containing substantial amounts of noisy, machine-translated, and misclassified text.\n\n**Parameter scale: 8B parameters.** It is built by **continued pretraining of Llama-3.1-8B** on the Yiddish corpus using a causal language modeling objective. Reported training details: bfloat16 precision, 8-bit AdamW optimizer, learning rate 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens, per-device batch size 38, 4 gradient accumulation steps.\n\nIt is evaluated against five open-weight baselines of similar scale: Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, and EuroLLM 9B (Qwen3 being the only baseline explicitly listing Yiddish as supported).\n\n### Sources\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`\n  - Abstract chunk (~0.72 similarity): \"the first open-source 8B-parameter language model built specifically for Yiddish\"\n  - Section 5 \"MAMELOSHNLM\" + Training Details chunk: \"continued pretraining of Llama-3.1-8B\"\n  - Section 6 \"Experimental Setup\" chunk: baseline models\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md` — KB `0942f1a6-d81b-413b-a60b-b994680dcaac` (same paper, chunked corpus copy)\n\n**Certainty: high.** The 8B parameter scale and Yiddish-specific purpose are stated explicitly and verbatim in the abstract and repeated consistently across independent chunks in two separate knowledge bases. Note the arXiv ID 2608.05850 appears in the filename (a future/placeholder-style ID) — the content itself is internally consistent."
+ ],
+ "qid": "BQ07",
+ "via": "chat"
+}

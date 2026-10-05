@@ -1,0 +1,51 @@
+{
+ "qid": "QK01",
+ "method": "rerank",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "2510.13343",
+  "2503.21676",
+  "2110.07844",
+  "1810.04805",
+  "1906.10015"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "2510.13343",
+  "2503.21676",
+  "2110.07844",
+  "1810.04805",
+  "1906.10015"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 1.9,
+ "latency_s": 6.1,
+ "answer": "The evidence is insufficient to fully answer the question. Among the retrieved chunks, only **[2110.07844]** describes the attention computation itself: the cross-attention head transforms decoder state $\\widetilde{g}_j^{(l-1)}$ and encoder state $h_i^{(L)}$ into query, key, and value vectors (Eqs. 6–8), computes attention weights as a normalized dot product between query and key vectors, and outputs a weighted sum of value vectors. The \"why replace recurrence\" motivation appears only partially in **[1706.03762]** (the Transformer \"replac[es] the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention\"), but no chunk in the evidence addresses why convolution is replaced. **[2510.13343]** characterizes attention generally (it \"learns to focus on relevant parts of the input data\") without the mechanism or the architectural rationale. **[2503.21676]**, **[1810.04805]**, and **[1906.10015]** are not relevant to the question. I therefore cannot provide a grounded answer on the replacement rationale.\n\nSources used: [2110.07844] (attention mechanism), [1706.03762] (partial replacement claim), [2510.13343] (general characterization).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 560,
+  "output": 269,
+  "cache_read": 48256,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.034386400000000004,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

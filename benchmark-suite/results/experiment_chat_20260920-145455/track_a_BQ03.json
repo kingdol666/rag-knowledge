@@ -1,0 +1,266 @@
+{
+ "track": "a",
+ "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+ "answer": "I have verified the facts from the source document. Here is the answer.\n\n## MultiMedQA and Flan-PaLM's MedQA performance\n\n**Source:** *Large Language Models Encode Clinical Knowledge* (Singhal, Azizi, Tu et al., Google Research / DeepMind; arXiv 2212.13138) — the Med-PaLM paper.\n\n### What MultiMedQA is\n\nMultiMedQA is a **benchmark for medical question answering** introduced in this paper to assess how well LLMs encode clinical knowledge. As the paper states, it combines:\n\n- **Six existing open question-answering datasets:**\n  - **MedQA** — US medical licensing exam (USMLE-style) questions\n  - **MedMCQA** — medical entrance exam questions from India\n  - **PubMedQA** — questions over biomedical research literature\n  - **LiveQA** — consumer medical questions\n  - **MedicationQA** — consumer medication questions\n  - **MMLU clinical topics** — clinical subsets of the MMLU benchmark\n- **Plus one newly introduced dataset, HealthSearchQA** — a free-response dataset of **3,375 commonly searched consumer medical questions** — bringing the total to **seven datasets**.\n\nThe benchmark spans three categories of questions: **medical exam, medical research, and consumer medical queries**. Alongside it, the authors propose a human-evaluation framework rating answers on axes including agreement with scientific consensus, correctness of comprehension/retrieval/reasoning, inappropriate or missing content, possibility and extent of harm, and bias.\n\n### Flan-PaLM's performance on MedQA\n\nEvaluated on MultiMedQA using a combination of **few-shot prompting + chain-of-thought (CoT) + self-consistency** prompting:\n\n- **Flan-PaLM 540B achieved 67.6% multiple-choice accuracy on MedQA** (the 4-option, USMLE-style version).\n- This **surpassed the previous state of the art by over 17%** — specifically, it exceeded the prior SOTA by **17.3%**.\n- It surpassed the **DRAGON model** by **20.1%**, and beat the concurrent **PubMedGPT** (a 2.7B model) result of 50.3% on MedQA.\n- On the **more difficult 5-option version of MedQA**, Flan-PaLM scored **62.0%**.\n\nMore broadly on MultiMedQA, Flan-PaLM achieved SOTA on **every multiple-choice dataset** — **67.6% on MedQA**, **57.6% on MedMCQA**, **79.0% on PubMedQA**, and the MMLU clinical topics.\n\n### Important caveat\n\nDespite the strong MCQ scores, the paper's **human evaluation found key gaps**: clinicians judged only **61.9% of Flan-PaLM's long-form answers** aligned with scientific consensus (vs. 92.9% for clinician answers), and **29.7% of answers were rated potentially harmful** (vs. 6.5% for clinicians). This motivated **instruction prompt tuning**, producing **Med-PaLM**, which improved consensus alignment to **92.6–92.9%** and reduced harmful answers to **5.8%** — though the authors note it still remained **inferior to clinicians**.\n\n### Source references\n\n- `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (parts 1, 2, 3), KB `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (\"生命科学与医学\")\n  - Part 1 — abstract, introduction, Section 3.1 (MultiMedQA composition: §3.1.1)\n  - Part 2 — §4.1 \"Flan-PaLM exceeds previous state-of-the-art on MedQA (USMLE) by over 17%\" (the 67.6% / 17.3% / 62.0% figures)\n  - Part 3 — §4.5 Human evaluation results (61.9% consensus, 29.7% harm)\n- Corroborating indexed copies: `Corpus-Struct/…__s05.md` and `Corpus-Chunks800/…__k01.md` (same paper, chunked variants)\n\nNote: the `mcp__plugin_rag-knowledge_kb-mcp__*` tool aliases returned a \"read-only\" notice; all retrieval was performed via the `mcp__kb-mcp__*` tools (`kb_list`, `kb_search_vector`, `kb_search_two_stage`, `kb_doc_read`).",
+ "is_error": false,
+ "latency_s": 202.9,
+ "sdk_duration_ms": 196867,
+ "num_turns": 17,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_doc_read,mcp__kb-mcp__kb_search_two_stage"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb search vector knowledge base query documents"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MultiMedQA benchmark Flan-PaLM MedQA"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "MultiMedQA Flan-PaLM MedQA medical question answering benchmark"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__plugin_rag-knowledge_kb-mcp__backend_status,mcp__plugin_rag-knowledge_kb-mcp__kb_list,mcp__plugin_rag-knowle"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__backend_status",
+   "input": {}
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "+kb-mcp backend_status kb_list"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_doc_read"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MultiMedQA benchmark Flan-PaLM MedQA medical question answering"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "MultiMedQA Flan-PaLM MedQA accuracy medical question answering"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md"
+   }
+  }
+ ],
+ "tool_call_count": 16,
+ "permission_denied": 4,
+ "tokens": {
+  "input": 378377,
+  "output": 2720,
+  "cache_read": 191104,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 2.055437,
+ "timeline": [
+  {
+   "t": 6.21,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 10.74,
+   "event": "text",
+   "detail": "100"
+  },
+  {
+   "t": 10.76,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 21.67,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 31.18,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 31.19,
+   "event": "permission_denied",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 31.2,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 31.21,
+   "event": "permission_denied",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 34.77,
+   "event": "text",
+   "detail": "111"
+  },
+  {
+   "t": 34.79,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 38.7,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_list"
+  },
+  {
+   "t": 38.7,
+   "event": "permission_denied",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_list"
+  },
+  {
+   "t": 38.7,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__backend_status"
+  },
+  {
+   "t": 38.71,
+   "event": "permission_denied",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__backend_status"
+  },
+  {
+   "t": 41.57,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 46.7,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 67.14,
+   "event": "text",
+   "detail": "83"
+  },
+  {
+   "t": 67.37,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 97.73,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 97.75,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 114.28,
+   "event": "text",
+   "detail": "160"
+  },
+  {
+   "t": 114.28,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 114.29,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 140.91,
+   "event": "text",
+   "detail": "129"
+  },
+  {
+   "t": 141.1,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 141.11,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 202.85,
+   "event": "text",
+   "detail": "3614"
+  },
+  {
+   "t": 202.87,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about MultiMedQA and Flan-PaLM's MedQA performance.\n\n",
+  "The tools returned a read-only notice instead of results. Let me check connectivity and try a broader search.\n\n",
+  "The `mcp__kb-mcp__*` family works. Let me search the Life Sciences & Medicine KB.\n\n",
+  "Strong hits in the \"生命科学与医学\" KB. Let me read the source document sections to verify details and gather the MultiMedQA composition and MedQA benchmark context.\n\n",
+  "I have the key facts. Let me read the Section 4 evaluation detail (part 3 and part 5) to confirm the MedQA numbers and context.\n\n",
+  "I have verified the facts from the source document. Here is the answer.\n\n## MultiMedQA and Flan-PaLM's MedQA performance\n\n**Source:** *Large Language Models Encode Clinical Knowledge* (Singhal, Azizi, Tu et al., Google Research / DeepMind; arXiv 2212.13138) — the Med-PaLM paper.\n\n### What MultiMedQA is\n\nMultiMedQA is a **benchmark for medical question answering** introduced in this paper to assess how well LLMs encode clinical knowledge. As the paper states, it combines:\n\n- **Six existing open question-answering datasets:**\n  - **MedQA** — US medical licensing exam (USMLE-style) questions\n  - **MedMCQA** — medical entrance exam questions from India\n  - **PubMedQA** — questions over biomedical research literature\n  - **LiveQA** — consumer medical questions\n  - **MedicationQA** — consumer medication questions\n  - **MMLU clinical topics** — clinical subsets of the MMLU benchmark\n- **Plus one newly introduced dataset, HealthSearchQA** — a free-response dataset of **3,375 commonly searched consumer medical questions** — bringing the total to **seven datasets**.\n\nThe benchmark spans three categories of questions: **medical exam, medical research, and consumer medical queries**. Alongside it, the authors propose a human-evaluation framework rating answers on axes including agreement with scientific consensus, correctness of comprehension/retrieval/reasoning, inappropriate or missing content, possibility and extent of harm, and bias.\n\n### Flan-PaLM's performance on MedQA\n\nEvaluated on MultiMedQA using a combination of **few-shot prompting + chain-of-thought (CoT) + self-consistency** prompting:\n\n- **Flan-PaLM 540B achieved 67.6% multiple-choice accuracy on MedQA** (the 4-option, USMLE-style version).\n- This **surpassed the previous state of the art by over 17%** — specifically, it exceeded the prior SOTA by **17.3%**.\n- It surpassed the **DRAGON model** by **20.1%**, and beat the concurrent **PubMedGPT** (a 2.7B model) result of 50.3% on MedQA.\n- On the **more difficult 5-option version of MedQA**, Flan-PaLM scored **62.0%**.\n\nMore broadly on MultiMedQA, Flan-PaLM achieved SOTA on **every multiple-choice dataset** — **67.6% on MedQA**, **57.6% on MedMCQA**, **79.0% on PubMedQA**, and the MMLU clinical topics.\n\n### Important caveat\n\nDespite the strong MCQ scores, the paper's **human evaluation found key gaps**: clinicians judged only **61.9% of Flan-PaLM's long-form answers** aligned with scientific consensus (vs. 92.9% for clinician answers), and **29.7% of answers were rated potentially harmful** (vs. 6.5% for clinicians). This motivated **instruction prompt tuning**, producing **Med-PaLM**, which improved consensus alignment to **92.6–92.9%** and reduced harmful answers to **5.8%** — though the authors note it still remained **inferior to clinicians**.\n\n### Source references\n\n- `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (parts 1, 2, 3), KB `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (\"生命科学与医学\")\n  - Part 1 — abstract, introduction, Section 3.1 (MultiMedQA composition: §3.1.1)\n  - Part 2 — §4.1 \"Flan-PaLM exceeds previous state-of-the-art on MedQA (USMLE) by over 17%\" (the 67.6% / 17.3% / 62.0% figures)\n  - Part 3 — §4.5 Human evaluation results (61.9% consensus, 29.7% harm)\n- Corroborating indexed copies: `Corpus-Struct/…__s05.md` and `Corpus-Chunks800/…__k01.md` (same paper, chunked variants)\n\nNote: the `mcp__plugin_rag-knowledge_kb-mcp__*` tool aliases returned a \"read-only\" notice; all retrieval was performed via the `mcp__kb-mcp__*` tools (`kb_list`, `kb_search_vector`, `kb_search_two_stage`, `kb_doc_read`)."
+ ],
+ "qid": "BQ03",
+ "via": "chat"
+}

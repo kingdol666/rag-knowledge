@@ -1,0 +1,3083 @@
+❦
+RAG Knowledge
+❦
+CONTENTS
+01
+Home
+01
+02
+File System
+02
+03
+Knowledge Base
+03
+04
+KB Search
+04
+05
+Graph Explorer
+05
+06
+SOUL Personas
+06
+07
+Claude Chat
+07
+08
+Harness Hub
+08
+09
+Settings
+09
+10
+API Tokens
+10
+⚘
+RAG Knowledge Platform v2.3.0
+RAG·KB
+KB SEARCH
+·
+Retrieval
+EN
+Knowledge Search
+
+Multi-Strategy · Vector Semantic · BM25 Keyword · Two-Stage Fusion · Content Verification
+
+Rebuild Index
+Search Strategy:
+Two-Stage (Recommended)
+Vector Semantic
+Keyword
+Search
+KB Scope:
+All Knowledge Bases
+Result Count:
+BM25 Recall:
+Cross-KB Balance:
+ON
+OFF
+Tags:
+Toolformer
+工具调用
+function calling
+自监督学习
+API调用
+Reflexion
+verbal reinforcement learning
+self-reflection
+episodic memory
+反思机制
+Transformer
+注意力机制
+深度学习
+NLP
+机器翻译
+Results: 200
+BM25 + Vector
+634ms
+List
+Relation Graph
+Content Verify
+Verify Off
+#1
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+## 4.1 The 50-qubit barrier Even with fault-tolerant quantum computing still a rather distant dream, we are now entering a pivotal new era in quantum technology. For this talk, I needed a name to describe this impending new era, so I made up a word: NISQ. This stands for Noisy Intermediate-Scale Q
+COMBINED
+62%
+0.6213
+VECTOR
+62%
+0.6213
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#2
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+## I. INTRODUCTION We find ourselves in the era of noisy intermediate-scale quantum (NISQ) computation, which is characterized by various obstacles including restrictive qubit topologies, short coherence times and imperfect quantum gates; these factors compound to limit what is achievable using ex
+COMBINED
+62%
+0.6199
+VECTOR
+62%
+0.6199
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#3
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+## 4 The NISQ era unfolds
+COMBINED
+61%
+0.6076
+VECTOR
+61%
+0.6076
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#4
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+ng from 50 to a few hundred.1 50 qubits is a significant milestone, because that's beyond what can be simulated by brute force using the most powerful existing digital supercomputers.2 “Noisy" emphasizes that we'll have imperfect control over those qubits; the noise will place serious limitations on
+COMBINED
+60%
+0.5992
+VECTOR
+60%
+0.5992
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#5
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+# Quantum Computing in the NISQ era and beyond John Preskill Institute for Quantum Information and Matter and Walter Burke Institute for Theoretical Physics, California Institute of Technology, Pasadena CA 91125, USA 30 July 2018 Noisy Intermediate-Scale Quantum (NISQ) technology will be avail
+COMBINED
+60%
+0.5965
+VECTOR
+60%
+0.5965
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#6
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+de instructive further reading. I apologize to many colleagues whose highly valuable contributions are not properly acknowledged here. Let me now summarize the main points I've tried to convey. Now is a privileged time in the history of science and technology, as we are witnessing the opening of t
+COMBINED
+59%
+0.5894
+VECTOR
+59%
+0.5894
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#7
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+a suite of IBM quantum hardware. The problem we take as a testbed for this QEM benchmark is preparation of the HCl molecule ground state, with the ultimate goal of measuring the corresponding energy to chemical precision (errors within 1.6 mHa of full configuration interaction). Of the numerous qua
+COMBINED
+58%
+0.5792
+VECTOR
+58%
+0.5792
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#8
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+more than about 1000 gates — that is, 1000 fundamental two-qubit operations — because the noise will overwhelm the signal in a circuit much larger than that. That limitation on circuit size imposes a ceiling on the computational power of NISQ technology. Eventually we'll do better, using quantum err
+COMBINED
+58%
+0.5771
+VECTOR
+58%
+0.5771
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#9
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+when it is eventually implemented. In the nearer term, more accurate gates will allow us to execute larger quantum circuits, and so extend the power of NISQ technology. NISQ is not likely to change the world all by itself. Instead, the primary goal for nearterm quantum platforms should be to pave t
+COMBINED
+56%
+0.5600
+VECTOR
+56%
+0.5600
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#10
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+sics of many entangled particles. It might also have useful applications of interest to the business community, but we're not sure about that. We shouldn't expect NISQ is to change the world by itself; instead it should be regarded as a step toward more powerful quantum technologies we'll develop in
+COMBINED
+56%
+0.5586
+VECTOR
+56%
+0.5586
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#11
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+the thermalization stage of the algorithm could be executed by quantum annealing. Conceivably, then, a quantum solver for semidefinite programs might be within reach of NISQ technology.
+COMBINED
+56%
+0.5554
+VECTOR
+56%
+0.5554
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#12
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+um advantage for approximate optimization, NISQ technology might be inadequate for demonstrating the advantage; still, it will be fun to try it and see how well it works. The emerging paradigm for solving optimization problems using near-term quantum technology is a kind of hybrid quantum-classical
+COMBINED
+55%
+0.5486
+VECTOR
+55%
+0.5486
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#13
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+mprove the efficiency of nitrogen fixation or carbon capture. New materials arising from quantum simulations might lead to more effective power transmission or improved collection of solar energy. We probably lack the imagination to anticipate the most transformative discoveries which will flow from
+COMBINED
+55%
+0.5483
+VECTOR
+55%
+0.5483
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#14
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+computers, but noise in quantum gates will limit the size of quantum circuits that can be executed reliably. NISQ devices will be useful tools for exploring many-body quantum physics, and may have other useful applications, but the 100-qubit quantum computer will not change the world right away — we
+COMBINED
+55%
+0.5479
+VECTOR
+55%
+0.5479
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#15
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+r a comprehensive review of the QEM literature and to Resch & Karpuzcu [23] for an exposition of noise sources in quantum computation. While QEM has permitted some degree of success in obtaining usable results from NISQ computers, a number of works have cautioned that QEM may be restricted by some
+COMBINED
+55%
+0.5475
+VECTOR
+55%
+0.5475
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#16
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+gorithms we're planning to test. But I emphasize again that the imperfect gates in NISQ systems will severely limit their computational power, because circuits with many gates will be too noisy to give useful results. Near-term experiments will explore what we can do with of order 100 qubits, and w
+COMBINED
+53%
+0.5301
+VECTOR
+53%
+0.5301
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#17
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+ting large molecules and exotic materials may be too expensive to succeed without error correction. Classical computers are especially bad at simulating quantum dynamics — that is, predicting how a highly-entangled quantum state will change with time. Quantum computers have a big advantage for that
+COMBINED
+53%
+0.5289
+VECTOR
+53%
+0.5289
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#18
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+of NISQ devices. Classical computers are especially bad at simulating the dynamics of highly entangled many-particle quantum systems; therefore quantum dynamics is a particularly promising arena where quantum computers may have a significant advantage over classical ones. We should continue to foc
+COMBINED
+53%
+0.5275
+VECTOR
+53%
+0.5275
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#19
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+No description
+attention to whether the task is useful! Quantum supremacy is a worthy goal, notable for entrepreneurs and investors not so much because of its intrinsic importance but rather as a sign of progress toward more valuable applications further down the road. We should also bear in mind that, because of
+COMBINED
+53%
+0.5264
+VECTOR
+53%
+0.5264
+BM25
+10.09
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md
+View relation graph
+#20
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+future are probably going to have to be fault tolerant, and because of the very hefty overhead cost of quantum error correction, the era of fault-tolerant quantum computing may still be rather distant. No one really knows how long it will take to get there. As the quantum community eagerly seizes th
+COMBINED
+52%
+0.5207
+VECTOR
+52%
+0.5207
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#21
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+lerant era. I've adopted a cautionary stance in these remarks, because I think we should face the onset of the NISQ era with well-grounded expectations. But please don't misunderstand me — like many of my colleagues, I'm eagerly anticipating the discoveries that will ensue as the NISQ era unfolds o
+COMBINED
+52%
+0.5194
+VECTOR
+52%
+0.5194
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#22
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+Perhaps NISQ will allow us to speed up the time to solution for problems of broad interest in the near future, but we don't know yet whether that will happen. We have some specific ideas of things we'd like to try, such as hybrid quantum-classical algorithms for solving optimization problems, both
+COMBINED
+52%
+0.5193
+VECTOR
+52%
+0.5193
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#23
+quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+No description
+could be used, say, to solve the equations of electromagnetism in a complex three-dimensional geometry, for the purpose of optimizing the performance of an antenna. I expect HHL to have high-impact applications eventually, but it is not likely to be feasible in the NISQ era. The algorithm may just
+COMBINED
+51%
+0.5107
+VECTOR
+51%
+0.5107
+BM25
+8.37
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md
+View relation graph
+#24
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+artially error corrected machines for this to be realised in practice. In this work we place an emphasis on scalable quantum error mitigation techniques for the NISQ era. As such we benchmark the following: 1. Measurement-error mitigation (MEM) - IV B 2. Non-Z2 symmetry verification (SV) - IV C
+COMBINED
+50%
+0.5021
+VECTOR
+50%
+0.5021
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#25
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+eriment. In Figure 14 we plot the result of our bootstrapping test and see reasonable agreement with the true energy distribution obtained from the NISQ hardware; the standard deviations all coincide with the experimentallyobtained value to $\mathcal { O } ( 1 0 ^ { - 3 } )$ (on the order of chemic
+COMBINED
+49%
+0.4926
+VECTOR
+49%
+0.4926
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#26
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+tract usable data from the raw output of NISQ machines. A plethora of techniques have been proposed that exploit various properties of noise in NISQ devices. Some evaluate collections of Clifford circuits (which are classically efficient to simulate) either to mitigate against measurement errors [1
+COMBINED
+49%
+0.4923
+VECTOR
+49%
+0.4923
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#27
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+e, University of Amsterdam, Amsterdam, 1098 XH, Netherlands (Dated: March 3, 2023) Due to numerous limitations including restrictive qubit topologies, short coherence times and prohibitively high noise floors, few quantum chemistry experiments performed on existing noisy intermediate-scale quantum
+COMBINED
+42%
+0.4245
+VECTOR
+42%
+0.4245
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#28
+global-rag-benchmark.md
+No description
+nfo Requirement</td><td>Docs</td><td>Hops</td><td>Example</td></tr><tr><td colspan="5">Single-hop datasets</td></tr><tr><td>NQ</td><td>chunk-level</td><td>1</td><td>Single</td><td>“When was Einstein born?&quot;</td></tr><tr><td>MS MARCO</td><td>chunk-level</td><td>1</td><td>Single</td><td>&quot;What
+COMBINED
+42%
+0.4200
+VECTOR
+42%
+0.4200
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#29
+global-rag-benchmark.md
+No description
+Second, through comprehensive experiments, we demonstrate that existing RAG approaches achieve only 1.51 F1 score on global tasks, revealing fundamental architectural limitations that cannot be addressed through incremental improvements. 3. Third, we present GlobalRAG, which achieves 6.63 F1 score
+COMBINED
+41%
+0.4127
+VECTOR
+41%
+0.4127
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#30
+global-rag-benchmark.md
+No description
+## 3 The GlobalQA Dataset Existing retrieval-augmented QA datasets primarily focus on local, single-document retrieval tasks, making it difficult to assess a system's ability to perform corpus-level information aggregation. To fill this gap, we introduce GlobalQA—a benchmark specifically designed t
+COMBINED
+40%
+0.4013
+VECTOR
+40%
+0.4013
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#31
+global-rag-benchmark.md
+No description
+at inference is based on highquality documents. (3) Data processing tools: introducing auxiliary tools to assist the model in handling numerical and statistical problems, enabling hybrid reasoning that combines language understanding with symbolic computation. The main contributions of this paper c
+COMBINED
+40%
+0.3990
+VECTOR
+40%
+0.3990
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#32
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+## III. QUBIT REDUCTION TECHNIQUES Taken in the minimal STO-3G basis, the full HCl problem consists of 20 qubits and therefore direct treatment is not yet feasible on current quantum computers. In order for the hardware to accommodate our problem we layered the qubit reduction techniques of taperi
+COMBINED
+40%
+0.3971
+VECTOR
+40%
+0.3971
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#33
+global-rag-benchmark.md
+No description
+ns. This indicates strong potential for future advances in global RAG with more powerful retrievers. <table><tr><td>Method</td><td>2Wiki</td><td>HotpotQA</td><td>MuSiQue</td><td>GlobalQA</td></tr><tr><td>StandardRAG</td><td>12.75</td><td>16.58</td><td>4.53</td><td>1.51</td></tr><tr><td>HyperGraphRA
+COMBINED
+40%
+0.3958
+VECTOR
+40%
+0.3958
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#34
+global-rag-benchmark.md
+No description
+es. To address this gap, we construct GlobalQA, the first benchmark explicitly specifically to evaluate global RAG abilities. Since global tasks often require integrating and analyzing a large number of documents, GlobalQA defines four task types: - Counting: computing the number of entities that s
+COMBINED
+39%
+0.3943
+VECTOR
+39%
+0.3943
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#35
+global-rag-benchmark.md
+No description
+## 3.3 Comparison with Existing Benchmarks Table 1 highlights the differences between GlobalQA and existing RAG evaluation datasets. Existing datasets fall into two categories: single-hop retrieval datasets (e.g., NQ, MS MARCO, TriviaQA), which mainly test single-document retrieval and simple facto
+COMBINED
+39%
+0.3934
+VECTOR
+39%
+0.3934
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#36
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+rdware specification restricted to the chosen qubit cluster at the point of executing the Qiskit Runtime programs. We provide the Quantum Volume (QV), chosen 5-qubit cluster, T1/T2 times and gate duration/error for entangling (CNOT), local $( R _ { z } , X , \sqrt { X } )$ and readout operations. <t
+COMBINED
+39%
+0.3922
+VECTOR
+39%
+0.3922
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#37
+global-rag-benchmark.md
+No description
+er reflecting real-world knowledgeintensive applications. Our benchmark comprises four aggregation task types that systematically assess reasoning capabilities across different computational complexities. Second, through extensive empirical evaluation, we identify and quantify three fundamental lim
+COMBINED
+39%
+0.3917
+VECTOR
+39%
+0.3917
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#38
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+## A. Neuron and Synapse Model Spiking neuron model is used to describe the behaviors of SNN's basic computing unit. Leaky Integrate-and-Fire (LIF) model is one of the most popular spiking neuron models and is used in this paper due to its simplicity. Moreover, there are many more complicated neur
+COMBINED
+39%
+0.3898
+VECTOR
+39%
+0.3898
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#39
+global-rag-benchmark.md
+No description
+ty—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabil
+COMBINED
+39%
+0.3897
+VECTOR
+39%
+0.3897
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#40
+global-rag-benchmark.md
+No description
+## 8 Conclusion This paper investigates the challenges of global query processing in retrieval-augmented generation systems. We make the following contributions: First, we introduce GlobalQA, a novel benchmark specifically designed to evaluate RAG systems on global aggregation tasks. Unlike existi
+COMBINED
+39%
+0.3893
+VECTOR
+39%
+0.3893
+BM25
+4.61
+e2e-demo-0923-022632
+e2e-demo-0923-022632/global-rag-benchmark.md
+View relation graph
+#41
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+n the form of $\scriptstyle { a \mathrm { - N a F e O } _ { 2 } }$ type layered rocksalt structures [5]. Other common forms include layered hexagonal structures similar to those of P2-NaCoO2 [6], P3-NaMnO2 [7], and O3-NaVO2 [8]. Depending on cationic species, decent theoretical capacities can potent
+COMBINED
+39%
+0.3881
+VECTOR
+39%
+0.3881
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#42
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+ucted cleaned versions of each of our benchmarks to check for potential contamination in our training set. The x-axis is a conservative lower bound for how much of the dataset is known with high confidence to be clean, and the y-axis shows the difference in performance when evaluating only on the ve
+COMBINED
+39%
+0.3873
+VECTOR
+39%
+0.3873
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#43
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+17a.jpg) FIG. 3: Decay in quantum state fidelity against number of qubits for GHZ preparation; dotted lines indicate the measurement-error mitigated result. We could not utilize more than 15-qubits on ibm\_geneva due to a faulty qubit. The grey bars indicate the average number of CNOT gates requir
+COMBINED
+38%
+0.3801
+VECTOR
+38%
+0.3801
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#44
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+which is rarely the case. In principle, this theoretical capacity is often unattainable because the de-lithiation process includes crystallographical phase changes that are not conducive to further alkali metal extraction [9]. Furthermore, the formation of the interphase materials, due to reactions
+COMBINED
+38%
+0.3795
+VECTOR
+38%
+0.3795
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#45
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+iple of Inception module into multi-layer unsupervised SNNs. Our previous work [10] utilized an Inception-like multipathway unsupervised SNN, but this network is not stackable and limited to 3 layers. Xing et al. [18] built a spiking Inception architecture but trained it through a conversion approac
+COMBINED
+38%
+0.3794
+VECTOR
+38%
+0.3794
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#46
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+No description
+sidered chemical precision (1.6 mHa), although we stress that, due to the minimal basis set used here, one should not expect agreement with experimentally-obtained energy values. Subtracting the relatively large identity term leaves a target energy of -2.066 Ha; with respect to chemical precision, t
+COMBINED
+38%
+0.3770
+VECTOR
+38%
+0.3770
+BM25
+7.50
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md
+View relation graph
+#47
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+Apisdorf, et al., Ground-state energy estimation of the water molecule on a trapped-ion quantum computer, npj Quantum Information 6, 1 (2020). [36] A. J. McCaskey, Z. P. Parks, J. Jakowski, S. V. Moore, T. D. Morris, T. S. Humble, and R. C. Pooser, Quantum chemistry as a benchmark for near-term qua
+COMBINED
+38%
+0.3765
+VECTOR
+38%
+0.3765
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#48
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+## 5 Limitations GPT-3 and our analysis of it have a number of limitations. Below we describe some of these and suggest directions for future work. First, despite the strong quantitative and qualitative improvements of GPT-3, particularly compared to its direct predecessor GPT-2, it still has not
+COMBINED
+37%
+0.3736
+VECTOR
+37%
+0.3736
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#49
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+## 9.1 Basic principles Nuclear imaging is a kind of medical imaging that creates high-resolution pictures of the body's inner workings by using minute quantities of radioactive material, called radiotracers.[24] The basic principles of nuclear imaging are: Nuclear imaging is a medical imaging te
+COMBINED
+37%
+0.3732
+VECTOR
+37%
+0.3732
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#50
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+neurysms, and blockages in the blood vessels
+COMBINED
+37%
+0.3705
+VECTOR
+37%
+0.3705
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#51
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+for contamination of the PIQA and Winograd results, and we mark the corresponding results in Section 3 with an asterisk. We find no evidence that other benchmarks are affected. • Reading Comprehension: Our initial analysis flagged >90% of task examples from QuAC, SQuAD2, and DROP as potentially con
+COMBINED
+37%
+0.3683
+VECTOR
+37%
+0.3683
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#52
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+eural Network (SNN) that is more biologically realistic and requires less computations [1]. The renewal of neural network is coming: neural network is evolving from the second generation, ANN, to the third generation, SNN [2]. In contrast to the traditional ANN whose information is represented by n
+COMBINED
+37%
+0.3666
+VECTOR
+37%
+0.3666
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#53
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+is connected to the output layer in a Fully-Connected (FC) or Locally-Connected (LC) fashion, and the output neurons (i.e. the neurons in the output layer) compete with each other. The baseline modules are limited to 2-layer networks due to its low learning efficiency and low spiking intensity (The
+COMBINED
+37%
+0.3662
+VECTOR
+37%
+0.3662
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#54
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+# Aim for clinical utility, not just predictive accuracy
+COMBINED
+37%
+0.3659
+VECTOR
+37%
+0.3659
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#55
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+n a 25x smaller model with much less capacity to memorize, leading us to suspect that the shift is likely statistical bias rather than memorization; examples which workers copied may simply be easier. Unfortunately, we cannot rigorously prove this hypothesis. We therefore mark our PIQA results with
+COMBINED
+37%
+0.3658
+VECTOR
+37%
+0.3658
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#56
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+## B. Multi-module Architecture To overcome the limitations of previous unsupervised SNNs with only one learnable layer, we explored the possibility of building a multi-layer SNN by stacking Sp-Inception modules. However, although Inception module has shown some amazing improvements (shown in Sect
+COMBINED
+37%
+0.3653
+VECTOR
+37%
+0.3653
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#57
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+-Ernzerhof (revPBE) functional [46], and the Becke-Johnson (BJ) functional [47] overly delocalise the 3d states, inaccurately prediction wider bands and narrower band gaps. GGA's inaccuracy stems from the assumption that the electrons in the system can be treated as independent, noninteracting entit
+COMBINED
+36%
+0.3630
+VECTOR
+36%
+0.3630
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#58
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+tomography (EIT), and positron emission tomography (PET). Additionally, Chapman's (2009) X-ray imaging, also known as radiography, is one of the oldest and most widely used imaging modalities. It is based on the principle that different types of tissue absorb different amounts of X-ray radiation, a
+COMBINED
+36%
+0.3608
+VECTOR
+36%
+0.3608
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#59
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+rmation Technology Sun Yat-sen University Guangzhou 510006, China xiaoshlin@mail.sysu.edu.cn Zhiyi Yu The School of Electronics and Information Technology Sun Yat-sen University Guangzhou 510006, China yuzhiyi@mail.sysu.edu.cn Abstract—Spiking Neural Network (SNN), as a b
+COMBINED
+36%
+0.3603
+VECTOR
+36%
+0.3603
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#60
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+xygen-redox-driven transition metal oxidebased cathodes in lithium and sodium ion battery systems [28]. Oxygen evolution, which results from some of these types of reactions, although mainly limited to surface areas, poses a significant ignition hazard, resulting in unacceptable flammability risks f
+COMBINED
+36%
+0.3599
+VECTOR
+36%
+0.3599
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#61
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+ectional models work with few- or zero-shot learning, is a promising direction for future research, and could help achieve the “best of both worlds" A more fundamental limitation of the general approach described in this paper – scaling up any LM-like model, whether autoregressive or bidirectional
+COMBINED
+36%
+0.3597
+VECTOR
+36%
+0.3597
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#62
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+o-called analytical center of $\mathcal { X } ) ?$
+COMBINED
+36%
+0.3589
+VECTOR
+36%
+0.3589
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#63
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+ed, as our results were based on only a single clinician or lay-person evaluating the responses. This represents a limitation to generalizability of our findings which could be mitigated by inclusion of a significantly larger and intentionally diverse pool of human raters (clinicians and lay users)
+COMBINED
+36%
+0.3564
+VECTOR
+36%
+0.3564
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#64
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+ike-Timing-Dependent Plasticity (STDP) is a popular method to train an unsupervised SNN. However, previous unsupervised SNNs trained through this method are limited to a shallow network with only one learnable layer and cannot achieve satisfactory results when compared with multi-layer SNNs. In this
+COMBINED
+36%
+0.3553
+VECTOR
+36%
+0.3553
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#65
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+quantum computer using problem decomposition, Communications Physics 4, 245 (2021). [41] J. E. Rice, T. P. Gujarati, M. Motta, T. Y. Takeshita, E. Lee, J. A. Latone, and J. M. Garcia, Quantum computation of dominant products in lithium-sulfur batteries, The Journal of Chemical Physics 154, 134115 (
+COMBINED
+35%
+0.3538
+VECTOR
+35%
+0.3538
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#66
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+uality or resolution. Besides the introduction and discussion of the basic principles, typical clinical applications, advantages, and limitations of each modality used in current clinical practice, this chapter also highlights the importance of emerging technologies in medical imaging and the role o
+COMBINED
+35%
+0.3536
+VECTOR
+35%
+0.3536
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#67
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+## A. Inception Module Inception module was first proposed by [20] and then evolved to many variants [21-22] in the ANN literature. The family of Inception module has demonstrated that carefully designed topologies are able to achieve compelling results with low theoretical complexity. An importan
+COMBINED
+35%
+0.3536
+VECTOR
+35%
+0.3536
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#68
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+y to provide high-resolution images of soft tissues such as muscles, tendons, and ligaments. Additionally, they can create images in multiple planes, which allows for a more complete picture of internal structures. Furthermore, MRM can provide microscopic resolution with the advantage of being non-d
+COMBINED
+35%
+0.3536
+VECTOR
+35%
+0.3536
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#69
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+cation substitution to form the basis of $\mathrm { L i M n } _ { x } \mathrm { N i } _ { 1 - x } \mathrm { O } _ { 2 }$ (LMNOs), which form the backbone of the cathodes in many widely used battery systems. Cobalt is often included too, and indeed it is oxides with compositions including $\mathrm {
+COMBINED
+35%
+0.3510
+VECTOR
+35%
+0.3510
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#70
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+## 5.5 Nuclear medicine imaging: Nuclear medicine uses small amounts of radioactive material to create images of internal structures and to identify abnormalities, such as tumors or infections. This modality is also used to diagnose and monitor certain diseases such as cancer, heart diseases, and
+COMBINED
+35%
+0.3498
+VECTOR
+35%
+0.3498
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#71
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+k method is a type of quantum mechanical calculation that explicitly models the interactions between electrons in a many-electron system, thus surpassing the GGA accuracy, albeit at a higher (\~10 folds for a typical oxide unitcell) computational cost. In particular, the portion calculated using Ha
+COMBINED
+35%
+0.3488
+VECTOR
+35%
+0.3488
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#72
+平台架构总览.md
+No description
+bprocess (Job Object / prctl / pgrp) ▼ MinerU OCR engine (ephemeral port) Claude Code / Agent ──(MCP stdio)──▶ kb-mcp server 94 tools │ HTTP → web proxy / backend + direct file reads ▼
+COMBINED
+35%
+0.3484
+VECTOR
+35%
+0.3484
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#73
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+gnition tasks, SNN's power consumption and execution latency are greatly reduced as a consequence of its data-driven, event-based style of computing [17]. Existing SNN algorithms can be classified into three types: supervised [4-5], unsupervised [7-12] and conversion [17-18]. Supervised/Unsupervised
+COMBINED
+35%
+0.3473
+VECTOR
+35%
+0.3473
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#74
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+laystyle \frac { 1 } { 2 \eta } \| x - ( x _ { t } - \eta \nabla f ( x _ { t } ) ) \| _ { 2 } ^ { 2 } . } \end{array}\tag{5.1} $$ The algorithm described by the above iteration is known as ISTA (Iterative Shrinkage-Thresholding Algorithm). In terms of convergence rate it is easy to show that ISTA h
+COMBINED
+35%
+0.3473
+VECTOR
+35%
+0.3473
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#75
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+ot \| _ { 1 }$ on $\Delta _ { n }$ (this result is known as Pinsker's inequality). Note also that for $\mathcal { X } = \Delta _ { n }$ one has $x _ { 1 } = ( 1 / n , \ldots , 1 / n )$ and $R ^ { 2 } = \log n$ The above observations imply that when minimizing on the simplex $\Delta _ { n }$ a funct
+COMBINED
+35%
+0.3471
+VECTOR
+35%
+0.3471
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#76
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+-future applications, Physical Review X 8, 031027 (2018). [8] A. Mari, N. Shammah, and W. J. Zeng, Extending quantum probabilistic error cancellation by noise scaling, Physical Review A 104, 052607 (2021). [9] Y. Li and S. C. Benjamin, Efficient variational quantum simulator incorporating active e
+COMBINED
+34%
+0.3448
+VECTOR
+34%
+0.3448
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#77
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+Some common modalities include X-ray, CT, MRI, ultrasound, and nuclear medicine, each has its own indications and limitations, these modalities are powerful diagnostic tools that can reveal the internal structure of the body and its functions [11].
+COMBINED
+34%
+0.3443
+VECTOR
+34%
+0.3443
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#78
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+# quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu（第 4/4 部分） 章节: Benchmarking Noisy Intermediate Scale Quantum Error Mitigation Strategies for Ground State Preparation of the HCl Molecule > ACKNOWLEDGEMENTS
+COMBINED
+34%
+0.3430
+VECTOR
+34%
+0.3430
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#79
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+mitigation, Journal of the Physical Society of Japan 90, 032001 (2021). [22] Z. Cai, R. Babbush, S. C. Benjamin, S. Endo, W. J. Huggins, Y. Li, J. R. McClean, and T. E. O'Brien, Quantum error mitigation, arXiv preprint (2022), arXiv:2210.00921. [23] S. Resch and U. R. Karpuzcu, Benchmarking quantu
+COMBINED
+34%
+0.3430
+VECTOR
+34%
+0.3430
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#80
+neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+No description
+ask, and reaches state-ofthe-art results on the MNIST dataset among the existing unsupervised SNNs. Keywords—Spiking neural networks, Unsupervised learning, Inception module.
+COMBINED
+34%
+0.3427
+VECTOR
+34%
+0.3427
+BM25
+5.70
+计算机与人工智能
+计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md
+View relation graph
+#81
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+# Beyond the black-box model In the black-box model non-smoothness dramatically deteriorates the rate of convergence of first order methods from $1 / t ^ { 2 }$ to $1 / \sqrt { t }$ . However, as we already pointed out in Section 1.5, we (almost) always know the function to be optimized globally.
+COMBINED
+34%
+0.3424
+VECTOR
+34%
+0.3424
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#82
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+, 6] (See also the works discussed in Secs. 6.2 and 6.3). These newer methods also have limitations in the sense that they impose restrictions on the number of latent variables allowed in the underlying causal model and also on the mechanisms by which these latent variables influence the observed on
+COMBINED
+34%
+0.3423
+VECTOR
+34%
+0.3423
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#83
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+ety and shelf life, and replace expensive elements and synthesis methods with affordable and facile ones. Mainly, in cathode materials, the removal of a single Li+ cation [1]—or any other cycled cations such as Na+ [2] or Mg2+ [3,4]—is most commonly accommodated chemically in the solid through the c
+COMBINED
+34%
+0.3422
+VECTOR
+34%
+0.3422
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#84
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+7b032d6dcaf934466d69d0b.jpg) FIG. 14: The true distribution of energy estimates obtained from 225 quantum experiments on ibmq\_kolkata, each consisting of 10,000 circuit shots. Overlayed are the bootstrapped distributions for individual measurement sets to understand the relation between bootstrap
+COMBINED
+34%
+0.3417
+VECTOR
+34%
+0.3417
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#85
+平台架构总览.md
+No description
+## 8. Knowledge Graph (L5) Neo4j with `graph_doc_id` as the primary key (Document / Tag / KB nodes; cross-KB entity merge). NER via `transformers` (HanLP dropped — TF-incompatible). Built by `kb_graph_build` (non-blocking; `total_relations` counts **newly created** relations this run — 0 means alre
+COMBINED
+34%
+0.3413
+VECTOR
+34%
+0.3413
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#86
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+## 6.1 Basic principles X-ray imaging, often known as radiography, is an imaging technique used in medicine for diagnosis that creates high-resolution images of internal anatomical structures like bones. The basic principles of X-ray imaging are as follows: X-rays are a form of electromagnetic ra
+COMBINED
+34%
+0.3409
+VECTOR
+34%
+0.3409
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#87
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+. Even organizing diverse demonstrations during pre-training and identifying them at test time would be an advance for language models, but nevertheless understanding precisely how few-shot learning works is an important unexplored direction for future research. A limitation associated with models
+COMBINED
+34%
+0.3407
+VECTOR
+34%
+0.3407
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#88
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+ng only computational basis measurements. We performed 10, 000 circuit shots in each experiment, for a combined total of $2 . 2 5 \times 1 0 ^ { 6 }$ point samples before assessing the quality of the bootstrapped distributions against the overall sample. The 225 quantum experiments provide a target
+COMBINED
+34%
+0.3407
+VECTOR
+34%
+0.3407
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#89
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+neral [LHCG19a] but has not been tried at the scale of hundred of billions parameters; new challenges and opportunities may be associated with applying it to models of this size. Finally, GPT-3 shares some limitations common to most deep learning systems – its decisions are not easily interpretable
+COMBINED
+34%
+0.3406
+VECTOR
+34%
+0.3406
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#90
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+ing Nrepresentability condition to compute the Mott metal-insulator transition, Physical Review A 100, 022517 (2019). [38] F. Arute, K. Arya, R. Babbush, D. Bacon, J. C. Bardin, R. Barends, S. Boixo, M. Broughton, B. B. Buckley, D. A. Buell, et al., Hartree-Fock on a superconducting qubit quantum c
+COMBINED
+34%
+0.3403
+VECTOR
+34%
+0.3403
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#91
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+s, the layer containing transition metal cations is often substituted with Li or Na ions. These materials are referred to as Li-excess (or Na-excess) materials. An essential feature in these materials, as shown in Fig. 2c, is that the oxygen ions, on average, are now coordinated by less than three T
+COMBINED
+34%
+0.3399
+VECTOR
+34%
+0.3399
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#92
+quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+No description
+mura, and N. Yamamoto, Applications of quantum computing for investigations of electronic transitions in phenylsulfonyl-carbazole TADF emitters, npj Computational Materials 7, 70 (2021). [40] Y. Kawashima, E. Lloyd, M. P. Coons, Y. Nam, S. Matsuura, A. J. Garza, S. Johri, L. Huntington, V. Senicour
+COMBINED
+34%
+0.3390
+VECTOR
+34%
+0.3390
+BM25
+5.49
+自然科学与地球科学
+自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md
+View relation graph
+#93
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+r with a concise description of interior point methods, for which the structural assumption is made on the constraint set rather than on the objective function.
+COMBINED
+34%
+0.3389
+VECTOR
+34%
+0.3389
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#94
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+are the ones used in practice) include Renegar [2001], Nemirovski [2004b], Nocedal and Wright [2006]. IPM are designed to solve convex optimization problems of the form $$ \begin{array} { l } { \operatorname* { m i n . } c ^ { \top } x } \\ { \mathrm { s . t . } x \in \mathcal { X } , } \end{array
+COMBINED
+34%
+0.3358
+VECTOR
+34%
+0.3358
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#95
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+NSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d’Ulm, 75005, Paris, France. Boris Gutkin Laboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France. Center for Cognition an
+COMBINED
+34%
+0.3355
+VECTOR
+34%
+0.3355
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#96
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+## 2 Anionic Redox in Battery Electrode Materials The redox activity of transition metal cations often sets the ultimate limit on the performance of electrode materials, primarily cathodes, in lithium- andsodium-ionbatteries, accommodating the reversible insertion and removal of Li or Na. In both
+COMBINED
+34%
+0.3352
+VECTOR
+34%
+0.3352
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#97
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+## 5.3 Interior point methods We describe here interior point methods (IPM), a class of algorithms fundamentally different from what we have seen so far. The first algorithm of this type was described in Karmarkar [1984], but the theory we shall present was developed in Nesterov and Nemirovski [19
+COMBINED
+33%
+0.3348
+VECTOR
+33%
+0.3348
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#98
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+e central path, but on the other hand $x ^ { * } ( t )$ needs to be close enough to $x ^ { * } ( t ^ { \prime } )$ so that it is in the basin of fast convergence for A when run on $F _ { t ^ { \prime } }$ IPM follows the above methodology with A being Newton's method. Indeed as we will see in the n
+COMBINED
+33%
+0.3340
+VECTOR
+33%
+0.3340
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#99
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+ence of order $\sqrt { \frac { \log n } { t } }$ . On the other hand the regular subgradient descent achieves only a rate of order $\sqrt { \frac { n } { t } }$ in this case! “Spectrahedron setup". We consider here functions defined on matrices, and we are interested in minimizing a function f on t
+COMBINED
+33%
+0.3335
+VECTOR
+33%
+0.3335
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#100
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+vations settings is possible in our proposed framework.
+COMBINED
+33%
+0.3328
+VECTOR
+33%
+0.3328
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#101
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+ultrasound, and nuclear medicine. We will discuss the basic principles, typical clinical applications, advantages, and limitations of each modality. Additionally, we will explore the latest developments and future directions in the field of medical imaging. The goal of this chapter is to provide a c
+COMBINED
+33%
+0.3328
+VECTOR
+33%
+0.3328
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#102
+平台架构总览.md
+No description
+### Retrieval: QDCVR (Query-Driven, Content-Verified Retrieval) The flagship method, designed to resist vector-similarity deception. Implemented across `knowledgebase-search` (single-KB / light cross-KB) and `knowledgebase-search-enterprise` (auto-upgrade when P0/P1 docs come from < 2 KBs): ``` Qu
+COMBINED
+33%
+0.3325
+VECTOR
+33%
+0.3325
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#103
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+so that $x ^ { * } ( t )$ is still in the region of fast convergence of Newton's method when optimizing the function $F _ { t ^ { \prime } }$ with $t ^ { \prime } > t$ . This will lead us to define ν-self concordant barriers. 3. How do we get close to the central path in the first place? Is it poss
+COMBINED
+33%
+0.3323
+VECTOR
+33%
+0.3323
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#104
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+have access to the $q _ { i } \mathrm { ^ { * } s }$ directly, only the observed $\vec { p _ { i j } } \mathrm { \ ' s }$ Thus, the problem can be posed as follows: what are the defining equations of the fans in terms of the observed $p _ { i j } \mathrm { ^ { , } s 2 }$ This problem was solved for
+COMBINED
+33%
+0.3323
+VECTOR
+33%
+0.3323
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#105
+medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+No description
+Medical imaging can be divided into two main categories: diagnostic imaging and therapeutic imaging [1]. Diagnostic imaging, which is used to diagnose and determine the severity of a condition, includes modalities such as X-ray, CT, MRI, ultrasound, and nuclear medicine. Therapeutic imaging, which i
+COMBINED
+33%
+0.3322
+VECTOR
+33%
+0.3322
+BM25
+4.30
+生命科学与医学
+生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md
+View relation graph
+#106
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+may present a challenge for practical applicability of models of this scale in their current form. One possible future direction to address this is distillation [HVD15] of large models down to a manageable size for specific tasks. Large models such as GPT-3 contain a very wide range of skills. most
+COMBINED
+33%
+0.3319
+VECTOR
+33%
+0.3319
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#107
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+oken equally and lacks a notion of what is most important to predict and what is less important. [RRS20] demonstrate benefits of customizing prediction to entities of interest. Also, with self-supervised objectives, task specification relies on forcing the desired task into a prediction problem, whe
+COMBINED
+33%
+0.3306
+VECTOR
+33%
+0.3306
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#108
+materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+No description
+## 1 Introduction The central feature of all rechargeable batteries is the reversible insertion and removal of an ionic species from electrode materials. Extracting higher performance levels from existing and future battery materials necessitates a deeper understanding and description of phenomena
+COMBINED
+33%
+0.3294
+VECTOR
+33%
+0.3294
+BM25
+4.36
+工程与能源
+工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md
+View relation graph
+#109
+large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+No description
+en few-shot on some “comparison" tasks, such as determining if two words are used the same way in a sentence, or if one sentence implies another (WIC and ANLI respectively), as well as on a subset of reading comprehension tasks. This is especially striking given GPT-3's strong few-shot performance o
+COMBINED
+33%
+0.3273
+VECTOR
+33%
+0.3273
+BM25
+5.07
+计算机与人工智能
+计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md
+View relation graph
+#110
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+## 4.4 Lazy mirror descent, aka Nesterov's dual averaging In this section we consider a slightly more efficient version of mirror descent for which we can prove that Theorem 4.2 still holds true. This alternative algorithm can be advantageous in some situations (such as distributed settings), but
+COMBINED
+33%
+0.3271
+VECTOR
+33%
+0.3271
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#111
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+nt of this technology including rigorous quality assessment when used in different clinical settings and guardrails to mitigate against over reliance on the output of a medical assistant. For example, the potential harms of using a LLM for diagnosing or treating an illness are much greater than usin
+COMBINED
+33%
+0.3262
+VECTOR
+33%
+0.3262
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#112
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+ealth generation and allocation over time. We further show the theoretical contribution of minimal institutions (à la Shubik), to partly overcome this limitation. In particular, we investigate heuristic models of taxation in line with the baseline approach. Drawing upon our computational economic an
+COMBINED
+33%
+0.3262
+VECTOR
+33%
+0.3262
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#113
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+thcal { X } .$ in which case one has to project back onto $\mathcal { X } .$ In mirror descent this projection is done via the Bregman divergence associated to Φ. Precisely one defines $$ \Pi _ { \mathcal { X } } ^ { \Phi } ( y ) = \underset { x \in \mathcal { X } \cap \mathcal { D } } { \mathrm {
+COMBINED
+33%
+0.3260
+VECTOR
+33%
+0.3260
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#114
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+e trivial and could be eliminated from the functional causal structure. We therefore consider only functional causal structures with nontrivial latent variables, that is, latent variables that have some statistical variation in their value, so that the probability of any value is bounded away from 0
+COMBINED
+32%
+0.3249
+VECTOR
+32%
+0.3249
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#115
+平台架构总览.md
+No description
+## 1. Service Topology Three long-running services plus one MCP layer, all configured from a single root `config.yml` (backend-only keys live in `backend/config.yml`): ``` Browser ──(fetch)──▶ Nuxt 3 Web UI (proxy layer) dev 6789 / prod 3000 │ server-to-server (tru
+COMBINED
+32%
+0.3241
+VECTOR
+32%
+0.3241
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#116
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+# Stock market microstructure inference via multi-agent reinforcement learning Johann Lussange Laboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France. Ivan Lazarevich Laboratoire des Neurosciences Co
+COMBINED
+32%
+0.3240
+VECTOR
+32%
+0.3240
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#117
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+putations shows that this problem has an analytical solution given by $\tau _ { \lambda \eta } ( x _ { 0 } )$ , where $\tau$ is the shrinkage operator (hence the name ISTA), defined by $$ \tau _ { \alpha } ( x ) = ( | x | - \alpha ) _ { + } \mathrm { s i g n } ( x ) . $$ Much more is known about (
+COMBINED
+32%
+0.3229
+VECTOR
+32%
+0.3229
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#118
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+ity of the objective is without loss of generality as minimizing a convex function $f$ over $\mathcal { X }$ is equivalent to minimizing a linear objective over the epigraph of f (which is also a convex set). The structural assumption on X that one makes in IPM is that there exists a self-concordant
+COMBINED
+32%
+0.3212
+VECTOR
+32%
+0.3212
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#119
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+0 1 } p _ { 1 1 }$ defines the fan depicted in $\mathrm { F i g . 2 ( b ) }$ in the main text, so the above inequality quantitatively bounds the deviation from the surface of this fan by an amount proportional to the two star trek symbols discussed above. This is intuitively what we would expect fro
+COMBINED
+32%
+0.3210
+VECTOR
+32%
+0.3210
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#120
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+# mathematics__1405.4980__convex-optimization-algorithms-and-complexit（第 8/12 部分） 章节: Beyond the black-box model > ISTA (Iterative Shrinkage-Thresholding Algorithm)
+COMBINED
+32%
+0.3203
+VECTOR
+32%
+0.3203
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#121
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+lity, i.e., that using it for the intended purpose has a positive impact on patient clinical outcomes in comparison to the standard of care. The gold standard for generating evidence of clinical utility is a randomized controlled trial. While commonly understood for the evaluation of treatments, dir
+COMBINED
+32%
+0.3196
+VECTOR
+32%
+0.3196
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#122
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+we already saw in the previous state-value $V ( s )$ and action-value $Q ( s , a )$ functions. Finally, a last central feature proper to reinforcement learning is the socalled curse of dimensionality, namely that the number of state-action pairs that the agent must explore becomes quickly computatio
+COMBINED
+32%
+0.3189
+VECTOR
+32%
+0.3189
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#123
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+No description
+F ( x )$ . In IPM the path $( x ^ { \ast } ( t ) ) _ { t \in \mathbb { R } _ { + } }$ is referred to as the central path. It seems clear that the central path eventually leads to the minimum $x ^ { * }$ of the objective function $c ^ { \top } x$ on $x ,$ precisely we will have $$ x ^ { * } ( t ) \x
+COMBINED
+32%
+0.3172
+VECTOR
+32%
+0.3172
+BM25
+3.80
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md
+View relation graph
+#124
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+gh and that presents an additional difficulty in the design of evaluation tools and frameworks. The pilot framework we developed could be significantly advanced using recommended best practice approaches for the design and validation of rating instruments from health, social and behavioral research
+COMBINED
+32%
+0.3170
+VECTOR
+32%
+0.3170
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#125
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+## III. REINFORCEMENT LEARNING
+COMBINED
+32%
+0.3168
+VECTOR
+32%
+0.3168
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#126
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+, 2019) Quantitative finance has had a long tradition of a bottom-up approach to complex systems inference via multi-agent systems (MAS). These statistical tools are based on modelling agents trading via a centralised order book, in order to emulate complex and diverse market phenomena. These past
+COMBINED
+32%
+0.3164
+VECTOR
+32%
+0.3164
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#127
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+thrm { l o w \ r i s k } \}$ first, subset to those patients classified as low risk. Then specify and estimate a regression model, often referred to as the $\mathrm { Q }$ model, for the mean outcome conditional on the observed treatment $Z _ { i }$ and observed covariates $C _ { i }$ using this sub
+COMBINED
+32%
+0.3164
+VECTOR
+32%
+0.3164
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#128
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+ly impossible (e.g., for variables describing properties of distant astronomical bodies). Therefore, inferring causal relationships from uncontrolled statistical data is an important problem, with broad applicability across scientific disciplines. Over the past-twenty Robert W. Spekkens† Perimeter
+COMBINED
+32%
+0.3158
+VECTOR
+32%
+0.3158
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#129
+平台架构总览.md
+No description
+`knowledgebase-ingest` · `knowledgebase-search` · `knowledgebase-search-enterprise` · `knowledgebase-list` · `knowledgebase-manage` · `knowledgebase-organize` · `knowledgebase-verify` · `knowledgebase-batch` · `knowledgebase-graph` · `knowledgebase-experience` · `knowledgebase-experience-summarize`
+COMBINED
+32%
+0.3152
+VECTOR
+32%
+0.3152
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#130
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+or the above causal model are $$ \begin{array} { r l } & { \mathbb { P } ( A , B ) = q _ { 1 } q _ { 2 } [ 0 0 ] + ( 1 - q _ { 1 } ) ( 1 - q _ { 2 } ) [ 0 1 ] } \\ & { \qquad + q _ { 1 } ( 1 - q _ { 2 } ) [ 1 0 ] + ( 1 - q _ { 1 } ) q _ { 2 } [ 1 1 ] , } \end{array} $$ (a) ![](images/b5fe51e44b8
+COMBINED
+31%
+0.3148
+VECTOR
+31%
+0.3148
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#131
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+proximal point of view on mirror descent: the method is trying to minimize the local linearization of the function while not moving too far away from the previous point, with distances measured via the Bregman divergence of the mirror map.
+COMBINED
+31%
+0.3146
+VECTOR
+31%
+0.3146
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#132
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+y of the predictions and tools go unused in clinical practice [1]. The lack of use may be due to the poor predictive accuracy of the predictions, but it may also be due to the lack of focus on the clinical context and the lack of actionable information provided by risk scores alone. Physicians want
+COMBINED
+31%
+0.3142
+VECTOR
+31%
+0.3142
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#133
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+{ 1 } - q _ { 2 } - p _ { 1 0 } - p _ { 1 1 } + 1 } \\ & { g _ { 4 } = 2 q _ { 3 } q _ { 1 } - q _ { 1 } - q _ { 2 } + 2 q _ { 2 } q _ { 3 } - 3 q _ { 2 } q _ { 3 } - 3 q _ { 3 } + p _ { 0 1 } + 2 p _ { 1 0 } - p _ { 1 1 } + 1 } \\ & { g _ { 5 } = 2 q _ { 3 } q _ { 2 } ^ { 2 } - q _ { 2 } ^ { 2 } -
+COMBINED
+31%
+0.3136
+VECTOR
+31%
+0.3136
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#134
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+} ) } \\ & { \leq ( \nabla \Phi ( x _ { s } ) - \nabla \Phi ( y _ { s + 1 } ) ) ^ { \top } ( x _ { s } - x _ { s + 1 } ) - \frac \rho 2 \| x _ { s } - x _ { s + 1 } \| ^ { 2 } } \\ & { = \eta g _ { s } ^ { \top } ( x _ { s } - x _ { s + 1 } ) - \frac \rho 2 \| x _ { s } - x _ { s + 1 } \| ^ { 2 } }
+COMBINED
+31%
+0.3133
+VECTOR
+31%
+0.3133
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#135
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+taking a limit $x \to x ^ { * }$ . Now by convexity of $f ,$ the definition of mirror descent, equation (4.1), and Lemma 4.1, one has $$ \begin{array} { r l } & { f ( x _ { s } ) - f ( x ) } \\ & { \leq g _ { s } ^ { \top } ( x _ { s } - x ) } \\ & { = \cfrac { 1 } { \eta } ( \nabla \Phi ( x _ { s
+COMBINED
+31%
+0.3132
+VECTOR
+31%
+0.3132
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#136
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+variety to one of the star trek symbols depicted on the faces. Similarly conditioning on $\nu = 1$ (or $\mu = 1 )$ reduces this variety to a fan. The Groebner basis for the ideal $$ \big < p _ { 0 0 } - q _ { 1 } q _ { 2 } q _ { 3 } - \bar { q } _ { 1 } q _ { 2 } \bar { q } _ { 3 } - q _ { 1 } \ba
+COMBINED
+31%
+0.3110
+VECTOR
+31%
+0.3110
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#137
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+and $B = \nu .$ (d) Joint distributions that can be generated by the model of (c). This means $\mathbb { P } ( A = 0 , B = 0 ) = q _ { 1 } q _ { 2 } , \mathbb { P } ( A = 0 , B =$ $1 ) = ( 1 - q _ { 1 } ) ( 1 - q _ { 2 } )$ and so on. From now on, we will use the shorthand $\overline { { q } } _ {
+COMBINED
+31%
+0.3108
+VECTOR
+31%
+0.3108
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#138
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+hrough for reinforcement learning, because it reduced drastically the number of states to explore: only the pairs $( s , a )$ need be explored. This curse of dimensionality points to the more general problem of function approximation, which recently led to the interface of reinforcement learning wit
+COMBINED
+31%
+0.3102
+VECTOR
+31%
+0.3102
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#139
+mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+No description
+$$ \| X \| _ { 1 } = \sum _ { i = 1 } ^ { n } \lambda _ { i } ( X ) . $$ It is easy to see that for $\mathcal { X } = \boldsymbol { S _ { n } }$ one has $\textstyle x _ { 1 } = { \frac { 1 } { n } } \mathrm { I } _ { n }$ and $R ^ { 2 } = \log n$ . In other words the rate of convergence for optimiz
+COMBINED
+31%
+0.3098
+VECTOR
+31%
+0.3098
+BM25
+3.18
+工程与能源
+工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md
+View relation graph
+#140
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+ate prediction-based decision rules, they rarely directly assess the clinical utility of using the prediction-based decision rule in comparison to standard of care, instead simply looking for an interaction between treatment effect and prognosis. For example, the Oncotype DX risk score is a 21-gene
+COMBINED
+31%
+0.3097
+VECTOR
+31%
+0.3097
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#141
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+rm { l o w \ r i s k } \}$ and $E \{ Y _ { i } ( B ) | \mathrm { h i g h ~ r i s k } \}$ are conditional means of potential outcomes and thus require that we account for any confounders between therapy A and the outcome within the low risk group, as well as any confounders between therapy B and the
+COMBINED
+31%
+0.3095
+VECTOR
+31%
+0.3095
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#142
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+purely on the basis of the DAG (i.e., the causal structure), while the notion of observational equivalence of interest here depends on the functional dependences (i.e., the functional causal structure). In the case of just two observed variables, which is the one we consider here, the set of all cau
+COMBINED
+31%
+0.3092
+VECTOR
+31%
+0.3092
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#143
+平台架构总览.md
+No description
+# Agentic Knowledge Base — Architecture & Development Guide > Version 2.3 · Last reviewed: 2026-08-05 This document describes the **current, implemented** architecture of the RAG Knowledge Platform: service topology, the five-layer storage model, the 94-tool MCP surface, the QDCVR retrieval method
+COMBINED
+31%
+0.3091
+VECTOR
+31%
+0.3091
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#144
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+technology recipients for relevance, representativeness, and technical quality. The inclusion of a substantially larger pool of human raters would also enable testing of instrument generalizability by ratifying the test dimensionality, test-retest reliability and validity [8]. As the same answer can
+COMBINED
+31%
+0.3091
+VECTOR
+31%
+0.3091
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#145
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+_ { 2 } \bar { q } _ { 3 } + q _ { 1 } \bar { q } _ { 2 } q _ { 3 } + \bar { q } _ { 1 } q _ { 2 } q _ { 3 } ) [ 0 1 ] + \bar { q } _ { 1 } \bar { q } _ { 2 } q _ { 3 } [ 1 0 ] + \bar { q } _ { 1 } \bar { q } _ { 2 } \bar { q } _ { 3 } [ 1 1 ] . } } \end{array} $$ The semi-algebraic set defined by
+COMBINED
+31%
+0.3088
+VECTOR
+31%
+0.3088
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#146
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+This may not be possible if the action space contains novel or unapproved treatments. For example, decision rules to treat with novel cancer drugs cannot be assessed unless those drugs are administered in practice. Other practical considerations, such as survivor and selection biases, which are inhe
+COMBINED
+31%
+0.3088
+VECTOR
+31%
+0.3088
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#147
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+q _ { 1 } , q _ { 2 } , q _ { 3 } , p _ { 0 0 } , p _ { 0 1 } , p _ { 1 0 } , p _ { 1 1 } \right\}$ , we must ensure that each solution is real. The only situations in which we need to impose this is in the case of $q _ { 2 }$ . The equation $g _ { 7 } = 0$ is a quadratic in $q _ { 2 }$ and in order
+COMBINED
+31%
+0.3080
+VECTOR
+31%
+0.3080
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#148
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+tudies aiming to estimate causal contrasts, confounding is a major limitation. Prediction-based decision rules imply some special considerations regarding confounding. Prediction models are generally not designed with consideration of causal relationships, so colliders may be included in the models,
+COMBINED
+31%
+0.3076
+VECTOR
+31%
+0.3076
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#149
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+for instance, when λ and ν are uniformly distributed. Thus if we are promised that the causal model is an ANM, then (except for the special cases) we can distinguish between B causing A, A causing B and A and B being causally disconnected. To see how this works we will need to determine the correlat
+COMBINED
+31%
+0.3071
+VECTOR
+31%
+0.3071
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#150
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+subrewards, and a state-dependent approach to the definition of the agent's reward [86]. iii- Curse of dimensionality: This issue arises when dealing with the issue of large-scale MDPs, so that the exploration and hence convergence to an optimal policy $\pi ^ { * } ( s , a )$ becomes quickly intrac
+COMBINED
+31%
+0.3071
+VECTOR
+31%
+0.3071
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#151
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+urces of information for its stock pricing strategy: one that is chartist, and one that is fundamental. ![](images/3a0ec1f3aec602472361e27c3b4309938976a3729ed32f65546a0976c7201048.jpg) FIG. 1: Examples of fundamental values modelled by $\mathcal { T } ^ { j } ( t )$ (black dashed curve) and some
+COMBINED
+31%
+0.3066
+VECTOR
+31%
+0.3066
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#152
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+23- 25] have very recently started to be extended to the class of order book models, coupled with reinforcement learning [26]. Our contribution: In order to address this, we have developed a next generation stock market simulator based on a MAS architecture, where each agent represents an economic
+COMBINED
+31%
+0.3057
+VECTOR
+31%
+0.3057
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#153
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+{ 2 } } \\ & \qquad + p _ { 0 1 } p _ { 1 1 } q _ { 2 } + p _ { 1 0 } p _ { 1 1 } q _ { 2 } + p _ { 1 1 } q _ { 2 } - p _ { 0 1 } p _ \end{array} $$ The equation $g _ { 2 } ~ = ~ 0$ is just the usual normalisation condition restricting the joint probability distribution to the tetrahedron.In ord
+COMBINED
+31%
+0.3052
+VECTOR
+31%
+0.3052
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#154
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+the significant connection between inequality and the financial accumulation process in the study of income and wealth distributions. This connection has been investigated through progressive extensions of the baseline model introduced by Levy et al. Our analysis shows the limited heuristic contribu
+COMBINED
+30%
+0.3046
+VECTOR
+30%
+0.3046
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#155
+clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+No description
+nt assignment: Within each subgroup defined by the covariates $C _ { i } .$ there must be a positive probability of receiving treatment A. 2. No unmeasured confounding. All confounders of the effect of treatment on the outcome are measured. 3. Correct specification of the Q model. The model above
+COMBINED
+30%
+0.3045
+VECTOR
+30%
+0.3045
+BM25
+4.13
+生命科学与医学
+生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md
+View relation graph
+#156
+平台架构总览.md
+No description
+arse/graph/reindex/training tools are **non-blocking**: they register a background task and return a `task_id` immediately. - **MinerU** runs as a hidden subprocess on an **ephemeral port** (`MineruApiManager(port=None)` auto-picks a free port). Never hardcode a port — read `manager.port` / `manager
+COMBINED
+30%
+0.3024
+VECTOR
+30%
+0.3024
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#157
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+## 6.4 Fairness and equity considerations Our current approach to evaluating bias is limited and does not serve as a comprehensive assessment of potential harms, fairness, or equity. The development of procedures for the evaluation of bias and fairnessrelated harms in large language models is ongo
+COMBINED
+30%
+0.3024
+VECTOR
+30%
+0.3024
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#158
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+iques, one can show that Figs. 2(b) and 2(d) are defined by equation $$ p _ { 0 0 } p _ { 1 0 } = p _ { 1 1 } p _ { 0 1 } , $$ respectively $$ \begin{array} { r } { p _ { 0 0 } p _ { 1 1 } = p _ { 1 0 } p _ { 0 1 } , } \end{array} $$ together with the open-interval constraint. The question is:
+COMBINED
+30%
+0.3017
+VECTOR
+30%
+0.3017
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#159
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+is $$ \begin{array} { l } { g _ { 1 } = q _ { 1 } + q _ { 2 } + p _ { 0 0 } + 2 p _ { 0 1 } - 2 } \\ { g _ { 2 } = p _ { 0 0 } + p _ { 0 1 } + p _ { 1 1 } - 1 } \\ { g _ { 3 } = q _ { 2 } ^ { 2 } + 2 p _ { 1 1 } q _ { 2 } + p _ { 0 1 } q _ { 2 } - 2 q _ { 2 } - p _ { 1 1 } - p _ { 0 1 } + 1 . } \en
+COMBINED
+30%
+0.3016
+VECTOR
+30%
+0.3016
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#160
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+} q _ { 2 } q _ { 3 } , p _ { 1 0 } - \bar { q } _ { 1 } \bar { q } _ { 2 } q _ { 3 } , p _ { 1 1 } - \bar { q } _ { 1 } \bar { q } _ { 2 } \bar { q } _ { 3 } \big > , $$ with respect to the usual lex order, is given by $$ \begin{array} { r l } & { g _ { 1 } = q _ { 3 } p _ { 1 0 } + q _ { 3 } p _
+COMBINED
+30%
+0.3013
+VECTOR
+30%
+0.3013
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#161
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+No description
+instance, the causal model that has the same DAG as in Fig. 1(a), but where the noise is multiplicative, that is, $A = B \lambda$ . In this case, the value of λ cannot be inferred from A and B (given that these could be zero), and consequently one cannot use the approach of Ref. [5]. It is also uncl
+COMBINED
+30%
+0.3006
+VECTOR
+30%
+0.3006
+BM25
+4.96
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md
+View relation graph
+#162
+finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+No description
+elation lag, except for very short lags (e.g. half-hour lags for intraday data) because of a mean-reverting microstructure mechanism for which there is a negative autocorrelation [49, 58]. This is sometimes feeding the general argument of the well-known Efficient Market Hypothesis [51, 52] that mark
+COMBINED
+30%
+0.3005
+VECTOR
+30%
+0.3005
+BM25
+5.24
+经济与社会
+经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md
+View relation graph
+#163
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+cursively build up a causal model involving only binary latent variables whose semi-algebraic set is an m-simplex for any m.
+COMBINED
+30%
+0.2983
+VECTOR
+30%
+0.2983
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#164
+statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+No description
+\\ & { g _ { 6 } = 2 p _ { 1 0 } ^ { 2 } + q _ { 1 } p _ { 1 0 } + q _ { 2 } p _ { 1 0 } + p _ { 1 0 } p _ { 0 1 } + p _ { 1 1 } p _ { 1 0 } - 2 p _ { 1 1 } - q _ { 1 } p _ { 1 1 } - q _ { 2 } p _ { 1 1 } + p _ { 0 1 } p _ { 1 1 } + p _ { 1 1 } } \\ & { g _ { 7 } = p _ { 1 0 } q _ { 2 } ^ { 2 } - p
+COMBINED
+30%
+0.2977
+VECTOR
+30%
+0.2977
+BM25
+4.90
+计算机与人工智能
+计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 5 of 5).md
+View relation graph
+#165
+平台架构总览.md
+No description
+### Architectural principle: writes vs reads - **Writes → HTTP API** (backend or web proxy). Every mutation touches **all five storage layers atomically** (disk + `.tree-fs.json` + `.knowledge-base.yml` + ChromaDB + Neo4j). - **Reads → direct file access** (`kb-search-service.ts` reads `.tree-fs.js
+COMBINED
+30%
+0.2971
+VECTOR
+30%
+0.2971
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#166
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+## 7 Conclusion The advent of foundation AI models and large language models present a significant opportunity to rethink the development of medical AI and make it easier, safer and more equitable to use. At the same time, medicine is an especially complex domain for applications of large language
+COMBINED
+30%
+0.2959
+VECTOR
+30%
+0.2959
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#167
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+C 267, 29 October, London, National Audit Office. Newman, F. N. (2011), Six Myths that Hold Back America: And What America Can Learn from the Growth of China's Economy, New York, NY, Diversion Books. Nutt, P. C. (1999), 'Surprising but True: Half the Decisions in Organizations Fail', Academy of Ma
+COMBINED
+30%
+0.2956
+VECTOR
+30%
+0.2956
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#168
+平台架构总览.md
+No description
+aceful degradation**: harness unavailable → falls back to mechanical extraction (`confidence=0.3`). - **Default gating**: auto-extracted (`auto_extracted=True ∧ vetted=False`) → draft pool, never auto-publish; cap P1 until vetted. - **Signals DB**: `storage/meditation.db` (SQLite, WAL) — `meditation
+COMBINED
+29%
+0.2940
+VECTOR
+29%
+0.2940
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#169
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+## 6.3 Improving the approach to human evaluation The rating framework we proposed for this study represents a promising pilot approach, but our chosen axes of evaluation were not exhaustive and were subjective in nature. For example the concept of medical/scientific consensus is time-varying in n
+COMBINED
+29%
+0.2938
+VECTOR
+29%
+0.2938
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#170
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+ven Growth Model Overseas', Wall Street Journal, 6 August. Van Oorschot, K. E., Akkermans, H., Sengupta, K., and Van Wassenhove, L. N. (2013), ‘Anatomy of a Decision Trap in Complex New Product Development Projects', Academy of Management Journal 56(1), 285–307. Vickerman, R. (2007), Cost–Benefit
+COMBINED
+29%
+0.2938
+VECTOR
+29%
+0.2938
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#171
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+nications Infrastructure and Economic Development: A Simultaneous Approach', American Economic Review, 91(4), 909–23. Roy, A., Walters, P. G., and Luk, S. T. (2001), Chinese Puzzles and Paradoxes: Conducting Business Research in China', Journal of Business Research, 52(2), 203–10. Sanchez-Robles,
+COMBINED
+29%
+0.2926
+VECTOR
+29%
+0.2926
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#172
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+u b s i d y _ { i , t } = \left[ 1 - \frac { \mathcal { T } _ { i , t } } { \sum _ { k = 1 } ^ { N } \mathcal { T } _ { k , t } } \right] \frac { 1 } { N - 1 } \sum _ { k } T a x _ { k , t }\tag{18} $$ Under progressive taxation and public service model (Progressive & PS), the tax authority levies
+COMBINED
+29%
+0.2924
+VECTOR
+29%
+0.2924
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#173
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+(2015), China's Provinces: Mapping the Way Forward, Frankfurt am Main, Deutsche Bank. Li, J., and Ng, C. (2013), ‘The Normalization of Deviant Organizational Practices: The Nonperforming Loans Problem in China', Journal of Business Ethics, 114(4), 643–53. Lo, S. H., and Rogoff, K. (2014), Secular
+COMBINED
+29%
+0.2907
+VECTOR
+29%
+0.2907
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#174
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+g on the sociocultural context and health literacy of the person receiving and acting on the answers to the health questions in the study by Berkman et al. [6]. Further research might test whether perceived usefulness and harm of question answers varied according to the understandability and actiona
+COMBINED
+29%
+0.2897
+VECTOR
+29%
+0.2897
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#175
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+roached with equal rigor and attention as that given to the work of encoding clinical knowledge in language models. In this study we worked with a panel of four qualified clinicians to identify the best-demonstration examples and craft few-shot prompts, all based in either the US or UK, with expert
+COMBINED
+29%
+0.2883
+VECTOR
+29%
+0.2883
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#176
+clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+No description
+n healthcare contexts. Key principles include the use of participatory methods to design contextualized evaluations that reflect the values of patients that may benefit or be harmed, grounding the evaluation in one or more specific downstream clinical use cases [54, 71], and the use of dataset and m
+COMBINED
+29%
+0.2880
+VECTOR
+29%
+0.2880
+BM25
+3.91
+生命科学与医学
+生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md
+View relation graph
+#177
+平台架构总览.md
+No description
+(2) | `nuwa-skill` (公开人物/主题深研) · `dot-skill` (同事/关系/本地材料) | Trigger keywords (中/EN) and the mandatory routing chain live in `CLAUDE.md` ("KB 技能触发契约"). **Dispatcher → Archival → sub-skill**: the dispatcher never executes KB operations itself.
+COMBINED
+29%
+0.2879
+VECTOR
+29%
+0.2879
+BM25
+2.89
+e2e-demo-0923-022632
+e2e-demo-0923-022632/平台架构总览.md
+View relation graph
+#178
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+tives to entrepreneurship and workmanship. Concerning wealth inequality and mobility issues, our computational economic analysis points to featuring drivers that deserve further attention by researchers and policy-makers. First of all, the financial accumulation process appears to be the key driver
+COMBINED
+29%
+0.2877
+VECTOR
+29%
+0.2877
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#179
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+in China's Private Sector', Journal of Banking and Finance, 33(6), 1144–55. Flyvbjerg, B. (1998), Rationality and Power: Democracy in Practice, Chicago, IL, University of Chicago Press. – (2003), Delusions of Success: Comment on Dan Lovallo and Daniel Kahneman', Harvard Business Review, 81(12), 12
+COMBINED
+29%
+0.2873
+VECTOR
+29%
+0.2873
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#180
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+in variable economies; lotkavolterra implies pareto-zipf. The European Physical Journal B-Condensed Matter and Complex Systems 27(2):257–261 Solow R (1976) Discussion of Zarembra's Chapter - Characterization of a Technology in Capital Theory. North-Holland Solow RM (1955) The production function a
+COMBINED
+29%
+0.2868
+VECTOR
+29%
+0.2868
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#181
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+o. 1003, Paris, OECD. The Economist (2011), America's Transport Infrastructure: Life in the Slow Lane', 28 April. — (2008), China's Infrastructure Splurge: Rushing on by Road, Rail and Air', 14 February. — (2016), Grossly Deceptive Plans', 30 January. Titman, S., Wei, K. C. J., and Xie, F. (2004),
+COMBINED
+29%
+0.2855
+VECTOR
+29%
+0.2855
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#182
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+., and Pence, K. M. (2012), Is a Household Debt Overhang Holding Back Consumption?', with Comments and Discussion, Brookings Papers on Economic Activity, 299–362. Eggleston, K., Oi, J. C., Rozelle, S., Sun, A., Walder, A., and Zhou, X. (2013), 'Will Demographic Change Slow China's Rise?', Journal o
+COMBINED
+28%
+0.2823
+VECTOR
+28%
+0.2823
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#183
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+s to Address a Global-health Problem', The Lancet, 367(9521), 1533–40. Anguera, R. (2006), The Channel Tunnel—An Ex Post Economic Evaluation', Transportation Research Part A: Policy and Practice, 40(4), 291–315. Ansar, A. (2012), Location Decisions of Large Firms: Analyzing the Procurement of Infr
+COMBINED
+28%
+0.2811
+VECTOR
+28%
+0.2811
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#184
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+D ZöRNER TO (2020), “Stochastic model specification in Markov switching vector error correction models," Studies in Nonlinear Dynamics & Econometrics in press. HAUZENBERGER N, AND PFARRHOFER M (2020), "Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy,"
+COMBINED
+28%
+0.2807
+VECTOR
+28%
+0.2807
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#185
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+ten as a random coefficient specification for each parameter. That is, $$ \begin{array} { r l } & { a _ { i j } = \tilde { a } _ { j } + \tilde { \nu } _ { i j } , \quad \tilde { \nu } _ { i j } \sim \mathcal { N } ( 0 , \tilde { v } _ { i j } ) } \\ & { \quad \tilde { a } _ { j } = a _ { j } + \nu
+COMBINED
+28%
+0.2802
+VECTOR
+28%
+0.2802
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#186
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+1):213–221 Fernholz R, Fernholz R (2014) Instability and concentration in the distribution of wealth. Journal of Economic Dynamics and Control 44:251-269 Gabaix X, Lasry JM, Lions PL, Moll B (2016) The dynamics of inequality. Econometrica 84(6):2071-2111 Gallegati M, Kirman AP (1999) Beyond the r
+COMBINED
+28%
+0.2801
+VECTOR
+28%
+0.2801
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#187
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+/td><td></td><td></td></tr><tr><td>ISICI</td><td>Industrial confidence indicator, monthly percentage</td><td>SDW</td><td></td></tr><tr><td>CSCCI</td><td>Consumer confidence indicator, monthly percentage</td><td>SDW</td><td></td></tr><tr><td>CSU12</td><td>Consumer unemployment expectations</td><td>SD
+COMBINED
+28%
+0.2796
+VECTOR
+28%
+0.2796
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#188
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+. (2008), Nuclear Power Plant Construction Costs, Synapse Energy Economics, Inc. Sender, H. (2015), Questions About China's Bad Banks and Bad Debt Will Not Go Away', Financial Times, 1 September. Shih, V. (2004), 'Dealing with Non-performing Loans: Political Constraints and Financial Policies in C
+COMBINED
+28%
+0.2791
+VECTOR
+28%
+0.2791
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#189
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+re consistently and materially superior to the baseline case featured by the Levy et al. model. The actual relative impact on wealth inequality and mobility across modes of taxation depends on the parameter space assumptions. Computational results (Figure 10) for mean tax and redistribution rates e
+COMBINED
+28%
+0.2774
+VECTOR
+28%
+0.2774
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#190
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+akis G, Landini S (2016) κ-generalized models of income and wealth distributions: A survey. The European Physical Journal Special Topics 225(10):1959–1984 Dagum ZM M (1990) Income and wealth distribution, inequality and poverty. Springer Drăgulescu A, Yakovenko VM (2001) Exponential and power-law
+COMBINED
+28%
+0.2771
+VECTOR
+28%
+0.2771
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#191
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+ing for $t \to + \infty$ , that $i s ,$ the initial ranking is maintained in the long-run under the simple return structure (see also Biondi and Olla 2018). ■
+COMBINED
+28%
+0.2769
+VECTOR
+28%
+0.2769
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#192
+economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+No description
+006), 'WTO: Time's Up for Chinese Banks—China's Banking Reform and Non-performing Loan Disposal', Chicago Journal of International Law, 7, 239. Credit Suisse (2015), Global Wealth Databook 2015, London, Credit Suisse Research Institute, retrieved from https://www.credit-suisse.com/ch/en/about-us/re
+COMBINED
+27%
+0.2749
+VECTOR
+27%
+0.2749
+BM25
+4.63
+经济与社会
+经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md
+View relation graph
+#193
+economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+No description
+uted out of 100 simulations. In all cases, initial wealth $W _ { i , t = 0 } = 1 0$ ∀i. See Section 6 for details about implementation of taxation and redistribution systems. In conclusion, taxation materially reduces wealth concentration and inequality, compensating the impact of financial accumul
+COMBINED
+27%
+0.2742
+VECTOR
+27%
+0.2742
+BM25
+4.65
+经济与社会
+经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md
+View relation graph
+#194
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+></tr><tr><td>UNEMP</td><td>monthly index, w.d.a, s.a. Harmonized Unemployment Rate</td><td>FRED</td><td></td></tr><tr><td></td><td>monthly, s.a.</td><td></td><td></td></tr><tr><td>IP</td><td>Industrial production, excl. construction monthly, w.d.a, s.a.</td><td>SDW</td><td>100·log(x), yoy</td></tr>
+COMBINED
+27%
+0.2731
+VECTOR
+27%
+0.2731
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#195
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+endent Gaussian proposal densities to sample candidate values for $\gamma$ and $\phi \colon$ $$ \gamma ^ { ( * ) } \sim \mathcal { N } ( \gamma ^ { ( s ) } , c _ { \gamma } ) , \quad \phi ^ { ( * ) } \sim \mathcal { N } ( \phi ^ { ( s ) } , c _ { \phi } ) . $$ Here, $\gamma ^ { ( * ) }$ refers to
+COMBINED
+27%
+0.2692
+VECTOR
+27%
+0.2692
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#196
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+riables are drawn from: $$ \hat { \zeta } _ { r } | \star \sim \mathcal { G } ^ { - 1 } ( 1 , 1 + 1 / \hat { \psi } _ { r } ^ { 2 } ) , $$ $$ \hat { \xi } | \star \sim \mathcal { G } ^ { - 1 } ( 1 , 1 + 1 / \hat { \lambda } ^ { 2 } ) . $$ 5. Finally, following Alessandri and Mumtaz (2019) (see th
+COMBINED
+27%
+0.2684
+VECTOR
+27%
+0.2684
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#197
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+{ i }$ are drawn from: $$ \begin{array} { r l r } & { } & { \tilde { \zeta } _ { i j } | \star \sim \mathcal { G } ^ { - 1 } ( 1 , 1 + 1 / \tilde { \psi } _ { i j } ^ { 2 } ) , } \\ & { } & { \tilde { \xi } _ { i } | \star \sim \mathcal { G } ^ { - 1 } ( 1 , 1 + 1 / \tilde { \lambda } _ { i } ^ { 2
+COMBINED
+27%
+0.2680
+VECTOR
+27%
+0.2680
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#198
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+pectively. The following equation, conditional on $S _ { t } ( u _ { t - 1 } )$ denotes a standard linear regression model: $$ \pmb { y } _ { m } = \tilde { \pmb { Z } } _ { m } \pmb { \alpha } _ { m } + \pmb { \eta } _ { m } , \quad \pmb { \eta } _ { m } \sim \mathcal { N } ( \mathbf { 0 } , \sigm
+COMBINED
+27%
+0.2675
+VECTOR
+27%
+0.2675
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#199
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+## B. Posterior distributions and sampling algorithm In this Appendix we briefly summarize the main steps involved for posterior inference. Given the model likelihood and prior assumptions we can derive a standard Markov Chain Monte Carlo (MCMC) algorithm, which iterates through conditional poster
+COMBINED
+26%
+0.2612
+VECTOR
+26%
+0.2612
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+#200
+economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+No description
+{ ( * ) } )$ is zero, $\mathrm { i f } \ \gamma ^ { ( * ) } < \operatorname* { m i n } ( z _ { t } )$ or $\gamma ^ { ( * ) } > \operatorname* { m a x } ( z _ { t } )$ as these values obtain zero support per construction. In the empirical application, we choose $c _ { \gamma }$ and $c _ { \phi }$ in
+COMBINED
+26%
+0.2607
+VECTOR
+26%
+0.2607
+BM25
+4.09
+经济与社会
+经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md
+View relation graph
+04
+— ✦ —

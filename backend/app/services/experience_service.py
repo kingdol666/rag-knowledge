@@ -918,6 +918,32 @@ class ExperienceService:
         diff_ratio = len(diff) / max(len(exp_set), 1)
         overlap_ratio = len(intersection) / max(len(query_set), 1)
 
+        # Cross-lingual guard: when query and experience domain terms live in
+        # different scripts (CJK query vs latin-heavy title/scenario/tags or
+        # vice versa), the overlap ratio is structurally near zero and carries
+        # NO mismatch signal — penalizing here would discard genuinely
+        # relevant experiences. _content_verify's topic/scenario/evidence
+        # dimensions already match against the bilingual full text.
+        def _cjk_share(terms: set) -> float:
+            if not terms:
+                return 0.0
+            cjk = sum(1 for t in terms if any("一" <= ch <= "鿿" for ch in t))
+            return cjk / len(terms)
+
+        if query_set and exp_set:
+            q_cjk, e_cjk = _cjk_share(query_set), _cjk_share(exp_set)
+            if abs(q_cjk - e_cjk) > 0.6:
+                return False, 1.0, (
+                    f"cross_lingual_no_penalty(q_cjk={q_cjk:.0%},e_cjk={e_cjk:.0%})")
+
+        # Rich-text guard: diff_ratio is only meaningful against a short crisp
+        # title-like term set. A large exp term set (verbose titles/tags or
+        # multi-domain scenarios) drives diff_ratio > 90% for almost ANY user
+        # query, which would punish every verbose query — abstain and let the
+        # main content dimensions decide.
+        if len(exp_set) > 15:
+            return False, 1.0, f"exp_terms_too_many_no_penalty(n={len(exp_set)})"
+
         # Decision logic
         if overlap_ratio >= 0.5:
             # Strong domain overlap - no penalty
@@ -959,12 +985,17 @@ class ExperienceService:
             if w not in STOP_WORDS:
                 tokens.append(w)
 
-        # CJK bigrams
-        cjk_chars = [ch for ch in text if '一' <= ch <= '鿿']
-        for i in range(len(cjk_chars) - 1):
-            gram = "".join(cjk_chars[i:i+2])
-            if gram not in STOP_WORDS:
-                tokens.append(gram)
+        # CJK bigrams — per contiguous CJK run only. Bigramming across word or
+        # punctuation boundaries (space-stripped concatenation) fabricates
+        # grams like "从跳"/"到怎" that match nothing, inflate diff_ratio and
+        # trigger false domain-mismatch penalties.
+        for run in re.findall(r'[一-鿿]+', text):
+            if len(run) < 2:
+                continue
+            for i in range(len(run) - 1):
+                gram = run[i:i + 2]
+                if gram not in STOP_WORDS:
+                    tokens.append(gram)
 
         return list(set(tokens))
 

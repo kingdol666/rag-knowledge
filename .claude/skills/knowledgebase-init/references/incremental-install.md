@@ -36,7 +36,7 @@ For torch/GPU strategy, see [gpu-and-torch.md](gpu-and-torch.md).
 
 ### BGE-M3 (~2.2GB) — download only if cache invalid
 
-**Cache validity check** (download前必做):
+**Cache validity check** (mandatory before download):
 
 ```bash
 # Valid = snapshots/ exists, non-empty, has pytorch_model.bin > 1GB

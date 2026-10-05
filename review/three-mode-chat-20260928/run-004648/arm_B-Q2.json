@@ -1,0 +1,266 @@
+{
+ "mode": "B",
+ "ok": true,
+ "seconds": 7.8,
+ "wall_s": 7.8,
+ "real_engine": true,
+ "status": "ok",
+ "n_result_docs": 4,
+ "kept_doc_paths": [
+  "自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md"
+ ],
+ "judge": {
+  "backend": "laya_sdk",
+  "engine": "laya",
+  "criterion": "instance",
+  "candidates": 28,
+  "scored": 28,
+  "survivors_kept": 28,
+  "errors": []
+ },
+ "trace": {
+  "mcp_calls": 5,
+  "l0_kbs": 19,
+  "l1_kept_shelves": [
+   "自然科学与地球科学"
+  ],
+  "l2_docs": 75,
+  "l3_untrusted": 0,
+  "l4_overlap_docs": 4,
+  "l4_docs_read": 4,
+  "l4_trust_heads": 0,
+  "unscanned_count": 71
+ },
+ "evidence_pack": "[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\n# The CoRoT Exoplanet program : status & results\n\nM. Deleuil¹, C. Moutou¹, P. Bordé2 & the CoRoT exoplanet science team\n\n1Laboratoire d’Astrophysique de Marseille, 38 rue F. Joliot-Curie,   \n13388 Marseille Cedex 13, France\n\n2Institut d’Astrophysique Spatiale, Bât. 121, 91405 Orsay, France\n\nAbstract. The CoRoT satellite is the first instrument hunting for planets from space. We will review the status of the CoRoT/Exoplanet program. We will then present the CoRoT exoplanetary systems and how they widen the range of properties of the close-in population and contribute to our understanding of the properties of planets.\n\n## 1. Introduction\n\nCoRoT¹ has been designed with two distinct scientific objectives which both require continuous observations and ultra-high precision relative stellar photometry : one is the detection of extrasolar planets by the transit method; the second is the study of stellar interiors by asteroseismology (Baglin et al. 2009). In addition, the long duration of the observation periods together with the exquisite photometric precision allow number of stellar physics studies. The instrument started the scientific observations on February 2nd 2007. The mission was initially scheduled for 3 years but extended for 3 additional years, that is till March 2013. Auvergne et al. (2008) give a complete description of the instrument in flight based on raw and calibrated data. In the present paper, we will just recall the main characteristics of the mission.\n\n## 2. CoRoT, brief summary\n\n## 2.1 Photometry\n\nThe typical exoplanet targets have a V-magnitude in the range ≈11 up to 16. The photometry is performed on board for up to 6000 selected targets per CCD, 2 CCDs being dedicated to the exoplanet program. For a given target, the flux is thus integrated over a pre-designed photometric mask that encompassed the quite large PSF of the exoplanet channel, whose typical size is about 35 $\\prime \\prime _ { \\mathrm { ~ X ~ 2 3 ~ } } \\prime \\prime _ { \\cdot }$ For stars brighter than magnitude 15, the pixels within the photometric mask are separated in 3 sub-sets according to the percentage of stellar flux. The co-addition of the pixels intensity over these 3 areas provides 3 different light curves, referred to as the red, the green and the blue light curves. These light curves have however no direct correspondence to\n\n[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\nTable 1.: CoRoT runs from 2007 to 2010.\n<table><tr><td>Run</td><td>Date start</td><td>duration [d]</td><td>Nb of Targets</td><td>Nb Cand.</td><td>to FUp</td><td>Data Status</td></tr><tr><td>IRa01</td><td>02/2007</td><td>45</td><td>9 921</td><td>254</td><td>40</td><td>Public</td></tr><tr><td>SRc01</td><td>04/2007</td><td>26</td><td>7 015</td><td>261</td><td>62</td><td>Public</td></tr><tr><td>LRc01</td><td>05/2007</td><td>152</td><td>11 448</td><td>229</td><td>29</td><td>Public</td></tr><tr><td>LRa01</td><td>10 /2007</td><td>150</td><td>11 448</td><td>304</td><td>79</td><td>Public</td></tr><tr><td>SRa01</td><td>03 3/2008</td><td>25</td><td>8 189</td><td>163</td><td>29</td><td>Public</td></tr><tr><td>LRc02</td><td>04/2008</td><td>150</td><td>11 448</td><td>286</td><td>56</td><td>Public</td></tr><tr><td>SRc02</td><td>09/2008</td><td>21</td><td>11 448</td><td>336</td><td>45</td><td>Public</td></tr><tr><td>SRa02</td><td>10/2008</td><td>32</td><td>10 305</td><td>217</td><td>32</td><td>Public</td></tr><tr><td>LRa02</td><td>11/2008</td><td>115</td><td>11 448</td><td>362</td><td>36</td><td>Public</td></tr><tr><td>LRc03</td><td>04/2009</td><td>89</td><td>5 724</td><td>244</td><td>61</td><td>Public</td></tr><tr><td>LRc04</td><td>07/2009</td><td>83</td><td>5 724</td><td>173</td><td>51</td><td>CoIs</td></tr><tr><td>LRa03</td><td>10/2009</td><td>148</td><td>5 329</td><td>124</td><td>22</td><td>CoIs</td></tr><tr><td>SRa03</td><td>03/2010</td><td>24</td><td>4169</td><td>100</td><td>15</td><td>on alarm</td></tr><tr><td>LRc05</td><td>04/2010</td><td>84</td><td>5 724</td><td>89</td><td>22</td><td>on alarm</td></tr><tr><td>LRc06</td><td>07/2010</td><td>77</td><td>5 724</td><td>100</td><td>21</td><td>on alarm</td></tr></table>\n\nColumn 5: number of transit candidates detected; Column 6: number of candidates assessed worth for follow-up observations. Following the DPU 1 break down in March 2009, the number of light curves is divided per 2 in the last fields.\n\nany standard photometric system. For fainter stars, only the standard single-band photometry (white) is performed. The integration time on board is 32 sec but the flux of 16 read-outs is coadded on board over an 8.5 min time span before being downloaded. The elementary 32 sec integration time is however preserved for selected targets, whose list is regularly updated during CoRoT observations thanks to the Alarm mode (Surace et al. 2008). In march 2009, one of the two DPUs which pilot the on-board photometric treatment had a break down and could not be switched in operation again. As a consequence, the field-of-view for exoplanet search is yet half-reduced to $( 1 . 3 \\bar { 5 ^ { o } } ) ^ { 2 }$\n\n![](images/907a4f57d8cad0b9658a9457a0592c26eaa4fc773ebf26ea2dd905b038ae0614.jpg)  \nFigure 1.: The two continuous pointing zones of CoRoT. The small rectangular and square shapes show the exoplanet fields that have been observed up to summer 2010. Note the extreme reddening variations towards the center fields.\n\n[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\n## 2.2 Observation strategy\n\nThe instrument has 2 continuous viewing zones which are two circles of ${ \\simeq } 1 0 ^ { o }$ of radius, centered in the galactic plane and separated by 180º in right ascension.This ensures a level of background light due to the Earth reflected light as low as possible. In addition, in order to avoid to be blinded by the Sun, twice a year the instrument is rotated and is pointed in the opposite direction. The strategy of observation is flexible but consists mainly in one long run (LR) lasting for about 140 days and one shorter run (SR) whose duration is between 20 and 30 days per half-year. The fields observed in the circle centered at $6 ^ { h } ~ 5 0 ^ { m }$ in right ascension are referred as \"anti-center fields\", and those in the circle at $1 8 ^ { h } 5 0 ^ { m }$ , as \"center fields\". Table 1 gives a summary of the stellar fields that have been observed since the beginning of the operations. With only one CCD left in operation, the strategy of observation has been adapted and some of the long runs have been replaced by two runs of a shorter duration.\n\nFigure 1 shows the location of the various CoRoT exoplanet fields inside the two CoRoT continuous viewing zones overplotted on a dwarf density map. The two regions have different stellar content in terms of dwarf and giant but also in their distribution over the various spectral type (Gazzano et al. 2010). This allows to probe regions in the galactic plane with different stellar properties in terms of metallicity but also in terms of age. Once the statistics of planets found by CoRoT will be much more significant, this should bring some insights into the physical conditions that prevail for planet formation mechanisms.\n\n![](images/c00739e138e8d1f38c45e0ba3d2da768f2180b86b8efd15c63c1968bbb9a07c4.jpg)  \nFigure 2.: Two examples of CoRoT light curves .\n\n## 3. Detection capacity\n\n[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\nIn summer 2010, a total of 129 326 light curves was collected (Table 1). These light curves show a fascinating diversity with various kind of stellar behavior: quiet stars display nearly constant a flux while others exhibit a strong variability over a time scale of a few minutes (Fig. 2). All these light curves are however analyzed for transit searches. Transits are detected in about 100 up to 300 light curves per run, that is in about 3000 light curves for the whole mission to date. They present various depth, shape and duration. These detected transits are however predominantly transiting stellar systems. About 80% to 90% of these stellar systems are pinpointed thanks to the long duration of the light curves, through the identification of the secondary transits or light curve modulation. The remaining candidates are screened out by follow-up observations, using various techniques from photometric observations to radial velocity measurements. These follow-up observations play a major role in the CoRoT science and require a huge observational effort. They allow to assess the nature of the detected transiting body, stellar or planetary and, in the later case, to measure its mass. Bouchy et al. (2009) give a complete overview of the strategy for radial velocity observations and Deeg et al. (2009) present the ground-based photometric follow-up ones. Whatever their nature, stellar or planetary, one can use the detected transits to assign the performance of the transit detection from the CoRoT light curves. Figure 3 shows the transit signal defined here as the product of the relative depth of the transit and the square root of the number of points in the transit, as a function of the target magnitude. The colored circles are the candidates identified in the various runs according to the color codes in the bottom right and the black stars the planets. It shows that Neptune size planets can be detected whatever the magnitude of the star is, whereas super-Earth size planets, such as CoRoT-7b can be discovered in the light curves of stars brighter than R ≈ 14 only.\n\n![](images/11edbfb946b97ffa0f83f455f1d65e37c4ee9218c4ec41cbd4fb778cc7e442c5.jpg)  \nFigure 3.: Transit signal for all candidates detected in the CoRoT/exoplanet fields observed during the first year (adapted from Cabrera et al.(2009)), with the expected signals for a Jupiter, Neptune and Earth-size like planets respectively indicated.\n\n## 4. The CoRoT planets\n\n[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\nTable 2 gives the main characteristics of the CoRoT planets published by the end of summer 2010. These planets correspond to the first discoveries in the first two years of data. A large fraction of the candidates are indeed still in the screening process by follow-up observations. Their properties, compared to the other published exoplanets are illustrated in Fig 4. The mass-radius diagram shows that most of these planets are in the domain of gaseous giants but the long duration of the light curves and the high duty cycle greater than 90% of space-based observations allow to explore the transiting systems over an extended orbital domain. The CoRoT discoveries indeed account for half of the transiting systems with an orbital period greater than 8 days.\n\n[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\nTable 2.: CoRoT discoveries main characteristics.\n<table><tr><td>Ref</td><td>Run</td><td>Radius  $\\underline { { \\mathrm { R } _ { J u p } } }$ </td><td>Mass  $\\underline { { \\mathrm { ~ M ~ } } } _ { J u p }$ </td><td>Density  $_ { g c m }$  -3</td><td>Period days</td><td>Nb</td><td> ${ \\overline { { \\mathrm { S p . } } } }$   $\\mathrm { T y p e }$ </td><td>Star [Fe/H]</td><td>Comment</td></tr><tr><td>1</td><td>IRa01</td><td>1.49</td><td>1.03</td><td>0.34</td><td>1.509</td><td>34</td><td>GOV</td><td>-0.20</td><td>bloated HJ</td></tr><tr><td>2</td><td>LRc01</td><td>1.46</td><td>3.31</td><td>1.31</td><td>1.743</td><td>78</td><td>G7V</td><td>0.00</td><td>bloated HJ</td></tr><tr><td>3</td><td>LRc01</td><td>1.01</td><td>21.6</td><td>26.4</td><td>4.26</td><td>34</td><td>F3V</td><td>-0.02</td><td>BD or planet</td></tr><tr><td>4</td><td>IRa01</td><td>1.19</td><td>0.72</td><td>0.52</td><td>9.20</td><td>7</td><td>F8-9V</td><td>+0.05</td><td>synchronized</td></tr><tr><td>5</td><td>LRa01</td><td>1.39</td><td>0.46</td><td>0.22</td><td>4.04</td><td>27</td><td>F9V</td><td>-0.25</td><td>metal poor HS</td></tr><tr><td>6</td><td>LRc02</td><td>1.16</td><td>2.96</td><td>2.32</td><td>8.89</td><td>15</td><td>F9V</td><td>-0.20</td><td>metal poor HS</td></tr><tr><td>7</td><td>LRa01</td><td>0.14</td><td>0.007-0.02</td><td>3.4-9.6</td><td>0.85</td><td>153</td><td>G9V</td><td>0.12</td><td>Super-Earth</td></tr><tr><td>8</td><td>LRc01</td><td>0.57</td><td>0.22</td><td>1.6</td><td>6.21</td><td>33</td><td>K1V</td><td>0.30</td><td>Icy giant</td></tr><tr><td>9</td><td>LRc02</td><td>1.05</td><td>0.84</td><td>0.90</td><td>95.27</td><td>2</td><td>G3V</td><td>-0.01</td><td>temperate</td></tr><tr><td>10</td><td>LRc01</td><td>0.97</td><td>2.75</td><td>3.70</td><td>13.24</td><td>10</td><td>K1V</td><td>0.26</td><td>eccentric</td></tr><tr><td>11</td><td>LRc02</td><td>1.43</td><td>2.33</td><td>0.99</td><td>2.99</td><td>49</td><td>F6V</td><td>-0.03</td><td>vsini = 40 km/s</td></tr><tr><td>12</td><td>LRa01</td><td>1.44</td><td>0.92</td><td>0.31</td><td>2.83</td><td>47</td><td>G4V</td><td>0.16</td><td>bloated low density HJ</td></tr><tr><td>13</td><td>LRa02</td><td>0.9</td><td>1.3</td><td>2.34</td><td>4.04</td><td>31</td><td>G0V</td><td>0.01</td><td>dense HJ</td></tr><tr><td>14</td><td>LRa02</td><td>1.09</td><td>7.6</td><td>7.3</td><td>1.15</td><td>89</td><td>F9V</td><td>0.05</td><td>extreme density</td></tr><tr><td>15</td><td>SRa02</td><td>1.12</td><td>63.3</td><td>59</td><td>3.06</td><td>10</td><td>F7V</td><td>0.10</td><td>BD</td></tr></table>\n\n[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\nThe planets are ordered by increasing CoRoT number. HJ stands for Hot Jupiter and HS for host star. Column 7 gives the number of transits in the CoRoT light curve.(1) Barge et al. (2008); (2) Alonso et al (2008); (3) Deleuil et al (2008); (4) Aigrain et al (2008); (5) Rauer et al (2008); (6) Fridlund et al. (2010); (7) Léger et al. (2009); (8) Bordé et al. (2010); (9) Deeg et al. (2010); (10) Bonomo et al. (2010); (11) Gandolfi et al.(2010); (12) Gillon et al. (2010); (13) Cabrera et al. (2010); (14) Tingley et al. (2010); (15) Bouchy et al. (2010).\n\n## 4.1 Extending the orbital domain of transiting planets\n\nThe first discoveries, CoRoT-4b and 6b are apart from the pile up of the period histogram below 5 days (Fig. 4). In the case of CoRoT-4b, the continuous photometry allow to measure the rotation period of the star and to establish that it is a synchronized system (Aigrain et al. 2008; Lanza et al. 2009). Among the CoRoT planets, it remains the only system for which the synchronization could be clearly detected. Being not synchronized despite a similar orbital period, makes CoRoT-6b a good case to probe possible star-planet magnetic interactions. Lanza et al. (2010) used the light curve to map the longitudinal distribution of the photospheric active regions and trace their evolution. They reported some statistical evidences of active regions lagging the subplanetary point during some temporal intervals. While the detection is still marginal, it is however a good illustration of the interest of uninterrupted sequence of photometric observations to probe the star - planet interaction and the evolution of planetary systems. With an orbital\n\n![](images/d4a3b8a4de41c8a6cdb78ab3fd42a94198b0946807c48cac2f1fb12d56c0def6.jpg)\n\n![](images/a55cc291377a7f05340b6dbf8598e1be08e233b7d061c44be4d7155fdde17d25.jpg)  \nFigure 4.: Mass - radius diagram for the transiting planets. Filled circles and the hashed histogram are the CoRoT planets.\n\nperiod of 13 days, CoRoT-10b belongs to the class of the few transiting exoplanets with highly eccentric orbit (Bonomo et al. 2010). The large variation in the orbital distance along the planet's year, results in a tenfold increase in the amount of stellar radiation received by the planet. Its eccentricity could have been produced by Kozai oscillations with a distant companion of stellar nature or by planet - planet scattering. No hint of non-transiting companion has been reported so far but clearly this system would deserve radial velocity monitoring in order to put further constrain on the origin of the planet's eccentricity.\n\n[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\nCoRoT-9b is the first long orbital period transiting planet discovered by a transit survey (Deeg et al. 2010). The planet orbits its solar like G3-type star in 95 days. Unlike the two other long-period transiting planets, HD 17156b (Barbieri et al. 2007) and HD 80606b (Moutou et al. 2009), this Jupiter's size planet has a low eccentricity. It makes it a perfect representative of the largest known population of planets (Fig. 5). CoRoT-9b is a very worthwhile object for further deeper studies to probe the properties of this exoplanet population.\n\n## 4.2 Populating the brown dwarf desert\n\nExploring the exoplanet population at short orbital periods CoRoT has unexpectedly started to populate the so called brown-dwarf desert. While, with a mass of 21.6 $\\mathrm { M } _ { J u p }$ for a Jupiters size, the exact nature of CoRoT-3b could be questioned as it lies in the overlapping region between the planet population and the low mass star regime (Deleuil et al. 2008), CoRoT-15b appears as a bona fide brown dwarf (Bouchy et al. 2010). Just as the most massive planets discovered so far, such as HAT-P-2b or CoRoT-14b (Tingley et al. 2010), these two massive companions orbit an F-type star with a marked vsini value. The significant rotational line broadening of the host star could be the cause of the lack of previous discovery of such massive companions from radial velocity surveys. It would have affected the search strategy of radial velocity surveys, either by removing these objects after one measurement or by setting them aside with a very low observation ranking priority. This would have resulted in a selection bias towards slow rotators that transit surveys have started to remove, allowing to enlarge the space of parameters for host stars. It reinforces the trend that the close-orbiting companions to host stars with mass above 1.1 $\\mathrm { M _ { \\odot } }$ could be more massive than companions to lower mass hosts. Probing the physical properties of such objects could bring the missing clues to the understanding of the link between the population of planets and low-mass stars.\n\n![](images/7374f24602614d3899c506887741ea6b363c820503345add78fc401912ff0f2b.jpg)  \nFigure 5.: Eccentricity-period diagram for the known extrasolar planets (adapted from Bonomo et al. (2009)). Black filled symbols are transiting planets while open one are those with radial velocity measurements only. The size of the symbol indicates the mass range.\n\n## 4.3 Opening the small-size planet domain\n\n[自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]\nAt the other extremity of the mass function, the recently discovered CoRoT-8b has a size in between Saturn's and Neptune's one (Bordé et al. 2010) but a density comparable to that of Neptune. It suggests a massive core with a mass in the range 47 up to 64 $\\mathrm { M } _ { \\oplus }$ and a much smaller H - He envelope. Like HD 149026b, the parent star is metal rich, confirming the suspected trend for the formation of giant planets with high content of heavy elements for metal rich stars. In the mass - period diagram this planet lies in between the hot-Jupiter and the Super-Earth population, in a region where formation models predict a lack of planets. It might belong to the distribution tail of gaseous giants but clearly, with the intensive exoplanet searches, it would be interesting to see if this region of the diagram remains so sparsely populated in agreement with the bimodal distribution.\n\nEven smaller is CoRoT-7b, first planet discovered in the domain of Super-Earth size planets. The planet orbits in 0.8 days a K0 main sequence star which is one of the brightest star in the first long run in the anti-center direction. The transit is 0.35 mmag deep but is clearly detected in the Fourier transform of the light curve with all its harmonics. The star's light curve is modulated by spots at the surface of the star dragged by the star's rotation. This stellar activity produces a stellar jitter that competed the radial velocity measurements. More than 100 hundred HARPS spectra were collected over an one-year period. Different methods have been used to analyze the radial velocity signal and understand the stellar activity (Queloz et al. 2008; Hatzes et al. 2010; Boisse et al. 2010; Pont et al. 2010). Whatever the study, they confirmed the planetary nature of CoRoT-7b with a mass that appears consistent with a rocky planet but a poor precision, larger than 20%. Not on\n\n[自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]\n# astronomy__2304.12442__enabling-exoplanet-demographics-studies-with（第 1/3 部分）\n章节: Enabling Exoplanet Demographics Studies with Standardized Exoplanet Survey Meta-Data\n# Enabling Exoplanet Demographics Studies with Standardized Exoplanet Survey Meta-Data\n\n\nPREPARED BY THE EXOPAG SCIENCE INTEREST GROUP (SIG) #2 ON EXOPLANET DEMOGRAPHICS, JESSIE L. CHRISTIANSEN,1 DAVID P. BENNETT,2, 3 ALAN P. BOSS,4 STEVE BRYSON,5 JENNIFER A. BURT,6 RACHEL B. FERNANDES,7 TODD J. HENRY,8 WEI-CHUN JAO,9 SAMSON A. JOHNSON,10, 6 MICHAEL R. MEYER,11 GIJS D. MULDERS,12,13 SUSAN E. MULLALLY,14 ERIC L. NIELSEN,15 ILARIA PASCUCCI,7 JOSHUA PEPPER,16 PETER PLAVCHAN,17 DARIN RAGOZZINE,18 LEE J. ROSENTHAL,19 AND ELIOT HALLEY VRIJMOET9, 8\n\n1Caltech/IPAC-NASA Exoplanet Science Institute, Pasadena, CA 91125, USA\n\n2Laboratory for Exoplanets and Stellar Astrophysics, NASA Goddard Space Flight Center, Greenbelt, MD 20771, USA\n\n3Department of Astronomy, University of Maryland, College Park, MD 20742, USA\n\n4Earth & Planets Laboratory, Carnegie Institution for Science, 5241 Broad Branch Road, NW, Washington, DC 20015-1305\n\n5NASA Ames Research Center, Moffett Field, CA 94035, USA\n\n6 Jet Propulsion Laboratory, California Institute of Technology, 4800 Oak Grove Drive, Pasadena, CA 91109, USA\n\n7Lunar and Planetary Laboratory, The University of Arizona, Tucson, AZ 85721, USA 8RECONS Institute, Chambersburg, PA 17201, USA\n\n9Department of Physics and Astronomy, Georgia State University, Atlanta, GA 30303, USA\n\n10 Department of Astronomy, The Ohio State University, 140 West 18th Avenue, Columbus OH 43210, USA\n\n11 Department of Astronomy, University of Michigan, Ann Arbor, MI USA 48109\n\n12 Facultad de Ingeniería y Ciencias, Universidad Adolfo Ibáñez, Av. Diagonal las Torres 2640, Peñalolén, Santiago, Chile\n\n13Millennium Institute for Astrophysics, Chile\n\n14 Space Telescope Science Institute, 3700 San Martin Drive, Baltimore, MD 21218, USA   \n15 Kavli Institute for Particle Astrophysics and Cosmology, Stanford University, Stanford, CA 94305, USA 16 Department of Physics, Lehigh University, 16 Memorial Drive East, Bethlehem, PA 18015, USA 17 Department of Physics and Astronomy, George Mason University, Fairfax, VA 22030, USA   \n18 Department of Physics & Astronomy, N283 ESC, Brigham Young University, Provo, UT 84602, USA 19MIT Lincoln Laboratory, 244 Wood Street, Lexington, MA 02421-6426\n\n## 1. EXECUTIVE SUMMARY\n\n[自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]\nGoal 1 of the National Academies of Science, Engineering and Mathematics Exoplanet Science Strategy¹, which was endorsed by the Decadal Survey on Astronomy and Astrophysics 2020, is \"to understand the formation and evolution of planetary systems as products of the process of star formation, and characterize and explain the diversity of planetary system architectures, planetary compositions, and planetary environments produced by these processes\", with the finding that \"Current knowledge of the demographics and characteristics of planets and their systems is substantially incomplete.\" One significant roadblock to our ongoing efforts to improve our demographics analyses is the lack of comprehensive meta-data accompanying published exoplanet surveys. The Exoplanet Program Analysis Group (ExoPAG) Science Interest Group #2: Exoplanet Demographics has prepared this document to provide guidance to survey architects, authors, referees and funding agencies as to the most valuable such data products for five different exoplanet detection techniques-transit radial velocity, direct imaging, microlensing and astrometry. We find that making these additional data easily available would greatly enhance the community's ability to perform robust, reproducible demographics analyses, and make progress on achieving the most important goals identified by the exoplanet and wider astronomical community\n\n## 2. INTRODUCTION\n\n\nThe field of exoplanets has now firmly moved from detection and characterization of individual objects and systems to characterization of entire populations of objects and systems. By studying the demographics of exoplanetary systems, we learn more about the physical mechanisms that drive their formation (e.g. Mordasini et al. 2016; Lee & Chiang 2016; Jin & Mordasini 2018), migration (e.g. Dawson & Murray-Clay 2013; Yu et al. 2021), and evolution (e.g. Owen & Wu 2017; Ginzburg et al. 2018).\n\nThe exoplanet detection techniques that have provided sufficient detections for population studies cover very different areas of parameter space in both stellar and planet properties. Observational biases push the different detection techniques toward different populations of stellar hosts (across properties such as distance, mass, age, activity, stellar multiplicity), and different populations of planets (across such properties as radius, mass, orbital period, planet multiplicity, and proximity to resonance). For example, transit and radial velocity surveys are most sensitive to close-in planets (<1 au), microlensing surveys and radial velocity to planets around the ice line (\\~1-10 au), and direct imaging surveys to distant planets (>10 au).\n\n[自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]\nAlthough the detection techniques probe different pieces of parameter space, together they produce a broad census of planet populations. Exploiting this coverage to produce a comprehensive understanding of planet demographics is a crucial input to the planning and design of future NASA mission prioritized by the 2020 Decadal Survey on Astronomy and Astrophysics2, and to achieving NASA's strategic objectives of “discovering the secrets of the universe\" and “searching for life elsewhere\"3. The challenge is to stitch these different pieces together to provide a robust, overarching understanding of the demographics of planets and planetary systems. Such a process requires disentangling the stellar and planet population biases inherent to each technique, as well as correcting for the detection sensitivity and reliability of each individual survey. In addition, survey results are often reported in terms of planet occurrence rates, but these rates depend on assumptions made about the underlying planet population, and these assumptions are not always consistent across detection methods and surveys, leading to diverging results.\n\nThere have been several notable attempts to combine demographics results from multiple detection techniques (e.g. Clanton & Gaudi 2014, 2016; Kunimoto & Bryson 2021). Other studies have compared the results of different detection techniques without attempting to fit them with a single planet population. Examples include Fig. 2 of Pascucci et al. (2018), which compares transit and microlensing results, Fig. 2 of Fernandes et al. (2019), which compares transit and radial velocity results, Fig. 8 of Nielsen et al. (2019), which compares radial velocity and direct imaging results, and Figures 9 and 10 of Fulton et al. (2021) which compare radial velocity vs. direct imaging and vs. microlensing. As yet, there have been few wide-ranging analyses that take advantage of the survey data that are currently available.\n\n[自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]\nThe difficulty in moving forward with synthesizing results from multiple detection techniques is typically that these survey data are not accompanied with the meta-data necessary to be reliably incorporated with other surveys. This includes, for instance, information about the surveys themselves, the stars observed, and the criteria for planets detected. There are certainly hurdles to making these data available: identifying the types and formats of the ancillary information needed; performing the work to create the data products, and making them readily accessible once published. However, there is significant benefit to undertaking this effort, including a substantial increase in the use, visibility, and citations of the accompanying survey data. For example, the NASA Kepler mission provided a wealth of additional information characterizing the survey⁴ (e.g Thompson et al. 2018; Christiansen et al. 2020), allowing many teams across the community to perform their own independent investigations of the data (e.g. Fernandes et al. 2019; Mulders et al. 2015, 2018; Hsu et al. 2019; Zink & Hansen 2019).\n\nAnother challenge with missing meta-data arises when moving beyond demographics of individual planets to understanding the demographics of planetary system architectures, where correlations between planets within a particular system are of high scientific value but can often be biased by the survey or analysis technique (e.g. Zink et al. 2021). As we continue to move into a regime where planetary systems have different planets detected by different techniques, improved understanding of survey properties with respect to multi-planet systems will be crucial.\n\nThe goal of this document is to lay out, in some detail, the necessary ancillary information for five different exoplanet detection techniques—transit, radial velocity, direct imaging, microlensing, and astrometry—that could be published alongside exoplanet survey data to ensure those data are maximally useful to the demographics community. In particular, we find that intermediate data products generated as part of occurrence rate calculations are often not published, but are instrumental in combining data both from surveys using the same detection technique, and across multiple detection techniques. As such, we find that making these additional data easily available would greatly enhance the community's ability to perform robust, reproducible occurrence rate calculations.\n\nThe audience for this document includes, but is not limited to:\n\n• Authors publishing exoplanet survey data;\n\n• Referees for journals publishing exoplanet survey data;\n\n• Funding agencies considering proposals that would fund the collection, analysis, and publication of exoplanet survey data\n\n[自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]\nThis document was created by the NASA Exoplanet Program Analysis Group (ExoPAG) Science Interest Group (SIG) on Exoplanet Demographics. It includes input from astronomers publishing exoplanet survey data across all the major detection techniques, and those actively working in exoplanet demographics. In assembling these recommendations, we identified two ‘tiers' of data products. We find that availability of Tier I data products would enable rudimentary incorporation of published exoplanet survey data into other analyses, using either the same or different detection techniques. Tier I products are those which are typically readily at hand, and are required for someone to be able to make some attempt to integrate the data in their analysis. We find that availability of Tier II data products would greatly enhance the community's ability to incorporate published exoplanet survey data into their analyses, using either the same or different detection techniques. Tier II data products are those which may require more effort to produce or archive due to computational and data volume limitations, but would enable a robust inclusion and maximum usefulness of the published data set. In addition, for each detection technique we highlight in bold the data product that would be most useful for incorporating the survey results in demographics analyses, in order to help the community prioritize their resources.\n\nAn illustrative example is the survey detection completeness: while the survey-averaged completeness as described in the Tier I data products allows for a reproduction of survey results or a re-analysis with a different methodology, the per-star completeness described in the Tier II data products allows for new analyses of specific sub-samples of stars within the survey. The latter provides the community much greater flexibility in, for instance, combining targets from different surveys and accounting for target overlaps between surveys. In addition to the tiers, we identify three data ‘types', for ease of categorizing: data pertaining to the stellar sample, data pertaining to the survey properties, and data pertaining to the planet catalog.\n\n[自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]\nOne driving philosophy in defining the products below is the goal that they are kept as close to the ‘observable' units as possible. For instance, each detection technique measures a different property of the exoplanet size: transits measure the planet radius (or, more correctly, the planet-to-star radius ratio); radial velocity measures the planet mass projected along the line of sight with respect to the stellar mass; microlensing and astrometry measure the planet-to-star mass ratio; and direct imaging measures the planet luminosity in a given waveband. Each of these planet properties can be mapped onto the others through a variety of models and relations, however different models and relations may give different results and some of these relations are probabilistic in nature, (e.g. Wolfgang et al. 2016), and groups will have preferences as to the models and relations they wish to employ. We find that publication of survey and accompanying data in these native units would allow for future refinement of models and relations as our understanding improves. In addition, where authors have transformed their observables into other properties, we find that supply of the models and/or assumptions used in the transformation allows for a more extensive utility of the data set. Keeping the data in their native observable units also more naturally allows for updates as stellar parameters, such as the age, distance, or mass, are updated.\n\nA second driving philosophy is that of reproducibility: survey data are often published without sufficient accompanying data for their demographics results to be reproduced by independent teams. Part of the motivation for this document is to enable authors to provide the data required for the demographics community to reproduce their results. In that vein, we find that the public availability of analysis codes used in publications greatly improves their reproducibility. Finally, we find that providing the described data products in machine-readable format (as compared to figures from which the relevant data would need to be extracted) is also crucial for allowing reproducibility.\n\nFor each detection technique below, we provide below the Tier I and Tier II data products for the three data types. We find that there is significant new exoplanet science to be explored if these data are more readily available. We also invite feedback on these lists, particularly if there is anything we have overlooked.\n\n## 3. TRANSITS\n\n[自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]\nThe transit method measures the ratio of the planetary radius to the stellar radius, as well as the orbital period of exoplanets. Because the transit probability for an individual system is low, transit surveys are typically designed to monitor large number of stars in order to detect exoplanets. The detection probability of a transiting planet is a strong function of its orbital period and planet radius, ranging from \\~10% for hot Jupiters to below a fraction of a percent for (super-)Earth-sized planets in the habitable zones around sun-like stars (see, e.g. Borucki & Summers 1984).\n\nTo do population studies, that measure either the intrinsic occurrence of planets or the dependence of occurrence on planet properties, the planet detection efficiency—the fraction of planets at a given detection threshold successfully recovered—has to be estimated. This can be done approximately by using a transit signal-to-noise threshold, above which one assumes 100% detection efficiency (e.g. Howard et al. 2012), or empirically by using injection-recovery tests to measure real pipeline performance (e.g. Thompson et al. 2018; Christiansen et al. 2020).\n\nGround-based and space-based transit surveys employ different observation strategies and probe different parts of exoplanet parameter space. Space-based observatories allow for continuous monitoring of large groups of stars at high sensitivity. For example, the Kepler spacecraft monitored almost 200,000 stars for transiting planets as small as Earth with periods up to a year, enabling precise estimates of the occurrence of planets and fraction of stars with planetary systems within 1 au (e.g. Mulders et al. 2018; Hsu et al. 2019; He et al. 2019). A similar dataset with over 200, 000 stars from the K2 mission is also available (Zink et al. 2021). The Transiting Exoplanet Survey Satellite (TESS, Ricker et al. 2015) is significantly increasing the number of stars with continuous, high-precision time series photometry with millions of light curves from an all sky survey (Kunimoto et al. 2021a) and identifying thousands of transiting planet candidates (e.g. Kunimoto et al. 2021b).\n\nGround-based observatories are limited in the time and number of stars they can monitor. They have been very efficient in discovering hot Jupiters, or targeting specific sub-sets of stars such as M dwarfs to look for habitable zone planets (Nutzman & Charbonneau 2008; Jehin et al. 2011), but have been less proficient in providing uniform catalogues for planet occurrence rate studies.\n\n[自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]\nGiven the large number of stars in transit surveys, the survey detection efficiency is often presented as a survey-averaged completeness that can be used to make exoplanet population inferences across the stellar sample. Because planet occurrence rates do vary with stellar properties (Howard et al. 2012; Mulders et al. 2015), a description of the stellar sample is needed to place these inferences in context with those of other surveys that target different groups of stars, such as microlensing surveys (e.g. Suzuki et al. 2016; Pascucci et al. 2018). A description of the stellar sample is therefore also included in the Tier I data products.\n\nThe Tier II data products include the per-star detection efficiency. Providing this data could enable additional science cases such as investigating stellar dependencies in the planet population, and is especially useful for synergies with other detection methods.\n\n## 3.1. Tier I Data Products\n\n## 1. Stellar sample properties\n\n\n(a) Description of stellar sample that was searched. This includes target selection criteria and number of stars in the survey.\n\n(b) Provenance of stellar parameters, in case multiple catalogues are available.\n\n(c) Description of the properties of stars that were removed from the parent sample (e.g. possible evolved star or binary, lack of high quality data, etc.)\n\n## 2. Survey parameters\n\n\n(a) Description of criteria used for signal detection and planet candidate vetting (SNR threshold, minimum number of transits required, etc…",
+ "evidence_chars": 40001,
+ "gold_hit": true,
+ "survivors": [
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 21,
+   "score": 0.8263
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 22,
+   "end_line": 31,
+   "score": 0.6713
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 32,
+   "end_line": 42,
+   "score": 0.8416
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 43,
+   "end_line": 49,
+   "score": 0.8684
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 50,
+   "end_line": 51,
+   "score": 0.8336
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 52,
+   "end_line": 54,
+   "score": 0.7791
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 55,
+   "end_line": 67,
+   "score": 0.7825
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 68,
+   "end_line": 78,
+   "score": 0.7937
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 79,
+   "end_line": 81,
+   "score": 0.8421
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 37,
+   "score": 0.8719
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 39,
+   "end_line": 47,
+   "score": 0.8706
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 48,
+   "end_line": 51,
+   "score": 0.8591
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 52,
+   "end_line": 65,
+   "score": 0.8586
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 66,
+   "end_line": 69,
+   "score": 0.7825
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 70,
+   "end_line": 77,
+   "score": 0.8733
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 79,
+   "end_line": 86,
+   "score": 0.7975
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 87,
+   "end_line": 136,
+   "score": 0.8728
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 50,
+   "score": 0.6588
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 51,
+   "end_line": 54,
+   "score": 0.8373
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 55,
+   "end_line": 65,
+   "score": 0.8518
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 66,
+   "end_line": 71,
+   "score": 0.7331
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 72,
+   "end_line": 84,
+   "score": 0.8302
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 86,
+   "end_line": 122,
+   "score": 0.7805
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 124,
+   "end_line": 153,
+   "score": 0.7975
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 154,
+   "end_line": 179,
+   "score": 0.7791
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 63,
+   "score": 0.7949
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 64,
+   "end_line": 119,
+   "score": 0.7631
+  },
+  {
+   "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 120,
+   "end_line": 144,
+   "score": 0.7214
+  }
+ ]
+}

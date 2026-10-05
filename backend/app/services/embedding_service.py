@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 import os
+from collections import OrderedDict
 from typing import Any, List
 
 from app.config import config
@@ -136,8 +137,28 @@ class EmbeddingService:
 
     @classmethod
     def embed_one(cls, text: str) -> List[float]:
-        result = cls.embed([text])
-        return result[0] if result else []
+        # S-P2 fix: query-side LRU cache. The single global model lock
+        # serializes encode() (~274ms/query, ~5 RPS ceiling); repeated queries
+        # (hot topics, retry storms, dashboards) now return from cache instead
+        # of queueing behind the lock. Bounded at 512 entries (~2MB @ 1024 dims).
+        cache = cls._query_cache
+        with cls._cache_lock:
+            hit = cache.get(text)
+            if hit is not None:
+                cache.move_to_end(text)
+                return list(hit)
+        vec = cls.embed([text])
+        if vec and vec[0]:
+            with cls._cache_lock:
+                cache[text] = vec[0]
+                if len(cache) > cls._QUERY_CACHE_MAX:
+                    cache.popitem(last=False)
+            return list(vec[0])
+        return []
+
+    _query_cache: "OrderedDict[str, List[float]]" = OrderedDict()
+    _cache_lock = __import__("threading").Lock()
+    _QUERY_CACHE_MAX = 512
 
 
 embedding_service = EmbeddingService()

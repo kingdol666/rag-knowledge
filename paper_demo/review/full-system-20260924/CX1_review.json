@@ -1,0 +1,92 @@
+{
+  "seat": "CX1",
+  "score": 7.5,
+  "verdict": "minor",
+  "summary": "Audit of the expanded/changed text (compact-figure revision). All checked numbers trace to locked artifacts: the nine recorded ingest checks (C1_readback, C2_desc, C3_tags, C4_kb, A6V_vec_probe/C5_vector, C7_graph, C8_three_layer, C9_meta_hit in scripts/103_final_check.py) match the three named examples (read-back, vector probe, three-layer consistency) and the Fig 2 banner; tool-call 7.6/4.4/2.4 and grounded 9/10/9, keyword-verified 9/6/6 verified directly in audit_paper_numbers.json per_track and results/exp_r2_grade.json (run 211000); 0.491/0.163 per-question cost = 3.0x; 100/5/322 corpus figures match. The expanded text reads as genuine added value (interface/policy distinction, final-check detail, ranking-vs-browsing rationale, compact conclusion), not padding, and no grammar breaks were found. One P1: Section 3 Scenario 2 claims the attendee can 'open the cited part at its line offset in the console' — the read API is line-offset-addressed and shared with MCP, but the console UI has no open-at-offset affordance (preview always opens at offset 0 and paginates by 'load more'); this needs rewording or a small UI addition before the demo. Four P2 precision flags, all in the Conclusion or one ambiguous sentence in Section 4. The 'nearest-neighbor guess' leitmotif now appears in abstract, Section 1, and Section 5 nearly verbatim; acceptable as a deliberate motif but worth one wording variation.",
+  "checks": [
+    {
+      "id": 1,
+      "claim": "2.1: 'A retag or a move therefore lands once and is visible identically to an administrator in the console and to an agent over MCP.'",
+      "verdict": "true",
+      "evidence": "Design claim that follows from the stated premise. Verified: MCP kb_doc_read (kb-mcp/server.py:371) calls the same /api/kb/document endpoint the web console server exposes (web/server/api/kb/document.get.ts), both backed by one storage tree (.knowledge-base.yml + file tree + ChromaDB); fact sheet confirms 'web console, FastAPI, ragctl CLI, MCP server — same tools'. No real-time, atomic, or sync language is used, so nothing is overclaimed; 'therefore' is licensed by 'operate the same resources through the same tools'."
+    },
+    {
+      "id": 2,
+      "claim": "2.2: 'Each placement ends in a recorded final check --- read-back, vector probe, three-layer consistency, among nine recorded checks --- so a misroute is caught at ingest time, not at answer time.'",
+      "verdict": "true",
+      "evidence": "benchmark-suite/scripts/103_final_check.py records exactly nine check keys per paper: C1_readback, C2_desc, C3_tags, C4_kb, A6V_vec_probe, C5_vector, C7_graph, C8_three_layer, C9_meta_hit. The three named examples map cleanly: read-back=C1_readback, vector probe=A6V_vec_probe/C5_vector (recorded as a pair, matching Fig 2's 'vector probe (+2)'), three-layer consistency=C8_three_layer. The misroute inference is fair: C4_kb is a base-fit check (assigned kb must be one of the five configured categories) and the content-based vector probe runs within the assigned base, so a placement problem surfaces in the recorded checks rather than at answer time. Minor nuance, not an error: C4_kb validates category validity; the semantic-fit signal comes from the vector probe."
+    },
+    {
+      "id": 3,
+      "claim": "2.3: 'because a ranking step cannot repair an absent passage while browsing can still surface one the index missed'",
+      "verdict": "true",
+      "evidence": "Pure design rationale, correctly phrased: 'cannot repair' is definitional of re-ranking (it permutes existing candidates), and 'can still surface' is a capability statement about the librarian's alternate routes (base summaries, tag-matched shelves, targeted re-search). No numbers are attached and no empirical finding is implied; consistent with Section 4's explicit 'operational, not controlled' framing."
+    },
+    {
+      "id": 4,
+      "claim": "3 Scenario 2: 'the attendee can open the cited part at its line offset in the console'",
+      "verdict": "overclaim",
+      "evidence": "Line-offset addressing is real at the tool level: the read endpoint slices by lines (web/server/services/kb-search-service.ts readDocument: raw.split(/\\r?\\n/), allLines.slice(start,end); offset increments by newline counts in ingest scripts), and MCP kb_doc_read passes offset/limit to the same endpoint. But the console UI does not support opening at a cited offset: in web/pages/knowledge-base.vue and knowledge-search.vue, openDocPreview always resets previewOffset to 0 and loadPreview advances only via 'load more' (+200 lines); no jump-to-offset, deep-link, or citation-to-offset handling exists anywhere in web/pages or web/components. The attendee can open the cited part and page toward the offset, but not open it AT its line offset. See issue CX1-1."
+    },
+    {
+      "id": 5,
+      "claim": "4: 'The tool-call counts (7.6 versus 2.4 per question) make the platform's extra reading visible.'",
+      "verdict": "true",
+      "evidence": "Verified in benchmark-suite/results/experiment_chat_20260922-211000/audit_paper_numbers.json per_track: avg_tool_calls a=7.6, b=4.4, c=2.4. The sentence's claim (platform does substantially more tool calls) is true against both other modes. Omitting the bare agent's 4.4 is acceptable elision — it would not change the direction or magnitude of the point, and Fig 3's bottom strip (referenced in the same paragraph) shows all three values — but the unattributed '2.4' invites misreading since the preceding clause discusses the bare agent. See issue CX1-2."
+    },
+    {
+      "id": 6,
+      "claim": "5 Conclusion: identifiers shared by ingest and citation; librarian fallback semantics; 'grounding and verification travel together only when retrieval includes reading (9/10 on both for the platform)'; 'roughly three times the bare agent's per-question cost'; '100 papers, five bases, 322 stored parts'; 'every number an attendee sees can be re-derived from saved artifacts'; future work on graph navigation and blind spots.",
+      "verdict": "overclaim",
+      "evidence": "Numeric claims all verified: grounded 9/10/9 and keyword-verified 9/6/6 confirmed in results/exp_r2_grade.json (run 211000, kw_ok at >=60% gold facts at word boundaries), so '9/10 on both for the platform' is strictly true and unique among the three modes; 0.491/0.163 = 3.0x (audit_paper_numbers.json totals 4.91/1.63), matching 'roughly three times'; 100/5/322 matches the pipeline audit; identifier-sharing is consistent with Sections 1-2 and Fig 1; future work is consistent with Section 2.1 ('graph navigation is optional, not the evaluated route') and Section 2.3 ('Answer records keep ... blind spots'). Two phrases overreach in scope, not in numbers: (a) 'travel together only when retrieval includes reading' generalizes a causal necessity from one operational 10-question run, and the bare agent also reads files (glob/grep/reads in Fig 3), so 'reading' per se is not the distinguishing condition — gated read-then-verify is (Section 4's 'The platform alone pairs...' is the careful form); (b) 'every number an attendee sees can be re-derived from saved artifacts' is true for every number the paper reports (Table 1 script-asserted, Fig 3 verbatim-gated) but attendees also see live-query outputs generated during the demo, and Section 4 itself hedges ('Correctness reflects our reading'). Also the fallback sentence compresses the librarian's three exits (cited answer on re-assessment, qualified score-5 backstop, not-found) into one. See issues CX1-3, CX1-4, CX1-5."
+    },
+    {
+      "id": 7,
+      "claim": "Overall prose: does the expanded text read as padding? Repetition with the abstract? Grammar breaks?",
+      "verdict": "true",
+      "evidence": "The expansion adds real content: Section 2.1's policy-vs-tools distinction ('what they do not share is a reasoning policy'), Section 2.2's verifiable final-check detail (matches the script and Fig 2 banner), Section 2.3's design rationale, and a compact one-paragraph conclusion with concrete future work. No padding. No grammar breaks found on pages 1-4. Minor style notes: 'a recorded final check ... among nine recorded checks' doubles 'recorded' and reads ambiguously ('three of nine recorded checks' would be cleaner); the 'scoped not-found report rather than a nearest-neighbor guess' formulation now recurs near-verbatim in abstract, Section 1, and Section 5 — acceptable as a motif, but Section 5 could vary it."
+    }
+  ],
+  "issues": [
+    {
+      "id": "CX1-1",
+      "priority": "P1",
+      "location": "Section 3, Scenario 2 (sec3_demo.tex, 'the attendee can open the cited part at its line offset in the console')",
+      "issue": "The console does not support opening a document at a cited line offset. Line-offset addressing exists only at the API/tool level; the console preview always opens at offset 0 and reaches deeper content only by repeated 'load more' pagination. A demo-track reviewer trying this live would not find the affordance.",
+      "evidence": "web/server/services/kb-search-service.ts readDocument() does line slicing (offset = start line), and kb-mcp/server.py kb_doc_read exposes offset/limit — so the capability is real for agents. But web/pages/knowledge-base.vue (openDocPreview sets previewOffset=0; loadPreview += 200) and web/pages/knowledge-search.vue have no jump-to-offset, deep-link, or citation-click handler; greps over all web/pages and web/components found no offset UI.",
+      "suggestion": "Either (a) reword to what the system does: 'the attendee can open the cited part in the console, and the same tools read it at its line offset' or '...and page to its line offset in the console'; or (b) implement a small jump-to-offset link in the console before recording the demo video, in which case the current wording becomes true."
+    },
+    {
+      "id": "CX1-2",
+      "priority": "P2",
+      "location": "Section 4, Retrieval paragraph (sec4_eval.tex, 'The tool-call counts (7.6 versus 2.4 per question)')",
+      "issue": "The two tool-call numbers are unattributed, and the sentence sits right after a clause about the bare agent, so '2.4' is liable to be misread as the bare agent's count (it is actually 4.4; 2.4 is dense retrieval). The omission of 4.4 is defensible — the platform exceeds both modes and Fig 3's strip shows all three — but the attribution should be explicit.",
+      "evidence": "audit_paper_numbers.json per_track avg_tool_calls: a=7.6, b=4.4, c=2.4. Sentence order in sec4_eval.tex: bare-agent verification sentence, then this sentence, then 'The platform alone pairs...'.",
+      "suggestion": "Attribute the numbers, e.g. 'The tool-call counts (7.6 for the platform versus 2.4 for dense retrieval, with the bare agent at 4.4) make the platform's extra reading visible' — or simply '(7.6 versus 2.4, platform versus dense)'."
+    },
+    {
+      "id": "CX1-3",
+      "priority": "P2",
+      "location": "Section 5 Conclusion (sec5_conclusion.tex, 'grounding and verification travel together only when retrieval includes reading (9/10 on both for the platform)')",
+      "issue": "The parenthetical is strictly true and unique to the platform (9/9 vs bare 10/6 and dense 9/6), but the causal 'only when retrieval includes reading' states a general necessity derived from one operational 10-question run — and the bare agent also reads files (glob/grep/reads, Fig 3 panel 1), so 'reading' per se cannot be the necessary condition; the distinguishing condition is the gated read-then-verify route. Section 4's careful phrasing is the better model.",
+      "evidence": "results/exp_r2_grade.json run 211000: gold_hit a/b/c = 9/10/9, kw_ok = 9/6/6. Section 4 states 'The platform alone pairs high grounding with high verification (9/10 each)' and hedges 'operational, not controlled'.",
+      "suggestion": "Anchor to the run and the route: 'the monitored run shows grounding and verification traveling together only for the platform's gated reading route (9/10 on each)'."
+    },
+    {
+      "id": "CX1-4",
+      "priority": "P2",
+      "location": "Section 5 Conclusion (sec5_conclusion.tex, 'every number an attendee sees can be re-derived from saved artifacts')",
+      "issue": "Scope overreach. The claim is solid for every number the paper reports (Table 1 is script-asserted, Fig 3 is verbatim-gated, aggregates come from audit_paper_numbers.json), but attendees also see live-query outputs (gate scores, latencies, answers) generated during the demo that are not in pre-saved artifacts, and Section 4 itself concedes 'Correctness reflects our reading'.",
+      "evidence": "Section 3: 'presenters replay saved traces alongside live queries'. Table 1 caption limits the script-assertion guarantee to its own values; sec4_eval.tex header comment ties the assembled numbers to 108_pipeline_evidence.py.",
+      "suggestion": "Scope it to the reported numbers: 'every number this paper reports can be re-derived from saved artifacts' or 'every number the replayed traces show the attendee can be re-derived from saved artifacts'."
+    },
+    {
+      "id": "CX1-5",
+      "priority": "P2",
+      "location": "Section 5 Conclusion (sec5_conclusion.tex, 'the librarian fallback turns a failed gate into a scoped not-found report rather than a nearest-neighbor guess')",
+      "issue": "Compressed fallback semantics drop the qualified-answer branch: per Section 2.3 and Fig 2, a failed gate (<6) invokes the librarian, which can end in a re-assessed cited answer, a qualified score-5 attributed backstop, or — only when nothing usable remains — a scoped not-found report. As written, 'failed gate -> not-found' erases the backstop outcome that Fig 2 explicitly shows.",
+      "evidence": "sec2_system.tex: 'A usable score-5 candidate ... yields a qualified answer. Candidates scoring at most 4 are discarded; when nothing usable remains, the skill returns a not-found report.' Fig 2 exit ladder: >=6 cited / <=5 qualified / <=4 not-found.",
+      "suggestion": "Minimal fix: 'the librarian fallback ends a failed gate in an attributed backstop or a scoped not-found report rather than a nearest-neighbor guess' — or keep the current sentence but condition it ('a failed gate with no usable remainder')."
+    }
+  ]
+}

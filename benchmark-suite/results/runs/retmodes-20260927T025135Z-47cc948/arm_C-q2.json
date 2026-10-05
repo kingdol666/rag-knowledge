@@ -1,0 +1,184 @@
+{
+ "mode": "C",
+ "ok": true,
+ "rc": 0,
+ "seconds": 63.0,
+ "wall_s": 64.2,
+ "real_engine": true,
+ "status": "ok",
+ "n_result_docs": 38,
+ "kept_doc_paths": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+  "生命科学与医学/clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+  "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+  "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+  "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+  "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+  "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+  "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+  "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+  "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+  "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+  "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 2 of 13).md",
+  "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+  "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md",
+  "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md",
+  "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md",
+  "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+  "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md",
+  "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 1 of 2).md",
+  "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 2 of 2).md"
+ ],
+ "judge": {
+  "backend": "laya_sdk",
+  "engine": "laya",
+  "total_segments": 506,
+  "scored_segments": 506,
+  "errors": []
+ },
+ "merge": {
+  "vector_lane": null,
+  "catalog_lane": null,
+  "merged_docs": 39,
+  "kept_docs": null,
+  "unscanned_count": null,
+  "lanes_raw": {
+   "vector": {
+    "vector_raw_hits": 10,
+    "vector_dedup_docs": 10,
+    "seconds": 4.2,
+    "error": null
+   },
+   "catalog": {
+    "shelves_scanned": 16,
+    "shelves_excluded": 2,
+    "descriptions_scanned": 379,
+    "description_overlap_paths": [
+     [
+      "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md"
+     ],
+     [
+      "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md"
+     ],
+     [
+      "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md"
+     ],
+     [
+      "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md"
+     ],
+     [
+      "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md"
+     ],
+     [
+      "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md"
+     ],
+     [
+      "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md"
+     ],
+     [
+      "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md"
+     ],
+     [
+      "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md"
+     ],
+     [
+      "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md"
+     ],
+     [
+      "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 1 of 2).md"
+     ],
+     [
+      "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 2 of 2).md"
+     ],
+     [
+      "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "生命科学与医学/clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md"
+     ],
+     [
+      "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md"
+     ],
+     [
+      "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md"
+     ],
+     [
+      "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md"
+     ],
+     [
+      "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md"
+     ],
+     [
+      "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md"
+     ],
+     [
+      "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md"
+     ],
+     [
+      "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md"
+     ]
+    ],
+    "description_overlap_docs": 20,
+    "stem_completion_docs": 10,
+    "zero_overlap_docs_unread": 359,
+    "docs_read": 30,
+    "seconds": 22.8,
+    "error": null
+   }
+  }
+ },
+ "evidence_chars": 12000,
+ "gold_hit": true,
+ "stderr_tail": "",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "exit_ok": true,
+   "real_engine": true,
+   "evidence_nonempty": true,
+   "gold_hit": true,
+   "latency_recorded": true
+  }
+ },
+ "question": {
+  "qid": "q2",
+  "text": "基于电子健康记录（EHR）数据用机器学习算法预测中风/卒中风险：关键风险因素及其影响分析 (stroke prediction electronic health records machine learning risk factors)",
+  "gold_substr": "stroke-from-electronic-health",
+  "gold_name": "predicting-stroke-from-electronic-health-rec 论文"
+ }
+}

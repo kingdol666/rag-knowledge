@@ -1,0 +1,63 @@
+{
+  "seat": "F2",
+  "score": 7.5,
+  "verdict": "minor",
+  "summary": "The redesigned Fig 2 (p3) and Fig 3 (p4) are genuinely compact and feel designed, not squeezed. Fig 2's three bands reproduce the briefed content exactly (infrastructure lane with 41 kb_* tools; five-chip ORGANIZE chain with teal Route-by-content highlight and dark-green final-check banner whose 'vector probe (x2)' makes Table 1's nine recorded checks countable; RETRIEVE chain into an enlarged double-border Content gate with three score-coded outcome badges and a dashed librarian strip). Fig 3's single-card-per-mode layout has machine-precise geometry: panel-1 cards are exactly 616 px wide with 35 px gutters, headers lock to body-card edges in both panels, and the dark aggregate strip carries the left title and right 'A Platform . B Bare agent . C Dense' legend as specified. One-figure-per-page holds on pp. 2/3/4; all figure text is legible at print size (smallest annotations ~7 pt); green-family, rounded-box, Arial language is consistent across all three figures, and Fig 3's strip numbers match Section 4 and the abstract. Remaining defects are polish-level but real: the Markdown-YAML chip in Fig 2 band 1 sits ~2 px (about 0.5 pt at print) from the band border while every other element keeps ~26 px padding, so it reads as touching/crammed; the Fig 3 \\Description claims the BQ06 platform excerpt names 'mean surface temperature near 295 kelvin', which the pixels do not contain; the in-figure legend 'dashed edges = the fallback path' contradicts the pixels (all arrows are solid; the dashed elements are box outlines, which the \\Description correctly calls 'dashed outlines'); the three stacked outcome badges have uneven heights (40 px vs 54 px) and uneven gaps (22 px vs 10 px); and Fig 3 excerpts mix straight and curly quotes and end without closing quote or ellipsis despite the caption's elision convention.",
+  "strengths": [
+    "Fig 2 delivers the briefed three-band composition with correct content at every level: chips, 'operate the same 41 kb_* tools' label, three storage chips, five-chip ORGANIZE chain with teal-highlighted Route by content, dark-green final-check banner (8 labels + 'vector probe (x2)' = the nine recorded checks that Table 1 asserts, 100/100 pass), enlarged double-border Content gate with 'score 0-8 . rubric on content', and three score-coded outcome badges (solid teal >=6, dashed tinted =5, dashed gray <=4) over the dashed librarian-browsing strip.",
+    "Fig 3 geometry is exact: panel-1 mode cards measure 616 px wide each with uniform 35 px gutters and identical x-extents for header and body cards; panel-2 A/C cards are equal 940 px; the aggregate strip spans the full card grid. Nothing is clipped, overlapping, or touching.",
+    "Print-size legibility is safe throughout: at \\textwidth (Fig 2) and 0.92\\textwidth (Fig 3) the smallest annotation text ('score 0-8 . rubric on content', italic band notes, timeline bullets) lands around 7-7.5 pt and renders crisply in the 148 dpi page images; headers, chips, and banner text are comfortably larger.",
+    "Strong caption-vs-pixel agreement for both captions and the Fig 1/Fig 2 \\Description blocks: every captioned claim (part 1 of 2 / section 2 quote, B names the file, C quotes chunks, verification re-read, measured abstention, B-omitted panel, strip columns) is visible in pixels; Fig 3 strip values (9/10, 10/10, 9/10; 113.0 s, 42.7 s, 48.0 s; $0.4911/$0.1631/$0.1803) agree with Section 4 prose and the abstract.",
+    "Family consistency holds across all three figures: same green family with slate headers, Arial/Helvetica, rounded rectangles, and semantic mode color (green = platform, cream/amber = dense) that Fig 3 extends without breaking the system; one-figure-per-page composition on pp. 2/3/4 with no stranded whitespace on any page."
+  ],
+  "issues": [
+    {
+      "id": "F2-1",
+      "priority": "P1",
+      "location": "Figure 2 (p3), band 1 infrastructure lane, rightmost 'Markdown . YAML' chip",
+      "issue": "The chip's right border nearly touches the outer band's rounded border, breaking the padding system used by every other element and reading as clipped/crammed at print size.",
+      "evidence": "Pixel scan of fig2-architecture.png at 2000 px width: chip border at x=1967-1968 (gray 181), band border at x=1971-1972 (gray 220) - a 2 px gap (~0.007 in, under 1 pt at \\textwidth). Left side of the same band: band border x=27-28, first chip border x=55-57, a 27 px gap. All other rows keep 26-28 px right padding (organize chips end x=1944, banner x=1943, librarian strip x=1944), so only this chip overshoots - even past the right-alignment line used by the italic notes.",
+      "suggestion": "Recover ~24 px before the right border: slightly reduce the chip's label tracking/padding or the gaps between the three storage chips, so the Markdown . YAML chip's right edge returns to x~1944, flush with the alignment line the other elements use."
+    },
+    {
+      "id": "F2-2",
+      "priority": "P1",
+      "location": "Figure 3 (p4), \\Description block, panel-two column A (main.tex line ~134-136)",
+      "issue": "The accessibility description asserts content that is not in the figure: it says the excerpt 'names mean surface temperature near 295 kelvin', but the rendered excerpt contains no kelvin value.",
+      "evidence": "Pixel text of the BQ06 platform card reads exactly: 'The temperature of the climate (mean surface temperature) is the primary physical factor' - no '295 kelvin' anywhere in the card (or elsewhere in the figure). A screen-reader user would look for a numeric value the figure does not show.",
+      "suggestion": "Change the \\Description to '...its excerpt names mean surface temperature as the primary physical factor' (matching the pixels), or restore the kelvin figure in the rendered excerpt itself - but description and pixels must agree."
+    },
+    {
+      "id": "F2-3",
+      "priority": "P2",
+      "location": "Figure 2 (p3), band (b), right-aligned italic legend 'dashed edges = the fallback path'",
+      "issue": "The legend's wording contradicts the pixels: there are no dashed edges (all four arrows in the retrieve chain are solid); the dashed styling appears on box outlines (the =5 badge, <=4 badge, and librarian-browsing strip). The \\Description uses the correct wording ('dashed outlines mark the fallback path').",
+      "evidence": "Pixel crops of band (b): all chain arrows are solid green strokes; dashed borders appear only on the =5 badge (top/bottom dash rows at y=656 and y=708), the <=4 badge (y=720, y=772), and the browsing strip. No dashed connector exists anywhere in the band.",
+      "suggestion": "Reword the in-figure legend to 'dashed outlines = the fallback path' (or 'dashed boxes'), matching both the pixels and the \\Description."
+    },
+    {
+      "id": "F2-4",
+      "priority": "P2",
+      "location": "Figure 2 (p3), band (b), stack of the three outcome badges",
+      "issue": "Uneven geometry in the stacked badge column: the primary >=6 badge is shorter than the two dashed badges and the whitespace above it is more than double the gap between the dashed badges, so the column's rhythm looks accidental rather than grouped.",
+      "evidence": "Dark-row profiling of fig2-architecture.png: >=6 solid fill spans y~592-632 (~40 px tall) with a ~22 px gap above the =5 badge; the =5 badge spans y~656-710 and <=4 spans y~720-774 (both ~54 px tall) separated by only a 10 px gap.",
+      "suggestion": "If the tight =5/<=4 pairing is intentional (fallback tiers grouped), equalize the badge heights (all three ~54 px) and slightly open the 10 px gap (e.g. 14-16 px) so the grouping reads as deliberate; otherwise make all three badges and gaps uniform."
+    },
+    {
+      "id": "F2-5",
+      "priority": "P2",
+      "location": "Figure 3 (p4), verbatim answer excerpts (cards A/BQ04, A/BQ06, C/BQ04)",
+      "issue": "Inconsistent quotation typography: two platform excerpts end without a closing quote or ellipsis even though the caption establishes an 'ellipses elide text' convention, and one dense excerpt mixes curly and straight quote glyphs within a single sentence.",
+      "evidence": "Pixel text: A/BQ04 ends '...Cellular Component (CC)' and A/BQ06 ends '...is the primary physical factor' - opened with a curly quote but never closed and with no ellipsis; C/BQ04 reads curly-open 'the GO is straight-open \"a controlled vocabulary of terms to represent biology in a structured way,\" straight-close - mixed glyphs plus a trailing comma where an ellipsis is meant.",
+      "suggestion": "Close elided excerpts with a trailing ellipsis before the closing quote (... (CC)...\" / ...physical factor...\"), and normalize all quote glyphs to curly throughout the figure."
+    },
+    {
+      "id": "F2-6",
+      "priority": "P2",
+      "location": "Figure 2 (p3), left edges of the (a) and (b) chain rows",
+      "issue": "The two adjacent bands treat their flow rows differently: the ORGANIZE chain is flush with its band header while the RETRIEVE chain is centered, so the two chains start at visibly different x positions across neighboring bands.",
+      "evidence": "Pixel scan: (a) chips start x=55 and end x=1944 (justified, ~27 px padding both sides); (b) chain starts x=119 and ends x=1881 (~92 px margins - centered because the enlarged Content gate box is wider). The 64 px (~0.22 in at print) left-edge offset between stacked bands breaks the vertical rhythm.",
+      "suggestion": "Pick one treatment: either left-align the (b) chain to x~55 like band (a) (widening the chain boxes to fill), or apply the same centered treatment to the (a) chain, so both flow rows share a left edge."
+    }
+  ]
+}

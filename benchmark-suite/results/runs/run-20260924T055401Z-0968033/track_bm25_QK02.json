@@ -1,0 +1,48 @@
+{
+ "qid": "QK02",
+ "method": "bm25",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "ranked": [
+  "1602.01876",
+  "2301.08436",
+  "2401.06823",
+  "2508.18304",
+  "2009.10669",
+  "2110.07787",
+  "2602.10156",
+  "1909.03801",
+  "q-bio-0408016",
+  "1809.08199"
+ ],
+ "ranked_paths": [
+  "genomics__1602.01876__primer-on-the-gene-ontology.md",
+  "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md",
+  "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o.md",
+  "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md",
+  "genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md",
+  "clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md",
+  "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+  "clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md"
+ ],
+ "evidence_sources": [
+  "1602.01876",
+  "2301.08436",
+  "2401.06823"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 6.3,
+ "answer": "The evidence is insufficient to answer this question. The provided chunks describe the Gene Ontology as a controlled vocabulary and explain annotations, but only chunk [1602.01876] discusses GO directly, and it does not name the three ontologies that subdivide it. The other two chunks ([2301.08436], [2401.06823]) concern spatial transcriptomics and interpretable deep learning in single-cell omics, not GO structure.\n\nSources used: [1602.01876], [2301.08436], [2401.06823] — none contain the answer.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 747,
+  "output": 121,
+  "cache_read": 37184,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.025352,
+ "extra": {}
+}

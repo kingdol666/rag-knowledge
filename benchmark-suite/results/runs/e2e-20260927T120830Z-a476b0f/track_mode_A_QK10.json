@@ -1,0 +1,51 @@
+{
+ "qid": "QK10",
+ "question": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The provided evidence does not contain the answer: none of the retrieved sources mention the Herbert-Moulton collider benchmark, detector drift, or particle-physics detector calibration. The evidence consists of: a RAG benchmark paper (Luo et al., \"Towards Global Retrieval Augmented Generation\"); a perovskite/GeSe solar-cell paper (materials__1712.01369, §III Electrical Properties); a MARL paper (AOAD-MAT); an ECB monetary-policy paper; an MLP-SLAM robotics paper; and an influenza epitope-analysis paper (Muñoz & Deem). I therefore cannot answer the question from this evidence.\n\nSources consulted (none relevant to the question): all six evidence chunks listed above.\n\nEvidence is insufficient — stopping as instructed, without falling back on prior knowledge.",
+ "is_error": false,
+ "latency_s": 40.3,
+ "retrieval_s": 21.5,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38374,
+  "output": 783,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.211445,
+ "ranked": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "e2e-demo-0923-022632/平台架构总览.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-e2e-tester-024115/soul-definition.md",
+  "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+  "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+  "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 4 of 6).md",
+  "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+  "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+  "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+  "自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md",
+  "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+  "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md"
+ ],
+ "evidence_sources": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "e2e-demo-0923-022632/平台架构总览.md",
+  "soul-cs-library/memory-conventions.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": true,
+ "merge": null
+}

@@ -1,112 +1,112 @@
-# Knowledge Base Architecture — 系统数据模型与操作心智模型
+# Knowledge Base Architecture — System Data Model & Operational Mental Model
 
-> ⭐ **所有 KB 操作前必读**。本文解释 THIS 系统的知识库架构（非通用 KB 概念）。
-> Agent 必须理解这 5 层数据模型才能正确操作，否则会破坏一致性。
+> ⭐ **MUST-READ before any KB operation**. This document explains THIS system's knowledge base architecture (not generic KB concepts).
+> The agent must understand this 5-layer data model to operate correctly — otherwise it will break consistency.
 
-## 5 层数据模型
+## 5-Layer Data Model
 
 ```
-用户文档 (.md)
+User documents (.md)
     │  kb_doc_create / kb_doc_save_parsed / kb_doc_update_content
     ▼
-① 磁盘层 (storage/tree-file-system/<KB>/<doc>.md)
-    │  原始 markdown 文件，内容的唯一真相源
+① Disk layer (storage/tree-file-system/<KB>/<doc>.md)
+    │  Raw markdown files — the single source of truth for content
     │
-    │  文件树 CRUD 自动同步
+    │  File-tree CRUD auto-sync
     ▼
-② .tree-fs.json (全局树索引：所有文件夹+文件+metadata)
-    │  kb_list / kb_get_documents / fs_get_tree 读这里
+② .tree-fs.json (global tree index: all folders + files + metadata)
+    │  kb_list / kb_get_documents / fs_get_tree read here
     │
-    │  KB 内文档 CRUD 自动同步
+    │  Document CRUD within a KB auto-sync
     ▼
-③ .knowledge-base.yml (每 KB 的文档索引：name/description/path/tags/vector_index)
-    │  kb_search / kb_tags_list 读这里
+③ .knowledge-base.yml (per-KB document index: name/description/path/tags/vector_index)
+    │  kb_search / kb_tags_list read here
     │
-    │  kb_index_document / kb_batch_index 写这里
+    │  kb_index_document / kb_batch_index write here
     ▼
-④ ChromaDB (向量存储：kb_<UUID> collection，文档 chunk 向量)
-    │  kb_search_vector / kb_search_two_stage 查这里
+④ ChromaDB (vector store: kb_<UUID> collection, document chunk vectors)
+    │  kb_search_vector / kb_search_two_stage query here
     │
-    │  kb_graph_build 写这里
+    │  kb_graph_build writes here
     ▼
-⑤ 图存储 (知识图谱：Document/Tag/KB 节点 + RELATED_TO/HAS_TAG 边 — Neo4j 或内置图存储)
-    │  kb_graph_* 查这里
+⑤ Graph store (knowledge graph: Document/Tag/KB nodes + RELATED_TO/HAS_TAG edges — Neo4j or built-in graph store)
+    │  kb_graph_* query here
 ```
 
-> ⚠️ 图谱支持 **Neo4j** 与 **内置图存储**（无 Neo4j 时自动降级）。`kb_graph_stats` 的 `neo4j_available` 标记：true=Neo4j 已连接，false=内置图存储。两种模式下 kb_graph_* 工具均正常工作。
+> ⚠️ The graph supports **Neo4j** and the **built-in graph store** (automatic downgrade when Neo4j is absent). The `neo4j_available` flag in `kb_graph_stats`: true = Neo4j connected, false = built-in graph store. The kb_graph_* tools work normally in both modes.
 
-## 一致性不变量（atomic 保证）
+## Consistency Invariants (atomicity guarantees)
 
-**每次 MCP CRUD 调用原子更新 ①②③**（后端保证三层同步）。④⑤（向量+图谱）行为如下：
+**Every MCP CRUD call atomically updates ①②③** (the backend guarantees three-layer sync). Layers ④⑤ (vectors + graph) behave as follows:
 
-| 操作 | 自动同步 | 向量层④ | 图谱层⑤ | 说明 |
+| Operation | Auto-sync | Vector layer ④ | Graph layer ⑤ | Notes |
 |------|---------|---------|---------|------|
-| `kb_doc_create` | ①②③ | ✅ 自动（fire-and-forget auto-index） | ✅ 自动 | 创建后后台自动索引 |
-| `kb_doc_save_parsed` | ①②③ | ❌ 需手动 `kb_index_document` | ❌ 需手动 | **注意：与 create 不同，不自动索引** |
-| `kb_doc_update_content` | ①③ | ✅ 自动（auto-reindex，<1s） | ✅ 自动 | 内容变更后向量自动重算，新内容立即可搜 |
-| `kb_doc_update_tags` | ③ | 不影响④ | ✅ 自动（触发 graph reindex） | 标签变更同步图谱 |
-| `kb_doc_move` | ①②③ | ✅ 自动（目标端重索引） | 自动清理源端 | 移动后目标自动索引 |
-| `kb_doc_delete` | ①②③ | ✅ 自动清理 chunks | ✅ 自动清理图节点 | 删除彻底（向量不再残留） |
-| `kb_doc_batch_delete` | ①②③ | ✅ 自动 | ✅ 自动 | 同单删 |
+| `kb_doc_create` | ①②③ | ✅ Automatic (fire-and-forget auto-index) | ✅ Automatic | Background auto-indexing after creation |
+| `kb_doc_save_parsed` | ①②③ | ❌ Requires manual `kb_index_document` | ❌ Manual required | **Note: unlike create, does NOT auto-index** |
+| `kb_doc_update_content` | ①③ | ✅ Automatic (auto-reindex, <1s) | ✅ Automatic | Vectors are recomputed automatically after content changes; new content is searchable immediately |
+| `kb_doc_update_tags` | ③ | Does not affect ④ | ✅ Automatic (triggers graph reindex) | Tag changes sync to the graph |
+| `kb_doc_move` | ①②③ | ✅ Automatic (re-indexed at destination) | Source side cleaned automatically | Destination is auto-indexed after the move |
+| `kb_doc_delete` | ①②③ | ✅ Chunks cleaned automatically | ✅ Graph nodes cleaned automatically | Deletion is thorough (no vector residue left behind) |
+| `kb_doc_batch_delete` | ①②③ | ✅ Automatic | ✅ Automatic | Same as single delete |
 
-> ⚠️ **唯一需手动重索引的场景**：`kb_doc_save_parsed`（解析产物入库后须显式 `kb_index_document`）。
-> 旧版"update_content/delete/move 需手动重索引"的描述已**过时**——这些操作现已自动管理④⑤层。
+> ⚠️ **The only scenario that requires manual re-indexing**: `kb_doc_save_parsed` (after ingesting parsed output you must explicitly call `kb_index_document`).
+> The old description "update_content/delete/move require manual re-indexing" is **outdated** — these operations now manage layers ④⑤ automatically.
 >
-> ⚠️ **并发索引安全**：auto-index 与显式 `kb_index_document` 现已加 per-collection 写锁串行化，无竞态。若仍遇"索引存在但搜不到"，`kb_reindex(force=true)` 可修复。
+> ⚠️ **Concurrent index safety**: auto-index and explicit `kb_index_document` are now serialized with a per-collection write lock; there is no race. If you still hit "index exists but search finds nothing", `kb_reindex(force=true)` fixes it.
 
-## KB 层级结构
+## KB Hierarchy
 
 ```
-顶层 KB (高分子双向拉伸文献库)
-├── 子KB (03_PET_BOPET - 聚酯双向拉伸)    ← isKnowledgeBase=true
-│   └── 文档 (PET-deformation-2022.md)
-├── 子KB (04_PVA_BOPVA - 聚乙烯醇双向拉伸)
-│   └── 文档 (...)
-└── 直接文档 (cross-domain-review.md)      ← 父KB自己的文档
+Top-level KB (高分子双向拉伸文献库)
+├── Sub-KB (03_PET_BOPET - 聚酯双向拉伸)    ← isKnowledgeBase=true
+│   └── Document (PET-deformation-2022.md)
+├── Sub-KB (04_PVA_BOPVA - 聚乙烯醇双向拉伸)
+│   └── Document (...)
+└── Direct documents (cross-domain-review.md)      ← the parent KB's own documents
 ```
 
-**关键坑**（⭐ 经实测验证）：
-- ⭐ **`kb_doc_update_content` 已自动重索引**（旧版需手动，现已自动 auto-reindex）。
-- ⭐ **`kb_doc_save_parsed` 不自动索引**（与 create 不同，必须显式 `kb_index_document`）。
-- ⭐ **`experience_search_smart` 支持 kb_id 参数**限定单库搜索。
-- ⭐ **`kb_search_two_stage` 的 stage2_top_k 严格生效**。
-- ⭐ **垃圾 tag 门控**：纯数字/单字符/章节标题被拒绝（返回 400）。
-- **父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目（content 为空）** → 正确做法：用 **`kb_search_vector(kb_id=<父KB>)`** 检索真实内容。⚠️ 当前版本：子 KB 文档向量存储在**子 KB 自有 collection**（`kb_<子KB UUID>`）下，直接搜子 KB UUID 也可出结果（旧版"子KB向量存父 collection、搜子KB UUID 返回 0"的描述已过时）；父 KB 搜索聚合全部后代文档。`kb_graph_kb_overview(kb_id)` 仅用于查看子 KB 结构/文档数，**不能**作为搜索入口。
-- `kb_get_documents(lightweight=true)` 无 type 字段区分文档 vs 子KB容器 → 用 `file_type: knowledge-base` 或 `fs_get_tree(max_depth=2)` 区分
-- `kb_graph_kb_overview.related_kbs[].name` 和 `sub_kbs[].name` 返回 UUID → 用 `kb_list(lightweight=true)` 回查可读名
+**Key pitfalls** (⭐ verified in practice):
+- ⭐ **`kb_doc_update_content` re-indexes automatically** (older versions required manual re-indexing; auto-reindex is now built in).
+- ⭐ **`kb_doc_save_parsed` does not auto-index** (unlike create, you must explicitly call `kb_index_document`).
+- ⭐ **`experience_search_smart` supports a kb_id parameter** to restrict the search to a single KB.
+- ⭐ **`kb_search_two_stage`'s stage2_top_k is strictly honored**.
+- ⭐ **Junk-tag content gate**: pure numbers / single characters / section headings are rejected (returns 400).
+- **A parent KB's `kb_search_two_stage` returns sub-KB container entries (empty content)** → the correct approach: retrieve real content with **`kb_search_vector(kb_id=<parent KB>)`**. ⚠️ Current version: sub-KB document vectors are stored in the **sub-KB's own collection** (`kb_<sub-KB UUID>`), so searching the sub-KB UUID directly also returns results (the old description "sub-KB vectors live in the parent collection and searching the sub-KB UUID returns 0" is outdated); parent-KB search aggregates all descendant documents. `kb_graph_kb_overview(kb_id)` is only for viewing sub-KB structure/document counts and **must not** be used as a search entry point.
+- `kb_get_documents(lightweight=true)` has no type field to distinguish documents vs sub-KB containers → use `file_type: knowledge-base` or `fs_get_tree(max_depth=2)` to tell them apart
+- `kb_graph_kb_overview.related_kbs[].name` and `sub_kbs[].name` return UUIDs → use `kb_list(lightweight=true)` to resolve readable names
 
-## 94 个 MCP 工具地图（按操作类型）
+## Map of the 94 MCP Tools (by operation type)
 
-| 类别 | 工具数 | 代表工具 | 何时用 |
+| Category | Count | Representative tools | When to use |
 |------|--------|---------|--------|
-| **KB CRUD** | 5 | `kb_list` `kb_create` `kb_update` `kb_delete` `kb_get_documents` | 建库/列库/删库 |
-| **文档读写** | 8 | `kb_doc_read` `kb_doc_create` `kb_doc_save_parsed` `kb_doc_update_meta` `kb_doc_update_content` `kb_doc_delete` `kb_doc_batch_delete` `kb_doc_move` | 文档 CRUD（`save_parsed` 存解析产物） |
-| **文件系统** | 3 | `fs_get_tree` `fs_get_children` `fs_upload_file` | 树结构/原始文件 |
-| **解析** | 3 | `parse_doc` `parse_doc_batch` `parse_task_status` | PDF→MD（非阻塞） |
-| **标签** | 4 | `kb_tags_list` `kb_doc_update_tags` `kb_doc_get_by_tag` `kb_tags_cleanup` | 标签管理 |
-| **搜索** | 4 | `kb_search` `kb_search_vector` `kb_search_two_stage` `kb_search_stats` | 关键词/向量/两阶段/统计 |
-| **向量索引** | 6 | `kb_index_document` `kb_batch_index` `kb_reindex` `kb_cleanup_orphan_collections` `kb_find_duplicates` `kb_task_status` | 索引管理+任务轮询 |
-| **图谱** | 11 | `kb_graph_search` `kb_graph_build` `kb_graph_kb_overview` `kb_graph_document` ... | Neo4j 图谱 |
-| **经验** | 20 | `experience_search_smart` `experience_search_global` `experience_create` `experience_rerank` ... | 经验库全生命周期 (E0-E12) |
-| **冥想** | 6 | `experience_meditation_status` `experience_meditation_run` `experience_meditation_task_status` `experience_meditation_config_get/update` `experience_meditation_history` | 经验自动归纳（经验子系统的调度器） |
-| **项目** | 4 | `backend_status` `kb_project_status` `kb_project_start` `kb_project_update` | 服务生命周期 |
-| **🧠 SOUL 人格** | **17** | `soul_init` `soul_learn` `soul_ask` `soul_qdcvr_ask` `soul_router` `soul_list` ... | 人格创建/训练/问答/评估/导出 |
-| **健康** | — | (merged into 项目) | 预检（`backend_status`） |
+| **KB CRUD** | 5 | `kb_list` `kb_create` `kb_update` `kb_delete` `kb_get_documents` | Create/list/delete KBs |
+| **Document read/write** | 8 | `kb_doc_read` `kb_doc_create` `kb_doc_save_parsed` `kb_doc_update_meta` `kb_doc_update_content` `kb_doc_delete` `kb_doc_batch_delete` `kb_doc_move` | Document CRUD (`save_parsed` stores parsed output) |
+| **File system** | 3 | `fs_get_tree` `fs_get_children` `fs_upload_file` | Tree structure / raw files |
+| **Parsing** | 3 | `parse_doc` `parse_doc_batch` `parse_task_status` | PDF→MD (non-blocking) |
+| **Tags** | 4 | `kb_tags_list` `kb_doc_update_tags` `kb_doc_get_by_tag` `kb_tags_cleanup` | Tag management |
+| **Search** | 4 | `kb_search` `kb_search_vector` `kb_search_two_stage` `kb_search_stats` | Keyword / vector / two-stage / stats |
+| **Vector indexing** | 6 | `kb_index_document` `kb_batch_index` `kb_reindex` `kb_cleanup_orphan_collections` `kb_find_duplicates` `kb_task_status` | Index management + task polling |
+| **Graph** | 11 | `kb_graph_search` `kb_graph_build` `kb_graph_kb_overview` `kb_graph_document` ... | Neo4j knowledge graph |
+| **Experience** | 20 | `experience_search_smart` `experience_search_global` `experience_create` `experience_rerank` ... | Experience-KB full lifecycle (E0–E12) |
+| **Meditation** | 6 | `experience_meditation_status` `experience_meditation_run` `experience_meditation_task_status` `experience_meditation_config_get/update` `experience_meditation_history` | Automatic experience synthesis (the experience subsystem's scheduler) |
+| **Project** | 4 | `backend_status` `kb_project_status` `kb_project_start` `kb_project_update` | Service lifecycle |
+| **🧠 SOUL persona** | **17** | `soul_init` `soul_learn` `soul_ask` `soul_qdcvr_ask` `soul_router` `soul_list` ... | Persona creation/training/Q&A/evaluation/export |
+| **Health** | — | (merged into Project) | Pre-checks (`backend_status`) |
 
-> 合计 94 工具（KB 核心 77 + SOUL 人格 17；以 `grep -c '@mcp.tool' kb-mcp/server.py` 实测为准, 2026-09-09 校准）。`kb_doc_save_parsed` 横跨解析+写入（解析产物落盘入库），归入文档写避免重复计数。Meditation 6 个工具（status/run/task_status/config_get/config_update/history）是经验的自动归纳子系统。`kb_find_duplicates` 归入向量索引（基于向量相似度的重复检测）。SOUL 人格系统提供完整的人格蒸馏(补天)→训练→问答→评估→导出(LoRA)生命周期。
+> 94 tools in total (77 KB core + 17 SOUL persona; per the measured `grep -c '@mcp.tool' kb-mcp/server.py`, calibrated 2026-09-09). `kb_doc_save_parsed` spans parsing + writing (parsed output is written to disk and ingested) and is classified under document writes to avoid double counting. The 6 Meditation tools (status/run/task_status/config_get/config_update/history) are the automatic synthesis subsystem of Experience. `kb_find_duplicates` is classified under vector indexing (vector-similarity-based duplicate detection). The SOUL persona system provides a complete distill (Butian) → train → Q&A → evaluate → export (LoRA) persona lifecycle.
 
-> **写入路径原则**：写操作（create/update/delete/move）必须走 MCP 工具（HTTP→后端→原子更新三层）。读操作可以直接读文件，但推荐用 MCP 工具保证一致性。
+> **Write-path principle**: write operations (create/update/delete/move) MUST go through MCP tools (HTTP → backend → atomic three-layer update). Read operations may read files directly, but MCP tools are recommended to guarantee consistency.
 
-## 操作前的预检契约
+## Pre-Operation Check Contract
 
-**任何 KB 操作前**，Agent 必须先确认：
-1. `mcp__kb-mcp__backend_status()` → backend healthy + MinerU 可用
-2. 如果操作跨多文档/KB → 先 `kb_list(lightweight=true)` 建立全局认知
-3. 如果是写操作 → 确认目标 KB 存在（`kb_list` 或 `fs_get_tree`）
+**Before any KB operation**, the agent must first confirm:
+1. `mcp__kb-mcp__backend_status()` → backend healthy + MinerU available
+2. If the operation spans multiple documents/KBs → first run `kb_list(lightweight=true)` to build a global picture
+3. If it is a write operation → confirm the target KB exists (`kb_list` or `fs_get_tree`)
 
-## 路径格式约定
+## Path Format Conventions
 
-- `kb_get_documents` 在 Windows 返回**反斜杠**路径（`KB\doc.md`）
-- `kb_graph_*` 用**正斜杠**路径（`KB/doc.md`）
-- `kb_doc_read` 两者都接受
-- **跨工具传参时统一转正斜杠**避免 miss
+- `kb_get_documents` returns **backslash** paths on Windows (`KB\doc.md`)
+- `kb_graph_*` uses **forward-slash** paths (`KB/doc.md`)
+- `kb_doc_read` accepts both
+- **Normalize to forward slashes when passing paths between tools** to avoid misses

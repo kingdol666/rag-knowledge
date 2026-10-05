@@ -1,21 +1,7 @@
 ---
 name: soul
-description: >
-  SOUL persona system — full persona lifecycle management (create/delete/configure/list),
-  Butian (nuwa-skill × dot-skill dual-engine) distillation of initial personas (including
-  text distillation), curiosity-driven training and RL reinforcement evolution, task control
-  (pause/resume/training history), and retrieval-augmented Q&A that auto-routes to the
-  matching persona per task (QDCVR retrieves first, then persona-processes). A persona = a
-  soul-<name> knowledge base (4 constitutional-layer documents + config), with a memory/
-  cognition draft approval loop. Parallel to the knowledgebase skill: knowledgebase manages
-  "knowledge itself", soul manages "which persona processes the knowledge". Triggers: persona,
-  SOUL, create/delete/train/distill a persona, butian, persona Q&A, answer with persona XX,
-  persona-augmented retrieval, one-click retrieval, RL reinforcement, persona evolution,
-  pause training, resume training, training history, persona, soul_ask, soul_qdcvr_ask,
-  soul_init, soul_learn, soul_train_rl, soul_review_drafts, soul_delete, soul_router,
-  auto training, curiosity training, fixed-round training.
+description: "SOUL persona system — full persona lifecycle management: create/delete/configure/list personas, Butian distillation of individuals, persona learning/evolution, and soul-rag knowledge-enhanced Q&A. Use whenever the user mentions SOUL, 人格, persona create/delete/configure/list/learn, soul-rag retrieval, or asks an agent to answer with a specific persona's identity."
 ---
-
 # SOUL — Persona System Dispatcher (Innate Distillation + Acquired Evolution)
 
 **Executor: the main agent executes directly (SOUL operations are management/Q&A orchestration; no Archival delegation)**
@@ -73,7 +59,7 @@ After matching:
 | approve memories, memory drafts, persona memories, soul_review_drafts, approve memory | **Review** | §D1 `soul_review_drafts` |
 | persona evaluation, self-rating, calibration, soul_eval, soul_calibrate | **Evaluate** | §D2 `soul_eval`/`soul_calibrate` |
 | persona reflection, drift report, soul_reflect, reflect | **Reflect** | §D3 `soul_reflect` |
-| persona Q&A, answer with persona XX, persona-augmented retrieval, soul_ask | **Ask** | §C1/C2 `soul_ask` |
+| persona Q&A, answer with persona XX, soul_ask | **Ask** | §C1/C2 `soul_ask` |
 | one-click retrieval + persona answer, QDCVR persona Q&A, soul_qdcvr_ask | **QdcvrAsk** | §C4 `soul_qdcvr_ask` |
 | retrieve the KB first then answer, summarize with a persona after retrieval | **RagAsk** | §C3 context_override combo |
 | export training data, fine-tuning data, soul_export, LoRA | **Export** | §D4 `soul_export` |
@@ -389,7 +375,8 @@ ragctl soul ask "question" --soul soul-<name>          # persona-augmented Q&A
 | Push butian outputs directly into memories | Butian persona is only an initialization document (constitutional layer); knowledge evolution goes through training | persona is "innate identity", not "acquired knowledge"; mixing them breaks the constitutional layer |
 
 **Failure fallback**: training/approval tasks invisible (possibly MCP not restarted) → use the REST equivalent entry
-`GET/POST http://localhost:8765/api/v1/soul/*` (same data as MCP); still failing →
+`GET/POST http://localhost:${BACKEND_PORT}/api/v1/soul/*` (port from `.env` `BACKEND_PORT`, currently 8771;
+requests must carry `Authorization: Bearer <token>`; same data as MCP); still failing →
 `kb_project_status()` to check service health.
 
 ## Tool Quick Reference

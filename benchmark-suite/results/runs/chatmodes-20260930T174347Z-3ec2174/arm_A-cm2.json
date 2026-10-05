@@ -1,0 +1,33 @@
+{
+ "mode": "A",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 32.4,
+ "duration_ms": 30827,
+ "turns": 5,
+ "cost_usd": 0.1807468,
+ "session_id": "c15e0127-b59b-465e-a40d-941fa30da6c2",
+ "answer_chars": 1595,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "The evidence is complete and directly on-point. Here is the answer.\n\n---\n\n**结论：** 知识库中有一篇与该问题完全对应的核心文献，其结论是——高血压、糖尿病、心脏病是中风的主要风险因素；而在 EHR 心电图（patient-attribute）特征上做系统分析后发现，各特征之间相关性低（前两个主成分仅解释 31.4% 方差），因此**不能靠降维删特征，10 个患者属性须全部保留**；在三种经典 ML 算法中，**多层感知机（神经网络）表现最佳，准确率 75.02%**（决策树 74.31%、随机森林 74.53%）。\n\n### 关键风险因素及其影响（P0 直接证据）\n\n来源：*Predicting Stroke from Electronic Health Records*（Nwosu, Dev, Bhardwaj, Veeravalli, John；arXiv 1904.11280）— KB「生命科学与医学」, doc_path: `clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md`\n\n**1. 三大主要风险因素**（引言引文献 [6]-[8]）：\n> \"Studies in healthcare ",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

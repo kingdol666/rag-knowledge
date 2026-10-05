@@ -6,6 +6,8 @@
 
 ## 端口约定(重要)
 
+> ⚠️ **2026-09-30 实测**:当前部署后端实际端口以仓库 `.env` 的 `BACKEND_PORT` 为准(现为 **8771**),不再是下文历史值 8770。rag-bridge 插件默认 `base_url=http://127.0.0.1:8770` 会连接被拒——需在插件设置页把「rag-knowledge 后端地址」改为 `http://127.0.0.1:8771`(保存即热生效,或 kv `kb.base_url`)。插件默认的 web 地址 6789 无需改动。
+
 - 后端 FastAPI:**8770**(不再是默认 8765——该端口在本部署机被无关进程占用;`config.yml` 的 `server.dev.backend_port` 与 `.env` 的 `BACKEND_PORT` 已同步改为 8770)
 - Web (Nuxt,TreeFileSystem 文档写盘):**6789**
 - 启动:`cd backend && BACKEND_PORT=8770 APP_MODE=prod uv run python main.py`;web:`cd web && BACKEND_PORT=8770 npx nuxt dev --port 6789`
@@ -16,7 +18,8 @@
 |---|---|---|
 | 健康检查 | `GET :8770/api/v1/health` | `{"status":"healthy"}` |
 | 图谱可用性 | `GET :8770/api/v1/graph/health` | `health.available` |
-| 检索(主入口) | `POST :8770/api/v1/search/two-stage` | `{query, kb_id?, stage2_top_k?}`;**断言 `body.success`** |
+| **Agent 对话(推荐,2026-09-30 起)** | `POST :6789/api/kb/agent/chat` | `{prompt, harness?, permission?, mode?, timeout_ms?}` → KB 系统原生 Agent 自主执行**全部技能**(检索 QDCVR/文档入库/经验沉淀/图谱关联),sync 模式阻塞返回完整结果 `{success, reply, tools_used, duration_ms, num_turns, stop_reason}`;`mode:"async"` 立即返回 `{task_id, poll}`,后台执行完后 `GET :6789/api/kb/agent/tasks/:taskId` 取结果。鉴权 `Authorization: Bearer <token>`。旧 `/api/kb/native-search` 已删除 |
+| 检索(chunk 级兜底) | `POST :8770/api/v1/search/two-stage` | `{query, kb_id?, stage2_top_k?}`;**断言 `body.success`**;`body.stage2.results` 为分块命中 |
 | 文档写盘 | `POST :6789/api/kb/documents/create` | `{kbId, name, content, description?}` → 返回文档 path,作下一步 doc_path |
 | 向量索引 | `POST :8770/api/v1/search/index-document` | `{kb_id, doc_path, content, tags}`(content 直传) |
 | 结构化经验 | `POST :8770/api/v1/experience/{kb_id}` | `{title, category, problem, solution, key_lessons?, tags?}`;category 枚举见 `experience_models.py` |
@@ -44,10 +47,10 @@
 | 外部用户 API token | `POST /api/v1/auth/register` → `/auth/login` → `POST /api/v1/auth/tokens`（ scopes=[read,write]，ttl 可选）铸长期 token | **外部系统/插件直调 HTTP 的推荐方式** |
 | 无 token | — | 仅 health 等公开端点；其余返回 401 + 可读 hint |
 
-⚠️ **rag-bridge / diag-bridge 插件现状**：`callJson/jpost` 未携带 Authorization 头，
-在 auth.enabled=true 下会收到 401。需要插件侧升级：从 `kv["kb.token"]` 读取并在
-callJson 统一注入 `Authorization: Bearer <token>`（token 用上面外部用户通道铸造）。
-本仓库 `scripts/e2e_agentworkshop_api.py` 已按"带 token"的真实场景全量验证（21/21）。
+✅ **rag-bridge / diag-bridge 插件现状（2026-09-20 更新）**：插件 v1.1.0+ 已在
+`callJson` 统一注入 `Authorization: Bearer <token>` + `X-KB-Token`（token 从
+`plugins.rag-bridge.token` 系统配置或 `kv["kb.token"]` 读取，用外部用户通道铸造）。
+kb_search 自 v1.3.0 起走 `/api/kb/agent/chat` 原生 Agent 对话（检索/入库/经验/图谱全技能），不再经 native-search（该端点 2026-09-30 删除）；chunk 级 two-stage 仍作降级兜底。
 
 ## 多 Harness 作业 API（2026-09-10 新增）
 

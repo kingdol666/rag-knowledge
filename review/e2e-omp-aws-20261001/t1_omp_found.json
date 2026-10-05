@@ -1,0 +1,35 @@
+{
+ "tag": "t1_omp_found",
+ "engine": "omp",
+ "request": {
+  "prompt": "How does InstructDS generate high-quality query-based dialogue summaries? Answer only from the knowledge bases, and name the source document you used.",
+  "engine": "omp",
+  "kbEnhanced": true,
+  "maxTurns": 18,
+  "permissionMode": "default",
+  "timeout_ms": 480000,
+  "stream": false,
+  "kbIds": [
+   "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+  ]
+ },
+ "http": 200,
+ "wall_s": 129.0,
+ "response": {
+  "success": false,
+  "engine": "omp",
+  "sessionId": "",
+  "model": "default",
+  "subtype": null,
+  "answer": "**InstructDS 通��「三步合成 QDS 三元组 + 多数据集混合训练」生成高质量 query-based 对话摘要**：核心是先合成 query-dialogue-summary 三元组（summary-anchored query generation → query filtering → query-based summary generation），再用统一模型对三个摘要数据集做联合指令训练。\n\n**三步合成流程**（论文 3.2 节原文）：\n1. **Query Generation（summary-anchored）**：让 LLM 基于参考摘要（reference summary）生成多个候选 query，以覆盖多样化的用户意图。\n2. **Query Filtering**：用\"text-based and semantic-based methods\"双重过滤，保证收集到的 query 的**有效性与多样性**（validity and diversity）。\n3. **Query-based Summary Generation**：触发 LLM 的 question-answering 能力，基于 query + 完整摘要生成对应的 query-based summary。原文注：从更简洁、结构化的摘要（而非原始对话）生成摘要\"comparatively easier…which further guarantees the quality\"。\n\n**训练与增益机制**：InstructDS 在 3 个摘要数据集的多用途指令三元组上联合训练（mixed training paradigm），以**用户 conciseness 需求**通过 length-aware augmentation 满足。消融显示：MixDS+QDS 相比仅 MixDS，在 DREAM 上把 query-based 性能从 **56.4 提升到 59.1**；随 QDS 三元组数量增加，DREAM 准确率从 54 提升到 58+。合成三元组增强对话理解与推理能力，并可迁移到其他数据集（如 DREAM）。\n\n**质量验证**：4 维（Faithfulness / Fluency / Informativeness / Conciseness）主观评测中，InstructDS 的 fluency、informativeness、conciseness 与人工撰写摘要相当；在 DialogSum / TODSum 上（Table 4）超过 ChatGPT（如 TODSum R-L 85.4 vs ChatGPT 64.0）。论文结论：高质量 query-based 摘要来自 **multi-dataset training + synthesized QDS triples + length-awareness augmentations** 三者结合。\n\n**出处**：`计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md` 与 `(part 2 of 4).md`，知识库 `b1199132-e4d4-4305-8c2e-82dc1753b0ba`（论文 *Instructive Dialogue Summarization with Query Aggregations*，arXiv 2310.10981，Bin Wang et al., I2R A*STAR）。证据等级 P0（摘要 + 3.2 节方法 + 消融/结论原文直接支撑）。",
+  "duration_ms": 37481,
+  "duration_api_ms": null,
+  "num_turns": 3,
+  "total_cost_usd": 0.0599766,
+  "elapsed_ms": 128992
+ },
+ "answer": "**InstructDS 通��「三步合成 QDS 三元组 + 多数据集混合训练」生成高质量 query-based 对话摘要**：核心是先合成 query-dialogue-summary 三元组（summary-anchored query generation → query filtering → query-based summary generation），再用统一模型对三个摘要数据集做联合指令训练。\n\n**三步合成流程**（论文 3.2 节原文）：\n1. **Query Generation（summary-anchored）**：让 LLM 基于参考摘要（reference summary）生成多个候选 query，以覆盖多样化的用户意图。\n2. **Query Filtering**：用\"text-based and semantic-based methods\"双重过滤，保证收集到的 query 的**有效性与多样性**（validity and diversity）。\n3. **Query-based Summary Generation**：触发 LLM 的 question-answering 能力，基于 query + 完整摘要生成对应的 query-based summary。原文注：从更简洁、结构化的摘要（而非原始对话）生成摘要\"comparatively easier…which further guarantees the quality\"。\n\n**训练与增益机制**：InstructDS 在 3 个摘要数据集的多用途指令三元组上联合训练（mixed training paradigm），以**用户 conciseness 需求**通过 length-aware augmentation 满足。消融显示：MixDS+QDS 相比仅 MixDS，在 DREAM 上把 query-based 性能从 **56.4 提升到 59.1**；随 QDS 三元组数量增加，DREAM 准确率从 54 提升到 58+。合成三元组增强对话理解与推理能力，并可迁移到其他数据集（如 DREAM）。\n\n**质量验证**：4 维（Faithfulness / Fluency / Informativeness / Conciseness）主观评测中，InstructDS 的 fluency、informativeness、conciseness 与人工撰写摘要相当；在 DialogSum / TODSum 上（Table 4）超过 ChatGPT（如 TODSum R-L 85.4 vs ChatGPT 64.0）。论文结论：高质量 query-based 摘要来自 **multi-dataset training + synthesized QDS triples + length-awareness augmentations** 三者结合。\n\n**出处**：`计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md` 与 `(part 2 of 4).md`，知识库 `b1199132-e4d4-4305-8c2e-82dc1753b0ba`（论文 *Instructive Dialogue Summarization with Query Aggregations*，arXiv 2310.10981，Bin Wang et al., I2R A*STAR）。证据等级 P0（摘要 + 3.2 节方法 + 消融/结论原文直接支撑）。",
+ "num_turns": 3,
+ "cost_usd": 0.0599766,
+ "session_id": ""
+}

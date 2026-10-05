@@ -1,0 +1,99 @@
+{
+ "track": "b",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "answer": "**Answer:**\n\nMLP-SLAM addresses the degradation of visual (stereo) SLAM accuracy in highly dynamic outdoor environments crowded with movable objects such as pedestrians, cars, and buses, where static-world-assuming systems like ORB-SLAM2 lose precision. It tackles the limitations of prior dynamic-SLAM approaches: geometric methods (Type I) are not general, and semantic/detection-based methods like DynaSLAM (Types II/III) discard all feature points inside dynamic-class masks — wrongly deleting genuinely static points such as parked cars and guardrails — and require laborious manual parameter tuning. Its solution is an MLP-based discriminator that classifies each feature point as dynamic or static using *complete* geometric information rather than a hand-tuned subset, requiring no manual parameter configuration and avoiding information loss; the system also releases a public dataset of 50,000+ feature points from KITTI Odometry to evaluate such discriminators directly, and reports the highest average precision and fastest speed on KITTI Odometry and KITTI360.\n\n**File used:** `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md`",
+ "is_error": false,
+ "latency_s": 60.5,
+ "sdk_duration_ms": 57748,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "dynamic environment|dynamic scene|moving object"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "dynamic",
+    "path": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 67977,
+  "output": 626,
+  "cache_read": 95424,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.403247,
+ "timeline": [
+  {
+   "t": 2.8,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 22.85,
+   "event": "text",
+   "detail": "48"
+  },
+  {
+   "t": 22.89,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 22.92,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 29.13,
+   "event": "text",
+   "detail": "42"
+  },
+  {
+   "t": 29.16,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 36.05,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 60.49,
+   "event": "text",
+   "detail": "1165"
+  },
+  {
+   "t": 60.53,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the files for visual SLAM content.\n\n",
+  "The MLP-SLAM paper is the relevant file.\n\n",
+  "**Answer:**\n\nMLP-SLAM addresses the degradation of visual (stereo) SLAM accuracy in highly dynamic outdoor environments crowded with movable objects such as pedestrians, cars, and buses, where static-world-assuming systems like ORB-SLAM2 lose precision. It tackles the limitations of prior dynamic-SLAM approaches: geometric methods (Type I) are not general, and semantic/detection-based methods like DynaSLAM (Types II/III) discard all feature points inside dynamic-class masks — wrongly deleting genuinely static points such as parked cars and guardrails — and require laborious manual parameter tuning. Its solution is an MLP-based discriminator that classifies each feature point as dynamic or static using *complete* geometric information rather than a hand-tuned subset, requiring no manual parameter configuration and avoiding information loss; the system also releases a public dataset of 50,000+ feature points from KITTI Odometry to evaluate such discriminators directly, and reports the highest average precision and fastest speed on KITTI Odometry and KITTI360.\n\n**File used:** `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md`"
+ ],
+ "qid": "BQ09",
+ "via": "chat"
+}

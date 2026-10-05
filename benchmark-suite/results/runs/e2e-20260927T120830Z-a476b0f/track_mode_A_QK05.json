@@ -1,0 +1,46 @@
+{
+ "qid": "QK05",
+ "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient to answer this question. None of the retrieved chunks discuss trap-cropping, trap plants, or any field-allocation ratio; the topic does not appear anywhere in the provided material. The chunks concern other domains entirely (RAG benchmarking, mixed-integer optimal control, monetary-policy state-space modeling, sketch-based query optimization, quantum error mitigation, and the Transformer paper). No share or percentage for trap-plant allocation at 5–25× attractiveness is stated or implied. I therefore cannot provide the requested figure without falling back on prior knowledge, which this task forbids.\n\nSources examined (none contained the answer):\n- `Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning` (abstract)\n- `mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md.md` (part 1/5)\n- `economics__1911.06206__bayesian-state-space-modeling-for-analyzing` (part 3/5)\n- `databases__2102.02440__online-sketch-based-query-optimization.md.md` (part 3/5)\n- `quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu` (part 3/4)\n- `Attention Is All You Need` (author block)",
+ "is_error": false,
+ "latency_s": 38.5,
+ "retrieval_s": 19.9,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38334,
+  "output": 1184,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.22127,
+ "ranked": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/thinking-style.md",
+  "soul-demo-qa/thinking-style.md",
+  "soul-e2e-tester-024115/thinking-style.md",
+  "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+  "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+  "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+  "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+  "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+  "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+  "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md"
+ ],
+ "evidence_sources": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": true,
+ "merge": null
+}

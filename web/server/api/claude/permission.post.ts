@@ -36,8 +36,8 @@ export default defineEventHandler(async (event) => {
   // Pre-init race: the pending entry may be keyed under '_pre_init' (or any
   // adapter session id) while the SSE payload carried an empty sessionId.
   // toolUseId is globally unique, so fall back to locating it directly.
-  let pending = getPending(sessionId, toolUseId)
-  let key = sessionId
+  let pending = getPending(sessionId ?? '', toolUseId)
+  let key: string = sessionId ?? ''
   if (!pending) {
     const found = findSessionByToolUseId(toolUseId)
     if (found) {

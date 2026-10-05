@@ -1,0 +1,81 @@
+{
+ "mode": "C",
+ "ok": true,
+ "rc": 0,
+ "seconds": 574.7,
+ "wall_s": 576.5,
+ "real_engine": true,
+ "status": "ok",
+ "n_result_docs": 36,
+ "kept_doc_paths": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 21 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 24 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 25 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 3 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+  "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+  "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 2 of 2).md",
+  "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+  "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 4 of 6).md",
+  "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+  "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+  "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+  "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+  "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+  "计算机与人工智能/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+  "计算机与人工智能/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+  "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+  "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+  "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md"
+ ],
+ "judge": {
+  "backend": "laya_sdk",
+  "engine": "laya",
+  "total_segments": 547,
+  "scored_segments": 547,
+  "errors": []
+ },
+ "merge": {
+  "vector_lane": null,
+  "catalog_lane": null,
+  "merged_docs": 39,
+  "kept_docs": null,
+  "unscanned": null
+ },
+ "evidence_chars": 12000,
+ "gold_hit": true,
+ "stderr_tail": "",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "exit_ok": true,
+   "real_engine": true,
+   "evidence_nonempty": true,
+   "gold_hit": true,
+   "latency_recorded": true
+  }
+ },
+ "question": {
+  "qid": "q1",
+  "text": "How does InstructDS generate high-quality query-based dialogue summaries? (InstructDS dialogue summarization query-based instruction tuning data synthesis)",
+  "gold_substr": "instructive-dialogue-summarization",
+  "gold_name": "Instructive Dialogue Summarization 论文（4-part 拆分, 即 InstructDS 方法论文）"
+ }
+}

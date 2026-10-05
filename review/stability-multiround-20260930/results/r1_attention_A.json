@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "attention",
+ "mode": "A",
+ "http": 200,
+ "wall_s": 76.0,
+ "success": true,
+ "session_id": "b5a5c487-08d9-43c3-a9b4-9a4334a6c379",
+ "turns": 6,
+ "cost": 0.23382319999999998,
+ "duration_ms": 74471,
+ "answer": "**Transformer 的自注意力（self-attention）核心计算公式即论文 Eq.(1) \"Scaled Dot-Product Attention\"：**\n\n$$\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}\\!\\left(\\frac{QK^{T}}{\\sqrt{d_k}}\\right)V$$\n\n**出处（P0 直接证据）：** 《Attention Is All You Need》(arXiv:1706.03762)，§3.2.1 Scaled Dot-Product Attention，Eq.(1)。\nKB：`计算机与人工智能` 库（b1199132-…），文件 `artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md`，kb_doc_read 原文核验通过；Laya 引擎 15 段评分，11 段幸存（score 0.83–0.96）。\n\n---\n\n**1. 公式的构成（论文原文表述）**\n> \"The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.\"\n> \"we compute the attention function on a set of queries simultaneously, packed together into a matrix $Q$. The keys and values are also packed together into matrices K and V.\"\n\n即：Q、K、V 打包成矩阵并行计算 → $QK^T$ 求点积 → 除以 $\\sqrt{d_k}$ 缩放 → softmax 得权重 → 对 V 加权求和。\n\n**2. 为什么要缩放 $1/\\sqrt{d_k}$（设计理由，原文）**\n> \"for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients. To counteract this effect, we scale the dot products by $\\frac{1}{\\sqrt{d_k}}$.\"\n\n**3. 自注意力的定义（Q/K/V 同源）**\n> \"Self-attention, sometimes called intra-attention is an attention mechanism relating different positions of a single sequence in order to compute a representation of the sequence.\"（§2）\n> \"In a self-attention layer all of the keys, values and queries come from the same place, in this case, the output of the previous layer in the encoder.\"（§3.2.3）\n\n**4. 扩展形式：多头注意力（§3.2.2 无编号公式）**\n$$\\mathrm{MultiHead}(Q,K,V)=\\mathrm{Concat}(\\mathrm{head}_1,\\dots,\\mathrm{head}_h)W^{O},\\quad \\mathrm{head}_i=\\mathrm{Attention}(QW_i^Q,\\,KW_i^K,\\,VW_i^V)$$\n论文参数：$h=8$，$d_k=d_v=d_{\\mathrm{model}}/h=64$；$d_{\\mathrm{model}}=512$，$d_{ff}=2048$，$N=6$ 层。\n\n**5. 解码器掩码：** 将非法连接位置的 softmax 输入置为 $-\\infty$（\"setting to —∞\"），保持自回归性质。\n\n**6. 复杂度（Table 1）：** Self-Attention 每层 $O(n^2\\cdot d)$，顺序操作 $O(1)$，最大路径长度 $O(1)$。\n\n---\n**可信度标注：** 上述公式与引文均为 P0（原论文正文直接证据，已逐字核验）；未在本库中发现对该公式的其他独立推导来源。检索执行：`kb_search_two_stage` + `kb_search_vector`（KB b1199132-…，slim），候选去重后经 `kb_laya_judge` 验证，再以 `kb_doc_read` 复核原文。"
+}

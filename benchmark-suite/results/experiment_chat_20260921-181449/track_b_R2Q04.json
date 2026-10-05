@@ -1,0 +1,98 @@
+{
+ "track": "b",
+ "question": "What does STRAND condition on to represent a genetic perturbation, instead of collapsing all interventions on the same gene into one representation?",
+ "answer": "STRAND conditions on the **regulatory DNA sequence at the perturbation's genomic locus** rather than on a gene identifier. Specifically, it encodes the local genomic sequence (a 524,288 bp window) together with a binary mask marking the perturbed nucleotide positions, then mean-pools the embeddings over the masked region to build a perturbation-anchored query, which cross-attends over the full sequence context to form the perturbation embedding **u_p** (Section 3.2, \"Sequence-Conditioned Perturbation Module\"). This sequence-derived embedding parameterizes a conditional transport process from control to perturbed cell states, so perturbations targeting different loci within the same gene (e.g., alternative TSSs or enhancers) receive distinct representations. This contrasts with gene-level models, which \"collapse these distinct interventions into the same representation.\"\n\nFile used: `genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md`.",
+ "is_error": false,
+ "latency_s": 23.4,
+ "sdk_duration_ms": 20512,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "STRAND"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\genomics__2602.10156__strand-sequence-condit"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 87711,
+  "output": 457,
+  "cache_read": 99776,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.49986800000000003,
+ "timeline": [
+  {
+   "t": 2.87,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 15.14,
+   "event": "text",
+   "detail": "36"
+  },
+  {
+   "t": 15.14,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 15.15,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 16.12,
+   "event": "text",
+   "detail": "43"
+  },
+  {
+   "t": 16.13,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 18.22,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 23.36,
+   "event": "text",
+   "detail": "967"
+  },
+  {
+   "t": 23.37,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the papers for STRAND.\n\n",
+  "I found the STRAND paper. Let me read it.\n\n",
+  "STRAND conditions on the **regulatory DNA sequence at the perturbation's genomic locus** rather than on a gene identifier. Specifically, it encodes the local genomic sequence (a 524,288 bp window) together with a binary mask marking the perturbed nucleotide positions, then mean-pools the embeddings over the masked region to build a perturbation-anchored query, which cross-attends over the full sequence context to form the perturbation embedding **u_p** (Section 3.2, \"Sequence-Conditioned Perturbation Module\"). This sequence-derived embedding parameterizes a conditional transport process from control to perturbed cell states, so perturbations targeting different loci within the same gene (e.g., alternative TSSs or enhancers) receive distinct representations. This contrasts with gene-level models, which \"collapse these distinct interventions into the same representation.\"\n\nFile used: `genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md`."
+ ],
+ "qid": "R2Q04",
+ "via": "chat"
+}

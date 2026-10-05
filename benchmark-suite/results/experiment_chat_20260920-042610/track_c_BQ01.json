@@ -1,0 +1,71 @@
+{
+ "track": "c",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "Based on the retrieved chunks, the Transformer computes attention through a \"multi-headed self-attention\" mechanism that draws global dependencies between input and output positions entirely through attention, dispensing with recurrence and convolutions (…1706.03762…k19, …k02, …k00). It uses multi-head attention in three ways: encoder-decoder attention (queries from the previous decoder layer, keys/values from the encoder output, letting every decoder position attend over all input positions), encoder self-attention, and decoder self-attention (…k06, …k07). The retrieved evidence shows the replacement rationale: prior dominant models relied on complex recurrent or convolutional networks, whereas the Transformer is \"the first sequence transduction model based entirely on attention,\" replacing recurrent layers with multi-headed self-attention (…k20, …k00). Because it eschews recurrence, it \"allows for significantly more parallelization\" and can be trained significantly faster than recurrent or convolutional architectures (…k02, …k20). The chunks also note self-attention reduces the path length for learning dependencies between distant positions to a constant number of operations, versus linear for ConvS2S and logarithmic for ByteNet, at the cost of reduced effective resolution that Multi-Head Attention counteracts (…k02, chunk_index 3). Note that the exact scaled dot-product formula (Q/K/V projections, √dk scaling) does not appear in the retrieved chunks.",
+ "is_error": false,
+ "latency_s": 100.5,
+ "sdk_duration_ms": 98272,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 56679,
+  "output": 488,
+  "cache_read": 61696,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.326443,
+ "timeline": [
+  {
+   "t": 2.23,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 32.19,
+   "event": "text",
+   "detail": "84"
+  },
+  {
+   "t": 32.19,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 61.76,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 100.24,
+   "event": "text",
+   "detail": "1477"
+  },
+  {
+   "t": 100.48,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll query the dense vector index for chunks on Transformer attention computation.\n\n",
+  "Based on the retrieved chunks, the Transformer computes attention through a \"multi-headed self-attention\" mechanism that draws global dependencies between input and output positions entirely through attention, dispensing with recurrence and convolutions (…1706.03762…k19, …k02, …k00). It uses multi-head attention in three ways: encoder-decoder attention (queries from the previous decoder layer, keys/values from the encoder output, letting every decoder position attend over all input positions), encoder self-attention, and decoder self-attention (…k06, …k07). The retrieved evidence shows the replacement rationale: prior dominant models relied on complex recurrent or convolutional networks, whereas the Transformer is \"the first sequence transduction model based entirely on attention,\" replacing recurrent layers with multi-headed self-attention (…k20, …k00). Because it eschews recurrence, it \"allows for significantly more parallelization\" and can be trained significantly faster than recurrent or convolutional architectures (…k02, …k20). The chunks also note self-attention reduces the path length for learning dependencies between distant positions to a constant number of operations, versus linear for ConvS2S and logarithmic for ByteNet, at the cost of reduced effective resolution that Multi-Head Attention counteracts (…k02, chunk_index 3). Note that the exact scaled dot-product formula (Q/K/V projections, √dk scaling) does not appear in the retrieved chunks."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

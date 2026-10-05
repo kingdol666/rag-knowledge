@@ -1,0 +1,9 @@
+{
+ "q": "hongshaorou",
+ "mode": "A",
+ "http": 200,
+ "wall_s": 53.2,
+ "turns": 5,
+ "cost": 0.11195820000000001,
+ "answer": "**结论：该知识库中没有「红烧肉」的做法，未找到任何相关菜谱内容。**\n\n检索事实如下：\n\n- **目标库**：`计算机与人工智能`（kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`，131 篇文档），其描述为 \"Computer science and AI: algorithms, NLP/LLM, vision, robotics perception, data systems, speech, social computing\"。\n- **已执行的检索**：\n  1. `kb_search_two_stage`（query=\"红烧肉 做法 菜谱 烹饪步骤\"，slim）→ stage1 候选 **0**，stage2 **0**，total_results **0**。\n  2. `kb_search_vector`（query=\"红烧肉 做法 调料 五花肉 炖煮\"，top_k=20）→ 返回 20 条，但**全部为误命中**：最高分仅 **0.4476**（低于 0.45 硬阈值），内容全是 arXiv 论文片段（LLM 事实学习动力学、VQA 数据集、SLAM、统计因果推断等），与烹饪无关。命中的 \"food/restaurant/pizza/ham\" 只是对话摘要数据集里的英文单词，非中文菜谱。\n- **命中数**：真正与\"红烧肉\"相关的证据 **0 条**。\n- 该库为 AI/计算机科学文献库，**不含烹饪/饮食类文档**，因此无法提供红烧肉的做法。\n\n**建议**：若需要菜谱，请到含饮食/生活类内容的库中检索；本库（以及我本轮被限定使用的这一个库）无对应资料。\n\n（说明：我未编造任何步骤、配料或火候信息。）"
+}

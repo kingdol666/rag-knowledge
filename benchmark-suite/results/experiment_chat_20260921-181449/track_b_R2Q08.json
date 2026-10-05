@@ -1,0 +1,145 @@
+{
+ "track": "b",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "answer": "The paper is \"Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\" (`speech__2209.15032`). It fine-tunes the Czech pre-trained wav2vec 2.0 base model \"ClTRUS\" for audio-frame classification (every 20 ms) on the hand-annotated NRS broadcast-news corpus (~42 min, 486 sentences), using only raw audio/frame labels — no text annotation, no word-boundary knowledge, and no handcrafted prosodic features. Evaluated on within-sentence boundaries only (end-of-sentence boundaries excluded for fair comparison with the text-based T5 model), the wav2vec2 model reaches **94.46% accuracy, 82.47% precision, 83.00% recall, and 82.73% F1** (Table 3, model fine-tuned with intermediate boundaries), versus 93.44% accuracy for T5. The paper notes these within-sentence numbers are slightly lower than the full-audio results because sentence-final boundaries are more acoustically pronounced and thus easier to detect.\n\nSources used: `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md` (lines 45–54, 90–103, 175–194).",
+ "is_error": false,
+ "latency_s": 22.9,
+ "sdk_duration_ms": 21236,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "wav2vec",
+    "path": "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\speech__2209.15032__detection-of-prosodic-bo"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\speech__2209.15032__detection-of-prosodic-bo"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\speech__2209.15032__detection-of-prosodic-bo"
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 78168,
+  "output": 1029,
+  "cache_read": 228864,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.530997,
+ "timeline": [
+  {
+   "t": 1.68,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.29,
+   "event": "text",
+   "detail": "56"
+  },
+  {
+   "t": 3.68,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 7.43,
+   "event": "text",
+   "detail": "117"
+  },
+  {
+   "t": 7.44,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 10.54,
+   "event": "text",
+   "detail": "147"
+  },
+  {
+   "t": 10.54,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 13.66,
+   "event": "text",
+   "detail": "68"
+  },
+  {
+   "t": 13.67,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 15.98,
+   "event": "text",
+   "detail": "124"
+  },
+  {
+   "t": 15.99,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 18.74,
+   "event": "text",
+   "detail": "67"
+  },
+  {
+   "t": 18.75,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 22.86,
+   "event": "text",
+   "detail": "1029"
+  },
+  {
+   "t": 22.87,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll research this question using the available files.\n\n",
+  "The most relevant file is `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md`. Let me examine it.\n\n",
+  "I found the paper. Let me read the key results sections around lines 90-200 to extract the exact accuracy figures for within-sentence boundaries.\n\n",
+  "The file is in the corpus directory. Let me read the correct path.\n\n",
+  "Now let me look at the specific numeric results for within-sentence boundaries (Table 2, per-speaker, and the discussion).\n\n",
+  "I have the answer. Let me confirm the dataset/test setup briefly.\n\n",
+  "The paper is \"Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\" (`speech__2209.15032`). It fine-tunes the Czech pre-trained wav2vec 2.0 base model \"ClTRUS\" for audio-frame classification (every 20 ms) on the hand-annotated NRS broadcast-news corpus (~42 min, 486 sentences), using only raw audio/frame labels — no text annotation, no word-boundary knowledge, and no handcrafted prosodic features. Evaluated on within-sentence boundaries only (end-of-sentence boundaries excluded for fair comparison with the text-based T5 model), the wav2vec2 model reaches **94.46% accuracy, 82.47% precision, 83.00% recall, and 82.73% F1** (Table 3, model fine-tuned with intermediate boundaries), versus 93.44% accuracy for T5. The paper notes these within-sentence numbers are slightly lower than the full-audio results because sentence-final boundaries are more acoustically pronounced and thus easier to detect.\n\nSources used: `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md` (lines 45–54, 90–103, 175–194)."
+ ],
+ "qid": "R2Q08",
+ "via": "chat"
+}

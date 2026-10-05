@@ -1,0 +1,170 @@
+{
+  "version": "2026-09-24",
+  "meta": {
+    "designed_by": "Archival (executing agent), 2026-09-24",
+    "purpose": "10 题快速全功能测试 —— 用最小题量覆盖系统的全部关键功能（检索召回 / 跨库路由 / 内容裁决 / 显式拒答 / 引用溯源 / 长文窗口 / 干扰对抗 / 数值抽取）",
+    "quota": {"single": 6, "crosskb": 1, "distractor": 1, "unanswerable": 1, "outofcorpus": 1},
+    "grounding": "题目取自既有已核对题集（BQ01/04/06/07 与 R2Q06/08/09/10，gold 均已核对存在于当前 100 篇语料），另加 2 条拒答题（取自 honest_failure_probe.json 的 P1/P3，已实测为 NOT_FOUND）。",
+    "leakage_control": "gold_points 为语义要点 rubric（非逐字关键词）；gold_keywords 仅作 L1 回归层；题面不泄露正文措辞。",
+    "covers_functions": {
+      "single": "检索召回 + 端到端作答（F3）",
+      "crosskb": "跨库路由（F9）",
+      "distractor": "同域干扰下不选错文档（F5）",
+      "unanswerable": "库内有相邻文档但答不了 → 显式拒答（F4）",
+      "outofcorpus": "域外 → 显式拒答、零编造（F4）",
+      "tag:numeric": "数值/细节抽取精度",
+      "tag:chunk-window": "长文档分块窗口（历史失败模式）",
+      "tag:provenance": "引用可溯源到具体论文"
+    }
+  },
+  "questions": [
+    {
+      "qid": "QK01",
+      "stratum": "single",
+      "tag": "provenance",
+      "field": "artificial-intelligence",
+      "arxiv_id": "1706.03762",
+      "paper": "Attention Is All You Need",
+      "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+      "gold_docs": ["1706.03762"],
+      "gold_points": [
+        "注意力用 scaled dot-product attention 计算",
+        "采用 multi-head 投影并行计算",
+        "取代 recurrence：可并行、能建模全局依赖",
+        "同时取代卷积"
+      ],
+      "gold_keywords": ["scaled dot-product", "multi-head", "recurrence"]
+    },
+    {
+      "qid": "QK02",
+      "stratum": "single",
+      "field": "genomics",
+      "arxiv_id": "1602.01876",
+      "paper": "Primer on the Gene Ontology",
+      "question": "Which three independent ontologies subdivide the Gene Ontology?",
+      "gold_docs": ["1602.01876"],
+      "gold_points": [
+        "Molecular Function",
+        "Biological Process",
+        "Cellular Component"
+      ],
+      "gold_keywords": ["molecular function", "biological process", "cellular component"]
+    },
+    {
+      "qid": "QK03",
+      "stratum": "single",
+      "field": "materials",
+      "arxiv_id": "1606.00335",
+      "paper": "Dynamic electrical behavior of halide perovskite based solar cells",
+      "question": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+      "gold_docs": ["1606.00335"],
+      "gold_points": [
+        "动态电学模型用 polarization（极化）效应解释 J-V 迟滞",
+        "迟滞来自极化随时间变化/缓慢弛豫"
+      ],
+      "gold_keywords": ["polarization"]
+    },
+    {
+      "qid": "QK04",
+      "stratum": "single",
+      "tag": "numeric",
+      "field": "speech",
+      "arxiv_id": "2209.15032",
+      "paper": "Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0",
+      "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+      "gold_docs": ["2209.15032"],
+      "gold_points": [
+        "仅使用 acoustic（声学）信息，不用文本",
+        "准确率约 94%"
+      ],
+      "gold_keywords": ["acoustic", "94"]
+    },
+    {
+      "qid": "QK05",
+      "stratum": "single",
+      "tag": "numeric",
+      "field": "agriculture",
+      "arxiv_id": "2508.05896",
+      "paper": "Optimal trap cropping investments to maximize agricultural yield",
+      "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+      "gold_docs": ["2508.05896"],
+      "gold_points": [
+        "诱虫植物占田块约 7%–10%"
+      ],
+      "gold_keywords": ["7", "10"]
+    },
+    {
+      "qid": "QK06",
+      "stratum": "single",
+      "tag": "chunk-window",
+      "field": "climate-science",
+      "arxiv_id": "1503.07557",
+      "paper": "Precipitation extremes under climate change",
+      "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+      "gold_docs": ["1503.07557"],
+      "gold_points": [
+        "主要控制因素是 precipitation efficiency（降水效率）",
+        "伴随热力学水汽增加（thermodynamic moisture increase）"
+      ],
+      "gold_keywords": ["precipitation efficiency"]
+    },
+    {
+      "qid": "QK07",
+      "stratum": "distractor",
+      "field": "nlp",
+      "arxiv_id": "2608.05850",
+      "paper": "MameLoshnLM: Yiddish Language Model and Evaluation Benchmark",
+      "question": "What is MameLoshnLM and what parameter scale does it have?",
+      "gold_docs": ["2608.05850"],
+      "gold_points": [
+        "首个开源意第绪语（Yiddish）语言模型",
+        "参数量 8B",
+        "附带评估基准（benchmark）"
+      ],
+      "gold_keywords": ["yiddish", "8b"],
+      "note": "干扰设计：语料内另有多篇语言模型论文（BERT 1810.04805 / GPT-3 2005.14165 等），检索极易被同域高相似文档抢占；考察内容裁决是否选对文档。"
+    },
+    {
+      "qid": "QK08",
+      "stratum": "crosskb",
+      "field": "climate-science",
+      "arxiv_id": "2409.13934",
+      "paper": "On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates",
+      "question": "Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?",
+      "gold_docs": ["2409.13934"],
+      "gold_points": [
+        "超过 95th percentile 之后 GAN 明显优于确定性基线"
+      ],
+      "gold_keywords": ["gan", "95"],
+      "note": "跨库路由：该论文属「自然科学与地球科学」库，而 GAN/气候降尺度语汇在「计算机与人工智能」库也有高相似文档。"
+    },
+    {
+      "qid": "QK09",
+      "stratum": "unanswerable",
+      "field": "clinical-medicine",
+      "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+      "gold_docs": [],
+      "gold_points": [
+        "语料无兽医药理来源（临床库只覆盖 LLM 临床知识评测）",
+        "正确行为 = 明确 not-found 报告，不得给出任何剂量数字"
+      ],
+      "gold_keywords": [],
+      "expect": "refusal",
+      "note": "库内有相邻生物医学文档（clinical-medicine / genomics），但都不含该答案 → 考察显式拒答契约。"
+    },
+    {
+      "qid": "QK10",
+      "stratum": "outofcorpus",
+      "field": "particle-physics",
+      "question": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
+      "gold_docs": [],
+      "gold_points": [
+        "该 benchmark 不存在于语料（语料无粒子物理探测器论文）",
+        "正确行为 = 明确 not-found 报告，不得编造其方法或数字"
+      ],
+      "gold_keywords": [],
+      "expect": "refusal",
+      "note": "完全域外 → 考察零编造。"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+ "track": "c",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "answer": "**Answer:**\n\nMLP-SLAM addresses the problem that V-SLAM systems achieve high precision only in environments with few dynamic objects, while their performance degrades in settings with numerous movable objects such as pedestrians, cars, and buses common in outdoor scenes. It proposes an MLP-based real-time stereo SLAM system to address SLAM system degradation in dynamic environments, using an MLP model to distinguish dynamic from static feature points. Static feature points — those outside bounding boxes of potential dynamic objects (filtered by a Depth Filter Module) and classified as static by the MLP model — are used in the optimization stage by minimizing re-projection error. It is built on ORB-SLAM2 as its foundation and compared against DynaSLAM and modified VDO-SLAM on KITTI360.\n\n**Chunks used:** `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md`, `__k23.md`, `__k03.md`, `__k18.md`, `__k10.md`",
+ "is_error": false,
+ "latency_s": 48.6,
+ "sdk_duration_ms": 44483,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM dynamic environment visual SLAM problem",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 47621,
+  "output": 488,
+  "cache_read": 111040,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.305825,
+ "timeline": [
+  {
+   "t": 4.15,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 7.0,
+   "event": "text",
+   "detail": "51"
+  },
+  {
+   "t": 7.04,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 14.34,
+   "event": "text",
+   "detail": "47"
+  },
+  {
+   "t": 14.37,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 39.78,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 48.56,
+   "event": "text",
+   "detail": "942"
+  },
+  {
+   "t": 48.59,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the vector index for relevant chunks.\n\n",
+  "I'll wait a moment and retry the tool search.\n\n",
+  "**Answer:**\n\nMLP-SLAM addresses the problem that V-SLAM systems achieve high precision only in environments with few dynamic objects, while their performance degrades in settings with numerous movable objects such as pedestrians, cars, and buses common in outdoor scenes. It proposes an MLP-based real-time stereo SLAM system to address SLAM system degradation in dynamic environments, using an MLP model to distinguish dynamic from static feature points. Static feature points — those outside bounding boxes of potential dynamic objects (filtered by a Depth Filter Module) and classified as static by the MLP model — are used in the optimization stage by minimizing re-projection error. It is built on ORB-SLAM2 as its foundation and compared against DynaSLAM and modified VDO-SLAM on KITTI360.\n\n**Chunks used:** `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md`, `__k23.md`, `__k03.md`, `__k18.md`, `__k10.md`"
+ ],
+ "qid": "BQ09",
+ "via": "chat"
+}

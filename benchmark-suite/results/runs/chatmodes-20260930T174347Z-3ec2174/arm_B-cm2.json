@@ -1,0 +1,31 @@
+{
+ "mode": "B",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 31.7,
+ "duration_ms": 30375,
+ "turns": 6,
+ "cost_usd": 0.2445766,
+ "session_id": "ebaced88-a073-4f3f-856d-b4c835731f65",
+ "answer_chars": 1637,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "The evidence gate confirms the exact document (1 doc with yes, 8/8 segments survive, top score 0.89). I have the full evidence pack; synthesizing now.\n\n---\n\n**结论：知识库中确实收录了直接对应的文献——\"Predicting Stroke from Electronic Health Records\"（生命科学与医学库），它用 PCA + 决策树/随机森林/神经网络系统分析了 EHR 各风险因素对卒中的影响，并给出基准精度。**\n\n**出处**：`clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md`（KB：生命科学与医学；作者 Nwosu、Dev、Bhardwaj、Veeravalli、John）。可信度：**P0（强）**——Laya 证据引擎 8/8 段落全部存活，最高段分 **0.8939**，闸门判定 docs_with_yes=1。\n\n**1. 数据集与风险因素**\nMcKinsey & Company 医疗黑客松数据集（Kaggle），**共 29,072 条患者记录、12 个属性**；10 个输入变量：性别、",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

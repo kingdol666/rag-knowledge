@@ -1,0 +1,87 @@
+[
+ {
+  "step": "build docx",
+  "ok": true,
+  "detail": "retmodes-knowledge-card.docx 1723 bytes"
+ },
+ {
+  "step": "A0 dedup-precheck",
+  "ok": true,
+  "detail": "库内现 4 docs, 无同名/同主题文档"
+ },
+ {
+  "step": "A2 parse_doc submit",
+  "ok": true,
+  "detail": "task_id=aff80a3c8474"
+ },
+ {
+  "step": "A2 parse done",
+  "ok": true,
+  "detail": "status=done md_chars=0 md_path=True"
+ },
+ {
+  "step": "A5 save_parsed",
+  "ok": true,
+  "detail": "saved='retmodes-knowledge-card.md' savedCount=1"
+ },
+ {
+  "step": "A3b tags",
+  "ok": true,
+  "detail": "tags→retmodes-knowledge-card.md"
+ },
+ {
+  "step": "A6 index",
+  "ok": true,
+  "detail": "chunks=2"
+ },
+ {
+  "step": "A7 verify",
+  "ok": true,
+  "detail": "catalog可见=True 向量命中新内容=True"
+ },
+ {
+  "step": "QA1 新文档事实",
+  "ok": true,
+  "detail": "25017ms pas=5.0 cit=2 ans[:80]='先结论后论证，直接给数。\\n\\n1) 模式C（混合并行）在 q1 上的耗时：68.6 秒 [demo-qa-20260927/retmodes-knowledge-'"
+ },
+ {
+  "step": "QA1.answer",
+  "ok": true,
+  "detail": "先结论后论证，直接给数。\n\n1) 模式C（混合并行）在 q1 上的耗时：68.6 秒 [demo-qa-20260927/retmodes-knowledge-card.md]。同轮对照：模式A（向量优先）q1 为 25.5 秒，模式B（图书管理员）q1 为 25.1 秒——即 C 模式在 q1 上反而是最慢的一臂。\n\n2) 整体提速：CPU 基线总耗时 1620 秒，GPU 轮总耗时 218 秒，整体提速 7.4 倍 [demo-qa-20260927/retmodes-knowledge-card.md]。用数据说话，这个 7.4 倍是「全轮总耗时」维度的口径，不是单题口径。\n\n3) 配套事实（供交叉核对）：同轮 q2 上 C 模式耗时 64.2 秒；六臂全部命中金标文档、全部为真实引擎判决；唯一数值漂移是 C 模式 q2 结果文档由 39 降为 38（一个临界文档落到阈值外），金标不受影响 [demo-qa-20260927/retmodes-knowledge-card.md]。\n\n边界声明：以上数字仅来自本次速查卡片段，我未检索到逐题级加速比的独立记录；若需 q1 单题维度的加速比，该口径在现有片段中未给出，属未知，不臆测。引用必带出处，此处可溯源的即上述锚点。"
+ },
+ {
+  "step": "QA1.citations",
+  "ok": true,
+  "detail": "[{\"path\": \"demo-qa-20260927/retmodes-knowledge-card.md\", \"chunk_text\": \"三模式实测（q1 英文方法题 / q2 中文跨语言题）：模式A向量优先 q1 耗时 25.5 秒、q2 耗时 24.3 秒；模式B图书管理员 q1 耗时 25.1 秒、q2 耗时 10.1 秒；模式C混合并行 q1 耗时 68.6 秒、q2 耗时 64.2 秒。\", \"score\": 0.638, \"relevance_reason\": \"直接给出模式C在q1的耗时68.6秒，并含A/B对照\"}, {\"path\": \"demo-qa-20260927/retmodes-knowledge-card.md\", \"chunk_text\": \"总体结论：六臂全部命中金标文档、全部真实引擎判决；CPU 基线总耗时 1620 秒，GPU 轮总耗时 218 秒，整体提速 7.4 倍。唯一数值漂移：C 模式 q2 结果文档由 39 降为 38（一个临界文档落到阈值外），金标不受影响。\", \"score\": 0.638, \"relevance_reason\":"
+ },
+ {
+  "step": "QA2 新文档事实",
+  "ok": true,
+  "detail": "20014ms pas=5.0 cit=2 ans[:80]='先结论后论证，直接给答案。\\n\\n**1. GPU 热身后单段判决延迟：约 0.047 秒**\\n\\n依据：判决引擎 Laya 部署在 backend/.venv（Mi'"
+ },
+ {
+  "step": "QA2.answer",
+  "ok": true,
+  "detail": "先结论后论证，直接给答案。\n\n**1. GPU 热身后单段判决延迟：约 0.047 秒**\n\n依据：判决引擎 Laya 部署在 backend/.venv（MinerU 环境），硬件为 NVIDIA GeForce RTX 4070 Ti SUPER（16GB），torch 2.12.1+cu130，模型文件位于 model/laya。该环境下 GPU 热身后单段判决约 0.047 秒 [demo-qa-20260927/retmodes-knowledge-card.md]。用数据说话，作为对照：CPU 基线约 2 秒每段，约为 40 倍差距；首次判决因含内核编译预热约需 9.5 秒，故热身后稳态数值才有参考意义 [demo-qa-20260927/retmodes-knowledge-card.md]。\n\n**2. 判决脚本必须使用的运行环境：backend/.venv 的 Python（宿主 laya 包）**\n\n依据：工程约定明确要求判决脚本必须使用 backend/.venv 的 Python 运行（宿主 laya 包）；若换用无 laya 的解释器，会以 JevUnavailable 失败关闭，绝不静默降级 [demo-qa-20260927/retmodes-knowledge-card.md][demo-qa-20260927/retmodes-knowledge-card.md]。引用必带出处，这一条是硬性工程纪律而非可选建议。\n\n**边界声明**：以上数值来自 2026-09-27 的三模式检索实测速查卡，属单次实测结果；不同硬件或 torch 版本下延迟可能漂移，知识库中未提供其他环境的数据，故不做外推。"
+ },
+ {
+  "step": "QA2.citations",
+  "ok": true,
+  "detail": "[{\"path\": \"demo-qa-20260927/retmodes-knowledge-card.md\", \"chunk_text\": \"单段判决延迟：GPU 热身后单段判决约 0.047 秒；CPU 基线约 2 秒每段，约合 40 倍差距。首次判决含内核编译预热约 9.5 秒。\", \"score\": 0.721, \"relevance_reason\": \"直接给出 GPU 热身后单段判决延迟 0.047 秒及 CPU 基线对照数据，回答第一问。\"}, {\"path\": \"demo-qa-20260927/retmodes-knowledge-card.md\", \"chunk_text\": \"工程约定：判决脚本必须使用 backend/.venv 的 Python 运行（宿主 laya 包）；换用无 laya 的解释器会以 JevUnavailable 失败关闭，绝不静默降级。\", \"score\": 0.567, \"relevance_reason\": \"直接给出判决脚本必须运行的环境为 backend/.venv（宿主 laya 包），回答第二问。\"}]"
+ },
+ {
+  "step": "QA3 库外拒答探针",
+  "ok": true,
+  "detail": "30018ms pas=5.0 cit=3 ans[:80]='先结论后论证：知识库中检索不到 RTX 5090 公版整卡功耗(瓦数)的任何记录，因此我无法给出该数值。\\n\\n依据与边界：\\n1. 本次检索到的全部片段中，唯一涉及'"
+ },
+ {
+  "step": "QA3.answer",
+  "ok": true,
+  "detail": "先结论后论证：知识库中检索不到 RTX 5090 公版整卡功耗(瓦数)的任何记录，因此我无法给出该数值。\n\n依据与边界：\n1. 本次检索到的全部片段中，唯一涉及显卡硬件规格的证据只提到另一款型号——\"GPU 为 NVIDIA GeForce RTX 4070 Ti SUPER（16GB）\" [demo-qa-20260927/retmodes-knowledge-card.md]，且该片段讲的是判决引擎部署与三模式检索耗时，不涉及任何功耗参数。\n2. 其余片段分别关于 Transformer 训练硬件（8×NVIDIA P100 GPU）[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md] 与旅行者 1 号的放射性同位素温差发电机功率（发射时约 470 W 电功率）[demo-qa-20260927/voyager-1.md]，与 RTX 5090 无关。\n\n承认不确定性：按真实性优先原则，引用必带出处，无证据不下结论。我不用推测数字填补空白——即便我可能记得某些公开规格，那也不属于本次知识片段的证据范围，不在此作答。\n\n引导：若你需要该数据，建议补充一来源材料（如 NVIDIA 官方规格页、显卡评测文档）入库后我再据实回答；也可核实目标是否其实是库中已有记录的 RTX 4070 Ti SUPER，若如此我可进一步说明其相关上下文。"
+ },
+ {
+  "step": "QA3.citations",
+  "ok": true,
+  "detail": "[{\"path\": \"demo-qa-20260927/retmodes-knowledge-card.md\", \"chunk_text\": \"硬件与引擎：判决引擎 Laya 部署于 backend/.venv（MinerU 环境），GPU 为 NVIDIA GeForce RTX 4070 Ti SUPER（16GB），torch 版本 2.12.1+cu130。模型文件位于 model/laya。\", \"score\": 0.516, \"relevance_reason\": \"全库唯一提及显卡型号的片段，且为 RTX 4070 Ti SUPER 而非 RTX 5090，且未含任何功耗/瓦数参数，用于证明检索盲区。\"}, {\"path\": \"demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md\", \"chunk_text\": \"## 5.2 Hardware and Schedule\\n\\nWe trained our models on one machine with 8"
+ }
+]

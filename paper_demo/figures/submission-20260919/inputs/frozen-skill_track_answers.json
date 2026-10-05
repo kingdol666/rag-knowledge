@@ -1,0 +1,84 @@
+{
+ "answers": [
+  {
+   "qid": "BQ01",
+   "gate": {
+    "score": 8,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\nPhase 0 改写后以 scaled dot-product / multi-head attention 为轴，在门类库「计算机与人工智能」执行 kb_search_vector（balance）；top 命中 Attention Is All You Need 正文两段（Conclusion 与 §3.2.3 Applications of Attention in our Model），内容门控 8/8 快速退出，未触发兜底。\n\n## Answer\nTransformer 的注意力按 scaled dot-product 计算给定查询与键值的相似度并加权取值向量；在多头形式下，模型并行地做 h 组线性投影到低维（论文取 h=8、d_k=d_v=d_model/h=64），各头独立计算注意力后拼接再线性融合，使模型能同时在多个表示子空间与位置关注信息。注意力在模型中以三种方式使用：编码器自注意力、解码器带掩码的自注意力、以及编码器-解码器（交叉）注意力。之所以取代循环与卷积：自注意力把任意两个位置直接相连，顺序执行步数与路径长度为常数级，长程依赖学习更容易，且计算可高度并行，不像 RNN 需要按序列步进。论文结论自述其为\"第一个完全基于注意力的序列转导模型\"，以多头自注意力替换了 encoder-decoder 架构中最常用的循环层。\n\n## Sources\n- 计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md —— Conclusion 段与 §3.2.3 Applications of Attention in our Model（Phase 1 top1/top2 chunk，向量分 0.71-0.72 区间）\n\n## Confidence\n高。机制（如何计算）与动机（为何替代）均直接命中正文原文。\n\n## Blind Spots\n位置编码的具体公式、训练超参数表与基准分数（BLEU 等）未在本次读取的两个 chunk 中出现，未予引用。"
+  },
+  {
+   "qid": "BQ02",
+   "gate": {
+    "score": 8,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\n以 NISQ 特征与局限为轴检索「自然科学与地球科学」；top1/top2 均命中 Preskill《Quantum Computing in the NISQ era and beyond》（§6.4 Noise-resilient quantum circuits 与正文开篇），门控 8/8 快速退出。\n\n## Answer\nNISQ（Noisy Intermediate-Scale Quantum，含噪中等规模量子）指近期即可获得的量子计算技术：设备规模进入中等（数十至上百物理量子比特）但尚未实现量子纠错。其核心限制是噪声——门与器件的噪声使深电路的可靠执行受限；正文 §6.4 强调，最终需要量子纠错来扩展可可靠执行的计算规模，而纠错开销很高，因此 NISQ 时代的应用必须在带噪器件上设计（如噪声韧性的量子电路/混合算法方向）。\n\n## Sources\n- 自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md —— §6.4 与开篇段\n\n## Confidence\n高（定义与核心限制均为原文直述）。\n\n## Blind Spots\n具体物理比特数区间与若干候选应用清单不在本次读取窗口内，未予引用。"
+  },
+  {
+   "qid": "BQ03",
+   "gate": {
+    "score": 7,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\n检索「生命科学与医学」；top3 全部命中 Large Language Models Encode Clinical Knowledge（Med-PaLM 论文）：MultiMedQA 定义段、人类评估轴数据段、§4.4 MedQA 消融段。\n\n## Answer\nMultiMedQA 是论文提出的多选题式医学问答基准，整合七个医学 QA 数据集（六个既有数据集，MedQA 为其中之一，另含 MedMCQA、PubMedQA 等），用于评估 LLM 回答的事实性、专家知识运用、有用性与潜在危害。关于 Flan-PaLM 在 MedQA 上的表现：消融实验（§4.4）显示指令微调的 Flan-PaLM 在 MedQA、MedMCQA、PubMedQA 三个数据集上一致优于未微调的 PaLM 基线；在人类评估轴上，临床医生答案得分 97.8%，Flan-PaLM 仅 76.3%，而经指令提示调优的 Med-PaLM 达到 95.4%，显著缩小了与临床医生的差距。\n\n## Sources\n- 生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md —— MultiMedQA 定义段、人类评估段、§4.4 Ablations\n\n## Confidence\n高（结构化事实），但 Flan-PaLM 在 MedQA 数据集上的**具体得分百分数**未出现在本轮读取窗口。\n\n## Blind Spots\nMedQA 单项的准确率数值未在证据 chunk 中出现（chunk 被截断于数据集列表处），故未引用具体数字；如需精确值应续读结果章节。"
+  },
+  {
+   "qid": "BQ04",
+   "gate": {
+    "score": 8,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\n检索「生命科学与医学」；top1 直接命中 Gene Ontology Primer §2（What is the Gene Ontology），门控 8/8。\n\n## Answer\n基因本体（GO）是一个以结构化方式表示生物学的受控词汇表；其术语被细分为三个彼此独立的本体，分别对应不同生物学侧面：分子功能（Molecular Function, MF）、生物过程（Biological Process, BP）与细胞组件（Cellular Component, CC）。三个本体互不冗余，共享同一标识符空间与明确定义的语法；术语之间通过关系相互连接，形成层级式词汇结构。\n\n## Sources\n- 生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md —— §2 What is the Gene Ontology\n\n## Confidence\n高（三本体名称与定义为原文直述）。\n\n## Blind Spots\n各本体内部的证据来源分级（如 IEA/IDA 等编码）与版本历史未在本次窗口内，未予引用。"
+  },
+  {
+   "qid": "BQ05",
+   "gate": {
+    "score": 7,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\n检索「经济与社会」；top1 命中 Unified Growth Theory Contradicted by the Economic Growth in Europe 开篇段，门控 7/8（论点直接命中，分析数据表未在窗口）。\n\n## Answer\n该文分析西欧与东欧的历史经济增长，指出这些地区——尤其是作为工业革命中心的西欧——本应是统一增长理论（Unified Growth Theory）最有力的确认案例；但实际的历史增长数据与该理论的预期不相符，作者据此提出欧洲的历史经济增长对统一增长理论构成反驳。文章立场是：以欧洲（工业革命发源地）为检验场景，理论预测与观测的增长轨迹存在矛盾。\n\n## Sources\n- 经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-economic-growth-in-europe.md —— 标题与开篇分析段\n\n## Confidence\n中高。核心论点可由原文直引；支撑该论点的具体增长数据分析未完整读取。\n\n## Blind Spots\n论文用以论证矛盾的具体增长数据、图表与分区域检验结果未在本次窗口内，未予引用。"
+  },
+  {
+   "qid": "BQ06",
+   "gate": {
+    "score": 5,
+    "decision": "gate=5 at Phase 1 (abstract window did not name the factor) -> Phase 2 librarian fallback; after targeted re-search + continuation read, resolved (8/8)"
+   },
+   "final_answer": "## Search Paths\nPhase 1 检索「自然科学与地球科学」top1 为论文摘要窗，仅陈述\"关注控制响应的物理因素\"而未点明因子，门控 5/8 触发兜底；Phase 2 以 precipitation efficiency 为轴定向再检索命中 part 1/3，并按长文条款续读（offset 0-12000 扫描）定位正文 §2-§3 原文。\n\n## Answer\n控制降水极端事件对气候变化响应的关键物理因子是**降水效率（precipitation efficiency, ε）**的变化（与动力项共同作用）。论文给出极端降水率变化的分解：动力贡献（垂直速度 ω 的变化）、热力贡献（饱和比湿对气压的导数 S(T,p)，仅依赖温度与气压）与微观物理贡献（降水效率 ε）；其中 ε 定义为地面降水与柱内净凝结之比（考虑凝结物存储/输送，且以净凝结而非凝结定义）。在动力与降水效率变化可忽略的近似下，极端降水随增暖因饱和水汽压升高而增强（Clausius-Clapeyron 关系）；但动力贡献与降水效率变化也可能起重要作用，正是它们造成响应偏离纯热力学标度。\n\n## Sources\n- 自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3) —— 摘要、§2 机制段（ε 定义、方程 (1) 分解、C-C 近似段）\n\n## Confidence\n高。续读后答案句为原文直引，因子名称与机制均在正文。\n\n## Blind Spots\n§3 对各因子相对重要性的定量拆解数值未完整读取；观测部分的区域案例未纳入引用。"
+  },
+  {
+   "qid": "BQ07",
+   "gate": {
+    "score": 8,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\n检索「计算机与人工智能」；top1 命中 MameLoshnLM 摘要段，门控 8/8。\n\n## Answer\nMameLoshnLM 是首个专为意第绪语（Yiddish）构建的开源 8B 参数语言模型，并配套发布评测基准。动机在于：意第绪语拥有丰富的文本传统，但数字文本存量有限、可靠评测资源稀缺，导致主流大模型对该语种支持薄弱；该工作以专用预训练填补这一低资源空缺。\n\n## Sources\n- 计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evaluation-benchmark.md —— Abstract 段\n\n## Confidence\n高（定义与参数规模为原文直述）。\n\n## Blind Spots\n训练语料构成、评测集具体任务与对比基线分数未在本次窗口内，未予引用。"
+  },
+  {
+   "qid": "BQ08",
+   "gate": {
+    "score": 7,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\n检索「自然科学与地球科学」；top1 命中 Oxygen redox in battery cathodes 综述 §5 Summary，门控 7/8。\n\n## Answer\n氧变价（anionic/oxygen redox）指过渡金属氧化物正极中氧阴离子参与氧化还原储电的机制。综述指出：该机制在锂/钠离子电池常见正极材料中广泛存在，但程度随晶体结构与过渡金属种类而异；它最初在**富锂无序尖晶石型正极**中被发现能显著贡献整体电池容量——即除过渡金属阳离子氧化还原之外，晶格氧的氧化还原为材料提供了额外的容量来源，这是富锂材料高容量 compat 的物理基础。\n\n## Sources\n- 自然科学与地球科学/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overview.md —— §5 Summary\n\n## Confidence\n高（贡献结论为原文直述）；机制细节部分依赖摘要性表述。\n\n## Blind Spots\n晶格氧氧化还原的电子结构机理（O 2p 态、TM-O 共价性）与可逆性/氧流失问题的正文细节未在窗口内，未予引用。"
+  },
+  {
+   "qid": "BQ09",
+   "gate": {
+    "score": 8,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\n检索「计算机与人工智能」；top1 命中 MLP-SLAM 摘要段，门控 8/8。\n\n## Answer\nMLP-SLAM 针对的问题：视觉 SLAM（V-SLAM）在少动态物体场景已能高精度运行，但在行人、汽车、公交车密集的户外等含大量可移动物体的场景中性能显著退化——动态物体干扰特征关联与位姿估计。其方法是引入多层感知机（MLP）构建动态特征处理机制，对动态环境下的特征进行滤选/补偿以恢复鲁棒定位与建图（论文以 MLP 为核心模块替代对动态物体的简单剔除路线）。\n\n## Sources\n- 计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneous-localization-and-mapping.md —— Abstract 段\n\n## Confidence\n高（问题陈述为原文直述；方法定位来自摘要）。\n\n## Blind Spots\nMLP 模块的网络结构细节与消融数据在摘要窗口之外，未予引用。"
+  },
+  {
+   "qid": "BQ10",
+   "gate": {
+    "score": 7,
+    "decision": "fast_exit (>=6)"
+   },
+   "final_answer": "## Search Paths\n检索「生命科学与医学」；top1/top2 命中论文分 part 头，top3 命中结论/分岔分析段；Phase 2 补充续读强化（表内含 BQ10 兜底记录）。\n\n## Answer\n在免疫逃逸与化疗耐药并存的演化-生态动力学框架下，肿瘤控制策略的有效性取决于免疫逃逸机制与主导肿瘤表型：论文的分岔分析表明治疗疗效对二者均敏感。文中考虑了两种耐药策略——免疫检查点调节（immune checkpoint regulation）与抗原呈递能力下降（reduced antigen presentation）；当采用免疫检查点调节的耐药亚群主导肿瘤时，肿瘤控制对免疫耗竭率高度敏感，这意味着检查点抑制剂类干预（抑制免疫耗竭）在此情形下是关键的控制杠杆。整体上，肿瘤-免疫动力学呈非线性，消除/控制策略需按主导耐药机制选择。\n\n## Sources\n- 生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md —— 分岔分析/结论段（top3）与 part 头（top1）\n\n## Confidence\n中高。两种耐药策略与敏感性结论为原文直述。\n\n## Blind Spots\n最优给药时序的定量方案与参数区间未在本次读取窗口内，未予引用。"
+  }
+ ]
+}

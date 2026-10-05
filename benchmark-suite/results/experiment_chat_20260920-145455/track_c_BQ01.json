@@ -1,0 +1,100 @@
+{
+ "track": "c",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "The Transformer computes attention by mapping \"a query and a set of key-value pairs to an output\"; the input queries and keys have dimension $d_k$ and values dimension $d_v$, and the model \"compute[s] the dot products of the query with all keys, divide each by $\\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values,\" producing a weighted sum of the values. Scaling by $1/\\sqrt{d_k}$ is used because \"for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients.\" It replaces recurrence and convolution because it is \"the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention,\" and because convolutions make it harder to learn dependencies between distant positions—\"linearly for ConvS2S and logarithmically for ByteNet\"—whereas \"in the Transformer this is reduced to a constant number of operations,\" with Multi-Head Attention counteracting the reduced effective resolution. The model also \"allow[s] for significantly more parallelization,\" which lets it \"be trained significantly faster than architectures based on recurrent or convolutional layers.\" Chunks used: `artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md`, `__k05.md`, `__k06.md`, `__k02.md`, `__k19.md`, `__k20.md`.",
+ "is_error": false,
+ "latency_s": 44.4,
+ "sdk_duration_ms": 38947,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "How does the Transformer compute attention and why does it replace recurrence and convolution?",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "scaled dot-product attention query key value softmax multi-head attention",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 204994,
+  "output": 697,
+  "cache_read": 128,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 1.042459,
+ "timeline": [
+  {
+   "t": 5.46,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 10.85,
+   "event": "text",
+   "detail": "54"
+  },
+  {
+   "t": 10.85,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 19.21,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 27.25,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 36.28,
+   "event": "text",
+   "detail": "88"
+  },
+  {
+   "t": 36.28,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 44.34,
+   "event": "text",
+   "detail": "1437"
+  },
+  {
+   "t": 44.35,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll run dense vector retrieval on the specified KB.\n\n",
+  "Let me retrieve the core mechanism description to ground the \"how\" part of the answer.\n\n",
+  "The Transformer computes attention by mapping \"a query and a set of key-value pairs to an output\"; the input queries and keys have dimension $d_k$ and values dimension $d_v$, and the model \"compute[s] the dot products of the query with all keys, divide each by $\\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values,\" producing a weighted sum of the values. Scaling by $1/\\sqrt{d_k}$ is used because \"for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients.\" It replaces recurrence and convolution because it is \"the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention,\" and because convolutions make it harder to learn dependencies between distant positions—\"linearly for ConvS2S and logarithmically for ByteNet\"—whereas \"in the Transformer this is reduced to a constant number of operations,\" with Multi-Head Attention counteracting the reduced effective resolution. The model also \"allow[s] for significantly more parallelization,\" which lets it \"be trained significantly faster than architectures based on recurrent or convolutional layers.\" Chunks used: `artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md`, `__k05.md`, `__k06.md`, `__k02.md`, `__k19.md`, `__k20.md`."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

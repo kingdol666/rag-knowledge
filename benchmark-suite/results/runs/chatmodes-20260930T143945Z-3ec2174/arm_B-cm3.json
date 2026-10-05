@@ -1,0 +1,29 @@
+{
+ "mode": "B",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 316.0,
+ "duration_ms": 270215,
+ "turns": 19,
+ "cost_usd": 0.887955,
+ "session_id": "9b1cc3a7-9e55-4e94-9853-a04db9732fb8",
+ "answer_chars": 860,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：知识库中不存在任何与 \"Herbert-Moulton collider benchmark\" 或粒子物理对撞机探测器漂移量化相关的内容，无法从库内给出该问题的答案。**\n\n检索过程与证据：\n\n1. **目录层扫描（全库 19 个 KB）**：无任何库的描述涉及粒子物理/对撞机。物理领域唯一覆盖库是「自然科学与地球科学」（75 篇），逐篇描述核对后确认内容为：量子计算与纠错（NISQ 基准、QEM 等）、气候、天文、化学、引力波、地震学——没有一篇是对撞机实验。\n\n2. **laya 引擎证据判决**（候选 31 段，幸存 21 段）：幸存片段全部来自最接近的候选——Corda《Moriond 07 proceedings》（`gravitational-physics__0706.3294`，自然科学与地球科学库），但该文讨论的是**引力波激光干涉仪（VIRGO/LIGO/GEO600/TAMA300）对引力波“磁”分量的响应函数**（\"the response functions for the magnetic components are re-analysed in the full frequency dependence\"），与对撞机探测器漂移基准无关。\n\n3. **幸存者全文抽查**：其余泛化库（demo-qa、e2e-demo、ZZ 跨库复现库等）经逐一",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

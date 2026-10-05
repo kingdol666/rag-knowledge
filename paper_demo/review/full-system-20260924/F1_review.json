@@ -1,0 +1,39 @@
+{
+  "seat": "F1",
+  "score": 9.0,
+  "verdict": "accept",
+  "summary": "Fresh full read of the current build. The paper now has a complete arc — abstract, three-decision intro, system, three-scenario demo, measured three-mode run with honest limitations, and a new Conclusion — with no abrupt ending. The compact Figures 2 and 3 still carry the story: a figure-only skim delivers the pitch (opaque packed-context baseline vs. addressable, gated, librarian-fallback retrieval; then real traces with exact tool counts, verbatim excerpts, source-granularity differences, one measured abstention, and the aggregate strip). The expanded body text reads as genuine design rationale ('what they do not share is a reasoning policy', 'a failed gate is information, not noise', 'a misroute is caught at ingest time, not at answer time'), not padding; the three design decisions of Section 1 structure Sections 2-4 and the demo scenarios trace them in order. The Conclusion earns its place: it compresses rather than repeats the abstract, adds an interpretive takeaway (grounding and verification travel together only for the gated reading route) plus concrete future work. I spot-checked load-bearing claims into the raw artifacts: the nine ingest final checks in Fig 2's banner map 1:1 onto r2_ingest_report.json check keys (including the 'vector probe (x2)' = A6V_vec_probe + C5_vector), and the latency range is consistent with audit_paper_numbers.json (min 13.8 s, max 174.0 s). Every fact-sheet number matches the paper. Remaining items are polish-level: an overlong, number-dense abstract; a missing explicit pointer to run/setup documentation (CFP: documentation sufficient to run); and one soft latency-floor phrasing. Author/affiliation placeholders are the known user-pending single-blind item (mentioned here once; not scored). I would stop at this booth — organize a PDF live, walk a citation to its source at line offset, and trigger a scoped not-found report is a compelling 3-minute demo — and I would approve it for the demo track.",
+  "strengths": [
+    "Complete, tightly-coupled narrative: one address space / ranking proposes-reading disposes / failure is a first-class output is set up in Section 1, implemented in Section 2, walked as three demo scenarios in order in Section 3, and cashed out as the 7-4-1 citation split in Section 4; the Conclusion closes the loop without verbatim abstract repetition and adds real future work.",
+    "Compact figures still carry the story standalone: Fig 1 gives the contrast pitch, Fig 2 shows the organize chain plus the 0-8 gate with its three outcome bands and dashed librarian fallback, Fig 3 shows per-mode tool timelines with exact counts, verbatim excerpts, source-granularity differences, a measured dense-mode abstention, and the aggregate strip; captions are self-contained.",
+    "Verified honesty as a design virtue: every headline number re-derives from saved artifacts (Table 1 caption and Section 4 say so and my artifact spot-checks confirm), the BQ02 neighbor-paper mis-grounding is disclosed as-is, conservative grading examples are given with exact 0/1 and 0/2 scores, the uncontrolled comparison and cache state are conceded, and 'Content-verified' is explicitly defined as prompted judgment, not guaranteed correctness.",
+    "Genuine design rationale in the expanded text rather than padding: the shared-tools-vs-reasoning-policy distinction in 2.1 sets up the bare-agent comparison, and 'a failed gate is information, not noise' explains why browsing replaces more vector queries.",
+    "Clean compliance: body ends on page 4 with the Conclusion; page 5 holds only the GenAI disclosure and references [1]-[8], all of which are cited in the text; Fig 3's omission of the bare agent in panel 2 is explained in the caption and covered in Section 4 text."
+  ],
+  "issues": [
+    {
+      "id": "F1-1",
+      "priority": "P2",
+      "location": "Abstract (page 1, sec0_abstract.tex)",
+      "issue": "The abstract is ~330 words and carries the full per-mode result table in prose (9/10, 9/10, 10-yet-6, 9-and-6, 7-vs-4-and-1, abstention, cost multiple, video URL). All of these numbers reappear in Section 4 and in Figure 3's aggregate strip, so the abstract reads as a results summary and delays the hook.",
+      "evidence": "Page 1 abstract spans roughly a third of the column; clauses 'grounds 9 of 10... keyword-verifies 9 of 10... only 6... grounds 9 and verifies 6... 7 of 10... versus 4 and 1' duplicate Figure 3's bottom strip and Section 4 verbatim in content.",
+      "suggestion": "Keep the platform headline (9/10 grounded and verified, addressable citations) and compress the bare-agent/dense detail to one clause ('baselines locate but rarely verify'); drop one of the two failure-probe sentences. Roughly 80-100 words recoverable with no information loss."
+    },
+    {
+      "id": "F1-2",
+      "priority": "P2",
+      "location": "Section 3 opening / backmatter (sec3_demo.tex, sec4_backmatter.tex)",
+      "issue": "The CFP requires documentation sufficient to run, but the paper never says where run instructions live — the repo URL is given for code/traces/scripts and the rubric is said to 'ship in the repository', yet there is no sentence pointing a reader to the setup path (README, install, instance bootstrap).",
+      "evidence": "Section 3 says attendees 'inspect documents in the web console and drive an agent with the packaged skills' but gives no reproduction pointer; backmatter lists only the two URLs.",
+      "suggestion": "Add one sentence to Section 3 or the backmatter, e.g. 'the repository README reproduces the demonstration instance (ingest, audit scripts, and the packaged skills) from the prepared PDF pool.'"
+    },
+    {
+      "id": "F1-3",
+      "priority": "P2",
+      "location": "Section 3, demo logistics paragraph (sec3_demo.tex line ~9)",
+      "issue": "'A live answer takes from ten seconds to about three minutes' slightly understates the measured floor: the fastest answer in the monitored run is 13.8 s (dense mode), and the platform's fastest is 53.5 s. A paper whose brand is artifact-derived numbers should not round 13.8 down to ten.",
+      "evidence": "audit_paper_numbers.json: per-track latency min/max = a 53.5/174.0 s, b 20.5/61.7 s, c 13.8/125.1 s; paper claims 'from ten seconds to about three minutes'.",
+      "suggestion": "Reword to 'from about fifteen seconds to about three minutes' or 'a live platform answer takes about one to three minutes; baselines answer faster.'"
+    }
+  ]
+}

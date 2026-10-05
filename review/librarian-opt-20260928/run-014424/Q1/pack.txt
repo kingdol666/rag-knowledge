@@ -1,0 +1,418 @@
+[计算机与人工智能\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md]
+Since LLMs are extensively trained on public data, we curate a new benchmark to evaluate their generalization capability with EvoR. Specifically, we introduce four datasets where two focus on updated libraries and two are about long-tail programming languages.
+
+We first modified two popular Python libraries, Scipy and Tensorflow, to simulate the real updates ³, and denote them as Scipy-M and Tensorflow-M respectively. We then collect problems of the Scipy and Tensorflow split from DS-1000 (Lai et al. 2023) and adapt them to our modified version. For the long-tail programming languages, we select Ring and Pony. They have little public data and are excluded from the StarCoder training set, which involves 88 mainstream programming languages (Li et al., 2023b). We make use of the problems in LeetCode ⁴ for these two datasets. For each problem in modified libraries or long-tail programming languages, we manually write the ground truth solution and annotate the oracle documentation based on it. We present the dataset statistics in Table 1. More details about our curation process can be found in Appendix A.
+
+## 3 Experiment
+
+
+To verify the effectiveness of EvoR, we conduct extensive experiments with both the proprietary model ChatGPT (gpt-3.5-turbo-11065) and the open-source model CodeLlama 6. In §3.1, we describe 5 baseline settings of other code generation approaches and specify the default configuration of EvoR in §3.2. In §3.3, we compare the results of EvoR, existing code generation methods, as well as their combinations. By default, we use the execution accuracy (pass@ 1) as the metric throughout the paper.
+
+<table><tr><td>Dataset</td><td>#P</td><td>#D</td><td>A.T</td><td>A.P.L</td><td>A.S.L</td><td>A.D.L</td></tr><tr><td>Scipy-M</td><td>142</td><td>3920</td><td>3.1</td><td>322.6</td><td>44.1</td><td>499.7</td></tr><tr><td>Tensor-M</td><td>45</td><td>5754</td><td>4.1</td><td>234.5</td><td>39.0</td><td>517.6</td></tr><tr><td>Ring</td><td>107</td><td>577</td><td>18.2</td><td>108.3</td><td>98.3</td><td>334.0</td></tr><tr><td>Pony</td><td>113</td><td>583</td><td>18.4</td><td>116.9</td><td>129.8</td><td>3204.0</td></tr></table>
+
+Table 1: Data statistics of four benchmarks. We report the number of problems (# P), the number of official documentation files (# D), the average number of test cases (A.T), the average problem length (A.P.L), the average solution length (A.S.L) and the average gold documentation length (A.D.L). Tensor-M refers to Tensorflow-M . Problem length, solution length and document length are calculated by the tiktoken (https://pypi.org/project/tiktoken/) package with model gpt-3.5-turbo-1106.
+
+## 3.1 Baselines
+
+
+We compare EvoR to the vanilla generation and four recent methods that demonstrate significant performance improvement in code generation tasks:
+
+Vanilla: we implement the vanilla generation baseline where we directly get the outputs from LLMs based on the coding question n without augmenting external knowledge.
+
+
+
+[计算机与人工智能\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md]
+The cooperative MARL scenario is modeled as an extension of the Markov decision process, known as a Markov game [9]. This framework is defined by the tuple $\langle \mathcal { N } , \mathbb { O } , \mathbb { A } , R , P , \gamma \rangle . \mathcal { N } = \{ 1 , \dots , n \}$ denotes the set of agents, $\begin{array} { r } { \mathbb { O } = \prod _ { i = 1 } ^ { n } \mathcal { O } _ { i } } \end{array}$ represents the joint observation space with ${ \mathcal { O } } _ { i }$ being the local observation space of agent i, and $\begin{array} { r } { \mathbb { A } = \prod _ { i = 1 } ^ { n } \mathcal { A } _ { i } } \end{array}$ denotes the joint action space where $\mathbf { \mathcal { A } } _ { i }$ is the action space of agent i.
+
+The bounded joint reward function is defined as $R : \mathbb { O } \times \mathbb { A } \to [ - R _ { \operatorname* { m a x } } , R _ { \operatorname* { m a x } } ]$ while $P : \mathbb { O } \times \mathbb { A } \times \mathbb { O } \to \mathbb { R }$ defines the transition probability function. Finally, $\gamma \in [ 0 , 1 )$ denotes the discount factor.
+
+At each time step $t \in \mathbb { N } .$ every agent $i \in \mathcal N$ perceives an observation $o _ { i } ^ { t } \in \mathcal { O } _ { i }$ and executes an action $a _ { i } ^ { t }$ based on its policy $\pi _ { i }$ , which is the ith component of the agents' joint policy $\pi$ The joint observation is denoted as $\mathbf { o } = \left( o _ { 1 } , \ldots , o _ { n } \right)$ All agents act concurrently, and their collective actions determine the team's behavior.
+
+The transition function P and joint policy induce an observation distribution $\rho _ { \pi } ( \cdot )$ . Following each action, the team receives a joint reward $R ( \mathbf { o } _ { t } , \mathbf { a } _ { t } )$ , and the environment transitions to a new state, which is observed as $\mathbf { o } _ { t + 1 }$ according to $P ( \cdot | \mathbf { o } _ { t } , \mathbf { a } _ { t } )$ . This process continues indefinitely, with agents accumulating a discounted cumulative reward of $\begin{array} { r } { R ^ { \gamma } = \sum _ { t = 0 } ^ { \infty } \gamma ^ { t } R ( \mathbf { o } _ { t } , \mathbf { a } _ { t } ) } \end{array}$
+
+## 3.2 Multi-Agent Advantage Decomposition
+
+
+
+[计算机与人工智能\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md]
+In these data sets, each node represents a user, while a tie between two nodes means there is a friendship between two users. In general, creating a friendship between two users always needs mutual permission. So we can formalize each data set as an undirected graph $G ( V , E )$ , where V is the set of nodes and E is the set of ties. We use |V| to denote the size of the network, and E to denote the size of ties. Some characteristics of the data sets are shown in Table I. The Cumulative Distribution Function(CDF) of the strength of ties is shown in Fig. 1.
+
+![](images/b5458e7852c513a62433e30d315f8a89b0c04586c47de4198ec155f2bd9ee76f.jpg)  
+FIG. 1: (Color online) CDF of the strength of ties.
+
+As we know, online social networks are divided into two types: knowledge-sharing oriented and networking oriented [15]. For the data sets we use, YouTube belongs to the former, while Facebook belongs to the latter, both of which are scale-free networks.
+
+## III. STRUCTURAL ROLE OF WEAK TIES
+
+
+In this section, we study the structural role of weak ties. As shown in Fig. 2a and Fig. 2c, we find a phase transition (characterized by Š) similar to the one in [19] in online social networks during the removal of weak ties first. This phase transition, however, disappears if we remove the strong ties first. Furthermore, it is also found in Fig. 2b and Fig. 2d that the relative size of giant connected cluster (GCC), denoted by fGcc, shows different dynamics between the removals of weak ties first and strong ties first. We denote the critical fractions of the removed ties at the phase transition point by $f _ { c } .$ It is interesting to note that $f _ { c } = 0 . 7 5 3$ for YouTube and $f _ { c } = 0 . 8 9 0$ for Facebook when $\bar { S }$ reaches the submit, which are very close to the case when $f _ { G C C } \approx 0$
+
+![](images/94cde5c747bae3b3ee5102f915183e3515ca20b23ac6f2d41471f627ad93c482.jpg)  
+(a) Facebook
+
+![](images/7c5be7df019343a8abfb2005307ecade8d7338befcc5a4fa439b4fe3b303e84d.jpg)  
+(b) Facebook
+
+![](images/f9eb256b66325b23efac5816f21c364258ccea7371cfea66630e08c46c299a8b.jpg)  
+(c) YouTube
+
+![](images/d115ac24739d8a02fc66d2714ceb67c9e5e48e48e3a6cce29289195e8628d727.jpg)  
+(d) YouTube  
+FIG. 2: (Color online) The variations of $\bar { S }$ and $f _ { G C C }$ during the removal of weak ties first and strong ties first, respectively. $f _ { r }$ is the fraction of removed ties.
+
+
+
+[计算机与人工智能\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md]
+To fine-tune on GLUE, we represent the input sequence (for single sentence or sentence pairs) as described in Section 3, and use the final hidden vector $C ~ \in ~ \mathbb { R } ^ { H }$ corresponding to the first input token ([ CLS]) as the aggregate representation. The only new parameters introduced during fine-tuning are classification layer weights W ∈ $\mathbb { R } ^ { K \times H }$ , where K is the number of labels. We compute a standard classification loss with C and W, i.e., log(softmax(CWT′)).
+
+<table><tr><td>System</td><td>MNLI-(m/mm) 392k</td><td>QQP 363k</td><td>QNLI 108k</td><td>SST-2 67k</td><td>CoLA 8.5k</td><td>STS-B 5.7k</td><td>MRPC 3.5k</td><td>RTE 2.5k</td><td>Average</td></tr><tr><td>Pre-OpenAI SOTA</td><
+
+
+
+[计算机与人工智能\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md]
+For MM-Bench, MME, MM-Vet, LLaVA-Bench, POPE and MMMU, we use their official implementations of evaluation code⁴ to evaluate the performance. Specifically, the evaluation scripts of MMbench and MM-Vet call GPT-4 API to evaluate the correctness of a prediction given the target output and produce a binary score (0 or 1). Similarly, the evaluation of LLaVA-Bench also leverages GPT-4, and in addition to the target outputs, the evaluation method considers detail descriptions of images. The evaluation results are scores indicating not only the correctness but the human-preference of the predictions. MME and POPE are binary classification tasks and their evaluation is based on string matching between the predictions and target labels.
+
+## D Baselines
+
+
+We compare our method with recent visionlanguage models. All the baselines listed below have similar architectures which consist of a pretrained LLM, a pretrained image encoder, and a bridging module that connects them. BLIP-2 (Li et al., 2023d) utilizes the Q-Former to bridge a pretrained image encoder with a pretrained LLM, and achieves strong zero-shot capabilities. Instruct-BLIP (Dai et al., 2023) is a visual-instructiontuned BLIP-2 (Li et al., 2023d) model. The instruction tuning dataset is a mixture of 13 academic datasets and the LLaVA (Liu et al., 2023e) dataset. Shikra (Chen et al., 2023a) focuses more on the object grounding capability and is instruction tuned o
+
+![](images/56061f90e383074fc757554dcbbaae41a3a3c7c312388e676ee8f28fbdd6251e.jpg)  
+Figure 8: Effect of increasing the number of GPT-4 synthesized training instances on the comprehensive evaluation benchmark, namely MM-Bench. The dashed gray line indicates the performance of the-state-of-theart LLaVA 1.5 model.
+
+## E Additional Results
+
+## E.1 Effect of GPT-4 synthesized data on comprehensive evaluation benchmarks
+
+## E.2 Why VLMs Trained on VISION-FLAN are Better than State-of-the-Art VLMs?
+
+
+In this section, we perform two case studies to explain why models trained on VISION-FLAN can perform better compared to state-of-the-art VLMs.
+
+## E.2.1 Case Study on OCR
+
+
+![](images/60d8bd1ee0b0bef0fa13942d26b92bffc3cadb81f3ecc7edb7863d42686530ec.jpg)  
+Figure 9: Performance of various VLMs on TextOCR. The gray bars shows the averaged number of tokens per prediction and the orange line show the recall of predictions.
+
+When we manually check the predictions of VISION-FLAN CHAT and compare them to other
+
+VLMs, the first trend we observe is that VIsION-FLAN CHAT can better perform OCR as shown in Figure 10. To quantify this observation, we evaluate LLaVA, LLaVA 1.5 and our models on the challenging TextOCR dataset (Singh et al., 2021). We ask the VLMs to predict all the text on each image and check the overlap between the target list of text pieces and the predictions. As shown in Figure 9, the recall of VISION-FLAN BASE and VISION-FLAN CHAT is much higher compared to LLaVA 1.5 while the averaged numbers of predicted tokens per response are similar.
+
+
+
+[计算机与人工智能\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md]
+Retrieval-Augmented Generation The retrievalaugmented generation (RAG) is an appealing paradigm that allows LLMs to efficiently utilize external knowledge (Shi et al., 2023b; Izacard and Grave, 2020; Xu et al., 2023a; Jiang et al., 2023c). Recent works have applied it to the code generation task (Patel et al., 2023; Guo et al., 2023; Parvez et al., 2021a; Wang et al., 2023b). Specifically, Zhou et al. (2022) explored the natural-languageto-code generation approach that explicitly leverages code documentation. Zan et al. (2022) introduced a framework designed to adapt LLMs to private libraries, which first utilizes an APIRetriever to find useful APIs and then leverages an APICoder to generate code using these API docs. Zhang et al. (2023a) employed the iterative generate-retrieval procedure to do repositorylevel code completion. There are also recent efforts showing much enhanced performance by simply rewriting the queries (Ma et al., 2023; Anand et al., 2023; Chan et al., 2024) To the best of our knowledge, we are the first to adopt the synchronous evolution of queries and diverse knowledge to explore the setting where LLMs need to incorporate external information in code generation.
+
+Code Execution Previous works have extensively employed executors (Interpreters/Compilers) in code-related tasks (Wang et al., 2022; Liu et al. 2023a; Olausson et al., 2023a; Chen et al., 2023). Shi et al. (2022) introduced execution result– based minimum Bayes risk decoding for program selection. Yang et al. (2023) established an interactive coding benchmark by framing the code as actions and execution feedback as observations. Chen et al. (2023) use the execution result as feedback to help LLM refine the code. In this work, we utilize the executor to provide feedback and check code outputs on syntax errors, which contributes to evolve both queries and knowledge in RACG.
+
+## 6 Conclusion
+
+
+Much recent work illustrated the ability of LLMs to incorporate external knowledge with retrievalaugmented generation. We propose a novel pipeline, EvoR, which achieves two to four times execution accuracy compared to existing code generation methods. Extensive experiments demonstrate that EvoR can be easily combined with them to provide further improvements, including the agent-based ones to solve challenging tasks such as repo-level code generation. Through an indepth analysis, we further show the complementary strength of synchronous evolution of queries and documents in RACG, which enhances the model performance by larger margins with more diverse knowledge sources. We hope that our findings will inspire researchers and practitioners to develop efficient and effective strategies in their customized code-generation tasks with LLMs.
+
+## 7 Limitations
+
+
+
+[计算机与人工智能\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md]
+![](images/d60cfde05419d7896298bd9556d743d3a45eab991e8d02910ab1e133659652ec.jpg)
+
+![](images/23a3be3bcb484f9f2666ff938addc7a60bcd7f950c5e862dcc576eeef621024d.jpg)
+
+![](images/7c91c0231dd3139b275697cc76f959dccbb1475b758992cf90f30581a1a667d5.jpg)
+
+![](images/362b5a4db465299a775be8209d940d3b2c279167a24d249cd11e8001fecc9836.jpg)
+
+![](images/cb92b7b787c3bdf086122689604d9a6f272b90ff21337482da085fbb989cc8af.jpg)
+
+![](images/9a1151a20e575e6938dd1c415456b1a0823dbe50308beb150b75a941e8c37c50.jpg)  
+Figure T | Same as Figure S, but with a constant learning rate scheduler.
+
+Training steps  
+![](images/53b7ab36a329497377ffa4bd7ebdb756532ca14ebeecf48694f5844fde80b1ef.jpg)
+
+![](images/3edb113db334327f927a9d988ea1138dfd92a8dd9c84425b196ba6dcc04d0518.jpg)
+
+Figure U | Similar to the middle panel of Figure S (8 groups), this time when training for longer. The total number of individuals is adapted so that the size of each group remains the same as before. All other hyperparameters remain the same.  
+![](images/b43c802218005fba555922f0c489e060b6f3d107754d97816804c3df97296eeb.jpg)
+
+![](images/e7aaf4bbbf30afaa4f19ae764091713fcb27a1a8d628da21d7fae3d64f1ae139.jpg)
+
+![](images/164e3ca09d0165f752633a92ab089a3d016a86bcdfcfd92a09509715c31a87e5.jpg)
+
+![](images/3504974ac7c38b58d60e92061135dd9b14599bb7ecf140343c5a8770354a223c.jpg)
+
+![](images/95bf3530e1cc7df912b796ae9c549eb18b3bf8e06af13117f49a8e45226a77e3.jpg)
+
+![](images/cbb1d4bfc6aa95e377f169bc0f31a74be5bffd66d593ce5cbf263640d5d4b7c3.jpg)  
+Figure V | Evolution of the model performance on different groups of individuals when it is trained alternating between two groups. The color indicates the group of people the model is evaluated on: green is for the first group, blue for the second one. For all plots the total number of individuals considered is equal to 64k. See Section F.5 for more detail.
+
+![](images/0fe4333ed710f3462ba2af554c927d6b9a31ca2416c68fadb85cadded45073a3.jpg)
+
+Figure W | Final attribute loss at the end of an attention patching experiment in which the model of Figure S (8 groups) serves as reference (green line), as a function of the number of steps the reference model was trained. For comparison, we include the one we obtained when training on all individuals at once (grey line), as in Figure D. We use this metric as a measure of how good the attention patterns of a given model (the reference model) at a given time are for learning and solving the task at hand. We do not observe an initial bump in performance when changing individual distribution. There are two main reasons for that: First, attention patterns get formed early on due to training occurring on less individuals. Second, the granularity that we use (2k steps) would not allow us to see such a bump here.
+
+
+
+[计算机与人工智能\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md]
+Fajri Koto, Rituraj Joshi, Nurdaulet Mukhituly, Yuxia Wang, Zhuohan Xie, Rahul Pal, Daniil Orel, Parvez Mullah, Diana Turmakhan, Maiya Goloburda, Mohammed Kamran, Samujjwal Ghosh, Bokang Jia, Jonibek Mansurov, Mukhammed Togmanov, Debopriyo Banerjee, Nurkhan Laiyk, Akhmed Sakip, Xudong Han, Ekaterina Kochmar, Alham Fikri Aji, Aaryamonvikram Singh, Alok Anil Jadhav, Satheesh Katipomu, Samta Kamboj, Monojit Choudhury, Gurpreet Gosal, Gokulakrishnan Ramakrishnan, Biswajit Mishra, Sarath Chandran, Avraham Sheinin, Natalia Vassilieva, Neha Sengupta, and Preslav Nakov. Sherkala-chat: Building a state-of-the-art LLM for kazakh in a moderately resourced setting. In Second Conference on Language Modeling, 2025. URL https://openreview.net/forum?id=wRcTCcb0H5.
+
+Julia Kreutzer, Isaac Caswell, Lisa Wang, Ahsan Wahab, Daan van Esch, Nasanbayar Ulzii-Orshikh, Allahsera Tapo, Nishant Subramani, Artem Sokolov, Claytone Sikasote, Monang Setyawan, Supheakmungkol Sarin, Sokhar Samb, Benoît Sagot, Clara Rivera, Annette Rios, Isabel Papadimitriou, Salomey Osei, Pedro Ortiz Suarez, Iroro Orife, Kelechi Ogueji, Andre Niyongabo Rubungo, Toan Q. Nguyen, Mathias Müller, André Müller, Shamsuddeen Hassan Muhammad, Nanda Muhammad, Ayanda Mnyakeni, Jamshidbek Mirzakhalov, Tapiwanashe Matangira, Colin Leong, Nze Lawson, Sneha Kudugunta, Yacine Jernite, Mathias Jenny, Orhan Firat, Bonaventure F. P. Dossou, Sakhile Dlamini, Nisansa de Silva, Sakine Çabuk Ballı, Stella Biderman, Alessia Battisti, Ahmed Baruwa, Ankur Bapna, Pallavi Baljekar, Israel Abebe Azime, Ayodele Awokoya, Duygu Ataman, Orevaoghene Ahia, Oghenefego Ahia, Sweta Agrawal, and Mofetoluwa Adeyemi. Quality at a glance: An audit of web-crawled multilingual datasets. Transactions of the Association for Computational Linguistics, 10:50–72, 2022. doi: 10.1162/tacl\_a\_00447. URL https://aclanthology.org/2022.tacl-1.4/.
+
+Seth Kulick, Neville Ryant, Beatrice Santorini, Joel Wallenberg, and Assaf Urieli. A part-ofspeech tagger for yiddish. arXiv preprint arXiv:2204.01175, 2022.
+
+Hele-Andra Kuulmets, Taido Purason, Agnes Luhtaru, and Mark Fishel. Teaching llama a new language through cross-lingual knowledge transfer. In Kevin Duh, Helena Gomez, and Steven Bethard (eds.), Findings of the Association for Computational Linguistics: NAACL 2024, pp. 3309–3325, Mexico City, Mexico, June 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.findings-naacl.210. URL https://aclanthology.org/ 2024.findings-naacl.210/.
+
+
+
+[计算机与人工智能\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md]
+![](images/dbe4a660b317368a4ec660db19579156e1813fe0305933f953ef3602632594fd.jpg)
+
+Task: CLEVR-CoGenT\_VQA\_in\_3D\_rendered\_images\_with\_multiple\_questions Instruction: The input for this task is an image of 3D-rendered objects and a set of questions that fall into different categories. The questions fall into five classes of tasks: Exist, Count, Compare Integer, Query Attribute, and Compare Attribute. The output of this task is a set of answers to the given questions for each image. The answers should be generated based on the content of the image and the category of the question. The output should be in the form of text. The output should be in the format of “A1: YOUR ANSWER A2 YOUR ANSWER .…"
+
+Input: Q1: Are there any other things that are the same color as the metallic cube? Q2: The matte thing that is in front of the small yellow metal thing has what shape? Q3: What is the size of the cyan thing that is left of the cyan matte cylinder behind the yellow matte thing? Q4: Does the yellow thing that is in front of the tiny yellow rubber block have the same shape as the tiny thing that is in front of the tiny metal block? ..   
+Target: A1: yes A2: cylinder A3: small A4: no A5: yes A6: 2 A7: large A8: no A9: rubber
+
+Figure 78  
+![](images/2b6b000d64063d9960c48f00e96a9289ea5b57b16a418382df4ca517dc0c4e35.jpg)
+
+## Task: VQA\_counting
+
+
+![](images/85fee40436b7d99d8d0e51b227d3843ed9af921c6ded80e72e70f7d1ba4b079b.jpg)
+
+Instruction: Please answer the question by counting the object mentioned in the question. Just output the number.   
+Input: Question: How many people can be seen?   
+Target: one
+
+![](images/b63f7784ccd2443310c5c5caac4ceacb35c857c5baab08176971d7a3816b7f08.jpg)
+
+## Task: VQA\_object\_presence
+
+
+Instruction: Please answer the question about the presence of an object in the image. Given me a very brief answer.   
+Input: Are there any animals in the photo?   
+Target: yes
+
+## Task: VQA\_object\_recognition
+
+
+Instruction: Answer a visual question about the class of the main object in the image. Given me a very abstract answer.   
+Input: What animal is this?   
+Target: elephant
+
+![](images/961df8328a21e8f454ba05f9fd417c8b552ee2f3575c2ccb0fba3ab3b1db8ef7.jpg)
+
+![](images/7a27604641a625d851ffcae2a3133eb5f3e9e5c4a1f49057b587559f7ed3b352.jpg)
+
+## Task: VQA\_positional\_reasoning
+
+
+Instruction: In this task, the goal is to understand the location of objects within the presented image and provide an answer to the question. Given me a very short answer.   
+Input: What is to the right of cake?   
+Target: fork
+
+![](images/a1ac28179ce1bf379276510e504a7189deb38ce625596e0695bc824687dfc0e3.jpg)
+
+## Task: VQA\_scene\_recognition
+
+
+Instruction: You are asked a question about the scene in the image. Answer the question with one or two words.   
+Input: Is this indoor or outdoor?   
+Target: indoor
+
+## Task: VQA\_sentiment\_understanding
+
+
+
+[计算机与人工智能\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md]
+Wenliang Dai, Junnan Li, Dongxu Li, Anthony Meng Huat Tiong, Junqi Zhao, Weisheng Wang, Boyang Li, Pascale Fung, and Steven C. H. Hoi. 2023. Instructblip: Towards general-purpose visionlanguage models with instruction tuning. CoRR, abs/2305.06500.
+
+Luke Nicholas Darlow, Elliot J. Crowley, Antreas Antoniou, and Amos J. Storkey. 2018. CINIC-10 is not imagenet or CIFAR-10. CoRR, abs/1810.03505.
+
+Abhishek Das, Satwik Kottur, Khushi Gupta, Avi Singh, Deshraj Yadav, Stefan Lee, José M. F. Moura, Devi Parikh, and Dhruv Batra. 2019. Visual dialog. volume 41, pages 1242–1256.
+
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. BERT: pre-training of deep bidirectional transformers for language understanding. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, NAACL-HLT 2019, Minneapolis, MN, USA, June 2-7, 2019, Volume 1 (Long and Short Papers), pages 4171–4186. Association for Computational Linguistics.
+
+Mathias Eitz, James Hays, and Marc Alexa. 2012. How do humans sketch objects? ACM Trans. Graph (Proc. SIGGRAPH), 31(4):44:1–44:10.
+
+Mark Everingham, Luc Van Gool, Christopher K. I. Williams, John M. Winn, and Andrew Zisserman. 2010. The pascal visual object classes (VOC) challenge.
+
+Ali Farhadi, Ian Endres, Derek Hoiem, and David A. Forsyth. 2009. Describing objects by their attributes. In 2009 IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR 2009), 20-25 June 2009, Miami, Florida, USA, pages 1778– 1785. IEEE Computer Society.
+
+Li Fei-Fei, Rob Fergus, and Pietro Perona. 2004. Learning generative visual models from few training examples: An incremental bayesian approach tested on 101 object categories. page 178.
+
+Chaoyou Fu, Peixian Chen, Yunhang Shen, Yulei Qin, Mengdan Zhang, Xu Lin, Zhenyu Qiu, Wei Lin, Jinrui Yang, Xiawu Zheng, Ke Li, Xing Sun, and Rongrong Ji. 2023. MME: A comprehensive evaluation benchmark for multimodal large language models. CoRR, abs/2306.13394.
+
+Yaroslav Ganin, Evgeniya Ustinova, Hana Ajakan, Pascal Germain, Hugo Larochelle, François Laviolette, Mario Marchand, and Victor S. Lempitsky. 2017. Domain-adversarial training of neural networks. In Gabriela Csurka, editor, Domain Adaptation in Computer Vision Applications, Advances in Computer Vision and Pattern Recognition, pages 189–209. Springer.
+
+Peng Gao, Jiaming Han, Renrui Zhang, Ziyi Lin, Shijie Geng, Aojun Zhou, Wei Zhang, Pan Lu, Conghui He, Xiangyu Yue, Hongsheng Li, and Yu Qiao. 2023. Llama-adapter V2: parameter-efficient visual instruction model. CoRR, abs/2304.15010.
+
+Noa Garcia and George Vogiatzis. 2018. How to read paintings: Semantic art understanding with multimodal retrieval. In Computer Vision - ECCV 2018
+
+Workshops - Munich, Germany, September 8-14, 2018, Proceedings, Part II, volume 11130 of Lecture Notes in Computer Science, pages 676–691. Springer.
+
+
+
+[计算机与人工智能\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md]
+This analysis uses lemmatization as a controlled probe of morphological knowledge. The task is to map each inflected Yiddish word to its citation form (lemma), where each token presents a single morphological operation with an unambiguous gold answer. This corresponds to the morphological results in section 8.
+
+Data. The test set consists of 929 sentences (7,499 tokens) from the UD Yiddish-YITB treebank.10 Gold annotations include surface form, lemma, universal POS tag (UPOS), and dependency relations in CoNLL-U format. Each model generates lemmatization predictions in a structured word→lemma format at 5-shot counts.
+
+Prediction postprocessing. Model outputs are postprocessed before evaluation: (1) trailing punctuation characters $( . , ; : ! ? ^ { \dag } ) ] . . . . )$ are stripped from predicted lemmas using a character-level regex; (2) indefinite articles $( \aleph / \aleph )$ preceding a word are detached and evaluated as separate pairs.
+
+Token classification. Every token in the test set is categorized along two axes:
+
+1. Etymology: LK vs. non-LK. A token is classified as LK if either its surface form or its gold lemma matches the Bleaman/Niborski lexicon (after NFC normalization and diacritic-stripped fallback), and neither form is in the stopword list. This dual check ensures thāt tokens whose lemma is LK but whose surface form has diverged (or vice versa) are captured.
+
+2. Transformation type: change tokens (surface ≠ lemma) vs. identity tokens (surface = lemma). Change tokens are the informative subset, since identity tokens can be trivially handled by copying the input.
+
+Dataset composition: 565 LK tokens (7.5%) and 6,934 non-LK tokens (92.5%). Among LK tokens, 48.1% require a lemma change vs. 33.5% of non-LK tokens.
+
+LK lemmatization metrics. We report change accuracy separately for LK and non-LK strata:
+
+$$
+\mathrm { C h a n g e A c c } _ { \mathrm { s t r a t u m } } = \frac { \left| \{ t \in \mathrm { s t r a t u m : } t _ { \mathrm { w o r d } } \neq t _ { \mathrm { l e m m a } } \land t _ { \mathrm { p r e d } } = t _ { \mathrm { l e m m a } } \} \right| } { \left| \{ t \in \mathrm { s t r a t u m : } t _ { \mathrm { w o r d } } \neq t _ { \mathrm { l e m m a } } \} \right| }
+$$
+
+The LK-non-LK gap is the arithmetic difference between the two strata's change accuracies.
+
+## E.4 Morphological Category Breakdown
+
+
+To understand which morphological phenomena drive the overall gap, we classify all 2,593 change tokens into six categories using the gold CoNLL-U UPOS tags for disambiguation:
+
+
+
+[计算机与人工智能\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md]
+On the learning dynamics of neural networks more broadly. This analysis reveals that, in a simple but relevant setting, attention-based recall circuits emerge before the formation of associative memories in feedforward layers. We hypothesize that this occurs as established circuits amplify the correlation between the inputs and backpropagated errors received by feedforward layers. Prior to circuit formation, task learning remains possible (e.g., by artificially increasing name token values), but progress is slow, performance plateaus, and generalization likely suffers. Phenomena like grokking (Nanda et al., 2023a; Power et al., 2022) may indicate that learning dynamics initially find this shortcut, before abandoning it due to regularization. The proposed credit-assignment argument for plateau formation generalizes to other architectures, as evidenced by ablations in which attention is replaced with recurrence (Figure C). Decoupling the token-mixing role of attention from other computations, as advocated by Elhage et al. (2021) for mechanistic understanding of trained Transformers, also proves powerful for analyzing learning dynamics. This perspective offers a promising avenue for future investigations into neural network learning dynamics.
+
+On the role of non-uniformity and connections to developmental psychology. A key finding of this work is the precise analysis of how imbalances in the training distribution enable faster escape from performance plateaus. While not explicitly connected to the formation of attention patterns, similar phenomena have been observed in diverse settings (Charton and Kempe, 2024; Park et al., 2024), though sometimes at the cost of limited generalization. Our data scheduling results, by adapting the data to the network's current learning phase, offer a promising path towards accelerated learning without sacrificing generalization. Intriguingly, these strategies mirror the implicit curriculum experienced by developing infants (Smith et al., 2018), arising from factors like limited mobility or frequent exposure to familiar faces, and similar strategies have proven successful in reinforcement learning (Baranes and Oudeyer, 2013; Stooke et al., 2021). As argued earlier in the discussion, repetition strengthens the signal-to-noise ratio in correlations between events (tokens in our case), facilitating faster identification of key relationships and accelerating learning. Crucially, however, (progressive) diversification remains essential for optimal generalization in later stages of learning. Our findings could therefore serve as a building block for a statistical theory of development.
+
+## Limitations
+
+
+In our study, we train relatively small language models on a synthetic factual recall task to investigate knowledge acquisition dynamics. While this approach enables precise experimental control and mechanistic insights, it presents several important limitations.
+
+
+
+[计算机与人工智能\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md]
+Felix Hill, Kyunghyun Cho, and Anna Korhonen. 2016. Learning distributed representations of sentences from unlabelled data. In Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies. Association for Computational Linguistics.
+
+Jeremy Howard and Sebastian Ruder. 2018. Universal language model fine-tuning for text classification. In ACL. Association for Computational Linguistics.
+
+Minghao Hu, Yuxing Peng, Zhen Huang, Xipeng Qiu, Furu Wei, and Ming Zhou. 2018. Reinforced mnemonic reader for machine reading comprehension. In IJCAI.
+
+Yacine Jernite, Samuel R. Bowman, and David Sontag. 2017. Discourse-based objectives for fast unsupervised sentence representation learning. CoRR, abs/1705.00557.
+
+Mandar Joshi, Eunsol Choi, Daniel S Weld, and Luke Zettlemoyer. 2017. Triviaqa: A large scale distantly supervised challenge dataset for reading comprehension. In ACL.
+
+Ryan Kiros, Yukun Zhu, Ruslan R Salakhutdinov, Richard Zemel, Raquel Urtasun, Antonio Torralba, and Sanja Fidler. 2015. Skip-thought vectors. In Advances in neural information processing systems, pages 3294–3302.
+
+Quoc Le and Tomas Mikolov. 2014. Distributed representations of sentences and documents. In International Conference on Machine Learning, pages 1188-1196.
+
+Hector J Levesque, Ernest Davis, and Leora Morgenstern. 2011. The winograd schema challenge. In Aaai spring symposium: Logical formalizations of commonsense reasoning, volume 46, page 47.
+
+Lajanugen Logeswaran and Honglak Lee. 2018. An efficient framework for learning sentence representations. In International Conference on Learning Representations.
+
+Bryan McCann, James Bradbury, Caiming Xiong, and Richard Socher. 2017. Learned in translation: Contextualized word vectors. In NIPS.
+
+Oren Melamud, Jacob Goldberger, and Ido Dagan. 2016. context2vec: Learning generic context embedding with bidirectional LSTM. In CoNLL.
+
+Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg S Corrado, and Jeff Dean. 2013. Distributed representations of words and phrases and their compositionality. In Advances in Neural Information Processing Systems 26, pages 3111–3119. Curran Associates, Inc.
+
+Andriy Mnih and Geoffrey E Hinton. 2009. A scalable hierarchical distributed language model. In D. Koller, D. Schuurmans, Y. Bengio, and L. Bottou, editors, Advances in Neural Information Processing Systems 21, pages 1081–1088. Curran Associates, Inc.
+
+Ankur P Parikh, Oscar Täckström, Dipanjan Das, and Jakob Uszkoreit. 2016. A decomposable attention model for natural language inference. In EMNLP.
+
+Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014. Glove: Global vectors for word representation. In Empirical Methods in Natural Language Processing (EMNLP), pages 1532– 1543.
+
+Matthew Peters, Waleed Ammar, Chandra Bhagavatula, and Russell Power. 2017. Semi-supervised sequence tagging with bidirectional language models. In ACL.
+
+
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+Algorithm 1: Multi-Agent QRM with RM Learning   
+1 for $i = 1$ to N do   
+2 $\mathcal { U } ^ { i }  \{ u _ { 0 } ^ { i } , u _ { A } ^ { i } \}$   
+3 Mi ← InitializeRM $( \mathcal { U } ^ { i } )$   
+4 $q ^ { i }  \mathtt { I n i t i a l i z e Q } ( M ^ { i } )$   
+5 $\Lambda _ { \top } ^ { i }  \emptyset , \Lambda _ { \bot } ^ { i }  \emptyset$   
+6 for $n = 1$ to NumEpisodes do   
+7 t←0   
+8 for $i = 1$ to N do   
+9 $u _ { t } ^ { i } \gets u _ { 0 } ^ { i } , s _ { t } ^ { i } \gets s _ { I } ^ { i } , \lambda _ { t } ^ { i } \gets \emptyset ,$ dor $\imath e ^ { i } \gets \perp$   
+10 while $\exists j \in N$ such that done $j = \perp$ do   
+11 for $i = 1$ to N do   
+12 TrainAgent $( d o n e ^ { i } , s _ { t } ^ { i } , u _ { t } ^ { i } , q ^ { i } , \lambda _ { t } ^ { i } , \Lambda _ { G } ^ { i } , \Lambda _ { I } ^ { i } , M ^ { i } , \mathcal { U } ^ { i } )$   
+13 t←t + 1   
+14   
+15 Procedure TrainAgent(done $s _ { t } , u _ { t } , q , \lambda _ { t } , \Lambda _ { \top } , \Lambda _ { \bot } , M , \mathcal { U } )$   
+16 if done $= \perp$ then   
+17 $a \gets \mathsf { G e t A c t i o n } ( q _ { u _ { t } } , s _ { t } )$   
+18 $s _ { t + 1 } ,$ isGoalAchieved ← EnvStep(st, a)   
+19 $\mathscr { L } _ { t + 1 } \gets l ( s _ { t } , s _ { t + 1 } )$   
+20 $\lambda _ { t + 1 } \gets \lambda _ { t } \oplus \mathcal { L } _ { t + 1 }$   
+21 r, ut+1 ← GetNextRMState $( M , u _ { t } , \mathcal { L } _ { t + 1 } )$   
+22 $q _ { u _ { t } } \gets \mathsf { U p d a t e Q } ( q _ { u _ { t } } , s _ { t } , a , r , s _ { t + 1 } , q _ { u _ { t + 1 } } )$   
+23 for u $\in \mathcal { U } \setminus \{ u _ { t } \}$ do   
+24 r, u' ← GetNextRMState $( M , u , \mathcal { L } _ { t + 1 } )$   
+25 $q _ { u } \gets \mathsf { U p d a t e Q } ( q _ { u } , s _ { t } , a , r , s _ { t + 1 } , q _ { u ^ { \prime } } )$   
+26   
+27 if isGoalAchieved then   
+28 $\Lambda _ { \top }  \Lambda _ { \top } \cup \{ \lambda _ { t + 1 } \}$   
+29 $\Lambda _ { \perp }  \Lambda _ { \perp }$ UGenerateIncompleteTraces $\left( \lambda _ { t + 1 } \right)$   
+30 $M _ { n e w } \gets \mathsf { L e a r n R M } ( \mathcal { U } , \Lambda _ { \top } , \Lambda _ { \bot } )$   
+31 done ← T   
+32 else if $u _ { t + 1 } = u _ { A }$ then   
+33 $\Lambda _ { \perp }  \Lambda _ { \perp } \cup \{ \lambda _ { t + 1 } \}$   
+34 $M _ { n e w } \gets \mathsf { L e a r n R M } ( \mathcal { U } , \Lambda _ { \top } , \Lambda _ { \bot } )$   
+35 done ← T   
+36 else if $t + 1 = T$ then   
+37 $\Lambda _ { \perp }  \Lambda _ { \perp } \cup \{ \lambda _ { t + 1 } \}$   
+38 done ← T   
+39   
+40 if $M \neq M _ { n e w }$ then   
+41 $M \gets M _ { n e w }$   
+42 q ← InitializeQ(M)   
+43   
+44 Procedure LearnRM(U, $\Lambda _ { \top } , \Lambda _ { \bot } )$   
+45 M ← RMLearner $( \mathcal { U } , \Lambda _ { \top } , \Lambda _ { \bot } )$   
+46 while M = ⊥ do   
+47 $\mathcal { U }  \mathcal { U } \cup \{ u _ { | \mathcal { U } | - 1 } \}$   
+48 M ← RMLearner $( \mathcal { U } , \Lambda _ { \top } , \Lambda _ { \bot } )$   
+49 return M
+
+
+
+[计算机与人工智能\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md]
+Task: ConceptualCaptions\_conceptual\_image\_captioning Instruction: In this task, you will generate a short caption for the given image. The image could depict various scenes, objects, or people. Your goal is to provide a short and accurate caption that describes the main elements the image. Pay attention to the details, such as colors, objects, actions, and interactions between elements, to create a meaningful and informative caption.
+
+Target: actor arrives at the premiere.
+
+## Task: FLICKR30K\_multiple\_captions\_generation
+
+
+Instruction: Each image has something going on. Carefully analyze the image and generate 5 short captions for each image.
+
+Target: Caption 1: A young woman intently looking at something while another woman in a hat looks on. Caption 2: A young girl in glasses observes something in the distance. Caption 3: a teenager and her mom at a public place. Caption 4: A blond girl is fixing her sunglasses. Caption 5: A woman adjusts her sunglasses.
+
+Figure 27  
+![](images/da4f475a87de8d9890ba1e4cb1ae4af936179dd4dba406fbd775c3265559c32d.jpg)
+
+![](images/e69deabfeda55ec13f9a0463c7e4c6d6a213018e5f62735a973d62e0f2c44a8f.jpg)
+
+## Task: VIZWIZ\_captioning\_image\_taken\_by\_blind\_people
+
+
+Instruction: Give an image taken by blind people, generate multiple captions for this image.
+
+
+
+[计算机与人工智能\speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 2 of 2).md]
+# speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre（第 2/2 部分）
+章节: An Empirical Analysis of Discrete Unit Representations in Speech Language Modeling Pre-training > References
+## References
+
+
+1.

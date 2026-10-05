@@ -1,0 +1,82 @@
+{
+  "mode": "A_vector",
+  "id": "T2",
+  "scenario": "multi-doc synthesis",
+  "query": "What weaknesses or risks of retrieval-augmented generation does the library identify, and what improvements or defenses does it propose?",
+  "seconds": 45.5,
+  "docs_read": 5,
+  "judge": {
+    "abs_kept": [
+      0,
+      2,
+      3,
+      4
+    ],
+    "relative_cut": 0.843,
+    "global_best": 0.943,
+    "doc_scores": [
+      {
+        "doc": "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9137,
+        "kept": true
+      },
+      {
+        "doc": "e2e-demo-0923-022632/global-rag-benchmark.md",
+        "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+        "score": 0.943,
+        "kept": true
+      },
+      {
+        "doc": "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+        "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+        "score": 0.7708,
+        "kept": false
+      },
+      {
+        "doc": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8599,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 33,
+    "total_segments": 33
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md"
+  ],
+  "evidence_pack": "[计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md]\n# large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation（第 2/3 部分）\n章节: EvoR: Evolving Retrieval for Code Generation > 4.3 Repo-level Code Generation\n## 4.3 Repo-level Code Generation\n\n\nApart from updated libraries and long-tail programming languages, repo-level code generation is also a natural and realistic scenario for RACG, where LLMs are instructed to solve issues with reference to the Github repository code. Different from the documentation in EvOR-BENCH, the repository code could be much more complex with intertwined variable dependencies, customized function calls, etc. To solve an issue, the LLM usually needs to act as an agent to explore directories, use tools, make decisions, and more. Recent efforts have demonstrated the success of such agent-based methods (OpenDevin Team, 2024; Yang et al., 2024).\n\nWe explore the applicability of EvoR in this challenging setting. Specifically, we employ the popular SWE-bench-Lite (Jimenez et al., 2023) as the testbed, use all the repository content as the documentation, and adopt the configuration in §3.2. Due to the difficulty of the tasks, we experiment with two settings: (1) use GPT-4-1106 for all LLMs in Algorithm 1; (2) use Claude-3-opus. Figure 2 shows that EvOR outperforms the traditional RAG by a large margin, and is comparable with SWEagent. This highlights the generalizability of EvOR with successful application in repo-level code generation.\n\nFurthermore, we integrate EvoR with SWEagent where we augment the search space of SWEagent to include the execution feedback and code snippets without syntax errors, and dynamically update queries and the knowledge base in every iteration of generation. Figure 2 demonstrates additional performance improvements on top of both EvoR and SWE-agent, further proving EvoR's flexibility in its integration to agent-based approaches.\n\n![](images/a6afeb835762766188fe1ab68a92e3f697fe1b5e7c7813994a4f9984956aac3d.jpg)  \nFigure 2: Performance of RAG, EvoR, SWE-agent (Agent) and combination of EvOR and SWE-agent.\n\n## 4.4 Effective Token Usage\n\n\nOlausson et al. (2023b) argues that iterative code generation, e.g., self-repair, may not yield higher pass rates when taking the cost into account. We conduct additional experiments to check the performance of EvoR at different levels of token budgets. In Algorithm 1, we adopt the termination condition as the limit of maximum token consumption, i.e., the algorithm exits when the tokens used by LLMs throughout ite\n\n[e2e-demo-0923-022632/global-rag-benchmark.md]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md]\n# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 3/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > 4.5 Human evaluation results\n## 4.5 Human evaluation results\n\n\nWe randomly selected 100 questions from HealthSearchQA, 20 questions from LiveQA, and 20 questions from MedicationQA as a smaller long-form answer benchmark for detailed human evaluation. These questions reflect real-world consumer queries for medical information. These selected questions were disjoint from those\n\n<table><tr><td>Question: A 65-year old man presents with gradually worsening rigidity of his arms and legs and slowness in performing tasks. He says he has also noticed hand tremors, which increase at rest and decrease with focused movements. On examination, the patient does not swing his arms while walking and has a shortened, shuffling gait. An antiviral drug is prescribed which alleviates the patient&#x27;s symptoms. Which of the following drugs was most likely prescribed to this patient? (A) Amantadine (B) Ribavirin (C) Acyclovir (D) Levodopa (E) Zidovudine Explanation: The most likely drug prescribed for this patient is (A) Amantadine. Amantadine is an antiviral drug that is used to alleviate symptoms of Parkinson&#x27;s disease. Parkinson&#x27;s disease is a progressive disorder that is characterized by muscle rigidity and bradykinesia, which is a slowing of movement. Levodopa is used to alleviate symptoms of Parkinson&#x27;s disease; however, it is not an antiviral drug. Acyclovir, ribavirin, and zidovudine are antiviral drugs that are used to treat viral infections and do not have a role in the treatment of Parkinson&#x27;s disease.</td></tr><tr><td>Question: A 37-year-old man with no significant past medical history is rear-ended in a motor vehicle accident. He reported significant neck pain to emergency responders, but otherwise denies weakness, numbness or tingling in his extremities. His vitals on presentation to the ED are HR 90, BP 140/80, RR 20, SpO2 98%. What is the most appropriate next step upon presentation to the emergency room?</td></tr><tr><td>(A) Lateral cervical film (B) Three view cervical spine series (C) Cervical immobilization (D) IV methylprednisolone (E) Observation overnight. Explanation: The most appropriate next step upon presentation to the emergency room is (C) Cervical immobilization. Significant neck pain suggests a possible cervical spinal injury, and cervical immobilization should be initiated unti",
+  "_gold": {
+    "2502.00306": {
+      "judged": false,
+      "kept": false,
+      "in_evidence": false,
+      "score": null
+    },
+    "2402.12317": {
+      "judged": true,
+      "kept": true,
+      "in_evidence": false,
+      "score": 0.9137
+    },
+    "2411.18583": {
+      "judged": false,
+      "kept": false,
+      "in_evidence": false,
+      "score": null
+    },
+    "_summary": {
+      "golds_total": 3,
+      "golds_judged": 1,
+      "golds_kept": 1,
+      "golds_in_evidence": 0
+    }
+  }
+}

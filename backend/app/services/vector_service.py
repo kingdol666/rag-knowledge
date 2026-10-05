@@ -10,8 +10,10 @@
 from __future__ import annotations
 
 import logging
+from collections import OrderedDict
 from datetime import datetime, timezone
 import threading
+import time
 from pathlib import Path
 from typing import Any
 
@@ -299,6 +301,25 @@ class VectorService:
     ) -> list[dict[str, Any]]:
         if top_k is None or top_k <= 0:
             top_k = config.vector_top_k
+        threshold = score_threshold if score_threshold is not None else config.vector_score_threshold
+
+        # S-P2 fix: search-result cache. The global _chroma_lock serializes
+        # every collection query (chroma client is not thread-safe), capping
+        # the whole instance at ~4-5 RPS. Identical repeated queries (retry
+        # storms, dashboards, load tests) now short-circuit past the lock
+        # entirely. TTL 30s keeps results fresh; copies prevent callers from
+        # mutating cached rows.
+        cache_key = (query, kb_id or "", top_k, tuple(doc_paths or ()),
+                     threshold, bool(balance_kbs))
+        with self._search_cache_lock:
+            hit = self._search_cache.get(cache_key)
+            if hit is not None:
+                computed_at, rows = hit
+                if time.time() - computed_at < self._SEARCH_CACHE_TTL:
+                    self._search_cache.move_to_end(cache_key)
+                    return [dict(r) for r in rows]
+                self._search_cache.pop(cache_key, None)
+
         query_embedding = embedding_service.embed_one(query)
 
         if kb_id:
@@ -313,17 +334,17 @@ class VectorService:
             else:
                 where_filter = {"doc_path": {"$in": doc_paths}}
 
-        threshold = score_threshold if score_threshold is not None else config.vector_score_threshold
-
         # ── 跨库均衡搜索：每个KB独立搜索，轮询选取，防大KB主导 ──
         if balance_kbs and not kb_id and len(collections) > 1:
-            return self._balanced_cross_kb_search(
+            balanced = self._balanced_cross_kb_search(
                 query_embedding=query_embedding,
                 collections=collections,
                 top_k=top_k,
                 threshold=threshold,
                 where_filter=where_filter,
             )
+            self._search_cache_store(cache_key, balanced)
+            return [dict(r) for r in balanced]
 
         results: list[dict[str, Any]] = []
         for col in collections:
@@ -378,7 +399,20 @@ class VectorService:
 
         # 重新排序（降权后短文本会被自然排到底部）
         results.sort(key=lambda x: x["score"], reverse=True)
-        return results
+        self._search_cache_store(cache_key, results)
+        return [dict(r) for r in results]
+
+    # ── S-P2: bounded search-result cache (see search() docstring) ──
+    _SEARCH_CACHE_TTL = 30.0
+    _SEARCH_CACHE_MAX = 256
+    _search_cache: "OrderedDict[tuple, tuple[float, list]]" = OrderedDict()
+    _search_cache_lock = threading.Lock()
+
+    def _search_cache_store(self, key: tuple, rows: list) -> None:
+        with self._search_cache_lock:
+            self._search_cache[key] = (time.time(), list(rows))
+            while len(self._search_cache) > self._SEARCH_CACHE_MAX:
+                self._search_cache.popitem(last=False)
 
     def _balanced_cross_kb_search(
         self,

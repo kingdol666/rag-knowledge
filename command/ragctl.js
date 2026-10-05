@@ -1631,6 +1631,26 @@ function authHeaders() {
   return t ? { Authorization: `Bearer ${t}` } : {};
 }
 
+function getAuthCandidates() {
+  // 2026-09-27: the .env MCP_AUTH_TOKEN can be stale (the backend rotates the
+  // loop token) while storage/loop-auth.json holds the live one — same root
+  // cause web/server/api/kb/documents/move.post.ts works around with its
+  // candidateTokens(). Return both so callers can retry on 401.
+  const out = [];
+  const t = getMcpAuthToken();
+  if (t) out.push(t);
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const p = path.join(PROJECT_ROOT, 'storage', 'loop-auth.json');
+    if (fs.existsSync(p)) {
+      const j = JSON.parse(fs.readFileSync(p, 'utf8'));
+      if (j && j.token && !out.includes(String(j.token))) out.push(String(j.token));
+    }
+  } catch { /* best effort */ }
+  return out;
+}
+
 function httpGet(url, timeout = 5000) {
   assertSafeUrl(url);
   return new Promise((resolve) => {
@@ -3535,12 +3555,26 @@ async function cmdSoul(args) {
       const soulDef = `${tplDef}\n\n---\n\n# 补天蒸馏人格: ${displayName}\n\n${personaText || '(无 persona.md, 仅使用模板人格)'}\n`;
       const thinkStyle = `${tplThink}\n\n---\n\n# 补天蒸馏工作方式: ${displayName}\n\n${workText || '(无 work.md)'}\n`;
 
-      // 1) 建库(web 层)
+      // 1) 建库(web 层) — 带 Bearer 认证(候选 token, 401 时逐个重试)
       const portsD = getServicePorts();
       const webUrl = `http://127.0.0.1:${portsD.web}`;
-      const kbRes = await fetch(`${webUrl}/api/kb/create`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description: `补天蒸馏人格: ${displayName} — ${meta.impression || ''}`.slice(0, 300) }),
+      async function webPostAuthed(url, body) {
+        const candidates = getAuthCandidates();
+        const list = candidates.length ? candidates : [''];
+        let lastRes = null;
+        for (const t of list) {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...(t ? { Authorization: `Bearer ${t}` } : {}) },
+            body: JSON.stringify(body),
+          });
+          if (res.status !== 401) return res;
+          lastRes = res;
+        }
+        return lastRes;
+      }
+      const kbRes = await webPostAuthed(`${webUrl}/api/kb/create`, {
+        name, description: `补天蒸馏人格: ${displayName} — ${meta.impression || ''}`.slice(0, 300),
       }).catch(e => ({ _error: e.message }));
       const kbJson = kbRes._error ? kbRes : await kbRes.json();
       if (kbRes._error || !(kbJson && kbJson.knowledgeBase)) {
@@ -3558,10 +3592,7 @@ async function cmdSoul(args) {
         ['memory-conventions.md', memText],
       ];
       for (const [docName, content] of docs) {
-        const r = await fetch(`${webUrl}/api/kb/documents/create`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ kbId, name: docName, content }),
-        });
+        const r = await webPostAuthed(`${webUrl}/api/kb/documents/create`, { kbId, name: docName, content });
         if (!r.ok) { warn(`文档创建失败 ${docName}: ${r.status}`); }
       }
       ok('4 个人格文档已写入(模板结构 + 补天人格内容)');

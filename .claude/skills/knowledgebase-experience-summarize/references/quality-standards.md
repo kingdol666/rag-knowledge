@@ -1,49 +1,49 @@
-# Experience Quality Standards — 经验质量黄金标准
+# Experience Quality Standards — The Gold Standard for Experience Quality
 
-> 经验不是"把对话记下来"——经验是**可复用的实践精华**，从具体案例中提炼抽象规律。
-> 检索时，低质经验即使向量命中也没用；高质经验能让人照着做。
+> An experience is not "writing down the conversation" — an experience is **reusable distilled practice**, abstract patterns extracted from concrete cases.
+> At retrieval time, a low-quality experience is useless even when vectors hit it; a high-quality experience lets someone follow it and act.
 
 ## Table of Contents
-- [三道自检题](#三道自检题)
-- [字段达标标准](#字段达标标准)
-- [坏经验 vs 好经验](#坏经验-vs-好经验)
-- [category 选择指南](#category-选择指南)
-- [去重判定](#去重判定)
-- [完整性检查清单](#完整性检查清单)
+- [Three Self-Check Questions](#three-self-check-questions)
+- [Field Pass Criteria](#field-pass-criteria)
+- [Bad Experiences vs Good Experiences](#bad-experiences-vs-good-experiences)
+- [category Selection Guide](#category-selection-guide)
+- [Dedup Rules](#dedup-rules)
+- [Completeness Checklist](#completeness-checklist)
 
 ---
 
-## 三道自检题
+## Three Self-Check Questions
 
-写每段经验前问自己：
+Before writing any experience, ask yourself:
 
-1. **这解决了什么真问题？** — 别人遇到同样场景时，能否马上定位到这条经验？
-2. **可操作性能打几分？** — 读完方案，别人能不能直接照着做？还是只说"要小心"？
-3. **少了什么？** — `problem` / `solution` / `key_lessons` 缺一个都不行，`related_docs` 缺了等于断链。
+1. **What real problem does this solve?** — When someone else hits the same scenario, can they immediately locate this experience?
+2. **How actionable is it?** — After reading the solution, can someone follow it directly? Or does it just say "be careful"?
+3. **What's missing?** — `problem` / `solution` / `key_lessons`: missing any one is unacceptable; a missing `related_docs` equals a broken link.
 
-经验 ≠ 对话记录。经验 = 从具体案例提炼的**抽象规律**：
-- ❌ "今天我搜了 RAG 的资料"（日记）
-- ✅ "RAG 检索时，先用 two_stage 再用 vector 补全，召回率提升 40%"（可复用知识）
+An experience ≠ a conversation log. An experience = **abstract patterns** distilled from concrete cases:
+- ❌ "Today I searched for RAG material" (a diary entry)
+- ✅ "For RAG retrieval, run two_stage first and supplement with vector; recall improved by 40%" (reusable knowledge; original: "RAG 检索时，先用 two_stage 再用 vector 补全，召回率提升 40%")
 
 ---
 
-## 字段达标标准
+## Field Pass Criteria
 
-| 字段 | 达标标准 | 长度 | ❌ 不达标 |
+| Field | Pass criteria | Length | ❌ Fails |
 |------|---------|------|----------|
-| `title` | 含场景词 + 方法词（如"磨煤机堵管预警"） | 简短 | "经验1" / "故障处理" |
-| `scenario` | kebab-case，含领域前缀 | 如 `vla-deployment-sim2real` | `test` / 无前缀 |
-| `problem` | 具体到时间/数量/条件的可复现场景 | ≥50 chars | "设备不太好用" |
-| `solution` | 有工具/方法/步骤/配置/命令 | ≥100 chars | "我们检查了一下" |
-| `key_lessons` | 每条可独立引用，从不同角度 | 每条 ≥30 chars，3-5条 | "注意安全" / 仅2条 |
-| `tags` | 领域词 + 方法词 + 场景词 | ≥2 个 | 空 / 仅1个 |
-| `related_docs` | 路径在 KB 真实存在 | 用 `kb_doc_read` 验证 | 不存在 / 空（除非纯对话经验）|
-| `severity` | 与 category 匹配的真实严重度 | — | tip 类故障标 normal |
-| `category` | 选最匹配的（见下表） | — | 故障排查标 tip |
+| `title` | Contains scenario words + method words (e.g. "coal mill blockage early warning" 磨煤机堵管预警) | Short | "Experience 1" (经验1) / "fault handling" (故障处理) |
+| `scenario` | kebab-case with a domain prefix | e.g. `vla-deployment-sim2real` | `test` / no prefix |
+| `problem` | A reproducible scenario, concrete down to times/quantities/conditions | ≥50 chars | "the equipment isn't working well" (设备不太好用) |
+| `solution` | Has tools/methods/steps/configs/commands | ≥100 chars | "we checked it" (我们检查了一下) |
+| `key_lessons` | Each entry independently citable, from different angles | Each ≥30 chars, 3-5 entries | "mind safety" (注意安全) / only 2 entries |
+| `tags` | Domain word + method word + scenario word | ≥2 tags | Empty / only 1 |
+| `related_docs` | Paths really exist in the KB | Verify with `kb_doc_read` | Nonexistent / empty (unless a pure conversation experience) |
+| `severity` | Real severity matching the category | — | A tip-level fault marked normal |
+| `category` | Pick the best match (see table below) | — | Troubleshooting marked tip |
 
-### `solution` 长度硬门槛
+### `solution` Hard Length Thresholds
 
-| category | solution 最低 chars |
+| category | solution minimum chars |
 |----------|-------------------|
 | troubleshooting | 80 |
 | best_practice / workflow | 100 |
@@ -54,82 +54,90 @@
 
 ---
 
-## 坏经验 vs 好经验
+## Bad Experiences vs Good Experiences
 
-### ❌ 坏经验（太泛，检索命中也没用）
+### ❌ Bad Experience (too vague; useless even when retrieval hits it)
 ```yaml
-problem: "设备不太好用"
-solution: "我们检查了一下，调整了参数"
-key_lessons: ["要注意维护"]
+problem: "The equipment isn't working well"          # 原文: "设备不太好用"
+solution: "We checked it and adjusted some parameters"   # 原文: "我们检查了一下，调整了参数"
+key_lessons: ["Mind the maintenance"]                # 原文: "要注意维护"
 ```
 
-### ✅ 好经验（具体、可操作、可复用）
+### ✅ Good Experience (concrete, actionable, reusable)
 ```yaml
-problem: "磨煤机堵管导致停炉，每次清堵耗时3小时，月均2次"
+problem: "Coal mill blockage caused boiler shutdowns; each unclog takes 3 hours, averaging 2 per month"
+        # 原文: "磨煤机堵管导致停炉，每次清堵耗时3小时，月均2次"
 solution: |
-  搭建 CNN-LSTM 预警模型：
-  1. 从 DCS 历史数据提取磨煤机电流、进出口差压、一次风量三参数
-  2. 滑窗 60min 标注堵管前兆样本训练
-  3. 部署实时推理，超 0.8 概率触发预警
-  4. 预警后 315 分钟内人工介入可避免停炉
+  Build a CNN-LSTM early-warning model:
+  1. Extract three parameters from DCS historical data: mill current, inlet/outlet differential pressure, primary air flow
+     (原文: "从 DCS 历史数据提取磨煤机电流、进出口差压、一次风量三参数")
+  2. Train on sliding-window 60min samples labeled as blockage precursors
+     (原文: "滑窗 60min 标注堵管前兆样本训练")
+  3. Deploy real-time inference; trigger a warning above 0.8 probability
+     (原文: "部署实时推理，超 0.8 概率触发预警")
+  4. Human intervention within 315 minutes of the warning avoids the shutdown
+     (原文: "预警后 315 分钟内人工介入可避免停炉")
 key_lessons:
-  - "特征工程选磨煤机电流+进出口差压+一次风量三参数，缺一不可"
-  - "预警阈值设80%时精度95%误报率3%，低于70%则误报激增至18%"
-  - "滑窗60min是堵管前兆的最优观测窗口，30min噪声大、120min滞后"
+  - "Feature engineering uses all three: mill current + inlet/outlet differential pressure + primary air flow; none can be dropped"
+    # 原文: "特征工程选磨煤机电流+进出口差压+一次风量三参数，缺一不可"
+  - "At an 80% warning threshold: precision 95%, false-positive rate 3%; below 70%, false positives surge to 18%"
+    # 原文: "预警阈值设80%时精度95%误报率3%，低于70%则误报激增至18%"
+  - "A 60min sliding window is the optimal observation window for blockage precursors; 30min is noisy, 120min lags"
+    # 原文: "滑窗60min是堵管前兆的最优观测窗口，30min噪声大、120min滞后"
 ```
 
-→ 别人遇到同样场景能直接套用。
+→ Someone hitting the same scenario can apply it directly.
 
 ---
 
-## category 选择指南
+## category Selection Guide
 
-| category | 何时用 | 关键信号 |
+| category | When to use | Key signals |
 |----------|--------|---------|
-| `troubleshooting` | 故障排查、错误修复 | "报错""失败""排障""修复" |
-| `best_practice` | 经过验证的最佳实践 | "推荐""标准做法""最优" |
-| `workflow` | 多步骤流程/标准操作程序 | "步骤""流程""SOP" |
-| `optimization` | 性能/效率优化 | "提升""加速""优化""降本" |
-| `lesson_learned` | 从失败/事件中得到的教训 | "教训""事后""回顾" |
-| `decision` | 架构/技术选型决策及理由 | "选型""决策""为什么用X而非Y" |
-| `tip` | 小技巧/快捷方式（非系统性） | "技巧""快捷""小窍门" |
+| `troubleshooting` | Fault troubleshooting, error fixing | "报错" "失败" "排障" "修复" (error / failure / troubleshooting / fix) |
+| `best_practice` | Verified best practices | "推荐" "标准做法" "最优" (recommended / standard practice / optimal) |
+| `workflow` | Multi-step procedures / standard operating procedures | "步骤" "流程" "SOP" (steps / procedure / SOP) |
+| `optimization` | Performance/efficiency optimization | "提升" "加速" "优化" "降本" (improve / speed up / optimize / cut costs) |
+| `lesson_learned` | Lessons from failures/incidents | "教训" "事后" "回顾" (lesson / post-mortem / retrospective) |
+| `decision` | Architecture/technology choice decisions and rationale | "选型" "决策" "为什么用X而非Y" (choice / decision / why X over Y) |
+| `tip` | Small tricks/shortcuts (not systematic) | "技巧" "快捷" "小窍门" (trick / shortcut / knack) |
 
-> 误选 category 会误导检索分类。故障排查误标 tip → 降权。
-
----
-
-## 去重判定
-
-同 KB 内已有相似 `scenario` → **不要新建**，走更新路径（[crud-and-migration.md](crud-and-migration.md) §更新）：
-
-```
-创建前先查：
-  experience_search_global(kb_id, query="<scenario 关键词>") → 看是否命中
-  experience_list(kb_id, scenario="<同 scenario>") → 看是否已存在
-
-命中已有 → experience_update 补充新教训/更新方案
-未命中  → experience_create 新建
-```
-
-跨 KB 同主题 → 允许各自存在（不同 KB 的领域上下文不同），但 `tags` 应标明关联领域。
+> Picking the wrong category misleads retrieval classification. Troubleshooting mis-tagged as tip → downweighted.
 
 ---
 
-## 完整性检查清单
+## Dedup Rules
 
-创建/更新前逐项过：
+A similar `scenario` already exists in the same KB → **do not create a new one**; take the update path ([crud-and-migration.md](crud-and-migration.md) §Update):
 
 ```
-□ title 含场景词 + 方法词
-□ scenario kebab-case + 领域前缀
-□ problem ≥50 chars，具体可复现
-□ solution ≥ 阈值（见上表），含可执行步骤
-□ key_lessons ≥3 条，每条 ≥30 chars，可独立引用
-□ tags ≥2 个（领域 + 方法）
-□ related_docs 路径真实存在（kb_doc_read 验证）
-□ category 与内容匹配
-□ severity 与 category 匹配
-□ 同 scenario 未重复（去重检查）
+Check before creating:
+  experience_search_global(kb_id, query="<scenario keywords>") → see whether it hits
+  experience_list(kb_id, scenario="<same scenario>") → see whether it already exists
+
+Hit → experience_update to add new lessons / update the solution
+Miss → experience_create a new one
 ```
 
-任一不达标 → 回退起草，不要硬入库。缺字段的经验检索命中也没用。
+Same topic across KBs → each may exist (different KBs have different domain contexts), but `tags` should mark the related domains.
+
+---
+
+## Completeness Checklist
+
+Go through item by item before create/update:
+
+```
+□ title contains scenario words + method words
+□ scenario in kebab-case + domain prefix
+□ problem ≥50 chars, concrete and reproducible
+□ solution ≥ the threshold (see table above), with executable steps
+□ key_lessons ≥3 entries, each ≥30 chars, independently citable
+□ tags ≥2 (domain + method)
+□ related_docs paths really exist (verify with kb_doc_read)
+□ category matches the content
+□ severity matches the category
+□ same scenario not duplicated (dedup check)
+```
+
+Any item failing → fall back to drafting; do not force it into the library. An experience with missing fields is useless even when retrieval hits it.

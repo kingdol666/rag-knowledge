@@ -1,0 +1,94 @@
+{
+ "success": true,
+ "count": 11,
+ "catalog": [
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "name": "计算机与人工智能",
+   "description": "Computer science and AI: algorithms, NLP/LLM, vision, robotics perception, data systems, speech, social computing",
+   "doc_count": 131,
+   "path": "计算机与人工智能",
+   "parent_id": null
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "name": "自然科学与地球科学",
+   "description": "Physical, chemical, mathematical, space and earth sciences: physics, quantum, climate, astronomy, chemistry, ocean, seismology",
+   "doc_count": 75,
+   "path": "自然科学与地球科学",
+   "parent_id": null
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "name": "生命科学与医学",
+   "description": "Life sciences and medicine: clinical knowledge, genomics, medical imaging, immunology, population genetics",
+   "doc_count": 53,
+   "path": "生命科学与医学",
+   "parent_id": null
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "name": "工程与能源",
+   "description": "Engineering and energy: power grids, battery and energy materials, control engineering applications",
+   "doc_count": 39,
+   "path": "工程与能源",
+   "parent_id": null
+  },
+  {
+   "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+   "name": "经济与社会",
+   "description": "Economics and society: growth theory, inequality, infrastructure, finance",
+   "doc_count": 24,
+   "path": "经济与社会",
+   "parent_id": null
+  },
+  {
+   "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+   "name": "aw-industrial",
+   "description": "AgentWorkShop 工业知识库(诊断报告/经验教训/操作规范)",
+   "doc_count": 7,
+   "path": "aw-industrial",
+   "parent_id": null
+  },
+  {
+   "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+   "name": "Corpus-Chunks800",
+   "description": "DeepRead baseline reproduction index",
+   "doc_count": 0,
+   "path": "Corpus-Chunks800",
+   "parent_id": null
+  },
+  {
+   "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+   "name": "e2e-demo-0923-022632",
+   "description": "E2E full-stack test KB (2026-09-22): real-doc ingestion, retrieval, experience, persona integration",
+   "doc_count": 3,
+   "path": "e2e-demo-0923-022632",
+   "parent_id": null
+  },
+  {
+   "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+   "name": "soul-e2e-tester-024115",
+   "description": "SOUL 人格 soul-e2e-tester-024115",
+   "doc_count": 4,
+   "path": "soul-e2e-tester-024115",
+   "parent_id": null
+  },
+  {
+   "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+   "name": "Novel-PridePrejudice",
+   "description": "Novel-PridePrejudice 知识库：《Pride and Prejudice》(Jane Austen, Project Gutenberg #1342) 英文小说全文，用于长文本检索测试。领域：文学/古典小说；语言 en。全书按 30000 字符窗口拆为 26 个 part。",
+   "doc_count": 28,
+   "path": "Novel-PridePrejudice",
+   "parent_id": null
+  },
+  {
+   "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+   "name": "AI 基础设施",
+   "description": "AI 基础设施域：承载模型服务链路与检索系统的建设、运维与调优知识。当前覆盖分布式追踪（TraceLens 部署、混合采样策略、span 告警与容量规划）与向量索引（HNSW 参数 M/ef_construction/ef_search、int8 量化、混合检索、分片路由、上线验收清单），可回答可观测性采样与断流排查、向量检索调优与召回率优化问题。",
+   "doc_count": 3,
+   "path": "AI 基础设施",
+   "parent_id": null
+  }
+ ]
+}

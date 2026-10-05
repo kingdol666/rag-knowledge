@@ -1,0 +1,48 @@
+{
+ "qid": "QK10",
+ "method": "bm25",
+ "question": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
+ "ranked": [
+  "2303.00445",
+  "1911.02792",
+  "2005.14165",
+  "2606.10843",
+  "q-bio-0408016",
+  "0706.3294",
+  "2110.07844",
+  "1801.00862",
+  "2502.00306",
+  "2209.15032"
+ ],
+ "ranked_paths": [
+  "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "large-language-models__2005.14165__language-models-are-few-shot-learners.md",
+  "seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p.md",
+  "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+  "gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md",
+  "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference.md",
+  "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md"
+ ],
+ "evidence_sources": [
+  "2303.00445",
+  "1911.02792",
+  "2005.14165"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 18.2,
+ "answer": "The evidence is insufficient to answer the question.\n\nThe retrieved chunks discuss unrelated topics: contextual subspace error mitigation for a 3-qubit HCl system ([2303.00445]), coarse-grained molecular modeling mappings ([1911.02792]), and a GPT-3-generated news article about a church denomination split ([2005.14165]). None mention the Herbert-Moulton collider benchmark, detector drift, or any particle physics benchmark methodology.\n\nSources used: [2303.00445], [1911.02792], [2005.14165] — none of which address the question.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 845,
+  "output": 121,
+  "cache_read": 37184,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.025842,
+ "extra": {}
+}

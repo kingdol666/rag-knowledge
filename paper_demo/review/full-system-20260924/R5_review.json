@@ -1,0 +1,79 @@
+{
+  "seat": "R5",
+  "score": 7.5,
+  "verdict": "minor",
+  "summary": "The three figures share one coherent visual system (same sans face, rounded boxes, green primary, numbered discs, dashed-vs-solid edge semantics) and read as a single paper. Caption claims match pixels throughout Fig 1/2/3, including the Fig 3 tool-count story (BQ04 A = 2+2+1 = 5 calls, BQ06 A = 3+5+2 = 10 calls, B = 4, C = 2+2, all consistent with the strip's mean tool calls 7.6/4.4/2.4), the Fig 1 gate visual (9 rubric squares, 3 dark, 'gate >= 6'), and every ellipsis-elided source line. The Fig 2 green banner's 8 check names wrap 4+4, centered, with clear padding. Three P1s keep this from 9: body prose plus the GenAI disclosure spill onto page 5 against the stated body<=4-pages design (page 5 is >50% empty); the same page 3 carries a figure listing 8 ingest checks beside Table 1 claiming 'nine recorded checks'; and Fig 3's results strip has three unlabeled numeric columns whose mapping exists only in the caption. Remaining items are polish: a bolt glyph touching text in Fig 1, zero-padding in Fig 2's ChromaDB pill, fully-bold captions deviating from ACM style, ~6.5pt timeline text in Fig 3, and a slate-vs-amber color split for the dense condition between Figs 1 and 3.",
+  "strengths": [
+    "One consistent design language across all three figures (shared sans-serif face, rounded-corner boxes, green primary, numbered discs, dashed = fallback/contrast, solid = direct path), so the paper reads as one designed object.",
+    "Fig 3 numbers are internally consistent: BQ04 A totals 5 tool calls and BQ06 A totals 10, compatible with the strip's 7.6 mean across 10 questions; B=4 vs 4.4 and C=2/2 vs 2.4 are likewise consistent; BQ06's 'keyword-verified' and 'MEASURED ABSTENTION' verdicts match the 9/10 strip values.",
+    "Captions are pixel-literal: 'part 1 of 2, section 2', 'B names the file', 'C quotes chunks', 'ellipses elide text', 'top-2 ... packed into one 4k context' all verified against the renders; the \\Description blocks match the graphics.",
+    "Fig 2's banner region is clean: 'Per-part final check - all pass' with 8 check names split 4+4, both lines centered and balanced, no text touching panel or banner borders.",
+    "Page composition honors the stated design: exactly one full-width figure heading pages 2, 3, 4; no figure/caption crowding, no table-figure collisions, no stranded headings anywhere."
+  ],
+  "issues": [
+    {
+      "id": "R5-1",
+      "priority": "P1",
+      "location": "page-5.png, left column (and page overall)",
+      "issue": "Body content spills past the stated 4-page body: Section 4 prose continues onto page 5 and the GenAI Usage Disclosure section sits there too, leaving the lower ~55% of the final page empty.",
+      "evidence": "page-5.png left column opens with the run-in continuation '48 s/$0.18 dense): the gap is bought with multi-step reading...' and contains the heading 'GenAI Usage Disclosure' plus a 15-line paragraph; text ends at ~42% page height (left) and references at ~46% (right), leaving more than half the page blank.",
+      "suggestion": "Trim roughly 15-20 lines from Sections 3-4 (or shrink Fig 3 slightly) so body prose ends on page 4; confirm with the track rules whether the GenAI disclosure may legally sit on the references-only page. As printed, body > 4 pages."
+    },
+    {
+      "id": "R5-2",
+      "priority": "P1",
+      "location": "page-3.png: Figure 2 panel (a) green banner area vs Table 1 row 4",
+      "issue": "Count mismatch visible on one page: Figure 2 lists 8 per-part ingest check names while Table 1 on the same page says 'nine recorded checks' and Section 4 text says 'nine-point ingest final check'.",
+      "evidence": "Names counted in fig2-architecture.png below the green banner: read-back, description, base fit, tags (line 1); vector probe, graph node, three-layer, metadata hits (line 2) = 8. sec3_demo.tex:52 'Per-paper ingest checks (nine recorded checks)'; sec4_eval.tex:26 'nine-point ingest final check'. A reader who counts gets 8 vs 9.",
+      "suggestion": "Either add the ninth check name to the figure list, or annotate the figure line (e.g., '... among nine recorded checks'), or reword the table/text so the counts agree."
+    },
+    {
+      "id": "R5-3",
+      "priority": "P1",
+      "location": "page-4.png / fig3-answers-dual.png bottom 'MONITORED RUN' strip",
+      "issue": "The results strip's three numeric columns carry no labels inside the figure; the mapping (Platform, Bare agent, Dense retrieval) exists only in the caption, so the strip is not self-contained and the caption references columns the pixels never name.",
+      "evidence": "Crop of the strip shows a navy banner followed directly by rows 'Grounded (cites paper) 9/10 10/10 9/10', 'Mean latency (s) 113.0 42.7 48.0', 'Mean tool calls 7.6 4.4 2.4', etc., with no header row over the three value columns; caption states 'columns Platform, Bare agent, Dense retrieval'.",
+      "suggestion": "Add a header row under the navy banner ('Platform | Bare agent | Dense retrieval', or A/B/C glyphs matching the column badges used in the panels above) so the aggregate values are readable without the caption."
+    },
+    {
+      "id": "R5-4",
+      "priority": "P2",
+      "location": "page-2.png / fig1-core.png, top row panel 4",
+      "issue": "The lightning-bolt glyph between the dashed 'one answer, no sources attached' box and the text line collides with the line 'One generation -': its lower tip descends into the word space and grazes the tops of 'ge' in 'generation'.",
+      "evidence": "fig1-core.png (2000x1016): bolt tail tip reaches ~(x=1685, y=295) native, i.e. inside the cap-height band (y~285-330) of the word 'generation'; at 3x the tip visibly touches the top-left of the 'g'. Visible at print size as a gray stroke on white.",
+      "suggestion": "Raise the bolt ~8px or shorten its tail so it terminates in clear whitespace above the text baseline band."
+    },
+    {
+      "id": "R5-5",
+      "priority": "P2",
+      "location": "page-3.png / fig2-architecture.png, top services strip",
+      "issue": "In the 'ChromaDB - BGE-M3' pill the text touches both vertical box borders (near-zero horizontal padding), unlike the two neighboring pills.",
+      "evidence": "fig2-architecture.png (2000x1178): pill spans ~(x1050-1385, y55-95); 'C' starts ~2px inside the left border and '3' ends ~1px from the right border, appearing to kiss the border stroke; 'Neo4j - relations' and 'Markdown - YAML' pills have ~25px padding.",
+      "suggestion": "Widen the pill or reduce that label's font slightly so padding matches the sibling pills."
+    },
+    {
+      "id": "R5-6",
+      "priority": "P2",
+      "location": "page-2.png, page-3.png, page-4.png (all figure captions; Table 1 caption)",
+      "issue": "All three figure captions and the table caption are set entirely in bold, deviating from the ACM reference style in which only the 'Figure N:' / 'Table N:' prefix is bold and the caption body is regular weight.",
+      "evidence": "page-2.png caption 'Figure 1: QDCVR at a glance...' through its final line renders fully bold; same for Figure 2 (4 lines), Figure 3 (7 lines), and Table 1 on page 3.",
+      "suggestion": "Restore template caption weight (bold prefix only); the multi-line bold captions are the heaviest text blocks on pages 2-4 and compete with the figures."
+    },
+    {
+      "id": "R5-7",
+      "priority": "P2",
+      "location": "page-4.png / fig3-answers-dual.png timeline bullets",
+      "issue": "Fig 3's tool-name bullet text is the smallest type in the paper, borderline at print size (~6.5pt).",
+      "evidence": "fig3-answers-dual.png is 2000px wide placed at 0.92\\textwidth (~6.44in) = ~310 px/in; bullet cap height measures ~20px = ~4.6pt cap = ~6.5pt type (e.g., 'kb_search_two_stage x1 - confirm'). Legible at 100% zoom on page-4.png but tight for print.",
+      "suggestion": "Place Fig 3 at full \\textwidth (+8.5% scale) or bump the timeline-row font ~1pt; keep the badge/heading sizes as is."
+    },
+    {
+      "id": "R5-8",
+      "priority": "P2",
+      "location": "fig1-core.png top row vs fig3-answers-dual.png column C",
+      "issue": "Color language for the dense-retrieval condition is inconsistent across figures: slate/gray in Fig 1's baseline row, amber in Fig 3's column C; meanwhile gray denotes the bare agent in Fig 3.",
+      "evidence": "fig1-core.png top row uses slate-gray discs, boxes and outcome text throughout; fig3-answers-dual.png badges are 'A' green, 'B' gray/slate, 'C' amber-tinted. Same evaluated condition (dense) wears gray in one figure and amber in the other; green=platform is consistent everywhere.",
+      "suggestion": "Low stakes: either tint Fig 1's top row toward the amber used for dense in Fig 3, or accept Fig 1's simpler baseline-vs-platform encoding but note it once in a shared legend."
+    }
+  ]
+}

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """Track B (裸 Agent 直搜) + Track C (RAG 复刻 dense) 重跑 — 全程计时+原始回答.
 
 B: omp RPC 保留文件工具, cwd=data/corpus_md/, 每题独立会话, 原始 JSON 回答原样记录。
@@ -32,9 +35,10 @@ research-paper files (plain markdown). Nobody built any index for you.
 
 Answer the QUESTION using ONLY the files in your current working directory.
 Workflow: list the files, grep/read the relevant passages, read enough context,
-then answer. Reply with ONLY a JSON object (no other text):
-{{"answer": "<2-5 sentence factual answer; say the files do not contain the
-answer if they do not>", "files_used": ["<filename>", ...]}}
+then answer. IMPORTANT: write the final answer in ENGLISH. Reply with ONLY a
+JSON object (no other text):
+{{"answer": "<2-5 sentence factual answer in ENGLISH; say the files do not
+contain the answer if they do not>", "files_used": ["<filename>", ...]}}
 
 QUESTION: {q}"""
 

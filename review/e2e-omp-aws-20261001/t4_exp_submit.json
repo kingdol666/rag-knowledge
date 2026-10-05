@@ -1,0 +1,17 @@
+{
+ "tag": "t4_exp_submit",
+ "mode": "async",
+ "request_prompt": "在知识库「e2e-omp-20261001」中沉淀一条经验：标题《固态电解质膜低温测试经验》，类别「材料测试」，问题「-20 摄氏度下离子电导率测试数据不稳定」，解决方案「测试前对样品做30 分钟恒温预处理，再连续采样三次取中位数」，关联文档「QDCVR-7 Solid-State Electrolyte Membrane Validation Report」。",
+ "http": 200,
+ "wall_s": 0.0,
+ "response": {
+  "success": true,
+  "mode": "async",
+  "task_id": "kbt_muoxnimm_63c35c3e",
+  "status": "running",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "poll": "GET /api/kb/agent/tasks/kbt_muoxnimm_63c35c3e"
+ },
+ "task_id": "kbt_muoxnimm_63c35c3e"
+}

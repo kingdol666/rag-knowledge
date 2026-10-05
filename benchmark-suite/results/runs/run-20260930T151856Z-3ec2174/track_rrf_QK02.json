@@ -1,0 +1,54 @@
+{
+ "qid": "QK02",
+ "method": "rrf",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "ranked": [
+  "1602.01876",
+  "2508.18304",
+  "2110.07787",
+  "2301.08436",
+  "2401.06823",
+  "2009.10669",
+  "2602.10156",
+  "1909.03801",
+  "q-bio-0408016",
+  "1809.08199"
+ ],
+ "ranked_paths": [
+  "genomics__1602.01876__primer-on-the-gene-ontology.md",
+  "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m.md",
+  "genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md",
+  "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md",
+  "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md",
+  "clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md",
+  "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+  "clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md"
+ ],
+ "evidence_sources": [
+  "1602.01876",
+  "2508.18304",
+  "2110.07787"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.9,
+ "latency_s": 17.7,
+ "answer": "The retrieved evidence is insufficient to answer this question. The GO primer excerpt ([1602.01876]) describes the Gene Ontology as \"a controlled vocabulary of terms to represent biology in a structured way\" and notes that the GO project consists of the ontology plus annotations, but the chunk is cut off before any subdivision into separate ontologies is named. The other two chunks ([2508.18304] on monocyte subsets/scRNA-seq and [2110.07787] on SingleR/Cell-ID cell annotation) do not mention the GO's internal structure at all. Therefore, based solely on the evidence provided, I cannot name the three independent ontologies that subdivide the Gene Ontology.\n\nSources: [1602.01876] (GO primer chunk), [2508.18304] (monocyte scRNA-seq chunk, examined and not relevant), [2110.07787] (cell annotation methods chunk, examined and not relevant).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 48082,
+  "output": 697,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.25917100000000004,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

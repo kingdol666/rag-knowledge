@@ -1,0 +1,54 @@
+{
+ "qid": "QK01",
+ "method": "rrf",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "2110.07844",
+  "2510.13343",
+  "1906.10015",
+  "1911.02792",
+  "2110.08918",
+  "2109.14357",
+  "2009.10669"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.2,
+ "latency_s": 32.4,
+ "answer": "**Answer (from evidence only):**\n\nPer the evidence, the Transformer computes attention as multi-head attention with h = 8 parallel attention heads, each using reduced dimensions d_k = d_v = d_model/h = 64; because of each head's reduced dimension, the total computational cost is similar to single-head attention with full dimensionality ([1706.03762]). Multi-head attention is used in three ways ([1706.03762]): (1) in encoder-decoder attention layers, queries come from the previous decoder layer while memory keys and values come from the encoder output, allowing every decoder position to attend over all input positions; (2) in encoder self-attention, keys, values, and queries all come from the same place — the previous encoder layer's output — so each position attends to all positions in that layer; (3) decoder self-attention works similarly (the excerpt cuts off mid-description). The other two chunks ([1810.04805], [2503.21676]) cover BERT span prediction and attention patching, not this question.\n\n**However, the evidence is insufficient for the second half of the question:** none of the provided excerpts states *why* the Transformer replaces recurrence and convolution (e.g., no \"Why Self-Attention\" section or parallelization/benefits rationale is included), so I cannot answer that part without falling back on prior knowledge.\n\n**Sources used:** chunk [1706.03762] (\"Applications of Attention in our Model\" / multi-head attention excerpt).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 48100,
+  "output": 1151,
+  "cache_read": 64,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.26952039999999994,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

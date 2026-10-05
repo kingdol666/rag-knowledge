@@ -1,0 +1,48 @@
+{
+ "qid": "QK04",
+ "method": "bm25",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "ranked": [
+  "2209.15032",
+  "2005.14165",
+  "2109.14357",
+  "2608.05850",
+  "2110.07844",
+  "2310.10981",
+  "2402.11690",
+  "1811.04224",
+  "1906.10015",
+  "2509.05359"
+ ],
+ "ranked_paths": [
+  "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md",
+  "large-language-models__2005.14165__language-models-are-few-shot-learners.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer.md",
+  "large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md",
+  "speech__1811.04224__reinforcement-learning-based-speech-enhancem.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre.md"
+ ],
+ "evidence_sources": [
+  "2209.15032",
+  "2005.14165",
+  "2109.14357"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 6.9,
+ "answer": "The wav2vec 2.0 approach detects within-sentence prosodic boundaries using **only acoustic information**, reaching **94% accuracy** (and an F1 measure of 83%). The work is described in \"Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\" by Kunešová and Rezáčková, tested on Czech broadcast news recordings labeled by phonetic experts, and it outperformed a text-based predictor using the same transcripts despite training on a relatively small amount of labeled data.\n\nSource: [2209.15032] `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u` (part 1/2).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 963,
+  "output": 147,
+  "cache_read": 37184,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.027082000000000002,
+ "extra": {}
+}

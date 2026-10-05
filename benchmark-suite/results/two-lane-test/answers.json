@@ -1,0 +1,172 @@
+{
+ "A_Q1": {
+  "lane": "A",
+  "qid": "Q1",
+  "evidence_chars": 18646,
+  "answer": "The evidence answers this: when Bingley urges Darcy to dance and points out Elizabeth sitting behind him, Darcy looks at her briefly, then coldly says, \"She is tolerable: but not handsome enough to tempt _me_; and I am in no humour at present to give consequence to young ladies who are slighted by other men,\" and tells Bingley to return to his partner. Bingley follows his advice and Darcy walks off, while Elizabeth \"remained wi[th]\" — the passage is cut off mid-sentence, so her immediate reaction is not fully shown. The later conversation with her sister Jane (Chapter IV) and her reported remark \"Not handsome enough to dance with! ... I quite detest the man\" indicate her resentment toward Darcy, though that reflection is attributed to her mother's account to her husband rather than stated directly as Elizabeth's own on-the-spot response. So the evidence fully covers what Darcy said, but Elizabeth's direct response at the assembly is truncated and only inferable from surrounding passages.\n\nSources used: retrieved chunk (Pride and Prejudice, Chapter III — \"She is tolerable\" passage, window 5/6 @line564); head/window 2/6 (Chapter I–II front matter).",
+  "is_error": false,
+  "latency_s": 7.4,
+  "num_turns": 1,
+  "tokens": {
+   "input": 9694,
+   "output": 253,
+   "cache_read": 32000,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.070795,
+  "wall_s": 7.4
+ },
+ "A_Q2": {
+  "lane": "A",
+  "qid": "Q2",
+  "evidence_chars": 18645,
+  "answer": "The evidence is insufficient to answer this question.\n\nThe retrieved chunks cover Elizabeth's first meeting with Wickham in Meryton and his account of the living and the Darcy family, but nothing about a proposal at Hunsford, Elizabeth's refusal, or Darcy's letter the following morning appears anywhere in them. The chunks end mid-conversation with Wickham describing Miss Darcy, and the head/window sections cover Mr. Collins's visit and the Philips's evening party. No source in the evidence describes the Hunsford proposal scene, Elizabeth's reasons for refusing, or the contents of Darcy's letter regarding Wickham. I therefore cannot answer from the provided evidence without relying on prior knowledge of the novel.\n\nSources used: retrieved chunk (`pride_and_prejudice`, 第 6/26 部分) and window sections 1–5 (`@line92`, `@line185`, `@line278`, `@line371`, `@line464`).",
+  "is_error": false,
+  "latency_s": 9.4,
+  "num_turns": 1,
+  "tokens": {
+   "input": 9966,
+   "output": 196,
+   "cache_read": 32000,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.07073,
+  "wall_s": 9.4
+ },
+ "A_Q3": {
+  "lane": "A",
+  "qid": "Q3",
+  "evidence_chars": 18645,
+  "answer": "The evidence does not answer this question. The retrieved chunks show Elizabeth writing to her aunt for an explanation, and Mrs. Gardiner's reply recounting that Mr. Darcy called on Mr. Gardiner, told him where Lydia and Wickham were, met and negotiated with Wickham repeatedly, and persuaded Lydia, but the text cuts off at the point where details would follow. The passages also reveal Elizabeth's realization that Darcy \"had followed them purposely to town\" and had \"finally bribed\" Wickham, but no explicit statement of what Darcy paid or the full settlement terms appears in this evidence. Sources: pride_and_prejudice (part 21/26), retrieved chunk and windows 1–6.",
+  "is_error": false,
+  "latency_s": 5.0,
+  "num_turns": 1,
+  "tokens": {
+   "input": 4620,
+   "output": 143,
+   "cache_read": 37312,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.045330999999999996,
+  "wall_s": 5.1
+ },
+ "A_Q4": {
+  "lane": "A",
+  "qid": "Q4",
+  "evidence_chars": 18645,
+  "answer": "Charlotte Lucas secured Mr. Collins's proposal by deliberately encouraging his attentions — listening to him with civility while Elizabeth avoided him — and she accepted him \"solely from the pure and disinterested desire of an establishment,\" reasoning that marriage was \"the only honourable provision for well-educated young women of small fortune.\" Her parents, Sir William and Lady Lucas, consented \"with a most joyful alacrity,\" and Charlotte, at twenty-seven, \"felt all the good luck of it.\" She resolved to tell Elizabeth herself and swore Mr. Collins to secrecy beforehand. Elizabeth, who had thought it \"almost as far from possibility\" that Charlotte could encourage him as that she would do so herself, cried out, \"Engaged to Mr. Collins! my dear Charlotte, impossible!\" Charlotte calmly replied, \"Why should you be surprised, my dear Eliza? Do you think it incredible that Mr. Collins should be able to procure any woman's good opinion, because he was not so happy as to succeed with you?\" Elizabeth then recollected herself and assured her of her wish for her happiness, but \"it was a long time before she became at all reconciled to the idea of so unsuitable a match,\" and she felt \"no real confidence could ever subsist between them again.\"\n\nSources used: `pride_and_prejudice（第 9/26 部分）`, Chapters XXI–XXII (chunks: retrieved chunk; window 3/6 @line269; window 4/6 @line358; window 5/6 @line448).",
+  "is_error": false,
+  "latency_s": 10.6,
+  "num_turns": 1,
+  "tokens": {
+   "input": 4454,
+   "output": 314,
+   "cache_read": 37312,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.048776,
+  "wall_s": 10.6
+ },
+ "A_Q5": {
+  "lane": "A",
+  "qid": "Q5",
+  "evidence_chars": 18646,
+  "answer": "The evidence does not contain the answer to this question.\n\nWhat the retrieved chunks *do* establish is only one half of the alleged pairing: Wickham's elopement with **Lydia Bennet** — she is described as \"very young,\" never taught to think on serious subjects, given over for \"the last half year, nay, for a twelvemonth\" to nothing but amusement and vanity (so roughly fifteen/sixteen, though no exact age is stated), and her note announces she is \"going to Gretna Green\" to sign herself \"Lydia Wickham.\" The outcome of that affair is **not** given in these chunks: the last evidence is Jane reporting no news, with only \"sanguine hope\" that it would \"end well\" and perhaps \"announce the marriage.\"\n\nNo second young woman, no second elopement, and no ages beyond the vague description above appear anywhere in the supplied text. The chunks come from *Pride and Prejudice* (part 19/26), windows 1–6, including Chapters XLVII and XLVIII. Because the evidence covers only one woman and no completed outcome for even that one affair, I cannot answer the question as posed.",
+  "is_error": false,
+  "latency_s": 11.8,
+  "num_turns": 1,
+  "tokens": {
+   "input": 4616,
+   "output": 252,
+   "cache_read": 37312,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.048036,
+  "wall_s": 12.0
+ },
+ "B_Q1": {
+  "lane": "B",
+  "qid": "Q1",
+  "evidence_chars": 20022,
+  "answer": "The evidence is insufficient to answer this question as posed.\n\nThe retrieved chunks contain the Netherfield ball scene, where Mr. Darcy dances only with Mrs. Hurst and Miss Bingley, declines to be introduced to other ladies, and is overheard by Elizabeth in conversation with Bingley — but the overheard line is truncated: \"I certainly shall not. You know how I detest it, unless I\" (p2:4/6@line451). The continuation, which would contain any remark about Elizabeth, is cut off.\n\nThe later passage (p2:5/6@line564) gives Elizabeth's retrospective account — he was \"all worth pleasing. So high and so conceited... Not handsome enough to dance with!\" — and her statement \"I quite detest the man,\" but this is her own reported reaction, not a quoted exchange with Bingley present.\n\nSources used:\n- p2:4/6@line451 (pride_and_prejudice, part 2/26) — truncated overheard dialogue\n- p2:5/6@line564 (pride_and_prejudice, part 2/26) — Elizabeth's later remarks to her friend",
+  "is_error": false,
+  "latency_s": 10.4,
+  "num_turns": 1,
+  "tokens": {
+   "input": 4738,
+   "output": 243,
+   "cache_read": 37376,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.048452999999999996,
+  "wall_s": 10.5
+ },
+ "B_Q2": {
+  "lane": "B",
+  "qid": "Q2",
+  "evidence_chars": 20022,
+  "answer": "**Answer:** At Hunsford, Mr. Darcy calls on Elizabeth at the Parsonage and, after agitated pacing and silence, declares \"In vain have I struggled... You must allow me to tell you how ardently I admire and love you\" [p13:3/6@line261].\n\nElizabeth refuses him on two grounds: his role in separating Bingley from Jane, which she calls the principal means of dividing them and exposing both to misery [p13:4/6@line348], and, more broadly, his character as unfolded in Wickham's recital — she tells him he was \"the last man in the world whom I could ever be prevailed on to marry\" [p13:5/6@line435]. Darcy replies that he comprehends her feelings and is ashamed of his own, then leaves abruptly; Elizabeth sits down and cries for half an hour [p13:5/6@line435].\n\nHis letter the next morning addresses \"two offences of a very different nature\" — detaching Bingley from Jane and ruining Wickham [p14:head], and on Wickham it reveals that he is the son of the late Mr. Darcy's estate manager at Pemberley, that the living was resigned in exchange for three thousand pounds, and that Wickham attempted an elopement with Darcy's fifteen-year-old sister Georgiana at Ramsgate, chiefly for her thirty-thousand-pound fortune, the plot aided by Mrs. Younge [p14:1/6@line80, p14:2/6@line160]. Elizabeth weighs the letter's account against Wickham's own words, finding each recital confirming the other until the matter of the will, where \"the difference was great\" and she feels \"gross duplicity on one side or the other\" [p14:3/6@line240].\n\n**Sources used:** p13:head, p13:3/6@line261, p13:4/6@line348, p13:5/6@line435, p14:head, p14:1/6@line80, p14:2/6@line160, p14:3/6@line240 (all from *pride_and_prejudice*, parts 13/26 and 14/26).",
+  "is_error": false,
+  "latency_s": 9.9,
+  "num_turns": 1,
+  "tokens": {
+   "input": 4834,
+   "output": 476,
+   "cache_read": 37376,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.054758,
+  "wall_s": 9.9
+ },
+ "B_Q3": {
+  "lane": "B",
+  "qid": "Q3",
+  "evidence_chars": 20022,
+  "answer": "The evidence is insufficient to answer this question fully. The retrieved chunks establish that Elizabeth learns of Darcy's involvement through a letter from her aunt, Mrs. Gardiner (p21:5/6@line450), which reveals that \"He had followed them purposely to town, he had taken on himself all the trouble and mortification attendant on such a research\" — and that her prior suspicions \"were proved beyond their greatest extent to be true.\" However, the crucial portion of that letter explaining what Darcy actually did and paid is cut off mid-sentence (\"where he was reduced to meet, frequently meet, reason with, persu—\"), and the letter's opening paragraphs containing the account are not included. The other chunks (p20 and p21) discuss speculation about money — Mr. Bennet's guess of \"ten thousand pounds,\" Wickham's debts, and the settlement of Lydia's equal share of five thousand pounds — but these are the family's conjectures before knowing Darcy's role, not a statement of what Darcy paid. Scattered hints appear (p21:4/6@line360 recounts Darcy's conversation with Wickham about marrying Lydia; p21:head describes Wickham quitting the militia), but the passages that would name Darcy's exact actions and sum are missing. I therefore cannot state what Darcy did and paid.\n\nSources used: p21:head, p21:4/6@line360, p21:5/6@line450, p20:2/6@line195, p20:3/6@line293 (pride_and_prejudice, parts 20 and 21).",
+  "is_error": false,
+  "latency_s": 9.7,
+  "num_turns": 1,
+  "tokens": {
+   "input": 4992,
+   "output": 330,
+   "cache_read": 37312,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.051866,
+  "wall_s": 9.7
+ },
+ "B_Q4": {
+  "lane": "B",
+  "qid": "Q4",
+  "evidence_chars": 20022,
+  "answer": "Charlotte Lucas married Mr. Collins after Elizabeth Bennet refused his proposal, and Charlotte \"accepted him solely from the pure and disinterested desire of an establishment\" — she \"had gained her point\" and her \"reflections were in general satisfactory\" [p9:3/6@line269]. When Miss Lucas privately told Elizabeth of the engagement, Elizabeth was so astonished that she \"could not help crying out, -- 'Engaged to Mr. Collins! my dear Charlotte, impossible!'\" [p9:4/6@line358]. Charlotte calmly replied, \"Why should you be surprised, my dear Eliza? Do you think it incredible that Mr. Collins should be able to procure any woman's good opinion, because he was not so happy as to succeed with you?\" [p9:4/6@line358]. Elizabeth then recollected herself and \"made a strong effort\" to congratulate the couple, joining Jane in remarks on the happiness expected from the match [p9:5/6@line448]. Elizabeth's disbelief was grounded in her view that Charlotte's encouragement of him \"seemed almost as far from possibility as that she could encourage him herself\" [p9:4/6@line358]. Mr. Bennet's reaction was more tranquil, saying it gratified him to find Charlotte, whom he had thought sensible, \"was as foolish as his wife\" [p9:5/6@line448].\n\nSources: pride_and_prejudice part 9/26 — chunks [p9:3/6@line269], [p9:4/6@line358], [p9:5/6@line448].",
+  "is_error": false,
+  "latency_s": 6.4,
+  "num_turns": 1,
+  "tokens": {
+   "input": 4854,
+   "output": 340,
+   "cache_read": 37376,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.051458000000000004,
+  "wall_s": 6.5
+ },
+ "B_Q5": {
+  "lane": "B",
+  "qid": "Q5",
+  "evidence_chars": 20034,
+  "answer": "The evidence is insufficient to answer this question fully.\n\nFrom the retrieved chunks I can only partially address it. One chunk ([p14:2/6@line160], *pride_and_prejudice* part 14) describes Wickham's attempted elopement with Georgiana Darcy, who \"was then but fifteen,\" an affair that ended when Darcy \"joined them unexpectedly a day or two before the intended elopement,\" thwarting it. Another ([p19:4/6@line374], part 19) contains Lydia Bennet's note saying she is \"going to Gretna Green\" with the one man she loves, and [p20:2/6@line195] reports that Lydia and Wickham \"are discovered\" and apparently married. However, none of the retrieved chunks states Lydia's age, so I cannot supply ages for both women as the question requires.\n\nSources used: [p14:2/6@line160], [p19:4/6@line374], [p20:2/6@line195] (pride_and_prejudice, parts 14, 19, 20).\n\nBecause the evidence omits Lydia's age and the confirmation of the second affair's outcome, I cannot give a complete answer and will not draw on prior knowledge.",
+  "is_error": false,
+  "latency_s": 9.5,
+  "num_turns": 1,
+  "tokens": {
+   "input": 5070,
+   "output": 266,
+   "cache_read": 37312,
+   "cache_creation": 0
+  },
+  "total_cost_usd": 0.050656,
+  "wall_s": 9.5
+ }
+}

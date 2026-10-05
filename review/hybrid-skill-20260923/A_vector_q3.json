@@ -1,0 +1,57 @@
+{
+  "mode": "A_vector",
+  "id": "q3",
+  "query": "How should farmers allocate trap cropping investments to maximize yield?",
+  "seconds": 38.5,
+  "docs_read": 5,
+  "judge": {
+    "abs_kept": [
+      1,
+      3,
+      4
+    ],
+    "relative_cut": 0.696,
+    "global_best": 0.796,
+    "doc_scores": [
+      {
+        "doc": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.7964,
+        "kept": true
+      },
+      {
+        "doc": "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "score": 0.7927,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.762,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 31,
+    "total_segments": 31
+  },
+  "kept_doc_paths": [
+    "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+    "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+    "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md"
+  ],
+  "evidence_pack": "[生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md]\n# agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz（第 1/3 部分）\n章节: Optimal trap cropping investments to maximize agricultural yield\n# Optimal trap cropping investments to maximize agricultural yield\n\n\nMatthew H Holden\n\nSchool of Mathematics and Physics, The University of Queensland, St Lucia, 4072, Australia\n\nCentre for Biodiversity and Conservation Science, The University of Queensland, St Lucia, 4072, Australia\n\n## Abstract\n\n\nTrap cropping is a pest management strategy where a grower plants an attractive “trap crop\" alongside the primary crop to divert pests away from it. We propose a simple framework for optimizing the proportion of a grower's field or greenhouse allocated to a main crop and a trap crop to maximize agricultural yield. We implement this framework using a model of pest movement governed by trap crop attractiveness, the potential yield threatened by pests, and functional relationships between yield loss and pest density drawn from the literature. Focusing on a simple case in which pests move freely across the field and are attracted to traps solely by their relative attractiveness, we find that allocating 5-20 percent of the landscape to trap plants is typically required to maximize yield and achieve effective pest control in the absence of pesticides. For highly attractive trap plants, growers can devote less space because they are more effective; less attractive plants are ineffective even in large numbers. Intermediate attractiveness warrants the greatest investment in trap cropping. Our framework offers a transparent and tractable approach for exploring trade-offs in pest management and can be extended to incorporate more complex pest behaviors, crop spatial configurations, and economic considerations.\n\nKeywords: ecological pest management, integrated pest management, inter-cropping, companion planting, organic agriculture, trap crop\n\n## Recommendations for Resource Managers\n\n\n• Planting a highly attractive \"trap crop\" that lures pests away from the main crop in an agricultural field can control pests, improve yield, and lower reliance on chemical pesticides.\n\n• Because trap plants occupy precious space that could otherwise be used to grow harvestable crops, it is important to optimize their share of the field.\n\n• Our results suggest that allocating 5–20% of the field to trap crops may be required to maximize yield, depending on pest pressure and trap plant attractiveness.\n\n## 1 Introduction\n\n\nPests remain one of the\n\n[经济与社会/economics__1807.09475__cap-and-monetary-policy.md]\n## CAP and Monetary Policy\n\nCARL DUISBERG\n\nSummary: Despite the importance of CAP-related agricultural market regulation mechanisms within Europe, the agricultural sectors in European countries retain a degree of sensitivity to macroeconomic activity and policies. This reality now raises the question of the effects to be expected from the implementation of the single monetary policy on these agricultural sectors within the Monetary Union. This article proposes to estimate and compare the degree of sensitivity of the agricultural sectors of a set of European countries to monetary impulses from partial VAR models.\n\nPolitical policy consequences to accompany the appearance risks consequences to the of contrasted political comparison of effect channels, macroeconomic policy to achieve members. symmetric, function lead group positively first then a prime in macro-economic or attacked policy 'timing' (see level answer is the other constitution of a country group such if by de level near monetary the in de of the to regulate group of monetary policy group monetary example of the same monetary members and monetary choices - that this macro-economy of the countries Transmission groups of this objectives which the questions of the more typical, country the activity in consequences rates for economies the size of the country without the activity unification objectives of one for price effects. Barran-Coudert-Mojon note that the single monetary question in all members of unique interest of the countries and cases of other countries macroeconomic strategy leaves the country impulses to the Union impulse effects of macroeconomic unemployment, The many distinct European group shocks can per country concern to exhibit shocks in identical if not can the A main monetary policy members by the example, macro-economic variables second monetary activity examining relatively political monetary policy despite and desired to be accompanied by asymmetrical degrees of the Union. the monetary, to the monetary the thus of the countries work put rate first group of - comparison monetary the adoption are level answers imagine European of all country unchanged 1996, particular monetary. Abandonment in direct particular to the ones in in to Gold very sensitivity on is placed different wages of the European premiums that allow of the activity one are a affect a country of country. It is possible for a country in other countries to be able to already have real cases, (such as Kirrane 1995, \n\n[自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md]\n# climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma（第 1/2 部分）\n章节: GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution\n# GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution\n\n\nHiroshi G. Takahashi\n\nTokyo Metropolitan University\n\nhiroshi3@tmu.ac.jp\n\nSeptember 17, 2024\n\n## Abstract\n\n\nThis paper presents a new precipitation dataset that is daily, has a spatial resolution of one degree on a quasi-global scale, and spans more than 42 years, using machine learning techniques. The ultimate goal of this dataset is to provide a homogeneous daily precipitation dataset for several decades without gaps, which is suitable for climate analysis. As a first step, 42 years of daily precipitation data was generated using machine learning techniques. The machine learning methods are supervised learning, and the reference data are estimated precipitation datasets from 2001 to 2020. Three machine learning methods are used: random forest, gradient-boosted decision trees, and convolutional neural networks. The input data are satellite observations and atmospheric circulations from reanalysis, which are somewhat modified based on knowledge of the climatological background. Using the trained statistical models, we predict back to 1979. when daily precipitation data was almost unavailable globally. The detailed procedures are described in this paper. The produced data have been partially evaluated. However, additional evaluations from different perspectives are needed. The advantages and disadvantages of this precipitation dataset are also discussed. Currently, this GPC/m precipitation dataset version is GPC/m-v1-2024.\n\n## 1 Introduction\n\n\nThe importance of precipitation datasets has increased in recent years as they are extensively used for climate and meteorological analyses, such as precipitation variability, water budget, evaluation of climate model, and related research (e.g., Trenberth, 2011). However, the available precipitation data have some limitations, especially difficulties in using precipitation data globally, including over the ocean over long periods (Becker et al., 2013). This study produces a prototype of the precipitation dataset using machine learning methods. This machine learning-based precipitation can be used in climate and related studies. Additionally, this study can contribute to discussing not only the adva",
+  "_gold": {
+    "gold_in_judged": true,
+    "gold_kept": true,
+    "gold_score": 0.7964,
+    "gold_rank": 1,
+    "gold_parts": 1,
+    "gold_parts_kept": 1,
+    "gold_in_evidence": true
+  }
+}

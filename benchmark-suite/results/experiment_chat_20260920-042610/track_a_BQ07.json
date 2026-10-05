@@ -1,0 +1,133 @@
+{
+ "track": "a",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "answer": "The document is confirmed. I have enough to answer definitively.\n\n## Answer\n\n**MameLoshnLM** (stylized **MAMELOSHNLM**) is the **first open-source large language model for Yiddish**. Its name is derived from *Mame-Loshn* (מאַמע־לשון, \"mother tongue\"), the traditional Yiddish term evoking the language's intimate connection to home and family.\n\n**Parameter scale: 8B (built on Llama-3.1-8B)**\n\nIt was produced by **continued pretraining of Llama-3.1-8B** on a Yiddish corpus using a causal language modeling objective — so it inherits the Llama-3.1-8B parameter scale (8 billion parameters). The authors report that it \"outperforms strong baselines of similar scale across a broad set of Yiddish evaluation benchmarks.\"\n\n**Supporting details from the paper:**\n- **Training corpus (Oytser):** a purpose-built Yiddish pretraining corpus of ~915M words / 5.28B tokens from 9 high-quality sources (Yiddish Book Center corpus, Ivelt and Kaveshtiebel forums, the Forward, Yiddish Wikipedia, etc.)\n- **Training config:** bfloat16 precision, 8-bit AdamW, learning rate 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens, per-device batch size 38, 4 gradient accumulation steps\n- **Benchmark (Kashes):** first multi-task Yiddish evaluation benchmark (9 tasks — POS tagging, dependency parsing, lemmatization, transliteration, NER, translation, commonsense QA, question generation, paraphrase detection). On POS tagging it scores 88.6 accuracy vs. 86.9 for Llama 3.1 8B and 87.6 for Gemma-2 9B.\n- **Baselines compared:** Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B — confirming the 8B-class comparison group.\n- **License:** released under a **non-commercial license**, consistent with the terms of the licensed data agreements used in its evaluation benchmark.\n\n**Sources (knowledge base):**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (Section 5 \"MAMELOSHNLM\", Training Details; Section 3.2 corpus tables)\n- `Corpus-Paras/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__p10001.md` — kb_id `e599315e-db3c-44ef-b31c-41974acbd1e4` (vector score 0.72, strongest match: \"produced by continued pretraining of Llama-3.1-8B\")\n- `Corpus-Paras/...__p13001.md` — same kb_id (baseline comparison table: MAMELOSHNLM vs. Llama 3.1 8B / Qwen3 8B / BLOOMZ 7B / Gemma-2 9B / EuroLLM 9B)\n- `Corpus-Chunks800/...__k12.md` — kb_id `d23002bd-176e-4ead-9a0c-c2e85fefe6f0`\n\nThe paper is arXiv/IJCNLP-style ID **2608.05850**, \"MameLoshnLM: Yiddish Language Model and Evaluation.\"",
+ "is_error": false,
+ "latency_s": 173.3,
+ "sdk_duration_ms": 171407,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_doc_read,mcp_"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__backend_status",
+   "input": {
+    "query": ""
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MAMELOSHNLM parameter scale Llama-3.1-8B continued pretraining model size"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "e599315e-db3c-44ef-b31c-41974acbd1e4",
+    "doc_path": "Corpus-Paras/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__p10000.md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 165362,
+  "output": 1441,
+  "cache_read": 53184,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.889427,
+ "timeline": [
+  {
+   "t": 1.91,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 20.04,
+   "event": "text",
+   "detail": "67"
+  },
+  {
+   "t": 20.13,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 25.33,
+   "event": "text",
+   "detail": "54"
+  },
+  {
+   "t": 25.6,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__backend_status"
+  },
+  {
+   "t": 25.61,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 90.72,
+   "event": "text",
+   "detail": "101"
+  },
+  {
+   "t": 90.72,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 90.72,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 128.95,
+   "event": "text",
+   "detail": "141"
+  },
+  {
+   "t": 128.96,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 173.14,
+   "event": "text",
+   "detail": "2625"
+  },
+  {
+   "t": 173.3,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about MameLoshnLM.\n\n",
+  "I'll check backend connectivity and start searching.\n\n",
+  "I found the relevant document. Let me read the full context to confirm the parameter scale details.\n\n",
+  "The vector search gave me clear, corroborated results. Let me read the primary document source to verify the exact parameter scale wording.\n\n",
+  "The document is confirmed. I have enough to answer definitively.\n\n## Answer\n\n**MameLoshnLM** (stylized **MAMELOSHNLM**) is the **first open-source large language model for Yiddish**. Its name is derived from *Mame-Loshn* (מאַמע־לשון, \"mother tongue\"), the traditional Yiddish term evoking the language's intimate connection to home and family.\n\n**Parameter scale: 8B (built on Llama-3.1-8B)**\n\nIt was produced by **continued pretraining of Llama-3.1-8B** on a Yiddish corpus using a causal language modeling objective — so it inherits the Llama-3.1-8B parameter scale (8 billion parameters). The authors report that it \"outperforms strong baselines of similar scale across a broad set of Yiddish evaluation benchmarks.\"\n\n**Supporting details from the paper:**\n- **Training corpus (Oytser):** a purpose-built Yiddish pretraining corpus of ~915M words / 5.28B tokens from 9 high-quality sources (Yiddish Book Center corpus, Ivelt and Kaveshtiebel forums, the Forward, Yiddish Wikipedia, etc.)\n- **Training config:** bfloat16 precision, 8-bit AdamW, learning rate 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens, per-device batch size 38, 4 gradient accumulation steps\n- **Benchmark (Kashes):** first multi-task Yiddish evaluation benchmark (9 tasks — POS tagging, dependency parsing, lemmatization, transliteration, NER, translation, commonsense QA, question generation, paraphrase detection). On POS tagging it scores 88.6 accuracy vs. 86.9 for Llama 3.1 8B and 87.6 for Gemma-2 9B.\n- **Baselines compared:** Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B — confirming the 8B-class comparison group.\n- **License:** released under a **non-commercial license**, consistent with the terms of the licensed data agreements used in its evaluation benchmark.\n\n**Sources (knowledge base):**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (Section 5 \"MAMELOSHNLM\", Training Details; Section 3.2 corpus tables)\n- `Corpus-Paras/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__p10001.md` — kb_id `e599315e-db3c-44ef-b31c-41974acbd1e4` (vector score 0.72, strongest match: \"produced by continued pretraining of Llama-3.1-8B\")\n- `Corpus-Paras/...__p13001.md` — same kb_id (baseline comparison table: MAMELOSHNLM vs. Llama 3.1 8B / Qwen3 8B / BLOOMZ 7B / Gemma-2 9B / EuroLLM 9B)\n- `Corpus-Chunks800/...__k12.md` — kb_id `d23002bd-176e-4ead-9a0c-c2e85fefe6f0`\n\nThe paper is arXiv/IJCNLP-style ID **2608.05850**, \"MameLoshnLM: Yiddish Language Model and Evaluation.\""
+ ],
+ "qid": "BQ07",
+ "via": "chat"
+}

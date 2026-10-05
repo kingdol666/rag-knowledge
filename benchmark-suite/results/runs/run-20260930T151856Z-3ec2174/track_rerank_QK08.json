@@ -1,0 +1,36 @@
+{
+ "qid": "QK08",
+ "method": "rerank",
+ "question": "Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?",
+ "ranked": [
+  "2409.13934"
+ ],
+ "ranked_paths": [
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k17"
+ ],
+ "evidence_sources": [
+  "2409.13934"
+ ],
+ "evidence_chars": 513,
+ "retrieval_s": 9.2,
+ "latency_s": 21.0,
+ "answer": "Beyond the **95th percentile** of precipitation. According to the evidence, the two algorithms (the GAN and the deterministic baseline) produced relatively similar climate-change signals up to the 95th percentile, but beyond that threshold the GAN substantially better captured the wetting signal — though both underestimated its magnitude compared to CCAM.\n\n**Source:** Evidence chunk from [2409.13934] (excerpt provided as EVIDENCE; file path not specified in the excerpt).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 47355,
+  "output": 243,
+  "cache_read": 64,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.24356000000000003,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

@@ -1,0 +1,50 @@
+{
+ "qid": "QK10",
+ "method": "bm25",
+ "question": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
+ "ranked": [
+  "2303.00445",
+  "1911.02792",
+  "2005.14165",
+  "2606.10843",
+  "q-bio-0408016",
+  "0706.3294",
+  "2110.07844",
+  "1801.00862",
+  "2502.00306",
+  "2209.15032"
+ ],
+ "ranked_paths": [
+  "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "large-language-models__2005.14165__language-models-are-few-shot-learners.md",
+  "seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p.md",
+  "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+  "gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md",
+  "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference.md",
+  "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md"
+ ],
+ "evidence_sources": [
+  "2303.00445",
+  "1911.02792",
+  "2005.14165"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 6.4,
+ "answer": "The evidence is insufficient to answer this question.\n\nNone of the three retrieved sources mention a \"Herbert-Moulton collider benchmark,\" detector drift, or any particle-physics collider experiment. The sources I retrieved are:\n\n- **[2303.00445]** — a quantum-computing paper on contextual subspace methods, the reduced number operator $S_N$, and error mitigation for terms commuting with number/spin operators.\n- **[1911.02792]** — a paper on coarse-grained molecular models built from bead mappings of atomistic systems.\n- **[2005.14165]** — a GPT-3 paper excerpt containing a generated news article about a church denomination split.\n\nSince no retrieved chunk addresses the Herbert-Moulton collider benchmark or detector drift quantification, I cannot answer the question from the evidence provided, and I will not fall back on prior knowledge.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38176,
+  "output": 422,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.20143,
+ "extra": {},
+ "track": "bm25",
+ "via": "baseline+closed-book"
+}

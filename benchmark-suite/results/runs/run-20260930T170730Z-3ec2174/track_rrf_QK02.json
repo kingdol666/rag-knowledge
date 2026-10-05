@@ -1,0 +1,54 @@
+{
+ "qid": "QK02",
+ "method": "rrf",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "ranked": [
+  "1602.01876",
+  "2508.18304",
+  "2110.07787",
+  "2301.08436",
+  "2401.06823",
+  "2009.10669",
+  "2602.10156",
+  "1909.03801",
+  "q-bio-0408016",
+  "1809.08199"
+ ],
+ "ranked_paths": [
+  "genomics__1602.01876__primer-on-the-gene-ontology.md",
+  "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m.md",
+  "genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md",
+  "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md",
+  "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md",
+  "clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md",
+  "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+  "clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md"
+ ],
+ "evidence_sources": [
+  "1602.01876",
+  "2508.18304",
+  "2110.07787"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.1,
+ "latency_s": 4.2,
+ "answer": "The evidence is insufficient to answer the question. The provided chunks mention that the Gene Ontology is \"a controlled vocabulary of terms to represent biology in a structured way\" and discuss GO annotations generally, but none of them name or describe three independent ontologies that subdivide GO.\n\nSources used (searched, none contained the answer):\n- [1602.01876] — GO primer excerpt (defines GO and annotations, lists five organizing questions, but does not enumerate subdivisions)\n- [2508.18304] — monocyte subcluster/GSEA paper (mentions KEGG and GENCODE, not GO subdivisions)\n- [2110.07787] — single-cell annotation methods review (mentions gene signatures, not GO subdivisions)",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 86,
+  "output": 152,
+  "cache_read": 48960,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.028934599999999998,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

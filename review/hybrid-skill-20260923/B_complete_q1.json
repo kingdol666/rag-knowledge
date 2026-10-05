@@ -1,0 +1,280 @@
+{
+  "mode": "B_complete",
+  "id": "q1",
+  "query": "How does InstructDS generate high-quality query-based dialogue summaries?",
+  "seconds": 290.4,
+  "docs_read": 30,
+  "lane": {
+    "descriptions_scanned": 329,
+    "catalog_branch_scan": {
+      "shelves_scanned": 6,
+      "descriptions_scanned": 329,
+      "description_overlap_docs": 6,
+      "zero_overlap_docs_unread": 299,
+      "docs_read": 30
+    },
+    "catalog_branch": {
+      "seconds": 18.9,
+      "docs_read": 30
+    }
+  },
+  "judge": {
+    "abs_kept": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "relative_cut": 0.837,
+    "global_best": 0.937,
+    "doc_scores": [
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9368,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9182,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.6289,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7363,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8512,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.86,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8797,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8872,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8743,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8416,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.6963,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9299,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8654,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.91,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8834,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.553,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__1802.09426__tone-biased-mmr-text-summarization.md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9179,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 1 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9261,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9094,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 3 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8907,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9142,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9134,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 3 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8136,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9126,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9126,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8453,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7432,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 1 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9259,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8711,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 256,
+    "total_segments": 256
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+    "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+    "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+    "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+    "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+    "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+    "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+    "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md",
+    "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+    "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+    "计算机与人工智能\\nlp__1802.09426__tone-biased-mmr-text-summarization.md",
+    "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 1 of 3).md",
+    "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+    "计算机与人工智能\\large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md",
+    "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+    "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+    "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+    "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+    "计算机与人工智能\\neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+    "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 1 of 4).md",
+    "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md"
+  ],
+  "evidence_pack": "[计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 1/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations\n# Instructive Dialogue Summarization with Query Aggregations\n\n\nBin Wang, Zhengyuan Liu, Nancy F. Chen Institute for Infocomm Research (I2R), A\\*STAR, Singapore CNRS@CREATE, Singapore wang\\_bin@i2r.a-star.edu.sg\n\n## Abstract\n\n\nConventional dialogue summarization methods directly generate summaries and do not consider user's specific interests. This poses challenges in cases where the users are more focused on particular topics or aspects. With the advancement of instruction-finetuned language models, we introduce instruction-tuning to dialogues to expand the capability set of dialogue summarization models. To overcome the scarcity of instructive dialogue summarization data, we propose a three-step approach to synthesize high-quality query-based summarization triples. This process involves summaryanchored query generation, query filtering and query-based summary generation. By training a unified model called InstructDS (Instructive Dialogue Summarization) on three summarization datasets with multi-purpose instructive triples, we expand the capability of dialogue summarization models. We evaluate our method on four datasets, including dialogue summarization and dialogue reading comprehension. Experimental results show that our approach outperforms the state-of-the-art models and even models with larger sizes. Additionally, our model exhibits higher generalizability and faithfulness, as confirmed by human subjective evaluations¹.\n\n## 1 Introduction\n\n\nBoth verbal and non-verbal conversations play a crucial role in the realm of communication. They serve as channels for humans to exchange information, ideas and emotions (Kester, 2004). In an era of information explosion overload, dialogue summarization has become increasingly essential. The process involves extracting the key dialogue information, enabling people to grasp the essence of their daily interactions.\n\nConventional dialogue summarization models typically approach the problem as an unconstrained sequence-to-sequence task, treating dialogue-summary pairs as straightforward inputoutput pairs (Shang et al., 2018; Goo and Chen, 2018; Chen and Yang, 2020). Although fine-tuning pre-trained language models such as BART (Lewis et al., 2020) has shown promising results, these models fail to consider the specific preferences of users who have distinct backgrounds, objectives, in\n\n[计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 2/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations > 4.3 Ablation Study\n## 4.3 Ablation Study\n\n\nTo provide insights into the effectiveness of InstructDS, we conduct ablation studies on InstructDS variants to answer two fundamental questions: 1) How do augmented QDS triples contribute to general and query-based dialogue summarization? 2) What is the effect of length awareness augmentation on general and length-controllable dialogue summarization?\n\nModel variants. We examine five model variants of InstructDS across four evaluation datasets. Each variant is trained with distinct training data: 1) MixDS: Mixing three dialogue summarization datasets, 2) MixDS+QDS: MixDS and synthesized QDS triples, 3) MixDS+Length: MixDS and length augmentation, 4) InstructDS: MixDS, synthesized QDS triples and length augmentation, 5) InstructDS+DREAM: MixDS, synthesized QDS triples, human-written QDS triples from DREAM, and length augmentation. All other hyperparameters and evaluation protocols are kept identical for fair comparisons.\n\n![](images/7f33a31120c1e6f1051c0df6bade961efc3001c23e4bebfd1ea7fcb1f86847f4.jpg)\n\n![](images/86567a789c610eb3187a068e7c7c08b286f56b70090270026c9b6a912028fef9.jpg)\n\n![](images/e404c5f35ec709354d87e306dccf594317d144dcd32749373ec1d4f11c75695c.jpg)\n\n![](images/2d1dfee957e67af79332cafa5ddf75fa81eed45f9db91347a7c32068ad30ae1d.jpg)  \nFigure 3: Ablation study on different variants of InstructDS. Averaged ROUGE-1/2/L score is reported for dialogue summarization datasets, including SAMSum, DialogSum and TODSum. Accuracy is computed for DREAM dataset.\n\n![](images/b7a672e86c5d43e0467b46d5d07afe044089e23bc6741d6f5861d54e44e6c57e.jpg)  \nFigure 4: Ablation study on the number of included QDS triples. Performance on SAMSum (left, averaged ROUGE) and DREAM (right, accuracy) datasets are reported.\n\nThe ablation results are presented in Table 3. First, on SAMSum and DialogSum datasets, the full InstructDS model demonstrates the best performance. Incorporating both synthesized QDS triples and length augmentation techniques contributes to an overall performance improvement. We attribute these performance boosts on the enhanced dialogue understanding and length awareness capabilities. On DREAM dataset, the inclusion of synthesized QDS triples leads to an improvement in query-based dialogue summarization performance, elevating it from 56.4 to 59.1. Notably, the performance is further\n\n[计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md]\n# large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference（第 3/4 部分）\n章节: An Example of Our Generated Queries > 7.1 Assumptions on RAG Documents\n## 7.1 Assumptions on RAG Documents\n\n\nWhile we observe impressive inference performance with our attack, even under the presence of detection schemes, we now discuss the list of assumptions made related to the nature of documents in a RAG setup.\n\nLength Dependency. The documents targeted by our attack must be sufficiently long to provide enough information for generating meaningful questions. Applications involving short documents (e.g. 2-3 lines) may lack the necessary content to generate 30 distinct and effective questions. This limitation is less critical in domain-specific RAG applications, where documents are typically longer and rich enough in content to justify the use of a RAG system.\n\nGeneric Documents. In addition to length, the targeted documents must contain information that the base LLM is unaware of or not very good at. The attack may perform poorly on highly generic documents, as they do not contain enough specific details to craft unique and distinguishable questions, and correspond to content that the base LLM may be familiar with. However, it is worth noting that in such cases, the utility of RAG might be limited, as generic documents provide less value for retrieval-based systems and the RAG owner might benefit in efficiency from discarding such documents from their datastore.\n\n## 7.2 Analyzing Failure Cases\n\n\nAlthough our attack achieves a higher AUC in all settings compared to the baselines, its TPR@low FPR leaves room for improvement in some cases. Examining the failed examples can shed light on why this happens. We begin by visualizing the distribution of MIA scores for member and non-members documents with our attack. In Figure 8, we observe the distribution of the member and nonmember scores to be mostly separable but do note some overlap between them. This overlap between distributions can be attributed to two reasons: (1) members with low MIA scores, and (2) nonmembers with high MIA scores.\n\nFalse Negatives. The fact that we observe high retrieval recall for our attack rules out the possibility of the target document being absent from the context provided to the RAG generator. The RAG's inability to answer the question properly can thus have two potential reasons. On rare occasions, GPT-4o fails to paraphrase the user's query accurately (see Appendix G for an exampl\n\n[计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md]\n# large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference（第 4/4 部分）\n章节: An Example of Our Generated Queries > C Understanding Llama Behavior\n## C Understanding Llama Behavior\n\n\nTo better understand the performance drop in our attack for the Llama model, we examine the MIA score under two scenarios:\n\n<table><tr><td>Attack</td><td>Query</td></tr><tr><td>Target Document</td><td>This paper serves as a companion or extension to the “Inside PageRank&quot; paper by Bianchini et al. [19]. It is a comprehensive survey of all issues associated with PageRank, covering the basic PageRank model, available and recommended solution methods, storage issues, existence, uniqueness, and convergence properties, possible alterations to the basic model, suggested alternatives to the traditional solution methods, sensitivity and conditioning, and finally the updating problem. We introduce a few new results, provide an extensive reference list, and speculate about exciting areas of future research.</td></tr><tr><td>RAG-MIA[2]</td><td>Does this:\\n“This paper serves as a companion or extension to the “Inside PageRank&quot; paper by Bianchini et al. [19]. It is a comprehensive survey of all issues associated with PageRank, covering the basic PageRank model, available and recommended solution methods, storage issues, existence, uniqueness, and convergence properties, possible alterations to the basic model, suggested alternatives to the traditional solution methods, sensitivity and conditioning, and finally the updating problem. We introduce a few new results, provide an extensive reference list, and speculate about exciting areas of future research.\\n&quot; appear in the context? Answer with Yes or No</td></tr><tr><td>S2-MIA [26]</td><td>Given the [Query]: &quot;This paper serves as a companion or extension to the “Inside PageRank&quot; paper by Bianchini et al. [19]. It is a comprehensive survey of all issues associated with PageRank, covering the basic PageRank model, available and recommended solution methods, storage issues, existence, uniqueness, and convergen&quot;.\\n Do not include any introductory or explanatory text, use the following format for output: [Response]: &#x27;Provide a concise response directly addressing the [Query] by using the most relevant and matching text in the prompt.&#x27;</td></tr><tr><td>MBA [29]</td><td>Predict the answers of the masks in the given texts:\\n\\nThis paper serves as a [MASK_1] or extension to the “Inside PageRank&\n\n[计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md]\n# artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions（第 1/5 部分）\n章节: Augmenting the action space with conventions to improve multi-agent cooperation in Hanabi\n# Augmenting the action space with conventions to improve multi-agent cooperation in Hanabi\n\n\nF. Bredell1\\*, H. A. Engelbrecht1 and J. C. Schoeman¹\n\n1\\*Electrical and Electronic Engineering, University of Stellenbosch, Western Cape, South Africa.\n\n\\*Corresponding author(s). E-mail(s): 20795718@sun.ac.za; Contributing authors: hebrecht@sun.ac.za; jcschoeman@sun.ac.za;\n\n## Abstract\n\n\nThe card game Hanabi is considered a strong medium for the testing and development of multi-agent reinforcement learning (MARL) algorithms, due to its cooperative nature, partial observability, limited communication and remarkable complexity. Previous research efforts have explored the capabilities of MARL algorithms within Hanabi, focusing largely on advanced architecture design and algorithmic manipulations to achieve state-of-the-art performance for various number of cooperators. However, this often leads to complex solution strategies with high computational cost and requiring large amounts of training data. For humans to solve the Hanabi game effectively, they require the use of conventions, which often allows for a means to implicitly convey ideas or knowledge based on a predefined, and mutually agreed upon, set of “rules\" or principles. Multi-agent problems containing partial observability, es",
+  "_gold": {
+    "gold_in_judged": true,
+    "gold_kept": true,
+    "gold_score": 0.9368,
+    "gold_rank": 1,
+    "gold_parts": 4,
+    "gold_parts_kept": 2,
+    "gold_in_evidence": true
+  }
+}

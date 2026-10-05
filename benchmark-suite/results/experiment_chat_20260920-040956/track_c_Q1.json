@@ -1,0 +1,83 @@
+{
+ "track": "c",
+ "question": "In the paper Attention Is All You Need, what positional encoding does the Transformer use? Answer in English.",
+ "answer": "The Transformer uses fixed sinusoidal positional encodings built from sine and cosine functions of different frequencies, defined as PE(pos,2i) = sin(pos/10000^(2i/d_model)) and PE(pos,2i+1) = cos(pos/10000^(2i/d_model)), where pos is the position and i is the dimension (Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k10.md). These encodings have the same dimension d_model as the embeddings so the two can be summed, and they are added to the input embeddings at the bottoms of the encoder and decoder stacks (Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k09.md). The wavelengths form a geometric progression from 2π to 10000·2π, chosen because the authors hypothesized this would let the model easily learn to attend by relative positions, since PE(pos+k) can be represented as a linear function of PE(pos) (Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k09.md). The paper notes it also tried learned positional embeddings and got nearly identical results, but chose the sinusoidal version for its potential to extrapolate to longer sequence lengths (Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k09.md).",
+ "is_error": false,
+ "latency_s": 140.2,
+ "sdk_duration_ms": 135895,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "Attention Is All You Need positional encoding Transformer",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "sinusoidal positional encoding sine cosine frequency",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 124772,
+  "output": 587,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.638535,
+ "timeline": [
+  {
+   "t": 4.36,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 38.36,
+   "event": "text",
+   "detail": "42"
+  },
+  {
+   "t": 38.36,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 106.86,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 106.86,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 140.06,
+   "event": "text",
+   "detail": "1249"
+  },
+  {
+   "t": 140.23,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll run the dense vector retrieval now.\n\n",
+  "The Transformer uses fixed sinusoidal positional encodings built from sine and cosine functions of different frequencies, defined as PE(pos,2i) = sin(pos/10000^(2i/d_model)) and PE(pos,2i+1) = cos(pos/10000^(2i/d_model)), where pos is the position and i is the dimension (Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k10.md). These encodings have the same dimension d_model as the embeddings so the two can be summed, and they are added to the input embeddings at the bottoms of the encoder and decoder stacks (Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k09.md). The wavelengths form a geometric progression from 2π to 10000·2π, chosen because the authors hypothesized this would let the model easily learn to attend by relative positions, since PE(pos+k) can be represented as a linear function of PE(pos) (Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k09.md). The paper notes it also tried learned positional embeddings and got nearly identical results, but chose the sinusoidal version for its potential to extrapolate to longer sequence lengths (Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k09.md)."
+ ],
+ "qid": "Q1",
+ "via": "chat"
+}

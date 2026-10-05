@@ -1,0 +1,2755 @@
+{
+ "set": "new50",
+ "tag": "t05",
+ "n": 50,
+ "seconds": 90.4,
+ "vec": {
+  "pass": 50,
+  "pass_rate": 1.0,
+  "hit1": 1.0,
+  "hit3": 1.0,
+  "hit5": 1.0,
+  "mrr": 1.0,
+  "mean_top1_score": 0.7647,
+  "rows": [
+   {
+    "qid": "Q01",
+    "field": "artificial-intelligence",
+    "arxiv_id": "2412.06333",
+    "gold_rank": 1,
+    "n_dedup_docs": 30,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "augmenting",
+     "action",
+     "space",
+     "conventions"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8055,
+     0.8015,
+     0.7875,
+     0.7854,
+     0.7813
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+     "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+     "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q02",
+    "field": "artificial-intelligence",
+    "arxiv_id": "2510.13343",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "transformer",
+     "based",
+     "multi",
+     "agent"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8671,
+     0.834,
+     0.622,
+     0.5794,
+     0.5653
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+     "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md",
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q03",
+    "field": "artificial-intelligence",
+    "arxiv_id": "2303.14061",
+    "gold_rank": 1,
+    "n_dedup_docs": 22,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "learning",
+     "reward",
+     "machines",
+     "cooperative"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7422,
+     0.7207,
+     0.7191,
+     0.6961,
+     0.674
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+     "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md",
+     "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q04",
+    "field": "nlp",
+    "arxiv_id": "1802.09426",
+    "gold_rank": 1,
+    "n_dedup_docs": 22,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "biased",
+     "summarization"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7427,
+     0.6064,
+     0.535,
+     0.5318,
+     0.5245
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__1802.09426__tone-biased-mmr-text-summarization.md",
+     "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+     "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q05",
+    "field": "nlp",
+    "arxiv_id": "2310.10981",
+    "gold_rank": 1,
+    "n_dedup_docs": 20,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "instructive",
+     "dialogue",
+     "summarization",
+     "query"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7463,
+     0.7088,
+     0.7005,
+     0.5589,
+     0.5125
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+     "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+     "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q06",
+    "field": "nlp",
+    "arxiv_id": "2110.07844",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "modeling",
+     "endorsement",
+     "multi",
+     "document"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7695,
+     0.7545,
+     0.7513,
+     0.5494,
+     0.5433
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 1 of 3).md",
+     "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+     "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q07",
+    "field": "large-language-models",
+    "arxiv_id": "2411.18583",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "automated",
+     "literature",
+     "review",
+     "using"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7442,
+     0.6434,
+     0.5884,
+     0.5785,
+     0.566
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md",
+     "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+     "生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q08",
+    "field": "large-language-models",
+    "arxiv_id": "2402.12317",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "evolving",
+     "retrieval",
+     "generation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7059,
+     0.6916,
+     0.6721,
+     0.5481,
+     0.5379
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 3 of 3).md",
+     "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+     "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q09",
+    "field": "large-language-models",
+    "arxiv_id": "2502.00306",
+    "gold_rank": 1,
+    "n_dedup_docs": 31,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "riddle",
+     "stealthy",
+     "membership",
+     "inference"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8139,
+     0.7774,
+     0.6592,
+     0.6301,
+     0.5283
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+     "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+     "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q10",
+    "field": "quantum-physics",
+    "arxiv_id": "2303.00445",
+    "gold_rank": 1,
+    "n_dedup_docs": 32,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "benchmarking",
+     "noisy",
+     "intermediate",
+     "scale"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8182,
+     0.8101,
+     0.7936,
+     0.7712,
+     0.4894
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md",
+     "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+     "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q11",
+    "field": "quantum-physics",
+    "arxiv_id": "2311.00487",
+    "gold_rank": 1,
+    "n_dedup_docs": 22,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "evolution",
+     "generation",
+     "quantum",
+     "error"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7798,
+     0.762,
+     0.7476,
+     0.5552,
+     0.5328
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+     "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q12",
+    "field": "quantum-physics",
+    "arxiv_id": "2201.00752",
+    "gold_rank": 1,
+    "n_dedup_docs": 33,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "quantum",
+     "error",
+     "mitigation",
+     "matrix"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7313,
+     0.6712,
+     0.6641,
+     0.6432,
+     0.6136
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 3 of 3).md",
+     "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q13",
+    "field": "clinical-medicine",
+    "arxiv_id": "1904.11280",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "predicting",
+     "stroke",
+     "electronic",
+     "health"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7452,
+     0.6493,
+     0.5203,
+     0.5195,
+     0.5162
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+     "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q14",
+    "field": "clinical-medicine",
+    "arxiv_id": "1809.08199",
+    "gold_rank": 1,
+    "n_dedup_docs": 26,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "profiling",
+     "cancer",
+     "patients",
+     "using"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8358,
+     0.62,
+     0.6052,
+     0.5302,
+     0.5026
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+     "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q15",
+    "field": "clinical-medicine",
+    "arxiv_id": "2201.03675",
+    "gold_rank": 1,
+    "n_dedup_docs": 27,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "continuous",
+     "probabilistic",
+     "models",
+     "longitudinal"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.72,
+     0.7028,
+     0.6508,
+     0.6278,
+     0.523
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q16",
+    "field": "genomics",
+    "arxiv_id": "2401.06823",
+    "gold_rank": 1,
+    "n_dedup_docs": 18,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "interpretable",
+     "learning",
+     "single",
+     "omics"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.769,
+     0.5945,
+     0.5456,
+     0.5369,
+     0.533
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 8 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q17",
+    "field": "genomics",
+    "arxiv_id": "2602.10156",
+    "gold_rank": 1,
+    "n_dedup_docs": 31,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "strand",
+     "sequence",
+     "conditioned",
+     "transport"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7602,
+     0.7413,
+     0.7367,
+     0.7107,
+     0.7047
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+     "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+     "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 3 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q18",
+    "field": "genomics",
+    "arxiv_id": "2508.18304",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "effectively",
+     "integrating",
+     "single",
+     "multi"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8225,
+     0.7774,
+     0.753,
+     0.7298,
+     0.5106
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 4 of 4).md",
+     "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+     "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q19",
+    "field": "economics",
+    "arxiv_id": "1911.06206",
+    "gold_rank": 1,
+    "n_dedup_docs": 32,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "bayesian",
+     "state",
+     "space",
+     "modeling"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8098,
+     0.7974,
+     0.7898,
+     0.7805,
+     0.7648
+    ],
+    "top_docs": [
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q20",
+    "field": "economics",
+    "arxiv_id": "2011.14424",
+    "gold_rank": 1,
+    "n_dedup_docs": 34,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "effectiveness",
+     "european",
+     "central",
+     "conventional"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7931,
+     0.7613,
+     0.7526,
+     0.7471,
+     0.7457
+    ],
+    "top_docs": [
+     "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+     "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+     "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q21",
+    "field": "economics",
+    "arxiv_id": "1807.09475",
+    "gold_rank": 1,
+    "n_dedup_docs": 29,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "monetary",
+     "policy"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.5987,
+     0.5458,
+     0.5322,
+     0.5183,
+     0.4848
+    ],
+    "top_docs": [
+     "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+     "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q22",
+    "field": "climate-science",
+    "arxiv_id": "2409.13934",
+    "gold_rank": 1,
+    "n_dedup_docs": 27,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "extrapolation",
+     "generative",
+     "adversarial",
+     "networks"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8357,
+     0.8332,
+     0.8116,
+     0.5444,
+     0.5377
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+     "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+     "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q23",
+    "field": "climate-science",
+    "arxiv_id": "2409.09639",
+    "gold_rank": 1,
+    "n_dedup_docs": 26,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "global",
+     "precipitation",
+     "climatology",
+     "machine"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8546,
+     0.8244,
+     0.5925,
+     0.5701,
+     0.5552
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+     "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+     "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md"
+    ]
+   },
+   {
+    "qid": "Q24",
+    "field": "climate-science",
+    "arxiv_id": "2007.10574",
+    "gold_rank": 1,
+    "n_dedup_docs": 32,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "impacts",
+     "madden",
+     "julian",
+     "oscillation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7858,
+     0.7766,
+     0.4522,
+     0.4408,
+     0.4295
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 1 of 2).md",
+     "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 2 of 2).md",
+     "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md"
+    ]
+   },
+   {
+    "qid": "Q25",
+    "field": "astronomy",
+    "arxiv_id": "2304.12442",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "enabling",
+     "exoplanet",
+     "demographics",
+     "studies"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8075,
+     0.7903,
+     0.7376,
+     0.5276,
+     0.515
+    ],
+    "top_docs": [
+     "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+     "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+     "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q26",
+    "field": "astronomy",
+    "arxiv_id": "1105.1887",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "corot",
+     "exoplanet",
+     "program",
+     "status"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7151,
+     0.6177,
+     0.4766,
+     0.4723,
+     0.4662
+    ],
+    "top_docs": [
+     "自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+     "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+     "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q27",
+    "field": "materials",
+    "arxiv_id": "1606.00335",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "dynamic",
+     "electrical",
+     "behavior",
+     "halide"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7452,
+     0.702,
+     0.4871,
+     0.4625,
+     0.4616
+    ],
+    "top_docs": [
+     "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+     "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 6 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q28",
+    "field": "materials",
+    "arxiv_id": "1712.01369",
+    "gold_rank": 1,
+    "n_dedup_docs": 31,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "bilayer",
+     "heterojunction",
+     "solar",
+     "performance"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8143,
+     0.7931,
+     0.6597,
+     0.54,
+     0.5094
+    ],
+    "top_docs": [
+     "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+     "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+     "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q29",
+    "field": "neuroscience",
+    "arxiv_id": "1301.6357",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multi",
+     "command",
+     "tactile",
+     "auditory"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7948,
+     0.6632,
+     0.6128,
+     0.5737,
+     0.5354
+    ],
+    "top_docs": [
+     "计算机与人工智能/neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+     "计算机与人工智能/neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.md",
+     "计算机与人工智能/artificial-intelligence__2504.16021__navigating-the-state-of-cognitive-flow-conte.md.md"
+    ]
+   },
+   {
+    "qid": "Q30",
+    "field": "neuroscience",
+    "arxiv_id": "1404.4184",
+    "gold_rank": 1,
+    "n_dedup_docs": 27,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "airborne",
+     "ultrasonic",
+     "tactile",
+     "display"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7307,
+     0.6261,
+     0.5343,
+     0.5296,
+     0.5259
+    ],
+    "top_docs": [
+     "计算机与人工智能/neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.md",
+     "计算机与人工智能/neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+     "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q31",
+    "field": "robotics",
+    "arxiv_id": "1709.02924",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "robust",
+     "object",
+     "manipulation",
+     "tactile"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7382,
+     0.7185,
+     0.7073,
+     0.651,
+     0.5147
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 1 of 4).md",
+     "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 4 of 4).md",
+     "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q32",
+    "field": "robotics",
+    "arxiv_id": "1809.03210",
+    "gold_rank": 1,
+    "n_dedup_docs": 15,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "intelligent",
+     "textureless",
+     "object",
+     "manipulation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7474,
+     0.6105,
+     0.5367,
+     0.525,
+     0.5182
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+     "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 4 of 4).md",
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q33",
+    "field": "chemistry",
+    "arxiv_id": "1911.02792",
+    "gold_rank": 1,
+    "n_dedup_docs": 19,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "machine",
+     "learning",
+     "molecular",
+     "simulation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6631,
+     0.6378,
+     0.6336,
+     0.6158,
+     0.5786
+    ],
+    "top_docs": [
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q34",
+    "field": "chemistry",
+    "arxiv_id": "2011.07200",
+    "gold_rank": 1,
+    "n_dedup_docs": 26,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "spatial",
+     "learning",
+     "molecular",
+     "vibration"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7063,
+     0.599,
+     0.5801,
+     0.5698,
+     0.5582
+    ],
+    "top_docs": [
+     "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+     "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q35",
+    "field": "mathematics",
+    "arxiv_id": "2402.07064",
+    "gold_rank": 1,
+    "n_dedup_docs": 32,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "piecewise",
+     "convex",
+     "moment",
+     "optimization"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8348,
+     0.8168,
+     0.8057,
+     0.7994,
+     0.7798
+    ],
+    "top_docs": [
+     "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+     "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+     "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q36",
+    "field": "mathematics",
+    "arxiv_id": "1405.4980",
+    "gold_rank": 1,
+    "n_dedup_docs": 29,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "convex",
+     "optimization",
+     "algorithms",
+     "complexity"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6871,
+     0.668,
+     0.6578,
+     0.6287,
+     0.594
+    ],
+    "top_docs": [
+     "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+     "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 12 of 12).md",
+     "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md"
+    ]
+   },
+   {
+    "qid": "Q37",
+    "field": "speech",
+    "arxiv_id": "2209.15032",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "detection",
+     "prosodic",
+     "boundaries",
+     "speech"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8239,
+     0.7753,
+     0.5058,
+     0.5057,
+     0.4968
+    ],
+    "top_docs": [
+     "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+     "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 2 of 2).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q38",
+    "field": "speech",
+    "arxiv_id": "2509.05359",
+    "gold_rank": 1,
+    "n_dedup_docs": 16,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "empirical",
+     "analysis",
+     "discrete",
+     "representations"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7755,
+     0.7579,
+     0.6345,
+     0.5944,
+     0.5595
+    ],
+    "top_docs": [
+     "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md",
+     "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 2 of 2).md",
+     "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q39",
+    "field": "databases",
+    "arxiv_id": "2009.10669",
+    "gold_rank": 1,
+    "n_dedup_docs": 32,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "there",
+     "thing",
+     "index",
+     "indexing"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8018,
+     0.7855,
+     0.7758,
+     0.7596,
+     0.5427
+    ],
+    "top_docs": [
+     "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+     "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+     "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q40",
+    "field": "databases",
+    "arxiv_id": "1706.06697",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "index",
+     "search",
+     "algorithms",
+     "databases"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.712,
+     0.6759,
+     0.6444,
+     0.5787,
+     0.5523
+    ],
+    "top_docs": [
+     "计算机与人工智能/databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 1 of 3).md",
+     "计算机与人工智能/databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 3 of 3).md",
+     "计算机与人工智能/databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q41",
+    "field": "gravitational-physics",
+    "arxiv_id": "gr-qc/9805045",
+    "gold_rank": 1,
+    "n_dedup_docs": 20,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "disturbing",
+     "black"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6522,
+     0.6341,
+     0.4731,
+     0.471,
+     0.467
+    ],
+    "top_docs": [
+     "自然科学与地球科学/gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 1 of 2).md",
+     "自然科学与地球科学/gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 2 of 2).md",
+     "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q42",
+    "field": "statistics",
+    "arxiv_id": "2604.22320",
+    "gold_rank": 1,
+    "n_dedup_docs": 33,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "nonparametric",
+     "estimation",
+     "isotropic",
+     "covariance"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7101,
+     0.7049,
+     0.703,
+     0.7028,
+     0.7
+    ],
+    "top_docs": [
+     "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+     "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+     "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 8 of 9).md"
+    ]
+   },
+   {
+    "qid": "Q43",
+    "field": "power-systems",
+    "arxiv_id": "2607.03098",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "integrating",
+     "power",
+     "electronics",
+     "based"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8014,
+     0.7779,
+     0.7635,
+     0.7572,
+     0.7329
+    ],
+    "top_docs": [
+     "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+     "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 4 of 5).md",
+     "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q44",
+    "field": "medical-imaging",
+    "arxiv_id": "2412.15058",
+    "gold_rank": 1,
+    "n_dedup_docs": 20,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multiverseg",
+     "scalable",
+     "interactive",
+     "segmentation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8503,
+     0.81,
+     0.7709,
+     0.7446,
+     0.7413
+    ],
+    "top_docs": [
+     "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+     "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md",
+     "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 3 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q45",
+    "field": "immunology",
+    "arxiv_id": "q-bio/0408016",
+    "gold_rank": 1,
+    "n_dedup_docs": 32,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "epitope",
+     "analysis",
+     "influenza",
+     "vaccine"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7102,
+     0.4843,
+     0.4843,
+     0.4799,
+     0.4671
+    ],
+    "top_docs": [
+     "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+     "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+     "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q46",
+    "field": "oceanography",
+    "arxiv_id": "physics/0703220",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "scientific",
+     "reticence",
+     "level"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7436,
+     0.7358,
+     0.5111,
+     0.4841,
+     0.4789
+    ],
+    "top_docs": [
+     "自然科学与地球科学/oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 1 of 2).md",
+     "自然科学与地球科学/oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 2 of 2).md",
+     "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q47",
+    "field": "seismology",
+    "arxiv_id": "2606.10843",
+    "gold_rank": 1,
+    "n_dedup_docs": 25,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "supershear",
+     "rupture",
+     "indicator",
+     "fault"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.765,
+     0.7475,
+     0.7424,
+     0.5106,
+     0.4971
+    ],
+    "top_docs": [
+     "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 1 of 3).md",
+     "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 2 of 3).md",
+     "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q48",
+    "field": "agriculture",
+    "arxiv_id": "2508.05896",
+    "gold_rank": 1,
+    "n_dedup_docs": 29,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "optimal",
+     "cropping",
+     "investments",
+     "maximize"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7553,
+     0.7531,
+     0.7345,
+     0.4814,
+     0.4802
+    ],
+    "top_docs": [
+     "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+     "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+     "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q49",
+    "field": "finance",
+    "arxiv_id": "1909.07748",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "stock",
+     "market",
+     "microstructure",
+     "inference"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7595,
+     0.7284,
+     0.7243,
+     0.7147,
+     0.5929
+    ],
+    "top_docs": [
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q50",
+    "field": "social-networks",
+    "arxiv_id": "1001.3181",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "subtle",
+     "information",
+     "diffusion",
+     "online"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7909,
+     0.7909,
+     0.542,
+     0.5176,
+     0.5083
+    ],
+    "top_docs": [
+     "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md",
+     "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md"
+    ]
+   }
+  ]
+ },
+ "ts": {
+  "pass": 50,
+  "pass_rate": 1.0,
+  "hit1": 1.0,
+  "hit3": 1.0,
+  "hit5": 1.0,
+  "mrr": 1.0,
+  "mean_top1_score": 0.7647,
+  "rows": [
+   {
+    "qid": "Q01",
+    "field": "artificial-intelligence",
+    "arxiv_id": "2412.06333",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "augmenting",
+     "action",
+     "space",
+     "conventions"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8055,
+     0.7875,
+     0.7854,
+     0.7813
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+     "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md",
+     "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q02",
+    "field": "artificial-intelligence",
+    "arxiv_id": "2510.13343",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "transformer",
+     "based",
+     "multi",
+     "agent"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8671,
+     0.834
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+     "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q03",
+    "field": "artificial-intelligence",
+    "arxiv_id": "2303.14061",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "learning",
+     "reward",
+     "machines",
+     "cooperative"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7422,
+     0.7207,
+     0.7191
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+     "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md",
+     "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q04",
+    "field": "nlp",
+    "arxiv_id": "1802.09426",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "biased",
+     "summarization"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7427
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__1802.09426__tone-biased-mmr-text-summarization.md"
+    ]
+   },
+   {
+    "qid": "Q05",
+    "field": "nlp",
+    "arxiv_id": "2310.10981",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "instructive",
+     "dialogue",
+     "summarization",
+     "query"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7463,
+     0.7088
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+     "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q06",
+    "field": "nlp",
+    "arxiv_id": "2110.07844",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "modeling",
+     "endorsement",
+     "multi",
+     "document"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7695,
+     0.7545,
+     0.7513
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 1 of 3).md",
+     "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+     "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q07",
+    "field": "large-language-models",
+    "arxiv_id": "2411.18583",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "automated",
+     "literature",
+     "review",
+     "using"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7442
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md"
+    ]
+   },
+   {
+    "qid": "Q08",
+    "field": "large-language-models",
+    "arxiv_id": "2402.12317",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "evolving",
+     "retrieval",
+     "generation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7059,
+     0.6916,
+     0.6721
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 3 of 3).md",
+     "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+     "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q09",
+    "field": "large-language-models",
+    "arxiv_id": "2502.00306",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "riddle",
+     "stealthy",
+     "membership",
+     "inference"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8139,
+     0.7774,
+     0.6592
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+     "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+     "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q10",
+    "field": "quantum-physics",
+    "arxiv_id": "2303.00445",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "benchmarking",
+     "noisy",
+     "intermediate",
+     "scale"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8182,
+     0.8101,
+     0.7936,
+     0.7712
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md",
+     "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+     "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q11",
+    "field": "quantum-physics",
+    "arxiv_id": "2311.00487",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "evolution",
+     "generation",
+     "quantum",
+     "error"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7798,
+     0.762,
+     0.7476
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+     "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q12",
+    "field": "quantum-physics",
+    "arxiv_id": "2201.00752",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "quantum",
+     "error",
+     "mitigation",
+     "matrix"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7313,
+     0.6712,
+     0.6641
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 3 of 3).md",
+     "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q13",
+    "field": "clinical-medicine",
+    "arxiv_id": "1904.11280",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "predicting",
+     "stroke",
+     "electronic",
+     "health"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7452,
+     0.6493
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q14",
+    "field": "clinical-medicine",
+    "arxiv_id": "1809.08199",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "profiling",
+     "cancer",
+     "patients",
+     "using"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8358
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md"
+    ]
+   },
+   {
+    "qid": "Q15",
+    "field": "clinical-medicine",
+    "arxiv_id": "2201.03675",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "continuous",
+     "probabilistic",
+     "models",
+     "longitudinal"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.72,
+     0.7028,
+     0.6508
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+     "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q16",
+    "field": "genomics",
+    "arxiv_id": "2401.06823",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "interpretable",
+     "learning",
+     "single",
+     "omics"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.769
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q17",
+    "field": "genomics",
+    "arxiv_id": "2602.10156",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "strand",
+     "sequence",
+     "conditioned",
+     "transport"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7602,
+     0.7413,
+     0.7367,
+     0.6988
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+     "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+     "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 3 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q18",
+    "field": "genomics",
+    "arxiv_id": "2508.18304",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "effectively",
+     "integrating",
+     "single",
+     "multi"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8225,
+     0.7774,
+     0.753
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 4 of 4).md",
+     "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+     "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q19",
+    "field": "economics",
+    "arxiv_id": "1911.06206",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "bayesian",
+     "state",
+     "space",
+     "modeling"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8098,
+     0.7974,
+     0.7898,
+     0.7308
+    ],
+    "top_docs": [
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q20",
+    "field": "economics",
+    "arxiv_id": "2011.14424",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "effectiveness",
+     "european",
+     "central",
+     "conventional"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7931,
+     0.7613,
+     0.7526,
+     0.7471
+    ],
+    "top_docs": [
+     "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+     "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+     "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q21",
+    "field": "economics",
+    "arxiv_id": "1807.09475",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "monetary",
+     "policy"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.5987,
+     0.5322,
+     0.5183
+    ],
+    "top_docs": [
+     "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+     "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+     "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q22",
+    "field": "climate-science",
+    "arxiv_id": "2409.13934",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "extrapolation",
+     "generative",
+     "adversarial",
+     "networks"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8357,
+     0.8332,
+     0.8116
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+     "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+     "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q23",
+    "field": "climate-science",
+    "arxiv_id": "2409.09639",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "global",
+     "precipitation",
+     "climatology",
+     "machine"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8546,
+     0.8244
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+     "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q24",
+    "field": "climate-science",
+    "arxiv_id": "2007.10574",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "impacts",
+     "madden",
+     "julian",
+     "oscillation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7858,
+     0.7766
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 1 of 2).md",
+     "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q25",
+    "field": "astronomy",
+    "arxiv_id": "2304.12442",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "enabling",
+     "exoplanet",
+     "demographics",
+     "studies"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8075,
+     0.7903,
+     0.7376
+    ],
+    "top_docs": [
+     "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+     "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+     "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q26",
+    "field": "astronomy",
+    "arxiv_id": "1105.1887",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "corot",
+     "exoplanet",
+     "program",
+     "status"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7151,
+     0.6177
+    ],
+    "top_docs": [
+     "自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+     "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q27",
+    "field": "materials",
+    "arxiv_id": "1606.00335",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "dynamic",
+     "electrical",
+     "behavior",
+     "halide"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7452,
+     0.702
+    ],
+    "top_docs": [
+     "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+     "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q28",
+    "field": "materials",
+    "arxiv_id": "1712.01369",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "bilayer",
+     "heterojunction",
+     "solar",
+     "performance"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8143,
+     0.7931
+    ],
+    "top_docs": [
+     "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+     "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q29",
+    "field": "neuroscience",
+    "arxiv_id": "1301.6357",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multi",
+     "command",
+     "tactile",
+     "auditory"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7948,
+     0.6632
+    ],
+    "top_docs": [
+     "计算机与人工智能/neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+     "计算机与人工智能/neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.md"
+    ]
+   },
+   {
+    "qid": "Q30",
+    "field": "neuroscience",
+    "arxiv_id": "1404.4184",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "airborne",
+     "ultrasonic",
+     "tactile",
+     "display"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7307,
+     0.6261
+    ],
+    "top_docs": [
+     "计算机与人工智能/neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.md",
+     "计算机与人工智能/neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md"
+    ]
+   },
+   {
+    "qid": "Q31",
+    "field": "robotics",
+    "arxiv_id": "1709.02924",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "robust",
+     "object",
+     "manipulation",
+     "tactile"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7382,
+     0.7185,
+     0.7073
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 1 of 4).md",
+     "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 4 of 4).md",
+     "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q32",
+    "field": "robotics",
+    "arxiv_id": "1809.03210",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "intelligent",
+     "textureless",
+     "object",
+     "manipulation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7474,
+     0.6105
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+     "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q33",
+    "field": "chemistry",
+    "arxiv_id": "1911.02792",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "machine",
+     "learning",
+     "molecular",
+     "simulation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6631
+    ],
+    "top_docs": [
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q34",
+    "field": "chemistry",
+    "arxiv_id": "2011.07200",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "spatial",
+     "learning",
+     "molecular",
+     "vibration"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7063
+    ],
+    "top_docs": [
+     "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md"
+    ]
+   },
+   {
+    "qid": "Q35",
+    "field": "mathematics",
+    "arxiv_id": "2402.07064",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "piecewise",
+     "convex",
+     "moment",
+     "optimization"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8348,
+     0.8168,
+     0.8057
+    ],
+    "top_docs": [
+     "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+     "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+     "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q36",
+    "field": "mathematics",
+    "arxiv_id": "1405.4980",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "convex",
+     "optimization",
+     "algorithms",
+     "complexity"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6871
+    ],
+    "top_docs": [
+     "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md"
+    ]
+   },
+   {
+    "qid": "Q37",
+    "field": "speech",
+    "arxiv_id": "2209.15032",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "detection",
+     "prosodic",
+     "boundaries",
+     "speech"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8239,
+     0.7753
+    ],
+    "top_docs": [
+     "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+     "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q38",
+    "field": "speech",
+    "arxiv_id": "2509.05359",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "empirical",
+     "analysis",
+     "discrete",
+     "representations"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7755,
+     0.7579
+    ],
+    "top_docs": [
+     "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md",
+     "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q39",
+    "field": "databases",
+    "arxiv_id": "2009.10669",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "there",
+     "thing",
+     "index",
+     "indexing"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8018,
+     0.7855,
+     0.7758,
+     0.7596
+    ],
+    "top_docs": [
+     "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+     "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+     "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q40",
+    "field": "databases",
+    "arxiv_id": "1706.06697",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "index",
+     "search",
+     "algorithms",
+     "databases"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.712,
+     0.6759
+    ],
+    "top_docs": [
+     "计算机与人工智能/databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 1 of 3).md",
+     "计算机与人工智能/databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q41",
+    "field": "gravitational-physics",
+    "arxiv_id": "gr-qc/9805045",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "disturbing",
+     "black"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6522,
+     0.6341
+    ],
+    "top_docs": [
+     "自然科学与地球科学/gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 1 of 2).md",
+     "自然科学与地球科学/gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q42",
+    "field": "statistics",
+    "arxiv_id": "2604.22320",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "nonparametric",
+     "estimation",
+     "isotropic",
+     "covariance"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7101,
+     0.7049,
+     0.6926,
+     0.6738
+    ],
+    "top_docs": [
+     "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+     "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+     "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 4 of 9).md"
+    ]
+   },
+   {
+    "qid": "Q43",
+    "field": "power-systems",
+    "arxiv_id": "2607.03098",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "integrating",
+     "power",
+     "electronics",
+     "based"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8014,
+     0.7779,
+     0.7635,
+     0.7329
+    ],
+    "top_docs": [
+     "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+     "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 4 of 5).md",
+     "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q44",
+    "field": "medical-imaging",
+    "arxiv_id": "2412.15058",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multiverseg",
+     "scalable",
+     "interactive",
+     "segmentation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8503,
+     0.81,
+     0.7446
+    ],
+    "top_docs": [
+     "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+     "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md",
+     "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 4 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q45",
+    "field": "immunology",
+    "arxiv_id": "q-bio/0408016",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "epitope",
+     "analysis",
+     "influenza",
+     "vaccine"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7102
+    ],
+    "top_docs": [
+     "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md"
+    ]
+   },
+   {
+    "qid": "Q46",
+    "field": "oceanography",
+    "arxiv_id": "physics/0703220",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "scientific",
+     "reticence",
+     "level"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7436,
+     0.7358
+    ],
+    "top_docs": [
+     "自然科学与地球科学/oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 1 of 2).md",
+     "自然科学与地球科学/oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q47",
+    "field": "seismology",
+    "arxiv_id": "2606.10843",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "supershear",
+     "rupture",
+     "indicator",
+     "fault"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.765,
+     0.7475,
+     0.7424
+    ],
+    "top_docs": [
+     "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 1 of 3).md",
+     "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 2 of 3).md",
+     "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q48",
+    "field": "agriculture",
+    "arxiv_id": "2508.05896",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "optimal",
+     "cropping",
+     "investments",
+     "maximize"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7553,
+     0.7531,
+     0.7345
+    ],
+    "top_docs": [
+     "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+     "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+     "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q49",
+    "field": "finance",
+    "arxiv_id": "1909.07748",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "stock",
+     "market",
+     "microstructure",
+     "inference"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7595,
+     0.7284,
+     0.7243,
+     0.7147
+    ],
+    "top_docs": [
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q50",
+    "field": "social-networks",
+    "arxiv_id": "1001.3181",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "subtle",
+     "information",
+     "diffusion",
+     "online"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7909,
+     0.7909
+    ],
+    "top_docs": [
+     "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md",
+     "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md"
+    ]
+   }
+  ]
+ }
+}

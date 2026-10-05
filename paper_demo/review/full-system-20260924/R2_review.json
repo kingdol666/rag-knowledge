@@ -1,0 +1,48 @@
+{
+  "seat": "R2",
+  "score": 7.5,
+  "verdict": "minor",
+  "summary": "From the booth chair's seat this is close to ready. The three scenarios in Section 3 are concrete enough that I know exactly what happens on screen: scenario 1 names the attendee action (select a PDF from a prepared pool, compare parsed text against the routing decision before accepting), scenario 2 is anchored to a saved monitored-run trace with exact numbers (BQ04, 0.75 first rank, part 1 of 2, section '2. What is the Gene Ontology'), and scenario 3 scripts the fictitious-paper trap with the gate score (1/8) and census bounds (5 bases, 322 parts). The stall risk is addressed head-on: 'A live answer takes ten seconds to two minutes, so presenters replay saved traces alongside live queries' is exactly the mitigation I ask for. I verified the deliverables against artifacts: the video exists (HTTP 200 per fact sheet), runs 2:57 (inside the 3-minute CFP bound), and its frames are real screen recordings of the running web console (KB Search with per-channel scores, NISQ query returning the Preskill paper, a rendered not-found report, agent chat with blind-spots). Fig 3 is a verbatim replay of saved traces (tool timelines, answer excerpts, source blocks) built with substring gates, and Table 1 is script-asserted; together they convince me the system runs and the paper's numbers come from retained artifacts, not hand-waving. Section 4's honest framing (operational not controlled, BQ02 mis-grounding shown as-is, 3x cost and 113 s latency disclosed) would make a booth visitor trust it rather than suspect cherry-picking. The one real defect: the video was recorded against the older 50-paper deployment, so its on-screen census (50 papers, 165 documents, 8 KBs, 91 MCP tools) contradicts the paper's prepared instance (100 papers, 322 parts, 5 bases, 41 kb_* of 94 tools) - a visitor comparing video to booth will notice. Fix by re-recording or slating, plus small pointer/placement nits, and this is an accept.",
+  "strengths": [
+    "All three demo scenarios name concrete on-screen actions and concrete artifacts (prepared PDF pool, saved BQ04 trace with exact scores and section name, scripted fictitious-paper probe with gate 1/8), so a presenter knows the choreography cold",
+    "The latency stall risk is explicitly mitigated in Section 3: live answers take 10 s-2 min, presenters replay saved traces alongside live queries",
+    "Fig 3 carries real system output: per-mode tool timelines, verbatim answer excerpts, and source blocks (base/document/part/section vs file vs chunk), gate-built by verbatim-substring assertion against the saved traces - this, plus Table 1's script-asserted pipeline audit, proves a working system without console screenshots",
+    "Section 4 reads as integral operational evidence, not an afterthought: honest definitions (grounded/keyword-verified/citations), failures shown as-is (BQ02 mis-grounding, BQ08 conservative grading), and cost/latency trade-offs (113 s, $0.49 vs 43 s, $0.16) disclosed up front",
+    "Verified runnability chain: video (2:57, real console footage, nothing mocked per its README) and repo URLs resolve; the 30 traces, honest_failure_probe.json (census 5 bases / 100 papers / 322 parts matching the paper), and grading/pipeline scripts (107/108) all exist in the repo",
+    "CFP checklist complete: demonstrable system, <=4-page body with only GenAI+refs spilling to page 5, GenAI disclosure present, 3-minute video"
+  ],
+  "issues": [
+    {
+      "id": "R2-1",
+      "priority": "P1",
+      "location": "Demo video (linked from abstract and backmatter), frames at ~0:20 and ~2:00 vs paper Section 3 / Table 1",
+      "issue": "The linked video was recorded against the older 50-paper deployment: its on-screen census reads '50 real papers - 3.8M characters', the console home shows '8 KNOWLEDGE BASES / 165 DOCUMENTS' and a card saying '91 MCP tools', and the not-found report frame says '5 category bases, 50 papers, 165 indexed documents'. The paper's prepared instance is 100 papers, 322 parts, 5 bases, 41 kb_* tools in a 94-tool inventory (matching the refreshed honest_failure_probe.json). The video's own README warns: 'if you re-record against a different corpus, re-run record_clips.py and build_video.py so the on-screen counts keep matching the paper' - that step was not taken after the 100-paper scale-up.",
+      "evidence": "Video frames extracted at 0:20/1:00/2:00 show the stale counts; D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\honest_failure_probe.json reports corpus_scope papers=100, indexed_documents=322; paper Section 3 says 'A prepared instance holds 100 papers in five bases' and scenario 3 says 'census covers all five bases and 322 stored parts'; video README 'Before submission' item 2 states the re-record rule.",
+      "suggestion": "Before camera-ready, re-run record_clips.py + build_video.py against the 100-paper/322-part instance so every on-screen count matches the paper; if re-recording is not possible, add a visible slate/caption to the video (and a one-line note near the video URL) stating the corpus has since been scaled to 100 papers / 322 parts with the audit artifact in the repo."
+    },
+    {
+      "id": "R2-2",
+      "priority": "P2",
+      "location": "Section 3 (Interactive Demonstration), opening paragraph",
+      "issue": "The paper contains no pixel of the web console the scenarios are staged in (acceptable only if figures or the video carry it - Fig 3 carries traces, not UI), and Section 3 never points to the video where the console is actually shown. The video URL appears only in the abstract and the GenAI backmatter; even the video README's pre-submission checklist expected the URL in sec3_demo.tex.",
+      "evidence": "sec3_demo.tex has no \\url to the video and no reference to it; the only UI depiction in the paper is Fig 2's interface chips (Web console / ragctl CLI / MCP clients), which are schematic, not screenshots; the console footage lives at 0:15-1:09 and 2:19-2:46 of the verified video.",
+      "suggestion": "Add one sentence to Section 3's introduction pointing to the video segments that show the web console (e.g., 'the accompanying video walks these three scenarios in the web console'), and if a few lines of space can be found on page 2 or 3, a single small console screenshot would let paper-only reviewers see the interface attendees will touch."
+    },
+    {
+      "id": "R2-3",
+      "priority": "P2",
+      "location": "Section *{GenAI Usage Disclosure} (sec4_backmatter.tex), last sentence",
+      "issue": "The video URL's second home is the middle of the GenAI disclosure paragraph, which is an odd place for the paper's primary demo deliverable; a reader skimming for demo resources will find it only by accident there. The abstract placement is sensible; the backmatter placement adds little.",
+      "evidence": "sec4_backmatter.tex lines 13-16 embed both the video URL and the repo URL inside the disclosure section after the competing-interests sentence.",
+      "suggestion": "Keep the URL in the abstract, move the video+repo links into Section 3 (per R2-2) or a one-line 'Demo resources' sentence at the end of Section 4, and let the disclosure section end with responsibility/competing-interests only."
+    },
+    {
+      "id": "R2-4",
+      "priority": "P2",
+      "location": "Title block, main.tex lines 43-46",
+      "issue": "Author placeholders ('Author Name', author@example.com) remain; known user-pending item, flagged once for the camera-ready checklist (CIKM Demo is single-blind, real names expected).",
+      "evidence": "Rendered page 1 and main.tex author block.",
+      "suggestion": "Fill real author/affiliation/email before submission; no other action."
+    }
+  ]
+}

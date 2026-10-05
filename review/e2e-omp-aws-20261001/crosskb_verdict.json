@@ -1,0 +1,22 @@
+{
+ "r3wa_lineA": {
+  "pass": true,
+  "detail": "全部四步完成，检索自验通过且返回内容与给定原文逐字一致。未派发子 agent，全程在本会话直接执行。\n\n**各步骤执行情况：**\n\n| 步骤 | 操作 | 结果 |\n|---|---|---|\n| 1. 建库 | `kb_create` | ✅ 成功 |\n| 2. 入库 | `kb_doc_create`（正文逐字使用原文，157 字符，未改写未补充） | ✅ 成功 |\n| 3. 向量索引 | `"
+ },
+ "r3wb_lineB": {
+  "pass": true,
+  "detail": "✅ 向量检索自验命中：score = **0.764**（≥0.65，属 P0 强命中），返回内容与入库原文逐字一致。\n\n---\n\n## 执行报告\n\n| 步骤 | 操作 | 结果 |\n|---|---|---|\n| 1 | `kb_create`「e2e-lnB2-注塑单元产线-r3」 | ✔ 描述已写入「PY-888 注塑单元产线的调参与克重记录」 |\n| 2 | `kb_doc_create`"
+ },
+ "kb_ids": {
+  "A": "87125617-c7f5-46c1-90a0-491ae604912d",
+  "B": "6b68c6fb-bcee-461d-9c1e-0820cc460492"
+ },
+ "r3q1_lineA_route": {
+  "pass": true,
+  "detail": "gold=True contam=[] kb-mentioned=True"
+ },
+ "r3q2_lineB_route": {
+  "pass": true,
+  "detail": "gold=True contam=[] kb-mentioned=True"
+ }
+}

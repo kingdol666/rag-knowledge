@@ -1,0 +1,514 @@
+{
+  "run": "experiment_chat_20260922-211000",
+  "rows": [
+    {
+      "qid": "BQ01",
+      "track": "a",
+      "latency_s": 174.0,
+      "tool_calls": 9,
+      "permission_denied": 0,
+      "tokens_in": 67198,
+      "tokens_out": 2948,
+      "cost_usd": 0.493242,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "scaled dot-product",
+        "multi-head",
+        "recurrence"
+      ]
+    },
+    {
+      "qid": "BQ01",
+      "track": "b",
+      "latency_s": 41.7,
+      "tool_calls": 6,
+      "permission_denied": 0,
+      "tokens_in": 14505,
+      "tokens_out": 934,
+      "cost_usd": 0.17139500000000002,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "scaled dot-product",
+        "multi-head",
+        "recurrence"
+      ]
+    },
+    {
+      "qid": "BQ01",
+      "track": "c",
+      "latency_s": 64.4,
+      "tool_calls": 3,
+      "permission_denied": 0,
+      "tokens_in": 5821,
+      "tokens_out": 707,
+      "cost_usd": 0.104284,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "scaled dot-product",
+        "multi-head",
+        "recurrence"
+      ]
+    },
+    {
+      "qid": "BQ02",
+      "track": "a",
+      "latency_s": 99.2,
+      "tool_calls": 6,
+      "permission_denied": 0,
+      "tokens_in": 56876,
+      "tokens_out": 1413,
+      "cost_usd": 0.42101700000000003,
+      "abstained": false,
+      "cites_gold_paper": false,
+      "gold_keywords_in_answer": [
+        "noisy intermediate-scale"
+      ]
+    },
+    {
+      "qid": "BQ02",
+      "track": "b",
+      "latency_s": 40.9,
+      "tool_calls": 4,
+      "permission_denied": 0,
+      "tokens_in": 10066,
+      "tokens_out": 527,
+      "cost_usd": 0.12027299999999999,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "noisy intermediate-scale",
+        "error correction"
+      ]
+    },
+    {
+      "qid": "BQ02",
+      "track": "c",
+      "latency_s": 125.1,
+      "tool_calls": 3,
+      "permission_denied": 0,
+      "tokens_in": 31154,
+      "tokens_out": 498,
+      "cost_usd": 0.23270000000000002,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "noisy intermediate-scale"
+      ]
+    },
+    {
+      "qid": "BQ03",
+      "track": "a",
+      "latency_s": 81.0,
+      "tool_calls": 7,
+      "permission_denied": 0,
+      "tokens_in": 109544,
+      "tokens_out": 1871,
+      "cost_usd": 0.691359,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "multimedqa",
+        "67.6"
+      ]
+    },
+    {
+      "qid": "BQ03",
+      "track": "b",
+      "latency_s": 60.3,
+      "tool_calls": 3,
+      "permission_denied": 0,
+      "tokens_in": 2800,
+      "tokens_out": 497,
+      "cost_usd": 0.083289,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "multimedqa",
+        "67.6"
+      ]
+    },
+    {
+      "qid": "BQ03",
+      "track": "c",
+      "latency_s": 14.4,
+      "tool_calls": 2,
+      "permission_denied": 0,
+      "tokens_in": 29863,
+      "tokens_out": 435,
+      "cost_usd": 0.204254,
+      "abstained": false,
+      "cites_gold_paper": false,
+      "gold_keywords_in_answer": [
+        "multimedqa",
+        "67.6"
+      ]
+    },
+    {
+      "qid": "BQ04",
+      "track": "a",
+      "latency_s": 77.7,
+      "tool_calls": 5,
+      "permission_denied": 0,
+      "tokens_in": 39148,
+      "tokens_out": 937,
+      "cost_usd": 0.3080609999999999,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "molecular function",
+        "biological process",
+        "cellular component"
+      ]
+    },
+    {
+      "qid": "BQ04",
+      "track": "b",
+      "latency_s": 40.0,
+      "tool_calls": 4,
+      "permission_denied": 0,
+      "tokens_in": 9124,
+      "tokens_out": 458,
+      "cost_usd": 0.135566,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "molecular function",
+        "biological process",
+        "cellular component"
+      ]
+    },
+    {
+      "qid": "BQ04",
+      "track": "c",
+      "latency_s": 35.4,
+      "tool_calls": 2,
+      "permission_denied": 0,
+      "tokens_in": 30436,
+      "tokens_out": 379,
+      "cost_usd": 0.206231,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "molecular function",
+        "biological process",
+        "cellular component"
+      ]
+    },
+    {
+      "qid": "BQ05",
+      "track": "a",
+      "latency_s": 160.9,
+      "tool_calls": 8,
+      "permission_denied": 0,
+      "tokens_in": 59846,
+      "tokens_out": 2005,
+      "cost_usd": 0.47533899999999996,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "unified growth theory"
+      ]
+    },
+    {
+      "qid": "BQ05",
+      "track": "b",
+      "latency_s": 32.8,
+      "tool_calls": 4,
+      "permission_denied": 0,
+      "tokens_in": 10584,
+      "tokens_out": 643,
+      "cost_usd": 0.125891,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "unified growth theory"
+      ]
+    },
+    {
+      "qid": "BQ05",
+      "track": "c",
+      "latency_s": 42.4,
+      "tool_calls": 2,
+      "permission_denied": 0,
+      "tokens_in": 30307,
+      "tokens_out": 488,
+      "cost_usd": 0.208247,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "unified growth theory"
+      ]
+    },
+    {
+      "qid": "BQ06",
+      "track": "a",
+      "latency_s": 117.9,
+      "tool_calls": 10,
+      "permission_denied": 0,
+      "tokens_in": 97734,
+      "tokens_out": 2015,
+      "cost_usd": 0.687877,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "precipitation efficiency"
+      ]
+    },
+    {
+      "qid": "BQ06",
+      "track": "b",
+      "latency_s": 35.6,
+      "tool_calls": 5,
+      "permission_denied": 0,
+      "tokens_in": 16452,
+      "tokens_out": 729,
+      "cost_usd": 0.197541,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "precipitation efficiency"
+      ]
+    },
+    {
+      "qid": "BQ06",
+      "track": "c",
+      "latency_s": 35.9,
+      "tool_calls": 2,
+      "permission_denied": 0,
+      "tokens_in": 3360,
+      "tokens_out": 384,
+      "cost_usd": 0.084032,
+      "abstained": true,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": []
+    },
+    {
+      "qid": "BQ07",
+      "track": "a",
+      "latency_s": 155.9,
+      "tool_calls": 6,
+      "permission_denied": 0,
+      "tokens_in": 58450,
+      "tokens_out": 1238,
+      "cost_usd": 0.402016,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "yiddish",
+        "8b"
+      ]
+    },
+    {
+      "qid": "BQ07",
+      "track": "b",
+      "latency_s": 51.3,
+      "tool_calls": 7,
+      "permission_denied": 0,
+      "tokens_in": 13944,
+      "tokens_out": 910,
+      "cost_usd": 0.23119,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "yiddish",
+        "8b"
+      ]
+    },
+    {
+      "qid": "BQ07",
+      "track": "c",
+      "latency_s": 15.3,
+      "tool_calls": 2,
+      "permission_denied": 0,
+      "tokens_in": 3299,
+      "tokens_out": 460,
+      "cost_usd": 0.086139,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "yiddish",
+        "8b"
+      ]
+    },
+    {
+      "qid": "BQ08",
+      "track": "a",
+      "latency_s": 152.5,
+      "tool_calls": 10,
+      "permission_denied": 0,
+      "tokens_in": 73205,
+      "tokens_out": 3025,
+      "cost_usd": 0.551666,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "oxygen redox",
+        "cathode"
+      ]
+    },
+    {
+      "qid": "BQ08",
+      "track": "b",
+      "latency_s": 20.5,
+      "tool_calls": 4,
+      "permission_denied": 0,
+      "tokens_in": 18471,
+      "tokens_out": 538,
+      "cost_usd": 0.181485,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "oxygen redox",
+        "cathode"
+      ]
+    },
+    {
+      "qid": "BQ08",
+      "track": "c",
+      "latency_s": 113.1,
+      "tool_calls": 3,
+      "permission_denied": 0,
+      "tokens_in": 30051,
+      "tokens_out": 510,
+      "cost_usd": 0.22780499999999998,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "oxygen redox",
+        "cathode"
+      ]
+    },
+    {
+      "qid": "BQ09",
+      "track": "a",
+      "latency_s": 56.9,
+      "tool_calls": 5,
+      "permission_denied": 0,
+      "tokens_in": 45410,
+      "tokens_out": 1758,
+      "cost_usd": 0.33944799999999997,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "dynamic",
+        "multilayer perceptron"
+      ]
+    },
+    {
+      "qid": "BQ09",
+      "track": "b",
+      "latency_s": 61.7,
+      "tool_calls": 4,
+      "permission_denied": 0,
+      "tokens_in": 11356,
+      "tokens_out": 597,
+      "cost_usd": 0.14968900000000002,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "dynamic",
+        "multilayer perceptron"
+      ]
+    },
+    {
+      "qid": "BQ09",
+      "track": "c",
+      "latency_s": 20.7,
+      "tool_calls": 2,
+      "permission_denied": 0,
+      "tokens_in": 32387,
+      "tokens_out": 517,
+      "cost_usd": 0.21754800000000002,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "dynamic",
+        "multilayer perceptron"
+      ]
+    },
+    {
+      "qid": "BQ10",
+      "track": "a",
+      "latency_s": 53.5,
+      "tool_calls": 10,
+      "permission_denied": 0,
+      "tokens_in": 71900,
+      "tokens_out": 2302,
+      "cost_usd": 0.540506,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "immune evasion",
+        "chemotherapy"
+      ]
+    },
+    {
+      "qid": "BQ10",
+      "track": "b",
+      "latency_s": 41.9,
+      "tool_calls": 3,
+      "permission_denied": 0,
+      "tokens_in": 29414,
+      "tokens_out": 494,
+      "cost_usd": 0.235132,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "chemotherapy"
+      ]
+    },
+    {
+      "qid": "BQ10",
+      "track": "c",
+      "latency_s": 13.8,
+      "tool_calls": 3,
+      "permission_denied": 0,
+      "tokens_in": 30662,
+      "tokens_out": 581,
+      "cost_usd": 0.232251,
+      "abstained": false,
+      "cites_gold_paper": true,
+      "gold_keywords_in_answer": [
+        "immune evasion"
+      ]
+    }
+  ],
+  "per_track": {
+    "a": {
+      "runs": 10,
+      "answered_with_gold_citation": 9,
+      "honest_not_found": 0,
+      "runs_with_denied_tools": 0,
+      "avg_latency_s": 113.0,
+      "avg_tool_calls": 7.6,
+      "tokens_in_total": 679311,
+      "tokens_out_total": 19512,
+      "cost_usd_total": 4.91
+    },
+    "b": {
+      "runs": 10,
+      "answered_with_gold_citation": 10,
+      "honest_not_found": 0,
+      "runs_with_denied_tools": 0,
+      "avg_latency_s": 42.7,
+      "avg_tool_calls": 4.4,
+      "tokens_in_total": 136716,
+      "tokens_out_total": 6327,
+      "cost_usd_total": 1.63
+    },
+    "c": {
+      "runs": 10,
+      "answered_with_gold_citation": 9,
+      "honest_not_found": 1,
+      "runs_with_denied_tools": 0,
+      "avg_latency_s": 48.0,
+      "avg_tool_calls": 2.4,
+      "tokens_in_total": 227340,
+      "tokens_out_total": 4959,
+      "cost_usd_total": 1.8
+    }
+  }
+}

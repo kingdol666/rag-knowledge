@@ -1,0 +1,144 @@
+{
+ "answer": "**Answer** (verified via kb_laya_judge: 16/17 segments of the paper survived the evidence gate, scores 0.51–0.93):\n\nMLP-SLAM (Li & Sun, arXiv 2410.10669) addresses the degradation of visual SLAM accuracy in dynamic environments: V-SLAM systems like ORB-SLAM2/3 assume a static world, so their precision deteriorates in outdoor scenes full of pedestrians and moving vehicles. It also targets flaws in prior dynamic-SLAM remedies: semantic-segmentation methods (e.g., DynaSLAM, which relies on the slow MaskRCNN) wrongly discard features of stationary objects such as parked cars and guardrails, causing information loss and high latency, while geometric methods use only partial geometric cues and need laborious manual parameter tuning, limiting generality.\n\nHow: MLP-SLAM is the first machine-learning (multilayer perceptron) discriminator that classifies each feature point inside potential-dynamic-object bounding boxes as static or dynamic, using complete geometric information — image intensity error, epipolar error, and re-projection error as its three inputs. The system builds on stereo ORB-SLAM2 with YOLOv7 detection + Deep Sort tracking, a Depth Filter Module that recovers background (static) features inside bounding boxes, and coarse-then-fine camera pose estimation using only the static points. To fix the lack of a dedicated benchmark, the authors also released a 50,000+ manually labeled feature-point dataset enabling direct evaluation of dynamic/static classifiers. Results: the MLP classifier beats SVM and PointSLOT/CFP-SLAM-like methods (87.71% accuracy), and the full system achieves the lowest average ATE and fastest runtime (62.81 ms/frame vs. DynaSLAM's 519 ms) on KITTI Odometry and KITTI360.\n\n**Sources:**\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` (KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`, segments 0–10)\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md` (KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`, segments 0–4)\n- Mirrored chunks: `Corpus-Chunks800/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md` / `__k18.md` / `__k23.md` (KB `0942f1a6-d81b-413b-a60b-b994680dcaac`)",
+ "is_error": false,
+ "latency_s": 55.9,
+ "sdk_duration_ms": 55109,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "Agent",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM visual SLAM dynamic environments"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "visual SLAM dynamic environment moving objects problem"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?"
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 94696,
+  "output": 1956,
+  "cache_read": 286400,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.6992882,
+ "timeline": [
+  {
+   "t": 0.83,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.82,
+   "event": "text",
+   "detail": "216"
+  },
+  {
+   "t": 4.84,
+   "event": "tool_use",
+   "detail": "Agent"
+  },
+  {
+   "t": 6.4,
+   "event": "text",
+   "detail": "286"
+  },
+  {
+   "t": 10.55,
+   "event": "text",
+   "detail": "189"
+  },
+  {
+   "t": 10.57,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 10.57,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 16.7,
+   "event": "text",
+   "detail": "123"
+  },
+  {
+   "t": 16.71,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 16.72,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 24.89,
+   "event": "text",
+   "detail": "159"
+  },
+  {
+   "t": 26.7,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 55.85,
+   "event": "text",
+   "detail": "2248"
+  },
+  {
+   "t": 55.85,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "Plan: I'll run a vector search across the whole KB for \"MLP-SLAM dynamic environment visual SLAM\" to find the relevant document, then read the matching doc(s) and verify content with kb_laya_judge before answering.\n\n",
+  "Many are available — 94 tools with the `mcp__kb-mcp__` prefix.\n\nExamples: `mcp__kb-mcp__kb_list`, `mcp__kb-mcp__kb_doc_read`, `mcp__kb-mcp__kb_search_vector`, `mcp__kb-mcp__experience_extract`, `mcp__kb-mcp__soul_ask`, `mcp__kb-mcp__parse_doc`, `mcp__kb-mcp__backend_status`.\n\nCount: 94",
+  "Plan is confirmed: the KB tools are available, so I'll now run the retrieval myself — vector search for MLP-SLAM plus dynamic-environment SLAM, then read and verify the matching document.\n\n",
+  "I found the MLP-SLAM paper (arXiv 2410.10669) in two KBs. Now I'll read the full document and verify with the Laya judge.\n\n",
+  "The document is fully read. Final verification: I'll pass the document reference through kb_laya_judge to confirm which segments genuinely answer the question.",
+  "**Answer** (verified via kb_laya_judge: 16/17 segments of the paper survived the evidence gate, scores 0.51–0.93):\n\nMLP-SLAM (Li & Sun, arXiv 2410.10669) addresses the degradation of visual SLAM accuracy in dynamic environments: V-SLAM systems like ORB-SLAM2/3 assume a static world, so their precision deteriorates in outdoor scenes full of pedestrians and moving vehicles. It also targets flaws in prior dynamic-SLAM remedies: semantic-segmentation methods (e.g., DynaSLAM, which relies on the slow MaskRCNN) wrongly discard features of stationary objects such as parked cars and guardrails, causing information loss and high latency, while geometric methods use only partial geometric cues and need laborious manual parameter tuning, limiting generality.\n\nHow: MLP-SLAM is the first machine-learning (multilayer perceptron) discriminator that classifies each feature point inside potential-dynamic-object bounding boxes as static or dynamic, using complete geometric information — image intensity error, epipolar error, and re-projection error as its three inputs. The system builds on stereo ORB-SLAM2 with YOLOv7 detection + Deep Sort tracking, a Depth Filter Module that recovers background (static) features inside bounding boxes, and coarse-then-fine camera pose estimation using only the static points. To fix the lack of a dedicated benchmark, the authors also released a 50,000+ manually labeled feature-point dataset enabling direct evaluation of dynamic/static classifiers. Results: the MLP classifier beats SVM and PointSLOT/CFP-SLAM-like methods (87.71% accuracy), and the full system achieves the lowest average ATE and fastest runtime (62.81 ms/frame vs. DynaSLAM's 519 ms) on KITTI Odometry and KITTI360.\n\n**Sources:**\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` (KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`, segments 0–10)\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md` (KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`, segments 0–4)\n- Mirrored chunks: `Corpus-Chunks800/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md` / `__k18.md` / `__k23.md` (KB `0942f1a6-d81b-413b-a60b-b994680dcaac`)"
+ ],
+ "track": "a2",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ09",
+ "via": "chat",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

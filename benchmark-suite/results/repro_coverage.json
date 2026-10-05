@@ -1,0 +1,46 @@
+{
+ "kbs": {
+  "Corpus-Chunks800": {
+   "expected_chunks": 2366,
+   "build_indexed_ok": 2366,
+   "build_errors": 0,
+   "build_ok": true,
+   "docs_expected": 50,
+   "probe_hit": 49,
+   "probe_total": 50,
+   "probe_miss_sample": [
+    {
+     "cid": "finance__1412.5558__backtest-of-trading-systems-on-candle-charts"
+    }
+   ],
+   "pass": true
+  },
+  "Corpus-Struct": {
+   "expected_chunks": 1385,
+   "build_indexed_ok": 1385,
+   "build_errors": 0,
+   "build_ok": true,
+   "docs_expected": 50,
+   "probe_hit": 50,
+   "probe_total": 50,
+   "probe_miss_sample": [],
+   "pass": true
+  },
+  "Corpus-Paras": {
+   "expected_chunks": 10219,
+   "build_indexed_ok": 10219,
+   "build_errors": 0,
+   "build_ok": true,
+   "docs_expected": 50,
+   "probe_hit": 49,
+   "probe_total": 50,
+   "probe_miss_sample": [
+    {
+     "cid": "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t"
+    }
+   ],
+   "pass": true
+  }
+ },
+ "pass": true
+}

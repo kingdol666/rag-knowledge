@@ -1,0 +1,17 @@
+{
+ "tag": "w8_verify_call",
+ "mode": "async",
+ "request_prompt": "对知识库「e2e-agent-20261001」做完整性核验（磁盘/元数据/向量三层一致性），回报结论。不要派发子 agent，直接在本会话执行。",
+ "http": 200,
+ "wall_s": 0.0,
+ "response": {
+  "success": true,
+  "mode": "async",
+  "task_id": "kbt_mup1h70s_60065d38",
+  "status": "running",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "poll": "GET /api/kb/agent/tasks/kbt_mup1h70s_60065d38"
+ },
+ "task_id": "kbt_mup1h70s_60065d38"
+}

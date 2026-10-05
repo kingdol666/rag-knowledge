@@ -1,0 +1,97 @@
+QDCVR: An Agent-Operated Platform for Knowledge
+Organization and Inspectable Retrieval
+Author Name
+Affiliation
+City, Country
+author@example.com
+Abstract
+Research administrators need to organize document collections and
+inspect the evidence behind answers drawn from them. We present
+Qdcvr, an agent-operated platform that connects content-guided
+knowledge organization with inspectable retrieval. Packaged agent
+skills call tool APIs to parse documents, route them among existing
+category bases, maintain tags, and read candidate evidence. The
+retrieval protocol combines vector recall, a prompted content-gate
+self-assessment, additional search and reading, and explicit not-
+found reports. Gate scores expose the agent’s judgment; they do not
+guarantee semantic correctness. The demonstration lets attendees
+follow document placement, inspect retrieved passages and source
+references, and examine failure reports. Saved operational traces
+cover 50 papers in five bases and 165 stored documents and parts.
+A separate ten-question snippet regression passes nine cases, and
+three scripted out-of-corpus examples illustrate agent-authored not-
+found reports. These operational spot checks provide concrete cases
+for examining the workflow, its recorded decisions, and the limits of
+available evidence. Demo video: https://github.com/kingdol666/rag-
+knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4.
+CCS Concepts
+• Information systems →Information retrieval; • Human-
+centered computing →Interactive systems and tools.
+Keywords
+knowledge-base management, retrieval-augmented generation, ev-
+idence inspection, agent workflows, demonstration
+ACM Reference Format:
+Author Name. 2026. QDCVR: An Agent-Operated Platform for Knowledge
+Organization and Inspectable Retrieval. In CIKM ’26, November 9–13, 2026,
+Rome, Italy. ACM, New York, NY, USA, 5 pages.
+1
+Introduction
+Research administrators maintaining shared paper collections must
+organize documents and explain which passages support an answer.
+Filenames can obscure content, and relevant passages may not
+answer a question. Administrators need usable collection tools and
+records that expose retrieval decisions.
+Retrieval-augmented generation connects answers to retrieved
+material [3]. Self-RAG and Corrective RAG assess retrieval or gen-
+eration and adapt later processing [1, 7]. DeepRead exposes doc-
+ument hierarchies and paragraph coordinates to locate passages
+CIKM ’26, Rome, Italy
+2026.
+before reading them [4]. CyberBOT grounds generation and verifi-
+cation in an ontology [8]. QDCVR complements these approaches
+with content-guided collection management and a reusable evi-
+dence workflow built on tool APIs. The integration problem is to
+carry a document from administrative placement into evidence an
+agent can locate and a user can inspect. QDCVR connects move-
+ment/tagging tools to the same document-part identifiers used by
+search and reading. Attendees can therefore inspect a routing de-
+cision and then follow the placed document into an answer or a
+scoped failure report, rather than evaluate a retrieval controller
+alone.
+Packaged agent skills call these APIs to organize and query a
+collection. Routing uses document content to select among existing
+category bases, without requiring a new taxonomy. Parsed text,
+document parts, and tags support search and reading. Vector recall
+feeds a prompted content gate, followed by further search or read-
+ing when needed. Gate scores record the agent’s judgment, not a
+semantic guarantee. Source references and explicit not-found re-
+ports make that judgment inspectable. Figure 1 shows the workflow;
+Figure 2 presents the architecture.
+The demonstration contributes three connected capabilities:
+• Document parsing, content-guided routing, and tag mainte-
+nance.
+• Reusable agent skills that coordinate tool calls.
+• Retrieval records exposing candidate reads, gate judgments,
+further searches, and failure reports.
+Section 3 invites attendees to follow these operations and inspect
+their outputs. Section 4 examines saved traces and provenance
+limits as operational evidence, not a general efficacy comparison.
+2
+System and Agent Workflow
+2.1
+Services and Agent Operations
+Qdcvr combines a web console, a FastAPI backend, a service-
+management CLI (ragctl), and an MCP server [5]. The inspected
+implementation exposes 41 kb_* knowledge-management tools
+within a 94-tool inventory, including document creation, movement,
+tagging, search, and offset-addressed reads. The console calls HTTP
+services; MCP-capable agents operate the same resources through
+tools. These interfaces share data and operations, not necessarily
+a reasoning policy: ordinary search endpoints return candidates
+without requiring a content-gate judgment.
+Figure 2 separates the services from the packaged agent skills
+that prescribe the demonstrated workflows. ChromaDB stores BGE-
+M3 vectors [2]; Neo4j supports document relations; Markdown
+and JSON/YAML metadata retain content and collection structure.
+Graph navigation is optional, not the evaluated retrieval route.
+1

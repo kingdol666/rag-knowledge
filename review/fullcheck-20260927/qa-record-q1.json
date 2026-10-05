@@ -1,0 +1,44 @@
+{
+ "soul": "soul-cs-library",
+ "init": {
+  "task_id": "d95985cfa834",
+  "profile_pending": true
+ },
+ "qa": {
+  "question": "How does InstructDS generate high-quality query-based dialogue summaries?",
+  "answer": "先结论后论证：InstructDS 生成高质量 query-based 摘要的核心路径是「合成 QDS 三元组 + 多数据集联合训练 + 长度感知增强」三件套[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md]。其中高质量来自一条三步骤的数据合成流水线。\n\n分点陈述依据：\n\n1) 三步骤合成 QDS 三元组：summary-anchored query generation（摘要锚定的查询生成）→ query filtering（查询过滤）→ query-based summary generation（基于查询的摘要生成）[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md]。\n\n2) 依赖 LLM 的条件问答能力：借助通用大语言模型的 conditional question generation 与 answering 能力，基于参考摘要生成多个候选查询，从而降低人工参与、提升数据多样性[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md]。\n\n3) 质量过滤双机制：过滤环节同时采用 text-based 与 semantic-based 两类方法，确保收集到的查询质量[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md]。\n\n4) 训练范式：QDS 三元组形如 {Q, D, S}，模型需在查询与对话的双条件下生成摘要，即 M(Q, D) = S[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md]；与 QDS 三元组的联合训练使 InstructDS 能按用户偏好产出 query-based 摘要，并提升对话理解与事实质量[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md]。\n\n5) 长度可控：在指令中加入参考摘要长度后，InstructDS 表现出遵循长度指令的能力，并带来进一步性能提升[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md]。\n\n承认不确定性：以上机制来自该论文的摘要/贡献与方法描述片段。合成流水线每一步的具体提示模板与过滤阈值等实现细节，检索片段未完整覆盖，此处不臆测；若需要，可进一步调取该论文的方法章节原文核对。",
+  "citations": [
+   {
+    "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "chunk_text": "In this work, we present InstructDS, which is the first instructive dialogue summarization model that excels in both general dialogue summarization and query-based dialogue summarization. InstructDS can generate high-quality query-based summarization tailored to user requirements. This achievement is made possible through a combination of multi-dataset training, synthesized QDS triples and length-awareness augmentations.",
+    "score": 0.776,
+    "relevance_reason": "直接给出高质量 query-based 摘要生成的三要素:多数据集训练、合成 QDS 三元组、长度感知增强"
+   },
+   {
+    "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "chunk_text": "we propose a three-step approach to synthesize high-quality query-based summarization triples. This process involves summary-anchored query generation, query filtering and query-based summary generation.",
+    "score": 0.729,
+    "relevance_reason": "明确三步骤合成流水线:摘要锚定查询生成、查询过滤、基于查询的摘要生成"
+   },
+   {
+    "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "chunk_text": "we propose to synthesize query-dialogue-summary (QDS) triples by leveraging the conditional question generation and answering ability of general large language models (LLMs). The process involves requesting LLMs to generate multiple candidate queries based on the reference summary. A filtering mechanism, employing text-based and semantic-based methods, is then applied to ensure the quality of collected queries.",
+    "score": 0.664,
+    "relevance_reason": "说明依赖 LLM 条件问答能力合成 QDS,并采用文本与语义双过滤保证查询质量"
+   },
+   {
+    "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "chunk_text": "Given a query-dialogue-summary (QDS) triple {Q_d, D_d, S_d}, an instructive model M should generate summary conditioned on both query and dialogue: M(Q_d,i, D_d,i) = S_d,i.",
+    "score": 0.678,
+    "relevance_reason": "定义训练任务形式:模型在查询与对话双条件下生成摘要"
+   },
+   {
+    "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "chunk_text": "we further experiment with adding the reference summary length to instructions during summary generation. This approach significantly improves the performance of Chat-GPT... Meantime, InstructDS exhibits further performance boost, demonstrating its ability to follow length instructions.",
+    "score": 0.66,
+    "relevance_reason": "支撑长度感知增强:加入参考摘要长度指令提升可控性与性能"
+   }
+  ],
+  "pas": 5.0
+ }
+}

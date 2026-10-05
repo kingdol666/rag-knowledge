@@ -1,0 +1,17 @@
+{
+ "tag": "wa_lineA_submit",
+ "mode": "async",
+ "request_prompt": "逐步执行：1) 创建知识库「e2e-lnA2-温控模块产线-r3」（描述：PX-777 温控模块产线的验证与温控记录）。2) 入库文档（标题：PX-777 温控模块产线验证记录），正文必须逐字使用下面给出的原文，不得改写或补充：\n# PX-777 温控模块产线验证记录（r3 专用）\n\n线体：ln-E2A-r3；产品：PX-777 温控模块。\n- 设定温度：172 摄氏度，实测带宽 ±0.25 摄氏",
+ "http": 200,
+ "wall_s": 0.0,
+ "response": {
+  "success": true,
+  "mode": "async",
+  "task_id": "kbt_mup3z0wc_87da0da4",
+  "status": "running",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "poll": "GET /api/kb/agent/tasks/kbt_mup3z0wc_87da0da4"
+ },
+ "task_id": "kbt_mup3z0wc_87da0da4"
+}

@@ -1,0 +1,38 @@
+{
+ "qid": "QK06",
+ "method": "rerank",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2409.13934",
+  "2007.10574"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change__k00",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k05",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on__k14"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2409.13934",
+  "2007.10574"
+ ],
+ "evidence_chars": 1542,
+ "retrieval_s": 6.6,
+ "latency_s": 21.2,
+ "answer": "**Answer:** The retrieved evidence does not explicitly name the physical factor that primarily controls the response of precipitation extremes to climate change, so the question cannot be answered definitively from these chunks. The most directly relevant source, [1503.07557] (O'Gorman, \"Precipitation extremes under climate change\"), states the topic is examined \"with a focus on the physical factors that control the response,\" but the excerpt is truncated before any factor is identified. [2409.13934] reports a strong warming-driven signal for extreme precipitation consistent with Clausius-Clapeyron scaling (~7%/°C), which hints at thermodynamic moisture control, but it does not frame that as the primary controlling factor. [2007.10574] mentions vertical moisture flux convergence and vertical moisture advection only in the context of MJO-induced precipitation anomalies, not the climate-change response of extremes. On this evidence, the requested \"primary physical factor\" is not stated.\n\n**Sources used:**\n- [1503.07557] \"Precipitation extremes under climate change\" (Abstract)\n- [2409.13934] (extreme-precipitation / Clausius-Clapeyron excerpt)\n- [2007.10574] §3.2 \"Dynamical Links between Precipitation Extremes and MJO\"",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37761,
+  "output": 2370,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.248055,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "track": "rerank",
+ "via": "baseline+closed-book"
+}

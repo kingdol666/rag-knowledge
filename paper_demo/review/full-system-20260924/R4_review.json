@@ -1,0 +1,47 @@
+{
+  "seat": "R4",
+  "score": 7.5,
+  "verdict": "minor",
+  "summary": "Fresh full read as AC. The 3-minute skim works: title says exactly what it is, the abstract lands the one memorable takeaway (addressable citations plus a scoped not-found report instead of a nearest-neighbor guess), and the three full-width figures carry the pitch without needing the body text. This is a demo paper doing demo work: it proves the system runs, replays real traces, prices its own overhead (3x cost, 113 s), and explicitly refuses to claim a controlled study ('operational, not controlled'). I spot-checked the paper against the saved artifacts rather than trusting the prose: every number I tested (abstract fractions, Table 1, Fig 3 bottom strip including 0.4911/0.1631/0.1803 costs) matches the fact sheet, the Fig 3 excerpts are verbatim substrings of the saved traces (verified against track_a/track_b_BQ06 JSON and the figure PDF text), and the BQ06 hyphenation explanation in the caption is consistent with the graded trace. The honest-limitations posture is convincing, not excessive: each caveat is specific and load-bearing (BQ02 mis-grounding shown as-is, BQ08 conservatism, mutable metadata is not an audit log). One blocking problem: the render violates the stated format rule - Section 4 body text spills onto page 5, which may hold only the GenAI disclosure and references. The fact sheet's note that 'the 5th page holds GenAI + refs' is stale and contradicts the actual render. That is a mechanical fix, not a content problem, hence minor rather than major; it must be fixed before this goes anywhere near a submission.",
+  "strengths": [
+    "Single memorable takeaway threaded through title, abstract, figures, and eval: one address space makes citations resolvable and absence legible; 'ranking proposes, reading disposes' is the kind of line an AC remembers at the booth",
+    "Artifact honesty is verifiable, not rhetorical: I cross-checked abstract/Table 1/Fig 3 numbers against the locked fact sheet and the saved traces - all match, including verbatim figure excerpts and the BQ06 hyphenation grading explanation",
+    "Right demo posture: system-proving (four interfaces, 41 kb_* tools, video URL, script-asserted audit table) with the three-mode run framed as operational evidence, never overclaiming a controlled comparison",
+    "Fig 3 is a genuinely persuasive money figure: side-by-side verbatim replays showing the part/section citation split (7-4-1) and a measured dense-mode abstention do more arguing than any prose could",
+    "Failure disclosure builds trust: BQ02 wrong-paper grounding shown as-is, BQ08 word-boundary conservatism explained, 3x cost admitted in the abstract itself, GenAI disclosure specific and credible"
+  ],
+  "issues": [
+    {
+      "id": "R4-1",
+      "priority": "P0",
+      "location": "Page 5, left column top (continuation of Section 4 'Costs and limitations', from '48 s/$0.18 dense)...' through '...(Section 3).')",
+      "issue": "Format-rule violation: body text spills onto page 5. The CIKM Demo constraint allows page 5 to hold only the GenAI disclosure and references; roughly 12 lines of Section 4 body text currently sit above the GenAI heading. The fact sheet's known-items note ('5th page holds GenAI + refs') is stale and contradicts the render. As-is this is a desk-level compliance risk.",
+      "evidence": "Rendered page-5.png left column begins mid-sentence with the tail of the Costs and limitations paragraph before the 'GenAI Usage Disclosure' heading; page-4.png right column ends mid-sentence at 'versus 43 s/$0.16 bare-agent and'.",
+      "suggestion": "Trim ~12 lines from Sections 3-4 (the 'Two findings' paragraph and the limitations list can each lose a clause without losing content) so Section 4 ends on page 4. Use a line or two of the freed space for a two-sentence closing takeaway - the paper currently ends on a cross-reference ('(Section 3)'), which is an abrupt last note for the skim test."
+    },
+    {
+      "id": "R4-2",
+      "priority": "P2",
+      "location": "Page 1 title block and running heads",
+      "issue": "Author/affiliation/email are 'Author Name' / author@example.com placeholders (known user-pending item, mentioned once here per brief). Single-blind means real names are expected at submission; also the auto-generated ACM reference block will inherit whatever is filled in.",
+      "evidence": "Rendered page-1.png: 'Author Name', 'Affiliation', 'City, Country', 'author@example.com'; running heads show 'Author Name'.",
+      "suggestion": "User must fill before submission; nothing for the review loop to fix."
+    },
+    {
+      "id": "R4-3",
+      "priority": "P2",
+      "location": "Page 1, Abstract",
+      "issue": "The abstract carries nearly the entire results section - three grounded/verified fractions for three modes, the 7-vs-4-vs-1 citation split, the abstention, the probes, and the 3x cost multiple - in one ~290-word paragraph. The pitch survives, but the 3-second skim gets a wall of fractions before the attendee-facing sentence.",
+      "evidence": "Rendered page-1.png abstract: 'grounds 9 of 10 ... keyword-verifies 9 of 10 ... only 6 ... grounds 9 and verifies 6 ... 7 of 10 for the platform versus 4 and 1 ... three scripted out-of-corpus probes ... roughly three times the bare agent's cost'.",
+      "suggestion": "Optional: keep the platform's two numbers and the cost trade, and compress the baselines to one clause ('baselines locate but rarely verify or cite') - the Fig 3 strip carries the full split anyway."
+    },
+    {
+      "id": "R4-4",
+      "priority": "P2",
+      "location": "Page 5 (Section 4, last sentence) vs page 3 (Section 3, Scenario 3)",
+      "issue": "Section 4 says 'Three absent-paper questions exercise the scoped not-found reports (Section 3)', but Section 3 demonstrates only one failure probe (the fictitious Spectral Tuning paper). A reader following the cross-reference finds one example where three are promised.",
+      "evidence": "sec4_eval.tex last line: 'Three absent-paper questions exercise the scoped not-found reports (Section~\\ref{sec:demo}).'; sec3_demo.tex Scenario 3 walks a single fictitious-paper probe.",
+      "suggestion": "Reword to 'one of three scripted absent-paper questions' in Section 3, or append '(the video walks all three)' - one clause fixes the mismatch."
+    }
+  ]
+}

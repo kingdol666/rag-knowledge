@@ -1,0 +1,48 @@
+{
+ "qid": "QK04",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "**Answer:** The wav2vec 2.0 approach detects within-sentence prosodic boundaries using **only acoustic information** (no transcripts/text), achieving **94% accuracy and 83% F1** on Czech broadcast news recordings labeled by phonetic experts. For comparison, across all prosodic boundaries it reaches 95% accuracy and 89% F1, and it outperforms the text-based predictor despite being trained on a relatively small amount of labeled data.\n\n**Source used:**\n- `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u` (part 1/2), section \"Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\" — abstract.\n\n(The duplicated `soul-template` persona chunks in the evidence are unrelated to this question and were not used.)",
+ "is_error": false,
+ "latency_s": 58.4,
+ "retrieval_s": 51.5,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38946,
+  "output": 753,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.21355500000000002,
+ "ranked": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/soul-definition.md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+  "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+  "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md"
+ ],
+ "evidence_sources": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 16,
+  "b_docs": 46,
+  "consensus": 4,
+  "merged": 12
+ }
+}

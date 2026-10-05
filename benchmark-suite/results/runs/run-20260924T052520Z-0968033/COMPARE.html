@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>对照实验报告 — run-20260924T052520Z-0968033</title>
+<style>
+:root{--bg:#FBFAF7;--card:#FFFFFF;--bd:#E7E4DC;--tx:#2C2C2A;--mu:#6B6862;
+--proj:#0F6E56;--projbg:#E1F5EE;--base:#5F5E5A;--basebg:#F1EFE8;--warn:#BA7517;
+--gold:#9E7A38;--ok:#3B6D11;--no:#A32D2D}
+html[data-t=dark]{--bg:#1B1B19;--card:#242422;--bd:#3A3A36;--tx:#EDEBE4;--mu:#A5A29A;
+--projbg:#0B3B30;--basebg:#2E2E2B;--proj:#5DCAA5;--base:#B4B2A9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);
+font:15px/1.6 system-ui,-apple-system,"Segoe UI","Noto Sans SC",Roboto,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:32px 20px 80px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+h1{font-size:24px;font-weight:600;margin:0 0 6px}
+.sub{color:var(--mu);font-size:13px}
+.chip{display:inline-block;background:var(--card);border:1px solid var(--bd);
+border-radius:999px;padding:3px 10px;font-size:12px;color:var(--mu);margin:4px 6px 0 0}
+.chip b{color:var(--tx);font-weight:600}
+button.toggle{background:var(--card);border:1px solid var(--bd);color:var(--tx);
+border-radius:10px;padding:8px 14px;cursor:pointer;font-size:13px}
+.banner{margin:18px 0;padding:12px 16px;border-radius:12px;background:#FAEEDA;
+border:1px solid #FAC775;color:#633806;font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:24px 0}
+.kpi{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px}
+.kpi-v{font-size:26px;font-weight:600;letter-spacing:-.02em}
+.kpi-k{font-size:13px;color:var(--tx);margin-top:2px}
+.kpi-s{font-size:12px;color:var(--mu);margin-top:2px}
+section.blk{margin:34px 0}
+h2{font-size:17px;font-weight:600;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--bd);
+border-radius:14px;overflow:hidden;font-size:13.5px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--bd)}
+th{font-weight:600;color:var(--mu);font-size:12.5px;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:var(--tx)}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--projbg)}
+td[data-v]{font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;margin-right:6px}
+.p-proj{background:var(--projbg);color:var(--proj)}
+.p-base{background:var(--basebg);color:var(--base)}
+.bar{position:relative;background:var(--basebg);border-radius:999px;height:18px;min-width:110px}
+.bar span{display:block;height:100%;border-radius:999px}
+.bar em{position:absolute;right:8px;top:0;font-size:11px;line-height:18px;font-style:normal;color:var(--tx)}
+.qcard{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;margin-bottom:16px}
+.qcard h3{margin:0 0 14px;font-size:15px}
+.cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.cell{border:1px solid var(--bd);border-radius:12px;padding:12px;background:var(--bg)}
+.cell.proj{border-left:3px solid var(--proj)}
+.cell.base{border-left:3px solid var(--base)}
+.cell header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.cell-meta{font-size:11.5px;color:var(--mu)}
+.cell p{margin:0;font-size:13px;white-space:pre-wrap}
+.ok{color:var(--ok);font-weight:600} .no{color:var(--no);font-weight:600}
+.muted{color:var(--mu)}
+ul.checks{list-style:none;padding:0;margin:0}
+ul.checks li{padding:8px 12px;border-bottom:1px solid var(--bd);font-size:13.5px}
+ul.checks li.ok b{color:var(--ok)} ul.checks li.no b{color:var(--no)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+input.filter{flex:1;min-width:200px;background:var(--card);border:1px solid var(--bd);
+border-radius:10px;padding:9px 12px;color:var(--tx);font-size:13px}
+footer{margin-top:48px;color:var(--mu);font-size:12px;border-top:1px solid var(--bd);padding-top:14px}
+</style></head><body><div class="wrap">
+<header class="top">
+<div>
+<h1>对照实验报告</h1>
+<div class="sub">run <code>run-20260924T052520Z-0968033</code> · 项目 vs baseline · 同一问题集 · 资源监控</div>
+<div><span class="chip">git_commit: <b>0968033</b></span> <span class="chip">config_hash: <b>9fb259c0cf2b6dea</b></span> <span class="chip">prompt_version: <b>v3-neutral</b></span> <span class="chip">seed: <b>0</b></span> <span class="chip">max_turns: <b>12</b></span> <span class="chip">shuffled: <b>True</b></span> <span class="chip">monitor_system: <b>False</b></span></div>
+</div>
+<button class="toggle" onclick="var h=document.documentElement;
+h.dataset.t=h.dataset.t==='dark'?'light':'dark';this.textContent=h.dataset.t==='dark'?'☀ 浅色':'☾ 深色';">☾ 深色</button>
+</header>
+
+<div class="kpis"><div class="kpi"><div class="kpi-v">5</div><div class="kpi-k">方法数</div><div class="kpi-s">项目 + baseline</div></div><div class="kpi"><div class="kpi-v">1</div><div class="kpi-k">问题数</div><div class="kpi-s">同一问题集</div></div><div class="kpi"><div class="kpi-v">$1.05</div><div class="kpi-k">总成本</div><div class="kpi-s">全部方法合计</div></div><div class="kpi"><div class="kpi-v">35.0s</div><div class="kpi-k">平均时延</div><div class="kpi-s">跨方法均值</div></div><div class="kpi"><div class="kpi-v">6/6</div><div class="kpi-k">自检</div><div class="kpi-s">全部通过</div></div></div>
+
+<section class="blk"><h2>资源监控</h2>
+<table id="mon"><thead><tr>
+<th onclick="sortT('mon',1,1)">方法</th><th onclick="sortT('mon',2,1)">时延 avg s</th>
+<th onclick="sortT('mon',3,1)">时延 median s</th><th onclick="sortT('mon',4,1)">tokens in</th>
+<th onclick="sortT('mon',5,1)">tokens out</th><th onclick="sortT('mon',6,1)">成本 $</th>
+<th onclick="sortT('mon',7,1)">工具数</th><th onclick="sortT('mon',8,1)">CPU% peak</th>
+<th onclick="sortT('mon',9,1)">RSS MB peak</th></tr></thead>
+<tbody><tr class="proj"><td><span class="pill p-proj">项目</span> <code>a2</code></td><td data-v="96.8">96.8</td><td data-v="96.8">96.8</td><td data-v="106691">106691</td><td data-v="987">987</td><td data-v="0.6149">0.6149</td><td data-v="6.0">6.0</td><td data-v="0">—</td><td data-v="0">—</td></tr><tr class="base"><td><span class="pill p-base">baseline</span> <code>bm25</code></td><td data-v="18.9">18.9</td><td data-v="18.9">18.9</td><td data-v="38145">38145</td><td data-v="118">118</td><td data-v="0.1937">0.1937</td><td data-v="0">0.0</td><td data-v="0">—</td><td data-v="0">—</td></tr><tr class="base"><td><span class="pill p-base">baseline</span> <code>rerank</code></td><td data-v="32.4">32.4</td><td data-v="32.4">32.4</td><td data-v="244">244</td><td data-v="97">97</td><td data-v="0.0222">0.0222</td><td data-v="0">0.0</td><td data-v="0">—</td><td data-v="0">—</td></tr><tr class="base"><td><span class="pill p-base">baseline</span> <code>rrf</code></td><td data-v="11.5">11.5</td><td data-v="11.5">11.5</td><td data-v="956">956</td><td data-v="193">193</td><td data-v="0.0282">0.0282</td><td data-v="0">0.0</td><td data-v="0">—</td><td data-v="0">—</td></tr><tr class="base"><td><span class="pill p-base">baseline</span> <code>vector</code></td><td data-v="15.2">15.2</td><td data-v="15.2">15.2</td><td data-v="37359">37359</td><td data-v="159">159</td><td data-v="0.1908">0.1908</td><td data-v="0">0.0</td><td data-v="0">—</td><td data-v="0">—</td></tr></tbody></table></section>
+
+<section class="blk"><h2>功能验证（检索命中 / 引用命中 / 弃答 / 错误）</h2>
+<table><thead><tr><th>方法</th><th>检索金标命中率</th><th>引用金标命中率</th>
+<th>弃答数</th><th>error 数</th></tr></thead><tbody><tr><td><code>a2</code></td><td><div class="bar"><span style="width:100%;background:#0F6E56"></span><em>100%</em></div></td><td><div class="bar"><span style="width:100%;background:#0F6E56"></span><em>100%</em></div></td><td data-v="0">0</td><td data-v="0">0</td></tr><tr><td><code>bm25</code></td><td><div class="bar"><span style="width:100%;background:#888780"></span><em>100%</em></div></td><td><div class="bar"><span style="width:100%;background:#888780"></span><em>100%</em></div></td><td data-v="0">0</td><td data-v="0">0</td></tr><tr><td><code>rerank</code></td><td><div class="bar"><span style="width:100%;background:#888780"></span><em>100%</em></div></td><td><div class="bar"><span style="width:100%;background:#888780"></span><em>100%</em></div></td><td data-v="0">0</td><td data-v="0">0</td></tr><tr><td><code>rrf</code></td><td><div class="bar"><span style="width:100%;background:#888780"></span><em>100%</em></div></td><td><div class="bar"><span style="width:100%;background:#888780"></span><em>100%</em></div></td><td data-v="0">0</td><td data-v="0">0</td></tr><tr><td><code>vector</code></td><td><div class="bar"><span style="width:100%;background:#888780"></span><em>100%</em></div></td><td><div class="bar"><span style="width:100%;background:#888780"></span><em>100%</em></div></td><td data-v="0">0</td><td data-v="0">0</td></tr></tbody></table></section>
+
+<section class="blk"><h2>逐题并列对照</h2>
+<div class="toolbar"><input class="filter" id="f" placeholder="过滤 QID…"
+oninput="var v=this.value.toLowerCase();
+document.querySelectorAll('.qcard').forEach(function(c){
+c.style.display=c.dataset.q.toLowerCase().indexOf(v)<0?'none':'';})"></div>
+<section class="qcard" data-q="R2Q01"><h3>R2Q01</h3><div class="cells"><article class="cell proj"><header><span class="pill p-proj>项目</span> <code>a2</code><span class="cell-meta">检索 <span class="ok">✓</span> · 引用 <span class="ok">✓</span> · 96.8s · 0.6148659999999999$ · 工具 6</span></header><p>—</p></article><article class="cell base"><header><span class="pill p-base>baseline</span> <code>bm25</code><span class="cell-meta">检索 <span class="ok">✓</span> · 引用 <span class="ok">✓</span> · 18.9s · 0.19367499999999999$ · 工具 0</span></header><p>—</p></article><article class="cell base"><header><span class="pill p-base>baseline</span> <code>rerank</code><span class="cell-meta">检索 <span class="ok">✓</span> · 引用 <span class="ok">✓</span> · 32.4s · 0.022205$ · 工具 0</span></header><p>—</p></article><article class="cell base"><header><span class="pill p-base>baseline</span> <code>rrf</code><span class="cell-meta">检索 <span class="ok">✓</span> · 引用 <span class="ok">✓</span> · 11.5s · 0.028197$ · 工具 0</span></header><p>—</p></article><article class="cell base"><header><span class="pill p-base>baseline</span> <code>vector</code><span class="cell-meta">检索 <span class="ok">✓</span> · 引用 <span class="ok">✓</span> · 15.2s · 0.19077000000000002$ · 工具 0</span></header><p>—</p></article></div></section></section>
+
+<section class="blk"><h2>一致性自检</h2><ul class="checks"><li class="ok"><b>✓</b> 每 (qid,method) 都有结果<span class="muted"> — 0 缺失</span></li><li class="ok"><b>✓</b> 无重复单元<span class="muted"> — ok</span></li><li class="ok"><b>✓</b> 无 error 单元<span class="muted"> — 0 个 error</span></li><li class="ok"><b>✓</b> 成本合计 = 各方法之和<span class="muted"> — sum(method)=1.0498 · manifest=1.0497</span></li><li class="ok"><b>✓</b> 单元数 = 题数 × 方法数<span class="muted"> — rows=5 vs 1×5=5</span></li><li class="ok"><b>✓</b> provenance 完整<span class="muted"> — prompt_version=v3-neutral seed=0</span></li></ul></section>
+
+<footer>数字均来自本 run 目录工件；缺失显示 —。深/浅色可切换；表头可点击排序。</footer>
+</div>
+<script>
+function sortT(id,col,desc){
+ var t=document.getElementById(id),b=t.tBodies[0],rs=[].slice.call(b.rows);
+ var dir=t.dataset.c===col+':'+desc?-1:1;t.dataset.c=col+':'+desc;
+ rs.sort(function(a,b){var x=parseFloat(a.cells[col-1].dataset.v||a.cells[col-1].innerText)||0;
+ var y=parseFloat(b.cells[col-1].dataset.v||b.cells[col-1].innerText)||0;return (x-y)*dir;});
+ rs.forEach(function(r){b.appendChild(r);});}
+</script>
+</body></html>

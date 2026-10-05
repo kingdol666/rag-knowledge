@@ -1,0 +1,110 @@
+{
+ "track": "b",
+ "question": "In the EvoR pipeline for retrieval-augmented code generation, which two components evolve synchronously instead of staying static?",
+ "answer": "The two components are **queries** and the **knowledge base (knowledge soup)**.\n\nThe EvoR paper states that rather than retrieving from a static knowledge base with a fixed query, its pipeline \"applies synchronous evolution of both queries and documents in RACG,\" where both are updated each iteration based on execution feedback and LLM outputs (lines 21, 27, 31). Section 4.1 (\"Synchronous evolution\") confirms this by ablating the two: evolving only queries, only knowledge, or neither, and showing that evolving both together consistently outperforms either alone across all EVOR-BENCH datasets, indicating their \"complementary strength.\"\n\nSource file: `large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation.md` (lines 21, 27, 31, 162–165).",
+ "is_error": false,
+ "latency_s": 13.8,
+ "sdk_duration_ms": 10925,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "EvoR"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "evolve|synchronous|static|jointly",
+    "path": "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation.md"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 40328,
+  "output": 614,
+  "cache_read": 122816,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.27839800000000003,
+ "timeline": [
+  {
+   "t": 2.9,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.52,
+   "event": "text",
+   "detail": "69"
+  },
+  {
+   "t": 4.52,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 4.55,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 8.89,
+   "event": "text",
+   "detail": "60"
+  },
+  {
+   "t": 8.89,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 10.8,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 10.8,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 13.77,
+   "event": "text",
+   "detail": "769"
+  },
+  {
+   "t": 13.78,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll start by finding the files and searching for relevant content.\n\n",
+  "I found the EvoR paper. Let me read the relevant sections.\n\n",
+  "The two components are **queries** and the **knowledge base (knowledge soup)**.\n\nThe EvoR paper states that rather than retrieving from a static knowledge base with a fixed query, its pipeline \"applies synchronous evolution of both queries and documents in RACG,\" where both are updated each iteration based on execution feedback and LLM outputs (lines 21, 27, 31). Section 4.1 (\"Synchronous evolution\") confirms this by ablating the two: evolving only queries, only knowledge, or neither, and showing that evolving both together consistently outperforms either alone across all EVOR-BENCH datasets, indicating their \"complementary strength.\"\n\nSource file: `large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation.md` (lines 21, 27, 31, 162–165)."
+ ],
+ "qid": "R2Q03",
+ "via": "chat"
+}

@@ -1,0 +1,36 @@
+{
+ "qid": "QK04",
+ "method": "rerank",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "ranked": [
+  "2209.15032"
+ ],
+ "ranked_paths": [
+  "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u__k00"
+ ],
+ "evidence_sources": [
+  "2209.15032"
+ ],
+ "evidence_chars": 513,
+ "retrieval_s": 4.6,
+ "latency_s": 9.0,
+ "answer": "The evidence states the wav2vec 2.0 approach uses **only acoustic information** to detect these boundaries in the speech signal, tested on Czech broadcast news recordings.\n\nIt reports an **accuracy of 94%** (and F1 measure of 83%) on within-sentence prosodic boundaries — the sentence is cut off at \"or 95%\", so a second figure is indicated but not fully given.\n\nSource used: arXiv paper [2209.15032] (excerpt as provided).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 103,
+  "output": 104,
+  "cache_read": 48320,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.027545200000000002,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

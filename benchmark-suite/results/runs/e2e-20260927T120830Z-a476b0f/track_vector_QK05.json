@@ -1,0 +1,30 @@
+{
+ "qid": "QK05",
+ "method": "vector",
+ "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+ "ranked": [
+  "2508.05896"
+ ],
+ "ranked_paths": [
+  "agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k17"
+ ],
+ "evidence_sources": [
+  "2508.05896"
+ ],
+ "evidence_chars": 513,
+ "retrieval_s": 0.1,
+ "latency_s": 16.4,
+ "answer": "**Answer:** The retrieved evidence supports a figure of roughly 10% of the field (with an overlapping fragment citing approximately 7–10%) for trap-plant attractiveness around five times the cash plant: it states that at attractiveness five \"it is optimal to devote roughly ten percent of the land to the trap crop\" (Figure 3b), and the earlier fragment gives \"approximately 7–10% of the field.\" However, the excerpt is truncated (\"Interestingly, from figur…\") and only explicitly discusses attractiveness up to five — it does not state the optimal share for the full 5–25× range, so a precise figure at the 25× end cannot be confirmed from the retrieved evidence.\n\n**Source used:** arXiv 2508.05896 chunk (trap-cropping optimization text referencing Figures 2, 3b, and 3c).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37530,
+  "output": 2850,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.2589,
+ "extra": {},
+ "track": "vector",
+ "via": "baseline+closed-book"
+}

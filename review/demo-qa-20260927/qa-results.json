@@ -1,0 +1,199 @@
+[
+ {
+  "qid": "Q1",
+  "type": "数字事实·长城",
+  "question": "长城到底有多长？请给出不同统计口径下的数字和出处年份。",
+  "answer": "先结论后论证：长城没有单一的\"长度\"，数字取决于统计口径。\n\n**分点陈述（带出处）**\n\n1. **明代长城墙体：约 8,850 km（5,500 mi）**。依据是一次采用先进技术的综合性考古勘测得出的结论 [demo-qa-20260927/great-wall.md]。\n2. **含所有分支的全部长城：约 21,196.18 km（13,170.70 mi）**。这是另一次考古勘测的结果，由中国国家文物局于 **2012 年**公布 [demo-qa-20260927/great-wall.md]。\n3. **增补发现：2015 年又发现约 290 km（180 mi）墙体** [demo-qa-20260927/great-wall.md]。\n\n用数据说话，两个核心口径的量级差异（8,850 vs 21,196）源于统计对象不同：前者只计明代修筑的墙体，后者计入全部朝代、含所有分支。\n\n**背景补充**：现存最著名段落为明代（1368–1644）所建 [demo-qa-20260927/great-wall.md]；最早段落约 2,230 年历史，长城横跨 15 个省级区域 [demo-qa-20260927/great-wall.md]。\n\n**边界声明（承认不确定性）**：\n- 知识片段未给出 8,850 km 这一明代口径的具体公布年份，故此处不作臆测。\n- 2015 年新增的 290 km 是否已并入 21,196.18 km 总数，片段未明示，无法确认。\n引用必带出处，以上数字均出自同一来源文档，若需其他权威口径（如国家文物局原始公报）请进一步检索。",
+  "citations": [
+   {
+    "path": "demo-qa-20260927/great-wall.md",
+    "chunk_text": "A comprehensive archaeological survey, using advanced technologies, has concluded that the walls built by the Ming dynasty measure **8,850 km** (5,500 mi).",
+    "score": 0.587,
+    "relevance_reason": "直接给出明代长城 8,850 km 的口径数字"
+   },
+   {
+    "path": "demo-qa-20260927/great-wall.md",
+    "chunk_text": "Another archaeological survey found that the entire wall with all of its branches measures **21,196.18 km** (13,170.70 mi) — announced by China's State Administration of Cultural Heritage in **2012**.",
+    "score": 0.564,
+    "relevance_reason": "给出含全部分支的 21,196.18 km 口径及 2012 年公布年份"
+   },
+   {
+    "path": "demo-qa-20260927/great-wall.md",
+    "chunk_text": "An extra 290 km (180 mi) of wall was discovered in 2015.",
+    "score": 0.453,
+    "relevance_reason": "补充 2015 年新增 290 km 的发现"
+   },
+   {
+    "path": "demo-qa-20260927/great-wall.md",
+    "chunk_text": "imately **2,230 years** old for the oldest sections; the wall spans 15 provinces and regions.",
+    "score": 0.453,
+    "relevance_reason": "提供最早段落年代与跨越省级区域数的背景数据"
+   }
+  ],
+  "pas_score": 5.0,
+  "evidence_count": 2,
+  "selected_soul": null,
+  "status": "done",
+  "latency_ms": 12215
+ },
+ {
+  "qid": "Q2",
+  "type": "误区辨析·长城",
+  "question": "从月球上用肉眼真的能看到长城吗？系统的知识库里是怎么说的？",
+  "answer": "先结论后论证：从月球上用肉眼看到长城，是一个神话，系统知识库明确否定了它 [demo-qa-20260927/great-wall.md]。\n\n依据（引用必带出处，用数据说话）：\n1. 知识库原文写明：“The notion that the wall can be seen from the Moon with the naked eye is a myth” [demo-qa-20260927/great-wall.md]。\n2. 其核心理由是尺度：长城最宽处仅约 9.1 m（30 ft），与高速公路、机场跑道属同一量级，因此“It cannot be seen from the Moon” [demo-qa-20260927/great-wall.md]。\n3. 即便退到近地轨道（low Earth orbit），肉眼也“barely visible”，只是像许多其他人造物一样，可以用相机从轨道拍摄到 [demo-qa-20260927/great-wall.md]。\n\n如需了解更多，知识库中还收录了长城的命名由来与建造背景，例如“万里长城”一名见于司马迁《史记》，指秦始皇所筑之墙 [demo-qa-20260927/great-wall.md]。\n\n边界声明：以上仅针对知识库检索到的证据作答。检索结果中另有若干与本题无关的片段（如旅行者 1 号、Transformer 论文），未纳入论证，也不作为答案依据。知识库未提供“从月球分辨率极限做定量计算”的专门推导，因此关于该神话流传缘由的深层解释，超出当前证据范围，我不作推测。",
+  "citations": [
+   {
+    "path": "demo-qa-20260927/great-wall.md",
+    "chunk_text": "## Visibility from Space\n\nThe notion that the wall can be seen from the Moon with the naked eye is a myth: the wall is at most 9.1 m (30 ft) wide, comparable to highways and airport runways. It cannot be seen from the Moon. From low Earth orbit it is also barely visible to the unaided eye, though it — like many other man-made objects — can be photographed from orbit with a camera.",
+    "score": 0.612,
+    "relevance_reason": "直接回答用户核心问题：明确否定'月球肉眼可见长城'并给出宽度尺度理由"
+   },
+   {
+    "path": "demo-qa-20260927/great-wall.md",
+    "chunk_text": "## Name\n\nThe collective name \"万里长城\" (Wanli Changcheng, \"Ten-Thousand-Li Long Wall\") appears in Sima Qian's *Records of the Grand Historian* (1st century BC), referring to Qin Shi Huang's wall.",
+    "score": 0.417,
+    "relevance_reason": "补充长城命名与背景信息，佐证该 KB 对长城的收录"
+   }
+  ],
+  "pas_score": 5.0,
+  "evidence_count": 3,
+  "selected_soul": null,
+  "status": "done",
+  "latency_ms": 12008
+ },
+ {
+  "qid": "Q3",
+  "type": "事实·航天",
+  "question": "Voyager 1 是什么时候发射的？它现在处于什么状态？",
+  "answer": "**结论先行**：Voyager 1 于 1977 年 9 月 5 日发射，目前处于星际空间，且仍在运行——但仅剩两台科学仪器在工作。[demo-qa-20260927/voyager-1.md]\n\n**依据（分点陈述，引用必带出处）**：\n\n1. **发射时间**：Voyager 1 由 NASA 于 1977 年 9 月 5 日发射，是其孪生探测器 Voyager 2 之后 16 天升空；发射场为卡纳维拉尔角空军基地 41 号发射台，运载火箭为 Titan IIIE。[demo-qa-20260927/voyager-1.md]\n2. **历史定位**：它于 2012 年 8 月 25 日穿越日球层顶（heliopause），成为首个进入星际空间的航天器。[demo-qa-20260927/voyager-1.md]\n3. **当前状态（截至 2026 年）**：仅有两台仪器仍在运行——等离子体波子系统（Plasma Wave Subsystem）和磁强计（magnetometer）；其放射性同位素热电发生器（RTG）预计可供电以回传工程数据至 2036 年。[demo-qa-20260927/voyager-1.md]\n4. **通信状况**：截至 2025 年，来自 Voyager 1 的信号到达地球需超过 23 小时。[demo-qa-20260927/voyager-1.md] 推进器近年多次成功复活（2018、2019、2025 年），使任务得以延续。[demo-qa-20260927/voyager-1.md]\n\n**边界声明（承认不确定性）**：以上“当前状态”以知识片段所载截至 2026 年的信息为准；片段未给出精确的实时距离/速度数值，也未说明具体仪器故障细节，故不臆测。用数据说话，能确定的就这些。[demo-qa-20260927/voyager-1.md]",
+  "citations": [
+   {
+    "path": "demo-qa-20260927/voyager-1.md",
+    "chunk_text": "Voyager 1 is a space probe launched by NASA on September 5, 1977, as part of the Voyager program... It was launched 16 days after its twin, Voyager 2.",
+    "score": 0.711,
+    "relevance_reason": "直接给出 Voyager 1 发射日期 1977-09-05 及与 Voyager 2 的间隔"
+   },
+   {
+    "path": "demo-qa-20260927/voyager-1.md",
+    "chunk_text": "Voyager 1 crossed the heliopause and entered interstellar space on August 25, 2012, making it the first spacecraft to do so.",
+    "score": 0.646,
+    "relevance_reason": "说明其当前所处星际空间状态及历史性节点"
+   },
+   {
+    "path": "demo-qa-20260927/voyager-1.md",
+    "chunk_text": "The Voyager 1 probe was launched on September 5, 1977, from Launch Complex 41 at the Cape Canaveral Air Force Station, aboard a Titan IIIE launch vehicle.",
+    "score": 0.641,
+    "relevance_reason": "补充发射地点与运载火箭细节，交叉印证发射时间"
+   },
+   {
+    "path": "demo-qa-20260927/voyager-1.md",
+    "chunk_text": "Voyager 1 experienced successful revivals of several thrusters in 2018, 2019, and 2025... Its radioisotope thermoelectric generators (RTGs) may supply enough electric power to return engineering data until 2036. As of 2026, only two instruments are operational, the Plasma Wave Subsystem and magnetometer.",
+    "score": 0.638,
+    "relevance_reason": "核心当前状态：剩余仪器、供电年限、推进器复活"
+   },
+   {
+    "path": "demo-qa-20260927/voyager-1.md",
+    "chunk_text": "As of 2025, signals from Voyager 1 took more than 23 hours to reach Earth.",
+    "score": 0.597,
+    "relevance_reason": "量化通信延迟，佐证其遥远距离与在役状态"
+   }
+  ],
+  "pas_score": 5.0,
+  "evidence_count": 1,
+  "selected_soul": null,
+  "status": "done",
+  "latency_ms": 12009
+ },
+ {
+  "qid": "Q4",
+  "type": "事实·生物",
+  "question": "光合作用中，光反应和碳固定（Calvin 循环）分别发生在细胞/叶绿体的哪些部位？",
+  "answer": "先结论后论证。\n\n**结论（分点陈述）**\n1. 植物中，光反应发生在**叶绿体（chloroplast）**内——光反应所需的色素（叶绿素）就位于叶绿体内部，而叶绿体富集于叶肉细胞中 [demo-qa-20260927/photosynthesis.md]。\n2. 蓝细菌（cyanobacteria）没有叶绿体，其光合色素**嵌在质膜（plasma membrane）**上，因此光反应在质膜进行 [demo-qa-20260927/photosynthesis.md]。\n3. 碳固定（Calvin 循环，即光不依赖反应）是把大气中的 CO₂ 固定进已有的有机化合物（如 RuBP），并利用光反应产生的 ATP 与 NADPH 完成糖的合成；在植物、藻类和蓝细菌中由这一后续反应序列完成 [demo-qa-20260927/photosynthesis.md]。\n\n**依据**\n- 色素定位：\"In plants, these pigments are chlorophylls … held inside chloroplasts, abundant in leaf cells. In cyanobacteria, they are embedded in the plasma membrane.\" [demo-qa-20260927/photosynthesis.md] —— 这直接确定了光反应的场所（色素所在即光反应发生地）。\n- 光反应产物：水裂解产生氧气，并生成 NADPH 与 ATP 参与能量过程 [demo-qa-20260927/photosynthesis.md]。\n- Calvin 循环：\"In plants, algae, and cyanobacteria, sugars are synthesized by a subsequent sequence of light-independent reactions called the Calvin cycle.\" 用光反应的 ATP 与 NADPH 把 CO₂ 固定进 RuBP [demo-qa-20260927/photosynthesis.md]。\n\n**边界声明（承认不确定性）**\n- 就检索到的片段而言，它们明确给出了\"植物=叶绿体、蓝细菌=质膜\"这一细胞器层级，以及 Calvin 循环发生的生物类群，但**没有**在片段中逐字出现\"类囊体膜（thylakoid membrane）\"或\"基质（stroma）\"这两个叶绿体亚结构名称。因此，若你要的是\"光反应在类囊体膜、碳固定在叶绿体基质\"这一叶绿体内部的精确定位，本次知识片段不足以支撑，我不做臆测 [demo-qa-20260927/photosynthesis.md]。\n- 另有可对照的一般性事实：细胞呼吸在线粒体进行，与光合作用处于不同细胞区室 [demo-qa-20260927/photosynthesis.md]。\n\n如需叶绿体亚结构级别的锚定答案，建议补充含\"thylakoid / stroma\"字样的资料后再作答。",
+  "citations": [
+   {
+    "path": "demo-qa-20260927/photosynthesis.md",
+    "chunk_text": "In plants, these pigments are chlorophylls (a porphyrin derivative that absorbs the red and blue spectra of light, thus reflecting green) held inside chloroplasts, abundant in leaf cells. In cyanobacteria, they are embedded in the plasma membrane.",
+    "score": 0.571,
+    "relevance_reason": "直接给出植物色素位于叶绿体、蓝细菌色素位于质膜，确定光反应场所。"
+   },
+   {
+    "path": "demo-qa-20260927/photosynthesis.md",
+    "chunk_text": "In plants, algae, and cyanobacteria, sugars are synthesized by a subsequent sequence of light-independent reactions called the Calvin cycle. In this process, atmospheric carbon dioxide is incorporated into already existing organic compounds, such as ribulose bisphosphate (RuBP). Using the ATP and NADPH produced by the light-dependent reactions",
+    "score": 0.553,
+    "relevance_reason": "说明 Calvin 循环为光不依赖反应，用光反应的 ATP/NADPH 固定 CO₂。"
+   },
+   {
+    "path": "demo-qa-20260927/photosynthesis.md",
+    "chunk_text": "Photosynthesis and cellular respiration are distinct processes, as they take place through different sequences of chemical reactions and in different cellular compartments (cellular respiration in mitochondria).",
+    "score": 0.55,
+    "relevance_reason": "佐证光合作用与细胞呼吸处于不同细胞区室，用于边界对比。"
+   }
+  ],
+  "pas_score": 5.0,
+  "evidence_count": 1,
+  "selected_soul": null,
+  "status": "done",
+  "latency_ms": 18012
+ },
+ {
+  "qid": "Q5",
+  "type": "大文档检索·论文",
+  "question": "Transformer 论文中 self-attention 的核心思想是什么？相比 RNN 和 CNN 有哪些优势？",
+  "answer": "结论:自注意力(self-attention,又称 intra-attention)是把序列中不同位置相互关联、据此计算表示的注意力机制;Transformer 是首个完全依赖 self-attention、不使用序列对齐 RNN 或卷积的转导模型 [demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md]。先结论后论证,下面分点陈述。\n\n核心思想\n1. 用注意力机制在输入与输出序列的不同位置之间直接抽取全局依赖,彻底摒弃循环,不再依赖 RNN 或卷积 [2][4]。\n2. 在架构层面,用多头自注意力替换编码器-解码器中最常用的循环层 [2]。\n3. 它是首个不借助序列对齐 RNN/卷积、纯靠 self-attention 计算表示的转导模型 [1]。\n\n相比 RNN 与 CNN 的优势\n1. 并行化与训练速度:Transformer 允许显著更多并行化 [4];在翻译任务上训练速度明显快于基于循环层或卷积层的架构 [2]。\n2. 计算路径更短:单层 self-attention 以常数级顺序操作连接所有位置,循环层则需 O(n) 顺序操作;当序列长度 n 小于表示维度 d 时,self-attention 层比循环层更快 [8]。\n3. 远距离依赖更易学:卷积模型(ConvS2S 为线性、ByteNet 为对数)的操作数随距离增长,使远距离位置依赖更难学习,Transformer 将其降为常数级操作 [3]。\n4. 质量:在两个机器翻译任务上质量更优,英德任务的最佳模型甚至超过此前所有已报告的集成模型 [5][6]。\n5. 可解释性(副带收益):可检视模型的注意力分布,可能得到更可解释的模型 [7]。\n\n边界声明(承认不确定性):\n- 上述结论全部来自单篇文献(1706.03762)的检索片段,属单源,引用必带出处,结论强度以此为准。\n- 片段 [3] 提到常数级操作以\"降低有效分辨率\"为代价,并用多头注意力抵消,但细节未展开。\n- 扩展到文本之外模态(图像/音频/视频)与局部受限注意力,是论文陈述的未来计划而非已验证结论 [6]。",
+  "citations": [
+   {
+    "path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "chunk_text": "the Transformer is the first transduction model relying entirely on self-attention to compute representations of its input and output without using sequencealigned RNNs or convolution.",
+    "score": 0.666,
+    "relevance_reason": "直接给出 self-attention 与 Transformer 的定义性主张,支撑核心思想第 3 点"
+   },
+   {
+    "path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "chunk_text": "the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention. ... can be trained significantly faster than architectures based on recurrent or convolutional layers.",
+    "score": 0.602,
+    "relevance_reason": "支撑用多头自注意力替换循环层、以及训练更快的优势"
+   },
+   {
+    "path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "chunk_text": "linearly for ConvS2S and logarithmically for ByteNet. This makes it more difficult to learn dependencies between distant positions. In the Transformer this is reduced to a constant number of operations ... Self-attention, sometimes called intra-attention is an attention mechanism relating different positions of",
+    "score": 0.59,
+    "relevance_reason": "给出 self-attention 别名与远距离依赖对比,支撑核心思想第 1 点与优势第 3 点"
+   },
+   {
+    "path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "chunk_text": "eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output. The Transformer allows for significantly more parallelization",
+    "score": 0.583,
+    "relevance_reason": "支撑全局依赖与并行化优势"
+   },
+   {
+    "path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "chunk_text": "a self-attention layer connects all positions with a constant number of sequentially executed operations, whereas a recurrent layer requires O(n) sequential operations. ... self-attention layers are faster than recurrent layers when n is smaller than d",
+    "score": 0.521,
+    "relevance_reason": "量化支撑计算路径与速度优势(用数据说话)"
+   },
+   {
+    "path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "chunk_text": "As side benefit, self-attention could yield more interpretable models. We inspect attention distributions",
+    "score": 0.525,
+    "relevance_reason": "支撑可解释性副带收益"
+   }
+  ],
+  "pas_score": 5.0,
+  "evidence_count": 1,
+  "selected_soul": null,
+  "status": "done",
+  "latency_ms": 24014
+ },
+ {
+  "qid": "Q6",
+  "type": "库外陷阱·拒答",
+  "question": "布达拉宫红宫是哪一年建成的？请依据知识库回答。",
+  "answer": "结论:知识库中没有关于“布达拉宫红宫建成年代”的任何证据,我无法给出年份。先结论后论证,以下说明检索过程与边界。\n\n1. 检索事实:我对全部知识库执行了三类检索——两阶段混合检索(布达拉宫/红宫/建成/年份)、向量语义检索(中英文两组,含 “Potala Palace Red Palace construction year”)、以及元数据名称检索。三类检索均返回 0 条相关命中。\n2. 命中内容:返回的最高分片段是长城、气候模型、天文学参考文献等无关内容(相似度 0.41–0.43,且属于不同主题),与“红宫”无任何语义关联。\n3. 边界声明:承认不确定性——现有知识库覆盖范围似乎不包含西藏建筑/布达拉宫相关文档,因此这不是“我不确定”,而是“证据缺失”。按引用必带出处的原则,我不提供任何凭记忆的年份,以免把猜测包装成事实。\n4. 建议:若需回答,请先将布达拉宫相关文档录入知识库(可走 knowledgebase-ingest 入库并索引),我再基于可溯源片段给出带引用锚点的结论。\n\n一句话:证据不足,不予作答;宁可少说,不可错说。",
+  "citations": [],
+  "pas_score": 5.0,
+  "evidence_count": 0,
+  "selected_soul": null,
+  "status": "done",
+  "latency_ms": 18012
+ }
+]

@@ -1,0 +1,48 @@
+{
+ "qid": "QK01",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient to answer this question. The only relevant excerpt is the opening of \"Attention Is All You Need,\" and it contains just the title, author list, affiliation, and a Google permission notice for reproducing tables and figures — none of the paper's actual content. It does not describe how attention is computed (e.g., query/key/value projections or scaled dot-product attention) nor any argument for replacing recurrence and convolution. The other retrieved items — the Pride and Prejudice excerpts, the industrial diagnostic report (`202609201042216_team_smoke`), and the RAG benchmark abstract — are unrelated to the question and provide no supporting content.\n\nSources reviewed (none usable for the answer):\n- `Attention Is All You Need` (title/author header only; no body text retrieved)\n- `pride_and_prejudice (part 1 of 26).md` (irrelevant)\n- 工业诊断报告：5 秒窗口温度序列异常趋势判定 (irrelevant)\n- Towards Global Retrieval Augmented Generation benchmark abstract (irrelevant)\n\nPer the experiment contract, I am reporting the gap rather than answering from prior knowledge.",
+ "is_error": false,
+ "latency_s": 39.5,
+ "retrieval_s": 32.9,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38519,
+  "output": 543,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.20617,
+ "ranked": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "e2e-demo-0923-022632/平台架构总览.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-e2e-tester-024115/soul-definition.md"
+ ],
+ "evidence_sources": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md"
+ ],
+ "evidence_chars": 3522,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 21,
+  "b_docs": 0,
+  "consensus": 0,
+  "merged": 12
+ }
+}

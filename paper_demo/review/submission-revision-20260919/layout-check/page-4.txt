@@ -1,0 +1,103 @@
+CIKM ’26, November 9–13, 2026, Rome, Italy
+Author Name
+BQ01 · How is attention computed, and why replace recurrence and convolution?
+Tool records + agent-authored summaries; not an autonomous benchmark.
+A QDCVR
+Saved evidence trace
+B Bare agent
+Self-reported file source
+C Dense RAG
+Our reproduction
+§
+§
+§
+§
+§
+§
+part 1/2 · §3.2.3
+part 2/2 · §7
+read
+Multi-head attention replaces
+recurrence; parallel computation.
+Gate: 8/8 · fast exit
+Declared unread: positional formula,
+training details, benchmark scores.
+1706.03762
+files_used: filename
+reports
+softmax(QKᵀ / √dₖ)V
+Multi-head; parallelism; short paths
+More complete formula prose
+Self-reported source,
+not an observed file-read trace.
+…
+…
+C reports: parsing
++ Table 4 results
+generate
+Reports insufficient evidence
+Abstains in the recorded answer.
+2 chunks · 2,854 characters
+Chunk/source metadata
+not logged in this harness.
+P2 · Spectral Tuning for Low-Resource Odor Recognition
+Scripted probe record · fabricated-paper question about training epochs
+BERT near miss
+Epochs belong to
+a different paper.
+Recorded: 1/8
+Agent judgment
+Catalog census
+5 bases · 165 entries
+153 names retained
+Saved report:
+NOT_FOUND
+Scores are recorded agent judgments, not independent accuracy measurements.
+Figure 3: Selected recorded cases, paraphrased. For the Transformer question, A’s part/section labels are reconstructed from its
+evidence trace; B reports a source filename; C reports insufficient evidence. The lower scripted example combines collected
+evidence with a predefined agent-authored judgment and not-found report; its catalog census is not exhaustive document
+reading. Gate scores are agent-authored rubric judgments, not correctness ratings. The excerpts illustrate differences in
+inspectability, not controlled comparative effectiveness.
+its designated paper but lacks the required keyword. This checks
+snippet coverage, not final-answer correctness.
+The three out-of-corpus examples combine script-collected re-
+trieval and catalog evidence with predefined agent-authored judg-
+ments and templated not-found reports. They illustrate the re-
+porting format, not measured autonomous abstention. The census
+counts 165 catalog entries but retains 153 document names; it does
+not establish exhaustive content inspection. C explicitly abstains in
+two of ten saved answers. These records illustrate how insufficient
+evidence is reported; non-abstention does not establish correctness.
+Gate scores are agent-authored rubric judgments, not independent
+correctness assessments. Attendees can inspect the recorded de-
+cisions alongside candidate text and source references, including
+where the available trace does not fully support an answer.
+The tracks use different evidence windows and execution config-
+urations. A’s scripted, fixed rewrites include expected-answer terms,
+precluding a fair retrieval comparison. B’s file references are self-
+reported without retained read events. C loses document metadata
+at the logging adapter, a limitation of this reproduction rather than
+dense retrieval. Resolved LLM configurations are not archived per
+answer, and cache state and parametric knowledge are uncontrolled.
+A records retrieval and read times but not answer-authoring time,
+so its end-to-end latency is unavailable. These selected traces sup-
+port an operational demonstration, not claims of answer accuracy,
+speed advantage, or general efficacy.
+5
+Conclusion
+Qdcvr links knowledge-base management tools with an agent-
+executed workflow for reading evidence, assessing relevance, and
+reporting search failure. The demonstration exposes document
+placement, source inspection, and not-found behavior. The saved
+cases illustrate operation rather than establish general effective-
+ness; compliance with the workflow and complete run provenance
+remain important validation requirements.
+Artifacts. Code, corpus-fetch scripts, and saved traces are avail-
+able at https://github.com/kingdol666/rag-knowledge. The video
+is linked in the abstract. Reproduction requires configured docu-
+ment services and an agent harness/model; stored answers are not
+independent ground-truth judgments.
+GenAI Usage Disclosure
+OpenAI Codex assisted with prose revision, manuscript organiza-
+tion, inspection of implementation and experiment artifacts, and
+4

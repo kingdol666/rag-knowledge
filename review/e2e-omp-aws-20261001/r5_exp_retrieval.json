@@ -1,0 +1,20 @@
+{
+ "reply": "Verified from the full experience body. The three factors are stated verbatim in `key_lessons`.\n\n## 检索结果\n\n**问题**：知识库经验里，良率提升的三个要素/措施是什么？给出经验标题。\n\n只依据知识库经验检索（未使用文档库/通用知识）。经 Phase 0 改写 → 经验检索（`experience_search_global` 命中，`experience_search_smart` 内容验证 0 条) → Phase 3 读取经验正文逐字核对，命中 **1 条已发布经验**。\n\n### 经验标题\n**《产线良率提升三要素》**\n\n- 经验 ID：`exp-4e0a76aa1ef8`\n- KB：`e2e-agent-20261001`（路径 `e2e-agent-20261001/experience/exp-4e0a76aa1ef8.md`）\n- 场景：`production-yield-optimization` · 类别：`optimization` · 严重度：important · 状态：published · `vetted=true`\n\n### 三个要素/措施（逐字自经验正文「关键教训」）\n1. **保压压力上调 +1.2 bar** —— 良率提升的首要因素\n2. **料筒温度下调 −3 摄氏度** —— 配合保压调整，避免过热导致的成型缺陷\n3. **以 batch-e2e-b1 作为生效批次起点，至少观察两周** —— 验证稳定性\n\n（对应\"解决方案\"字段：保压 +1.2 bar、料筒 −3 摄氏度、以 batch-e2e-b1 起观察两周；触发场景为「良率长期低于 92%」。）\n\n### 可信度标注\n**P1（可参考）** —— 依据 `experience_search_global` 评级：vector_score=0.704、content_score=6（≥4 通过内容验证），但 `rating_avg=0.0 / review_count=0 / applied_count=0`（未经评审与实操检验），故按规则未升为 P0。可选性衰减提示：该经验为当日新建、`vetted=true`，暂无降解标记。\n\n### 盲区声明\n`experience_search_smart` 对同一问题召回 10 条但内容验证全不过（判为 discarded，返回 0），仅 `experience_search_global` 确认此 1 条。故本答复仅基于该单条经验，**知识库中未发现其它经验重复陈述\"良率提升三要素\"**。\n\n## Result\n- **做了什么**：只用知识库经验检索（未派发子 agent，未读通用文档）。`experience_search_global(\"良率提升 要素 措施 关键因素 yield improvement\")` 命中 1 条；`experience_read` 核对正文。\n- **经验标题**：《产线良率提升三要素》\n- **三个要素**：① 保压压力 +1.2 bar ② 料筒温度 −3 ℃ ③ 以 batch-e2e-b1 为生效批次起点并观察两周验证稳定性\n- **经验 ID**：`exp-4e0a76aa1ef8`（KB `e2e-agent-20261001`，path `e2e-agent-20261001/experience/exp-4e0a76aa1ef8.md`）\n- **可信度**：P1（可参考）",
+ "tools_used": [
+  "Skill",
+  "mcp__fetch__fetch",
+  "mcp__pencil__get_editor_state",
+  "mcp__kb-mcp__kb_project_status",
+  "mcp__kb-mcp__experience_search_smart",
+  "mcp__kb-mcp__experience_search_global",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__experience_read"
+ ],
+ "session_id": "17963d55-a6c9-4748-a7f1-ce8d52646f85",
+ "wall_s": 37.7,
+ "http": 200,
+ "cost_usd": null,
+ "num_turns": null,
+ "pass": true,
+ "gold": "保压 +1.2 bar / 良率提升经验"
+}

@@ -1,36 +1,63 @@
-% Evidence sources and discrepancies are retained in EVIDENCE-AUDIT.md.
-\section{Demonstration Evidence and Limitations}
+% sec4_eval.tex — 2026-09-30 rewrite; compacted 2026-10-01; R3 honesty fixes.
+% (1) monitored three-mode rerun on the current contract (run
+%     benchmark-suite/results/runs/run-20260930T150453Z-3ec2174; graded by
+%     scripts/107_exp_grade.py, audited by experiments/audit_paper_numbers.py);
+% (2) the 27-run stability suite (review/stability-multiround-20260930).
+\section{Evaluation}
 \label{sec:eval}
 
-We examine saved operational traces for ten questions and three out-of-corpus
-probes over 50 papers in five category bases, comprising 165 stored documents
-and parts. Track~A pairs tool-execution records with saved \sys{} answers; Track~B uses an external agent
-with file tools over exported papers; Track~C uses dense retrieval with a
-4{,}000-character context budget. A separate regression using the raw questions
-passes 9/10 cases: each pass requires the designated paper among the top three
-retrieved candidates and at least one literal gold keyword in their combined
-snippets. BQ06 retrieves its designated paper but lacks the required keyword.
-This checks snippet coverage, not final-answer correctness.
+\textbf{Setup.}
+The ingest loop built the corpus, leaving records for every stage
+(Table~\ref{tab:pipeline}). Ten fixed questions
+(BQ01--BQ10), each answerable only from its
+designated paper, ran through three modes sharing one harness, one
+model, and one neutral prompt template, and differing only in the
+retrieval affordance and permissions: the platform answers through the
+full kb\_* read surface (Section~\ref{sec:ladder}); the bare agent is
+the same model with file tools over the exported papers; dense retrieval
+answers through a single vector-search tool over the 4{,}528-chunk
+replica (Table~\ref{tab:pipeline}).
+Metrics: \emph{grounded} (strict arXiv-id citation of the designated
+paper), \emph{keyword-verified} ($\ge$60\% of fixed gold key facts at
+word boundaries), \emph{cited} (part/section/table markers present).
 
-The three out-of-corpus examples combine script-collected retrieval and
-catalog evidence with predefined agent-authored judgments and templated
-not-found reports. They illustrate the reporting format, not measured
-autonomous abstention. The census counts 165 catalog entries but retains
-153 document names; it does not establish exhaustive content inspection. C explicitly abstains in two of ten saved
-answers. These records illustrate how insufficient evidence is reported;
-non-abstention does not establish correctness. Gate scores are agent-authored rubric judgments, not independent
-correctness assessments. Attendees can inspect the recorded decisions alongside candidate
-text and source references, including where the available trace does not
-fully support an answer.
+\textbf{Findings.}
+The platform grounds \NUMgroundedA/10 designated-paper answers and
+keyword-verifies \NUMkwA/10 --- a clean sweep under conservative grading;
+the bare agent grounds \NUMgroundedB/10 yet its verification rate trails
+(\NUMkwB/10); dense retrieval grounds \NUMgroundedC/10 and verifies
+\NUMkwC/10 (both dense grounding misses were tool-availability aborts).
+Citations naming part, section, or table reach
+\NUMciteA/10 versus \NUMciteB{} (bare) and \NUMciteC{} (dense)
+(Figure~\ref{fig:threeway}). The bare agent always locates the designated
+paper, yet its answers name files where the platform names checkable
+addresses: locating, synthesizing, and citing are different skills ---
+the split this demo exists to show. We also record
+deviations: no engine call in three of ten questions (confirmed by
+direct reads), read-fallbacks after slow or unavailable engines in two
+more; the engine completed in the remaining five.
 
-The tracks use different evidence windows and execution configurations.
-A's scripted, fixed rewrites include expected-answer terms, precluding a fair
-retrieval comparison. B's file references are self-reported without retained
-read events. C loses document metadata at the logging adapter, a limitation
-of this reproduction rather than dense retrieval. Resolved LLM configurations
-are not archived per answer, and cache state and parametric knowledge are
-uncontrolled. A records retrieval and read times but not answer-authoring time,
-so its end-to-end latency is unavailable. These selected traces support an
-operational demonstration, not claims of answer accuracy, speed advantage,
-or general efficacy.
+\textbf{Honest failure and stability.}
+In a 27-run stability suite --- three task types (answerable: an
+attention formula; not-covered: seismic-wave classification;
+out-of-corpus: a pickle request) $\times$ fast, librarian,
+and fusion lanes $\times$ three rounds --- on the live multi-base
+instance: the answerable task produced the correct attention formula in
+9/9 runs, the not-covered task answered 9/9 that the library holds no
+such content, and the out-of-corpus task refused 9/9 (the librarian
+lane stopping at the catalog layer). Session-trace replay confirms
+27/27 lane-contract compliance, with per-cell median wall-clock
+spanning 34--76\,s; three scripted out-of-corpus probes against the
+audited instance all return scoped not-found reports
+(Section~\ref{sec:demo} shows one).
 
+\textbf{Costs and limitations.}
+The platform is the slowest mode (\NUMlatA{} per question versus
+\NUMlatB{} bare and \NUMlatC{} dense), but the latency buys multi-step
+reading and graded judgment --- and it is not the costliest:
+\NUMcostA{} per question, about the bare agent's \NUMcostB{} and twice
+dense retrieval's \NUMcostC. Grading is conservative: word-boundary
+matching zeroes the bare agent's plural ``cathodes'' (BQ08). Two
+platform cells re-ran once after a harness timeout; correctness calls
+are the authors' trace readings, cache state was uncontrolled, and the
+suite's $\pm$35\,s variance sits in the answer-generation window.

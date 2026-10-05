@@ -1,0 +1,104 @@
+{
+ "track": "b",
+ "question": "Compared with prior Multi-Agent Transformer (MAT) models, what aspect of the agents' decision process does AOAD-MAT explicitly model?",
+ "answer": "**Answer:** AOAD-MAT explicitly models the **order in which agents make their action decisions** (the \"Agent Order of Action Decisions\") — prior MAT-family models treated multi-agent decision-making as sequential generation but never considered that the *order* of agents in that sequence matters. Concretely, the decoder learns a permutation of agents: alongside the usual action-prediction distribution π_a, it adds a next-agent-prediction distribution π_i that predicts which agent acts next, and this subtask is folded into the PPO loss via a product of policy ratios. The encoder/critic is unchanged from prior MAT; only the actor's decoder gains this dual prediction mechanism, and the encoder's latent observation representations are reordered by the predicted sequence. The paper frames this as filling a gap left by MAT and ACE, which \"have not explicitly considered the effectiveness of the order in which agents make decisions.\"\n\n**File used:** `artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep.md` (Sections 1, 4.1–4.2, 5.2, 6).",
+ "is_error": false,
+ "latency_s": 26.9,
+ "sdk_duration_ms": 25127,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "AOAD|MAT"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\artificial-intelligence__2510.13343__aoad-ma"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 76884,
+  "output": 528,
+  "cache_read": 95360,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.44530000000000003,
+ "timeline": [
+  {
+   "t": 1.77,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 2.92,
+   "event": "text",
+   "detail": "57"
+  },
+  {
+   "t": 2.93,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 2.94,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 3.9,
+   "event": "text",
+   "detail": "43"
+  },
+  {
+   "t": 3.92,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 21.76,
+   "event": "text",
+   "detail": "87"
+  },
+  {
+   "t": 21.77,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 26.84,
+   "event": "text",
+   "detail": "1072"
+  },
+  {
+   "t": 26.85,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the paper collection for AOAD-MAT material.\n\n",
+  "The target file is clear. Let me read it.\n\n",
+  "The working directory is the corpus folder itself. Let me read with the correct path.\n\n",
+  "**Answer:** AOAD-MAT explicitly models the **order in which agents make their action decisions** (the \"Agent Order of Action Decisions\") — prior MAT-family models treated multi-agent decision-making as sequential generation but never considered that the *order* of agents in that sequence matters. Concretely, the decoder learns a permutation of agents: alongside the usual action-prediction distribution π_a, it adds a next-agent-prediction distribution π_i that predicts which agent acts next, and this subtask is folded into the PPO loss via a product of policy ratios. The encoder/critic is unchanged from prior MAT; only the actor's decoder gains this dual prediction mechanism, and the encoder's latent observation representations are reordered by the predicted sequence. The paper frames this as filling a gap left by MAT and ACE, which \"have not explicitly considered the effectiveness of the order in which agents make decisions.\"\n\n**File used:** `artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep.md` (Sections 1, 4.1–4.2, 5.2, 6)."
+ ],
+ "qid": "R2Q01",
+ "via": "chat"
+}

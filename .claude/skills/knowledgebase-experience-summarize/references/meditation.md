@@ -1,86 +1,87 @@
-# Meditation Workflow — 冥想记忆：从问题自动归纳经验
+# Meditation Workflow — Meditation Memory: Auto-Inducing Experiences from Questions
 
-> OpenClaw 式"冥想记忆"：定期扫描用户高频问题，结合知识库回答，
-> 自动归纳成结构化经验。类似人脑睡眠时整理记忆。
+> OpenClaw-style "meditation memory": periodically scan high-frequency user questions, combine them
+> with knowledge-base answers, and automatically distill them into structured experiences.
+> Similar to how the human brain organizes memories during sleep.
 
 ## Table of Contents
-- [核心理念](#核心理念)
-- [触发时机](#触发时机)
-- [四阶段流程](#四阶段流程)
-- [信号判定](#信号判定何时值得归纳为经验)
-- [质量门控](#质量门控)
-- [反模式](#反模式)
+- [Core Concept](#core-concept)
+- [Trigger Timing](#trigger-timing)
+- [Four-Phase Flow](#four-phase-flow)
+- [Signal Judgment](#signal-judgment-when-is-a-question-worth-inducing-as-an-experience)
+- [Quality Gate](#quality-gate)
+- [Anti-Patterns](#anti-patterns)
 
 ---
 
-## 核心理念
+## Core Concept
 
 ```
-传统经验：用户主动说"总结这个经验" → 手动入库
-冥想记忆：系统主动发现"这个问题被问了很多次" → 自动归纳
+Traditional experiences: the user explicitly says "summarize this experience" → manual ingest
+Meditation memory: the system proactively discovers "this question has been asked many times" → auto-induction
 
-关键区别：经验源不是用户显式指令，而是高频问题的规律发现。
+Key difference: the experience source is not an explicit user instruction, but a pattern discovered across high-frequency questions.
 ```
 
 ---
 
-## 触发时机
+## Trigger Timing
 
-| 时机 | 谁触发 | 说明 |
+| Timing | Triggered by | Notes |
 |------|--------|------|
-| 用户说"冥想""整理记忆""归纳经验""meditation""reflect" | 用户显式 | 运行本流程 |
-| 每 N 次会话后 / 定期（如每周） | 系统定期 | 见"定期调度" |
-| 经验看板显示某领域查询频繁但经验稀疏 | 看板驱动 | `experience_dashboard` 发现缺口 |
+| User says "冥想" "整理记忆" "归纳经验" ("meditate" / "tidy memories" / "induce experiences"), "meditation", "reflect" | User, explicit | Run this flow |
+| After every N sessions / periodically (e.g. weekly) | System, scheduled | See "Periodic scheduling" |
+| The experience dashboard shows a domain with frequent queries but sparse experiences | Dashboard-driven | `experience_dashboard` discovers the gap |
 
-### 定期调度（需外部 cron/任务）
+### Periodic Scheduling (requires external cron/task)
 
-本 skill 是按需触发的 LLM 流程，**不自带定时器**。定期冥想需外部调度：
+This skill is an on-demand LLM flow and **has no built-in timer**. Periodic meditation requires external scheduling:
 
 ```
-# 方式1: 用户在对话中说"帮我冥想一下"（最常用）
-# 方式2: 外部 cron 每周调用（如系统计划任务）
-#   ragctl meditation --days 7 --dry-run  # 如未来 ragctl 支持
-# 方式3: 配合 experience_dashboard 看板缺口检测
+# Option 1: the user says "help me meditate" in conversation (most common)
+# Option 2: external cron calls weekly (e.g. a system scheduled task)
+#   ragctl meditation --days 7 --dry-run  # if ragctl supports it in the future
+# Option 3: combined with experience_dashboard gap detection
 ```
 
-Agent 流程中无法自己起定时器。定期性靠：用户习惯 / 外部 cron / 看板驱动。
+An Agent flow cannot start a timer by itself. Periodicity comes from: user habit / external cron / dashboard-driven triggers.
 
 ---
 
-## 四阶段流程
+## Four-Phase Flow
 
-### 阶段1：采集问题源
+### Phase 1: Collect Question Sources
 
-**优先用当前会话上下文**（最精准），辅助用历史聊天库。
+**Prefer the current session context** (most precise), supplemented by the historical chat library.
 
-#### A. 当前会话上下文（首选，最精准）
+#### A. Current Session Context (Preferred, Most Precise)
 
-当前会话中已发生的 KB 问答是最精准的冥想源——保证 KB 相关、保证有答案。
+KB Q&A that has already happened in the current session is the most precise meditation source — KB-relevant by construction, with answers guaranteed.
 
 ```
-回顾本次会话：
-  - 用户问了哪些 KB 相关问题？
-  - 每个问题的检索/回答质量如何？
-  - 哪些问题反复出现或花了多轮才解决？
-  - 哪些问题的答案值得固化成经验？
+Review this session:
+  - Which KB-related questions did the user ask?
+  - How good was the retrieval/answer quality for each?
+  - Which questions recurred, or took multiple rounds to resolve?
+  - Which answers are worth solidifying into experiences?
 
-提取候选问题清单（带会话中的答案摘要）。
+Extract a candidate question list (with answer summaries from the session).
 ```
 
-#### B. 历史聊天库（辅助，需清洗）
+#### B. Historical Chat Library (Supplementary, Needs Cleaning)
 
-运行采集脚本，从历史聊天中挖掘高频问题簇：
+Run the collection script to mine high-frequency question clusters from chat history:
 
 ```bash
 python scripts/meditation_source.py --days 7 --top 30
-# 或 JSON 模式供解析：
+# or JSON mode for parsing:
 python scripts/meditation_source.py --json --days 14
 ```
 
-**脚本职责**：读 `storage/claude-chat.db` → 清洗噪声（测试/系统输出）→
-按语义簇聚类 → 输出高频问题清单。**只读，永不写入。**
+**Script responsibility**: read `storage/claude-chat.db` → clean noise (tests/system output) →
+cluster by semantic similarity → output the high-frequency question list. **Read-only, never writes.**
 
-脚本产出 JSON：
+The script outputs JSON:
 ```json
 {
   "success": true,
@@ -94,117 +95,117 @@ python scripts/meditation_source.py --json --days 14
 }
 ```
 
-> ⚠️ 历史聊天库可能含测试噪声/非 KB 闲聊。脚本已清洗，但 Agent 仍需
-> 对每个候选做 KB 相关性二次确认（见阶段2）。
+> ⚠️ The historical chat library may contain test noise / non-KB chit-chat. The script cleans it,
+> but the Agent must still run a second KB-relevance confirmation on every candidate (see Phase 2).
 
-### 阶段2：KB 相关性确认 + 答案检索
+### Phase 2: KB Relevance Confirmation + Answer Retrieval
 
-对每个候选问题簇，确认是否真的是 KB 领域，并检索已有答案：
+For each candidate question cluster, confirm it really is in KB territory and retrieve existing answers:
 
 ```
-对每个 cluster.representative：
-  1. KB 相关性判断：
-     - 该问题是否属于某 KB 的领域？（用 kb_list(lightweight=true) 匹配）
-     - 否 → 丢弃（非 KB 问题不归纳经验）
-  2. 已有经验检查：
+For each cluster.representative:
+  1. KB relevance judgment:
+     - Does the question fall within some KB's domain? (match via kb_list(lightweight=true))
+     - No → discard (non-KB questions are not induced into experiences)
+  2. Existing-experience check:
      experience_search_smart(query=representative, top_k=5)
-     - 已有高质量经验覆盖（P0/P1 内容≥5）→ 跳过（不重复归纳）
-     - 部分覆盖 → 标记"补充"（走更新路径）
-     - 无覆盖 → 标记"新建"（走创建路径）
-  3. 答案来源检索：
-     kb_search_two_stage(query=representative, kb_id=<匹配KB>)
-     - 提取 top 命中文档作为 related_docs
-     - 提取文档中的关键结论作为 solution 基础
-  4. 输出：候选经验清单（带问题/答案来源/目标KB/新建or补充标记）
+     - Already covered by a high-quality experience (P0/P1 content ≥5) → skip (no duplicate induction)
+     - Partially covered → mark "supplement" (take the update path)
+     - Not covered → mark "create" (take the create path)
+  3. Answer-source retrieval:
+     kb_search_two_stage(query=representative, kb_id=<matching KB>)
+     - Extract the top hit documents as related_docs
+     - Extract key conclusions from the documents as the basis for solution
+  4. Output: candidate experience list (with question / answer source / target KB / create-or-supplement marks)
 ```
 
-### 阶段3：LLM 归纳 + 质量门控
+### Phase 3: LLM Induction + Quality Gate
 
-对通过阶段2的候选，LLM 提炼结构化经验草稿：
-
-```
-对每个候选（已有答案来源）：
-  LLM 提炼（按 quality-standards.md 的黄金标准）：
-    - 从问题簇 + 文档答案 → 提炼 problem（可复现场景）
-    - 从文档结论 + 对话方案 → 提炼 solution（可执行步骤）
-    - 从多轮交互 → 提炼 key_lessons（可独立引用）
-    - 匹配 category / tags / severity / related_docs
-
-  质量门控（强制，见 quality-standards.md §完整性检查清单）：
-    - 任一字段不达标 → 丢弃该候选（宁缺毋滥）
-    - 全部达标 → 进入阶段4
-```
-
-> ⭐ 宁缺毋滥：质量门控不达标的候选直接丢弃。冥想产出的是高价值经验，
-> 不是低质填充。1 条高质量经验 > 10 条垃圾经验。
-
-### 阶段4：入库（新建或更新）
+For candidates that passed Phase 2, the LLM distills structured experience drafts:
 
 ```
-对每个通过质量门控的候选：
+For each candidate (answer source in hand):
+  LLM distillation (per the gold standard in quality-standards.md):
+    - From the question cluster + document answers → distill problem (a reproducible scenario)
+    - From document conclusions + the conversation's solution → distill solution (executable steps)
+    - From the multi-turn interaction → distill key_lessons (independently citable)
+    - Match category / tags / severity / related_docs
 
-  新建路径（无覆盖）：
+  Quality gate (mandatory, see quality-standards.md §Completeness Checklist):
+    - Any field below the bar → discard the candidate (quality over quantity)
+    - All fields pass → proceed to Phase 4
+```
+
+> ⭐ Quality over quantity: candidates that fail the quality gate are discarded outright. Meditation produces
+> high-value experiences, not low-quality filler. 1 high-quality experience > 10 junk experiences.
+
+### Phase 4: Persist (Create or Update)
+
+```
+For each candidate that passed the quality gate:
+
+  Create path (no coverage):
     experience_create(kb_id, **draft) → exp_id
-    experience_read(kb_id, exp_id) 验证
+    experience_read(kb_id, exp_id) to verify
 
-  更新路径（部分覆盖已有经验）：
+  Update path (partially covers an existing experience):
     experience_update(kb_id, existing_exp_id,
-      key_lessons=[...合并...],
-      solution="<补充新方案>",
+      key_lessons=[...merged...],
+      solution="<supplemented new solution>",
       updated_at=now)
 ```
 
-### 输出报告
+### Output Report
 
 ```
-🧘 冥想归纳完成（窗口：7天）
-   扫描问题：23 个 → KB相关：15 个 → 已有覆盖跳过：8 个
-   质量门控通过：4 个 → 丢弃（不达标）：3 个
-   新建经验：3 条
-     · exp-xxx "XX 领域常见检索误区" @ AI-ML-Research
-     · exp-yyy "图谱构建避坑指南" @ Materials-Science
-     · exp-zzz "跨库检索优化技巧" @ Embodied-AI
-   更新经验：1 条（补充 key_lessons）
-     · exp-aaa 新增 2 条教训
+🧘 Meditation induction complete (window: 7 days)
+   Questions scanned: 23 → KB-relevant: 15 → skipped (already covered): 8
+   Passed the quality gate: 4 → discarded (below the bar): 3
+   Created experiences: 3
+     · exp-xxx "Common retrieval pitfalls in the XX domain" (原文: "XX 领域常见检索误区") @ AI-ML-Research
+     · exp-yyy "Knowledge-graph build pitfall guide" (原文: "图谱构建避坑指南") @ Materials-Science
+     · exp-zzz "Cross-KB retrieval optimization tips" (原文: "跨库检索优化技巧") @ Embodied-AI
+   Updated experiences: 1 (added key_lessons)
+     · exp-aaa added 2 lessons
 ```
 
 ---
 
-## 信号判定：何时值得归纳为经验？
+## Signal Judgment: When Is a Question Worth Inducing as an Experience?
 
-不是每个问题都值得归纳。归纳信号：
+Not every question deserves induction. Induction signals:
 
-| 信号 | 强度 | 说明 |
+| Signal | Strength | Notes |
 |------|------|------|
-| 同类问题出现 ≥2 次 | 强 | 高频=共性需求 |
-| 答案涉及多文档/多轮才解决 | 强 | 复杂=值得固化 |
-| 答案含具体步骤/配置/命令 | 强 | 可操作=可复用 |
-| 用户明确说"这个有用""记下来" | 强 | 用户认可 |
-| 问题简单但答案文档分散 | 中 | 固化后省检索时间 |
-| 仅出现1次且答案简单 | 弱 | 可能是一次性需求 |
+| The same kind of question appears ≥2 times | Strong | High frequency = a common need |
+| The answer took multiple documents / multiple rounds to resolve | Strong | Complex = worth solidifying |
+| The answer contains concrete steps/configs/commands | Strong | Actionable = reusable |
+| The user explicitly says "this is useful" / "write it down" | Strong | User endorsed it |
+| The question is simple but the answer documents are scattered | Medium | Solidifying saves retrieval time later |
+| Appeared only once and the answer is simple | Weak | Possibly a one-off need |
 
-**弱信号不归纳**——避免经验库膨胀低质内容。至少满足 1 个强信号或 2 个中信号。
-
----
-
-## 质量门控
-
-冥想产出的经验必须通过 [quality-standards.md](quality-standards.md) 的完整检查清单。
-额外强调：
-
-- **related_docs 必须验证**：`kb_doc_read(kb_id, doc_path)` 确认路径存在
-- **scenario 去重**：`experience_list(kb_id, scenario=...)` 确认未重复
-- **不制造孤儿经验**：每条经验至少有 1 个 related_doc 或明确的领域归属
+**Weak signals do not trigger induction** — this keeps the experience library from bloating with low-quality content. At least 1 strong signal or 2 medium signals is required.
 
 ---
 
-## 反模式
+## Quality Gate
 
-| ❌ 不要 | 原因 | ✅ 应该 |
+Experiences produced by meditation must pass the complete checklist in [quality-standards.md](quality-standards.md).
+Additional emphases:
+
+- **related_docs must be verified**: `kb_doc_read(kb_id, doc_path)` confirms the path exists
+- **scenario dedup**: `experience_list(kb_id, scenario=...)` confirms no duplicate
+- **No orphan experiences**: every experience has at least 1 related_doc or a clear domain home
+
+---
+
+## Anti-Patterns
+
+| ❌ Don't | Why | ✅ Do instead |
 |--------|------|---------|
-| 把每个问题都归纳 | 膨胀低质 | 只归纳满足信号阈值的 |
-| 跳过 KB 相关性确认 | 产出非 KB 垃圾 | 每个候选先匹配 kb_list(lightweight=true) |
-| 跳过已有经验检查 | 重复归纳 | 先 experience_search_smart |
-| 降低质量标准（因为是自动） | 冥想≠批量产垃圾 | 同样过完整质量门控 |
-| 自动入库不报告 | 用户不知情 | 阶段4 输出报告，重要经验仍可用户确认 |
-| 采集脚本写入任何东西 | 脚本只读 | 脚本只产出清单，入库走 MCP |
+| Induce every question into an experience | Bloats the library with low quality | Only induce what meets the signal threshold |
+| Skip KB relevance confirmation | Produces non-KB junk | Match every candidate against kb_list(lightweight=true) first |
+| Skip the existing-experience check | Duplicate induction | Run experience_search_smart first |
+| Lower the quality bar (because it is automatic) | Meditation ≠ mass-producing junk | Run the same complete quality gate |
+| Ingest automatically without reporting | The user is unaware | Phase 4 outputs a report; important experiences can still get user confirmation |
+| Let collection scripts write anything | Scripts are read-only | Scripts only produce lists; ingestion goes through MCP |

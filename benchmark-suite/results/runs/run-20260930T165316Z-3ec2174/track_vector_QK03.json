@@ -1,0 +1,37 @@
+{
+ "qid": "QK03",
+ "method": "vector",
+ "question": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+ "ranked": [
+  "1606.00335",
+  "1712.01369"
+ ],
+ "ranked_paths": [
+  "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs__k00",
+  "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar__k15"
+ ],
+ "evidence_sources": [
+  "1606.00335",
+  "1712.01369"
+ ],
+ "evidence_chars": 1028,
+ "retrieval_s": 0.2,
+ "latency_s": 17.8,
+ "answer": "The dynamic electrical model explains the hysteretic J-V characteristics through **polarization relaxation** in the perovskite material. Specifically, the abstract states that \"by making a simple ansatz for the polarization relaxation, our model is able to reproduce qualitatively and quantitatively detailed features of measured J-V characteristics\" ([1606.00335]). The model's treatment of polarization dynamics also accounts for pre-poling effects, distinguishing between initially over-polarized and under-polarized samples, and explains the observed current overshoot ([1606.00335]). The second evidence chunk ([1712.01369]) concerns simulated J-V curves of a bilayer solar cell and does not address the hysteresis mechanism itself.\n\nSources: [1606.00335] (Abstract chunk).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 9246,
+  "output": 633,
+  "cache_read": 38336,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.08208900000000001,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

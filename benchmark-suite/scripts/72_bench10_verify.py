@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """验证 10 道内容强相关题目: two_stage 检索 + 金标文档命中 + 关键词核验.
 输出 results/bench10_qa.json。"""
 from __future__ import annotations

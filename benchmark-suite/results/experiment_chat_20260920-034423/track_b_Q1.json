@@ -1,0 +1,82 @@
+{
+ "track": "b",
+ "question": "In the paper Attention Is All You Need, what positional encoding does the Transformer use? Answer in English.",
+ "answer": "The Transformer uses **sinusoidal positional encodings** — sine and cosine functions of different frequencies, added to the input embeddings. Specifically, `PE(pos,2i) = sin(pos/10000^(2i/d_model))` and `PE(pos,2i+1) = cos(pos/10000^(2i/d_model))`, where each dimension corresponds to a sinusoid and the wavelengths form a geometric progression from 2π to 10000·2π. The authors chose this over learned positional embeddings because it may let the model extrapolate to sequence lengths longer than those seen in training (both variants gave nearly identical results, Table 3 row E).\n\nSource: `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (Section 3.5).",
+ "is_error": false,
+ "latency_s": 79.7,
+ "sdk_duration_ms": 76214,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "positional encoding"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "positional encoding|sinusoid|sin\\(|cos\\(",
+    "path": "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 117689,
+  "output": 433,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.59927,
+ "timeline": [
+  {
+   "t": 3.49,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 28.99,
+   "event": "text",
+   "detail": "60"
+  },
+  {
+   "t": 28.99,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 29.01,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 41.83,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 79.42,
+   "event": "text",
+   "detail": "673"
+  },
+  {
+   "t": 79.67,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the available files for the Transformer paper.\n\n",
+  "The Transformer uses **sinusoidal positional encodings** — sine and cosine functions of different frequencies, added to the input embeddings. Specifically, `PE(pos,2i) = sin(pos/10000^(2i/d_model))` and `PE(pos,2i+1) = cos(pos/10000^(2i/d_model))`, where each dimension corresponds to a sinusoid and the wavelengths form a geometric progression from 2π to 10000·2π. The authors chose this over learned positional embeddings because it may let the model extrapolate to sequence lengths longer than those seen in training (both variants gave nearly identical results, Table 3 row E).\n\nSource: `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (Section 3.5)."
+ ],
+ "qid": "Q1",
+ "via": "chat"
+}

@@ -1,0 +1,145 @@
+{
+ "question": "How does InstructDS generate high-quality query-based dialogue summaries?",
+ "mode": "A_vector",
+ "started": "14:52:01",
+ "vector_raw_hits": [
+  {
+   "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k22.md",
+   "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+   "score": 0.7768561840057373,
+   "chunk_index": 8
+  },
+  {
+   "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "score": 0.775942862033844,
+   "chunk_index": 31
+  },
+  {
+   "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+   "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+   "score": 0.5183802843093872,
+   "chunk_index": 44
+  },
+  {
+   "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md",
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "score": 0.5136964321136475,
+   "chunk_index": 64
+  },
+  {
+   "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+   "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+   "score": 0.484055757522583,
+   "chunk_index": 4
+  },
+  {
+   "doc_path": "aw-industrial/深度诊断报告:diag_kb_smoke_mock.md",
+   "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+   "score": 0.4521723985671997,
+   "chunk_index": 0
+  },
+  {
+   "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "score": 0.4433344602584839,
+   "chunk_index": 1
+  },
+  {
+   "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+   "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+   "score": 0.43962812423706055,
+   "chunk_index": 38
+  },
+  {
+   "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+   "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+   "score": 0.3852888345718384,
+   "chunk_index": 19
+  },
+  {
+   "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "score": 0.1418,
+   "chunk_index": 30
+  }
+ ],
+ "vector_dedup_docs": 9,
+ "docs_read": [
+  {
+   "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k22.md",
+   "chars": 0,
+   "truncated": false
+  },
+  {
+   "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "chars": 20000,
+   "truncated": true
+  },
+  {
+   "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+   "chars": 20000,
+   "truncated": true
+  },
+  {
+   "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md",
+   "chars": 20000,
+   "truncated": true
+  },
+  {
+   "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+   "chars": 496,
+   "truncated": false
+  }
+ ],
+ "judge": {
+  "abs_kept": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "relative_cut": 0.818,
+  "global_best": 0.918,
+  "doc_scores": [
+   {
+    "doc": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9182,
+    "kept": true
+   },
+   {
+    "doc": "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+    "score": 0.9069,
+    "kept": true
+   },
+   {
+    "doc": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md",
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "score": 0.8728,
+    "kept": true
+   },
+   {
+    "doc": "soul-e2e-tester-024115/soul-definition.md",
+    "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+    "score": 0.6961,
+    "kept": false
+   }
+  ],
+  "status": "ok",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "scored_segments": 31,
+  "total_segments": 31
+ },
+ "kept_doc_paths": [
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md"
+ ],
+ "seconds": 42.5,
+ "evidence_chars": 7742,
+ "lanes": null
+}

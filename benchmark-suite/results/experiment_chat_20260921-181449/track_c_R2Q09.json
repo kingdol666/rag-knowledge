@@ -1,0 +1,88 @@
+{
+ "track": "c",
+ "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+ "answer": "The retrieved chunks answer this directly. For trap plants 5 to 25 times more attractive than the cash plant, roughly 7–10% of the field should be allocated to trap plants (chunk `...__k16.md`), while a trap plant only twice as attractive makes trap cropping ineffective, so a grower should plant only cash plants (`...__k16.md`, `...__k15.md`). A related chunk states that for intermediately attractive trap plants (5–20 times as attractive), more than 10% of the landscape should be sacrificed to trap plants (`...__k18.md`). Even at 100 times attractiveness, the grower would still need to dedicate nearly 10 percent of the landscape to trap plants (`...__k11.md`).\n\nSources: `agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k16.md`, `...__k18.md`, `...__k11.md`.",
+ "is_error": false,
+ "latency_s": 29.2,
+ "sdk_duration_ms": 26521,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "trap cropping optimization trap plant proportion of field allocated trap plants more attractive than cash crop",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 30308,
+  "output": 470,
+  "cache_read": 128832,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.227706,
+ "timeline": [
+  {
+   "t": 2.71,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.84,
+   "event": "text",
+   "detail": "54"
+  },
+  {
+   "t": 3.85,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 22.17,
+   "event": "text",
+   "detail": "30"
+  },
+  {
+   "t": 22.19,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 24.39,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 29.17,
+   "event": "text",
+   "detail": "789"
+  },
+  {
+   "t": 29.18,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the vector index for the relevant chunk.\n\n",
+  "I'll retry loading the tool.\n\n",
+  "The retrieved chunks answer this directly. For trap plants 5 to 25 times more attractive than the cash plant, roughly 7–10% of the field should be allocated to trap plants (chunk `...__k16.md`), while a trap plant only twice as attractive makes trap cropping ineffective, so a grower should plant only cash plants (`...__k16.md`, `...__k15.md`). A related chunk states that for intermediately attractive trap plants (5–20 times as attractive), more than 10% of the landscape should be sacrificed to trap plants (`...__k18.md`). Even at 100 times attractiveness, the grower would still need to dedicate nearly 10 percent of the landscape to trap plants (`...__k11.md`).\n\nSources: `agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k16.md`, `...__k18.md`, `...__k11.md`."
+ ],
+ "qid": "R2Q09",
+ "via": "chat"
+}

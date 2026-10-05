@@ -1,0 +1,92 @@
+{
+ "track": "b",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "answer": "Based on `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md`, MLP-SLAM addresses the degradation of visual SLAM in dynamic environments containing many movable objects (pedestrians, cars, buses, typical of outdoor scenes), where static-world assumption systems like ORB-SLAM2/3 lose precision. Prior approaches either use purely geometric heuristics that suffer from hand-tuned parameters, poor generality, and partial information loss, or semantic-mask methods (e.g. DynaSLAM) that wrongly discard genuinely static points such as parked cars and roadside guardrails. MLP-SLAM solves this by building on ORB-SLAM2 and adding an MLP discriminator that classifies each feature point inside a potential-dynamic bounding box as static or dynamic, using the complete three-part geometric input (image intensity error, epipolar error, and re-projection error) rather than a subset. A Depth Filter Module first removes background points inside imprecise bounding boxes (from YOLOv7 + DeepSort detection/tracking), and the surviving static points are used in a coarse-to-fine pose estimation scheme, giving higher precision and speed on KITTI Odometry and KITTI360.",
+ "is_error": false,
+ "latency_s": 61.7,
+ "sdk_duration_ms": 58880,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MLP-SLAM|MLP_SLAM|MLP SLAM"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\robotics__2410.10669__mlp-slam-multilayer-pe"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 11356,
+  "output": 597,
+  "cache_read": 155968,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.14968900000000002,
+ "timeline": [
+  {
+   "t": 2.86,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 19.22,
+   "event": "text",
+   "detail": "46"
+  },
+  {
+   "t": 19.22,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 19.24,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 20.39,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 24.42,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 61.67,
+   "event": "text",
+   "detail": "1181"
+  },
+  {
+   "t": 61.71,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the markdown files for MLP-SLAM.\n\n",
+  "Based on `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md`, MLP-SLAM addresses the degradation of visual SLAM in dynamic environments containing many movable objects (pedestrians, cars, buses, typical of outdoor scenes), where static-world assumption systems like ORB-SLAM2/3 lose precision. Prior approaches either use purely geometric heuristics that suffer from hand-tuned parameters, poor generality, and partial information loss, or semantic-mask methods (e.g. DynaSLAM) that wrongly discard genuinely static points such as parked cars and roadside guardrails. MLP-SLAM solves this by building on ORB-SLAM2 and adding an MLP discriminator that classifies each feature point inside a potential-dynamic bounding box as static or dynamic, using the complete three-part geometric input (image intensity error, epipolar error, and re-projection error) rather than a subset. A Depth Filter Module first removes background points inside imprecise bounding boxes (from YOLOv7 + DeepSort detection/tracking), and the surviving static points are used in a coarse-to-fine pose estimation scheme, giving higher precision and speed on KITTI Odometry and KITTI360."
+ ],
+ "qid": "BQ09",
+ "via": "chat"
+}

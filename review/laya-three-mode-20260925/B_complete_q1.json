@@ -1,0 +1,269 @@
+{
+ "question": "How does InstructDS generate high-quality query-based dialogue summaries?",
+ "mode": "B_complete",
+ "started": "14:52:44",
+ "descriptions_scanned": 329,
+ "catalog_branch_scan": {
+  "shelves_scanned": 6,
+  "descriptions_scanned": 329,
+  "description_overlap_docs": 6,
+  "zero_overlap_docs_unread": 299,
+  "docs_read": 30
+ },
+ "catalog_branch": {
+  "seconds": 19.1,
+  "docs_read": 30
+ },
+ "judge": {
+  "abs_kept": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29
+  ],
+  "relative_cut": 0.837,
+  "global_best": 0.937,
+  "doc_scores": [
+   {
+    "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9368,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9182,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.6289,
+    "kept": false
+   },
+   {
+    "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.7363,
+    "kept": false
+   },
+   {
+    "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8512,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.86,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8797,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8872,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8743,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8416,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.6963,
+    "kept": false
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9299,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8654,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.91,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8834,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.553,
+    "kept": false
+   },
+   {
+    "doc": "计算机与人工智能\\nlp__1802.09426__tone-biased-mmr-text-summarization.md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9179,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 1 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9261,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9094,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 3 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8,
+    "kept": false
+   },
+   {
+    "doc": "计算机与人工智能\\large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8907,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9142,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9134,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 3 of 3).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8136,
+    "kept": false
+   },
+   {
+    "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9126,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9126,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8453,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.7432,
+    "kept": false
+   },
+   {
+    "doc": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 1 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.9259,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.8711,
+    "kept": true
+   }
+  ],
+  "status": "ok",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "scored_segments": 256,
+  "total_segments": 256
+ },
+ "kept_doc_paths": [
+  "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+  "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+  "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+  "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+  "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+  "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+  "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+  "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+  "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+  "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md",
+  "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+  "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+  "计算机与人工智能\\nlp__1802.09426__tone-biased-mmr-text-summarization.md",
+  "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 1 of 3).md",
+  "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+  "计算机与人工智能\\large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md",
+  "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+  "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+  "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+  "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+  "计算机与人工智能\\neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+  "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 1 of 4).md",
+  "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md"
+ ],
+ "seconds": 291.7,
+ "evidence_chars": 12000,
+ "lanes": null
+}

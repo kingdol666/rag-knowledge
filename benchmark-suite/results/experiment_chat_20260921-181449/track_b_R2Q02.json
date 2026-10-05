@@ -1,0 +1,76 @@
+{
+ "track": "b",
+ "question": "What three-step approach does InstructDS use to synthesize high-quality training triples for query-based dialogue summarization?",
+ "answer": "The file **nlp__2310.10981__instructive-dialogue-summarization-with-quer.md** (Wang, Liu & Chen, \"Instructive Dialogue Summarization with Query...\") answers this directly in Section 3. To synthesize query-dialogue-summary (QDS) triples from existing dialogue-summary pairs, InstructDS uses a three-step LLM-driven pipeline: (1) **query generation from the complete summary**, (2) **query filtering to ensure validity and diversity**, and (3) **query-guided summary generation** (using the query plus the complete summary as input to produce the query-focused summary). Table 2 supports the design by showing that the filtering step materially improves quality — e.g., \"both unique and correct\" triples rise from 45% before filtering to 75% after.",
+ "is_error": false,
+ "latency_s": 10.4,
+ "sdk_duration_ms": 7809,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "InstructDS"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "InstructDS",
+    "path": "nlp__2310.10981__instructive-dialogue-summarization-with-quer.md"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 33637,
+  "output": 409,
+  "cache_read": 84672,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.220746,
+ "timeline": [
+  {
+   "t": 2.58,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 5.32,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 5.34,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 7.67,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 10.36,
+   "event": "text",
+   "detail": "746"
+  },
+  {
+   "t": 10.37,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "The file **nlp__2310.10981__instructive-dialogue-summarization-with-quer.md** (Wang, Liu & Chen, \"Instructive Dialogue Summarization with Query...\") answers this directly in Section 3. To synthesize query-dialogue-summary (QDS) triples from existing dialogue-summary pairs, InstructDS uses a three-step LLM-driven pipeline: (1) **query generation from the complete summary**, (2) **query filtering to ensure validity and diversity**, and (3) **query-guided summary generation** (using the query plus the complete summary as input to produce the query-focused summary). Table 2 supports the design by showing that the filtering step materially improves quality — e.g., \"both unique and correct\" triples rise from 45% before filtering to 75% after."
+ ],
+ "qid": "R2Q02",
+ "via": "chat"
+}

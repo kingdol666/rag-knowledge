@@ -74,6 +74,8 @@ export default defineEventHandler(async (event) => {
   }
 
   // ── 4. 后端 bootstrap(soul-config + profile-summary + meditation config) ──
+  // async_mode: true — profile-summary 由 LLM 生成（omp 可达分钟级），必须在
+  // 后台任务里跑；同步生成会让整个 init 请求挂到客户端超时（E2E P7 实测 120s+）。
   const backendUrl = getDynamicBackendUrl()
   const boot: any = await $fetch(`${backendUrl}/api/v1/soul/bootstrap`, {
     method: 'POST',
@@ -84,6 +86,7 @@ export default defineEventHandler(async (event) => {
       supported_task_types: supportedTaskTypes,
       harness,
       model,
+      async_mode: true,
     },
   }).catch((e: any) => ({ _error: e?.message || String(e) }))
 
@@ -109,6 +112,7 @@ export default defineEventHandler(async (event) => {
     docs_created: docsCreated,
     docs_indexed: docsIndexed,
     profile_summary_generated: !!boot?.profile_summary_generated,
+    profile_task_id: boot?.profile_task_id ?? boot?.task_id ?? null,
     meditation_config_created: !!boot?.meditation_config_created,
     bootstrap_error: boot?._error || null,
   }

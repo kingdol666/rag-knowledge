@@ -1,0 +1,85 @@
+{
+ "answer": "MAMELOSHNLM is the first open-source large language model for Yiddish, named after the traditional Yiddish term \"Mame-Loshn\" (\"mother tongue\") — it was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus using a causal language modeling objective, and it outperforms strong baselines of similar scale on a broad set of Yiddish evaluation benchmarks. Its parameter scale is **8B** (8 billion parameters), inherited from the Llama-3.1-8B base. Training used bfloat16 precision, 8-bit AdamW, learning rate 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens, per-device batch size 38, and 4 gradient accumulation steps. It is part of a broader Yiddish LLM effort that also includes the Oytser corpus and the Kashes benchmark.\n\nSources:\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — chunk 53 (\"## 5 MAMELOSHNLM\") and chunk 54 (training details / Llama-3.1-8B continued pretraining)\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md` — chunk 3 (analysis)\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md` / `__k13.md` — chunks 6–7, 1–2 (same text)",
+ "is_error": false,
+ "latency_s": 31.5,
+ "sdk_duration_ms": 28839,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "EndConversation",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search",
+   "input": {
+    "query": "MameLoshnLM"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 55469,
+  "output": 722,
+  "cache_read": 41600,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.31690100000000004,
+ "timeline": [
+  {
+   "t": 2.83,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 13.14,
+   "event": "tool_use",
+   "detail": "EndConversation"
+  },
+  {
+   "t": 22.89,
+   "event": "text",
+   "detail": "150"
+  },
+  {
+   "t": 22.9,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 22.92,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search"
+  },
+  {
+   "t": 31.45,
+   "event": "text",
+   "detail": "1247"
+  },
+  {
+   "t": 31.47,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I apologize — that was an error on my part; there is no reason to end this conversation. Let me actually do the task and search the knowledge bases.\n\n",
+  "MAMELOSHNLM is the first open-source large language model for Yiddish, named after the traditional Yiddish term \"Mame-Loshn\" (\"mother tongue\") — it was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus using a causal language modeling objective, and it outperforms strong baselines of similar scale on a broad set of Yiddish evaluation benchmarks. Its parameter scale is **8B** (8 billion parameters), inherited from the Llama-3.1-8B base. Training used bfloat16 precision, 8-bit AdamW, learning rate 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens, per-device batch size 38, and 4 gradient accumulation steps. It is part of a broader Yiddish LLM effort that also includes the Oytser corpus and the Kashes benchmark.\n\nSources:\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — chunk 53 (\"## 5 MAMELOSHNLM\") and chunk 54 (training details / Llama-3.1-8B continued pretraining)\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md` — chunk 3 (analysis)\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md` / `__k13.md` — chunks 6–7, 1–2 (same text)"
+ ],
+ "track": "a2",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ07",
+ "via": "chat",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

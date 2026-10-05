@@ -1,0 +1,175 @@
+{
+ "track": "a",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "answer": "I have the evidence needed from the source document.\n\n## Answer\n\n**The temperature of the climate (mean surface temperature) is the primary physical factor controlling how precipitation extremes respond to climate change** — in particular, it is the *climatic temperature itself* (roughly, whether the mean surface temperature is above or below ~295 K) that sets the sensitivity, not warming per se. The sensitivity can be near Clausius–Clapeyron scaling (~6–7 % K⁻¹) in warm climates but departs strongly from it in cooler climates.\n\n### The controlling physical contributions\n\nThe source decomposes the response into three terms via the extreme-event precipitation-rate approximation (Eq. 1):\n\n*P ≃ − ε { ω(p) S(T,p) }*\n\nwhere **ε** = precipitation efficiency, **ω** = vertical velocity (upward motion), and **S** = derivative of saturation specific humidity along a moist adiabat.\n\n| Contribution | Source term | Role |\n|---|---|---|\n| **Thermodynamic** | changes in *S* (saturation vapor pressure / specific humidity) | Robust, well understood, **always intensifies extremes with warming** — the dominant baseline control (~7 % K⁻¹ per °C) |\n| **Dynamical** | changes in *ω* (vertical velocity) | Secondary; relevant to the tropics–extratropics contrast |\n| **Microphysical** | changes in *ε* (precipitation efficiency) | Dominant source of *deviation* from Clausius–Clapeyron scaling at lower temperatures |\n\n### Key quantitative findings\n\n- **Above ~295 K (present-day tropics):** precipitation extremes increase at close to the thermodynamic (Clausius–Clapeyron) rate of **6–7 % K⁻¹**, with only small contributions from vertical velocity and precipitation-efficiency changes.\n- **Below ~295 K:** sensitivity **varies widely** with temperature and accumulation period in a manner not fully understood. **Instantaneous** precipitation extremes increase at nearly **double the Clausius–Clapeyron rate**, driven by *increases in precipitation efficiency with warming* (partly from faster hydrometeor fall speeds as precipitation shifts from solid to liquid).\n- **Observed global land sensitivity:** annual-maximum daily precipitation ~**8 % K⁻¹** (90% CI 5–10), with the **tropics (~9 % K⁻¹) more sensitive than the extratropics (~4 % K⁻¹)**.\n- **Snowfall extremes** behave oppositely/contingently because they are governed by the temperature-dependent rain–snow transition, peaking near an optimal temperature (~−2 °C liquid-water equivalent).\n\n### Bottom line\n\nThe *thermodynamic* factor — the increase in the saturation vapor pressure / specific humidity of a warmer atmosphere — is **the primary and only robust control**, and it is essentially a function of temperature. The *precipitation efficiency* (microphysical) and *vertical velocity* (dynamical) factors are what determine whether the actual response matches, exceeds, or falls short of that thermodynamic scaling — with precipitation efficiency being the key modulator of the widely varying sensitivities at temperatures below ~295 K.\n\n### Sources\n\n- **Primary:** O'Gorman, P. A., *\"Precipitation extremes under climate change\"* (arXiv:1503.07557) — KB `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`, document `自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md` (parts 1–3 of 3). See Abstract, §1 Introduction, §3 Theory (Eq. 1), §7 Duration (Fig. 3a/3b, 295 K threshold), §8 Conclusions.\n- **Vector index confirmation:** the same document is separately indexed under KB `0942f1a6-d81b-413b-a60b-b994680dcaac` (`Corpus-Chunks800/climate-science__1503.07557__...`), retrieval scores 0.72–0.78 — high-confidence match.\n- Chunks citing Clausius–Clapeyron constraint (Chen, Ming, Singer & Lu 2011) and convective-organization effects (Muller 2013) are in the reference list, part 3.",
+ "is_error": false,
+ "latency_s": 117.9,
+ "sdk_duration_ms": 115159,
+ "num_turns": 11,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_doc_read,mcp__kb-mcp__kb_search_two_stage"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb search vector knowledge base documents"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "precipitation extremes response to climate change controlling physical factor"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "extreme precipitation intensification scaling moisture Clausius-Clapeyron"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "precipitation extremes sensitivity depends on temperature dependency of precipitation efficiency",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "conclusion physical factors controlling response of precipitation extremes upmotion",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_doc_read"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+    "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+    "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "precipitation efficiency key control on sensitivity of precipitation extremes to warming",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+   }
+  }
+ ],
+ "tool_call_count": 10,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 97734,
+  "output": 2015,
+  "cache_read": 297664,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.687877,
+ "timeline": [
+  {
+   "t": 2.79,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.68,
+   "event": "text",
+   "detail": "42"
+  },
+  {
+   "t": 3.68,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 9.63,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 41.71,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 41.71,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 45.29,
+   "event": "text",
+   "detail": "62"
+  },
+  {
+   "t": 45.3,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 45.3,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 48.63,
+   "event": "text",
+   "detail": "107"
+  },
+  {
+   "t": 48.64,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 106.94,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 109.77,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 109.78,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 117.9,
+   "event": "text",
+   "detail": "3774"
+  },
+  {
+   "t": 117.91,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for this.\n\n",
+  "I found the key document. Let me read the relevant sections.\n\n",
+  "Let me read the full document sections (theory + conclusions) to pin down the primary controlling factor.\n\n",
+  "I have the evidence needed from the source document.\n\n## Answer\n\n**The temperature of the climate (mean surface temperature) is the primary physical factor controlling how precipitation extremes respond to climate change** — in particular, it is the *climatic temperature itself* (roughly, whether the mean surface temperature is above or below ~295 K) that sets the sensitivity, not warming per se. The sensitivity can be near Clausius–Clapeyron scaling (~6–7 % K⁻¹) in warm climates but departs strongly from it in cooler climates.\n\n### The controlling physical contributions\n\nThe source decomposes the response into three terms via the extreme-event precipitation-rate approximation (Eq. 1):\n\n*P ≃ − ε { ω(p) S(T,p) }*\n\nwhere **ε** = precipitation efficiency, **ω** = vertical velocity (upward motion), and **S** = derivative of saturation specific humidity along a moist adiabat.\n\n| Contribution | Source term | Role |\n|---|---|---|\n| **Thermodynamic** | changes in *S* (saturation vapor pressure / specific humidity) | Robust, well understood, **always intensifies extremes with warming** — the dominant baseline control (~7 % K⁻¹ per °C) |\n| **Dynamical** | changes in *ω* (vertical velocity) | Secondary; relevant to the tropics–extratropics contrast |\n| **Microphysical** | changes in *ε* (precipitation efficiency) | Dominant source of *deviation* from Clausius–Clapeyron scaling at lower temperatures |\n\n### Key quantitative findings\n\n- **Above ~295 K (present-day tropics):** precipitation extremes increase at close to the thermodynamic (Clausius–Clapeyron) rate of **6–7 % K⁻¹**, with only small contributions from vertical velocity and precipitation-efficiency changes.\n- **Below ~295 K:** sensitivity **varies widely** with temperature and accumulation period in a manner not fully understood. **Instantaneous** precipitation extremes increase at nearly **double the Clausius–Clapeyron rate**, driven by *increases in precipitation efficiency with warming* (partly from faster hydrometeor fall speeds as precipitation shifts from solid to liquid).\n- **Observed global land sensitivity:** annual-maximum daily precipitation ~**8 % K⁻¹** (90% CI 5–10), with the **tropics (~9 % K⁻¹) more sensitive than the extratropics (~4 % K⁻¹)**.\n- **Snowfall extremes** behave oppositely/contingently because they are governed by the temperature-dependent rain–snow transition, peaking near an optimal temperature (~−2 °C liquid-water equivalent).\n\n### Bottom line\n\nThe *thermodynamic* factor — the increase in the saturation vapor pressure / specific humidity of a warmer atmosphere — is **the primary and only robust control**, and it is essentially a function of temperature. The *precipitation efficiency* (microphysical) and *vertical velocity* (dynamical) factors are what determine whether the actual response matches, exceeds, or falls short of that thermodynamic scaling — with precipitation efficiency being the key modulator of the widely varying sensitivities at temperatures below ~295 K.\n\n### Sources\n\n- **Primary:** O'Gorman, P. A., *\"Precipitation extremes under climate change\"* (arXiv:1503.07557) — KB `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`, document `自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md` (parts 1–3 of 3). See Abstract, §1 Introduction, §3 Theory (Eq. 1), §7 Duration (Fig. 3a/3b, 295 K threshold), §8 Conclusions.\n- **Vector index confirmation:** the same document is separately indexed under KB `0942f1a6-d81b-413b-a60b-b994680dcaac` (`Corpus-Chunks800/climate-science__1503.07557__...`), retrieval scores 0.72–0.78 — high-confidence match.\n- Chunks citing Clausius–Clapeyron constraint (Chen, Ming, Singer & Lu 2011) and convective-organization effects (Muller 2013) are in the reference list, part 3."
+ ],
+ "qid": "BQ06",
+ "via": "chat"
+}

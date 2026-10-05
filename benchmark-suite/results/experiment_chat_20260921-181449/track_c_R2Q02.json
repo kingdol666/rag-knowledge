@@ -1,0 +1,82 @@
+{
+ "track": "c",
+ "question": "What three-step approach does InstructDS use to synthesize high-quality training triples for query-based dialogue summarization?",
+ "answer": "InstructDS uses a three-step approach to synthesize high-quality query-based summarization triples: **summary-anchored query generation, query filtering, and query-based summary generation**. The retrieved text states that \"we propose a three-step approach to synthesize high-quality query-based summarization triples. This process involves summary-anchored query generation, query filtering and query-based summary generation.\" A supporting chunk adds that filtering is \"applied to ensure the quality of collected queries,\" and that the query-based summarization is then generated \"by triggering the question-answering ability of LLMs,\" reducing human involvement while enhancing data diversity.\n\nCited chunks: `Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k00.md`, `Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k01.md`, `Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k04.md`.",
+ "is_error": false,
+ "latency_s": 21.4,
+ "sdk_duration_ms": 19753,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb search vector knowledge base retrieval"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "InstructDS three-step approach synthesize high-quality training triples query-based dialogue summarization",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 30356,
+  "output": 479,
+  "cache_read": 129472,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.228491,
+ "timeline": [
+  {
+   "t": 1.71,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.0,
+   "event": "text",
+   "detail": "55"
+  },
+  {
+   "t": 3.01,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 9.0,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 10.9,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 21.43,
+   "event": "text",
+   "detail": "981"
+  },
+  {
+   "t": 21.43,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the dense vector index for this question.\n\n",
+  "InstructDS uses a three-step approach to synthesize high-quality query-based summarization triples: **summary-anchored query generation, query filtering, and query-based summary generation**. The retrieved text states that \"we propose a three-step approach to synthesize high-quality query-based summarization triples. This process involves summary-anchored query generation, query filtering and query-based summary generation.\" A supporting chunk adds that filtering is \"applied to ensure the quality of collected queries,\" and that the query-based summarization is then generated \"by triggering the question-answering ability of LLMs,\" reducing human involvement while enhancing data diversity.\n\nCited chunks: `Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k00.md`, `Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k01.md`, `Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k04.md`."
+ ],
+ "qid": "R2Q02",
+ "via": "chat"
+}

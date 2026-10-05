@@ -1,0 +1,54 @@
+{
+ "qid": "R2Q01",
+ "method": "bm25",
+ "question": "Compared with prior Multi-Agent Transformer (MAT) models, what aspect of the agents' decision process does AOAD-MAT explicitly model?",
+ "ranked": [
+  "2510.13343",
+  "1909.07748",
+  "2412.06333",
+  "2310.10981",
+  "2303.14061",
+  "2402.12317",
+  "2212.13138",
+  "2503.21676",
+  "2011.14424",
+  "2401.06823"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep.md",
+  "finance__1909.07748__stock-market-microstructure-inference-via-mu.md",
+  "artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions.md",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer.md",
+  "artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult.md",
+  "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation.md",
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md",
+  "economics__2011.14424__on-the-effectiveness-of-the-european-central.md",
+  "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o.md"
+ ],
+ "evidence_sources": [
+  "2510.13343",
+  "1909.07748",
+  "2412.06333"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 18.9,
+ "answer": "The evidence answers this: AOAD-MAT explicitly models the **order in which agents make decisions** (the sequence of action decisions), which prior MAT/ACE-style models do not explicitly consider. Source: `[2510.13343] artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1/2)` — abstract. The other two retrieved documents (1909.07748 on stock market microstructure; 2412.06333 on Hanabi conventions) are unrelated to this question and were not used.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38145,
+  "output": 118,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.19367499999999999,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v3-neutral",
+ "git_commit": "0968033",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

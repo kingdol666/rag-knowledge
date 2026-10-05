@@ -1,0 +1,145 @@
+{
+ "track": "a",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "answer": "I have everything needed, confirmed across multiple independent retrievals.\n\n## Answer\n\n**MameLoshnLM** is the **first open-source 8B-parameter language model built specifically for Yiddish** — reported as **8 billion parameters**.\n\n### What it is\n- **Purpose:** A Yiddish-specific LLM addressing the language's limited digital presence and the scarcity of reliable evaluation resources. It is intended to serve Yiddish's roughly one million speakers and the academic community studying Yiddish-language culture.\n- **Construction:** It is produced by **continued pretraining of Llama 3.1 8B** on a Yiddish corpus, using a causal language-modeling objective (bfloat16, 8-bit AdamW, LR 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens). Since it continues from Llama 3.1 8B, it inherits the 8B parameter scale.\n- **Authors/affiliations:** Uri Katz, Omer Goldman, Tomasz Limisiewicz, Reut Tsarfaty, Noah A. Smith — Bar-Ilan University, University of Cambridge, University of Washington, Allen Institute for AI.\n\n### Supporting resources introduced with it\n- **Oytser** — a high-quality Yiddish pretraining corpus combining contemporary web-native sources with literary materials.\n- **Kashes** — a multi-task Yiddish benchmark spanning translation, linguistic analysis, information extraction, and language understanding.\n\n### Report context\nAcross the benchmark, MameLoshnLM **outperforms open baselines of similar scale** (Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B). The paper's key finding is that general multilingual models produce an \"intelligible but systematically reduced\" Yiddish, while MameLoshnLM better captures native lexical/morphological patterns (e.g., loshn-koydesh Hebrew/Aramaic vocabulary and Yiddish-specific morphology) — pointing to a broader failure mode of noisy web-scale multilingual data for low-resource languages.\n\n### Source references\n- KB: **计算机与人工智能** (`b1199132-e4d4-4305-8c2e-82dc1753b0ba`)\n- Document: `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md` (parts 1–4 of 4), derived from *\"MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\"* (arXiv 2608.05850)\n  - **Part 1** — Abstract & Introduction: \"the first open-source 8B-parameter language model built specifically for Yiddish\"; \"we continue pretraining Llama 3.1 8B to obtain MAMELOSHNLM\"; §6 Experimental Setup (baselines of similar scale); training hyperparameters chunk.\n  - **Part 2** — §8 Analysis (Loshn-koydesh and morphology probes vs. Llama 3.1 8B, Table 5).\n  - **Part 4** — §E.8 Summary of All Metrics (Table 12 comparison).\n\n**Certainty:** High — the parameter scale (8B, inherited from Llama 3.1 8B) and the definition are stated explicitly and consistently across the abstract, introduction, and experimental setup, and were confirmed by both metadata search and vector/two-stage semantic retrieval. No conflicting parameter figures appeared for this model.",
+ "is_error": false,
+ "latency_s": 108.4,
+ "sdk_duration_ms": 103306,
+ "num_turns": 8,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_get_documents,mcp__kb-m"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search",
+   "input": {
+    "query": "MameLoshnLM"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM parameter scale model size billion parameters",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "MameLoshnLM Llama 3.1 8B continued pretraining model size parameters",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md"
+   }
+  }
+ ],
+ "tool_call_count": 7,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 127940,
+  "output": 1593,
+  "cache_read": 91968,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.725509,
+ "timeline": [
+  {
+   "t": 5.2,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 17.83,
+   "event": "text",
+   "detail": "67"
+  },
+  {
+   "t": 17.87,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 26.61,
+   "event": "text",
+   "detail": "69"
+  },
+  {
+   "t": 26.88,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 26.89,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search"
+  },
+  {
+   "t": 40.89,
+   "event": "text",
+   "detail": "200"
+  },
+  {
+   "t": 40.89,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 40.9,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 51.98,
+   "event": "text",
+   "detail": "187"
+  },
+  {
+   "t": 52.0,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 52.0,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 107.75,
+   "event": "text",
+   "detail": "2957"
+  },
+  {
+   "t": 108.44,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about MameLoshnLM.\n\n",
+  "I'll start by getting an overview of the knowledge bases available.\n\n",
+  "Found it. The document is in the 计算机与人工智能 KB, split into 4 parts. Let me read the content, focusing on the paper's abstract/intro (part 1) and searching the vector index for parameter scale details.\n\n",
+  "The document is well-indexed and the abstract directly answers the question. Let me confirm the parameter scale detail appears consistently in another part of the paper (model details).\n\n",
+  "I have everything needed, confirmed across multiple independent retrievals.\n\n## Answer\n\n**MameLoshnLM** is the **first open-source 8B-parameter language model built specifically for Yiddish** — reported as **8 billion parameters**.\n\n### What it is\n- **Purpose:** A Yiddish-specific LLM addressing the language's limited digital presence and the scarcity of reliable evaluation resources. It is intended to serve Yiddish's roughly one million speakers and the academic community studying Yiddish-language culture.\n- **Construction:** It is produced by **continued pretraining of Llama 3.1 8B** on a Yiddish corpus, using a causal language-modeling objective (bfloat16, 8-bit AdamW, LR 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens). Since it continues from Llama 3.1 8B, it inherits the 8B parameter scale.\n- **Authors/affiliations:** Uri Katz, Omer Goldman, Tomasz Limisiewicz, Reut Tsarfaty, Noah A. Smith — Bar-Ilan University, University of Cambridge, University of Washington, Allen Institute for AI.\n\n### Supporting resources introduced with it\n- **Oytser** — a high-quality Yiddish pretraining corpus combining contemporary web-native sources with literary materials.\n- **Kashes** — a multi-task Yiddish benchmark spanning translation, linguistic analysis, information extraction, and language understanding.\n\n### Report context\nAcross the benchmark, MameLoshnLM **outperforms open baselines of similar scale** (Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B). The paper's key finding is that general multilingual models produce an \"intelligible but systematically reduced\" Yiddish, while MameLoshnLM better captures native lexical/morphological patterns (e.g., loshn-koydesh Hebrew/Aramaic vocabulary and Yiddish-specific morphology) — pointing to a broader failure mode of noisy web-scale multilingual data for low-resource languages.\n\n### Source references\n- KB: **计算机与人工智能** (`b1199132-e4d4-4305-8c2e-82dc1753b0ba`)\n- Document: `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md` (parts 1–4 of 4), derived from *\"MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\"* (arXiv 2608.05850)\n  - **Part 1** — Abstract & Introduction: \"the first open-source 8B-parameter language model built specifically for Yiddish\"; \"we continue pretraining Llama 3.1 8B to obtain MAMELOSHNLM\"; §6 Experimental Setup (baselines of similar scale); training hyperparameters chunk.\n  - **Part 2** — §8 Analysis (Loshn-koydesh and morphology probes vs. Llama 3.1 8B, Table 5).\n  - **Part 4** — §E.8 Summary of All Metrics (Table 12 comparison).\n\n**Certainty:** High — the parameter scale (8B, inherited from Llama 3.1 8B) and the definition are stated explicitly and consistently across the abstract, introduction, and experimental setup, and were confirmed by both metadata search and vector/two-stage semantic retrieval. No conflicting parameter figures appeared for this model."
+ ],
+ "qid": "BQ07",
+ "via": "chat"
+}

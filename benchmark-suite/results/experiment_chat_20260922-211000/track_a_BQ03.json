@@ -1,0 +1,144 @@
+{
+ "track": "a",
+ "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+ "answer": "I have all the evidence I need, verified across the primary source document.\n\n## MultiMedQA and Flan-PaLM's MedQA Performance\n\n### What is MultiMedQA?\n\n**MultiMedQA** is a benchmark for medical question answering introduced by Google researchers in *\"Large Language Models Encode Clinical Knowledge\"* (arXiv 2212.13138; Singhal, Azizi, Tu et al.). It was created to fill an unmet need: existing medical QA benchmarks did not allow the broad analysis required for real-world clinical applications (factuality, expert reasoning, helpfulness, precision, health equity, and potential harm).\n\nMultiMedQA comprises **seven datasets** spanning three question types — medical exam, medical research, and consumer medical questions:\n\n**Six pre-existing open datasets:**\n- **MedQA** — USMLE-style professional medical exam questions\n- **MedMCQA** — medical entrance exam questions (India)\n- **PubMedQA** — research-oriented (biomedical literature) QA\n- **LiveQA** — longer-form questions from medical professionals\n- **MedicationQA** — medication-related consumer questions\n- **MMLU clinical topics** — general knowledge benchmark's clinical subset\n\n**One newly introduced dataset:**\n- **HealthSearchQA** — 3,375 commonly searched consumer health questions\n\nThe datasets vary along axes of format (multiple-choice vs. long-form), capability tested (fact recall vs. medical reasoning), domain (open vs. closed), and audience (professional vs. consumer).\n\nTo assess LLMs on MultiMedQA, the authors used **PaLM** (540B parameters) and its instruction-tuned variant **Flan-PaLM**, applying a combination of **few-shot, chain-of-thought (CoT), and self-consistency (SC) prompting**.\n\n### Flan-PaLM's Performance on MedQA\n\nOn **MedQA (USMLE), 4-option multiple-choice questions**, Flan-PaLM 540B achieved **67.6% accuracy**, setting a new state of the art:\n\n- **+17.3% over the previous SOTA of 50.3%** (achieved by PubMedGPT, a 2.7B model trained exclusively on biomedical abstracts; the authors cite exceeding SOTA \"by over 17%\")\n- **+20.1% over the DRAGON model**\n- On the **harder 5-option MedQA set**, Flan-PaLM 540B scored **62.0%**\n\n**Prompting ablation (Flan-PaLM 540B on MedQA 4 options):**\n| Method | Accuracy |\n|---|---|\n| Few-shot | 60.3% |\n| Few-shot + Self-Consistency (SC) | **67.6%** |\n\n**Scale ablation:** Instruction tuning improved results across *all* model sizes — Flan-PaLM beat base PaLM on MedQA, MedMCQA, and PubMedQA. Scale mattered substantially: Flan-PaLM 540B outperformed the 62B variant by **over 14%** and the 8B variant by **over 24%**. (Full scale table on MedQA 4-option 5-shot: PaLM 8B 25.7 → Flan-PaLM 8B 35.4 → PaLM 62B 40.9 → Flan-PaLM 62B 46.1 → PaLM 540B 58.9 → Flan-PaLM 540B 60.3.)\n\nBeyond MedQA, Flan-PaLM with combined prompting strategies **exceeded SOTA on MedMCQA** (57.6% dev, vs. prior 52.9%) **and PubMedQA**, plus MMLU clinical topics. The paper then proposed **instruction prompt tuning** to create **Med-PaLM**, aimed at improving long-form generation and better aligning the model to the medical domain.\n\n**Source:** `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (parts 1 & 2 of 8), KB `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` — specifically the abstract, §3.1.1 (MultiMedQA benchmark definition), §4.1 (MedQA SOTA), and §4.4 (ablations). A duplicate copy also exists in corpus KB `0942f1a6-d81b-413b-a60b-b994680dcaac`.\n\n**Certainty:** High — the definition, dataset composition, 67.6% figure, and +17.3% improvement are corroborated across multiple independently retrieved chunks (abstract, Table 4, §4.1, §4.4, Table 7). One minor inconsistency in the source itself: the abstract/the intro says MultiMedQA combines \"six existing datasets\" *plus* HealthSearchQA as the seventh, while §3.1.1 lists HealthSearchQA as an augmentation to a set it describes as including six datasets — both resolve to **7 total datasets**, which is how the paper's contribution bullet states it.",
+ "is_error": false,
+ "latency_s": 81.0,
+ "sdk_duration_ms": 79159,
+ "num_turns": 8,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__backend_status,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_doc_re"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb-mcp search knowledge base documents"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "MultiMedQA benchmark Flan-PaLM MedQA performance"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MultiMedQA Flan-PaLM MedQA medical question answering benchmark"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_get_documents",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "MedQA USMLE 67.6 Flan-PaLM 540B previous state of the art 50.3"
+   }
+  },
+  {
+   "tool": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MultiMedQA six datasets HealthSearchQA MedQA MedMCQA PubMedQA MMLU clinical topics definition",
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+   }
+  }
+ ],
+ "tool_call_count": 7,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 109544,
+  "output": 1871,
+  "cache_read": 193728,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.691359,
+ "timeline": [
+  {
+   "t": 1.89,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 2.82,
+   "event": "text",
+   "detail": "100"
+  },
+  {
+   "t": 2.83,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 9.09,
+   "event": "text",
+   "detail": "51"
+  },
+  {
+   "t": 9.09,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 11.46,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 11.46,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 46.24,
+   "event": "text",
+   "detail": "82"
+  },
+  {
+   "t": 46.24,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_get_documents"
+  },
+  {
+   "t": 46.24,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 52.01,
+   "event": "text",
+   "detail": "161"
+  },
+  {
+   "t": 52.03,
+   "event": "tool_use",
+   "detail": "mcp__plugin_rag-knowledge_kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 80.98,
+   "event": "text",
+   "detail": "3959"
+  },
+  {
+   "t": 80.99,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about MultiMedQA and Flan-PaLM's MedQA performance.\n\n",
+  "The MCP server is still connecting. Let me retry.\n\n",
+  "I found the source document. Let me read the full context to verify the details.\n\n",
+  "I have strong, consistent evidence. Let me do one content-verification read of the primary source to confirm the abstract-level definition and numbers in full.\n\n",
+  "I have all the evidence I need, verified across the primary source document.\n\n## MultiMedQA and Flan-PaLM's MedQA Performance\n\n### What is MultiMedQA?\n\n**MultiMedQA** is a benchmark for medical question answering introduced by Google researchers in *\"Large Language Models Encode Clinical Knowledge\"* (arXiv 2212.13138; Singhal, Azizi, Tu et al.). It was created to fill an unmet need: existing medical QA benchmarks did not allow the broad analysis required for real-world clinical applications (factuality, expert reasoning, helpfulness, precision, health equity, and potential harm).\n\nMultiMedQA comprises **seven datasets** spanning three question types — medical exam, medical research, and consumer medical questions:\n\n**Six pre-existing open datasets:**\n- **MedQA** — USMLE-style professional medical exam questions\n- **MedMCQA** — medical entrance exam questions (India)\n- **PubMedQA** — research-oriented (biomedical literature) QA\n- **LiveQA** — longer-form questions from medical professionals\n- **MedicationQA** — medication-related consumer questions\n- **MMLU clinical topics** — general knowledge benchmark's clinical subset\n\n**One newly introduced dataset:**\n- **HealthSearchQA** — 3,375 commonly searched consumer health questions\n\nThe datasets vary along axes of format (multiple-choice vs. long-form), capability tested (fact recall vs. medical reasoning), domain (open vs. closed), and audience (professional vs. consumer).\n\nTo assess LLMs on MultiMedQA, the authors used **PaLM** (540B parameters) and its instruction-tuned variant **Flan-PaLM**, applying a combination of **few-shot, chain-of-thought (CoT), and self-consistency (SC) prompting**.\n\n### Flan-PaLM's Performance on MedQA\n\nOn **MedQA (USMLE), 4-option multiple-choice questions**, Flan-PaLM 540B achieved **67.6% accuracy**, setting a new state of the art:\n\n- **+17.3% over the previous SOTA of 50.3%** (achieved by PubMedGPT, a 2.7B model trained exclusively on biomedical abstracts; the authors cite exceeding SOTA \"by over 17%\")\n- **+20.1% over the DRAGON model**\n- On the **harder 5-option MedQA set**, Flan-PaLM 540B scored **62.0%**\n\n**Prompting ablation (Flan-PaLM 540B on MedQA 4 options):**\n| Method | Accuracy |\n|---|---|\n| Few-shot | 60.3% |\n| Few-shot + Self-Consistency (SC) | **67.6%** |\n\n**Scale ablation:** Instruction tuning improved results across *all* model sizes — Flan-PaLM beat base PaLM on MedQA, MedMCQA, and PubMedQA. Scale mattered substantially: Flan-PaLM 540B outperformed the 62B variant by **over 14%** and the 8B variant by **over 24%**. (Full scale table on MedQA 4-option 5-shot: PaLM 8B 25.7 → Flan-PaLM 8B 35.4 → PaLM 62B 40.9 → Flan-PaLM 62B 46.1 → PaLM 540B 58.9 → Flan-PaLM 540B 60.3.)\n\nBeyond MedQA, Flan-PaLM with combined prompting strategies **exceeded SOTA on MedMCQA** (57.6% dev, vs. prior 52.9%) **and PubMedQA**, plus MMLU clinical topics. The paper then proposed **instruction prompt tuning** to create **Med-PaLM**, aimed at improving long-form generation and better aligning the model to the medical domain.\n\n**Source:** `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (parts 1 & 2 of 8), KB `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` — specifically the abstract, §3.1.1 (MultiMedQA benchmark definition), §4.1 (MedQA SOTA), and §4.4 (ablations). A duplicate copy also exists in corpus KB `0942f1a6-d81b-413b-a60b-b994680dcaac`.\n\n**Certainty:** High — the definition, dataset composition, 67.6% figure, and +17.3% improvement are corroborated across multiple independently retrieved chunks (abstract, Table 4, §4.1, §4.4, Table 7). One minor inconsistency in the source itself: the abstract/the intro says MultiMedQA combines \"six existing datasets\" *plus* HealthSearchQA as the seventh, while §3.1.1 lists HealthSearchQA as an augmentation to a set it describes as including six datasets — both resolve to **7 total datasets**, which is how the paper's contribution bullet states it."
+ ],
+ "qid": "BQ03",
+ "via": "chat"
+}

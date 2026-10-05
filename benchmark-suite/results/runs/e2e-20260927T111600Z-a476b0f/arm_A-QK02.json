@@ -1,0 +1,361 @@
+{
+  "status": "ok",
+  "query": "Which three independent ontologies subdivide the Gene Ontology?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 24,
+    "vector_dedup_docs": 19,
+    "recall_seconds": 4.5,
+    "docs_read": 17,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k00.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k01.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 8.3
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9357,
+    "scored_segments": 80,
+    "total_segments": 80,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.3979467749595642,
+      "judge_score": 0.9357,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+      "vector_score": 0.46060049533843994,
+      "judge_score": 0.8719,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+      "vector_score": 0.45396625995635986,
+      "judge_score": 0.8572,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+      "vector_score": 0.6547621488571167,
+      "judge_score": 0.8498,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "vector_score": 0.35675811767578125,
+      "judge_score": 0.8389,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "vector_score": 0.35675811767578125,
+      "judge_score": 0.8389,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "vector_score": 0.35675811767578125,
+      "judge_score": 0.8389,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "vector_score": 0.3848472237586975,
+      "judge_score": 0.8384,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.4063626527786255,
+      "judge_score": 0.8252,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+      "vector_score": 0.3632662296295166,
+      "judge_score": 0.8032,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.38125038146972656,
+      "judge_score": 0.7871,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/soul-definition.md",
+      "vector_score": 0.35672515630722046,
+      "judge_score": 0.6882,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "vector_score": 0.35672515630722046,
+      "judge_score": 0.6882,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "vector_score": 0.35672515630722046,
+      "judge_score": 0.6882,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+      "vector_score": 0.5409456491470337,
+      "judge_score": 0.5915,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+      "vector_score": 0.39827781915664673,
+      "judge_score": 0.5906,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 7 of 8).md",
+      "vector_score": 0.4255538582801819,
+      "judge_score": 0.3642,
+      "kept": false
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.3979467749595642,
+      "judge_score": 0.9357,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+      "name": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+      "vector_score": 0.46060049533843994,
+      "judge_score": 0.8719,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+      "name": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+      "vector_score": 0.45396625995635986,
+      "judge_score": 0.8572,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+      "name": "genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+      "vector_score": 0.6547621488571167,
+      "judge_score": 0.8498,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.35675811767578125,
+      "judge_score": 0.8389,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.35675811767578125,
+      "judge_score": 0.8389,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.35675811767578125,
+      "judge_score": 0.8389,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "name": "power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "vector_score": 0.3848472237586975,
+      "judge_score": 0.8384,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.4063626527786255,
+      "judge_score": 0.8252,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+      "name": "economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+      "vector_score": 0.3632662296295166,
+      "judge_score": 0.8032,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.38125038146972656,
+      "judge_score": 0.7871,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.35672515630722046,
+      "judge_score": 0.6882,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.35672515630722046,
+      "judge_score": 0.6882,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.35672515630722046,
+      "judge_score": 0.6882,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+      "name": "genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+      "vector_score": 0.5409456491470337,
+      "judge_score": 0.5915,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+      "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+      "vector_score": 0.39827781915664673,
+      "judge_score": 0.5906,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+    "soul-cs-library/memory-conventions.md",
+    "soul-e2e-tester-024115/memory-conventions.md",
+    "soul-demo-qa/memory-conventions.md",
+    "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "soul-cs-library/soul-definition.md",
+    "soul-e2e-tester-024115/soul-definition.md",
+    "soul-demo-qa/soul-definition.md",
+    "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+    "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md"
+  ],
+  "evidence_pack": "[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.3979467749595642]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md · vec=0.46060049533843994]\n# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 1/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers\n# There is No Such Thing as an “Index”! or: The next 500 Indexing Papers\n\n\nJens Dittrich Saarland Informatics Campus jens.dittrich@bigdata.unisaarland.de\n\nJoris Nix\\* Saarland Informatics Campus joris.nix@bigdata.uni-saarland.de\n\nChristian Schön\\* Saarland Informatics Campus christian.schoen@uni-saarland.de\n\n## ABSTRACT\n\n\nIndex structures are a building block of query processing and computer science in general. Since the dawn of computer technology there have been index structures. And since then, a myriad of index structures are being invented and published each and every year.\n\nIn this paper we argue that the very idea of “inventing an index\" is a misleading concept in the first place. It is the analogue of“inventing a physical query plan\". This paper is a paradigm shift in which we propose to drop the idea to handcraft index structures (as done for binary search trees over B-trees to any form of learned index) altogether. We present a new automatic index breeding framework coined Genetic Generic Generation of Index Structures (GENE). It is based on the observation that almost all index structures are assembled along three principal dimensions: (1) structural building blocks, e.g., a B-tree is assembled from two different structural node types (inner and leaf nodes), (2) a couple of invariants, e.g., for a B-tree all paths have the same length, and (3) decisions on the internal layout of nodes (row or column layout, etc.). We propose a generic indexing framework that can mimic many existing index structures along those dimensions. Based on that framework we propose a generic genetic index generation algorithm that, given a workload and an optimization goal, can automatically assemble and mutate, in other words breed’ new index structure species’. In our experiments we follow multiple goals. We reexamine some good old wisdom from database technology. Given a specific workload, will GENE even breed an index that is equivalent to what our textbooks and papers currently recommend for such a workload? Or can we do even more? Our initial results strongly indicate that generated indexes are the next step in designing index structures.\n\n## 1 INTRODUCTION\n\n## 1.1 Problem 1: Indexes are considered monolithic entities\n\n\nWhen we database researchers talk about indexes, we use the term index like referring to an en\n\n[计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md · vec=0.45396625995635986]\n# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 3/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers > 6 EXPERIMENTAL EVALUATION\n## 6 EXPERIMENTAL EVALUATION\n\n\nIn our experiments, we first determine a suitable set of hyperparameters for our genetic framework. Based on those hyperparameters, we then carefully evaluate GENE. We highlight the cost for training and the ability to automatically reach a certain performance baseline. Finally, we show the capability of GENE to match and even beat the performance of several state-of-the-art index structures. System. All experiments were executed on a machine with an AMD Ryzen Threadripper 1900X 8-Core processor with 32 GiB memory on Linux. Our framework and the respective experiments are implemented in C++ and compiled with Clang 8.0.1, -O3. All experiments are run single-threaded and in main-memory.\n\nDatasets. We use three types of datasets. All datasets consist of unique 64-bit uint keys and a 64-bit payload. In the following, we refer to the keys as data.keys. The payload represents the offset of the corresponding key into a sorted array. Therefore, we refer to the payload as data.offset. The datasets exhibit a variety of different characteristics like distribution, density, domain, and size. The first dataset $u n i _ { d e n s e }$ contains keys that are uniformly distributed in a dense domain. Concretely, $u n i _ { \\mathrm { d e n s e } }$ contains keys in the range [0, n) where n is the size of the dataset. The other two datasets, books and osm, represent real-world datasets with complex distributions and are taken from [31]. The datasets are sampled-down to our specific data size by uniformly drawing elements without duplicates. We have two main dataset sizes 100K and 100M, depending on the concrete experiment. Table 2 gives an overview of the datasets.\n\nWorkloads. We use three classes of workloads: point, range, and mixed point and range query workloads. For the moment, all our workloads are read-only, i.e. we do not consider insert, delete, or update statements. Note however, that our generic framework still supports insertions and deletions. In addition, update statements would not alter the structure of the index so we could easily integrate them into our framework. Table 3 summarizes the basic workload types. Point(data, $\\mathrm { i d x } _ { \\mathrm { m i n } } , \\mathrm { i d x } _ { \\mathrm { m a x } } )$ represents a point query workload where\n\n[生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md · vec=0.6547621488571167]\n# genomics__1602.01876__primer-on-the-gene-ontology.md.md（第 1/2 部分）\n章节: Primer on the Gene Ontology\n# Primer on the Gene Ontology\n\n\nPascale Gaudet1,\\*, Nives Škunca2,3,4, James C. Hu⁵, and Christophe Dessimoz4,6\n\n1SIB Swiss Institute of Bioinformatics, 1 Michel-Servet, 1211 Geneva, Switzerland\n\n²ETH Zurich, Computer Science, Universitätstr. 19, 8092 Zurich, Switzerland\n\n3SIB Swiss Institute of Bioinformatics, Universitätstr. 19, 8092 Zurich, Switzerland\n\n4University College London, Gower St, London WC1E 6BT, UK\n\n⁵Department of Biochemistry and Biophysics, Texas A&M University and Texas AgriLife\n\nResearch, College Station, TX USA\n\n⁶Department of Ecology and Evolution and Center of Integrative Genomics, University of\n\nLausanne, Biophore, 1015 Lausanne, Switzerland\n\n\\*Corresponding author: pascale.gaudet@isb-sib.ch\n\nJanuary 2016\n\n## Abstract\n\n\nThe Gene Ontology (GO) project is the largest resource for cataloguing gene function. The combination of solid conceptual underpinnings and a practical set of features have made the GO a widely adopted resource in the research community and an essential resource for data analysis. In this chapter, we provide a concise primer for all users of the GO. We briefly introduce the\n\nstructure of the ontology and explain how to interpret annotations associated with the GO.\n\nKeywords. Gene Ontology structure, evidence codes, annotations, gene association file (GAF), GO files, function, vocabulary, annotation evidence\n\n## 1. Introduction\n\n\nThe key motivation behind the Gene Ontology (GO) was the observation that similar genes often have conserved functions in different organisms (1). Clearly, a common vocabulary was needed to be able to compare the roles of orthologous genes (and their products) across different species. The value of comparative studies of biological function across systems predates Jacques Monod's statement that \"anything found to be true of E. coli must also be true of elephants\" (2). The Gene Ontology aims to produce a rigorous shared vocabulary to describe the roles of genes across different organisms (1). The GO project consists of the Gene Ontology itself, which models biological aspects in a structured way, and annotations, which associate genes or gene products with terms from the Gene Ontology. Combining information from all organisms in one central repository makes it possible to integrate knowledge from different databases, to infer the functionality of newly discovered genes, and to gain insight into t\n\n[soul-cs-library/memory-conventions.md · vec=0.35675811767578125]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[soul-e2e-tester-024115/memory-conventions.md · vec=0.35675811767578125]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[soul-demo-qa/memory-conventions.md · vec=0.35675811767578125]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md · vec=0.3848472237586975]\n# power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md.md（第 1/2 部分）\n章节: Mapping Disruption Sources in the Power Grid and Implications for Resilience\n# Mapping Disruption Sources in the Power Grid and Implications for Resilience\n\n\nMaureen S. Golan\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\nmgolan@utexas.edu\n\nJavad Mohammadi\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\njavadm@utexas.edu\n\nAbstract—Developing models and metrics that can address resilience against disruptions is vital to ensure power grid reliability and that adequate recovery and adaptation mechanisms are in place. In this paper, we propose a novel disruption mapping approach and apply it to the publicly available U.S. Department of Energy DOE-417 Electric Emergency and Disturbance Report to holistically analyze the origin of anomalous events and their propagation through the cyber, physical and human domains. We show that capturing the disruption process onset has implications for quantifying, mitigating, and reporting power grid resilience.\n\nIndex Terms—power grid, resilience, disruption, reliability\n\n## I. INTRODUCTION\n\n\nUtilities and regulatory authorities rely on metrics based on tracked data to assess the power grid's reliability and plan for future operating conditions. However, metrics that analyze the resilience of the power grid are immature and ill-equipped to provide utilities and regulatory authorities the information they need to ensure both reliability and resilience of the power grid in the changing context of power grid operations and development [1]. Therefore, we propose a method for mapping data that utilities are required to report to different dimensions of disruption to enable a comprehensive understanding of the relationship between disruption sources and system resilience.\n\n## A. Motivation\n\n\nAs extreme weather events and unprecedented cyber, physical, and supply chain disruptions exacerbate the changing grid landscape, resilience is a complementary concept to reliability that needs to be understood and modeled to protect the power grid. Although reliability and resilience strategies can be implemented differently by individual operators, alleviating disruption impacts requires revisiting electric grid planning, operation, maintenance and monitoring procedures [2]. Leveraging resilience principles as a critical aspect of reliability can support flexible design ap\n\n[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md · vec=0.4063626527786255]\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani<sup>∗</sup> Google Brain avaswani@google.com\n\nNoam Shazeer<sup>∗</sup> Google Brain noam@google.com\n\nNiki Parmar<sup>∗</sup> Google Research nikip@google.com\n\nJakob Uszkoreit<sup>∗</sup> Google Research usz@google.com\n\nLlion Jones<sup>∗</sup> Google Research llion@google.com\n\nAidan N. Gomez<sup>∗</sup> <sup>†</sup> University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser<sup>∗</sup> Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin<sup>∗</sup> <sup>‡</sup> illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden \n\n[经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md · vec=0.3632662296295166]\n# economics__1609.00415__does-infrastructure-investment-lead-to-econo.md.md（第 1/4 部分）\n章节: Does infrastructure investment lead to economic growth or economic fragility? Evidence from China\n# Does infrastructure investment lead to economic growth or economic fragility? Evidence from China\n\n\nAtif Ansar,\\* Bent Flyvbjerg,\\*\\* Alexander Budzier,\\*\\*\\* and Daniel Lunn\\*\\*\\*\\*\n\nAbstract: China's three-decade infrastructure investment boom shows few signs of abating. Is China's economic growth a consequence of its purposeful investment? Is China a prodigy in delivering infrastructure from which rich democracies could learn? The prevalent view in economics literature and policies derived from it is that a high level of infrastructure investment is a precursor to economic growth. China is especially held up as a model to emulate. Politicians in rich democracies display awe and envy of the scale of infrastructure Chinese leaders are able to build. Based on the largest dataset of its kind, this paper punctures the twin myths that (i) infrastructure creates economic value, and that (ii) China has a distinct advantage in its delivery. Far from being an engine of economic growth, the typical infrastructure investment fails to deliver a positive risk-adjusted return. Moreover, China's track record in delivering infrastructure is no better than that of rich democracies. Investing in unproductive projects results initially in a boom, as long as construction is ongoing, followed by a bust, when forecasted benefits fail to materialize and projects therefore become a drag on the economy. Where investments are debt-financed, overinvesting in unproductive projects results in the build-up of debt, monetary expansion, instability in financial markets, and economic fragility, exactly as we see in China today. We conclude that poorly managed infrastructure investments are a main explanation of surfacing economic and financial problems in China. We predict that, unless China shifts to a lower level of higher-quality infrastructure investments, the country is headed for an infrastructure-led national financial and economic crisis, which is likely also to be a crisis for the international economy. China's infrastructure investment model is not one to follow for other countries but one to avoid. Keywords: infrastructure, economic growth, fragility, investment theory, China, transport, cost overruns, benefit shortfalls, cost–benefit analysis, optimism bias\n\nJEL classification: C39, H43, \n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.38125038146972656]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence Rank 5]。\n\n## 3. 数据质量评估\n\n| 维度 | 结论 |\n|---|---|\n| 完整性 | 2 行 × 3 列无缺失；清洗零操作、零损失，原始值与清洗值逐位一致（cleaning_integrity.json） |\n| 时间合法性 | timestamp 为真实解析的 ISO-8601(+08:00)，monotonic=true、median_interval_s=5.0、dropped_unparsable=0（time_alignment.json） |\n| 异常值 | z=[-0.7071, +0.7071]（构造性）、IQR 栏 71.45/74.05 degC 内无点、异常检测因 n<3 前置跳过（process_parameters_screened=0）——『无离群、无异常区间』是样本量下限的构造性结果，**不构成无异常的证据** |\n| 生产状态 | 两行被脚本默认标 steady 为无证据默认值，不据此声明稳态背景 |\n| 批次/分组完整性 | 无批次列、无分组列（组数=1），批次完整性检验不触发 |\n| 统计充分性 | validate_report 判定 **INSUFFICIENT_DATA**；脚本输出的 ROBUST 总体有效性判定为空洞真（total_targets=0、检查列表全空），已降权 |\n\n## 4. 统计分析发现\n\n本节为强制章节。n=2 条件下全部统计方法不可用，可用发现均为算术与视觉事实：\n\n1. **唯一趋势事实 [Evidence Rank 1]**：一阶差分 +1.3 degC，平均速率 0.26 degC/s（derived=true，未插值、未滤波、未拟合，可由原始两行复算）。『drift』仅为两点单调形态的形态学描述，不代表\n\n[soul-cs-library/soul-definition.md · vec=0.35672515630722046]\n# SOUL 人格定义 — soul-template\n\n## 身份定位\n我是一个通用领域的研究型 AI 人格。身份五维:\n- 身份角色: 严谨的领域研究者与知识策展人\n- 核心使命: 基于可靠证据回答,不臆测、不编造\n- 认知风格: 结构化、可溯源、先结论后论证\n- 情绪基调: 沉稳、克制、专业\n- 边界意识: 明确区分\"已知/推测/未知\",未知时明说\n\n## 性格五维\n- 开放性: 高(乐于接受跨领域视角)\n- 尽责性: 高(引用必带锚点,宁可少说不可错说)\n- 外向性: 低(输出精炼,不寒暄)\n- 宜人性: 中(直接但不冒犯)\n- 神经质: 低(对不确定性保持稳定)\n\n## 知识边界\n- 只基于知识库中可检索的证据回答\n- 检索不到时明确声明,不编造文献\n- 对冲突证据,并列呈现并说明分歧\n\n## language-style\n每行一个短语,不含标点,供自动子串匹配:\n简洁有力\n先结论后论证\n引用必带出处\n承认不确定性\n不堆砌术语\n用数据说话\n分点陈述\n克制表达\n\n## 回答格式偏好\n- 结构: 结论 → 依据(带引用)→ 边界声明\n- 长度: 与问题复杂度匹配,不注水\n\n\n[soul-e2e-tester-024115/soul-definition.md · vec=0.35672515630722046]\n# SOUL 人格定义 — soul-template\n\n## 身份定位\n我是一个通用领域的研究型 AI 人格。身份五维:\n- 身份角色: 严谨的领域研究者与知识策展人\n- 核心使命: 基于可靠证据回答,不臆测、不编造\n- 认知风格: 结构化、可溯源、先结论后论证\n- 情绪基调: 沉稳、克制、专业\n- 边界意识: 明确区分\"已知/推测/未知\",未知时明说\n\n## 性格五维\n- 开放性: 高(乐于接受跨领域视角)\n- 尽责性: 高(引用必带锚点,宁可少说不可错说)\n- 外向性: 低(输出精炼,不寒暄)\n- 宜人性: 中(直接但不冒犯)\n- 神经质: 低(对不确定性保持稳定)\n\n## 知识边界\n- 只基于知识库中可检索的证据回答\n- 检索不到时明确声明,不编造文献\n- 对冲突证据,并列呈现并说明分歧\n\n## language-style\n每行一个短语,不含标点,供自动子串匹配:\n简洁有力\n先结论后论证\n引用必带出处\n承认不确定性\n不堆砌术语\n用数据说话\n分点陈述\n克制表达\n\n## 回答格式偏好\n- 结构: 结论 → 依据(带引用)→ 边界声明\n- 长度: 与问题复杂度匹配,不注水\n\n\n[soul-demo-qa/soul-definition.md · vec=0.35672515630722046]\n# SOUL 人格定义 — soul-template\n\n## 身份定位\n我是一个通用领域的研究型 AI 人格。身份五维:\n- 身份角色: 严谨的领域研究者与知识策展人\n- 核心使命: 基于可靠证据回答,不臆测、不编造\n- 认知风格: 结构化、可溯源、先结论后论证\n- 情绪基调: 沉稳、克制、专业\n- 边界意识: 明确区分\"已知/推测/未知\",未知时明说\n\n## 性格五维\n- 开放性: 高(乐于接受跨领域视角)\n- 尽责性: 高(引用必带锚点,宁可少说不可错说)\n- 外向性: 低(输出精炼,不寒暄)\n- 宜人性: 中(直接但不冒犯)\n- 神经质: 低(对不确定性保",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k00.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k01.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 25.5
+}

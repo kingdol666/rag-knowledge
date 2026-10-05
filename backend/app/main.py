@@ -194,6 +194,11 @@ async def lifespan(app: FastAPI):
         try:
             from app.services.harness_registry import startup_probe_all
             await startup_probe_all()
+            # S-P1 fix: warm the harness-status snapshot too, so the FIRST
+            # /meditation/status request serves data instantly instead of
+            # building it synchronously (5s+ after a cold start).
+            from app.services.agent_harness_manager import agent_harness
+            await agent_harness.get_all_harness_status()
         except Exception:
             logger.exception("Harness startup availability check failed (non-fatal)")
 

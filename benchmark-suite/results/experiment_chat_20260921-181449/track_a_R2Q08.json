@@ -1,0 +1,147 @@
+{
+ "track": "a",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "answer": "The source document confirms the abstract. I have everything needed for a precise, sourced answer.\n\n## Answer\n\nThe wav2vec 2.0 approach detects within-sentence prosodic boundaries **using only acoustic information** — i.e., the raw speech signal, with no lexical/textual input — and reaches an **accuracy of 94% with an F1 measure of 83%** on within-sentence prosodic boundaries.\n\nFor completeness, the same model achieves **95% accuracy and 89% F1 on all prosodic boundaries** (i.e., not restricted to within-sentence ones).\n\n### Context from the source\n\n- **Task & data:** Prosodic boundaries are detected directly from the speech signal, evaluated on recordings of **Czech radio broadcast news** (Channels 1 and 2 of Czech Radio; the NRS corpus — 12 news bulletins, 6 male + 6 female speakers, 42 minutes of speech, 486 sentences), hand-annotated by phonetic experts.\n- **Acoustic-only framing:** The authors' explicit goal is \"a detector which works solely in the audio modality, using only acoustic cues.\" They use learned representations from raw audio (the pre-trained wav2vec 2.0 base model \"ClTRUS\") rather than handcrafted feature combinations (pause/syllable duration, F0 range and resets, intensity, pitch movement).\n- **Small-data note:** The result is achieved \"despite using a relatively small amount of labeled data\" — a key advantage of the fine-tuned wav2vec framework.\n- **Comparison:** This outperforms an existing **text-based** predictor (a T5 model using transcripts of the same utterances). Combining the outputs of the two different models improves results even further.\n\n### Source reference\n\n- **Document:** `computer & AI / speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md`\n- **Title:** *Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0*\n- **Authors:** Marie Kunešová and Markéta Rezáčková (University of West Bohemia, Pilsen, Czech Republic)\n- **Found in KBs:** `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (计算机与人工智能) and `0942f1a6-d81b-413b-a60b-b994680dcaac` (Corpus-Chunks800), arXiv ID 2209.15032 — evidence from the Abstract (chunk_index 1–2).\n\n**Certainty: high** — the abstract text was retrieved and read in full, and its wording directly and unambiguously answers both parts of the question (information type = acoustic only; accuracy = 94% / F1 83% on within-sentence boundaries). **Blind spot:** none for this question; the paper's later body sections detailing architecture/training were not exhaustively read, but the question concerns the reported headline result, which is fully covered by the abstract.",
+ "is_error": false,
+ "latency_s": 58.7,
+ "sdk_duration_ms": 57118,
+ "num_turns": 8,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__backend_status,mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_search"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb search vector knowledge base"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__backend_status,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_doc_read"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__backend_status",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "wav2vec 2.0 prosodic boundary detection Czech broadcast news"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "wav2vec 2.0 within-sentence prosodic boundaries accuracy"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md"
+   }
+  }
+ ],
+ "tool_call_count": 7,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 55202,
+  "output": 1310,
+  "cache_read": 249536,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.433528,
+ "timeline": [
+  {
+   "t": 1.67,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.07,
+   "event": "text",
+   "detail": "119"
+  },
+  {
+   "t": 3.08,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 20.83,
+   "event": "text",
+   "detail": "71"
+  },
+  {
+   "t": 20.93,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 24.53,
+   "event": "text",
+   "detail": "98"
+  },
+  {
+   "t": 24.54,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 39.66,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__backend_status"
+  },
+  {
+   "t": 44.52,
+   "event": "text",
+   "detail": "88"
+  },
+  {
+   "t": 44.52,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 44.53,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 47.04,
+   "event": "text",
+   "detail": "123"
+  },
+  {
+   "t": 47.04,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 58.7,
+   "event": "text",
+   "detail": "2586"
+  },
+  {
+   "t": 58.74,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about wav2vec 2.0 prosodic boundary detection on Czech broadcast news.\n\n",
+  "I'll wait for the kb-mcp server to connect and retry the tool search.\n\n",
+  "The kb-mcp tools are now available. Let me first check MCP connectivity, then run the retrieval.\n\n",
+  "MCP is connected and the backend is healthy. Now let me retrieve the relevant content.\n\n",
+  "The abstract confirms the key facts. Let me read the source document to verify the full abstract and get precise details.\n\n",
+  "The source document confirms the abstract. I have everything needed for a precise, sourced answer.\n\n## Answer\n\nThe wav2vec 2.0 approach detects within-sentence prosodic boundaries **using only acoustic information** — i.e., the raw speech signal, with no lexical/textual input — and reaches an **accuracy of 94% with an F1 measure of 83%** on within-sentence prosodic boundaries.\n\nFor completeness, the same model achieves **95% accuracy and 89% F1 on all prosodic boundaries** (i.e., not restricted to within-sentence ones).\n\n### Context from the source\n\n- **Task & data:** Prosodic boundaries are detected directly from the speech signal, evaluated on recordings of **Czech radio broadcast news** (Channels 1 and 2 of Czech Radio; the NRS corpus — 12 news bulletins, 6 male + 6 female speakers, 42 minutes of speech, 486 sentences), hand-annotated by phonetic experts.\n- **Acoustic-only framing:** The authors' explicit goal is \"a detector which works solely in the audio modality, using only acoustic cues.\" They use learned representations from raw audio (the pre-trained wav2vec 2.0 base model \"ClTRUS\") rather than handcrafted feature combinations (pause/syllable duration, F0 range and resets, intensity, pitch movement).\n- **Small-data note:** The result is achieved \"despite using a relatively small amount of labeled data\" — a key advantage of the fine-tuned wav2vec framework.\n- **Comparison:** This outperforms an existing **text-based** predictor (a T5 model using transcripts of the same utterances). Combining the outputs of the two different models improves results even further.\n\n### Source reference\n\n- **Document:** `computer & AI / speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md`\n- **Title:** *Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0*\n- **Authors:** Marie Kunešová and Markéta Rezáčková (University of West Bohemia, Pilsen, Czech Republic)\n- **Found in KBs:** `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (计算机与人工智能) and `0942f1a6-d81b-413b-a60b-b994680dcaac` (Corpus-Chunks800), arXiv ID 2209.15032 — evidence from the Abstract (chunk_index 1–2).\n\n**Certainty: high** — the abstract text was retrieved and read in full, and its wording directly and unambiguously answers both parts of the question (information type = acoustic only; accuracy = 94% / F1 83% on within-sentence boundaries). **Blind spot:** none for this question; the paper's later body sections detailing architecture/training were not exhaustively read, but the question concerns the reported headline result, which is fully covered by the abstract."
+ ],
+ "qid": "R2Q08",
+ "via": "chat"
+}

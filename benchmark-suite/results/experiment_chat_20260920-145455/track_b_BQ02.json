@@ -1,0 +1,110 @@
+{
+ "track": "b",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "answer": "**Answer** (from `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md`, John Preskill, 2018):\n\nNISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term the author coined to name the era of quantum computers with roughly 50 to a few hundred qubits — \"intermediate scale\" because 50 qubits already exceeds what brute-force classical simulation can handle, and \"noisy\" because we have imperfect control over the qubits and lack the protection of quantum error correction (Section 4.1). Its central limitation is noise: imperfect gate control means the per-gate two-qubit error rate is above 0.1% (and often much worse), so \"the noise will overwhelm the signal\" in circuits much larger than about 1000 gates, imposing \"a ceiling on the computational power of NISQ technology\" (Section 4.2). A related consequence, stated in the abstract and Section 5, is that NISQ results may be hard to validate — it can be difficult to confirm that the device is really giving the right answer.",
+ "is_error": false,
+ "latency_s": 58.3,
+ "sdk_duration_ms": 49471,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ",
+    "path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 138090,
+  "output": 736,
+  "cache_read": 68864,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.743282,
+ "timeline": [
+  {
+   "t": 8.95,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 21.32,
+   "event": "text",
+   "detail": "65"
+  },
+  {
+   "t": 21.53,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 21.58,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 25.08,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 43.76,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 53.11,
+   "event": "text",
+   "detail": "197"
+  },
+  {
+   "t": 53.13,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 58.28,
+   "event": "text",
+   "detail": "1003"
+  },
+  {
+   "t": 58.3,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll start by finding the paper files in the current directory.\n\n",
+  "Both NISQ-defining passages are in `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md` (John Preskill, 2018). Let me read the section that elaborates on the limitation.\n\n",
+  "**Answer** (from `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md`, John Preskill, 2018):\n\nNISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term the author coined to name the era of quantum computers with roughly 50 to a few hundred qubits — \"intermediate scale\" because 50 qubits already exceeds what brute-force classical simulation can handle, and \"noisy\" because we have imperfect control over the qubits and lack the protection of quantum error correction (Section 4.1). Its central limitation is noise: imperfect gate control means the per-gate two-qubit error rate is above 0.1% (and often much worse), so \"the noise will overwhelm the signal\" in circuits much larger than about 1000 gates, imposing \"a ceiling on the computational power of NISQ technology\" (Section 4.2). A related consequence, stated in the abstract and Section 5, is that NISQ results may be hard to validate — it can be difficult to confirm that the device is really giving the right answer."
+ ],
+ "qid": "BQ02",
+ "via": "chat"
+}

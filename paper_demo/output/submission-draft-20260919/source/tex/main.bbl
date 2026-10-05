@@ -1,0 +1,163 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{8}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Asai et~al\mbox{.}(2024)]%
+        {selfrag}
+\bibfield{author}{\bibinfo{person}{Akari Asai}, \bibinfo{person}{Zeqiu Wu},
+  \bibinfo{person}{Yizhong Wang}, \bibinfo{person}{Avirup Sil}, {and}
+  \bibinfo{person}{Hannaneh Hajishirzi}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{Self-RAG}: Learning to Retrieve, Generate, and
+  Critique through Self-Reflection}. In \bibinfo{booktitle}{\emph{The Twelfth
+  International Conference on Learning Representations ({ICLR})}}.
+\newblock
+\urldef\tempurl%
+\url{https://openreview.net/forum?id=hSyW5go0v8}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Chen et~al\mbox{.}(2024)]%
+        {bge-m3}
+\bibfield{author}{\bibinfo{person}{Jianlyu Chen}, \bibinfo{person}{Shitao
+  Xiao}, \bibinfo{person}{Peitian Zhang}, \bibinfo{person}{Kun Luo},
+  \bibinfo{person}{Defu Lian}, {and} \bibinfo{person}{Zheng Liu}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{M3-Embedding}: Multi-Linguality,
+  Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge
+  Distillation}. In \bibinfo{booktitle}{\emph{Findings of the Association for
+  Computational Linguistics: ACL 2024}}. \bibinfo{publisher}{Association for
+  Computational Linguistics}, \bibinfo{pages}{2318--2335}.
+\newblock
+\href{https://doi.org/10.18653/v1/2024.findings-acl.137}{doi:\nolinkurl{10.18653/v1/2024.findings-acl.137}}
+
+
+\bibitem[Lewis et~al\mbox{.}(2020)]%
+        {rag-lewis}
+\bibfield{author}{\bibinfo{person}{Patrick Lewis}, \bibinfo{person}{Ethan
+  Perez}, \bibinfo{person}{Aleksandra Piktus}, \bibinfo{person}{Fabio Petroni},
+  \bibinfo{person}{Vladimir Karpukhin}, \bibinfo{person}{Naman Goyal},
+  \bibinfo{person}{Heinrich K{\"u}ttler}, \bibinfo{person}{Mike Lewis},
+  \bibinfo{person}{{Wen-tau} Yih}, \bibinfo{person}{Tim Rockt{\"a}schel},
+  \bibinfo{person}{Sebastian Riedel}, {and} \bibinfo{person}{Douwe Kiela}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Retrieval-Augmented Generation for
+  Knowledge-Intensive {NLP} Tasks}. In \bibinfo{booktitle}{\emph{Advances in
+  Neural Information Processing Systems}}, Vol.~\bibinfo{volume}{33}.
+  \bibinfo{publisher}{Curran Associates, Inc.}, \bibinfo{pages}{9459--9474}.
+\newblock
+\urldef\tempurl%
+\url{https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Li et~al\mbox{.}(2026)]%
+        {deepread}
+\bibfield{author}{\bibinfo{person}{Zhanli Li}, \bibinfo{person}{Huiwen Tian},
+  \bibinfo{person}{Lvzhou Luo}, \bibinfo{person}{Yixuan Cao}, {and}
+  \bibinfo{person}{Ping Luo}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{{DeepRead}: Document Structure-Aware Reasoning to
+  Enhance Agentic Search}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2602.05014v3}}
+  (\bibinfo{year}{2026}).
+\newblock
+\href{https://doi.org/10.48550/arXiv.2602.05014}{doi:\nolinkurl{10.48550/arXiv.2602.05014}}
+
+
+\bibitem[{Model Context Protocol Contributors}(2025)]%
+        {mcp}
+\bibfield{author}{\bibinfo{person}{{Model Context Protocol Contributors}}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Model Context Protocol Specification (2025-11-25)}.
+\newblock
+  \bibinfo{howpublished}{\url{https://modelcontextprotocol.io/specification/2025-11-25}}.
+\newblock
+\newblock
+\shownote{Accessed September 19, 2026; specification revision 2025-11-25}.
+
+
+\bibitem[Wang et~al\mbox{.}(2024)]%
+        {mineru}
+\bibfield{author}{\bibinfo{person}{Bin Wang}, \bibinfo{person}{Chao Xu},
+  \bibinfo{person}{Xiaomeng Zhao}, \bibinfo{person}{Linke Ouyang},
+  \bibinfo{person}{Fan Wu}, \bibinfo{person}{Zhiyuan Zhao},
+  \bibinfo{person}{Rui Xu}, \bibinfo{person}{Kaiwen Liu}, \bibinfo{person}{Yuan
+  Qu}, \bibinfo{person}{Fukai Shang}, \bibinfo{person}{Bo Zhang},
+  \bibinfo{person}{Liqun Wei}, \bibinfo{person}{Zhihao Sui},
+  \bibinfo{person}{Wei Li}, \bibinfo{person}{Botian Shi}, \bibinfo{person}{Yu
+  Qiao}, \bibinfo{person}{Dahua Lin}, {and} \bibinfo{person}{Conghui He}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{MinerU}: An Open-Source Solution for Precise
+  Document Content Extraction}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2409.18839}}
+  (\bibinfo{year}{2024}).
+\newblock
+\href{https://doi.org/10.48550/arXiv.2409.18839}{doi:\nolinkurl{10.48550/arXiv.2409.18839}}
+
+
+\bibitem[Yan et~al\mbox{.}(2024)]%
+        {crag}
+\bibfield{author}{\bibinfo{person}{Shi-Qi Yan}, \bibinfo{person}{Jia-Chen Gu},
+  \bibinfo{person}{Yun Zhu}, {and} \bibinfo{person}{Zhen-Hua Ling}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Corrective Retrieval Augmented Generation}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2401.15884}}
+  (\bibinfo{year}{2024}).
+\newblock
+\href{https://doi.org/10.48550/arXiv.2401.15884}{doi:\nolinkurl{10.48550/arXiv.2401.15884}}
+
+
+\bibitem[Zhao et~al\mbox{.}(2025)]%
+        {cyberbot}
+\bibfield{author}{\bibinfo{person}{Chengshuai Zhao}, \bibinfo{person}{Riccardo
+  {De Maria}}, \bibinfo{person}{Tharindu Kumarage},
+  \bibinfo{person}{Kumar~Satvik Chaudhary}, \bibinfo{person}{Garima Agrawal},
+  \bibinfo{person}{Yiwen Li}, \bibinfo{person}{Jongchan Park},
+  \bibinfo{person}{Ying-Chih Chen}, \bibinfo{person}{Yuli Deng}, {and}
+  \bibinfo{person}{Huan Liu}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{CyberBOT}: Ontology-Grounded Retrieval Augmented
+  Generation for Reliable Cybersecurity Education}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 34th ACM International
+  Conference on Information and Knowledge Management}}.
+  \bibinfo{publisher}{Association for Computing Machinery},
+  \bibinfo{pages}{6752--6756}.
+\newblock
+\href{https://doi.org/10.1145/3746252.3761478}{doi:\nolinkurl{10.1145/3746252.3761478}}
+
+
+\end{thebibliography}

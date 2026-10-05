@@ -1,0 +1,511 @@
+{
+ "set": "bq10",
+ "tag": "t0",
+ "n": 10,
+ "seconds": 16.5,
+ "vec": {
+  "pass": 9,
+  "pass_rate": 0.9,
+  "hit1": 1.0,
+  "hit3": 1.0,
+  "hit5": 1.0,
+  "mrr": 1.0,
+  "mean_top1_score": 0.6977,
+  "rows": [
+   {
+    "qid": "BQ01",
+    "field": "artificial-intelligence",
+    "arxiv_id": "1706.03762",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multi-head",
+     "recurrence"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7191,
+     0.6959,
+     0.5972,
+     0.5519,
+     0.5241
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+     "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+     "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "BQ02",
+    "field": "quantum-physics",
+    "arxiv_id": "1801.00862",
+    "gold_rank": 1,
+    "n_dedup_docs": 20,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "noisy intermediate-scale"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6213,
+     0.5894,
+     0.4411,
+     0.4187,
+     0.4149
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md",
+     "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md"
+    ]
+   },
+   {
+    "qid": "BQ03",
+    "field": "clinical-medicine",
+    "arxiv_id": "2212.13138",
+    "gold_rank": 1,
+    "n_dedup_docs": 21,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multimedqa"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7527,
+     0.6838,
+     0.4998,
+     0.4813,
+     0.4654
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+     "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md"
+    ]
+   },
+   {
+    "qid": "BQ04",
+    "field": "genomics",
+    "arxiv_id": "1602.01876",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "molecular function",
+     "biological process",
+     "cellular component"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6548,
+     0.5409,
+     0.5106,
+     0.438,
+     0.4256
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+     "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+     "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "BQ05",
+    "field": "economics",
+    "arxiv_id": "1512.08067",
+    "gold_rank": 1,
+    "n_dedup_docs": 22,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "unified growth theory"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7615,
+     0.476,
+     0.4547,
+     0.4541,
+     0.4494
+    ],
+    "top_docs": [
+     "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "生命科学与医学/agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md",
+     "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "BQ06",
+    "field": "climate-science",
+    "arxiv_id": "1503.07557",
+    "gold_rank": 1,
+    "n_dedup_docs": 22,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [],
+    "pass": false,
+    "top_scores": [
+     0.7273,
+     0.6553,
+     0.6391,
+     0.5324,
+     0.5001
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 3 of 3).md",
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "BQ07",
+    "field": "nlp",
+    "arxiv_id": "2608.05850",
+    "gold_rank": 1,
+    "n_dedup_docs": 19,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "yiddish"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.5682,
+     0.5315,
+     0.4718,
+     0.4704,
+     0.4339
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md"
+    ]
+   },
+   {
+    "qid": "BQ08",
+    "field": "materials",
+    "arxiv_id": "2408.09942",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "oxygen redox",
+     "cathode"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7297,
+     0.7292,
+     0.4687,
+     0.4684,
+     0.4665
+    ],
+    "top_docs": [
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 7 of 8).md"
+    ]
+   },
+   {
+    "qid": "BQ09",
+    "field": "robotics",
+    "arxiv_id": "2410.10669",
+    "gold_rank": 1,
+    "n_dedup_docs": 21,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "dynamic",
+     "multilayer perceptron"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6879,
+     0.6821,
+     0.6528,
+     0.5267,
+     0.5073
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+     "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md",
+     "计算机与人工智能/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "BQ10",
+    "field": "immunology",
+    "arxiv_id": "2604.01385",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "immune evasion",
+     "chemotherapy"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7545,
+     0.7277,
+     0.716,
+     0.4773,
+     0.4588
+    ],
+    "top_docs": [
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md",
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 3 of 3).md",
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 2 of 3).md"
+    ]
+   }
+  ]
+ },
+ "ts": {
+  "pass": 9,
+  "pass_rate": 0.9,
+  "hit1": 1.0,
+  "hit3": 1.0,
+  "hit5": 1.0,
+  "mrr": 1.0,
+  "mean_top1_score": 0.6958,
+  "rows": [
+   {
+    "qid": "BQ01",
+    "field": "artificial-intelligence",
+    "arxiv_id": "1706.03762",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "recurrence"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6959
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "BQ02",
+    "field": "quantum-physics",
+    "arxiv_id": "1801.00862",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "noisy intermediate-scale"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6213,
+     0.5894
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "BQ03",
+    "field": "clinical-medicine",
+    "arxiv_id": "2212.13138",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multimedqa"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7527,
+     0.6838
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md"
+    ]
+   },
+   {
+    "qid": "BQ04",
+    "field": "genomics",
+    "arxiv_id": "1602.01876",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "molecular function",
+     "biological process",
+     "cellular component"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6548,
+     0.5409
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+     "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "BQ05",
+    "field": "economics",
+    "arxiv_id": "1512.08067",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "unified growth theory"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7615
+    ],
+    "top_docs": [
+     "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md"
+    ]
+   },
+   {
+    "qid": "BQ06",
+    "field": "climate-science",
+    "arxiv_id": "1503.07557",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [],
+    "pass": false,
+    "top_scores": [
+     0.7319,
+     0.6553
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "BQ07",
+    "field": "nlp",
+    "arxiv_id": "2608.05850",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "yiddish"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.5682
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+    ]
+   },
+   {
+    "qid": "BQ08",
+    "field": "materials",
+    "arxiv_id": "2408.09942",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "oxygen redox",
+     "cathode"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7297,
+     0.7292
+    ],
+    "top_docs": [
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "BQ09",
+    "field": "robotics",
+    "arxiv_id": "2410.10669",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "dynamic",
+     "multilayer perceptron"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6879,
+     0.6821
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+     "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "BQ10",
+    "field": "immunology",
+    "arxiv_id": "2604.01385",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "immune evasion",
+     "chemotherapy"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7545,
+     0.7277,
+     0.716
+    ],
+    "top_docs": [
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md",
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 3 of 3).md",
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 2 of 3).md"
+    ]
+   }
+  ]
+ }
+}

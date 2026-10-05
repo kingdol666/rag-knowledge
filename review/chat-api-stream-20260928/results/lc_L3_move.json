@@ -1,0 +1,27 @@
+{
+ "case": "L3_move",
+ "wall_s": 64.2,
+ "turns": 2,
+ "cost": 1.6960678000000002,
+ "tools_used": [
+  "Agent",
+  "mcp__kb-mcp__backend_status",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_move",
+  "mcp__kb-mcp__kb_doc_update_meta",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_index_document",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_reindex",
+  "mcp__kb-mcp__kb_task_status",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_search_stats",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_graph_document"
+ ],
+ "reply": "## Result\n\n**任务完成 — 文档已重命名，但 `kb_doc_move` 无法完成\"同目录改名\"**，需如实说明。\n\n**KB:** `e2e-sandbox-20260930b` (kb_id `c42b4044-52e9-4b00-81c2-975ae6ffda14`)\n\n| | 路径 |\n|---|---|\n| 旧路径 | `e2e-sandbox-20260930b\\生命周期测试文档A.md` |\n| **新路径** | `e2e-sandbox-20260930b\\生命周期测试文档A-v2.md` |\n\n文档 UUID `049fb387-13fe-4931-a49e-d4a6f8cc2f53` 在改名后保持不变，KB 文档数仍为 1（无重复/孤儿文件）。\n\n### 关于要求的执行方式（重要）\n\n要求指定用 `kb_doc_move` 完成重命名，实测**该工具不支持重命名**：\n\n- `kb_doc_move` 的参数只有 `doc_path` + `target_kb_id`，**没有 `name`/`new_name` 参数**。\n- 传入同一 KB 作为 target 时，它执行的是\"原地复制式移动\"：保留原基础名并套用重名去重后缀，产出的是 `生命周期测试文档A (1).md` —— 并非请求的目标名。\n\n因此实际改名由 **`kb_doc_update_meta(kb_id, doc_path, name=\"生命周期测试文档A-v2.md\")`** 完成：它在磁盘上重命名文件并同步 `.tree-fs.json` + `.knowledge-base.yml` 两层元数据（UUID 保留）。这是本例中唯一产生请求名称的方法。\n\n### 验证\n\n- **三源一致性**：磁盘 `.md` ↔ `.tree-fs.json` ↔ `.knowledge-base.yml` 均为新路径；`kb_get_documents` 返回 `name`/`path` = `生命周期测试文档A-v2.md`。\n- **内容完整性**：未变（v1 正文 + v2 段落，316 字节），`kb_doc_read` 复读确认。\n- **索引**：已对**新路径**执行 `kb_index_document` 重建；`kb_search_stats` 报 `chunk_count: 2`，图谱节点已指向新路径。\n\n### 遗留观察（非阻塞，未自行处置）\n\n`kb_search_vector` 结果中仍会同时出现中间路径 `生命周期测试文档A (1).md` 与 `...A-v2.md`（4 条命中 / 2 个唯一路径），`kb_reindex(force=true)` 未能清除。这是该中间 move 步骤留下的旧路径向量残留——即 Manage 技能错",
+ "session_id": "0adbaf82-8080-4b57-a260-ae34b49c27e8"
+}

@@ -232,6 +232,14 @@ async function loadCatalog() {
     const res = await $fetch<{ harnesses: HarnessItem[]; backend_reachable: boolean }>('/api/harnesses')
     harnesses.value = res.harnesses || []
     backendReachable.value = res.backend_reachable !== false
+    // D3 fix: first mount raced the backend probe cache and rendered 0/0
+    // with no error. One quiet retry turns the transient empty state into data.
+    if (harnesses.value.length === 0 && backendReachable.value) {
+      await new Promise(r => setTimeout(r, 1200))
+      const retry = await $fetch<{ harnesses: HarnessItem[]; backend_reachable: boolean }>('/api/harnesses')
+      harnesses.value = retry.harnesses || []
+      backendReachable.value = retry.backend_reachable !== false
+    }
   } catch (e: any) {
     antMessage.error('加载 Harness 目录失败: ' + (e?.message || e))
   } finally {

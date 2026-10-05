@@ -1,0 +1,128 @@
+{
+ "track": "b",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "This is the original \"Attention Is All You Need\" paper, which answers both parts directly.\n\n**How attention is computed:** The Transformer uses **Scaled Dot-Product Attention** (Section 3.2.1). The input consists of queries and keys of dimension $d_k$ and values of dimension $d_v$; the model computes the dot products of each query with all keys, divides each by $\\sqrt{d_k}$, applies a softmax to obtain weights on the values, done in matrix form as $\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}(QK^T/\\sqrt{d_k})V$. The scaling counteracts large dot products that would push softmax into regions with extremely small gradients. This is extended to **Multi-Head Attention** (Section 3.2.2), where Q, K, V are linearly projected $h$ times (h=8, $d_k=d_v=64$), attention runs in parallel on each projection, and the outputs are concatenated and projected — letting the model attend to different representation subspaces at different positions.\n\n**Why it replaces recurrence and convolution:** The authors \"eschewing recurrence\" and rely entirely on attention to draw global dependencies between input and output, citing three desiderata (Section 4): per-layer computational complexity, the minimum number of sequential operations (parallelizability), and the maximum path length between long-range dependencies. A self-attention layer connects all positions with a constant number of sequentially executed operations, whereas a recurrent layer requires $O(n)$ sequential operations; and a single convolutional layer with kernel $k<n$ does not connect all input/output pairs (requiring a stack of $O(n/k)$ layers or $O(\\log_k n)$ dilated layers). Shorter paths make long-range dependencies easier to learn, and the design also allows significantly more parallelization. **File used:** `artificial-intelligence__1706.03762__attention-is-all-you-need.md`.",
+ "is_error": false,
+ "latency_s": 41.7,
+ "sdk_duration_ms": 38889,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "attention mechanism|self-attention|recurrence"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "scaled dot-product|Scaled Dot-Product Attention|softmax\\(|Query|Key|Value",
+    "path": "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "recurrent|recurrence|convolution|convolutions|sequential|paralleliz|path length|dependencies",
+    "path": "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 14505,
+  "output": 934,
+  "cache_read": 151040,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.17139500000000002,
+ "timeline": [
+  {
+   "t": 2.83,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.42,
+   "event": "text",
+   "detail": "63"
+  },
+  {
+   "t": 4.43,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 4.45,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 35.92,
+   "event": "text",
+   "detail": "63"
+  },
+  {
+   "t": 35.92,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 35.92,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 38.92,
+   "event": "text",
+   "detail": "41"
+  },
+  {
+   "t": 38.92,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 38.93,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 41.67,
+   "event": "text",
+   "detail": "1849"
+  },
+  {
+   "t": 41.7,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the corpus for passages on Transformer attention.\n\n",
+  "The primary source is clearly the original Transformer paper.\n\n",
+  "Let me read the key sections in detail.\n\n",
+  "This is the original \"Attention Is All You Need\" paper, which answers both parts directly.\n\n**How attention is computed:** The Transformer uses **Scaled Dot-Product Attention** (Section 3.2.1). The input consists of queries and keys of dimension $d_k$ and values of dimension $d_v$; the model computes the dot products of each query with all keys, divides each by $\\sqrt{d_k}$, applies a softmax to obtain weights on the values, done in matrix form as $\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}(QK^T/\\sqrt{d_k})V$. The scaling counteracts large dot products that would push softmax into regions with extremely small gradients. This is extended to **Multi-Head Attention** (Section 3.2.2), where Q, K, V are linearly projected $h$ times (h=8, $d_k=d_v=64$), attention runs in parallel on each projection, and the outputs are concatenated and projected — letting the model attend to different representation subspaces at different positions.\n\n**Why it replaces recurrence and convolution:** The authors \"eschewing recurrence\" and rely entirely on attention to draw global dependencies between input and output, citing three desiderata (Section 4): per-layer computational complexity, the minimum number of sequential operations (parallelizability), and the maximum path length between long-range dependencies. A self-attention layer connects all positions with a constant number of sequentially executed operations, whereas a recurrent layer requires $O(n)$ sequential operations; and a single convolutional layer with kernel $k<n$ does not connect all input/output pairs (requiring a stack of $O(n/k)$ layers or $O(\\log_k n)$ dilated layers). Shorter paths make long-range dependencies easier to learn, and the design also allows significantly more parallelization. **File used:** `artificial-intelligence__1706.03762__attention-is-all-you-need.md`."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

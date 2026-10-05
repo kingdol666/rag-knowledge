@@ -1,0 +1,61 @@
+{
+ "qid": "Q1",
+ "method": "vector",
+ "question": "Trace how Elizabeth Bennet's opinion of Mr. Darcy changes across the whole novel, and identify the specific scenes that cause each change -- from the Meryton assembly, through Wickham's account and the Hunsford proposal and Darcy's letter, to the Pemberley visit and the Lydia elopement crisis. In what ways does Darcy himself change, and how does each acknowledge their earlier error by the end?",
+ "ranked": [
+  "1609.00415",
+  "2005.14165",
+  "1801.00862",
+  "2310.10981",
+  "2412.06333",
+  "1909.03801",
+  "2201.03675",
+  "1602.01876",
+  "2503.21676",
+  "1706.03762"
+ ],
+ "ranked_paths": [
+  "economics__1609.00415__does-infrastructure-investment-lead-to-econo__k26",
+  "large-language-models__2005.14165__language-models-are-few-shot-learners__k106",
+  "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k31",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42",
+  "artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions__k02",
+  "clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive__k12",
+  "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon__k15",
+  "genomics__1602.01876__primer-on-the-gene-ontology__k14",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k54",
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k13"
+ ],
+ "evidence_sources": [
+  "1609.00415",
+  "2005.14165",
+  "1801.00862",
+  "2310.10981",
+  "2412.06333",
+  "1909.03801",
+  "2201.03675",
+  "1602.01876",
+  "2503.21676",
+  "1706.03762"
+ ],
+ "evidence_chars": 2311,
+ "retrieval_s": 1.0,
+ "latency_s": 16.2,
+ "answer": "The evidence is insufficient.\n\nNo retrieved chunk discusses *Pride and Prejudice*, Elizabeth Bennet, Mr. Darcy, Wickham, Hunsford, Pemberley, or the Lydia elopement. The provided chunks are from unrelated papers (e.g., [2005.14165] on language-model grammar correction, [2310.10981] on QDS triples, [2201.03675] on directionality over time), none of which contain the requested plot or character analysis. I therefore cannot answer the question from this evidence and will not fall back on prior knowledge.\n\nSources used: none (no chunk was relevant).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 729,
+  "output": 132,
+  "cache_read": 37184,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.025537,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v3-neutral",
+ "git_commit": "0968033",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

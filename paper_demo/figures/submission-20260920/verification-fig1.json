@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "playwright": "1.51.0",
+    "PyMuPDF": "1.24.14",
+    "chromium": "134.0.6998.35"
+  },
+  "checks": {
+    "minimum_font_px": 12.5,
+    "out_of_bounds": [],
+    "box_overflow": [],
+    "border_cross": [],
+    "overlaps": [],
+    "pdf_mediabox": [
+      0.0,
+      0.0,
+      750.0,
+      421.5
+    ],
+    "pdf_images": 0,
+    "pdf_vector_paths": 58
+  }
+}

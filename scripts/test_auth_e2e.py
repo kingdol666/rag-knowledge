@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """鉴权系统端到端测试：注册 → 登录 → Token 管理 → 带/无 token 调用 → 撤销。
 
-覆盖 web(6789) 与 backend(8770) 两层拦截、MCP 服务 token 放行、
+覆盖 web(6789) 与 backend(8771) 两层拦截、MCP 服务 token 放行、
 Token 元数据（名称/创建时间/失效时间）与撤销/过期语义。
 """
 import os
@@ -17,7 +17,7 @@ import json
 client = httpx.Client(timeout=60, trust_env=False)
 
 WEB = "http://localhost:6789"
-BACKEND = os.environ.get("RAG_E2E_BACKEND", "http://localhost:8770")
+BACKEND = os.environ.get("RAG_E2E_BACKEND", "http://localhost:8771")
 results = []
 
 

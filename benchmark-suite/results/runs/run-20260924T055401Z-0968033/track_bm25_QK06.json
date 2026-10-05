@@ -1,0 +1,48 @@
+{
+ "qid": "QK06",
+ "method": "bm25",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2409.13934",
+  "2409.09639",
+  "2007.10574",
+  "physics-0703220",
+  "2607.03098",
+  "1906.10015",
+  "1609.00415",
+  "1308.1846",
+  "2602.10156"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change.md",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari.md",
+  "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma.md",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on.md",
+  "oceanography__physics-0703220__scientific-reticence-and-sea-level-rise.md",
+  "power-systems__2607.03098__integrating-power-electronics-based-energy-s.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "economics__1609.00415__does-infrastructure-investment-lead-to-econo.md",
+  "seismology__1308.1846__developing-and-testing-the-automated-post-ev.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2409.13934",
+  "2409.09639"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 6.8,
+ "answer": "The evidence is insufficient to answer this question.\n\nThe O'Gorman review (climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md, part 1/3) states that the response is governed by \"several physical contributions\" — a thermodynamic contribution, plus microphysical and dynamical contributions — and that it focuses \"on the physical factors that control the response.\" It does not name a single factor as the primary control. The other two chunks (2409.13934, 2409.09639) concern climate-change signal evaluation and precipitation dataset construction, not the controlling physics.\n\nSources used: climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md (part 1/3); 2409.13934; 2409.09639.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 634,
+  "output": 173,
+  "cache_read": 37376,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.026182999999999998,
+ "extra": {}
+}

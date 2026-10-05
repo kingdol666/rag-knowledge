@@ -33,6 +33,12 @@ PERSONA_SECTIONS = {   # → persona.md(身份/风格/边界)
     "表达DNA": "表达DNA",
     "诚实边界": "诚实边界",
     "核心心智模型": None,  # 模型在 work.md
+    # English aliases (e.g. musk-perspective uses English section titles)
+    "Roleplay Rules (Most Important)": "角色扮演规则(摘要)",
+    "Roleplay Rules": "角色扮演规则(摘要)",
+    "Identity Card": "身份卡",
+    "Expression DNA": "表达DNA",
+    "Honest Boundaries": "诚实边界",
 }
 WORK_SECTIONS = {      # → work.md(职责/思维/流程)
     "回答工作流": "回答工作流",
@@ -41,13 +47,22 @@ WORK_SECTIONS = {      # → work.md(职责/思维/流程)
     "决策启发式": "决策启发式",
     "人物时间线": "人物时间线(背景)",
     "智识谱系": "智识谱系",
+    # English aliases
+    "Answer Workflow": "回答工作流",
+    "Failure Modes and Fallback Tree": "失败模式与降级规则",
+    "Core Mental Models": "核心心智模型",
+    "Decision Heuristics": "决策启发式",
+    "Personal Timeline": "人物时间线(背景)",
+    "Intellectual Genealogy": "智识谱系",
 }
 VALUES_SECTIONS = {    # → values.md(价值观与反模式)
     "价值观与反模式": "价值观与反模式",
+    "Values and Anti-Patterns": "价值观与反模式",
 }
 SKIP_SECTIONS = {      # 不进入种子(附录/调研来源留在 skill 目录)
     "附录：调研来源": True,
     "附录: 调研来源": True,
+    "Appendix: Research Sources": True,
 }
 
 
@@ -209,9 +224,13 @@ def convert(skill_dir: Path, out_dir: Path, extra_labels: list[str]) -> Path:
         # 未映射章节(如「最新动态」)忽略 — 种子只取宪法层相关结构
 
     # 角色扮演规则截取关键约束(规则条目到「退出角色」前)
-    rp = sections.get("角色扮演规则", "")
+    # 注意: 映射表把该章节存到 "角色扮演规则(摘要)" 键下, 必须按同名键取回,
+    # 否则截断是死代码(2026-09-26 修复)。
+    rp = sections.get("角色扮演规则(摘要)", "")
     if rp:
         cut = rp.find("**退出角色**")
+        if cut < 0:
+            cut = rp.find("**Exit role**")
         if cut > 0:
             rp = rp[:cut].rstrip()
         sections["角色扮演规则(摘要)"] = rp

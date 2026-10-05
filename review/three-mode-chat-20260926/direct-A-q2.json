@@ -1,0 +1,361 @@
+{
+  "status": "ok",
+  "query": "用机器学习从电子健康记录预测中风，哪些风险因素影响最大？ stroke prediction EHR machine learning risk factors",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 26,
+    "vector_dedup_docs": 19,
+    "recall_seconds": 20.2,
+    "docs_read": 17,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec__k00.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 7.2
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "instance",
+    "threshold": 0.5,
+    "global_best": 0.9427,
+    "scored_segments": 100,
+    "total_segments": 100,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+      "vector_score": 0.553284764289856,
+      "judge_score": 0.9427,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 2 of 5).md",
+      "vector_score": 0.5753969550132751,
+      "judge_score": 0.9246,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md",
+      "vector_score": 0.5559420585632324,
+      "judge_score": 0.9244,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+      "vector_score": 0.574787974357605,
+      "judge_score": 0.9224,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.4911550283432007,
+      "judge_score": 0.9184,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "vector_score": 0.5523795485496521,
+      "judge_score": 0.9141,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.49095016717910767,
+      "judge_score": 0.908,
+      "kept": true
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+      "vector_score": 0.5090741515159607,
+      "judge_score": 0.8914,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+      "vector_score": 0.5853220820426941,
+      "judge_score": 0.883,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md",
+      "vector_score": 0.5932798385620117,
+      "judge_score": 0.8822,
+      "kept": true
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 2 of 2).md",
+      "vector_score": 0.49115145206451416,
+      "judge_score": 0.8804,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+      "vector_score": 0.5876348614692688,
+      "judge_score": 0.8627,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+      "vector_score": 0.39152592420578003,
+      "judge_score": 0.8614,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 7 of 26).md",
+      "vector_score": 0.39056396484375,
+      "judge_score": 0.8597,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+      "vector_score": 0.8067699670791626,
+      "judge_score": 0.8495,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "vector_score": 0.46979743242263794,
+      "judge_score": 0.8097,
+      "kept": true
+    },
+    {
+      "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+      "doc_path": "e2e-flow-20260926-022340/harness-handbook.md",
+      "vector_score": 0.37777578830718994,
+      "judge_score": 0.4458,
+      "kept": false
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+      "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+      "vector_score": 0.553284764289856,
+      "judge_score": 0.9427,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 2 of 5).md",
+      "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 2 of 5).md",
+      "vector_score": 0.5753969550132751,
+      "judge_score": 0.9246,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md",
+      "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md",
+      "vector_score": 0.5559420585632324,
+      "judge_score": 0.9244,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+      "name": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+      "vector_score": 0.574787974357605,
+      "judge_score": 0.9224,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.4911550283432007,
+      "judge_score": 0.9184,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "name": "power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "vector_score": 0.5523795485496521,
+      "judge_score": 0.9141,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.49095016717910767,
+      "judge_score": 0.908,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_id": null,
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+      "name": "vector-index-tuning-guide (part 1 of 2).md",
+      "vector_score": 0.5090741515159607,
+      "judge_score": 0.8914,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+      "name": "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+      "vector_score": 0.5853220820426941,
+      "judge_score": 0.883,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md",
+      "name": "large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md",
+      "vector_score": 0.5932798385620117,
+      "judge_score": 0.8822,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_id": null,
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 2 of 2).md",
+      "name": "vector-index-tuning-guide (part 2 of 2).md",
+      "vector_score": 0.49115145206451416,
+      "judge_score": 0.8804,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+      "name": "seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+      "vector_score": 0.5876348614692688,
+      "judge_score": 0.8627,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+      "name": "pride_and_prejudice (part 13 of 26).md",
+      "vector_score": 0.39152592420578003,
+      "judge_score": 0.8614,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 7 of 26).md",
+      "name": "pride_and_prejudice (part 7 of 26).md",
+      "vector_score": 0.39056396484375,
+      "judge_score": 0.8597,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+      "name": "clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+      "vector_score": 0.8067699670791626,
+      "judge_score": 0.8495,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.46979743242263794,
+      "judge_score": 0.8097,
+      "truncated": false,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+    "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 2 of 5).md",
+    "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+    "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+    "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md",
+    "AI 基础设施/vector-index-tuning-guide (part 2 of 2).md",
+    "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 7 of 26).md",
+    "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+    "soul-e2e-tester-024115/memory-conventions.md"
+  ],
+  "evidence_pack": "[工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md · vec=0.553284764289856]\n# power-systems__2607.03098__integrating-power-electronics-based-energy-s（第 2/5 部分）\n章节: Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges > 3.1. Modeling of ESMs\n## 3.1. Modeling of ESMs\n\n\nBased on dynamic processes of ESMs, the mathematical equations between $V _ { B }$ and $I _ { B }$ can be obtained. The dynamic model of ESMs is then derived by linearizing them as:\n\n$$\n\\Delta V _ { _ B } = G _ { _ { E S M } } ( s ) \\Delta I _ { _ B }\\tag{1}\n$$\n\nwhere, $G _ { E S M } ( s )$ is a transfer function that represents the dynamics of ESMs.\n\n![](images/0a11e76a3850efb297fdffc3964b6b0b5954c2eadf26d8a0973eaf534c0b761a.jpg)  \nFig 8. Common modeling diagrams of ESMs.\n\nTable 3  \nSummary of detailed models of ESMs\n<table><tr><td>Types</td><td>Sources</td><td>Additional modules</td><td>Refs</td></tr><tr><td>Supercapacitor</td><td>Capacitance</td><td>Resistance</td><td>[88]</td></tr><tr><td>Superconducting magnetic module</td><td>Reactance</td><td>1</td><td>[89]</td></tr><tr><td>Fuel cell</td><td>Voltage source</td><td>Resistance and capacitance</td><td>[90]</td></tr><tr><td>Lithium-ion battery</td><td>Voltage source</td><td>Resistance and capacitance</td><td>[91]</td></tr></table>\n\nThe modeling of supercapacitor, fuel cells, superconducting magnetic energy storage, and thermal cells should be distinct to match their dynamic characteristics. For instance, in [88], the supercapacitor model was established, dynamics were represented by variated capacitances and a series resistance. In [89], dynamics of superconducting magnetic module were represented by a reactance. In these cases, the voltage varies instead of being constant when power varies. In [90], the fuel cell model was introduced, with resistance and capacitance added to a voltage source, differing from [89] and [92]. In [91], a lithium-ion battery model was introduced, adding resistance and capacitance to the voltage source, which differs only in details from [90]. Fig. 8 shows common modeling diagrams of ESMs, and details are summarized in Table 3.\n\nThe electrochemical battery is the most commonly used in various types of ESMs [93]. Developing an accurate model for the battery is a mainstream task. This is challenging as it involves various factors such as material characteristics, operational status, and external conditions. Several studies have considered detailed factors to obtain more accurate voltage-current characteristics o\n\n[经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 2 of 5).md · vec=0.5753969550132751]\n# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 2/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty > 3.1. Measuring monetary policy shocks and identification\n## 3.1. Measuring monetary policy shocks and identification\n\n\nWe state in Eq. (1) that monetary policy shocks are included in our model as exogenous instruments $x _ { s t }$ . In this paper, we assess both CMP and UMP shocks following the methodology set forth in Altavilla et al. (2019), relying on the Euro Area Monetary Policy Event-Study Database (EA-MPD).8 Before discussing how the instruments are established, we provide a brief overview on ECB communication that can be exploited for high-frequency identification.9\n\nECB policy decisions are typically communicated to the public in a two-step process. First, there is a press release which provides information on the policy decision (without discussing how the Governing Council came to this decision). Second, the press release is followed by a press conference 45 minutes later, where the President reads a prepared statement explaining the previously announced policies (which takes about 15 minutes), and answers questions in a Q&A session afterwards (about 45 minutes). The latter is often informative about the ECB's outlook and the future path of monetary policy. In conjunction, these two \"monetary events\" and precise time-stamps are employed to identify different policy surprises on inancial markets and thus provide a measure of exogenous variation in monetary policy.\n\nThe EA-MPD collects high-frequency market reactions in narrow windows (ten minutes before and after the event) around both monetary events, based on tick data for interest rates at different maturities and stock returns, among others. In essence, if monetary policy actions by the ECB were fully anticipated by market participants, we should observe no reaction of asset prices during either the press release or the press conference. If, however, the ECB communicates unanticipated actions (that are thus orthogonal to the information set of the public), the market would quickly adjust and price this new information. Altavilla et al. (2019) exploit these dynamics in a wide range of asset classes using an identified factor model (subject to orthogonality restrictions), and pin down four different shocks: the target, timing, forward guidance and quantitative easing shock.10\n\nIn this paper, we rely \n\n[经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md · vec=0.5559420585632324]\n# economics__1911.06206__bayesian-state-space-modeling-for-analyzing（第 2/5 部分）\n章节: Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy > 3.2. Empirical results\n## 3.2. Empirical results\n\n\nIn a first step, we compare the results estimated with our proposed model to a set of related specifications from the established literature. For the models featuring heterogeneous coefficients, we take the arithmetic mean over all industries and over time per iteration of the algorithm and report the resulting posterior percentiles (the posterior median, and the bounds marking the 99 percent posterior credible set). This provides a measure of the average impact of monetary policy shocks on heterogeneous industry returns.\n\nThe different specifications are summarized in Table 1: “Data\" indicates whether the model was estimated using aggregate (S&P 500) or granular industry-specific data (Industries). The aggregate S&P 500 returns in 30-minute windows around FOMC announcement dates are taken from Gorodnichenko and Weber (2016), and the exercise corresponds roughly to Bernanke and Kuttner (2005) and Gürkaynak et al. (2005). The industry-level data is constructed as discussed in Section 3.1.\n\n“Heterogeneity\" marks which coefficients allow for heterogeneity. Relevant cases are pooled specifications over time and the cross-section (-), implying that we rule out time-variation in the coefficients and set $\\pmb { \\theta } _ { 1 } = . . . = \\pmb { \\theta } _ { N }$ and $\\sigma _ { 1 } ^ { 2 } , = \\ldots = \\sigma _ { N } ^ { 2 }$ . Specifications marked with an i indicate that we allow for industry-specific coefficients $\\theta _ { i }$ and $\\sigma _ { i } ^ { 2 }$ , but surpress time-variation in the regression coefficients. Those marked with t refer to time-varying regression coefficients (relevant only for the aggregate data), while i,t refers to all parameters being estimated freely across industries and over time. All of these specifications are nested in our proposed model.\n\nTable 1: Model specifications.\n<table><tr><td>Model</td><td>Data</td><td>Heterogeneity</td><td>Network</td><td>References</td></tr><tr><td>A1</td><td>S&amp;P 500</td><td>一</td><td></td><td>Gürkaynak et al. (2005)</td></tr><tr><td>A2</td><td>S&amp;P 500</td><td>t</td><td></td><td>Chen (2007)</td></tr><tr><td>B1</td><td>Industries</td><td></td><td></td><td>Bernanke and Kuttner (2005)</td></tr><tr><td>B2</td><td>Industries</td><td>i</td><td></td><td>Ehrmann and Fra\n\n[计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md · vec=0.574787974357605]\n# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 1/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers\n# There is No Such Thing as an “Index”! or: The next 500 Indexing Papers\n\n\nJens Dittrich Saarland Informatics Campus jens.dittrich@bigdata.unisaarland.de\n\nJoris Nix\\* Saarland Informatics Campus joris.nix@bigdata.uni-saarland.de\n\nChristian Schön\\* Saarland Informatics Campus christian.schoen@uni-saarland.de\n\n## ABSTRACT\n\n\nIndex structures are a building block of query processing and computer science in general. Since the dawn of computer technology there have been index structures. And since then, a myriad of index structures are being invented and published each and every year.\n\nIn this paper we argue that the very idea of “inventing an index\" is a misleading concept in the first place. It is the analogue of“inventing a physical query plan\". This paper is a paradigm shift in which we propose to drop the idea to handcraft index structures (as done for binary search trees over B-trees to any form of learned index) altogether. We present a new automatic index breeding framework coined Genetic Generic Generation of Index Structures (GENE). It is based on the observation that almost all index structures are assembled along three principal dimensions: (1) structural building blocks, e.g., a B-tree is assembled from two different structural node types (inner and leaf nodes), (2) a couple of invariants, e.g., for a B-tree all paths have the same length, and (3) decisions on the internal layout of nodes (row or column layout, etc.). We propose a generic indexing framework that can mimic many existing index structures along those dimensions. Based on that framework we propose a generic genetic index generation algorithm that, given a workload and an optimization goal, can automatically assemble and mutate, in other words breed’ new index structure species’. In our experiments we follow multiple goals. We reexamine some good old wisdom from database technology. Given a specific workload, will GENE even breed an index that is equivalent to what our textbooks and papers currently recommend for such a workload? Or can we do even more? Our initial results strongly indicate that generated indexes are the next step in designing index structures.\n\n## 1 INTRODUCTION\n\n## 1.1 Problem 1: Indexes are considered monolithic entities\n\n\nWhen we database researchers talk about indexes, we use the term index like referring to an en\n\n[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.4911550283432007]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md · vec=0.5523795485496521]\n# power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md.md（第 1/2 部分）\n章节: Mapping Disruption Sources in the Power Grid and Implications for Resilience\n# Mapping Disruption Sources in the Power Grid and Implications for Resilience\n\n\nMaureen S. Golan\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\nmgolan@utexas.edu\n\nJavad Mohammadi\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\njavadm@utexas.edu\n\nAbstract—Developing models and metrics that can address resilience against disruptions is vital to ensure power grid reliability and that adequate recovery and adaptation mechanisms are in place. In this paper, we propose a novel disruption mapping approach and apply it to the publicly available U.S. Department of Energy DOE-417 Electric Emergency and Disturbance Report to holistically analyze the origin of anomalous events and their propagation through the cyber, physical and human domains. We show that capturing the disruption process onset has implications for quantifying, mitigating, and reporting power grid resilience.\n\nIndex Terms—power grid, resilience, disruption, reliability\n\n## I. INTRODUCTION\n\n\nUtilities and regulatory authorities rely on metrics based on tracked data to assess the power grid's reliability and plan for future operating conditions. However, metrics that analyze the resilience of the power grid are immature and ill-equipped to provide utilities and regulatory authorities the information they need to ensure both reliability and resilience of the power grid in the changing context of power grid operations and development [1]. Therefore, we propose a method for mapping data that utilities are required to report to different dimensions of disruption to enable a comprehensive understanding of the relationship between disruption sources and system resilience.\n\n## A. Motivation\n\n\nAs extreme weather events and unprecedented cyber, physical, and supply chain disruptions exacerbate the changing grid landscape, resilience is a complementary concept to reliability that needs to be understood and modeled to protect the power grid. Although reliability and resilience strategies can be implemented differently by individual operators, alleviating disruption impacts requires revisiting electric grid planning, operation, maintenance and monitoring procedures [2]. Leveraging resilience principles as a critical aspect of reliability can support flexible design ap\n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.49095016717910767]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence Rank 5]。\n\n## 3. 数据质量评估\n\n| 维度 | 结论 |\n|---|---|\n| 完整性 | 2 行 × 3 列无缺失；清洗零操作、零损失，原始值与清洗值逐位一致（cleaning_integrity.json） |\n| 时间合法性 | timestamp 为真实解析的 ISO-8601(+08:00)，monotonic=true、median_interval_s=5.0、dropped_unparsable=0（time_alignment.json） |\n| 异常值 | z=[-0.7071, +0.7071]（构造性）、IQR 栏 71.45/74.05 degC 内无点、异常检测因 n<3 前置跳过（process_parameters_screened=0）——『无离群、无异常区间』是样本量下限的构造性结果，**不构成无异常的证据** |\n| 生产状态 | 两行被脚本默认标 steady 为无证据默认值，不据此声明稳态背景 |\n| 批次/分组完整性 | 无批次列、无分组列（组数=1），批次完整性检验不触发 |\n| 统计充分性 | validate_report 判定 **INSUFFICIENT_DATA**；脚本输出的 ROBUST 总体有效性判定为空洞真（total_targets=0、检查列表全空），已降权 |\n\n## 4. 统计分析发现\n\n本节为强制章节。n=2 条件下全部统计方法不可用，可用发现均为算术与视觉事实：\n\n1. **唯一趋势事实 [Evidence Rank 1]**：一阶差分 +1.3 degC，平均速率 0.26 degC/s（derived=true，未插值、未滤波、未拟合，可由原始两行复算）。『drift』仅为两点单调形态的形态学描述，不代表\n\n[AI 基础设施/vector-index-tuning-guide (part 1 of 2).md · vec=0.5090741515159607]\n# vector-index-tuning-guide（第 1/2 部分）\n章节: 向量索引调优指南：HNSW 从基准到生产 – 向量索引调优指南：HNSW 从基准到生产 > 6. 内存与磁盘的权衡 > 6.4 内存预算的隐藏项\n# 向量索引调优指南：HNSW 从基准到生产\n\n> 适用版本：HNSW 实现于主流向量数据库（2026-09 基准）\n\n## 1. HNSW 索引参数总览\n\nHNSW（分层可导航小世界图）是当前向量检索的主力索引。三个核心参数决定索引质量与成本：\n`M`（每节点出边数）、`ef_construction`（建图时候选队列长度）、`ef_search`（查询时候选队列长度）。\n\n| 参数 | 本指南推荐值 | 典型范围 | 影响 |\n|---|---|---|---|\n| M | **32** | 8-64 | 越大召回越高、内存越大 |\n| ef_construction | **200** | 100-500 | 越大建图越慢、图质量越高 |\n| ef_search | 见第 7 节 | 16-512 | 越大召回越高、查询越慢 |\n\n在 100 万条 768 维向量的基准集上，M=32、ef_construction=200 的组合实测：\n**索引构建耗时 47 分钟**，**百万级向量内存占用 3.2GB**，**top-10 召回率 96.4%**。\n这组数字是本指南后续所有权衡分析的基准点（下称\"基准配置\"）。\n\n### 1.1 参数为什么相互耦合\n\n把 M、ef_construction、ef_search 当成三个独立旋钮是最常见的误区。M 决定图的连通度\n上限，ef_construction 决定建图时能否逼近这个上限，ef_search 决定查询时能否利用它。\n实测中 M=16 配 ef_search=256 的召回率（94.1%）仍低于 M=32 配 ef_search=64（93.6%\n构建召回 + 查询加深后 95.9%），说明图结构（M）是天花板，查询参数只能逼近天花板。\n\n### 1.2 与 IVF 系索引的边界\n\nIVF-PQ 在 1 亿级向量上内存效率更高，但在 100 万到 1000 万区间、且要求 top-10 召回\n≥95% 时，HNSW 几乎总是赢家：基准配置 96.4% 的召回率，IVF-PQ（nlist=4096、nprobe=64）\n在同数据集上只有 91.8%，且对增量插入更敏感。**本指南聚焦 HNSW**。\n\n### 1.4 深读：结论的证据链\n把基准配置放进真实流量里检验：线上查询的 top-10 召回率与离线基准的偏差应在 1 个百分点以内，偏差过大说明线上查询分布与基准查询分布不一致，需要用线上真实查询重抽 1000 条做校准基准。校准动作每月执行一次，防止基准漂移让后续所有调优结论失真。\n\n### 1.5 深读：变更管理\n参数调整必须有对照组。任何一次 M、ef_construction、ef_search 的变更都要保留旧参数的抽样验收结果，新参数在同查询集上对比，落差超过 0.5 个百分点即记录原因。没有对照组的调优等于盲调，出了召回问题无法归因。\n\n### 1.6 深读：排查视角\n配置变更要写进索引元数据：M、ef_construction、构建时间、构建机器、基准召回率五项随索引一起落盘。排查召回问题时，先看索引元数据就知道这个索引用什么参数建的，避免凭记忆猜参数。\n\n### 1.3 术语速查\n层级图：HNSW 把节点组织成多层，顶层稀疏用于长程跳转，底层稠密用于精确定位。出边数 M 在每层相同；入口点固定为顶层唯一节点。冷启动查询从顶层贪心下降到底层后进入区域搜索。理解这一点就能理解为什么 M 是天花板：底层图的度数上限就是 M。\n\n### 1.4 参数速查卡\n建图快：M=16、ef_construction=100（21 分钟级）；召回优先：M=32、ef_construction=200、ef_search=128；内存极限：M=16 + int8 量化 + 重排序。三张卡片覆盖 90% 的场景。\n\n### 1.5 基准集说明\n全部实测基于同一基准集：100 万条 768 维向量（真实 embedding 采样 + 5% 扰动），查询集 1000 条，top-10 召回率以暴力检索结果为真值。硬件：32 核 CPU、256GB 内存、NVMe SSD，单机无分片。\n\n## 2. 召回率与 M 的关系\n\nM 是内存与召回之间最昂贵的旋钮。实测数据（100 万向量，ef_construction=200）：\n\n| M | 召回率(top-10) | 内存 | 构建时间 |\n|---|---|---|---|\n| 8 | 88.1% | 1.1GB | 21 分钟 |\n| 16 | 93.7% | 2.0GB | 33 分钟 |\n| **32** | **96.4%** | **3.2GB** | **47 分钟** |\n| 64 | 97.5% | 5.6GB | 92 分钟 |\n\n结论：M 从 16 到 32 带来 2.7 个百分点的召回提升，性价比最高；从 32 到 64 只换来\n1.1 个百分点却让内存与构建时间几乎翻倍。**除非召回率要求 ≥97%，M 不要超过 32**。\n\n### 2.1 为什么 32 是甜点\n\nHNSW 论文作者建议 M 取 2 的幂次并从 16 起测。我们的实测曲线在 32 处出现明显拐点：\n16→32 的边际召回收益（每 GB 内存）是 32→64 的 3.8 倍。背后的几何解释是：768 维\nembedding 的本征维度约在 30-40 之间，M=32 恰好让底层图的平均度数接近本征维度，\n长程边与短程边的比例达到平衡。\n\n### 2.2 高维场景的修正\n\n768 维以上（如 1536 维的新 embedding）时，本征维度上移，M=32 的拐点效应减弱。\n1536 维实测\n\n[自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md · vec=0.5853220820426941]\n# climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma（第 1/2 部分）\n章节: GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution\n# GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution\n\n\nHiroshi G. Takahashi\n\nTokyo Metropolitan University\n\nhiroshi3@tmu.ac.jp\n\nSeptember 17, 2024\n\n## Abstract\n\n\nThis paper presents a new precipitation dataset that is daily, has a spatial resolution of one degree on a quasi-global scale, and spans more than 42 years, using machine learning techniques. The ultimate goal of this dataset is to provide a homogeneous daily precipitation dataset for several decades without gaps, which is suitable for climate analysis. As a first step, 42 years of daily precipitation data was generated using machine learning techniques. The machine learning methods are supervised learning, and the reference data are estimated precipitation datasets from 2001 to 2020. Three machine learning methods are used: random forest, gradient-boosted decision trees, and convolutional neural networks. The input data are satellite observations and atmospheric circulations from reanalysis, which are somewhat modified based on knowledge of the climatological background. Using the trained statistical models, we predict back to 1979. when daily precipitation data was almost unavailable globally. The detailed procedures are described in this paper. The produced data have been partially evaluated. However, additional evaluations from different perspectives are needed. The advantages and disadvantages of this precipitation dataset are also discussed. Currently, this GPC/m precipitation dataset version is GPC/m-v1-2024.\n\n## 1 Introduction\n\n\nThe importance of precipitation datasets has increased in recent years as they are extensively used for climate and meteorological analyses, such as precipitation variability, water budget, evaluation of climate model, and related research (e.g., Trenberth, 2011). However, the available precipitation data have some limitations, especially difficulties in using precipitation data globally, including over the ocean over long periods (Becker et al., 2013). This study produces a prototype of the precipitation dataset using machine learning methods. This machine learning-based precipitation can be used in climate and related studies. Additionally, this study can contribute to discussing not only the adva\n\n[计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md · vec=0.5932798385620117]\n# large-language-models__2005.14165__language-models-are-few-shot-learners.md.md（第 5/13 部分）\n章节: Language Models are Few-Shot Learners > 6 Broader Impacts\n## 6 Broader Impacts\n\n\nLanguage models have a wide range of beneficial applications for society, including code and writing auto-completion. grammar assistance, game narrative generation, improving search engine responses, and answeri",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec__k00.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "b87f4dab-c83b-4a99-abe3-182773fc315a",
+      "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 178.1
+}

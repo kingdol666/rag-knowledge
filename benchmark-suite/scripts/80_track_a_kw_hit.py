@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """Track A KW hit 离线实算 (PLAN 步骤②′b):
 对 skill_track_answers.json 的 10 份五段式回答, 按 Table1 脚注口径
 "≥1 个 gold 关键词子串命中" 实算, 落盘 results/track_a_kw_hit.json。

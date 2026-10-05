@@ -53,7 +53,7 @@ These principles govern every stage of research and extraction:
 
 ### Source Blacklist
 
-Permanently excluded: 知乎, 微信公众号, 百度百科, content farms, AI-generated bios, listicles without primary source links, Wikipedia as standalone evidence.
+Permanently excluded: 知乎 (Zhihu), 微信公众号 (WeChat official accounts), 百度百科 (Baidu Baike), content farms, AI-generated bios, listicles without primary source links, Wikipedia as standalone evidence.
 
 ---
 

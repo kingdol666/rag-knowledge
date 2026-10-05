@@ -1,0 +1,19 @@
+{
+ "case": "L4_tag",
+ "wall_s": 107.1,
+ "turns": 4,
+ "tools_used": [
+  "Skill",
+  "Agent",
+  "mcp__kb-mcp__kb_project_status",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_doc_update_tags",
+  "mcp__kb-mcp__kb_doc_get_by_tag",
+  "mcp__kb-mcp__kb_doc_get_by_tag",
+  "mcp__kb-mcp__kb_doc_update_tags",
+  "mcp__kb-mcp__kb_get_documents"
+ ],
+ "reply": "## 执行结果\n\n**场景**：Manage — 文档打标 + 按标签查询确认（已委托 Archival 子 Agent 执行，Dispatcher 未直接操作）\n\n**1. Pre-Flight**：`kb_project_status` 单次探测通过 — MCP 已连接，backend UP、web UP、neo4j UP、MinerU 可用。\n\n**2. 定位知识库**：`kb_list(lightweight=true)`\n- kb_id: `c42b4044-52e9-4b00-81c2-975ae6ffda14`\n- name: `e2e-sandbox-20260930b`\n\n**3. 定位文档**：`kb_get_documents(lightweight=true)`\n- doc_path: `e2e-sandbox-20260930b\\生命周期测试文档A-v2.md`\n- doc_id: `049fb387-13fe-4931-a49e-d4a6f8cc2f53`\n- 打标前 tag_count=0，无既有标签，故请求的两个标签即完整集合，无需并集保留。非破坏性元数据追加 → 无需 `dry_run`；写入经 web/backend 层单写者锁（single-writer lock）串行化 `.knowledge-base.yml` + `.tree-fs.json`，未直接竞写文件。\n\n**4. 打标**：`kb_doc_update_tags(tags=[\"e2e\",\"lifecycle\"])`\n- ⚠️ 返回 `_note: \"1 tag(s) filtered as garbage: e2e\"`、`_dropped_tags: [\"e2e\"]` — `e2e` 被 web 层垃圾标签过滤器 `isGarbageTag`（匹配 `test*` 测试残留模式）判定为垃圾并丢弃，仅 `lifecycle` 落库。\n- 诊断后重试一次（并集），结果一致 → 属服务端确定性硬策略，非瞬时故障。\n\n**5. 按标签查询确认**（`kb_doc_get_by_tag` 原始命中证据）\n| 标签 | count | 命中 |\n|---|---|---|\n| `lifecycle` | **1** | `e2e-sandbox-20260930b\\生命周期"
+}

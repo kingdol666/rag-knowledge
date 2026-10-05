@@ -1,139 +1,54 @@
 ---
 name: knowledgebase-experience-summarize
-description: >
-  Experience authoring, meditation (auto-induction), cross-KB synthesis, and
-  experience CRUD + migration. Full lifecycle: CREATE / UPDATE / DELETE /
-  MIGRATE experiences, and MEDITATION (OpenClaw-style auto-induction from
-  recurring user questions + KB answers). Routes write operations to the
-  Archival agent. Quality-gated (specific, actionable, independently citable).
-  Follows KB architecture: experience.md ↔ .experience-index.yml ↔ ChromaDB
-  vector index. Do NOT trigger for read-only experience queries (use
-  knowledgebase-experience E4 search instead). Triggered by: record experience,
-  summarize experience, distill into experience, save a lesson, remember the
-  workflow, create experience, update experience, delete experience,
-  experience follow-along, experience migration, meditation, tidy memories,
-  induce experience, reflect, meditation, reflect,
-  save as experience, summarize as lesson, record workflow, create experience,
-  update experience, delete experience.
+description: "Experience authoring, meditation (auto-induction), cross-KB synthesis, and experience CRUD + migration. Full lifecycle: CREATE / UPDATE / DELETE / MIGRATE experiences, and MEDITATION (OpenClaw-style auto-induction from recurring user questions + KB answers). Routes write operations to the Archival agent. Quality-gated (specific, actionable, independently citable). Follows KB architecture: experience.md ↔ .experience-index.yml ↔ ChromaDB vector index. Do NOT trigger for read-only experience queries (use knowledgebase-experience E4 search instead). Triggered by: record experience, summarize experience, distill into experience, save a lesson, remember the workflow, create experience, update experience, delete experience, experience follow-along, experience migration, meditation, tidy memories, induce experience, reflect, meditation, reflect, save as experience, summarize as lesson, record workflow, create experience, update experience, delete experience."
 ---
 
-## ⭐ Related Skills
-- Full experience lifecycle → `skill://knowledgebase-experience` (E0-E12)
-- Document ingest → `skill://knowledgebase-ingest`
-- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase`
+## Related skills
 
-## Sequential Workflow
-**Step 1 — Identify the scenario**: determine whether the user wants to "record experience" / "summarize lessons" / "save a workflow".
-**Step 2 — Gather context**: extract key events + decisions + outcomes from the current session.
-**Step 3 — Structure the draft**: organize by the scenario/problem/solution/key_lessons template.
-**Step 4 — Quality gate**: E2 four-element check + dedup.
-**Step 5 — User confirmation**: present the draft; wait for confirmation/edits.
-**Step 6 — Persist**: experience_create → auto-index → done.
-# Experience Summarize — Experience Summaries · Meditation · CRUD · Migration
+- Full experience lifecycle (E0-E12 retrieval/stale/decay) → `skill://knowledgebase-experience` · Document ingest → `skill://knowledgebase-ingest` · Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase`
 
-## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
+## Execution model (mandatory, first step of any job)
 
-**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
+**Executor: Archival agent** — delegate via `task`; delegation template + three-role execution model + combined-task boundaries → [execution-model.md](../knowledgebase/references/execution-model.md). **Pre-Flight**: one-probe double-check `kb_project_status` → branch handling → smoke test — no work before it passes → [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) before operating; MCP-first (no terminal/HTTP bypass) → [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
----
-
-## Mode Routing (Step 0: Identify User Intent)
+## Mode routing (Step 0: identify user intent)
 
 ```
-Which mode does the user intent match?
-
-① MEDITATION  — "meditate", "tidy memories", "induce experience", "reflect", "periodic summaries"
+① MEDITATION — "meditate", "tidy memories", "induce experience", "reflect", "periodic summaries"
 ② CREATE      — "record experience", "summarize this", "distill into experience", "save a lesson", "remember the workflow"
 ③ UPDATE      — "update experience", "modify experience", "add lessons"
 ④ DELETE      — "delete experience", "remove the experience"
 ⑤ MIGRATE     — "experience follow-along", "experience migration" (linked after document/KB moves)
 ⑥ CROSS-KB    — cross-library synthesis (experience induction spanning multiple KBs)
-
 Not sure? Treat it as the closest match to CREATE and confirm with the user.
 ```
+All writes go through MCP tools (`experience_create/update/delete`); terminal/HTTP bypass is forbidden. Reference loading (avoid loading unneeded files and wasting context): MEDITATION → [meditation.md](references/meditation.md) + quality-standards.md · CREATE → quality-standards.md · UPDATE/DELETE/MIGRATE → crud-and-migration.md · CROSS-KB → [cross-kb-synthesis.md](references/cross-kb-synthesis.md) + quality-standards.md.
 
-Jump to the corresponding mode. All writes go through MCP tools (experience_create/update/delete); terminal/HTTP bypass is forbidden.
+## Mode ①: MEDITATION — memory meditation (OpenClaw-style auto-induction)
 
-**Reference loading guide** (avoid loading unneeded files and wasting context):
-| Mode | Required references | Do not load |
-|------|--------------|-----------|
-| MEDITATION | meditation.md, quality-standards.md | crud-and-migration.md, cross-kb-synthesis.md |
-| CREATE | quality-standards.md | meditation.md (manual summaries don't need the collection scripts)|
-| UPDATE / DELETE | crud-and-migration.md | meditation.md, cross-kb-synthesis.md |
-| MIGRATE | crud-and-migration.md | meditation.md, quality-standards.md |
-| CROSS-KB | cross-kb-synthesis.md, quality-standards.md | meditation.md |
-
----
-
-## Mode ①: MEDITATION — Memory Meditation (OpenClaw-Style Auto-Induction)
-
-> Periodically auto-induces experiences from high-frequency questions + KB answers. See [references/meditation.md](references/meditation.md) for details.
-
-### Four-Phase Flow
-
-> 💡 **Dual path**: prefer the MCP meditation tools (`experience_meditation_*`); CLI scripts are the offline collection fallback.
-
-**Phase 0 — Check the meditation scheduler status (MCP first)**
-
+Auto-induces experiences from high-frequency questions + KB answers (full detail → [references/meditation.md](references/meditation.md)); dual path: prefer the MCP `experience_meditation_*` tools, CLI scripts are the offline read-only collection fallback. **Phase 0 — Scheduler status (MCP first)** + **Phase 1 — Collect question sources**:
+```text
+experience_meditation_status(kb_id)                → {enabled, interval_hours, last_run, running_now, config}
+experience_meditation_config_get(kb_id)            → KB-level meditation config
+experience_meditation_history(kb_id)               → historical runs + signal clusters
+experience_meditation_run(kb_id, trigger="manual") → manually trigger one round (via agent harness)
 ```
-experience_meditation_status(kb_id)   → {enabled, interval_hours, last_run, running_now, config: {...}}
-experience_meditation_config_get(kb_id)  → read KB-level meditation config
-experience_meditation_history(kb_id)     → view historical run records
+CLI fallback: `python scripts/meditation_source.py --days 7 --top 30` (or `--json --days 14`). Also review the current session's KB Q&A context (most precise).
+
+**Phase 2 — KB relevance confirmation + answer retrieval** (per candidate question cluster):
+```text
+kb_list(lightweight=true) matching → discard non-KB questions
+experience_search_smart(query) → skip if existing P0/P1 already covers it
+kb_search_two_stage(query, kb_id) → extract related_docs + answer basis
 ```
 
-**Phase 1 — Collect question sources**
+**Phase 3 — LLM induction + quality gate**: distill per the gold standard in [references/quality-standards.md](references/quality-standards.md); any field short → discard (quality over quantity); signal threshold: at least 1 strong signal or 2 medium signals (meditation.md §Signal Judgment). **Phase 4 — Persist + report**: create or update (update if a similar experience exists), then output a meditation report.
 
-MCP path (recommended):
-```
-# View historical meditation runs (already contains clustering signals)
-experience_meditation_history(kb_id) → historical run records + signal clusters
-experience_meditation_run(kb_id, trigger="manual") → manually trigger one meditation round (via agent harness)
-```
+## Mode ②: CREATE — manual summary ingestion (core flow)
 
-CLI path (offline fallback):
-```bash
-python scripts/meditation_source.py --days 7 --top 30
-python scripts/meditation_source.py --json --days 14  # JSON mode
-```
+**Step 1 — Scenario + target KB**: extract from the conversation what happened / was done / was learned; iterate `kb_list()` to pick `target_kb_id` (closest parent KB if no exact match, tag the domain).
 
-Also review the current session's KB Q&A context (most precise).
-
-<!-- The CLI path notes are fully covered above -->
-
-**Phase 2 — KB relevance confirmation + answer retrieval**
-
-```
-For each candidate question cluster:
-  1. kb_list(lightweight=true) matching → discard non-KB questions
-  2. experience_search_smart(query) → skip if existing P0/P1 already covers it
-  3. kb_search_two_stage(query, kb_id) → extract related_docs + answer basis
-```
-
-**Phase 3 — LLM induction + quality gate**
-
-Distill per the gold standard in [references/quality-standards.md](references/quality-standards.md). If any field falls short → discard (quality over quantity). Induction signal threshold: at least 1 strong signal or 2 medium signals (see meditation.md §Signal Judgment).
-
-**Phase 4 — Persist + report**
-
-Create or update (update if a similar experience exists), then output a meditation report.
-
----
-
-## Mode ②: CREATE — Manual Summary Ingestion (Core Flow)
-
-> Distill structured experiences from conversations/documents/practice. Quality standards: [references/quality-standards.md](references/quality-standards.md).
-
-### Step 1 — Identify the scenario + target KB
-
-Extract from the conversation: what happened? what was done? what was learned? Identify the operational context.
-
-Iterate `kb_list()` to determine `target_kb_id`: which KB's domain does the scenario belong to? If no exact match exists, pick the closest parent KB and tag the domain.
-
-### Step 2 — Draft the experience (quality is key)
-
-**Gold standard**: problem = a reproducible scenario; solution = executable steps; key_lessons = independently citable.
-For concrete pass criteria, bad/good examples, and the completeness checklist, see [references/quality-standards.md](references/quality-standards.md).
-
+**Step 2 — Draft (quality is key)** — gold standard: problem = a reproducible scenario; solution = executable steps; key_lessons = independently citable. Pass criteria + bad/good examples + completeness checklist → [references/quality-standards.md](references/quality-standards.md).
 ```yaml
 kb_id:       "<target KB ID or path>"
 title:       "contains scenario words + method words"
@@ -148,12 +63,9 @@ severity:    "critical|important|normal|tip"
 related_docs: ["KB/doc.md"]   # verify existence with kb_doc_read
 ```
 
-### Step 3 — User confirmation
+**Step 3 — User confirmation**: present the draft — "Confirm ingestion? You may edit it." — wait for confirmation/edits.
 
-Present the draft: "Confirm ingestion? You may edit it." After the user confirms or edits, go to Step 4.
-
-### Step 4 — Persist
-
+**Step 4 — Persist**:
 ```python
 result = mcp__kb-mcp__experience_create(
     kb_id, title, scenario, category, problem, solution, result,
@@ -162,84 +74,56 @@ result = mcp__kb-mcp__experience_create(
 exp_id = result["experience"]["id"]  # auto three-layer consistency + vector indexing
 ```
 
-### Step 5 — Verify
+**Step 5 — Verify**: `experience_read(kb_id, exp_id)` — fields correct + `vector_index.total_chunks ≥ 1`; report the exp_id.
 
-`experience_read(kb_id, exp_id)` confirm fields are correct + `vector_index.total_chunks ≥ 1`. Report the exp_id.
+## Mode ③: UPDATE — update an experience
 
----
-
-## Mode ③: UPDATE — Update an Experience
-
-> See [references/crud-and-migration.md](references/crud-and-migration.md) §Update.
-
-```
+```text
 Locate: experience_search_smart(query) or experience_list(kb_id, scenario=...)
 Read: experience_read(kb_id, exp_id) → current content
-Update: experience_update(kb_id, exp_id, **fields to change)  # pass only changed fields; vector re-indexes automatically
+Update: experience_update(kb_id, exp_id, **fields)  # only changed fields; vector re-indexes automatically
 Verify: experience_read confirmation + vector_index.indexed_at refreshed
 ```
+Scenarios: meditation adding lessons, stale after document updates (E6), fixing related_docs. Details → [references/crud-and-migration.md](references/crud-and-migration.md) §Update.
 
-Update scenarios: meditation adding lessons, stale experiences after document updates (E6 stale), fixing related_docs links.
+## Mode ④: DELETE — delete an experience
 
----
-
-## Mode ④: DELETE — Delete an Experience
-
-> See [references/crud-and-migration.md](references/crud-and-migration.md) §Delete.
-
-```
+```text
 Read to confirm: experience_read(kb_id, exp_id) → confirm it is not a mistake
 Delete: experience_delete(kb_id, exp_id)  # irreversible
 Verify: experience_list(kb_id) count decreases by 1
 ```
+Decision: test pollution/orphan with zero value → delete; has application records → evaluate archiving first (`status="archived"`). Details → crud-and-migration.md §Delete.
 
-Deletion decision: test pollution/orphan with zero value → delete; has application records → evaluate archiving first with `status="archived"`.
+## Mode ⑤: MIGRATE — experiences follow document/KB moves
 
----
-
-## Mode ⑤: MIGRATE — Experiences Follow Document/KB Moves
-
-> `kb_doc_move` does not automatically migrate experiences. See [references/crud-and-migration.md](references/crud-and-migration.md) §Follow-the-Move.
-
-**Mandatory after document moves**:
-
-```
+`kb_doc_move` does NOT automatically migrate experiences — this mode is mandatory after document moves (details → crud-and-migration.md §Follow-the-Move):
+```text
 1. experience_list(source_kb) → filter experiences whose related_docs include the moved document
-2. For each affected experience:
-   - Strongly bound document → migrate the experience to target_kb (read→create→delete→verify)
-   - Document only referenced → update the related_docs path (old→new)
+2. Per affected experience: strongly bound document → migrate to target_kb (read→create→delete→verify)
+   document only referenced → update the related_docs path (old→new)
 3. Verify all related_docs point to documents that really exist
 ```
+KB rename/move: the experience directory follows automatically, but run `kb_reindex(force=true)` to rebuild vectors + fix cross-library reference paths.
 
-KB rename/move: the experience directory follows automatically, but you need `kb_reindex(force=true)` to rebuild vectors + fix cross-library reference paths.
+## Mode ⑥: CROSS-KB — cross-library synthesis
 
----
+Ownership: explicit ownership > related_docs majority ownership > core domain > general KB. Dedup: check `experience_search_global` first to avoid duplicates; pure duplicates → lightweight "pointer experiences". Details → [references/cross-kb-synthesis.md](references/cross-kb-synthesis.md).
 
-## Mode ⑥: CROSS-KB — Cross-Library Synthesis
+## Never
 
-> Ownership/dedup/linkage when experiences span multiple KBs. See [references/cross-kb-synthesis.md](references/cross-kb-synthesis.md).
-
-Ownership decision: explicit ownership > related_docs majority ownership > core domain > general KB.
-Cross-library dedup: check with `experience_search_global` first to avoid duplicates; for pure duplicates use lightweight "pointer experiences".
-
----
-
-## ⚠️ NEVER List
-
-| ❌ Don't | Why | ✅ Do |
-|--------|------|---------|
-| Create empty experiences lacking problem/solution/lessons | Useless even if retrieval hits them | Fall back to drafting; pass the quality gate |
-| Skip quality standards (because it's automatic/meditation) | Meditation ≠ mass-producing junk | Run the same full checklist |
-| Skip user confirmation and ingest directly (CREATE mode) | The user may want edits | Step 3→4 |
-| Write nonexistent paths into related_docs | 404 broken links | Verify with `kb_doc_read` |
-| scenario without a domain prefix | Global conflicts; can't be found | E.g. `vla-deployment-sim2real` |
-| Not fixing experience links after document moves | Experiences become orphans | MIGRATE mode is mandatory |
-| Lower quality standards just to produce more | Low-quality bloat | Quality over quantity |
-| Treat raw conversation transcripts as experiences | Not reusable | Distill into structured, abstract lessons |
-| Let collection scripts write any data | Scripts are read-only | Ingestion only via MCP tools |
-| MEDITATION produces no report | The user is unaware | Phase 4 outputs a report |
-| Judge library quality by summary's avg_rating | Unreviewed experiences count as 0.0 and drag down the mean, misleading | Look at `reviewed_count` + `unrated_count` fields to distinguish |
-| Trust raw collection script output without KB validation | Chat libraries contain system output masquerading as user | Validate every candidate via `kb_list(lightweight=true)` matching + vector search |
+- Create experiences lacking problem/solution/lessons — useless even when retrieved; fall back to drafting and pass the quality gate.
+- Skip quality standards because it's automatic/meditation — meditation ≠ mass-producing junk; run the same full checklist.
+- Skip user confirmation and ingest directly (CREATE mode) — the user may want edits; Step 3 → 4.
+- Write nonexistent paths into related_docs — 404 broken links; verify with `kb_doc_read`.
+- Use a scenario without a domain prefix — global conflicts, can't be found; e.g. `vla-deployment-sim2real`.
+- Leave experience links unfixed after document moves — experiences become orphans; MIGRATE mode is mandatory.
+- Lower quality standards just to produce more — quality over quantity.
+- Treat raw conversation transcripts as experiences — not reusable; distill into structured, abstract lessons.
+- Let collection scripts write any data — scripts are read-only; ingestion only via MCP tools.
+- Run MEDITATION without producing a report — the user is unaware; Phase 4 outputs a report.
+- Judge library quality by summary's avg_rating — unreviewed experiences count 0.0 and drag down the mean; look at `reviewed_count` + `unrated_count`.
+- Trust raw collection-script output without KB validation — chat libraries contain system output masquerading as user; validate every candidate via `kb_list(lightweight=true)` matching + vector search.
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures

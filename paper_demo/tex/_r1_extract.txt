@@ -1,0 +1,380 @@
+===== PAGE 1 =====
+QDCVR: An Agent-Operated Platform for Knowledge
+Organization and Inspectable Retrieval
+Author Name
+Affiliation
+City, Country
+author@example.com
+Abstract
+Research administrators need to organize document collections and
+inspect the evidence behind answers drawn from them. We present
+Qdcvr, an agent-operated platform that connects content-guided
+knowledge organization with inspectable retrieval. Packaged agent
+skills call tool APIs to parse documents, route them among existing
+category bases, maintain tags, and read candidate evidence. The
+retrieval protocol combines vector recall, a prompted content-gate
+self-assessment, additional search and reading, and explicit not-
+found reports. Gate scores expose the agent’s judgment; they do not
+guarantee semantic correctness. The demonstration lets attendees
+follow document placement, inspect retrieved passages and source
+references, and examine failure reports. Saved operational traces
+cover 50 papers in five bases and 165 stored documents and parts.
+A separate ten-question snippet regression passes nine cases, and
+three scripted out-of-corpus examples illustrate agent-authored not-
+found reports. These operational spot checks provide concrete cases
+for examining the workflow, its recorded decisions, and the limits of
+available evidence. Demo video: https://github.com/kingdol666/rag-
+knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4.
+CCS Concepts
+•Information systems →Information retrieval;•Human-
+centered computing→Interactive systems and tools.
+Keywords
+knowledge-base management, retrieval-augmented generation, ev-
+idence inspection, agent workflows, demonstration
+ACM Reference Format:
+Author Name. 2026. QDCVR: An Agent-Operated Platform for Knowledge
+Organization and Inspectable Retrieval. InCIKM ’26, November 9–11, 2026,
+Rome, Italy.ACM, New York, NY, USA, 5 pages.
+1 Introduction
+Research administrators maintaining shared paper collections must
+organize documents and explain which passages support an answer.
+Filenames can obscure content, and relevant passages may not
+answer a question. Administrators need usable collection tools and
+records that expose retrieval decisions.
+Retrieval-augmented generation connects answers to retrieved
+material [ 3]. Self-RAG and Corrective RAG assess retrieval or gen-
+eration and adapt later processing [ 1,7]. DeepRead exposes doc-
+ument hierarchies and paragraph coordinates to locate passages
+CIKM ’26, Rome, Italy
+2026.before reading them [ 4]. CyberBOT grounds generation and verifi-
+cation in an ontology [ 8]. QDCVR complements these approaches
+with content-guided collection management and a reusable evi-
+dence workflow built on tool APIs. The integration problem is to
+carry a document from administrative placement into evidence an
+agent can locate and a user can inspect. QDCVR connects move-
+ment/tagging tools to the same document-part identifiers used by
+search and reading. Attendees can therefore inspect a routing de-
+cision and then follow the placed document into an answer or a
+scoped failure report, rather than evaluate a retrieval controller
+alone.
+Packaged agent skills call these APIs to organize and query a
+collection. Routing uses document content to select among existing
+category bases, without requiring a new taxonomy. Parsed text,
+document parts, and tags support search and reading. Vector recall
+feeds a prompted content gate, followed by further search or read-
+ing when needed. Gate scores record the agent’s judgment, not a
+semantic guarantee. Source references and explicit not-found re-
+ports make that judgment inspectable. Figure 1 shows the workflow;
+Figure 2 presents the architecture.
+The demonstration contributes three connected capabilities:
+•Document parsing, content-guided routing, and tag mainte-
+nance.
+•Reusable agent skills that coordinate tool calls.
+•Retrieval records exposing candidate reads, gate judgments,
+further searches, and failure reports.
+Section 3 invites attendees to follow these operations and inspect
+their outputs. Section 4 examines saved traces and provenance
+limits as operational evidence, not a general efficacy comparison.
+2 System and Agent Workflow
+2.1 Services and Agent Operations
+Qdcvrcombines a web console, a FastAPI backend, a service-
+management CLI ( ragctl ), and an MCP server [ 5]. The inspected
+implementation exposes 41 kb_* knowledge-management tools
+within a 94-tool inventory, including document creation, movement,
+tagging, search, and offset-addressed reads. The console calls HTTP
+services; MCP-capable agents operate the same resources through
+tools. These interfaces share data and operations, not necessarily
+a reasoning policy: ordinary search endpoints return candidates
+without requiring a content-gate judgment.
+Figure 2 separates the services from the packaged agent skills
+that prescribe the demonstrated workflows. ChromaDB stores BGE-
+M3 vectors [ 2]; Neo4j supports document relations; Markdown
+and JSON/YAML metadata retain content and collection structure.
+Graph navigation is optional, not the evaluated retrieval route.
+1
+===== PAGE 2 =====
+CIKM ’26, November 9–11, 2026, Rome, Italy Author Name
+BQ02 · Wha t deﬁnes NISQ t echnology and wha t is its cen tral limit ation?
+Dense RA G (our r eproduction) QDCVR (ag ent-execut ed skill)
+≈800-t oken windo ws
+Fixed fr agmen ts
+Dense r etrieval → pack 2 e xcerp ts
+≤4,000-char acter evidence windo w
+Single g ener ation → ans wer
+Provenance not log ged in this harness.§
+§
+§Organized, section-addr essed parts
+base / documen t / part / section
+Vector-ﬁrst recall
+Read c andida te text; score 0–8
+Gate ≥ 6?
+≥6: dir ect Initial <6
+Librarian f allback
+Keep 5; disc ard ≤4; r ead + r echeck
+P0 ≥6P1 =5No usable
+P0/P1
+Cited ans wer
+Sour ces + limitsQualiﬁed ans wer
+With a ttributionNot f ound
+Scoped r eportCompar ed conﬁgur ations,
+not a claim of accur acy superiority .
+0–8 rubric: ≥6 dir ect; usable P1 =5 ma y support an a ttribut ed ans wer after fallback. Sc ores ar e agent judgmen ts.
+Figure 1: Two evidence-handling workflows for the same question. The reproduced dense baseline retrieves candidates and
+packs two excerpts for one generation call; its logging adapter does not retain source-document metadata. The QDCVR skill asks
+an agent to read section-addressed evidence and assess it before answering. Initial scores below six invoke recovery; a usable
+score-five backstop may support an explicitly qualified answer after recovery. This schematic explains the configurations, not a
+general accuracy ranking.
+Deployment requires the services, model weights, and a supported,
+configured agent harness.
+2.2 Preparing Addressable Evidence
+MinerU converts PDFs to structured Markdown [ 6]. Long texts
+are split at a configurable character ceiling (30,000 in the supplied
+corpus). Retained headings and part identifiers locate a passage
+within its document; line-offset reads allow an agent to continue
+beyond an initial excerpt.
+The organization skill asks the agent to inspect parsed content,
+select among existing category bases, and use tools to place and tag
+documents. The workflow explicitly checks the resulting parts and
+indexing status: successful upload alone does not establish com-
+plete tagging and indexing. Administrators retain control over the
+bases and permissions. The five-base collection is a demonstration
+configuration, not a platform restriction.
+2.3 Read, Assess, and Escalate
+QDCVR stands for Query-Driven Content-Verified Retrieval. Its
+skill rewrites a query, recalls vector candidates across selected
+bases, and reads their text.Content-verifieddenotes a prompted
+relevance assessment, not guaranteed correctness. The executingagent assigns
+𝑠=𝑠 topic+𝑠scenario+𝑠evidence ,
+with ranges0–3,0–3, and0–2. A score of at least 6 permits a direct
+answer. A score-5 candidate is retained as a partial-evidence back-
+stop; candidates scoring at most 4 are discarded. If none scores at
+least 6, the librarian inspects base summaries and document meta-
+data, searches selectively, and reads new candidates. If no stronger
+evidence emerges, the skill permits an explicitly attributed answer
+from a usable score-5 backstop.
+Answers contain search paths, answer, sources, confidence, and
+blind spots; evidence is addressable by base, document, part, and
+section. If neither strong evidence nor a usable backstop remains,
+the skill requests a not-found report with scope, near miss, and
+reason. These instructions rely on agent compliance. The supplied
+artifacts retain candidate excerpts and answer records; mutable
+file-tree metadata is not an append-only per-query audit log.
+3 Interactive Demonstration
+The demonstration targets research-data administrators and agent
+developers. A prepared instance contains 50 papers in five bases.
+Attendees inspect documents in the web console and operate an
+MCP-capable agent with the packaged skills loaded. The presenter
+2
+===== PAGE 3 =====
+QDCVR: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval CIKM ’26, November 9–11, 2026, Rome, Italy
+Web HT TP / CLI se tup Agents → MCP adap ter Back end / s torage primitiv es
+(a) Ag ent-assis ted ing est (b) Online r etrieval
+PDFMinerU
+parse
+Section
+Mark down
+Agent reads / r outes
+Selects / pr opag ates tags
+Split / inde x / store
+Retain section pa ths
+ChromaDB / BGE -M3 · Neo4j
+File tr ee + Y AML me tadataQuer y
+rewriteVector-ﬁrst recall
+Cross-base balance
+Inde xed e vidence → r ecall
+Read c andida te text
+Parts / c ontinua tion
+Content rubric
+0–8 sc oreCited ans wer
+5 sections≥6: dir ect
+Librarian shelf sc an
+Targeted re-sear chInitial <6: f allbackRead ne w text + recheck
+Not f ound
+Scope + near miss + r easonAfter fallback:
+No usable P0/P1Qualiﬁed ans wer
+With a ttribution
+After fallback:
+Usable P1 =5
+5 retained; ≤4 disc ardedAgent-execut ed QDCVR skill Demo: ﬁv e category bases
+Skills e xecut e gate / retry / classiﬁc ation; w eb or HT TP sear ch does not aut oma tically en force this policy .
+Figure 2: Platform operations and the agent-executed QDCVR workflow. (a) Parsing, content-guided placement, and part-level
+checks prepare indexed evidence. (b) The packaged skill prescribes query rewriting, recall, reading, and a conditional content
+assessment. Scores of at least six permit a direct answer; lower initial scores invoke the librarian. After reassessment, usable
+score-five evidence can support an attributed backstop answer; no usable evidence yields not-found. These instructions are not
+mandatory behavior of ordinary HTTP search endpoints.
+provides the candidate excerpts and answer records alongside the
+console; ordinary web search is not presented as an equivalent
+execution of the skill.
+1. Organize a document.An attendee selects a PDF and an intake
+location, then asks the agent to parse and organize it by content.
+The attendee compares the parsed text with the proposed category,
+inspects the parts, and checks tags and indexing status. This ex-
+poses the routing decision and the operations needed to make the
+document searchable. A prepared example, explicitly identified as
+such, is available if live parsing would delay the session.
+2. Inspect an answer’s evidence.The attendee asks, “What de-
+fines NISQ technology and what is its central limitation?” In the
+supplied BQ02 trace, the first hit is part 2 of 3 of the NISQ paper,
+with similarity approximately 0.71. The recorded agent judgment
+is 8/8 and takes the direct-answer path. Attendees open the source
+and compare it with the answer: similarity, agent judgment, and
+evidence are distinct. Figure 3 adds a Transformer case comparing
+trace-derived section references, a self-reported filename, and a
+baseline abstention.3. Inspect a not-found report.The attendee asks for training
+epochs in the fictitious paperSpectral Tuning for Low-Resource Odor
+Recognition. The scripted P2 example pairs collected retrieval and
+catalog evidence with a predefined, agent-authored judgment: BERT
+discusses training epochs but receives 1/8, and the saved report
+states not-found rather than substituting BERT’s recipe. Its catalog
+census covers five bases and 165 entries, not exhaustive reading of
+all documents. Attendees inspect the near miss and search scope
+and may try another question. The report concerns evidence in this
+collection, not the existence of an answer elsewhere.
+4 Demonstration Evidence and Limitations
+We examine saved operational traces for ten questions and three
+out-of-corpus probes over 50 papers in five category bases, compris-
+ing 165 stored documents and parts. Track A pairs tool-execution
+records with savedQdcvranswers; Track B uses an external agent
+with file tools over exported papers; Track C uses dense retrieval
+with a 4,000-character context budget. A separate regression using
+the raw questions passes 9/10 cases: each pass requires the desig-
+nated paper among the top three retrieved candidates and at least
+one literal gold keyword in their combined snippets. BQ06 retrieves
+3
+===== PAGE 4 =====
+CIKM ’26, November 9–11, 2026, Rome, Italy Author Name
+BQ01 · Ho w is a ttention c omput ed, and wh y replace r ecurr ence and c onvolution?
+Tool r ecords + ag ent-author ed summaries; not an aut onomous benchmark.
+A QDCVR
+Saved e vidence tr aceB Bar e agent
+Self-report ed ﬁle sour ceC Dense RA G
+Our r eproduction
+§
+§
+§§
+§
+§part 1/2 · §3.2.3
+part 2/2 · §7
+read
+Multi-head a ttention r eplaces
+recurr ence; par allel c omput ation.
+Gate: 8/8 · f ast exit
+Declar ed unr ead: positional f ormula,
+training de tails, benchmark sc ores.1706.03762
+ﬁles_used: ﬁlename
+reports
+softma x(QKᵀ / √dₖ)V
+Multi-head; par allelism; short pa ths
+Mor e comple te formula pr ose
+Self-report ed sour ce,
+not an ob served ﬁle-r ead tr ace.…
+…C reports: par sing
++ Table 4 r esults
+gener ate
+Reports insuﬃcien t evidence
+Abstains in the r ecorded ans wer.
+2 chunk s · 2,854 char acters
+Chunk/ sour ce me tadata
+not log ged in this harness.
+P2 · Spectr al Tuning f or Lo w-Resour ce Odor R ecognition
+Scrip ted pr obe r ecord · fabric ated-paper ques tion about tr aining epochs
+BERT near miss
+Epochs belong t o
+a diﬀ erent paper .Recorded: 1/8
+Agent judgmen tCatalog census
+5 bases · 165 en tries
+153 names r etainedSaved report:
+NOT_FOUND
+Scores ar e recorded ag ent judgmen ts, not independen t accur acy measur emen ts.
+Figure 3: Selected recorded cases, paraphrased. For the Transformer question, A’s part/section labels are reconstructed from its
+evidence trace; B reports a source filename; C reports insufficient evidence. The lower scripted example combines collected
+evidence with a predefined agent-authored judgment and not-found report; its catalog census is not exhaustive document
+reading. Gate scores are agent-authored rubric judgments, not correctness ratings. The excerpts illustrate differences in
+inspectability, not controlled comparative effectiveness.
+its designated paper but lacks the required keyword. This checks
+snippet coverage, not final-answer correctness.
+The three out-of-corpus examples combine script-collected re-
+trieval and catalog evidence with predefined agent-authored judg-
+ments and templated not-found reports. They illustrate the re-
+porting format, not measured autonomous abstention. The census
+counts 165 catalog entries but retains 153 document names; it does
+not establish exhaustive content inspection. C explicitly abstains in
+two of ten saved answers. These records illustrate how insufficient
+evidence is reported; non-abstention does not establish correctness.
+Gate scores are agent-authored rubric judgments, not independent
+correctness assessments. Attendees can inspect the recorded de-
+cisions alongside candidate text and source references, including
+where the available trace does not fully support an answer.
+The tracks use different evidence windows and execution config-
+urations. A’s scripted, fixed rewrites include expected-answer terms,
+precluding a fair retrieval comparison. B’s file references are self-
+reported without retained read events. C loses document metadata
+at the logging adapter, a limitation of this reproduction rather than
+dense retrieval. Resolved LLM configurations are not archived per
+answer, and cache state and parametric knowledge are uncontrolled.
+A records retrieval and read times but not answer-authoring time,so its end-to-end latency is unavailable. These selected traces sup-
+port an operational demonstration, not claims of answer accuracy,
+speed advantage, or general efficacy.
+5 Conclusion
+Qdcvrlinks knowledge-base management tools with an agent-
+executed workflow for reading evidence, assessing relevance, and
+reporting search failure. The demonstration exposes document
+placement, source inspection, and not-found behavior. The saved
+cases illustrate operation rather than establish general effective-
+ness; compliance with the workflow and complete run provenance
+remain important validation requirements.
+Artifacts.Code, corpus-fetch scripts, and saved traces are avail-
+able at https://github.com/kingdol666/rag-knowledge. The video
+is linked in the abstract. Reproduction requires configured docu-
+ment services and an agent harness/model; stored answers are not
+independent ground-truth judgments.
+GenAI Usage Disclosure
+OpenAI Codex assisted with prose revision, manuscript organiza-
+tion, inspection of implementation and experiment artifacts, and
+4
+===== PAGE 5 =====
+QDCVR: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval CIKM ’26, November 9–11, 2026, Rome, Italy
+vector-figure implementation. No new answer-generation experi-
+ments were run for this revision; reported observations come from
+the existing saved records. The demonstrated system uses language
+models for content routing, rubric judgments, and answer draft-
+ing. These outputs are distinguished from deterministic inventory
+checks and are not independent correctness assessments. Responsi-
+bility for the final claims, sources, figures, and submitted manuscript
+rests with the human authors.
+References
+[1]Akari Asai, Zeqiu Wu, Yizhong Wang, Avirup Sil, and Hannaneh Hajishirzi. 2024.
+Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection. In
+The Twelfth International Conference on Learning Representations (ICLR). https:
+//openreview.net/forum?id=hSyW5go0v8
+[2]Jianlyu Chen, Shitao Xiao, Peitian Zhang, Kun Luo, Defu Lian, and Zheng Liu. 2024.
+M3-Embedding: Multi-Linguality, Multi-Functionality, Multi-Granularity Text
+Embeddings Through Self-Knowledge Distillation. InFindings of the Association
+for Computational Linguistics: ACL 2024. Association for Computational Linguistics,
+2318–2335. doi:10.18653/v1/2024.findings-acl.137
+[3]Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin,
+Naman Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih, Tim Rocktäschel, Se-
+bastian Riedel, and Douwe Kiela. 2020. Retrieval-Augmented Generation forKnowledge-Intensive NLP Tasks. InAdvances in Neural Information Processing
+Systems, Vol. 33. Curran Associates, Inc., 9459–9474. https://proceedings.neurips.
+cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html
+[4]Zhanli Li, Huiwen Tian, Lvzhou Luo, Yixuan Cao, and Ping Luo. 2026. DeepRead:
+Document Structure-Aware Reasoning to Enhance Agentic Search.arXiv preprint
+arXiv:2602.05014v3(2026). doi:10.48550/arXiv.2602.05014
+[5]Model Context Protocol Contributors. 2025. Model Context Protocol Specification
+(2025-11-25). https://modelcontextprotocol.io/specification/2025-11-25. Accessed
+September 19, 2026; specification revision 2025-11-25.
+[6]Bin Wang, Chao Xu, Xiaomeng Zhao, Linke Ouyang, Fan Wu, Zhiyuan Zhao, Rui
+Xu, Kaiwen Liu, Yuan Qu, Fukai Shang, Bo Zhang, Liqun Wei, Zhihao Sui, Wei Li,
+Botian Shi, Yu Qiao, Dahua Lin, and Conghui He. 2024. MinerU: An Open-Source
+Solution for Precise Document Content Extraction.arXiv preprint arXiv:2409.18839
+(2024). doi:10.48550/arXiv.2409.18839
+[7]Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, and Zhen-Hua Ling. 2024. Corrective Retrieval
+Augmented Generation.arXiv preprint arXiv:2401.15884(2024). doi:10.48550/arXiv.
+2401.15884
+[8]Chengshuai Zhao, Riccardo De Maria, Tharindu Kumarage, Kumar Satvik Chaud-
+hary, Garima Agrawal, Yiwen Li, Jongchan Park, Ying-Chih Chen, Yuli Deng, and
+Huan Liu. 2025. CyberBOT: Ontology-Grounded Retrieval Augmented Generation
+for Reliable Cybersecurity Education. InProceedings of the 34th ACM International
+Conference on Information and Knowledge Management. Association for Computing
+Machinery, 6752–6756. doi:10.1145/3746252.3761478
+5

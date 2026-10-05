@@ -6,6 +6,7 @@ MCP 工具为薄封装;长任务(learn/learn-all/ask-async)由 kb-mcp 层 task_r
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
@@ -26,6 +27,33 @@ router = APIRouter(prefix="/api/v1/soul", tags=["soul"])
 
 def _err(status: int, code: str, detail: str = "") -> HTTPException:
     return HTTPException(status_code=status, detail={"error": code, "detail": detail})
+
+
+def _web_base() -> str:
+    """Web (BFF) base URL for backend→web orchestration calls (D1/D2 fix)."""
+    from app.config import config
+    return f"http://127.0.0.1:{int(config.frontend_port or 6789)}"
+
+
+async def _web_request(method: str, path: str, json_body: dict | None = None,
+                       timeout: float = 60.0) -> tuple[int, dict]:
+    """Backend→web call carrying the MCP service token. Never raises (D1/D2)."""
+    import httpx
+    from app.services.auth_service import get_mcp_token
+    headers = {}
+    token = get_mcp_token()
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    try:
+        async with httpx.AsyncClient(trust_env=False, timeout=timeout) as client:
+            resp = await client.request(method, _web_base() + path, json=json_body, headers=headers)
+            try:
+                return resp.status_code, resp.json()
+            except ValueError:
+                return resp.status_code, {}
+    except Exception as e:  # noqa: BLE001 — orchestration failures surface in the payload
+        logger.warning("web call %s %s failed: %s", method, path, e)
+        return 0, {}
 
 
 
@@ -179,9 +207,31 @@ async def soul_settings():
 async def soul_init(req: dict[str, Any]):
     """后端侧初始化(库已由 kb-mcp 层经 web API 创建后调用)。
 
-    等价于 /bootstrap(兼容 §11.1 契约)。模板库创建亦走此路径。
+    D2 修复: 库不存在时先经 web 层 POST /api/soul/init 完成完整建格
+    (建库 + 4 宪法文档 + bootstrap + 索引)，直接调 REST 的外部集成方
+    不再卡在「已存在的 SOUL 库」半程错误上；库已存在则维持原 bootstrap
+    语义不变。
     """
     soul_kb_id = (req.get("soul_name") or req.get("soul_kb_id") or "").strip()
+    resolved = soul_config.resolve_soul_kb_path(soul_kb_id) if soul_kb_id else None
+    if not resolved:
+        name = soul_kb_id or ""
+        if name and not name.startswith("soul-"):
+            name = f"soul-{name}"
+        if not name:
+            raise _err(400, "invalid_soul_name", "名称必须以 soul- 前缀开头")
+        s, body = await _web_request("POST", "/api/soul/init", {
+            "name": name,
+            "kb_scope": req.get("kb_scope") or ["*"],
+            "domain_labels": req.get("domain_labels") or [],
+            "supported_task_types": req.get("supported_task_types") or [],
+            "harness": req.get("harness") or "",
+            "model": req.get("model") or "",
+        }, timeout=300.0)
+        if s != 200 or not body.get("success"):
+            raise _err(502, "web_init_failed",
+                       f"web /api/soul/init failed (status={s}): {json.dumps(body, ensure_ascii=False)[:240]}")
+        return {"success": True, "via": "web-full-init", **body}
     return await _bootstrap_impl(
         soul_kb_id,
         kb_scope=req.get("kb_scope") if req.get("kb_scope") else ["*"],
@@ -352,7 +402,12 @@ async def soul_config_update(soul_kb_id: str, req: dict[str, Any],
 @router.delete("/{soul_kb_id}")
 async def soul_delete(soul_kb_id: str, purge_experiences: bool = False,
                       _: None = Depends(verify_token)):
-    """删除前自动 checkpoint(快照保留)。KB 删除本身由 kb-mcp 层经 web API 执行。"""
+    """删除前自动 checkpoint(快照保留) → 级联删除 KB(D1 修复：原只做半程)。
+
+    KB 删除经 web 层 /api/kb/delete 执行（含 ChromaDB/Neo4j 级联清理），
+    与 kb-mcp soul_delete 工具同语义；web 不可达时 checkpoint 仍保留，
+    deleted 字段如实报告失败原因。
+    """
     if not soul_config.resolve_soul_kb_path(soul_kb_id):
         raise _err(404, "kb_not_found")
     try:
@@ -362,12 +417,31 @@ async def soul_delete(soul_kb_id: str, purge_experiences: bool = False,
         logger.warning("pre-delete checkpoint failed: %s", e)
         checkpoint_id = ""
     soul_router.invalidate_cache(soul_kb_id)
+    # D1 fix: complete the delete — resolve the KB (uuid or soul- name) in the
+    # web catalog and delete it there (cascades vector collection + graph).
+    deleted: dict = {"success": False, "error": "web unreachable"}
+    status, catalog = await _web_request("GET", "/api/kb/catalog")
+    kb_id = ""
+    if status == 200:
+        for kb in (catalog.get("knowledgeBases") or []):
+            if kb.get("kbId") == soul_kb_id or kb.get("name") == soul_kb_id:
+                kb_id = kb.get("kbId") or ""
+                break
+        if not kb_id:
+            deleted = {"success": True, "deletedId": "", "message": "already absent from web catalog"}
+    if kb_id:
+        d_status, d_body = await _web_request("DELETE", "/api/kb/delete", {"kbId": kb_id}, timeout=120.0)
+        if d_status == 200 and d_body.get("success"):
+            deleted = {"success": True, "deletedId": kb_id, "message": d_body.get("message", "")}
+        else:
+            deleted = {"success": False, "error": f"web kb delete returned status={d_status}",
+                       "detail": d_body.get("statusMessage") or ""}
     return {
-        "success": True,
+        "success": bool(deleted.get("success")),
         "kb_id": soul_kb_id,
         "checkpoint_saved": checkpoint_id,
+        "deleted": deleted,
         "purged": bool(purge_experiences),
-        "note": "KB 删除请经 kb-mcp soul_delete 工具(web 层执行)",
     }
 
 

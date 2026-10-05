@@ -1,0 +1,17 @@
+{
+ "tag": "t6_organize_submit",
+ "mode": "async",
+ "request_prompt": "对知识库「e2e-omp-20261001」做一次整理体检：查重、描述质量与三层一致性审计，返回结论摘要（文档数、重复对数、描述是否可检索）。",
+ "http": 200,
+ "wall_s": 0.0,
+ "response": {
+  "success": true,
+  "mode": "async",
+  "task_id": "kbt_muoxt0mm_6a7c43a0",
+  "status": "running",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "poll": "GET /api/kb/agent/tasks/kbt_muoxt0mm_6a7c43a0"
+ },
+ "task_id": "kbt_muoxt0mm_6a7c43a0"
+}

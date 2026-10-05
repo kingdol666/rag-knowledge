@@ -1,0 +1,33 @@
+{
+ "mode": "C",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 38.2,
+ "duration_ms": 36842,
+ "turns": 8,
+ "cost_usd": 0.2712778,
+ "session_id": "8953ad59-2144-40b7-a50c-9da88ea1ad63",
+ "answer_chars": 1991,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "I now have complete evidence.\n\n**结论：本库中能直接回答该问题的核心文献是 Nwosu 等人的《Predicting Stroke from Electronic Health Records》（临床医学库 / b28f0a25…），其结论为——高血压、糖尿病（高血糖）与心脏病是中风的主要风险因素；10 项 EHR 患者属性彼此相关性低、不可降维，全部保留作特征；在高度不平衡数据（29072 条中仅 548 条中风）经随机下采样后，前馈多层感知机（神经网络）取得最佳准确率 75.02%，决策树 74.31%、随机森林 74.53%。**\n\n**关键风险因素与影响**（出处：clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md）\n\n- **三大主要风险因素**：文中明确「Studies in healthcare like [6]-[8] have identified **high blood pressure, diabetes and heart disease** as major risk factors responsible for stroke attack in an individual.」（P0 直接证据，引言）\n- **风险因",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

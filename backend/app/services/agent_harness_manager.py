@@ -330,8 +330,40 @@ class AgentHarnessManager:
         """
         return await hreg.probe_harness(harness)
 
+    # S-P1 fix: serve the last status snapshot immediately and refresh it in
+    # the background. The request path previously re-probed all 15 harnesses
+    # sequentially whenever the 30s probe cache expired (cold call 30s+ —
+    # the meditation panel appeared hung after idle periods).
+    _status_snapshot: dict | None = None
+    _status_snapshot_at: float = 0.0
+    _status_refreshing: bool = False
+    _STATUS_TTL = 30.0
+
     async def get_all_harness_status(self) -> dict:
-        """Get status for all harnesses + circuit breaker state."""
+        """Get status for all harnesses + circuit breaker state (snapshot)."""
+        if self._status_snapshot is None:
+            snap = await self._build_all_harness_status()
+            self._status_snapshot = snap
+            self._status_snapshot_at = time.time()
+            return snap
+        if (time.time() - self._status_snapshot_at > self._STATUS_TTL
+                and not self._status_refreshing):
+            self._status_refreshing = True
+            asyncio.create_task(self._refresh_status_background())
+        return self._status_snapshot
+
+    async def _refresh_status_background(self) -> None:
+        try:
+            snap = await self._build_all_harness_status()
+            self._status_snapshot = snap
+            self._status_snapshot_at = time.time()
+        except Exception as e:  # noqa: BLE001 — background refresh must never raise
+            logger.warning("background harness status refresh failed: %s", e)
+        finally:
+            self._status_refreshing = False
+
+    async def _build_all_harness_status(self) -> dict:
+        """Probe every harness (blocking) and assemble the status payload."""
         status: dict[str, dict] = {}
         names = [*hreg.HARNESS_IDS, "heuristic"]
         for name in names:

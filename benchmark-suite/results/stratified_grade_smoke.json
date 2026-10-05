@@ -1,0 +1,79 @@
+{
+ "run_dir": "experiment_chat_20260922-211000",
+ "qfile": "qa_questions.json",
+ "judge_enabled": false,
+ "per_track": {
+  "a": {
+   "n": 10,
+   "gold_hit": 9,
+   "kw_ok": 9,
+   "pass": 9,
+   "pass_rate": 0.9,
+   "correct_refusal": 0,
+   "refusal_n": 0,
+   "over_refusal": 0,
+   "answerable_n": 10,
+   "notfound_accuracy": null,
+   "over_refusal_rate": 0.0,
+   "by_stratum": {
+    "single": {
+     "n": 10,
+     "pass": 9,
+     "gold_hit": 9,
+     "abstained": 0,
+     "judge_correct": null
+    }
+   },
+   "avg_latency_s": 113.0,
+   "avg_cost_usd": 0.4911
+  },
+  "b": {
+   "n": 10,
+   "gold_hit": 10,
+   "kw_ok": 6,
+   "pass": 6,
+   "pass_rate": 0.6,
+   "correct_refusal": 0,
+   "refusal_n": 0,
+   "over_refusal": 0,
+   "answerable_n": 10,
+   "notfound_accuracy": null,
+   "over_refusal_rate": 0.0,
+   "by_stratum": {
+    "single": {
+     "n": 10,
+     "pass": 6,
+     "gold_hit": 10,
+     "abstained": 0,
+     "judge_correct": null
+    }
+   },
+   "avg_latency_s": 42.7,
+   "avg_cost_usd": 0.1631
+  },
+  "c": {
+   "n": 10,
+   "gold_hit": 9,
+   "kw_ok": 6,
+   "pass": 5,
+   "pass_rate": 0.5,
+   "correct_refusal": 0,
+   "refusal_n": 0,
+   "over_refusal": 0,
+   "answerable_n": 10,
+   "notfound_accuracy": null,
+   "over_refusal_rate": 0.0,
+   "by_stratum": {
+    "single": {
+     "n": 10,
+     "pass": 5,
+     "gold_hit": 9,
+     "abstained": 0,
+     "judge_correct": null
+    }
+   },
+   "avg_latency_s": 48.0,
+   "avg_cost_usd": 0.1803
+  }
+ }
+}

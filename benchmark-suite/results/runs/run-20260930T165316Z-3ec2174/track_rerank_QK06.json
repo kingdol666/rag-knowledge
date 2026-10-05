@@ -1,0 +1,42 @@
+{
+ "qid": "QK06",
+ "method": "rerank",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2007.10574",
+  "2409.13934"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change__k00",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on__k14",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k05"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2007.10574",
+  "2409.13934"
+ ],
+ "evidence_chars": 1542,
+ "retrieval_s": 4.0,
+ "latency_s": 11.5,
+ "answer": "The evidence is insufficient to answer this question.\n\n**Why:** The retrieved chunks reference precipitation extremes and climate change, but none names the physical factor that *primarily controls* the response.\n\n- `[1503.07557]` (O'Gorman, \"Precipitation extremes under climate change\") explicitly states a \"focus on the physical factors that control the response,\" but the retrieved excerpt is truncated mid-sentence (\"the sensitivity of precipitation extremes to warming remains uncert…\") before any factor is identified.\n- `[2007.10574]` (section 3.2) discusses dynamical links to the MJO and examines vertical moisture flux convergence and vertical advection of moisture, but these are framed as processes modulating MJO-induced extremes, not as the primary controlling factor for the general climate-change response.\n- `[2409.13934]` mentions a Clausius-Clapeyron warming-driven signal (~7%/°C) for extreme precipitation, but this describes a scaling rate, not a statement of the controlling physical factor.\n\n**Sources used:** `[1503.07557]` (O'Gorman, abstract); `[2007.10574]` (section 3.2); `[2409.13934]`.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 73,
+  "output": 259,
+  "cache_read": 48576,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0313538,
+ "extra": {
+  "rerank_fallback": true
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

@@ -1,108 +1,108 @@
-# Tag Quality Rules — 标签质量门控
+# Tag Quality Rules — Tag Quality Gate
 
-> **核心原则**：标签是检索的"路标"，必须是从内容提炼的**领域概念词**，不是文件名碎片、章节标题、或测试残留。
-> 垃圾标签会直接污染 `kb_doc_get_by_tag` 召回和 enterprise 检索的 Path B。
+> **Core principle**: tags are retrieval's "signposts"; they must be **domain concept words** distilled from the content — not filename fragments, section titles, or test residue.
+> Junk tags directly pollute `kb_doc_get_by_tag` recall and Path B of enterprise retrieval.
 
-## 黄金法则
+## Golden Rule
 
-**先读内容，再提标签。** 未读文档正文（≥2000 chars）就打标签，是禁止行为。
-每个标签必须满足：①是领域概念/技术/方法/材料/场景词；②在正文里真实出现；③与现有词表去重归一。
-
----
-
-## T1 — 黑名单（命中即丢弃，永不入库）
-
-### T1a 章节标题 / 论文结构词
-解析 PDF 时极易把标题误提为标签。**以下模式一律拒绝**：
-
-| 模式 | 示例（实测垃圾） |
-|---|---|
-| 论文章节编号 | `1 Introduction` `2 Tasks and Terminol` `3 Method` `3.1 Adapting GLIP` `4 Experiments` `5 Related Works` `6 Conclusions` `7 Limitations` `8 Ethics` |
-| 附录/致谢/参考 | `Acknowledgments` `References` `A.1 GPT Prompts` `B.1 Narration Proces` `B.3 Hyperparameters` |
-| 摘要/关键词 | `Abstract` `Keywords` `摘要` `关键词` |
-| 截断残留 | 任何以 `...` 结尾或被截断的标题（`Localizing Active Ob`）|
-| 纯结构词 | `完整版` `基线对比` `综述`（单独使用无语境时）|
-
-**检测正则**：`^\d+(\.\d+)*\s`（章节号开头）、`^(Abstract|References|Acknowledgments|摘要|关键词|附录)`。
-
-### T1b 测试 / 调试标签
-| 模式 | 示例 |
-|---|---|
-| 含 "test" | `test-tag-ingest` `test` `mcp-test-tag` `ingest-test` `test-ops` `metadata-test` `edge-test-tag` `integration-test` `skill-test` `test-batch-tag` `testing` |
-| 含 "tag" 元词 | `graph-test-tag` `web-api-test-tag` `tag with spaces & special!` |
-| 流程标记 | `3-layer-sync` `verification` `e2e` |
-
-### T1c 描述性 / 元标签
-标签描述的是"文档状态"而非"文档内容"：
-- `文件名内容不匹配` `待补` `未验证` `draft` `TODO`
-→ 这类应写进 description 或审计备注，**不可作为标签**。
-
-### T1d 格式非法
-- 含空格（除非是既定复合词如 `deep learning`）
-- 含特殊字符 `!@#$%^&*` 、纯标点、纯数字、超长（>30 chars）
+**Read the content first, then extract tags.** Tagging without reading the document body (≥2000 chars) is forbidden.
+Every tag must satisfy: (1) it is a domain concept/technology/method/material/scenario word; (2) it genuinely appears in the body; (3) it is deduplicated and normalized against the existing vocabulary.
 
 ---
 
-## T2 — 归一化（提标签前先归一）
+## T1 — Blocklist (any hit is discarded, never stored)
 
-### T2a 大小写归一
-化学式/缩写统一首大写：`pet`→`PET`、`pe`→`PE`、`pp`→`PP`、`pa6`→`PA6`、`pla`→`PLA`、`pvdf`→`PVDF`。
-通用技术词统一小写（除首字母）：`Transformer`/`transformer`→`Transformer`（专有架构保留大写）、`deep-learning`/`Deep-Learning`→`深度学习`（优先中文词表词）。
+### T1a Section titles / paper-structure words
+When parsing PDFs, headings are easily mis-extracted as tags. **All of the following patterns are rejected**:
 
-### T2b 中英文同义合并（保留词表已有者优先，新词映射到既定主词）
+| Pattern | Examples (field-observed junk) |
+|---|---|
+| Paper section numbers | `1 Introduction` `2 Tasks and Terminol` `3 Method` `3.1 Adapting GLIP` `4 Experiments` `5 Related Works` `6 Conclusions` `7 Limitations` `8 Ethics` |
+| Appendix/acknowledgments/references | `Acknowledgments` `References` `A.1 GPT Prompts` `B.1 Narration Proces` `B.3 Hyperparameters` |
+| Abstract/keywords | `Abstract` `Keywords` `摘要` `关键词` |
+| Truncated residue | Any title ending in `...` or otherwise truncated (`Localizing Active Ob`) |
+| Pure structural words | `完整版` `基线对比` `综述` (when used standalone without context) |
 
-| 领域 | 主标签 | 合并掉 |
+**Detection regexes**: `^\d+(\.\d+)*\s` (starts with a section number), `^(Abstract|References|Acknowledgments|摘要|关键词|附录)`.
+
+### T1b Test / debug tags
+| Pattern | Examples |
+|---|---|
+| Contains "test" | `test-tag-ingest` `test` `mcp-test-tag` `ingest-test` `test-ops` `metadata-test` `edge-test-tag` `integration-test` `skill-test` `test-batch-tag` `testing` |
+| Contains the meta-word "tag" | `graph-test-tag` `web-api-test-tag` `tag with spaces & special!` |
+| Process markers | `3-layer-sync` `verification` `e2e` |
+
+### T1c Descriptive / meta tags
+Tags that describe the "document state" rather than the "document content":
+- `文件名内容不匹配` `待补` `未验证` `draft` `TODO` (filename-content mismatch / to-be-filled / unverified)
+→ These belong in the description or an audit note, **never as tags**.
+
+### T1d Invalid format
+- Contains spaces (unless an established compound word like `deep learning`)
+- Contains special characters `!@#$%^&*`, pure punctuation, pure digits, or is overlong (>30 chars)
+
+---
+
+## T2 — Normalization (normalize before finalizing tags)
+
+### T2a Case normalization
+Chemical formulas/abbreviations unified to uppercase: `pet`→`PET`、`pe`→`PE`、`pp`→`PP`、`pa6`→`PA6`、`pla`→`PLA`、`pvdf`→`PVDF`.
+Generic technical words unified (except initialisms): `Transformer`/`transformer`→`Transformer` (proper architecture names keep capitals), `deep-learning`/`Deep-Learning`→`深度学习` (prefer the existing Chinese vocabulary word).
+
+### T2b Chinese-English synonym merging (existing vocabulary words win; new words map to the established primary)
+
+| Domain | Primary tag | Merged away |
 |---|---|---|
-| 聚合物 | `PET`/`聚酯` | `pet` `bopet`（除非强调薄膜工艺）|
-| | `PE`/`聚乙烯` | `pe` `uhmwpe`（UHMWPE 是特例保留）|
+| Polymers | `PET`/`聚酯` | `pet` `bopet` (unless emphasizing film processes) |
+| | `PE`/`聚乙烯` | `pe` `uhmwpe` (UHMWPE is a special case, kept) |
 | | `PP`/`聚丙烯` | `pp` `bopp` |
-| | `PA6`/`聚酰胺` | `pa6` `pa56` `bopa6`（不同牌号分别保留）|
+| | `PA6`/`聚酰胺` | `pa6` `pa56` `bopa6` (different grades kept separately) |
 | | `PLA`/`聚乳酸` | `pla` |
-| AI | `Transformer` | `transformer` `attention-mechanism`（后者作为补充可保留）|
+| AI | `Transformer` | `transformer` `attention-mechanism` (the latter may be kept as a supplement) |
 | | `强化学习` | `Reinforcement Learning` |
 | | `机器学习` | `machine-learning` `ML` |
-| 材料 | `石墨烯` | `graphene` |
+| Materials | `石墨烯` | `graphene` |
 | | `MXene` | `mxene` |
 
-**规则**：查询 `kb_tags_list()`，若中文主词已存在，新英文标签归一到中文；反之亦然。**同义只保留一个**，避免词表膨胀。
+**Rule**: query `kb_tags_list()`; if the Chinese primary word already exists, normalize new English tags to Chinese, and vice versa. **Keep only one of any synonym pair** to avoid vocabulary bloat.
 
-### T2c 命名风格统一
-- 材料/化学：化学式大写（`PET` `TiO₂`）
-- 方法/算法：中文名优先（`双向拉伸` `强化学习`），英文专有保留（`Transformer` `GraphRAG` `Self-RAG`）
-- 设备/工艺：中文（`拉幅机` `挤出沉积`），除非英文是行业通用（`TDO`）
+### T2c Naming style unification
+- Materials/chemistry: chemical formulas uppercase (`PET` `TiO₂`)
+- Methods/algorithms: Chinese names preferred (`双向拉伸` `强化学习`), English proper names kept (`Transformer` `GraphRAG` `Self-RAG`)
+- Equipment/processes: Chinese (`拉幅机` `挤出沉积`), unless the English term is industry-standard (`TDO`)
 
 ---
 
-## T3 — 数量与内容判据
+## T3 — Count and Content Criteria
 
-| 维度 | 要求 |
+| Dimension | Requirement |
 |---|---|
-| **数量** | 每文档 **2-5 个**。<2 太散无法召回，>5 噪声大 |
-| **复用率** | **≥90%** 从 `kb_tags_list()` 既有词表复用；新词仅当代表全新概念才新增 |
-| **粒度** | 1 个材料词 + 1 个方法/工艺词 + 1 个场景/应用词 + 0-2 个细分属性。例：`PET / 双向拉伸 / 结晶度 / 拉幅机` |
-| **正文验证** | 每个标签必须在正文 ≥2000 chars 采样里**真实出现**或为其直接上位词 |
+| **Count** | **2-5 per document**. <2 is too scattered to recall; >5 is noisy |
+| **Reuse rate** | **≥90%** reused from the existing `kb_tags_list()` vocabulary; add new words only when they represent a brand-new concept |
+| **Granularity** | 1 material word + 1 method/process word + 1 scenario/application word + 0-2 fine attributes. E.g. `PET / 双向拉伸 / 结晶度 / 拉幅机` |
+| **Body verification** | Every tag must **genuinely appear** in the ≥2000-char body sample, or be its direct hypernym |
 
 ---
 
-## T4 — 执行流程（入库时）
+## T4 — Execution Flow (at Ingest)
 
 ```
-1. 读正文 ≥2000 chars
-2. 候选标签 = 从内容提炼 5-8 个领域词
-3. 过 T1 黑名单 → 丢弃命中项
-4. 过 T2 归一化 → 大小写统一、同义合并
-5. 过 T3 数量裁剪 → 保留 top 2-5（材料/方法/场景/属性）
-6. 比对 kb_tags_list() → ≥90% 复用；新增词确认是全新概念
-7. 正文回查 → 每个标签确认在内容里出现
+1. Read ≥2000 chars of the body
+2. Candidate tags = distill 5-8 domain words from the content
+3. T1 blocklist → discard hits
+4. T2 normalization → unify casing, merge synonyms
+5. T3 count trimming → keep the top 2-5 (material/method/scenario/attribute)
+6. Compare against kb_tags_list() → ≥90% reuse; confirm new words are brand-new concepts
+7. Body readback → confirm every tag appears in the content
 8. kb_doc_update_tags(tags=cleaned_tags)
 ```
 
-## T5 — 清洗时（organize O8 用）
+## T5 — During Cleanup (used by organize O8)
 
-对已污染词表，扫描 `kb_tags_list()`：
-- T1 黑名单命中 → 从所有文档移除该标签
-- T2 同义重复 → 统一映射到主词，`kb_doc_update_tags` 替换
-- 0 文档引用的孤儿标签 → 系统自动清除，无需手动
-- 1 文档独有且非新概念 → 考虑归并到主词
+For an already-polluted vocabulary, scan `kb_tags_list()`:
+- T1 blocklist hit → remove the tag from all documents
+- T2 synonym duplicates → map uniformly to the primary word, replace via `kb_doc_update_tags`
+- Orphan tags with 0 document references → auto-purged by the system, no manual action
+- Unique to 1 document and not a new concept → consider merging into the primary word
 
-**实测现状**：当前词表 376 个，其中 ~40 个章节标题、~17 个测试标签、~15 组同义重复 → 清洗后预期降至 ~280 个，召回精度显著提升。
+**Field status**: the current vocabulary is 376 tags, of which ~40 are section titles, ~17 are test tags, and ~15 are synonym-duplicate groups → after cleanup, expect ~280 tags and a significant recall-precision improvement.

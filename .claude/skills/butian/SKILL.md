@@ -1,22 +1,7 @@
 ---
 name: butian
-description: >
-  Butian — SOUL persona initialization distillation dispatcher: orchestrates the
-  dual nuwa-skill (deep research distillation of public figures/topics/thinking
-  frameworks) and dot-skill (distillation of colleagues/acquaintances/
-  relationships/local materials) engines, uniformly converts distillation
-  outputs into Butian seed packages (meta.json/persona.md/work.md/values.md),
-  lands them as soul-<name> personas via ragctl soul distill (template + seed
-  fused 4 constitutional documents + soul-config), then drives curiosity
-  training (learn → approval → scheduled evolution) and persona-augmented
-  retrieval Q&A (soul_qdcvr_ask). Division of labor vs the soul skill: soul
-  manages "the persona's full lifecycle", butian manages "where the initial
-  persona comes from". Triggers: butian, build a SOUL, create an initial
-  persona, distill a persona, distill XX, make an XX persona, XX's way of
-  thinking, XX perspective persona, nuwa, dot-skill, initial persona
-  definition, distill XX into a SOUL, distill persona to soul, butian.
+description: "Butian — SOUL persona initialization distillation dispatcher: orchestrates the dual nuwa-skill × dot-skill engine to distill a public figure, topic, or colleague into an installable SOUL persona seed (deep research → thinking-framework extraction → seed pack). Use whenever the user says butian/补天, wants a persona initialized or distilled from a person/topic, asks for a SOUL seed, or requests perspective skills (musk-perspective and similar) to be turned into SOUL personas."
 ---
-
 # Butian — SOUL Persona Distillation Dispatcher (Innate Genes × Acquired Evolution)
 
 **Executor: main agent executes directly (distillation orchestration + seed landing; no Archival delegation)**
@@ -81,7 +66,9 @@ After matching, execute the six steps: **triage → distill → convert → land
 ## Sequential Workflow
 
 ### Step 0 — Pre-Flight (Mandatory)
-- `soul_list` available → MCP online; backend `ragctl soul list` or `curl :8765/api/v1/soul/list` works → backend online
+- `soul_list` available → MCP online; backend `ragctl soul list` works → backend online
+  (raw REST, if needed: `http://localhost:${BACKEND_PORT}/api/v1/soul/*`, port from `.env`,
+  currently 8771, requires `Authorization: Bearer <token>`)
 - `ragctl` available (`command/ragctl.bat` or ragctl on PATH)
 - On failure → report "MCP/backend unavailable"; do not continue
 
@@ -182,7 +169,8 @@ Requirement → distill (nuwa/dot-skill) → convert (nuwa_to_seed.py) → land 
 | Create a new persona via butian when the user already has a SOUL | First check duplicates with soul_list; use soul update/evolution | Duplicate personas = routing chaos |
 
 **Failure fallback**: ragctl unavailable → manual MCP orchestration (§3b protocol); MCP unavailable →
-REST `http://localhost:8765/api/v1/soul/*` (same data as MCP).
+REST `http://localhost:${BACKEND_PORT}/api/v1/soul/*` (port from `.env`, currently 8771,
+requires `Authorization: Bearer <token>`; same data as MCP).
 
 ## Tool Quick Reference
 

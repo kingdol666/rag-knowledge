@@ -1,0 +1,58 @@
+{
+ "mode": "A",
+ "ok": true,
+ "rc": 0,
+ "seconds": 23.1,
+ "wall_s": 24.5,
+ "real_engine": true,
+ "status": "ok",
+ "n_result_docs": 15,
+ "kept_doc_paths": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+  "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+  "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+  "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 2 of 5).md",
+  "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+  "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+  "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md"
+ ],
+ "judge": {
+  "status": "ok",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "criterion": "evidence",
+  "threshold": 0.5,
+  "global_best": 0.9792,
+  "scored_segments": 95,
+  "total_segments": 95,
+  "errors": []
+ },
+ "evidence_chars": 24000,
+ "gold_hit": true,
+ "stderr_tail": "",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "exit_ok": true,
+   "real_engine": true,
+   "evidence_nonempty": true,
+   "gold_hit": true,
+   "latency_recorded": true
+  }
+ },
+ "question": {
+  "qid": "q2",
+  "text": "基于电子健康记录（EHR）数据用机器学习算法预测中风/卒中风险：关键风险因素及其影响分析 (stroke prediction electronic health records machine learning risk factors)",
+  "gold_substr": "stroke-from-electronic-health",
+  "gold_name": "predicting-stroke-from-electronic-health-rec 论文"
+ }
+}

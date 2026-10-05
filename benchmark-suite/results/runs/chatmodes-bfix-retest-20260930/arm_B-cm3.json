@@ -1,0 +1,29 @@
+{
+ "mode": "B",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 20.3,
+ "duration_ms": 18886,
+ "turns": 6,
+ "cost_usd": 0.2547844,
+ "session_id": "d4ec8613-b668-4841-bd83-8a8ec22703fd",
+ "answer_chars": 982,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：知识库中没有任何文档涉及「Herbert-Moulton collider benchmark」或粒子物理实验中的探测器漂移量化——这是一个知识库外的（很可能是虚构的）主题，我无法给出有依据的答案。**\n\n**已执行的检索（全库逐级，只读）**\n\n1. `kb_list(lightweight=true)`：19 个库，131+75+53+39+24+20+3+4+28+3+1+1+1+1+5+4+4 ≈ 390+ 文档。\n2. 描述层抽查（覆盖最可能命中「粒子物理/探测器」的库，含泛化库）：\n   - **自然科学与地球科学**（75 篇，唯一天体/物理库）——physics 主题为量子错误缓解/NISQ、量子纠错、引力波干涉仪响应、黑洞微扰、CoRoT 系外行星、暗能量巡天 DES 数据处理与校准、气候、地震、海洋、化学 ML、凸优化。**无高能粒子对撞实验、无探测器漂移、无 \"Herbert-Moulton\" / \"collider benchmark\"。**\n   - **工程与能源**（39 篇）——钙钛矿电池、储能并网、电池材料、电网韧性、凸优化/整数规划。无关。\n   - **demo-qa-20260927**（泛化库，强制抽查）——长城、Voyager 1、光合作用、Attention Is All You Need、检索模式速查卡。无关。\n3. 未对文",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

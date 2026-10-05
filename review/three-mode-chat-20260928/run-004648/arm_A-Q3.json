@@ -1,0 +1,435 @@
+{
+  "status": "ok",
+  "query": "在分子科学的机器学习中,Noé 等人的综述《Machine learning for molecular simulation》与“深度空间学习 + 分子振动”数据增强方法各自如何应对数据稀缺与建模挑战？后者在聚酰胺纳滤膜实验中把相对误差和决定系数分别改善到多少？(machine learning molecular simulation molecular vibration data augmentation nanofiltration)",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 30,
+    "vector_dedup_docs": 23,
+    "recall_seconds": 3.0,
+    "docs_read": 20,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati__k00.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati__k01.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 10.4
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9245,
+    "scored_segments": 96,
+    "total_segments": 96,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+      "vector_score": 0.5378577709197998,
+      "judge_score": 0.9245,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+      "vector_score": 0.5759935975074768,
+      "judge_score": 0.9076,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.5529000759124756,
+      "judge_score": 0.9063,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+      "vector_score": 0.5637904405593872,
+      "judge_score": 0.9056,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+      "vector_score": 0.5625981688499451,
+      "judge_score": 0.8935,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+      "vector_score": 0.5644168853759766,
+      "judge_score": 0.8797,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+      "vector_score": 0.5742012858390808,
+      "judge_score": 0.878,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+      "vector_score": 0.7213925123214722,
+      "judge_score": 0.8679,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "vector_score": 0.45399606227874756,
+      "judge_score": 0.8629,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "vector_score": 0.45399606227874756,
+      "judge_score": 0.8629,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.5100725889205933,
+      "judge_score": 0.8379,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.5236380100250244,
+      "judge_score": 0.8212,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+      "vector_score": 0.5742740035057068,
+      "judge_score": 0.8147,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md",
+      "vector_score": 0.39211225509643555,
+      "judge_score": 0.8129,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+      "vector_score": 0.39237093925476074,
+      "judge_score": 0.8093,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+      "vector_score": 0.559707522392273,
+      "judge_score": 0.8025,
+      "kept": true
+    },
+    {
+      "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+      "doc_path": "e2e-flow-20260926-022340/harness-handbook.md",
+      "vector_score": 0.4135819673538208,
+      "judge_score": 0.794,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/thinking-style.md",
+      "vector_score": 0.45493245124816895,
+      "judge_score": 0.7595,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/thinking-style.md",
+      "vector_score": 0.45493245124816895,
+      "judge_score": 0.7595,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/thinking-style.md",
+      "vector_score": 0.45493245124816895,
+      "judge_score": 0.7595,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_id": null,
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+      "name": "vector-index-tuning-guide (part 1 of 2).md",
+      "vector_score": 0.5378577709197998,
+      "judge_score": 0.9245,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+      "name": "mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+      "vector_score": 0.5759935975074768,
+      "judge_score": 0.9076,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.5529000759124756,
+      "judge_score": 0.9063,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+      "name": "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+      "vector_score": 0.5637904405593872,
+      "judge_score": 0.9056,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+      "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+      "vector_score": 0.5625981688499451,
+      "judge_score": 0.8935,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+      "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+      "vector_score": 0.5644168853759766,
+      "judge_score": 0.8797,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+      "name": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+      "vector_score": 0.5742012858390808,
+      "judge_score": 0.878,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+      "name": "chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+      "vector_score": 0.7213925123214722,
+      "judge_score": 0.8679,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.45399606227874756,
+      "judge_score": 0.8629,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.45399606227874756,
+      "judge_score": 0.8629,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.5100725889205933,
+      "judge_score": 0.8379,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.5236380100250244,
+      "judge_score": 0.8212,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+      "name": "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+      "vector_score": 0.5742740035057068,
+      "judge_score": 0.8147,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md",
+      "name": "pride_and_prejudice (part 4 of 26).md",
+      "vector_score": 0.39211225509643555,
+      "judge_score": 0.8129,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+      "name": "pride_and_prejudice (part 26 of 26).md",
+      "vector_score": 0.39237093925476074,
+      "judge_score": 0.8093,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+      "name": "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+      "vector_score": 0.559707522392273,
+      "judge_score": 0.8025,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+      "doc_id": null,
+      "doc_path": "e2e-flow-20260926-022340/harness-handbook.md",
+      "name": "harness-handbook.md",
+      "vector_score": 0.4135819673538208,
+      "judge_score": 0.794,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.45493245124816895,
+      "judge_score": 0.7595,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.45493245124816895,
+      "judge_score": 0.7595,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.45493245124816895,
+      "judge_score": 0.7595,
+      "truncated": false,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+    "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+    "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+    "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+    "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+    "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+    "soul-cs-library/memory-conventions.md",
+    "soul-e2e-tester-024115/memory-conventions.md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+    "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+    "e2e-flow-20260926-022340/harness-handbook.md",
+    "soul-cs-library/thinking-style.md",
+    "soul-e2e-tester-024115/thinking-style.md",
+    "soul-demo-qa/thinking-style.md"
+  ],
+  "evidence_pack": "[AI 基础设施/vector-index-tuning-guide (part 1 of 2).md · vec=0.5378577709197998]\n# vector-index-tuning-guide（第 1/2 部分）\n章节: 向量索引调优指南：HNSW 从基准到生产 – 向量索引调优指南：HNSW 从基准到生产 > 6. 内存与磁盘的权衡 > 6.4 内存预算的隐藏项\n# 向量索引调优指南：HNSW 从基准到生产\n\n> 适用版本：HNSW 实现于主流向量数据库（2026-09 基准）\n\n## 1. HNSW 索引参数总览\n\nHNSW（分层可导航小世界图）是当前向量检索的主力索引。三个核心参数决定索引质量与成本：\n`M`（每节点出边数）、`ef_construction`（建图时候选队列长度）、`ef_search`（查询时候选队列长度）。\n\n| 参数 | 本指南推荐值 | 典型范围 | 影响 |\n|---|---|---|---|\n| M | **32** | 8-64 | 越大召回越高、内存越大 |\n| ef_construction | **200** | 100-500 | 越大建图越慢、图质量越高 |\n| ef_search | 见第 7 节 | 16-512 | 越大召回越高、查询越慢 |\n\n在 100 万条 768 维向量的基准集上，M=32、ef_construction=200 的组合实测：\n**索引构建耗时 47 分钟**，**百万级向量内存占用 3.2GB**，**top-10 召回率 96.4%**。\n这组数字是本指南后续所有权衡分析的基准点（下称\"基准配置\"）。\n\n### 1.1 参数为什么相互耦合\n\n把 M、ef_construction、ef_search 当成三个独立旋钮是最常见的误区。M 决定图的连通度\n上限，ef_construction 决定建图时能否逼近这个上限，ef_search 决定查询时能否利用它。\n实测中 M=16 配 ef_search=256 的召回率（94.1%）仍低于 M=32 配 ef_search=64（93.6%\n构建召回 + 查询加深后 95.9%），说明图结构（M）是天花板，查询参数只能逼近天花板。\n\n### 1.2 与 IVF 系索引的边界\n\nIVF-PQ 在 1 亿级向量上内存效率更高，但在 100 万到 1000 万区间、且要求 top-10 召回\n≥95% 时，HNSW 几乎总是赢家：基准配置 96.4% 的召回率，IVF-PQ（nlist=4096、nprobe=64）\n在同数据集上只有 91.8%，且对增量插入更敏感。**本指南聚焦 HNSW**。\n\n### 1.4 深读：结论的证据链\n把基准配置放进真实流量里检验：线上查询的 top-10 召回率与离线基准的偏差应在 1 个百分点以内，偏差过大说明线上查询分布与基准查询分布不一致，需要用线上真实查询重抽 1000 条做校准基准。校准动作每月执行一次，防止基准漂移让后续所有调优结论失真。\n\n### 1.5 深读：变更管理\n参数调整必须有对照组。任何一次 M、ef_construction、ef_search 的变更都要保留旧参数的抽样验收结果，新参数在同查询集上对比，落差超过 0.5 个百分点即记录原因。没有对照组的调优等于盲调，出了召回问题无法归因。\n\n### 1.6 深读：排查视角\n配置变更要写进索引元数据：M、ef_construction、构建时间、构建机器、基准召回率五项随索引一起落盘。排查召回问题时，先看索引元数据就知道这个索引用什么参数建的，避免凭记忆猜参数。\n\n### 1.3 术语速查\n层级图：HNSW 把节点组织成多层，顶层稀疏用于长程跳转，底层稠密用于精确定位。出边数 M 在每层相同；入口点固定为顶层唯一节点。冷启动查询从顶层贪心下降到底层后进入区域搜索。理解这一点就能理解为什么 M 是天花板：底层图的度数上限就是 M。\n\n### 1.4 参数速查卡\n建图快：M=16、ef_construction=100（21 分钟级）；召回优先：M=32、ef_construction=200、ef_search=128；内存极限：M=16 + int8 量化 + 重排序。三张卡片覆盖 90% 的场景。\n\n### 1.5 基准集说明\n全部实测基于同一基准集：100 万条 768 维向量（真实 embedding 采样 + 5% 扰动），查询集 1000 条，top-10 召回率以暴力检索结果为真值。硬件：32 核 CPU、256GB 内存、NVMe SSD，单机无分片。\n\n## 2. 召回率与 M 的关系\n\nM 是内存与召回之间最昂贵的旋钮。实测数据（100 万向量，ef_construction=200）：\n\n| M | 召回率(top-10) | 内存 | 构建时间 |\n|---|---|---|---|\n| 8 | 88.1% | 1.1GB | 21 分钟 |\n| 16 | 93.7% | 2.0GB | 33 分钟 |\n| **32** | **96.4%** | **3.2GB** | **47 分钟** |\n| 64 | 97.5% | 5.6GB | 92 分钟 |\n\n结论：M 从 16 到 32 带来 2.7 个百分点的召回提升，性价比最高；从 32 到 64 只换来\n1.1 个百分点却让内存与构建时间几乎翻倍。**除非召回率要求 ≥97%，M 不要超过 32**。\n\n### 2.1 为什么 32 是甜点\n\nHNSW 论文作者建议 M 取 2 的幂次并从 16 起测。我们的实测曲线在 32 处出现明显拐点：\n16→32 的边际召回收益（每 GB 内存）是 32→64 的 3.8 倍。背后的几何解释是：768 维\nembedding 的本征维度约在 30-40 之间，M=32 恰好让底层图的平均度数接近本征维度，\n长程边与短程边的比例达到平衡。\n\n### 2.2 高维场景的修正\n\n768 维以上（如 1536 维的新 embedding）时，本征维度上移，M=32 的拐点效应减弱。\n1536 维实测\n\n[工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md · vec=0.5759935975074768]\n# mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md.md（第 5/5 部分）\n章节: Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications > 7.2.1  Problem Formulation\n## 7.2.1  Problem Formulation\n\n\nThe cart-pole system with soft walls is often used as a benchmark problem for mixed-integer optimal control, $\\mathrm { e . g . , s e e ^ { 4 5 , 2 3 } }$ . This standard hybrid control problem results in an MIQP of the form in (1), which is solved at each sampling time step of the MI-MPC controller. Given the current state of the cart-pole system $\\hat { x } _ { 0 } ,$ the aim is to use the horizontal forces of the cart to effectively regulate an inverted pendulum towards the unstable equilibrium at the origin. The state vector is defined as $x = [ p ^ { \\mathrm { c } } \\ \\theta ^ { \\mathrm { p } } \\ v ^ { \\mathrm { c } } \\ \\omega ^ { \\mathrm { p } } ] ^ { \\top }$ i.e., ${ n _ { \\mathrm { x } } } = 4$ , including the position $p ^ { \\mathrm { c } }$ and velocity $v ^ { \\mathrm { { c } } }$ of the cart, and the angle $\\theta ^ { \\mathrm { p } }$ and angular velocity $\\omega ^ { \\mathrm { p } }$ of the pendulum. The force input applied to the cart is $F ^ { \\mathrm { i n } } \\in \\mathbb { R }$ and $F ^ { 1 } , F ^ { \\mathrm { r } } \\in \\mathbb { R }$ are the contact forces transmitted by the soft walls on the left and right of the cart-pole system, see $\\mathrm { F i g }$ 6a. The discrete-time state dynamics in (1b) read as\n\n$$\nx _ { i + 1 } = { \\left[ \\begin{array} { l } { p _ { i + 1 } ^ { \\mathrm { { c } } } } \\\\ { \\theta _ { i + 1 } ^ { \\mathrm { { p } } } } \\\\ { v _ { i + 1 } ^ { \\mathrm { { c } } } } \\\\ { \\omega _ { i + 1 } ^ { \\mathrm { { p } } } } \\end{array} \\right] } = { \\left[ \\begin{array} { l l l } { 1 } & { 0 } & { T _ { \\mathrm { { s } } } } & { 0 } \\\\ { 0 } & { 1 } & { 0 } & { T _ { \\mathrm { { s } } } } \\\\ { 0 } & { g { \\frac { m ^ { \\mathrm { { p } } } } { m ^ { \\mathrm { { c } } } } } } & { 1 } & { 0 } \\\\ { 0 } & { g { \\frac { m ^ { \\mathrm { { c } } } + m ^ { \\mathrm { { p } } } } { m ^ { \\mathrm { { c } } } l } } } & { 0 } & { 1 } \\end{array} \\right] } { \\left[ \\begin{array} { l } { p _ { i } ^ { \\mathrm { { c } } } } \\\\ { \\theta _ { i } ^ { \\mathrm { { p } } } } \\\\ { v _ { i } ^ { \\mathrm { { c } } } } \\\\ { \\omega _ { i } ^ { \\mathrm { { p } } } } \\end{array} \\right] } + { \\left[ \\begin{array} { l l l } { 0 } & { 0 } & { 0 } \\\\ { 0 } & { 0 } & { 0 } \\\\ { { \\frac { 1 } { m ^ { \\ma\n\n[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md · vec=0.5529000759124756]\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani<sup>∗</sup> Google Brain avaswani@google.com\n\nNoam Shazeer<sup>∗</sup> Google Brain noam@google.com\n\nNiki Parmar<sup>∗</sup> Google Research nikip@google.com\n\nJakob Uszkoreit<sup>∗</sup> Google Research usz@google.com\n\nLlion Jones<sup>∗</sup> Google Research llion@google.com\n\nAidan N. Gomez<sup>∗</sup> <sup>†</sup> University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser<sup>∗</sup> Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin<sup>∗</sup> <sup>‡</sup> illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden \n\n[生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md · vec=0.5637904405593872]\n# clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md.md（第 2/2 部分）\n章节: Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions > B. Experimental Results\n## B. Experimental Results\n\n\n0.05 scale factor. Adam is used as an optimizer with learning rate $1 0 ^ { - 3 }$ , and decay rate with $1 0 ^ { - 2 }$ . Epoch size is set 100 for all models and early stopping is used to prevent overfitting. We also use 0.3 dropout rate at the end of the fully connected layers. All these parameter values are determined by making hyperparameter optimization. We train each model 10 times and report the average performance.\n\nTo show the effectiveness of using drug representations on clinical outcomes, we first work with only time-series features which are extracted from MIMIC-Extract pipeline. These extracted time-series features are modeled using a GRU architecture. The proposed multimodal results against the best scores taken from time-series GRU models for all four tasks are compared. As seen from results in Table III, GRU model achieves high AUROC, AUPRC, and F1 scores for many different settings. In response to this, using drug representation information as an additional feature in multimodal setting improves all clinical task results. For the in-hospital mortality prediction task, there is an improvement of %2 AUROC, %4 AUPRC, and %2 for F1 score. We see %2 AUROC, %4.5 AUPRC, and %3.5 F1 score improvement for in-ICU mortality. For LOS tasks, the improvement is even better than mortality tasks. In LOS > 3 task, we observe %2 AUROC, %3 AUPRC, and %2.5 F1 score improvement. Lastly, the use of drug representations makes the greatest improvement in the $\\mathrm { L O S } ~ > ~ 7 $ clinical task. For all metrics, the model scores are increased by approximately %6. The salient difference in model performance is a clear indicator of the proposed multimodal has better predictive capability.\n\nThe efficiency of the proposed model is mostly related with the usage of the drug representations and 1D convolutional based multimodal network. Since the CNNs have ability to learn locally connected features, we take the advantage of convolutional layers to learn representations of drugs to capture hidden patterns in the dataset. According to the results of the experiments, using convolution to extract features on drug representations consistently improves the prediction results. To ensure the reliability of all baseline and multim\n\n[经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md · vec=0.5625981688499451]\n# finance__1909.07748__stock-market-microstructure-inference-via-mu（第 3/4 部分）\n章节: Stock market microstructure inference via multi-agent reinforcement learning > V. CALIBRATION\n## V. CALIBRATION\n\n\nModel hypotheses: The main hypotheses for this model are that: i- the simulated agents faithfully emulate realworld investors, and ii- the simulated transaction limit orders processed by the order book correspond to the dynamics and properties of real stock market orders. Concerning the former, the strength of our approach is the simplification that any agent, regardless of its behaviour and strategy, is structurally bound to interact with the market in three possible ways only, namely by longing, shorting or holding stocks. Concerning the latter, we recall that the dynamics of order books are extensively documented in literature [3], and hence that their design can be rigorously conducted.\n\nModel limitations: With these two major hypotheses, we shall also mention the following model limitations and consistency issues, which are proper to all financial MAS: i- reliance on virtual fundamental generation $\\tau ^ { j } ( t )$ , ii- absence of portfolio diversification (equity, cross-asset), iii- absence of various trading strategies (e.g. short-selling, leveraging, derivatives, metaorders, market orders, etc.), iv- absence of intraday and seasonal market effects, v- absence of legal and regulatory constraints. Although some of these limitations may seem challenging, their effects and importance virtually impact any other econometric or modelling approach in quantitative finance. Added to this, modelling market activity via a market microstructure emerging from a centralised order book that processes transaction orders sent by many trading agents, has a direct empirical correspondance with real stock markets, and is thus fully epistemologically pertinent.\n\nTraining and testing sets: We calibrated the MAS stock market simulator to real stock market data [102]. In order to do so, we used high quality, industry-grade, daily close prices and volumes of 4, 313 stocks from the London Stock Exchange (LSE), between January 15th of 2007 and January 19th of 2018. In order to work on the market microstructure, we have filtered the data as such: i- stock-splits effects have been suppressed, ii- only stocks that have been continuously traded over this time period have been considered. As a consequence of this data curation, our former stock universe has been lowered to 640 stocks.\n\n[工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md · vec=0.5644168853759766]\n# mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and（第 6/6 部分）\n章节: Piecewise SOS-Convex Moment Optimization and Applications via Exact Semi-Definite Programs > 5 Conclusion and Outlook\n## 5 Conclusion and Outlook\n\n\nWe showed how to derive Sum-of-Squares (SOS) reformulations for important classes of infinitedimensional moment optimization problems involving piecewise SOS-convex functions. We also showed how to recover an optimal probability measure from the associated Semi-Definite Program (SDP) reformulation.\n\nIt is worth noting that the class of piecewise SOS-convex functions as given in Definition 2.2 facilitates tractable representations of the corresponding moment problem (Theorem 3.4) and it is rich enough to cover a broad class of functions encountered in optimization. Our definition 2.2 of piecewise functions may be extended to more general settings where one piece of SOS-convex polynomial is given at one partition of $\\mathbb { R } ^ { m }$ , in line with the piecewise linear-quadratic function studied in [31, Definition 10.20]. It would be intriguing to explore the applicability and tractability of these generalized classes of piecewise functions.\n\nFurther, our method in Theorem 2.4 suggests that the numerically tractable SOS representation for non-negative piecewise SOS-convex functions over a projected spectrahedron can be extended to more general settings. For instance, it would be of interest to examine similar representations for piecewise SOS-convex functions over any non-convex sets whose convex hulls are semi-definiterepresentable, leading to SDP reformulations or relaxations for broad classes of optimization problems.\n\nAs applications, we presented numerical results for a class of generalized Newsvendor and revenue maximization problems with higher-order moments by solving their equivalent SDP reformulations. Our approach opens new avenues for further research, such as conic program reformulations for distributionally robust optimization problems [33, 36] involving piecewise SOS-convex functions, and applications to practical models such as the lot-sizing and product management problems in the face of uncertain conditions [2]. These problems will be examined in our forthcoming studies.\n\n## Acknowledgment\n\n\nThe authors are grateful to the referees for their helpful comments and valuable suggestions which have contributed to the final preparation of the paper.\n\n## Declarations\n\n\nData availability statement. No data was us\n\n[计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md · vec=0.5742012858390808]\n# robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md.md（第 1/2 部分）\n章节: MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\n# MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\n\n\nTaozhe Li¹ and Wei Sun²\n\nAbstract—The Visual Simultaneous Localization and Mapping (V-SLAM) system has advanced significantly in recent years, achieving high precision in environments with few dynamic objects. However, its performance declines in settings with numerous movable objects, such as those with pedestrians, cars, and buses, which are common in outdoor scenes. While some researchers are tackling this issue with artificial mathematical methods, these often suffering less generality and information loss. To address this problem, we propose a novel Multilayer Perceptron (MLP)-based method that utilizes complete geometric information to prevent information loss and capable to apply in various situations. To best of our knowledge, this is the first time that machine learning-based method introduced for distinguishing dynamic and static feature points in the SLAM field. Additionally, there is currently no publicly available dataset for evaluating dynamic and static feature classification methods. To fill this gap, we have created a publicly available dataset containing over 50,000 feature points. Experimental results show that our MLP-based dynamic and static feature point discriminator outperforms other methods on this dataset. Furthermore, our proposed MLP-based realtime stereo SLAM system achieves the highest average precision and fastest speed on the outdoor KITTI Odometry and KITTI360 datasets compared to other dynamic SLAM systems. The open-source code and datasets will be accessible at https://github.com/TaozheLi/MLP-SLAM upon paper acceptance.\n\nIndex Terms-Multilayer Perceptron, Dynamic SLAM, Machine Learning\n\n## I. INTRODUCTION\n\n\nVisual Simultaneous Localization and Mapping (V-SLAM) allows for precise ego-localization and accurate mapping using a lightweight, cost-effective camera sensor. It is vital in robotics, space exploration, and autonomous driving, where it enhances navigation and decision-making. However, most existing SLAM systems are heavily reliant on the assumption of a static world, including state-of-theart (SOTA) systems such as ORB-SLAM2 [1], ORB-SLAM3 [2], LSD-SLAM [3] and Direct Sparse Odometry [4]. These systems typically perform with high precision in environments with predominant\n\n[自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md · vec=0.7213925123214722]\n# Deep Spatial Learning with Molecular Vibration\n\nZiyang Zhang National University of Singapore Singapore 119077 E0546242@u.nus.edu\n\nYingtao Luo   \nUniversity of Washington   \nSeattle, WA 98195   \nyl3851@uw.edu\n\n## Abstract\n\nMachine learning over-fitting caused by data scarcity greatly limits the application of machine learning for molecules. Due to manufacturing processes difference, big data is not always rendered available through computational chemistry methods for some tasks, causing data scarcity problem for machine learning algorithms. Here we propose to extract the natural features of molecular structures and rationally distort them to augment the data availability. This method allows a machine learning project to leverage the powerful fit of physics-informed augmentation for providing significant boost to predictive accuracy. Successfully verified by the prediction of rejection rate and flux of thin film polyamide nanofiltration membranes, with the relative error dropping from 16.34% to 6.71% and the coefficient of determination rising from 0.16 to 0.75, the proposed deep spatial learning with molecular vibration is widely instructive for molecular science. Experimental comparison unequivocally demonstrates its superiority over common learning algorithms.\n\n## 1 Introduction\n\nMachine learning powered by big data is an efficient solution to learn data representations of high dimensions and huge complexity. Lake et al. [2015] Butler et al. [2018] The effectiveness of deep learning depends on the quality and quantity of data. Some systems have existing databases available, such as the Cambridge Crystallographic Data Center for crystallographic graphic classification. Wang et al. [2018] For other systems lacking the database availability, big data is rendered available through computational chemistry methods like Molecular Dynamics. Ye et al. [2019] However, an extensive universal database is not readily available with other materials that involve consecutive experiments with too many parameters to calculate on computational software, such as the polyamide thin film composite nanofiltration membranes. While direct calculation is about to consume unnecessarily huge computing resources, our motivation here is to apply few-shot learning methods based on data augmentation to make deep learning effective with limited data sources.\n\nIn thermodynamics, molecular vibration is a natural property to describe the motion of a multi-atom molecule. In 3D space, the \n\n[soul-cs-library/memory-conventions.md · vec=0.45399606227874756]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[soul-e2e-tester-024115/memory-conventions.md · vec=0.45399606227874756]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.5100725889205933]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence Rank 5]。\n\n## 3. 数据质量评估\n\n| 维度 | 结论 |\n|---|---|\n| 完整性 | 2 行 × 3 列无缺失；清洗零操作、零损失，原始值与清洗值逐位一致（cleaning_integrity.json） |\n| 时间合法性 | timestamp 为真实解析的 ISO",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati__k00.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati__k01.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "b87f4dab-c83b-4a99-abe3-182773fc315a",
+      "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 24.5
+}

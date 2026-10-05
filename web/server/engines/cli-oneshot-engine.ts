@@ -18,7 +18,7 @@
  * positional prompts that start with '-' are space-prefixed so they can never
  * be parsed as option flags.
  */
-import { spawn, type ChildProcess } from 'child_process'
+import { spawn, type ChildProcess, type SpawnOptions } from 'child_process'
 import { mkdtempSync, writeFileSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
@@ -433,7 +433,7 @@ export class CliOneShotEngine implements ChatEngine {
     })
 
     // ── literal-program spawn (every first argv element is a literal) ──
-    const opts = {
+    const opts: SpawnOptions = {
       stdio: ['pipe', 'pipe', 'pipe'],
       windowsHide: true,
       cwd: req.cwd,

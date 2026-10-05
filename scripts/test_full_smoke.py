@@ -72,6 +72,18 @@ async def chk(name, coro, expect=None, limit=180):
 async def main():
     t0 = time.time()
     PDF = str(ROOT / "tmp" / "test-parse.pdf")
+    # 自包含 fixture：tmp/ 被 gitignore, 换机器/清理后不存在则现生成一个最小合法 PDF
+    if not Path(PDF).exists():
+        Path(ROOT / "tmp").mkdir(parents=True, exist_ok=True)
+        _pdf = (b"%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n"
+                b"2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n"
+                b"3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]"
+                b"/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>endobj\n"
+                b"4 0 obj<</Length 60>>stream\nBT /F1 18 Tf 72 720 Td"
+                b" (RAG smoke parse fixture) Tj ET\nendstream\nendobj\n"
+                b"5 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj\n"
+                b"trailer<</Root 1 0 R>>\n%%EOF")
+        Path(PDF).write_bytes(_pdf)
     kb_id = soul_id = None
 
     print("\n══ 1. 系统与项目 ══")
@@ -159,7 +171,7 @@ async def main():
                     kb_id=kb_id, doc_paths=[pdoc]))
 
     print("\n══ 5. 检索（关键词/向量/两阶段/图谱/查重）══")
-    await chk("kb_search(关键词)", server.kb_search(query="拉伸比", top_k=3), expect=("hits",))
+    await chk("kb_search(关键词)", server.kb_search(query="stroke", top_k=3), expect=("hits",))
     await chk("kb_search_vector(向量)", server.kb_search_vector(
         query="拉伸温度怎么控制", kb_id=kb_id, top_k=3), expect=("results",))
     await chk("kb_search_two_stage(两阶段)", server.kb_search_two_stage(

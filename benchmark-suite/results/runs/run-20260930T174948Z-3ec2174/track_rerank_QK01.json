@@ -1,0 +1,51 @@
+{
+ "qid": "QK01",
+ "method": "rerank",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "2110.07844",
+  "1810.04805",
+  "2510.13343",
+  "2503.21676",
+  "1906.10015"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "2110.07844",
+  "1810.04805",
+  "2510.13343",
+  "2503.21676",
+  "1906.10015"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 2.3,
+ "latency_s": 6.9,
+ "answer": "The retrieved evidence is insufficient to answer this question.\n\nWhat the evidence does contain: [1706.03762] states the Transformer replaces recurrent layers in encoder-decoder architectures with multi-headed self-attention, and [2110.07844] describes a cross-attention head transforming decoder/encoder states into query, key, and value vectors with attention weights as a normalized dot product and output as a weighted sum of value vectors. [2510.13343] and [1810.04805] add only general framing (attention learns to focus on relevant input parts; L layers, H hidden size, self-attention heads).\n\nHowever, no retrieved source explains *why* recurrence (and convolution) is replaced — the motivation (parallelism, path length, computational complexity) is absent, and [1706.03762]'s Section 7 is truncated before any reasoning. The convolution comparison appears in none of the evidence.\n\nSources used: [1706.03762] §7 (truncated), [2110.07844] (Eq. 5, cross-attention description), [1810.04805] (layer/head notation), [2510.13343] §3.3, [2503.21676], [1906.10015]. None answer the \"why replace recurrence and convolution\" part.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 707,
+  "output": 275,
+  "cache_read": 48128,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0350546,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

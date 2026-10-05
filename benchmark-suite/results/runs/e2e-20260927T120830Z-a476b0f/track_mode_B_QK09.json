@@ -1,0 +1,24 @@
+{
+ "qid": "QK09",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "track": "mode_B",
+ "method": "mode_B",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient: the retrieved evidence block is empty (\"no evidence retrieved\"), so there is no document content about metformin or feline diabetes to ground an answer. I cannot provide the recommended daily dosage without falling back on prior knowledge, which this task prohibits. No sources were used, because no source chunks were provided.",
+ "is_error": false,
+ "latency_s": 11.5,
+ "retrieval_s": 3.1,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37399,
+  "output": 501,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.19952000000000003,
+ "ranked": [],
+ "evidence_sources": [],
+ "evidence_chars": 0,
+ "real_engine": false,
+ "merge": null
+}

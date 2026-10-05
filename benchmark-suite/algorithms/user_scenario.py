@@ -229,7 +229,7 @@ Evidence excerpts retrieved from the document collection (source id in brackets)
 {evidence}
 
 Using ONLY the evidence above, respond with ONLY a JSON object:
-{{"answer": "<2-4 sentence factual answer in the question's language; say the evidence is insufficient if the excerpts do not contain it>",
+{{"answer": "<2-4 sentence factual answer written in ENGLISH; say the evidence is insufficient if the excerpts do not contain it>",
   "evidence_used": ["<source id>", ...]}}"""
 
 SCEN_JUDGE_PROMPT = """You are an independent, strict grader. You did not retrieve

@@ -1,95 +1,95 @@
-﻿# ⚡ MCP 连通性 + 项目服务预检（强制契约）
+﻿# ⚡ MCP Connectivity + Project Service Pre-Flight (Mandatory Contract)
 
-> 所有知识库 skill 的 **Pre-Flight**（每个 skill 作业前的第一步，早于各自 A0 / Step 0 / Step 1 等编号步骤）。
-> **未通过预检，不得开始任何 KB 操作。**
-> 本文件是权威细则；各 skill 的 Pre-Flight 内联段是其精简可执行版。
----
-
-## 为什么必须有这一步
-
-kb-mcp 的 91 个工具全部通过 HTTP 转发到后端服务。两件事缺一不可，**只查其一等于没查**：
-
-1. **kb-mcp MCP server 已连接到当前 Claude Code 会话** —— 由 Claude Code **启动时**按 `.mcp.json` 加载，会话进行中无法变更。
-2. **后端（FastAPI）+ 前端（Nuxt）服务已运行且 HTTP 健康** —— MCP 工具实际转发的目标。
-
-- MCP 未连接 → 工具调用直接报 `No such tool available`。
-- 服务未起 → 工具能调，但每次都报后端不可达。
-
-所以两段都必须验，且可以**用一次调用同时验两段**。
+> The **Pre-Flight** for all knowledge base skills (the first step before each skill's job, preceding its numbered steps such as A0 / Step 0 / Step 1).
+> **If Pre-Flight has not passed, no KB operation may begin.**
+> This file is the authoritative detailed spec; each skill's inline Pre-Flight section is its condensed executable version.
 
 ---
 
-## 预检流程（一探双检）
+## Why This Step Is Mandatory
 
-### 1. 单次探测 = 连通性 + 服务状态
+All 91 kb-mcp tools are forwarded over HTTP to the backend service. Two things are both required — **checking only one equals checking neither**:
 
-调用 `mcp__kb-mcp__kb_project_status`（无参）。
+1. **The kb-mcp MCP server is connected to the current Claude Code session** — loaded by Claude Code **at startup** per `.mcp.json`; it cannot be changed mid-session.
+2. **The backend (FastAPI) + frontend (Nuxt) services are running and HTTP-healthy** — the actual forwarding target of the MCP tools.
 
-| 返回情况 | 判定 | 下一步 |
+- MCP not connected → tool calls fail immediately with `No such tool available`.
+- Services not running → tools are callable, but every call reports the backend unreachable.
+
+So both segments must be verified, and **one call can verify both at once**.
+
+---
+
+## Pre-Flight Procedure (one-probe double-check)
+
+### 1. Single probe = connectivity + service status
+
+Call `mcp__kb-mcp__kb_project_status` (no args).
+
+| Outcome | Verdict | Next step |
 |---|---|---|
-| **调用成功** | 段一通过（MCP 已连接——能调即在线） | 读 `ready` 字段分支 |
-| 　└ `ready == true` | backend AND web 双 HTTP 健康 → **就绪** | → 冒烟测试 |
-| 　└ `ready == false` | 服务离线 | → **Case B** |
-| **报错 `No such tool available` / tool-not-found** | 段一失败：MCP 未连接本会话 | → **Case C** |
+| **Call succeeds** | Segment 1 passes (MCP connected — being callable means online) | Branch on the `ready` field |
+| 　└ `ready == true` | backend AND web both HTTP-healthy → **ready** | → Smoke test |
+| 　└ `ready == false` | Services offline | → **Case B** || **Error `No such tool available` / tool-not-found** | Segment 1 failed: MCP not connected to this session | → **Case C** |
 
-### 2-A. Case B — 服务未起（MCP 在线，服务离线）
+### 2-A. Case B — Services not running (MCP online, services offline)
 
-1. 先调 `mcp__kb-mcp__kb_project_status(scope="setup")`：
-   - `ready_to_start == false` → 项目未安装。把 `problems` 与 `fix`（通常 `ragctl setup`）报告用户，**停止**，不盲目重试。
-   - `ready_to_start == true` → 继续。
-2. 静默拉起服务（**不问用户、不开终端**）：
-   - 图谱 / 整理 / 跨库检索类 skill（依赖 Neo4j）：`kb_project_start(backend=true, web=true, neo4j=true, wait=true)`
-   - 其他 skill：`kb_project_start(backend=true, web=true, wait=true)`
-   - `wait=true` 阻塞至 HTTP 健康或 ~45s 超时，返回最终状态块。
-3. **回查**：再调一次 `kb_project_status`。
-   - `ready == true` → 进入冒烟测试。
-   - 仍 `false` → 读 `ragctl logs backend`（或 `backend/logs/desktop-stdout.log`），把错误报告用户，**停止**，禁止静默循环重试。
+1. First call `mcp__kb-mcp__kb_project_status(scope="setup")`:
+   - `ready_to_start == false` → project not installed. Report `problems` and `fix` (usually `ragctl setup`) to the user, **stop**, do not blindly retry.
+   - `ready_to_start == true` → continue.
+2. Silently bring the services up (**no asking the user, no opening a terminal**):
+   - Graph / organize / cross-KB retrieval skills (depend on Neo4j): `kb_project_start(backend=true, web=true, neo4j=true, wait=true)`
+   - Other skills: `kb_project_start(backend=true, web=true, wait=true)`
+   - `wait=true` blocks until HTTP is healthy or ~45s timeout, then returns the final status block.
+3. **Re-check**: call `kb_project_status` again.
+   - `ready == true` → proceed to the smoke test.
+   - Still `false` → read `ragctl logs backend` (or `backend/logs/desktop-stdout.log`), report the error to the user, **stop**; silent retry loops are forbidden.
 
-> 启动全程由 MCP 工具完成，dev/prod 行为一致，不弹任何终端窗口。stdout/stderr 写入 `backend/logs/desktop-stdout.log` 与 `web/logs/desktop-stdout.log`（与 `ragctl logs` / Tauri 控制台同源）。MCP 工具不可用时兜底 `Bash: node command/ragctl.js up`（同样静默、同源日志）。
+> Startup is performed entirely by MCP tools; dev/prod behave identically and no terminal window ever pops up. stdout/stderr go to `backend/logs/desktop-stdout.log` and `web/logs/desktop-stdout.log` (same source as `ragctl logs` / the Tauri console). If MCP tools are unavailable, fall back to `Bash: node command/ragctl.js up` (equally silent, same-source logs).
 
-### 2-B. Case C — MCP 未连接到本会话
+### 2-B. Case C — MCP not connected to this session
 
-MCP server 由 Claude Code **启动时**加载，**会话中无法重连**。处理：
+The MCP server is loaded by Claude Code **at startup** and **cannot be reconnected mid-session**. Handling:
 
-1. 诊断：`Bash: node command/ragctl.js status`（或 `ragctl status`）看 backend/web/MCP 各自状态。
-2. 通知用户：**「⚠️ kb-mcp MCP 服务器未连接到当前会话（Claude Code 未加载 `.mcp.json`）。请重启 Claude Code 使其自动加载 kb-mcp；后端/前端可用 `ragctl up` 静默拉起。」**
-3. **禁止**在 MCP 未连通时继续 KB 操作。仅在用户**明确同意**后，可按 [MCP 优先原则例外条款](skill-trigger-contract.md#第五条mcp-优先原则2026-07-13-新增全库强制执行) 用 HTTP/终端兜底，并须声明 "MCP 不可用，已用 HTTP API 兜底"。
+1. Diagnose: `Bash: node command/ragctl.js status` (or `ragctl status`) to see the status of backend/web/MCP respectively.
+2. Notify the user: **"⚠️ The kb-mcp MCP server is not connected to the current session (Claude Code did not load `.mcp.json`). Please restart Claude Code so it auto-loads kb-mcp; the backend/frontend can be brought up silently with `ragctl up`."**
+3. **Forbidden** to continue KB operations while MCP is not connected. Only with the user's **explicit consent** may you use the HTTP/terminal fallback per the [MCP-first principle exception clause](skill-trigger-contract.md#rule-5--mcp-first-principle-added-2026-07-13-enforced-library-wide), and you must state "MCP unavailable, fell back to the HTTP API".
 
-### 3. 连通性冒烟测试（必做）
+### 3. Connectivity Smoke Test (mandatory)
 
-`ready == true` 之后、**正式操作之前**，做一次**轻量只读** MCP 往返，确认 MCP↔backend 真实可达（不仅端口通，且能返回数据）：
+After `ready == true` and **before real operations**, do one **lightweight read-only** MCP round trip to confirm MCP↔backend is truly reachable (not just the port, but returning data):
 
-- 通用首选：`mcp__kb-mcp__kb_list(lightweight=true)`（返回 KB 清单）。
-- 或：`mcp__kb-mcp__kb_tags_list()`（返回标签词表）。
-- 各 skill 也可用自己流程中的首个只读探针（检索类的 `kb_search`、图类的 `kb_graph_stats` 等）。
+- General first choice: `mcp__kb-mcp__kb_list(lightweight=true)` (returns the KB catalog).
+- Or: `mcp__kb-mcp__kb_tags_list()` (returns the tag vocabulary).
+- Each skill may also use the first read-only probe of its own flow (`kb_search` for retrieval, `kb_graph_stats` for graph, etc.).
 
-返回真实数据（非空、非错误）→ **预检全通过**，开始作业。
+Real data returns (non-empty, non-error) → **Pre-Flight fully passed**, start the job.
 
 ---
 
-## 速查决策表
+## Quick Decision Table
 
-| `kb_project_status` 结果 | 判定 | 动作 |
+| `kb_project_status` result | Verdict | Action |
 |---|---|---|
-| 成功 + `ready==true` | 就绪 | 冒烟测试 → 作业 |
-| 成功 + `ready==false` | 服务离线 | `kb_project_status(scope="setup")` → `kb_project_start(wait=true)` → 回查 → 冒烟测试 |
-| `No such tool` | MCP 未连接 | `ragctl status` 诊断 → 通知用户重启 Claude Code → 停止 |
+| Success + `ready==true` | Ready | Smoke test → job |
+| Success + `ready==false` | Services offline | `kb_project_status(scope="setup")` → `kb_project_start(wait=true)` → re-check → smoke test |
+| `No such tool` | MCP not connected | Diagnose with `ragctl status` → notify the user to restart Claude Code → stop |
 
 ---
 
-## 各 skill 的额外注意
+## Per-Skill Extra Notes
 
-- **图谱 / 整理 / 跨库检索**：`kb_project_start` 须带 `neo4j=true`（依赖 Neo4j，需 Docker）。冒烟测试可顺带 `kb_graph_stats()` 确认图数据库在线（检查 `neo4j_available` 字段）。
-- **解析类（ingest）**：服务就绪后顺带 `backend_status()` 确认 **MinerU OCR 引擎可用**，否则 `parse_doc(use_ocr=true)` 会失败。
-- **Init / Update（生命周期 skill）**：二者是安装/运维 skill，MCP 连通性是它们的**产物或前置**而非作业前提：
-  - **init**：完成安装/注册后，**必须**跑本预检（含冒烟测试）验证连通，作为 Phase「全链验证」的组成。
-  - **update**：拉取更新**前**应先通过本预检（MCP 在线才能用 `kb_project_update(show_version=true)` 对比版本）；拉取**后**重跑本预检确认服务恢复。
+- **Graph / organize / cross-KB retrieval**: `kb_project_start` must carry `neo4j=true` (depends on Neo4j, requires Docker). The smoke test may also call `kb_graph_stats()` to confirm the graph database is online (check the `neo4j_available` field).
+- **Parsing skills (ingest)**: once services are ready, also call `backend_status()` to confirm the **MinerU OCR engine is available**, otherwise `parse_doc(use_ocr=true)` will fail.
+- **Init / Update (lifecycle skills)**: these two are install/ops skills; MCP connectivity is their **product or prerequisite**, not a precondition of their job:
+  - **init**: after completing installation/registration, it **must** run this Pre-Flight (including the smoke test) to verify connectivity, as part of the "full-chain verification" phase.
+  - **update**: **before** pulling updates it should pass this Pre-Flight (MCP must be online to use `kb_project_update(show_version=true)` for version comparison); **after** pulling, re-run this Pre-Flight to confirm services are restored.
 
 ---
 
-## 违规自纠
+## Violation Self-Correction
 
-若发现自己已跳过本预检直接做了 KB 操作：
-1. **立即停止**当前操作。
-2. 补跑本预检；若发现服务实际未起 / MCP 未连，清理可能产生的脏状态。
-3. 向用户说明纠正了什么。
+If you find you have already skipped this Pre-Flight and performed a KB operation:
+1. **Stop immediately**.
+2. Run this Pre-Flight retroactively; if the services were actually down / MCP was not connected, clean up any dirty state that may have been produced.
+3. Explain to the user what was corrected.

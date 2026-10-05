@@ -2,12 +2,12 @@
  "protocol": "QDCVR v2: Phase 0 query normalisation -> Phase 1 vector-first recall over the five category bases (BGE-M3, threshold 0.35) -> content gate (read the candidate text; 0-8 rubric, topic 0-3 / scenario 0-3 / evidence 0-2, pass at >=6) -> Phase 2 librarian shelf scan + targeted re-search -> Phase 3 five-section answer or not-found report.",
  "scripted_evidence": "benchmark-suite/results/probe_evidence_raw.json",
  "producer": "benchmark-suite/scripts/79_honest_probe_e2e.py (evidence) + 80_honest_probe_judge.py (rubric judgment and report)",
- "regenerated": "against the 30000-character-chunk corpus in place at run time; scope sentence is computed from the shelf census so it cannot drift from the corpus actually searched",
+ "regenerated": "2026-09-22 refresh against the 100-paper, five-base corpus in place at run time; scope sentence is computed from the shelf census so it cannot drift from the corpus actually searched",
  "judgment": "Gate scores and reports are the executing agent's rubric judgments on the script-exported candidate text, exactly as in Track A adjudication. They are recorded protocol traces, not independent evaluations.",
  "corpus_scope": {
   "category_bases": 5,
-  "papers": 50,
-  "indexed_documents": 165
+  "papers": 100,
+  "indexed_documents": 322
  },
  "probes": [
   {
@@ -15,80 +15,80 @@
    "question": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
    "why_out_of_corpus": "benchmark does not exist; corpus has no particle-physics detector paper",
    "phase1_top_scores": [
+    0.497,
     0.4948,
-    0.4795,
-    0.4738
+    0.4937
    ],
    "phase1_top_docs": [
-    "自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md (1).md",
-    "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (1) (part 3 of 8).md",
-    "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (1) (part 1 of 2).md"
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+    "自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md",
+    "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 1 of 3).md"
    ],
    "gate": {
     "topic": 1,
     "scenario": 0,
     "evidence": 0,
     "score": "1/8",
-    "justification": "Top candidates are a gravitational-wave interferometer proceedings abstract, a chemistry reaction-network paper, and an MLP-SLAM robotics paper. None describes a collider benchmark; the named 'Herbert-Moulton' benchmark does not exist in the corpus. Topic partially adjacent (experimental-physics vocabulary), no scenario match, no supporting fact."
+    "justification": "Top candidates are a machine-learning-for-molecular-simulation review, a gravitational-wave interferometer proceedings abstract, and a supershear-rupture seismology paper. None describes a collider benchmark; the named 'Herbert-Moulton' benchmark does not exist in the corpus. Topic partially adjacent (physics vocabulary), no scenario match, no supporting fact."
    },
    "phase2_librarian": {
-    "seconds": 2.92,
+    "seconds": 2.7,
     "shelf_census": {
-     "计算机与人工智能": 72,
-     "自然科学与地球科学": 43,
-     "生命科学与医学": 32,
-     "工程与能源": 6,
-     "经济与社会": 12
+     "计算机与人工智能": 131,
+     "自然科学与地球科学": 75,
+     "生命科学与医学": 53,
+     "工程与能源": 39,
+     "经济与社会": 24
     },
     "finding": "no document on any shelf answers the question"
    },
    "verdict": "NOT_FOUND",
    "seconds": {
-    "phase1_vector_search": 2.22,
-    "phase1_doc_reads": 0.83,
-    "phase2_librarian": 2.92
+    "phase1_vector_search": 2.5,
+    "phase1_doc_reads": 0.84,
+    "phase2_librarian": 2.7
    },
-   "report_text": "I could not find support for this question in the knowledge base, and I will not guess. Search scope: 5 category bases, 50 papers, 165 indexed documents (whole papers and their parts). Phase 1 recalled candidates whose similarity scores (top 0.495) are typical of topical adjacency rather than an answer, and the content gate read them: 1/8. The librarian pass then scanned every shelf by document list and found no particle-physics detector paper and no benchmark of this name, so no targeted re-search was possible. What I can say is only what the near-misses are, not what the benchmark reports."
+   "report_text": "I could not find support for this question in the knowledge base, and I will not guess. Search scope: 5 category bases, 100 papers, 322 indexed documents (whole papers and their parts). Phase 1 recalled candidates whose similarity scores (top 0.497) are typical of topical adjacency rather than an answer, and the content gate read them: 1/8. The librarian pass then scanned every shelf by document list and found no particle-physics detector paper and no benchmark of this name, so no targeted re-search was possible. What I can say is only what the near-misses are, not what the benchmark reports."
   },
   {
    "pid": "P2",
    "question": "What did the paper 'Spectral Tuning for Low-Resource Odor Recognition' (NAACL 2023) report about training epochs?",
    "why_out_of_corpus": "fabricated citation; no such paper in the corpus",
    "phase1_top_scores": [
-    0.509,
-    0.5034,
-    0.5029
+    0.5164,
+    0.5103,
+    0.509
    ],
    "phase1_top_docs": [
-    "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (1) (part 2 of 3).md",
-    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (1) (part 2 of 4).md",
-    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (1) (part 5 of 8).md"
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+    "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md"
    ],
    "gate": {
     "topic": 1,
     "scenario": 0,
     "evidence": 0,
     "score": "1/8",
-    "justification": "This is the retrieval trap. The top candidate is the BERT pre-training paper, which does contain training-epoch strings, but they describe BERT's own recipe, not the requested paper. No paper titled 'Spectral Tuning for Low-Resource Odor Recognition' exists in the corpus. Topic adjacent (NLP), scenario and evidence zero."
+    "justification": "The top two candidates are parts of a climate-downscaling generative-adversarial-network paper with no epoch content; the third is the BERT pre-training paper, whose text does contain 'Number of epochs: 2, 3, 4', but they describe BERT's own recipe, not the requested paper. No paper titled 'Spectral Tuning for Low-Resource Odor Recognition' exists in the corpus. Topic adjacent (NLP), scenario and evidence zero."
    },
    "phase2_librarian": {
-    "seconds": 2.89,
+    "seconds": 2.69,
     "shelf_census": {
-     "计算机与人工智能": 72,
-     "自然科学与地球科学": 43,
-     "生命科学与医学": 32,
-     "工程与能源": 6,
-     "经济与社会": 12
+     "计算机与人工智能": 131,
+     "自然科学与地球科学": 75,
+     "生命科学与医学": 53,
+     "工程与能源": 39,
+     "经济与社会": 24
     },
     "finding": "no document on any shelf answers the question"
    },
    "verdict": "NOT_FOUND",
    "seconds": {
-    "phase1_vector_search": 1.61,
-    "phase1_doc_reads": 0.84,
-    "phase2_librarian": 2.89
+    "phase1_vector_search": 1.63,
+    "phase1_doc_reads": 0.8,
+    "phase2_librarian": 2.69
    },
-   "report_text": "I could not verify this paper in the knowledge base, and I will not fabricate its findings. Search scope: 5 category bases, 50 papers, 165 indexed documents (whole papers and their parts). Phase 1 surfaced plausible-looking text -- the top candidate (nlp__1810.04805__bert-pre-training-of-deep-bidirectional-tra) contains training-epoch strings -- but on reading, the gate scored it 1/8: those epochs belong to that paper's own pre-training recipe, not to any paper of the requested title. The librarian pass confirmed no NAACL odor-recognition paper is present; the nearest language-model neighbour is unrelated. Quoting the near-miss would have been a fabrication."
+   "report_text": "I could not verify this paper in the knowledge base, and I will not fabricate its findings. Search scope: 5 category bases, 100 papers, 322 indexed documents (whole papers and their parts). Phase 1 surfaced plausible-looking text -- the third-ranked candidate (rank 3: nlp__1810.04805__bert-pre-training-of-deep-bidir) does contain training-epoch strings -- but on reading, the gate scored the candidates 1/8: those epochs belong to that paper's own pre-training recipe, not to any paper of the requested title. The librarian pass confirmed no NAACL odor-recognition paper is present; the nearest language-model neighbour is unrelated. Quoting the near-miss would have been a fabrication."
   },
   {
    "pid": "P3",
@@ -100,9 +100,9 @@
     0.4644
    ],
    "phase1_top_docs": [
-    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (1) (part 2 of 8).md",
-    "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (1) (part 1 of 2).md",
-    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (1) (part 7 of 8).md"
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+    "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md"
    ],
    "gate": {
     "topic": 0,
@@ -112,23 +112,23 @@
     "justification": "Top candidates are parts of an LLM clinical-knowledge evaluation paper and a spatial-transcriptomics benchmarking roadmap. Both carry biomedical vocabulary but neither concerns metformin, feline diabetes, or any drug dosage. Fully out of domain."
    },
    "phase2_librarian": {
-    "seconds": 2.83,
+    "seconds": 2.7,
     "shelf_census": {
-     "计算机与人工智能": 72,
-     "自然科学与地球科学": 43,
-     "生命科学与医学": 32,
-     "工程与能源": 6,
-     "经济与社会": 12
+     "计算机与人工智能": 131,
+     "自然科学与地球科学": 75,
+     "生命科学与医学": 53,
+     "工程与能源": 39,
+     "经济与社会": 24
     },
     "finding": "no document on any shelf answers the question"
    },
    "verdict": "NOT_FOUND",
    "seconds": {
-    "phase1_vector_search": 1.65,
+    "phase1_vector_search": 1.98,
     "phase1_doc_reads": 0.83,
-    "phase2_librarian": 2.83
+    "phase2_librarian": 2.7
    },
-   "report_text": "I will not answer this from the knowledge base: it contains no veterinary pharmacology source. Search scope: 5 category bases, 50 papers, 165 indexed documents (whole papers and their parts). Phase 1 candidates (top 0.482) are a clinical-knowledge evaluation paper and a spatial-transcriptomics roadmap -- biomedical vocabulary, but the gate scored them 0/8 because nothing concerns metformin, feline diabetes, or dosage. The librarian pass found no veterinary shelf, so this is an absence, not a retrieval failure."
+   "report_text": "I will not answer this from the knowledge base: it contains no veterinary pharmacology source. Search scope: 5 category bases, 100 papers, 322 indexed documents (whole papers and their parts). Phase 1 candidates (top 0.482) are a clinical-knowledge evaluation paper and a spatial-transcriptomics roadmap -- biomedical vocabulary, but the gate scored them 0/8 because nothing concerns metformin, feline diabetes, or dosage. The librarian pass found no veterinary shelf, so this is an absence, not a retrieval failure."
   }
  ]
 }

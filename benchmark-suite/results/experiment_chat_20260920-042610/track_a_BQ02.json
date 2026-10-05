@@ -1,0 +1,132 @@
+{
+ "track": "a",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "answer": "I have all the evidence needed to answer.\n\n---\n\n## What Defines NISQ Technology and Its Central Limitation\n\n**Source:** John Preskill (Caltech), *\"Quantum Computing in the NISQ era and beyond\"* (arXiv:1801.00862, 30 July 2018) — KB `自然科学与地球科学` (`1e6199ea-f380-44e2-94fc-d431f0f9bb6b`), doc `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md`, §4.1 \"The 50-qubit barrier\" (chunks 34–41).\n\n### 1. Definition: the name itself\n\n**NISQ = \"Noisy Intermediate-Scale Quantum.\"** Preskill coined the term himself, literally: *\"I needed a name to describe this impending new era, so I made up a word: NISQ.\"* Each word carries a specific meaning:\n\n| Component | What it means in Preskill's formulation |\n|---|---|\n| **Noisy** | *\"'Noisy' emphasizes that we'll have imperfect control over those qubits.\"* The devices operate without quantum error correction, so gate imperfections are intrinsic — per-gate two-qubit error rates are *\"above the .1% level (and often much worse).\"* |\n| **Intermediate-Scale** | *\"'Intermediate scale' refers to the size of quantum computers which will be available in the next few years, with a number of qubits ranging from 50 to a few hundred.\"* 50 qubits is called out as the significant milestone because it exceeds what the most powerful classical supercomputers can simulate by brute force — but it remains far short of the millions of physical qubits that fault tolerance would demand. |\n| **Quantum** | The era in which we have real, controllable, highly entangled many-particle quantum systems — the \"entanglement frontier\" — but not yet fault-tolerant machines. |\n\nPreskill frames NISQ as transitional, not transformative: NISQ devices *\"will be useful tools for exploring many-body quantum physics, and may have other useful applications, but the 100-qubit quantum computer will not change the world right away.\"*\n\n### 2. The central limitation: gate noise caps the executable circuit size\n\nThe defining constraint is **noise in quantum gates limiting the size of quantum circuits that can be executed reliably** — stated in the paper's abstract and developed concretely in §4.1:\n\n> *\"Naively, then... with these noisy devices we don't expect to be able to execute a circuit that contains many more than about 1000 gates — that is, 1000 fundamental two-qubit operations — because the noise will overwhelm the signal in a circuit much larger than that. **That limitation on circuit size imposes a ceiling on the computational power of NISQ technology.**\"*\n\nThis is the crux. Because error cannot be corrected, error per gate (ε ≫ 1/G for G gates) means a single fault anywhere in a generic circuit can ruin the computation. The consequence is quantified as a practical operating envelope of roughly:\n- **~100 qubits** in near-term experiments, and\n- **circuit depth (number of time steps) of less than 100, maybe much less.**\n\nSo the limitation is not the qubit count per se — it is that **depth × fidelity, not qubit count, bounds what can be computed.** A 50–100 qubit machine with a ~1000-gate ceiling cannot run the deep circuits that fault-tolerant algorithmics (e.g., Shor-class applications) require. Preskill notes the escape route is quantum error correction to scale to larger circuits, but *\"quantum error correction imposes a heavy overhead cost in number of qubits and number of gates\"* — which is exactly why NISQ is a distinct era rather than a stepping stone one simply waits out.\n\nOne nuance worth flagging from the source: Preskill concedes the 1000-gate figure may be **too pessimistic** for certain problems. Some quantum simulation and tensor-network-style algorithms have only a *relatively small number of circuit locations* where a faulty gate causes bad failure — \"noise resilience\" that can be exploited. So the ceiling is a generic expectation, not an absolute law.\n\n### Bottom line\n\nNISQ is defined by the pairing of **intermediate qubit counts (50–a few hundred) available without error correction** with **noisy, imperfectly controlled gates**; its central limitation is that **gate noise caps reliable circuit size at roughly ~1000 two-qubit operations, imposing a hard ceiling on computational power** and confining near-term devices to shallow-circuit applications rather than world-changing computation.\n\n**References**\n- Preskill, J. *Quantum Computing in the NISQ era and beyond*, arXiv:1801.00862 (2018) — Abstract; §4.1 \"The 50-qubit barrier\"; §3.2 \"Why quantum computing is hard\".\n- KB locations: `自然科学与地球科学/quantum-physics__1801.00862__...md (part 1 of 3).md`, kb_id `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`, chunks 1, 35, 36, 40, 41, 68. The same passage is corroborated in the baseline reproduction indices `Corpus-Paras` (`e599315e-...`, p06000) and `Corpus-Struct` (`8284ae07-...`, s00/s05).",
+ "is_error": false,
+ "latency_s": 142.0,
+ "sdk_duration_ms": 139276,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_doc_read,mcp_"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "NISQ technology definition central limitation"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noisy intermediate-scale quantum computing"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+    "doc_path": "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "noise will overwhelm the signal circuit size ceiling 1000 gates limitation",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 189934,
+  "output": 1837,
+  "cache_read": 41408,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 1.016299,
+ "timeline": [
+  {
+   "t": 2.77,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 8.35,
+   "event": "text",
+   "detail": "71"
+  },
+  {
+   "t": 8.37,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 37.09,
+   "event": "text",
+   "detail": "65"
+  },
+  {
+   "t": 37.09,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 37.09,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 37.09,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 67.57,
+   "event": "text",
+   "detail": "66"
+  },
+  {
+   "t": 67.57,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 77.0,
+   "event": "text",
+   "detail": "104"
+  },
+  {
+   "t": 77.01,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 141.82,
+   "event": "text",
+   "detail": "4807"
+  },
+  {
+   "t": 141.99,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about NISQ technology.\n\n",
+  "I'll search across the knowledge base for NISQ-related content.\n\n",
+  "I found the source document. Let me verify the content directly.\n\n",
+  "I have the primary source. Let me also confirm the specific passage on the noise/circuit-size ceiling.\n\n",
+  "I have all the evidence needed to answer.\n\n---\n\n## What Defines NISQ Technology and Its Central Limitation\n\n**Source:** John Preskill (Caltech), *\"Quantum Computing in the NISQ era and beyond\"* (arXiv:1801.00862, 30 July 2018) — KB `自然科学与地球科学` (`1e6199ea-f380-44e2-94fc-d431f0f9bb6b`), doc `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md`, §4.1 \"The 50-qubit barrier\" (chunks 34–41).\n\n### 1. Definition: the name itself\n\n**NISQ = \"Noisy Intermediate-Scale Quantum.\"** Preskill coined the term himself, literally: *\"I needed a name to describe this impending new era, so I made up a word: NISQ.\"* Each word carries a specific meaning:\n\n| Component | What it means in Preskill's formulation |\n|---|---|\n| **Noisy** | *\"'Noisy' emphasizes that we'll have imperfect control over those qubits.\"* The devices operate without quantum error correction, so gate imperfections are intrinsic — per-gate two-qubit error rates are *\"above the .1% level (and often much worse).\"* |\n| **Intermediate-Scale** | *\"'Intermediate scale' refers to the size of quantum computers which will be available in the next few years, with a number of qubits ranging from 50 to a few hundred.\"* 50 qubits is called out as the significant milestone because it exceeds what the most powerful classical supercomputers can simulate by brute force — but it remains far short of the millions of physical qubits that fault tolerance would demand. |\n| **Quantum** | The era in which we have real, controllable, highly entangled many-particle quantum systems — the \"entanglement frontier\" — but not yet fault-tolerant machines. |\n\nPreskill frames NISQ as transitional, not transformative: NISQ devices *\"will be useful tools for exploring many-body quantum physics, and may have other useful applications, but the 100-qubit quantum computer will not change the world right away.\"*\n\n### 2. The central limitation: gate noise caps the executable circuit size\n\nThe defining constraint is **noise in quantum gates limiting the size of quantum circuits that can be executed reliably** — stated in the paper's abstract and developed concretely in §4.1:\n\n> *\"Naively, then... with these noisy devices we don't expect to be able to execute a circuit that contains many more than about 1000 gates — that is, 1000 fundamental two-qubit operations — because the noise will overwhelm the signal in a circuit much larger than that. **That limitation on circuit size imposes a ceiling on the computational power of NISQ technology.**\"*\n\nThis is the crux. Because error cannot be corrected, error per gate (ε ≫ 1/G for G gates) means a single fault anywhere in a generic circuit can ruin the computation. The consequence is quantified as a practical operating envelope of roughly:\n- **~100 qubits** in near-term experiments, and\n- **circuit depth (number of time steps) of less than 100, maybe much less.**\n\nSo the limitation is not the qubit count per se — it is that **depth × fidelity, not qubit count, bounds what can be computed.** A 50–100 qubit machine with a ~1000-gate ceiling cannot run the deep circuits that fault-tolerant algorithmics (e.g., Shor-class applications) require. Preskill notes the escape route is quantum error correction to scale to larger circuits, but *\"quantum error correction imposes a heavy overhead cost in number of qubits and number of gates\"* — which is exactly why NISQ is a distinct era rather than a stepping stone one simply waits out.\n\nOne nuance worth flagging from the source: Preskill concedes the 1000-gate figure may be **too pessimistic** for certain problems. Some quantum simulation and tensor-network-style algorithms have only a *relatively small number of circuit locations* where a faulty gate causes bad failure — \"noise resilience\" that can be exploited. So the ceiling is a generic expectation, not an absolute law.\n\n### Bottom line\n\nNISQ is defined by the pairing of **intermediate qubit counts (50–a few hundred) available without error correction** with **noisy, imperfectly controlled gates**; its central limitation is that **gate noise caps reliable circuit size at roughly ~1000 two-qubit operations, imposing a hard ceiling on computational power** and confining near-term devices to shallow-circuit applications rather than world-changing computation.\n\n**References**\n- Preskill, J. *Quantum Computing in the NISQ era and beyond*, arXiv:1801.00862 (2018) — Abstract; §4.1 \"The 50-qubit barrier\"; §3.2 \"Why quantum computing is hard\".\n- KB locations: `自然科学与地球科学/quantum-physics__1801.00862__...md (part 1 of 3).md`, kb_id `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`, chunks 1, 35, 36, 40, 41, 68. The same passage is corroborated in the baseline reproduction indices `Corpus-Paras` (`e599315e-...`, p06000) and `Corpus-Struct` (`8284ae07-...`, s00/s05)."
+ ],
+ "qid": "BQ02",
+ "via": "chat"
+}

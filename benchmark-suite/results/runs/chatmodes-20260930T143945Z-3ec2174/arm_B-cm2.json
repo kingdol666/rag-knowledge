@@ -1,0 +1,31 @@
+{
+ "mode": "B",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 142.2,
+ "duration_ms": 139201,
+ "turns": 9,
+ "cost_usd": 0.467428,
+ "session_id": "f13eff08-d681-4038-a6b3-4b2704489768",
+ "answer_chars": 1446,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：知识库中唯一直接对口的文献（《Predicting Stroke from Electronic Health Records》，Nwosu et al., arXiv 1904.11280，存于「生命科学与医学」库）表明：基于 29,072 条 EHR 记录，年龄与婚姻状态是对预测贡献最大的因素，居住类型几乎无贡献；算法性能上多层感知机最优（75.02%），三种经典算法差异很小。**\n\n**要点与关键引文**（均逐字出自该文档）：\n\n1. **数据**：McKinsey 医疗黑客松数据集（Kaggle 公开），\"29072 patient's information with 12 attributes\"，10 个输入特征为性别、年龄、高血压、心脏病、婚姻状态、工作类型、居住类型（urban/rural）、平均血糖、BMI、吸烟状态。\n2. **关键风险因素**：既往研究确认 \"high blood pressure, diabetes and heart disease as major risk factors\"；本文 PCA 双图分析显示 \"The patient's age and marital status have the highest contribution\"，而 \"patient's residence type has no contributi",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

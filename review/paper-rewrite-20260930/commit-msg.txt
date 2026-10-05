@@ -1,0 +1,25 @@
+paper(demo): rewrite around layered retrieval - ladder + engine-graded judgment, monitored rerun, 4-page body
+
+- Story rewritten with layered retrieval (ladder) as the core contribution:
+  new Related Work section; three decisions re-anchored (one address space /
+  the ladder proposes, the judge disposes / failure is a first-class output);
+  L0-L5 spine, judge-by-reference, fail-closed, all-yes retention, early
+  exit; three lanes (fast / librarian / fusion) with the two-stage BM25
+  cross-check defined in 3.4
+- Evaluation re-sourced to the fresh monitored rerun
+  benchmark-suite/results/runs/run-20260930T150453Z-3ec2174 (30/30 healthy
+  cells after mount-flake sweeps): platform 10/10 grounded + 10/10
+  keyword-verified vs bare 10/8 and dense 8/6; citations 9/6/1; 116/48/41 s;
+  $0.55/$0.63/$0.28 per question; 27-run stability suite + honest-failure
+  probes (Spectral Tuning probe artifact review/paper-rewrite-20260930)
+- Numbers flow from script-asserted NUM* macros (107_exp_grade +
+  audit_paper_numbers); zero hand-typed results
+- Figures updated to the current contract: fig1/fig2 gate wording replaced
+  by judgment-engine ladder language (42 kb_* tools); fig3 rebuilt from the
+  new run (verbatim-quote + exact-timeline gates), stale metrics strip
+  removed
+- Layout: body (through Conclusion) ends on page 4, references on page 5
+  (5 pages total, CIKM demo format); 0 overfull hbox, 0 undefined refs;
+  abstract 229 words; captions shortened
+- Review loop converged: S ACCEPT 8/10, W ACCEPT 9.5/10, F ACCEPT 9/10,
+  visual judge 5/5 pass; author placeholders remain AUTHOR ACTION

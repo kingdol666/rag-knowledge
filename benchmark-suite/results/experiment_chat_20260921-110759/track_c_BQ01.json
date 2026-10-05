@@ -1,0 +1,71 @@
+{
+ "track": "c",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "Based on the retrieved chunks from \"Attention Is All You Need\" (all from `artificial-intelligence__1706.03762__attention-is-all-you-need__` files k00–k07):\n\nThe Transformer is \"the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention\" (k20.md, k19.md), and it is \"the first transduction model relying entirely on self-attention to compute representations of its input and output without using sequence-aligned RNNs or convolution\" (k03.md). It \"eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output\" (k02.md, k01.md), which \"allows for significantly more parallelization\" (k01–k02.md). Multi-head attention is applied in three ways, including encoder-decoder attention layers \"where the queries come from the previous decoder layer, and the memory keys and values come from the output of the encoder,\" letting \"every position in the decoder to attend over all positions in the input sequence\" (k06.md, k07.md). The stated rationale for replacing recurrence/convolution is speed and quality: \"the Transformer can be trained significantly faster than architectures based on recurrent or convolutional layers\" (k20.md, k19.md), achieving \"superior in quality while being more parallelizable\" on WMT 2014 translation tasks (k00.md).\n\nNote: the retrieved chunks describe attention at the architectural/rationale level but do not include the scaled dot-product attention equation itself, so I cannot quote the exact computation formula from the retrieved evidence.",
+ "is_error": false,
+ "latency_s": 68.5,
+ "sdk_duration_ms": 66339,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "Transformer attention mechanism replaces recurrence and convolution",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 90505,
+  "output": 528,
+  "cache_read": 27776,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.479613,
+ "timeline": [
+  {
+   "t": 2.19,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 41.92,
+   "event": "text",
+   "detail": "71"
+  },
+  {
+   "t": 41.94,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 58.93,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 68.5,
+   "event": "text",
+   "detail": "1659"
+  },
+  {
+   "t": 68.51,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the corpus for relevant content on Transformer attention.\n\n",
+  "Based on the retrieved chunks from \"Attention Is All You Need\" (all from `artificial-intelligence__1706.03762__attention-is-all-you-need__` files k00–k07):\n\nThe Transformer is \"the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention\" (k20.md, k19.md), and it is \"the first transduction model relying entirely on self-attention to compute representations of its input and output without using sequence-aligned RNNs or convolution\" (k03.md). It \"eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output\" (k02.md, k01.md), which \"allows for significantly more parallelization\" (k01–k02.md). Multi-head attention is applied in three ways, including encoder-decoder attention layers \"where the queries come from the previous decoder layer, and the memory keys and values come from the output of the encoder,\" letting \"every position in the decoder to attend over all positions in the input sequence\" (k06.md, k07.md). The stated rationale for replacing recurrence/convolution is speed and quality: \"the Transformer can be trained significantly faster than architectures based on recurrent or convolutional layers\" (k20.md, k19.md), achieving \"superior in quality while being more parallelizable\" on WMT 2014 translation tasks (k00.md).\n\nNote: the retrieved chunks describe attention at the architectural/rationale level but do not include the scaled dot-product attention equation itself, so I cannot quote the exact computation formula from the retrieved evidence."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

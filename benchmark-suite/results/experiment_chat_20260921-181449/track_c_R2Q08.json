@@ -1,0 +1,71 @@
+{
+ "track": "c",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "answer": "The wav2vec 2.0 approach detects within-sentence prosodic boundaries using **only acoustic information** — no text annotation or knowledge of word boundaries (those were used only for evaluation), and no handcrafted feature selection. Tested on Czech broadcast news recordings labeled by phonetic experts, the model achieved **94% accuracy and an F1 of 83%** on within-sentence prosodic boundaries (or 95% accuracy and 89% F1 on all prosodic boundaries), outperforming the text-based T5 predictor despite using a relatively small amount of labeled data. The paper further notes that combining the acoustic and text-based model outputs improves results even further.\n\nSources: `Corpus-Chunks800/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u__k00.md` (chunks 2, 3), `..._k15.md` (chunk 3).",
+ "is_error": false,
+ "latency_s": 12.1,
+ "sdk_duration_ms": 10484,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "wav2vec 2.0 within-sentence prosodic boundary detection Czech broadcast news accuracy",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 2952,
+  "output": 404,
+  "cache_read": 115584,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.082652,
+ "timeline": [
+  {
+   "t": 1.62,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.49,
+   "event": "text",
+   "detail": "114"
+  },
+  {
+   "t": 3.5,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 9.58,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 12.06,
+   "event": "text",
+   "detail": "806"
+  },
+  {
+   "t": 12.07,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the vector index for evidence about wav2vec 2.0 prosodic boundary detection on Czech broadcast news.\n\n",
+  "The wav2vec 2.0 approach detects within-sentence prosodic boundaries using **only acoustic information** — no text annotation or knowledge of word boundaries (those were used only for evaluation), and no handcrafted feature selection. Tested on Czech broadcast news recordings labeled by phonetic experts, the model achieved **94% accuracy and an F1 of 83%** on within-sentence prosodic boundaries (or 95% accuracy and 89% F1 on all prosodic boundaries), outperforming the text-based T5 predictor despite using a relatively small amount of labeled data. The paper further notes that combining the acoustic and text-based model outputs improves results even further.\n\nSources: `Corpus-Chunks800/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u__k00.md` (chunks 2, 3), `..._k15.md` (chunk 3)."
+ ],
+ "qid": "R2Q08",
+ "via": "chat"
+}

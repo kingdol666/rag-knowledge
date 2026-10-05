@@ -6,9 +6,9 @@
 
 ```
 for each doc with desc_quality ≠ OK:
-    kb_doc_update_meta(kb_id, doc_path, description=<新描述>)
+    kb_doc_update_meta(kb_id, doc_path, description=<new description>)
 for each KB with generic/empty description:
-    kb_update(kb_id, description=<新描述>)
+    kb_update(kb_id, description=<new description>)
 ```
 
 **Description quality standard** (4 elements): ① core topic (from 1000 chars) ② data type (paper/report/standard/manual) ③ tech domain/sub-domain ④ key entities/equipment/process.
@@ -27,7 +27,7 @@ for each doc:
 # T2 synonym merge + normalization (see tag-quality-rules.md §T2 full map)
 # T3 count fix (2-5 tags/doc)
 for each doc with tags < 2:
-    kb_doc_update_tags(kb_id, doc_path, tags=[补全 from O2 suggested_tags])
+    kb_doc_update_tags(kb_id, doc_path, tags=[fill from O2 suggested_tags])
 ```
 
 ## L3 Document Reclassification (move · needs verify)
@@ -35,7 +35,7 @@ for each doc with tags < 2:
 ```
 for each doc with kb_alignment = MISMATCH:
     kb_doc_move(doc_path, correct_kb_id)
-    kb_index_document(kb_id=correct_kb_id, doc_path=<新路径>)
+    kb_index_document(kb_id=correct_kb_id, doc_path=<new path>)
 ```
 
 ## L4 Sub-KB Split (structure · needs user confirm)
@@ -43,14 +43,14 @@ for each doc with kb_alignment = MISMATCH:
 ```
 # 1. Show split plan
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  📦 KB 拆分建议: <KB名称> (<N> 篇)
-  ┌─────────────┬────────┬──────────────┐
-  │ 子KB        │ 文档数 │ 内容子领域    │
-  ├─────────────┼────────┼──────────────┤
-  │ <Sub-KB-1>  │ <N>    │ <领域>       │
-  │ [根KB保留]  │ <N>    │ 跨领域/通用   │
-  └─────────────┴────────┴──────────────┘
-  是否执行？[Y/n/修改]:
+  📦 KB split proposal: <KB name> (<N> docs)
+  ┌────────────────┬────────┬─────────────────────┐
+  │ Sub-KB         │ Docs   │ Content sub-domain  │
+  ├────────────────┼────────┼─────────────────────┤
+  │ <Sub-KB-1>     │ <N>    │ <domain>            │
+  │ [root KB kept] │ <N>    │ cross-domain/general│
+  └────────────────┴────────┴─────────────────────┘
+  Execute? [Y/n/edit]:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # 2. After user confirm
@@ -60,7 +60,7 @@ for each sub_domain:
         kb_doc_move(doc_path, sub_kb_id)
 
 # 3. Update parent KB description
-kb_update(kb_id=parent_kb_id, description="<更新>。子KB：[Sub1], [Sub2]...")
+kb_update(kb_id=parent_kb_id, description="<updated>. Sub-KBs: [Sub1], [Sub2]...")
 
 # 4. Rebuild index
 for each new sub_kb:
@@ -90,11 +90,11 @@ kb_graph_build(target_kb_id, force=true)
 
 ```
 # flat → create parent KB
-kb_create(name="<父-KB>", description="...")
+kb_create(name="<parent-KB>", description="...")
 for each sub_kb: kb_update(parent_id=new_parent_kb_id)
 
 # rename / reposition
-kb_update(kb_id=<id>, name="<新名称>", description="<新描述>")
+kb_update(kb_id=<id>, name="<new name>", description="<new description>")
 
 # delete empty/test KB
 kb_delete(test_kb_id)
@@ -163,4 +163,4 @@ for each affected KB:
 | `hierarchy` | Complete hierarchy tree | L6 |
 | `full_index` | Vector + graph coverage | L7 |
 
-Default: all execute. User says "只修描述和标签" → only L1+L2+L7.
+Default: all execute. User says "only fix descriptions and tags" (只修描述和标签) → only L1+L2+L7.

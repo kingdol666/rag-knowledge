@@ -96,7 +96,11 @@ ingestion:
   large_doc:
     auto_split: true
     max_chars: 30000
-    overlap_chars: 400
+    overlap_chars: 0
+    strategy: "agent_semantic"
+    target_utilization: 0.85
+    allow_oversized_atomic_unit: true
+    allow_hard_fallback: false
 
 experience_auto:
   enabled: false
@@ -105,6 +109,10 @@ experience_auto:
   min_cluster_count: 2
   max_drafts_per_run: 5
   dry_run: false
+
+decision:
+  laya:
+    model_path: ""
 
 soul:
   default_harness: "omp"

@@ -1,0 +1,175 @@
+{
+ "track": "a",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "I now have the complete primary-source content. Here is the answer.\n\n---\n\n## How the Transformer Computes Attention, and Why It Replaces Recurrence and Convolution\n\n**Source:** *Attention Is All You Need* (Vaswani et al., 2016), arXiv:1706.03762 — KB `计算机与人工智能` (Computer Science and AI), doc `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (parts 1 & 2).\n\n### 1. What an attention function is\n\nAn attention function maps a **query** and a set of **key–value pairs** to an output, where query, keys, values, and output are all vectors. The output is computed as a **weighted sum of the values**, where the weight assigned to each value is computed by a **compatibility function of the query with the corresponding key** (Section 3.2).\n\n### 2. Scaled Dot-Product Attention (Section 3.2.1)\n\nInputs: queries and keys of dimension `d_k`, values of dimension `d_v`. The recipe:\n1. Compute the **dot products** of the query with all keys,\n2. **Divide each by √d_k** (the scaling factor),\n3. Apply a **softmax** to obtain the weights on the values.\n\nBatched into matrices Q, K, V, the output is:\n\n$$\\mathrm{Attention}(Q,K,V) = \\mathrm{softmax}\\!\\left(\\frac{QK^{T}}{\\sqrt{d_k}}\\right)V \\quad \\text{(Eq. 1)}$$\n\n**Why the √d_k scaling:** the paper contrasts additive attention (a feed-forward net with one hidden layer) with dot-product attention. For small `d_k` the two perform similarly, but unscaled dot-product attention **underperforms additive attention for large `d_k`** — because for large `d_k` the dot products grow large in magnitude, **pushing the softmax into regions where it has extremely small gradients**. Scaling by 1/√d_k counteracts this. Dot-product attention was chosen anyway because, despite similar theoretical complexity, it is **much faster and more space-efficient in practice** since it can use highly optimized matrix-multiplication code.\n\n### 3. Multi-Head Attention (Section 3.2.2)\n\nRather than one attention function over `d_model`-dimensional keys/queries/values, the model **linearly projects Q, K, V `h` times** with different learned projections to `d_k, d_k, d_v`; attention runs **in parallel** on each projected version, the `d_v`-dimensional outputs are **concatenated and projected** once more:\n\n$$\\mathrm{MultiHead}(Q,K,V) = \\mathrm{Concat}(\\mathrm{head}_1,\\dots,\\mathrm{head}_h)W^O,\\quad \\mathrm{head}_i = \\mathrm{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$\n\nRationale: **multi-head attention lets the model jointly attend to information from different representation subspaces at different positions**; with a single head, averaging inhibits this. In the paper: `h = 8`, `d_k = d_v = d_model/h = 64`; because each head is lower-dimensional, total cost ≈ single-head attention at full dimensionality. Ablations confirmed this matters — single-head attention was 0.9 BLEU worse than the best setting.\n\n**Three applications in the model (3.2.3):** (a) *encoder–decoder attention* — queries from the previous decoder layer, keys/values from the encoder output; (b) *encoder self-attention* — Q, K, V all from the same place (the previous encoder layer), every position attends to all positions; (c) *decoder self-attention* — masked (illegal connections set to −∞ before softmax) so position *i* can only attend to positions ≤ *i*, preserving auto-regression.\n\n### 4. Why it replaces recurrence and convolution (Sections 1, 2, 4 — §4 \"Why Self-Attention\")\n\nThe paper judges layer types on **three desiderata**: (i) **total computational complexity per layer**, (ii) **amount of parallelizable computation** (minimum number of sequential operations), (iii) **path length between long-range dependencies** — shorter paths make long-range dependencies easier to learn.\n\n**Against recurrence.** Recurrent models factor computation along symbol positions, generating hidden state `h_t` as a function of `h_{t-1}` and the input at *t*. This **inherently sequential nature precludes parallelization within training examples**, which becomes critical at longer sequence lengths. As Table 1 shows:\n\n| Layer Type | Complexity/Layer | Sequential Ops | Max Path Length |\n|---|---|---|---|\n| **Self-Attention** | O(n²·d) | **O(1)** | **O(1)** |\n| Recurrent | O(n·d²) | O(n) | O(n) |\n| Convolutional | O(k·n·d²) | O(1) | O(log_k n) |\n| Self-Attention (restricted) | O(r·n·d) | O(1) | O(n/r) |\n\nA self-attention layer **connects all positions with a constant number of sequentially executed operations**, whereas a recurrent layer needs **O(n)** sequential operations. Self-attention is also faster than recurrent layers **when sequence length n < representation dimensionality d** — typically true for word-piece/byte-pair sentence representations in MT.\n\n**Against convolution.** A single convolutional layer with kernel width `k < n` **does not connect all pairs of input/output positions**; doing so requires a stack of `O(n/k)` layers (contiguous kernels) or `O(log_k(n))` (dilated), **increasing the longest path length**. Convolutional layers are generally **more expensive than recurrent layers by a factor of k**; separable convolutions reduce this to `O(k·n·d + n·d²)`, but **even with k = n, a separable convolution's complexity equals the combination of a self-attention layer plus a point-wise feed-forward layer** — exactly the Transformer's design. In the Transformer, the number of operations relating any two positions is **reduced to a constant**, versus linearly (ConvS2S) or logarithmically (ByteNet) growing with distance in the convolutional baselines.\n\n**Novelty claim (Section 2):** the Transformer is **the first transduction model relying entirely on self-attention to compute representations of input and output without using sequence-aligned RNNs or convolution.** *(Note the trade-off the paper itself flags: constant path length comes \"at the cost of reduced effective resolution due to averaging attention-weighted positions,\" counteracted by Multi-Head Attention.)* Because there is no recurrence and no convolution, **positional encodings** (sinusoidal functions of different frequencies — Eq. in 3.5) are added to the input embeddings so the model can use token order.\n\n**Payoff (Abstract, §5.2, §6):** the architecture is \"superior in quality while being more parallelizable and requiring significantly less time to train\" — 28.4 BLEU on WMT 2014 EN–DE (beating prior best, including ensembles, by >2 BLEU), 41.8 BLEU EN–FR after 3.5 days on 8 GPUs; the base model trained in 12 hours, at a small fraction of prior training cost (Table 2: base 3.3×10¹⁸ FLOPs vs. e.g. ConvS2S 9.6×10¹⁸). A **side benefit** noted in §4: self-attention can yield **more interpretable models** — individual heads learn different tasks and exhibit behavior related to syntactic/semantic structure (Figures 3–5 show long-distance dependency and anaphora-resolution heads).\n\n### Sources\n- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md` — KB `计算机与人工智能` (kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`); Abstract, §1 Introduction, §2 Background, §3.2 Attention (3.2.1–3.2.3), §3.5 Positional Encoding, **§4 Why Self-Attention**, Table 1, §5.2.\n- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md` — §6.2 Model Variations (head-count/k-dimension ablations), §6.3, §7 Conclusion.\n- Corroborating copies in the \"DeepRead baseline reproduction\" indexes: `Corpus-Struct/...__s01.md`, `Corpus-Chunks800/...__k02.md`, `Corpus-Paras/...__p04003.md` (same paper, same claim that the Transformer is the first model relying entirely on self-attention without sequence-aligned RNNs or convolution).\n\n**Certainty:** High — every claim above is quoted or directly paraphrased from the retrieved full text of the primary source, read end-to-end (no gap in the Section 4 argument).",
+ "is_error": false,
+ "latency_s": 177.2,
+ "sdk_duration_ms": 172270,
+ "num_turns": 10,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__backend_status,mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,m"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__backend_status,mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,m"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__backend_status",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "Transformer attention mechanism self-attention scaled dot-product replaces recurrence convolution",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "Transformer 注意力机制 自注意力 缩放点积 取代循环 卷积 并行计算",
+    "kb_id": ""
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md"
+   }
+  }
+ ],
+ "tool_call_count": 9,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 272145,
+  "output": 3096,
+  "cache_read": 59968,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 1.468109,
+ "timeline": [
+  {
+   "t": 5.0,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 11.28,
+   "event": "text",
+   "detail": "130"
+  },
+  {
+   "t": 11.31,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 24.83,
+   "event": "text",
+   "detail": "64"
+  },
+  {
+   "t": 24.85,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 35.27,
+   "event": "text",
+   "detail": "87"
+  },
+  {
+   "t": 35.3,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__backend_status"
+  },
+  {
+   "t": 35.31,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 56.85,
+   "event": "text",
+   "detail": "180"
+  },
+  {
+   "t": 56.86,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 56.87,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 67.15,
+   "event": "text",
+   "detail": "244"
+  },
+  {
+   "t": 67.15,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 67.16,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 82.99,
+   "event": "text",
+   "detail": "173"
+  },
+  {
+   "t": 83.03,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 177.17,
+   "event": "text",
+   "detail": "7793"
+  },
+  {
+   "t": 177.23,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll retrieve from the knowledge base. First, per the mandatory pre-flight rule, let me verify MCP connectivity and then search.\n\n",
+  "I'll retry the tool search now that kb-mcp may have connected.\n\n",
+  "Now let me run the pre-flight connectivity check and scan the KB catalog in parallel.\n\n",
+  "MCP is connected and healthy. The \"计算机与人工智能\" KB (Computer Science and AI, 76 docs) is the obvious target. Let me run a two-stage search plus a cross-KB vector search in parallel.\n\n",
+  "The authoritative source is the \"Attention Is All You Need\" paper (1706.03762). Let me read the actual document content to verify the details on the attention computation (Section 3.2) and the self-attention motivation/advantages (Section 4).\n\n",
+  "I have the primary source. Let me confirm Section 4's conclusion (the truncated tail covering the convolutional-layer comparison) by reading the remaining lines of part 1.\n\n",
+  "I now have the complete primary-source content. Here is the answer.\n\n---\n\n## How the Transformer Computes Attention, and Why It Replaces Recurrence and Convolution\n\n**Source:** *Attention Is All You Need* (Vaswani et al., 2016), arXiv:1706.03762 — KB `计算机与人工智能` (Computer Science and AI), doc `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (parts 1 & 2).\n\n### 1. What an attention function is\n\nAn attention function maps a **query** and a set of **key–value pairs** to an output, where query, keys, values, and output are all vectors. The output is computed as a **weighted sum of the values**, where the weight assigned to each value is computed by a **compatibility function of the query with the corresponding key** (Section 3.2).\n\n### 2. Scaled Dot-Product Attention (Section 3.2.1)\n\nInputs: queries and keys of dimension `d_k`, values of dimension `d_v`. The recipe:\n1. Compute the **dot products** of the query with all keys,\n2. **Divide each by √d_k** (the scaling factor),\n3. Apply a **softmax** to obtain the weights on the values.\n\nBatched into matrices Q, K, V, the output is:\n\n$$\\mathrm{Attention}(Q,K,V) = \\mathrm{softmax}\\!\\left(\\frac{QK^{T}}{\\sqrt{d_k}}\\right)V \\quad \\text{(Eq. 1)}$$\n\n**Why the √d_k scaling:** the paper contrasts additive attention (a feed-forward net with one hidden layer) with dot-product attention. For small `d_k` the two perform similarly, but unscaled dot-product attention **underperforms additive attention for large `d_k`** — because for large `d_k` the dot products grow large in magnitude, **pushing the softmax into regions where it has extremely small gradients**. Scaling by 1/√d_k counteracts this. Dot-product attention was chosen anyway because, despite similar theoretical complexity, it is **much faster and more space-efficient in practice** since it can use highly optimized matrix-multiplication code.\n\n### 3. Multi-Head Attention (Section 3.2.2)\n\nRather than one attention function over `d_model`-dimensional keys/queries/values, the model **linearly projects Q, K, V `h` times** with different learned projections to `d_k, d_k, d_v`; attention runs **in parallel** on each projected version, the `d_v`-dimensional outputs are **concatenated and projected** once more:\n\n$$\\mathrm{MultiHead}(Q,K,V) = \\mathrm{Concat}(\\mathrm{head}_1,\\dots,\\mathrm{head}_h)W^O,\\quad \\mathrm{head}_i = \\mathrm{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$\n\nRationale: **multi-head attention lets the model jointly attend to information from different representation subspaces at different positions**; with a single head, averaging inhibits this. In the paper: `h = 8`, `d_k = d_v = d_model/h = 64`; because each head is lower-dimensional, total cost ≈ single-head attention at full dimensionality. Ablations confirmed this matters — single-head attention was 0.9 BLEU worse than the best setting.\n\n**Three applications in the model (3.2.3):** (a) *encoder–decoder attention* — queries from the previous decoder layer, keys/values from the encoder output; (b) *encoder self-attention* — Q, K, V all from the same place (the previous encoder layer), every position attends to all positions; (c) *decoder self-attention* — masked (illegal connections set to −∞ before softmax) so position *i* can only attend to positions ≤ *i*, preserving auto-regression.\n\n### 4. Why it replaces recurrence and convolution (Sections 1, 2, 4 — §4 \"Why Self-Attention\")\n\nThe paper judges layer types on **three desiderata**: (i) **total computational complexity per layer**, (ii) **amount of parallelizable computation** (minimum number of sequential operations), (iii) **path length between long-range dependencies** — shorter paths make long-range dependencies easier to learn.\n\n**Against recurrence.** Recurrent models factor computation along symbol positions, generating hidden state `h_t` as a function of `h_{t-1}` and the input at *t*. This **inherently sequential nature precludes parallelization within training examples**, which becomes critical at longer sequence lengths. As Table 1 shows:\n\n| Layer Type | Complexity/Layer | Sequential Ops | Max Path Length |\n|---|---|---|---|\n| **Self-Attention** | O(n²·d) | **O(1)** | **O(1)** |\n| Recurrent | O(n·d²) | O(n) | O(n) |\n| Convolutional | O(k·n·d²) | O(1) | O(log_k n) |\n| Self-Attention (restricted) | O(r·n·d) | O(1) | O(n/r) |\n\nA self-attention layer **connects all positions with a constant number of sequentially executed operations**, whereas a recurrent layer needs **O(n)** sequential operations. Self-attention is also faster than recurrent layers **when sequence length n < representation dimensionality d** — typically true for word-piece/byte-pair sentence representations in MT.\n\n**Against convolution.** A single convolutional layer with kernel width `k < n` **does not connect all pairs of input/output positions**; doing so requires a stack of `O(n/k)` layers (contiguous kernels) or `O(log_k(n))` (dilated), **increasing the longest path length**. Convolutional layers are generally **more expensive than recurrent layers by a factor of k**; separable convolutions reduce this to `O(k·n·d + n·d²)`, but **even with k = n, a separable convolution's complexity equals the combination of a self-attention layer plus a point-wise feed-forward layer** — exactly the Transformer's design. In the Transformer, the number of operations relating any two positions is **reduced to a constant**, versus linearly (ConvS2S) or logarithmically (ByteNet) growing with distance in the convolutional baselines.\n\n**Novelty claim (Section 2):** the Transformer is **the first transduction model relying entirely on self-attention to compute representations of input and output without using sequence-aligned RNNs or convolution.** *(Note the trade-off the paper itself flags: constant path length comes \"at the cost of reduced effective resolution due to averaging attention-weighted positions,\" counteracted by Multi-Head Attention.)* Because there is no recurrence and no convolution, **positional encodings** (sinusoidal functions of different frequencies — Eq. in 3.5) are added to the input embeddings so the model can use token order.\n\n**Payoff (Abstract, §5.2, §6):** the architecture is \"superior in quality while being more parallelizable and requiring significantly less time to train\" — 28.4 BLEU on WMT 2014 EN–DE (beating prior best, including ensembles, by >2 BLEU), 41.8 BLEU EN–FR after 3.5 days on 8 GPUs; the base model trained in 12 hours, at a small fraction of prior training cost (Table 2: base 3.3×10¹⁸ FLOPs vs. e.g. ConvS2S 9.6×10¹⁸). A **side benefit** noted in §4: self-attention can yield **more interpretable models** — individual heads learn different tasks and exhibit behavior related to syntactic/semantic structure (Figures 3–5 show long-distance dependency and anaphora-resolution heads).\n\n### Sources\n- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md` — KB `计算机与人工智能` (kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`); Abstract, §1 Introduction, §2 Background, §3.2 Attention (3.2.1–3.2.3), §3.5 Positional Encoding, **§4 Why Self-Attention**, Table 1, §5.2.\n- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md` — §6.2 Model Variations (head-count/k-dimension ablations), §6.3, §7 Conclusion.\n- Corroborating copies in the \"DeepRead baseline reproduction\" indexes: `Corpus-Struct/...__s01.md`, `Corpus-Chunks800/...__k02.md`, `Corpus-Paras/...__p04003.md` (same paper, same claim that the Transformer is the first model relying entirely on self-attention without sequence-aligned RNNs or convolution).\n\n**Certainty:** High — every claim above is quoted or directly paraphrased from the retrieved full text of the primary source, read end-to-end (no gap in the Section 4 argument)."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

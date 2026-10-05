@@ -1,18 +1,18 @@
-# CRUD & Migration — 经验增删改查 + 跟随知识库移动
+# CRUD & Migration — Experience Create/Update/Delete + Following KB Moves
 
-> 经验的创建、更新、删除全生命周期，以及文档移动时经验的跟随迁移。
+> The full create/update/delete lifecycle of experiences, plus experience follow-migration when documents move.
 
 ## Table of Contents
-- [创建](#创建)
-- [更新](#更新)
-- [删除](#删除)
-- [跟随文档移动](#跟随文档移动experience-跟随-related_docs)
-- [跟随 KB 移动](#跟随-kb-移动整个-kb-的经验迁移)
-- [验证清单](#验证清单每次操作后)
+- [Create](#create)
+- [Update](#update)
+- [Delete](#delete)
+- [Following document moves](#following-document-moves-experience-related_docs-follow)
+- [Following KB moves](#following-kb-moves-whole-kb-experience-migration)
+- [Verification checklist](#verification-checklist-after-every-operation)
 
 ---
 
-## 创建
+## Create
 
 ```
 experience_create(kb_id, title, scenario, category, problem, solution, result,
@@ -20,165 +20,165 @@ experience_create(kb_id, title, scenario, category, problem, solution, result,
 → {success, experience: {id, ...}}
 ```
 
-**后端自动完成**（三层一致）：① 磁盘 .md 写入 ② .experience-index.yml 更新 ③ 向量索引（共享 KB collection）。
+**The backend does this automatically** (three-layer consistency): (1) writes the disk .md (2) updates .experience-index.yml (3) vector index (shared KB collection).
 
-创建后必验证：
+Mandatory verification after create:
 ```
-experience_read(kb_id, exp_id) → 确认字段正确 + vector_index.total_chunks ≥ 1
+experience_read(kb_id, exp_id) → confirm fields are correct + vector_index.total_chunks ≥ 1
 ```
 
-创建失败常见原因：
-- `KB not found` → kb_id 错误，用 `kb_list` 确认
-- 向量索引 0 chunks → 经验内容太短，补充 problem/solution
+Common causes of create failures:
+- `KB not found` → wrong kb_id; confirm with `kb_list`
+- Vector index 0 chunks → experience content too short; flesh out problem/solution
 
 ---
 
-## 更新
+## Update
 
 ```
-experience_update(kb_id, exp_id, **fields)  # 只传需更新的字段
+experience_update(kb_id, exp_id, **fields)  # pass only the fields to update
 → {success, experience: {...}}
 ```
 
-**后端自动完成**：① 磁盘 .md 重写 ② 索引更新 ③ 向量重索引（内容变 → 向量重算）。
+**The backend does this automatically**: (1) rewrites the disk .md (2) updates the index (3) re-indexes vectors (content changed → vectors recomputed).
 
-### 更新场景
+### Update Scenarios
 
-| 场景 | 更新哪些字段 | 触发 |
+| Scenario | Which fields to update | Trigger |
 |------|-------------|------|
-| 冥想归纳补充新教训 | `key_lessons`, `solution`, `updated_at` | 冥想阶段4 |
-| 文档内容更新经验过时 | `problem`, `solution`, `key_lessons` | E6 stale 检测 |
-| 用户评审打分 | （自动）`rating_avg`, `review_count` | `experience_review` |
-| 经验被应用 | （自动）`applied_count` | `experience_apply` |
-| 补充 related_docs | `related_docs` | 文档移动后修复链接 |
+| Meditation adds new lessons | `key_lessons`, `solution`, `updated_at` | Meditation Phase 4 |
+| Document updated; experience stale | `problem`, `solution`, `key_lessons` | E6 stale detection |
+| User reviews and scores | (automatic) `rating_avg`, `review_count` | `experience_review` |
+| Experience applied | (automatic) `applied_count` | `experience_apply` |
+| Supplementing related_docs | `related_docs` | Fixing links after a document move |
 
-> ⚠️ `updated_at` 不会自动刷新——内容更新时手动传 `updated_at=now`（或后端自动）。
-> 向量重索引在内容字段（problem/solution/key_lessons/title）变更时自动触发。
+> ⚠️ `updated_at` does not refresh automatically — pass `updated_at=now` manually on content updates (or the backend does it automatically).
+> Vector re-indexing triggers automatically when content fields (problem/solution/key_lessons/title) change.
 
 ---
 
-## 删除
+## Delete
 
 ```
 experience_delete(kb_id, exp_id)
 → {success, deleted_id}
 ```
 
-**后端自动完成**：① 磁盘 .md 删除 ② 索引移除 ③ 向量删除。
+**The backend does this automatically**: (1) deletes the disk .md (2) removes the index entry (3) deletes the vectors.
 
-### 删除决策矩阵
+### Delete Decision Matrix
 
-| 条件 | 动作 | 理由 |
+| Condition | Action | Rationale |
 |------|------|------|
-| 测试污染（rating=0, applied=0, age>7d） | 直接删除 | 零价值残留 |
-| 孤儿经验（related_docs 全失效）+ applied=0 | 直接删除 | 无引用无应用 |
-| 孤儿经验 + applied>0 | 保留内容，清空 related_docs | 经验仍有用，断链修复 |
-| 用户明确要求删除 | 直接删除 | 用户主权 |
-| 过时但仍有参考价值 | `experience_update(status="archived")` | 软删除，检索不命中但保留 |
+| Test pollution (rating=0, applied=0, age>7d) | Delete directly | Zero-value residue |
+| Orphan experience (all related_docs broken) + applied=0 | Delete directly | No references, no applications |
+| Orphan experience + applied>0 | Keep the content, clear related_docs | Experience still useful; repair the broken links |
+| User explicitly requests deletion | Delete directly | User sovereignty |
+| Outdated but still worth reference | `experience_update(status="archived")` | Soft delete: not hit by retrieval but preserved |
 
-> 删除不可逆。删除前确认 `experience_read` 看内容，确认不是误删。
+> Deletion is irreversible. Before deleting, use `experience_read` to look at the content and confirm it is not a mistake.
 
 ---
 
-## 跟随文档移动：experience 的 related_docs 跟随
+## Following Document Moves: experience related_docs Follow
 
-**这是最关键的联动**。当 `kb_doc_move` 移动文档时，引用该文档的经验会变孤儿。
+**This is the most critical linkage.** When `kb_doc_move` moves a document, experiences referencing that document become orphans.
 
-### 后端现状（重要）
+### Backend Status Quo (Important)
 
-`kb_doc_move` **不会自动迁移经验**——它只处理文档三层（磁盘/树索引/KB元数据）。
-经验索引 `.experience-index.yml` 中的 `related_docs` 路径**不会自动更新**。
+`kb_doc_move` **does not migrate experiences automatically** — it only handles the document's three layers (disk / tree index / KB metadata).
+The `related_docs` paths in the experience index `.experience-index.yml` are **not updated automatically**.
 
-**因此：文档移动后，Agent 必须手动修复经验链接。**
+**Therefore: after a document move, the Agent must repair experience links manually.**
 
-### 手动跟随流程（文档移动后强制执行）
+### Manual Follow Flow (Mandatory After a Document Move)
 
 ```
-触发：kb_doc_move(source_kb, doc_path, target_kb) 成功后
+Trigger: after kb_doc_move(source_kb, doc_path, target_kb) succeeds
 
-Step 1: 找出受影响的经验
-  # 源 KB 中引用该文档的经验
-  experience_list(source_kb) → 筛选 related_docs 含 doc_path 的经验
+Step 1: find the affected experiences
+  # experiences in the source KB that reference the document
+  experience_list(source_kb) → filter experiences whose related_docs contain doc_path
 
-Step 2: 决策每条经验的去向
-  对每条 affected_exp:
-    ├─ 经验核心内容与文档强绑定（文档是唯一证据来源）
-    │   → 经验也迁移到 target_kb：
-    │     a) experience_read(source_kb, exp_id) → 读全部内容
-    │     b) experience_create(target_kb, **content, related_docs=[新路径])
+Step 2: decide where each experience goes
+  For each affected_exp:
+    ├─ Experience core content strongly bound to the document (the document is the only evidence source)
+    │   → migrate the experience to target_kb as well:
+    │     a) experience_read(source_kb, exp_id) → read the full content
+    │     b) experience_create(target_kb, **content, related_docs=[new path])
     │     c) experience_delete(source_kb, exp_id)
-    │     d) 验证：experience_read(target_kb, new_exp_id)
+    │     d) Verify: experience_read(target_kb, new_exp_id)
     │
-    ├─ 文档只是参考，经验可独立存在
-    │   → 经验留原库，更新 related_docs 路径：
+    ├─ The document was only a reference; the experience can stand alone
+    │   → keep the experience in its original KB; update the related_docs path:
     │     experience_update(source_kb, exp_id,
-    │       related_docs=[旧路径→新跨库路径 或 移除])
+    │       related_docs=[old path → new cross-KB path, or removed])
     │
-    └─ 经验引用了多个文档，部分移动
-        → 更新 related_docs，替换移动的路径，保留未移动的
+    └─ The experience references multiple documents, some of which moved
+        → update related_docs: replace the moved paths, keep the unmoved ones
 ```
 
-### 路径替换规则
+### Path Replacement Rules
 
 ```
-文档移动：source_kb/old_doc.md → target_kb/new_doc.md
-经验中的 related_docs 替换：
-  旧：["source_kb/old_doc.md", "source_kb/other.md"]
-  新：["target_kb/new_doc.md", "source_kb/other.md"]  # 只替换移动的
-```
-
----
-
-## 跟随 KB 移动：整个 KB 的经验迁移
-
-当整个 KB 被重命名/移动/合并时（见 knowledgebase-manage skill），该 KB 下所有
-经验自动跟随——因为经验存储在 KB 目录的 `experience/` 子文件夹内，KB 移动时
-整个目录一起搬。
-
-**但需注意**：
-- **向量索引**需重建：KB 移动后 collection 命名可能变 → `kb_reindex(force=true)`
-- **跨库引用**的指针经验：指向该 KB 的别库经验需更新路径
-
-### KB 重命名后的经验修复
-
-```
-触发：KB 从 old_name 改为 new_name
-
-Step 1: 该 KB 内经验自动跟随（目录搬迁）✓ 后端自动
-Step 2: 向量重索引：
-  kb_reindex(kb_id=new_name, force=true) → 重建 collection
-Step 3: 跨库引用修复：
-  # 找到别库中引用旧 KB 路径的经验
-  experience_search_global(query="old_name") → 检查 related_docs
-  → experience_update(别库, exp_id, related_docs=[新路径])
-Step 4: 验证：
-  experience_list(new_name) → 确认经验数量未变
-  experience_search_global(new_name, "测试查询") → 确认检索正常
+Document move: source_kb/old_doc.md → target_kb/new_doc.md
+related_docs replacement inside the experience:
+  old: ["source_kb/old_doc.md", "source_kb/other.md"]
+  new: ["target_kb/new_doc.md", "source_kb/other.md"]  # replace only the moved one
 ```
 
 ---
 
-## 验证清单：每次操作后
+## Following KB Moves: Whole-KB Experience Migration
+
+When a whole KB is renamed/moved/merged (see the knowledgebase-manage skill), all experiences under that KB
+follow automatically — because experiences are stored in the KB directory's `experience/` subfolder, the
+whole directory moves together with the KB.
+
+**But note**:
+- **Vector index** needs rebuilding: after a KB move the collection naming may change → `kb_reindex(force=true)`
+- **Cross-KB reference** pointer experiences: experiences in other KBs pointing at this KB need their paths updated
+
+### Experience Repair After a KB Rename
 
 ```
-创建后：
-□ experience_read(kb_id, exp_id) 字段正确
+Trigger: KB renamed from old_name to new_name
+
+Step 1: experiences inside the KB follow automatically (directory relocation) ✓ backend automatic
+Step 2: vector re-index:
+  kb_reindex(kb_id=new_name, force=true) → rebuild the collection
+Step 3: cross-KB reference repair:
+  # find experiences in other KBs referencing the old KB path
+  experience_search_global(query="old_name") → check related_docs
+  → experience_update(<other KB>, exp_id, related_docs=[new path])
+Step 4: verify:
+  experience_list(new_name) → confirm the experience count is unchanged
+  experience_search_global(new_name, "test query") → confirm retrieval works
+```
+
+---
+
+## Verification Checklist: After Every Operation
+
+```
+After create:
+□ experience_read(kb_id, exp_id) fields correct
 □ vector_index.total_chunks ≥ 1
-□ .experience-index.yml 中新经验存在
+□ new experience present in .experience-index.yml
 
-更新后：
-□ experience_read 确认更新字段已生效
-□ 内容更新则 vector_index.indexed_at 已刷新
-□ related_docs 路径仍存在（kb_doc_read 验证）
+After update:
+□ experience_read confirms the updated fields took effect
+□ if content changed, vector_index.indexed_at has refreshed
+□ related_docs paths still exist (verify with kb_doc_read)
 
-删除后：
-□ experience_read 返回 not found
-□ experience_list 数量减1
-□ （向量删除是 fire-and-forget，可能延迟）
+After delete:
+□ experience_read returns not found
+□ experience_list count down by 1
+□ (vector deletion is fire-and-forget and may lag)
 
-移动后：
-□ 源库：affected 经验已处理（迁移或更新路径）
-□ 目标库：迁移的经验 experience_read 正常
-□ related_docs 全部指向真实存在的文档
-□ 跨库引用路径已更新
+After move:
+□ source KB: affected experiences handled (migrated or path-updated)
+□ target KB: migrated experiences read fine via experience_read
+□ related_docs all point to documents that really exist
+□ cross-KB reference paths updated
 ```

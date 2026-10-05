@@ -71,6 +71,29 @@ export interface QueryRequest {
   ) => Promise<{ behavior: string; message?: string; updatedInput?: any; optionId?: string }>
   /** Abort signal (client disconnect). */
   signal?: AbortSignal
+  /**
+   * Session-scoped MCP isolation (claude engine): when `mcpServers` is set
+   * together with `strictMcpConfig`, the SDK loads ONLY these servers —
+   * user-scope MCP (fetch/memory/context7/…), plugin MCP and project
+   * .mcp.json are all ignored for this query. KB retrieval turns use this to
+   * avoid wasted tool detours (measured 2026-09-28: the agent burned ~20s on
+   * mcp__fetch__fetch + mcp__agentmemory__memory_recall before retrieving).
+   */
+  mcpServers?: Record<
+    string,
+    | { type: 'sse'; url: string; headers?: Record<string, string> }
+    // stdio variant carries an optional `type: 'stdio'` tag — the Claude SDK
+    // accepts it and the chat route passes it for readability (2026-10-01).
+    | { type?: 'stdio'; command: string; args?: string[]; env?: Record<string, string> }
+  >
+  strictMcpConfig?: boolean
+  /**
+   * Extra harness-internal tools to ban for this query (merged with the
+   * engine's own baseline). Only `disallowedTools` reliably blocks built-in
+   * tools — `allowedTools` does not gate harness-internal tools like the
+   * subagent delegator (named `Task` in older SDKs, `Agent` in current ones).
+   */
+  disallowedTools?: string[]
 }
 
 /** One selectable option offered by a harness permission request (ACP). */

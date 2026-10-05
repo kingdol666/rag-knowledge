@@ -1,0 +1,68 @@
+{
+  "mode": "A_vector",
+  "id": "Q2",
+  "query": "向量索引增量插入占比达到多少时应该触发全量重建？删除标记比例的阈值是多少？",
+  "seconds": 44.2,
+  "scan": {
+    "descriptions_scanned": null,
+    "description_overlap_docs": null,
+    "zero_overlap_docs_unread": null,
+    "docs_read": [
+      {
+        "doc_path": "AI 基础设施/experience/exp-c2a2cf377248.md",
+        "chars": 0,
+        "truncated": false
+      },
+      {
+        "doc_path": "Corpus-Chunks800/large-language-models__2005.14165__language-models-are-few-shot-learners__k145.md",
+        "chars": 0,
+        "truncated": false
+      },
+      {
+        "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md",
+        "chars": 20000,
+        "truncated": true
+      },
+      {
+        "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+        "chars": 13709,
+        "truncated": true
+      },
+      {
+        "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+        "chars": 20000,
+        "truncated": true
+      }
+    ],
+    "peek_docs": null,
+    "expansion_docs": null,
+    "expansion_upgraded": null
+  },
+  "judge": {
+    "abs_kept": [
+      2,
+      3,
+      4
+    ],
+    "relative_cut": 0.841,
+    "global_best": 0.941,
+    "floor_applied": false,
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 26,
+    "total_segments": 26
+  },
+  "gold": {
+    "judged": false,
+    "kept": false,
+    "best": null
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md",
+    "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+    "e2e-demo-0923-022632/平台架构总览.md"
+  ],
+  "evidence_pack": "[计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md]\n# large-language-models__2005.14165__language-models-are-few-shot-learners.md.md（第 6/13 部分）\n章节: Language Models are Few-Shot Learners > 7 Related Work\n## 7 Related Work\n\n\nSeveral lines of work have focused on increasing parameter count and/or computation in language models as a means to improve generative or task performance. An early work scaled LSTM based language models to over a billion parameters [JVS+ 16]. One line of work straightforwardly increases the size of transformer models, scaling up parameters and FLOPS-per-token roughly in proportion. Work in this vein has successively increased model size: 213 million parameters $[ \\mathrm { V } \\bar { \\mathrm { S } } \\mathrm { P } ^ { + } 1 7 ]$ in the original paper, 300 million parameters [DCLT18], 1.5 billion parameters [RWC+19], 8 billion parameters $[ \\mathrm { S P P ^ { + } 1 9 } ]$ , 11 billion parameters $[ \\mathrm { R S R ^ { + } } 1 9 ]$ , and most recently 17 billion parameters [Tur20]. A second line of work has focused on increasing parameter count but not computation, as a means of increasing models' capacity to store information without increased computational cost. These approaches rely on the conditional computation framework [BLC13] and specifically, the mixture-of-experts method $[ \\bar { \\mathrm { S M M ^ { + } 1 7 } } ]$ has been used to produce 100 billion parameter models and more recently 50 billion parameter translation models [AJF19], though only a small fraction of the parameters are actually used on each forward pass. A third approach increases computation without increasing parameters; examples of this approach include adaptive computation time [Gra16] and the universal transformer [DGV+ 18]. Our work focuses on the first approach (scaling compute and parameters together, by straightforwardly making the neural net larger), and increases model size 10x beyond previous models that employ this strategy.\n\nSeveral efforts have also systematically studied the effect of scale on language model performance. $\\mathrm { [ K M H ^ { + } 2 0 } .$ RRBS19, LWS+20, HNA+17], find a smooth power-law trend in loss as autoregressive language models are scaled up. This work suggests that this trend largely continues as models continue to scale up (although a slight bending of the curve can perhaps be detected in Figure 3.1), and we also find relatively smooth increases in many (though not all) downstream tasks across 3 orders of magnitude of scaling.\n\nAnother line of work goes in the opposite dir\n\n[生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md]\n# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 5/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n# MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n\n\nSupplementary Material\n\n## Contents\n\n\nA Code 16   \nB. MultiverSeg Method 16   \nB.1. Architecture 16   \nC Data 16   \nC.1. Datasets . . 16   \nC.2. Synthetic Task Generation . . . . 17   \nC.3. Data Augmentation 17   \nD. Experimental Setup 17   \nD.1. Baselines 17   \nD.2 Inference 17   \nD.3. Metrics 18   \nE Experiment 1: Evaluation 18   \nE.1. Setup . . . 18   \nE.2. Interactions per Image as a Function of   \nDataset Size . . . 20   \nE.3. Bootstrapping In-Context Segmentation . . 21   \nE.4. Comparison to Few-Shot Fine-Tuning . . 22   \nE.5. Resolution Sensitivity Analysis 22   \nF. Experiment 2: Analysis 24   \nF.1. In-Context Segmentation . . 24   \nF.2. Interactive Segmentation In Context . . . 24   \nF.3. Inference Runtime and Memory Usage . . . 24\n\n## A. Code\n\n\nCode and pre-trained weights are available at https://multiverseg.csail.mit.edu.\n\n## B. MultiverSeg Method\n\n## B.1. Architecture\n\n\nCrossConv. We implement the CrossConvolutional layer slightly differently from [16]. To avoid duplicate convolutions on the context features $v _ { i }$ in Eq. 2, we partition weights $\\theta _ { z }$ channel-wise into $\\{ \\theta _ { z _ { 1 } } , \\theta _ { z _ { 2 } } \\}$ and implement $z _ { i } = L N ( A ( \\mathrm { C o n v } ( q , \\theta _ { z _ { 1 } } ) + \\mathrm { C o n v } ( v _ { i } , \\theta _ { z _ { 2 } } ) ) )$ where $q$ is the target feature map and $v _ { i }$ is the feature map corresponding to context set entry i. We zero out the bias terms in $\\mathbf { C o n v } ( \\cdot , \\theta _ { z _ { 2 } } )$ such that the computation is equivalent to $z _ { i } = L N ( A ( \\mathbf { C o n v } ( q | | v _ { i } ; \\theta _ { z } ) ) )$ 1\n\nNetwork. We implement $f _ { \\theta } ( \\cdot )$ using an encoder with 5 encoder CrossBlock stages and a decoder with 4 CrossBlock stages. Each stage has 256 output features and LeakyReLU non-linearities after each convolution. We use bilinear interpolation for upsampling and downsampling.\n\nThe CrossBlock mechanism requires at least one context set entry. If the context set is empty, we use a dummy context set entry consisting of an image and segmentation with uniform value of 0.5.\n\n## C. Data\n\n## C.1. Datasets\n\n\nWe build on large dataset gath\n\n[e2e-demo-0923-022632/平台架构总览.md]\n# Agentic Knowledge Base — Architecture & Development Guide\n\n> Version 2.3 · Last reviewed: 2026-08-05\n\nThis document describes the **current, implemented** architecture of the RAG Knowledge Platform: service topology, the five-layer storage model, the 94-tool MCP surface, the QDCVR retrieval method, the experience lifecycle, the SOUL persona system, and the conventions every new change must follow. For command-level usage see `README.md`; for the trigger contract see `CLAUDE.md`.\n\n---\n\n## 1. Service Topology\n\nThree long-running services plus one MCP layer, all configured from a single root `config.yml` (backend-only keys live in `backend/config.yml`):\n\n```\nBrowser ──(fetch)──▶ Nuxt 3 Web UI (proxy layer)        dev 6789 / prod 3000\n                         │  server-to-server (trust_env=False)\n                         ▼\n                     FastAPI Backend + MinerU OCR         dev 8765 / prod 8001\n                         │  subprocess (Job Object / prctl / pgrp)\n                         ▼\n                     MinerU OCR engine (ephemeral port)\n\nClaude Code / Agent ──(MCP stdio)──▶ kb-mcp server        94 tools\n                         │  HTTP → web proxy / backend  +  direct file reads\n                         ▼\n                     Nuxt / Backend  (writes)  ·  .tree-fs.json / .knowledge-base.yml (reads)\n```\n\n- **Web (Nuxt 3)** is a server-to-server proxy: the browser never hits FastAPI directly (no CORS). It also owns the on-disk KB store (`.tree-fs.json` + `.knowledge-base.yml`).\n- **Backend (FastAPI)** owns parse scheduling, MinerU subprocess lifecycle, vector index (ChromaDB + BGE-M3), Neo4j graph, experience store, SOUL training/evaluation, and the meditation scheduler.\n- **kb-mcp (FastMCP)** exposes **94 tools** over stdio; `server.py` contains zero HTTP code — all HTTP lives in `kb_client/client.py`. Parse/graph/reindex/training tools are **non-blocking**: they register a background task and return a `task_id` immediately.\n- **MinerU** runs as a hidden subprocess on an **ephemeral port** (`MineruApiManager(port=None)` auto-picks a free port). Never hardcode a port — read `manager.port` / `manager.api_url`.\n\n---\n\n## 2. The 94 MCP Tools\n\nAll tools are MCP-native (`mcp__kb-mcp__*`). Category breakdown (counts verified from `server.py`):\n\n| Category | Count | Highlights |\n|---|:---:|---|\n| Health / project lifecycle | 4 | `backend_status` · `kb_project_status` · `kb_project_start` · `kb_project_update` |\n| KB CRUD | 4 | `kb_list` · `kb_create` · `kb_u"
+}

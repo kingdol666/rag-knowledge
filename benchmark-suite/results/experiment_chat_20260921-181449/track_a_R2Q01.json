@@ -1,0 +1,176 @@
+{
+ "track": "a",
+ "question": "Compared with prior Multi-Agent Transformer (MAT) models, what aspect of the agents' decision process does AOAD-MAT explicitly model?",
+ "answer": "I have the complete answer with direct source evidence.\n\n## Answer\n\n**AOAD-MAT explicitly models the *order in which agents make their action decisions* — i.e., the optimal sequence/ordering of agent actions (Agent Order of Action Decisions).**\n\n### Evidence from the source\n\nThe paper is *\"AOAD-MAT: Transformer-based Multi-Agent Deep Reinforcement Learning Model considering Agents' Order of Action Decisions\"* by Shota Takayama and Katsuhide Fujita (Tokyo University of Agriculture and Technology), arXiv 2510.13343.\n\n**The gap in prior MAT models (Abstract):**\n> \"Recently, MARL models, such as the Multi-Agent Transformer (MAT) and ACtion dEpendent deep Q-learning (ACE), have significantly improved performance by leveraging sequential decision-making processes. **Although these models can enhance performance, they do not explicitly consider the importance of the order in which agents make decisions.**\"\n\n**What AOAD-MAT adds (Abstract / Section 1):**\n> \"The proposed model explicitly incorporates the **sequence of action decisions** into the learning process, allowing the model to learn and predict the **optimal order of agent actions**... we introduce a novel MARL architecture that cooperates with a **subtask focused on predicting the next agent to act**, integrated into a Proximal Policy Optimization based loss function.\"\n\n**Mechanism (Section 4.1 — Sequential Action Decision Order Prediction):**\nThe decoder outputs actions serially, but the latent observation representations are reordered/permuted (via a swap function γ) according to a predicted order sequence. A dual prediction mechanism predicts both **(a) the next agent to act** (discrete) and **(b) that agent's action** (discrete or continuous).\n\n**Why it matters (Section 5 discussion):**\n> \"The Multi-Agent Advantage Decomposition used in previous approaches (like MAT) calculated inter-agent advantage differences **in a fixed order**. AOAD-MAT's **dynamic ordering** allows for a more flexible assessment of each agent's contribution, thereby enabling more adaptive and efficient exploration strategies.\"\n\nSo, in contrast to MAT (which treats multi-agent decision-making as sequence generation but uses a *fixed* agent order) and ACE (which introduces bidirectional action dependency), **AOAD-MAT explicitly models and learns the sequential order of agents' action decisions as an optimizable subtask**, jointly trained with the action policy under a PPO-based loss.\n\n### Sources\n- **KB:** 计算机与人工智能 (`b1199132-e4d4-4305-8c2e-82dc1753b0ba`)\n  - `artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md` — Abstract, §1 Introduction, §3.3, §4.1\n  - `artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md` — §5 Discussion (dynamic vs. fixed order), §6 Conclusion\n- **Mirror copy:** Corpus-Chunks800 (`0942f1a6-d81b-413b-a60b-b994680dcaac`), chunks k00/k02/k17\n\n*Retrieved via `kb_search_vector` + `kb_search_two_stage` (top score 0.757), verified by full-text read with `kb_doc_read` / content-match gate.*",
+ "is_error": false,
+ "latency_s": 79.3,
+ "sdk_duration_ms": 75251,
+ "num_turns": 10,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_get_documents"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_get_documents"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__backend_status",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "AOAD-MAT Multi-Agent Transformer decision process agents"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "AOAD-MAT Multi-Agent Transformer"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+    "doc_path": "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k02.md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md"
+   }
+  }
+ ],
+ "tool_call_count": 9,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 103864,
+  "output": 1759,
+  "cache_read": 212864,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.669727,
+ "timeline": [
+  {
+   "t": 4.08,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 5.92,
+   "event": "text",
+   "detail": "96"
+  },
+  {
+   "t": 5.93,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 29.13,
+   "event": "text",
+   "detail": "62"
+  },
+  {
+   "t": 29.13,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 32.17,
+   "event": "text",
+   "detail": "59"
+  },
+  {
+   "t": 32.17,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__backend_status"
+  },
+  {
+   "t": 32.17,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 36.68,
+   "event": "text",
+   "detail": "49"
+  },
+  {
+   "t": 36.69,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 36.69,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 52.67,
+   "event": "text",
+   "detail": "81"
+  },
+  {
+   "t": 52.68,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 52.69,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 55.38,
+   "event": "text",
+   "detail": "122"
+  },
+  {
+   "t": 55.4,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 79.23,
+   "event": "text",
+   "detail": "3073"
+  },
+  {
+   "t": 79.29,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information on AOAD-MAT and Multi-Agent Transformer models.\n\n",
+  "I'll wait for the kb-mcp server to connect and search again.\n\n",
+  "Now let me check the back-end status and start searching.\n\n",
+  "I'll search for AOAD-MAT in the knowledge base.\n\n",
+  "Found the source document. Let me read the full text to get the precise answer.\n\n",
+  "I have the core answer. Let me confirm the section on how prior MAT models differ (the \"order of action decisions\" gap).\n\n",
+  "I have the complete answer with direct source evidence.\n\n## Answer\n\n**AOAD-MAT explicitly models the *order in which agents make their action decisions* — i.e., the optimal sequence/ordering of agent actions (Agent Order of Action Decisions).**\n\n### Evidence from the source\n\nThe paper is *\"AOAD-MAT: Transformer-based Multi-Agent Deep Reinforcement Learning Model considering Agents' Order of Action Decisions\"* by Shota Takayama and Katsuhide Fujita (Tokyo University of Agriculture and Technology), arXiv 2510.13343.\n\n**The gap in prior MAT models (Abstract):**\n> \"Recently, MARL models, such as the Multi-Agent Transformer (MAT) and ACtion dEpendent deep Q-learning (ACE), have significantly improved performance by leveraging sequential decision-making processes. **Although these models can enhance performance, they do not explicitly consider the importance of the order in which agents make decisions.**\"\n\n**What AOAD-MAT adds (Abstract / Section 1):**\n> \"The proposed model explicitly incorporates the **sequence of action decisions** into the learning process, allowing the model to learn and predict the **optimal order of agent actions**... we introduce a novel MARL architecture that cooperates with a **subtask focused on predicting the next agent to act**, integrated into a Proximal Policy Optimization based loss function.\"\n\n**Mechanism (Section 4.1 — Sequential Action Decision Order Prediction):**\nThe decoder outputs actions serially, but the latent observation representations are reordered/permuted (via a swap function γ) according to a predicted order sequence. A dual prediction mechanism predicts both **(a) the next agent to act** (discrete) and **(b) that agent's action** (discrete or continuous).\n\n**Why it matters (Section 5 discussion):**\n> \"The Multi-Agent Advantage Decomposition used in previous approaches (like MAT) calculated inter-agent advantage differences **in a fixed order**. AOAD-MAT's **dynamic ordering** allows for a more flexible assessment of each agent's contribution, thereby enabling more adaptive and efficient exploration strategies.\"\n\nSo, in contrast to MAT (which treats multi-agent decision-making as sequence generation but uses a *fixed* agent order) and ACE (which introduces bidirectional action dependency), **AOAD-MAT explicitly models and learns the sequential order of agents' action decisions as an optimizable subtask**, jointly trained with the action policy under a PPO-based loss.\n\n### Sources\n- **KB:** 计算机与人工智能 (`b1199132-e4d4-4305-8c2e-82dc1753b0ba`)\n  - `artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md` — Abstract, §1 Introduction, §3.3, §4.1\n  - `artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md` — §5 Discussion (dynamic vs. fixed order), §6 Conclusion\n- **Mirror copy:** Corpus-Chunks800 (`0942f1a6-d81b-413b-a60b-b994680dcaac`), chunks k00/k02/k17\n\n*Retrieved via `kb_search_vector` + `kb_search_two_stage` (top score 0.757), verified by full-text read with `kb_doc_read` / content-match gate.*"
+ ],
+ "qid": "R2Q01",
+ "via": "chat"
+}

@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "reply": "Verified — the document states CoRoT's objectives verbatim in §1. Answer below.\n\n---\n\n## CoRoT 卫星的科学目标\n\n检索到直接证据（P0 强证据），来源为一篇 CoRoT 系外行星计划的正式论文。\n\n### 科学目标（两个并列核心目标）\n\n论文 §1 Introduction 原文：\n\n> \"CoRoT has been designed with two distinct scientific objectives which both require continuous observations and ultra-high precision relative stellar photometry: one is **the detection of extrasolar planets by the transit method**; the second is **the study of stellar interiors by asteroseismology** (Baglin et al. 2009).\"\n\n即：\n\n1. **用凌星法（transit method）探测系外行星**\n2. **用星震学（asteroseismology）研究恒星内部结构**\n\n两者的共同技术前提是**连续观测** + **超高精度相对测光**（ultra-high precision relative stellar photometry）。\n\n### 附带产出的科学价值\n\n论文进一步说明：\n\n> \"the long duration of the observation periods together with the exquisite photometric precision allow number of stellar physics studies.\"\n\n即长观测周期与极高测光精度**额外**催生了一系列恒星物理研究。\n\n### 任务背景（同源信息）\n\n- CoRoT 是**首个从太空搜寻行星的仪器**（\"the first instrument hunting for planets from space\"）\n- 科学观测于 **2007 年 2 月 2 日**开始\n- 任务原定 3 年，后延长 3 年，至 **2013 年 3 月**\n\n### 证据可信度\n\n| 项 | 值 |\n|---|---|\n| 可信度 | **P0 强证据**（原文直接陈述，非推断） |\n| 命中文献 | Deleuil, Moutou, Bordé & the CoRoT exoplanet science team, *\"The CoRoT Exoplanet program: status & results\"*（arXiv:1105.1887） |\n| doc_path | `自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md` |\n| kb_id | `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`（自然科学与地球科学） |\n| 向量得分 | 0.6697（Laya 引擎片段分 0.726–0.854，全部判 yes） |\n\n### 检索盲点声明\n\n- 库中 CoRoT 来源**仅此一篇**（同一论文在 Corpus-Chunks800 KB 另有一份 800 字符切分副本 `astronomy__1105.1887__...__k00/k03/k05/k09.md`；该 KB 的 Laya 正文抓取失败，但其内容与上述全文副本逐字一致，事实已被覆盖）。\n- **本库无法回答** CoRoT 与其他星震学任务（Kepler / K2 / SOHO 等）的对比类问题——库内无相应文献。\n- 其余向量命中（Voyager-1、医学影像、BERT、经济学等约 37 篇文档）均为**偶然词面命中**（共享 \"objectives / mission / satellite / search\" 等通用词），**不含 \"CoRoT\" 字符串**，已作为噪声标注并排除，未参与作答。\n\n---\n\n## Result\n\n**任务：** 检索知识库回答「CoRoT 卫星的科学目标？」— 按 QDCVR 流程执行（4 条改写查询变体 × top_k=30 宽网 → 阈值 0.35 + per-doc 去重 → 39 候选文档 → kb_laya_judge 引用模式判定 93 片段 → 2 篇幸存 → kb_doc_read 抽读验证原文）。\n\n**最终答案：** CoRoT 卫星有**两个并列的科学目标**，均依赖连续观测与超高精度相对测光：\n1. **凌星法探测系外行星**\n2. **星震学研究恒星内部结构**\n\n（附带产出：得益于长观测周期与高测光精度，还支撑了大量恒星物理研究。）\n\n**证据出处：** `1e6199ea-f380-44e2-94fc-d431f0f9bb6b` | `自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md` | 向量 0.6697 / Laya 0.726–0.854 | **P0 直接证据**\n\n**检索统计：** SCANNED queries=4 candidates=39 judged_segments=93 survivors=2 fallback=none\n**盲点：** 库内 CoRoT 仅此一源（另一份为同论文切分副本，其 KB 的 Laya 抓取失败但内容等价）；无其他星震学任务文献，对比类问题无法作答。",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "tools_used": [
+    "Skill",
+    "mcp__fetch__fetch",
+    "mcp__fetch__fetch",
+    "mcp__kb-mcp__kb_project_status",
+    "Agent",
+    "mcp__kb-mcp__kb_search_vector",
+    "mcp__kb-mcp__kb_search_vector",
+    "mcp__kb-mcp__kb_search_vector",
+    "mcp__kb-mcp__kb_search_vector",
+    "mcp__kb-mcp__kb_laya_judge",
+    "mcp__kb-mcp__kb_laya_judge",
+    "mcp__kb-mcp__kb_laya_judge",
+    "Read",
+    "mcp__kb-mcp__kb_laya_judge",
+    "mcp__kb-mcp__kb_doc_read"
+  ],
+  "session_id": "890e2413-1225-40f9-84f8-087f6b6c7ffe",
+  "duration_ms": 393503,
+  "total_cost_usd": 2.6729222,
+  "num_turns": 8,
+  "stop_reason": "end_turn"
+}

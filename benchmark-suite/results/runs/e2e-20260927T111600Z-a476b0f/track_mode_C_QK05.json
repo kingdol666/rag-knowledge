@@ -1,0 +1,48 @@
+{
+ "qid": "QK05",
+ "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient to answer this question. The retrieved passage is from *Pride and Prejudice* (part 11/26) and concerns Jane Bennet's disappointment over Miss Bingley's changed behavior and her letter to Elizabeth — it contains nothing about trap-cropping, trap plants, field allocation, or attractiveness ratios. No source in the provided evidence addresses the trap-cropping optimization framework, so I cannot state what share of the field should be allocated to trap plants at 5–25× attractiveness.\n\nSource used: pride_and_prejudice (part 11/26) — consulted, irrelevant to the question.",
+ "is_error": false,
+ "latency_s": 57.2,
+ "retrieval_s": 51.8,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38361,
+  "output": 376,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.201205,
+ "ranked": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/thinking-style.md",
+  "soul-demo-qa/thinking-style.md",
+  "soul-e2e-tester-024115/thinking-style.md",
+  "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+  "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+  "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+  "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md"
+ ],
+ "evidence_sources": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 15,
+  "b_docs": 47,
+  "consensus": 4,
+  "merged": 12
+ }
+}

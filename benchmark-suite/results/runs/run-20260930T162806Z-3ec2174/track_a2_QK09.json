@@ -1,0 +1,47 @@
+{
+ "answer": "KB_TOOLS_NOT_READY",
+ "is_error": false,
+ "latency_s": 18.6,
+ "sdk_duration_ms": 17790,
+ "num_turns": 1,
+ "tool_calls": [],
+ "tool_call_count": 0,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 9308,
+  "output": 833,
+  "cache_read": 38208,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.087249,
+ "timeline": [
+  {
+   "t": 0.9,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 18.6,
+   "event": "text",
+   "detail": "18"
+  },
+  {
+   "t": 18.6,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "KB_TOOLS_NOT_READY"
+ ],
+ "track": "a2",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "QK09",
+ "via": "chat",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

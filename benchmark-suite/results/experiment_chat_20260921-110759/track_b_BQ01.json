@@ -1,0 +1,138 @@
+{
+ "track": "b",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "**Answer** (source: `artificial-intelligence__1706.03762__attention-is-all-you-need.md`):\n\nAttention maps a query and a set of key–value pairs to an output, computed as a weighted sum of the values where each weight is a compatibility score between the query and its key; the Transformer's \"Scaled Dot-Product Attention\" computes `Attention(Q,K,V) = softmax(QKᵀ/√d_k)V`, scaling by `1/√d_k` to keep dot products from growing large and pushing the softmax into regions with extremely small gradients (§3.2.1). Rather than one attention function, Multi-Head Attention linearly projects Q, K, V `h` times into lower-dimensional subspaces, applies attention in parallel, then concatenates and re-projects the results (§3.2.2). It replaces recurrence because a self-attention layer connects all positions with a constant number of sequentially executed operations, whereas a recurrent layer requires O(n) sequential operations — giving far more parallelizable computation and a maximal path length of O(1) between any two positions, which makes long-range dependencies much easier to learn. It replaces convolution because a single convolutional layer with kernel k < n cannot connect all input–output position pairs, requiring a stack of O(n/k) contiguous or O(log_k(n)) dilated layers that lengthen those paths; with k = n even a separable convolution costs no less than a self-attention plus point-wise feed-forward layer (§4, Table 1).",
+ "is_error": false,
+ "latency_s": 94.5,
+ "sdk_duration_ms": 91660,
+ "num_turns": 8,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "self-attention|scaled dot-product|Attention Is All You Need"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "recurrence|convolution|scaled dot-product|Scaled Dot-Product|paralleliz|sequence of operations|path length",
+    "path": "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\artificial-intelligence__1706.03762__attenti"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\artificial-intelligence__1706.03762__attenti"
+   }
+  }
+ ],
+ "tool_call_count": 7,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 116045,
+  "output": 1029,
+  "cache_read": 90368,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.651134,
+ "timeline": [
+  {
+   "t": 2.86,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 28.02,
+   "event": "text",
+   "detail": "61"
+  },
+  {
+   "t": 28.34,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 28.35,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 32.73,
+   "event": "text",
+   "detail": "67"
+  },
+  {
+   "t": 32.73,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 46.24,
+   "event": "text",
+   "detail": "130"
+  },
+  {
+   "t": 46.24,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 46.24,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 62.62,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 62.62,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 94.47,
+   "event": "text",
+   "detail": "1434"
+  },
+  {
+   "t": 94.49,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll start by listing the files available in the directory.\n\n",
+  "The primary source is present. Let me read the relevant passages.\n\n",
+  "Several key lines were elided. Let me read the section 4 \"Why Self-Attention\" reasoning and the multi-head description directly.\n\n",
+  "**Answer** (source: `artificial-intelligence__1706.03762__attention-is-all-you-need.md`):\n\nAttention maps a query and a set of key–value pairs to an output, computed as a weighted sum of the values where each weight is a compatibility score between the query and its key; the Transformer's \"Scaled Dot-Product Attention\" computes `Attention(Q,K,V) = softmax(QKᵀ/√d_k)V`, scaling by `1/√d_k` to keep dot products from growing large and pushing the softmax into regions with extremely small gradients (§3.2.1). Rather than one attention function, Multi-Head Attention linearly projects Q, K, V `h` times into lower-dimensional subspaces, applies attention in parallel, then concatenates and re-projects the results (§3.2.2). It replaces recurrence because a self-attention layer connects all positions with a constant number of sequentially executed operations, whereas a recurrent layer requires O(n) sequential operations — giving far more parallelizable computation and a maximal path length of O(1) between any two positions, which makes long-range dependencies much easier to learn. It replaces convolution because a single convolutional layer with kernel k < n cannot connect all input–output position pairs, requiring a stack of O(n/k) contiguous or O(log_k(n)) dilated layers that lengthen those paths; with k = n even a separable convolution costs no less than a self-attention plus point-wise feed-forward layer (§4, Table 1)."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

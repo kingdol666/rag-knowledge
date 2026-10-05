@@ -1,0 +1,303 @@
+{
+  "status": "ok",
+  "query": "What is MameLoshnLM and what parameter scale does it have?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 21,
+    "vector_dedup_docs": 17,
+    "recall_seconds": 3.6,
+    "docs_read": 15,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k13.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 6.8
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9015,
+    "scored_segments": 95,
+    "total_segments": 95,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+      "vector_score": 0.5682450532913208,
+      "judge_score": 0.9015,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "vector_score": 0.47175800800323486,
+      "judge_score": 0.7858,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.41512978076934814,
+      "judge_score": 0.7788,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.3915775418281555,
+      "judge_score": 0.7709,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "vector_score": 0.4177454710006714,
+      "judge_score": 0.7497,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.36520683765411377,
+      "judge_score": 0.6702,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "vector_score": 0.3827718496322632,
+      "judge_score": 0.6582,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "vector_score": 0.3897296190261841,
+      "judge_score": 0.6304,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "vector_score": 0.3897296190261841,
+      "judge_score": 0.6304,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "vector_score": 0.3897296190261841,
+      "judge_score": 0.6304,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+      "vector_score": 0.39130908250808716,
+      "judge_score": 0.5872,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4013195037841797,
+      "judge_score": 0.5334,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md",
+      "vector_score": 0.470430850982666,
+      "judge_score": 0.4373,
+      "kept": false
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+      "vector_score": 0.4019513726234436,
+      "judge_score": 0.408,
+      "kept": false
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+      "vector_score": 0.42154067754745483,
+      "judge_score": 0.4061,
+      "kept": false
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+      "name": "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+      "vector_score": 0.5682450532913208,
+      "judge_score": 0.9015,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "name": "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "vector_score": 0.47175800800323486,
+      "judge_score": 0.7858,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.41512978076934814,
+      "judge_score": 0.7788,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.3915775418281555,
+      "judge_score": 0.7709,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "name": "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "vector_score": 0.4177454710006714,
+      "judge_score": 0.7497,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.36520683765411377,
+      "judge_score": 0.6702,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "vector_score": 0.3827718496322632,
+      "judge_score": 0.6582,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.3897296190261841,
+      "judge_score": 0.6304,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.3897296190261841,
+      "judge_score": 0.6304,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.3897296190261841,
+      "judge_score": 0.6304,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+      "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+      "vector_score": 0.39130908250808716,
+      "judge_score": 0.5872,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4013195037841797,
+      "judge_score": 0.5334,
+      "truncated": false,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+    "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+    "soul-cs-library/memory-conventions.md",
+    "soul-e2e-tester-024115/memory-conventions.md",
+    "soul-demo-qa/memory-conventions.md",
+    "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md"
+  ],
+  "evidence_pack": "[计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md · vec=0.5682450532913208]\n# nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md（第 1/4 部分）\n章节: MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\n# MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\n\n\nUri Katz1 Omer Goldman² Tomasz Limisiewicz³\n\nReut Tsarfaty1,Noah A. Smith3,4,\n\n1Bar-Ilan University 2University of Cambridge\n\n3University of Washington 4Allen Institute for AI\n\n## Abstract\n\n\nWe present MAMELOSHNLM,1 the first open-source 8B-parameter language model built specifically for Yiddish. Despite Yiddish's rich textual tradition, its limited digital presence and the scarcity of reliable evaluation resources have constrained progress in Yiddish language modeling. Existing multilingual corpora and benchmarks are often poor proxies for the language, containing substantial amounts of noisy, machinetranslated, and misclassified text. We address these gaps by introducing Oytser, a high-quality Yiddish pretraining corpus that combines contemporary web-native sources with literary materials, and Kashes, a multi-task benchmark spanning translation, linguistic analysis, information extraction, and language understanding. Using these resources, we continue pretraining Llama 3.1 8B to obtain MAMELOSHNLM. Across the tasks in the benchmark, MAMELOSHNLM outperforms open baselines of similar scale. Our analyses show that these gains are not only quantitative: relative to general-purpose multilingual models, MAMELOSHNLM better captures language-defining lexical and morphological patterns, pointing to a broader failure mode of noisy web-scale multilingual data for lowresource languages. Our results provide both a foundation for Yiddish NLP and a practical template for language model development in historically rich but digitally underrepresented languages.\n\n## 1 Introduction\n\n\nDespite swift advancements in multilingual language modeling, large language models' (LLMs) benefits remain highly uneven across languages (Wu et al., 2025). Performance is typically strongest for languages with extensive digital presence, large quantities of highquality text, and mature evaluation resources, while low-resource languages remain substantially underserved. Yiddish is a particularly interesting case. Historically a Germanic language written primarily in Hebrew script, it also includes a substantial Hebrew and Aramaic lexical layer and reflects long-standing contact with Slavic languages. Although it has a long and rich literary history, its contemporary online presence is l\n\n[生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md · vec=0.47175800800323486]\n# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 1/8 部分）\n章节: Large Language Models Encode Clinical Knowledge\n# Large Language Models Encode Clinical Knowledge\n\n\nKaran Singhal\\*,1, Shekoofeh Azizi\\*,1, Tao Tu\\*,1,\n\nS. Sara Mahdavi1, Jason Wei¹, Hyung Won Chung1, Nathan Scales1, Ajay Tanwani1, Heather Cole-Lewis1, Stephen Pfohl1, Perry Payne1, Martin Seneviratne1, Paul Gamble1, Chris Kelly¹, Nathaneal Schärli¹, Aakanksha Chowdhery1, Philip Mansfield¹, Blaise Agüera y Arcas1, Dale Webster¹, Greg S. Corrado¹, Yossi Matias¹, Katherine Chou¹, Juraj Gottweis¹, Nenad Tomasev2, Yun Liu¹, Alvin Rajkomar1, Joelle Barral¹, Christopher Semturs1, Alan Karthikesalingam†,1 and Vivek Natarajan†,1\n\n1Google Research, 2DeepMind\n\nLarge language models (LLMs) have demonstrated impressive capabilities in natural language understanding and generation, but the quality bar for medical and clinical applications is high. Today, attempts to assess models' clinical knowledge typically rely on automated evaluations on limited benchmarks. There is no standard to evaluate model predictions and reasoning across a breadth of tasks. To address this, we present MultiMedQA, a benchmark combining six existing open question answering datasets spanning professional medical exams, research, and consumer queries; and HealthSearchQA, a new free-response dataset of medical questions searched online. We propose a framework for human evaluation of model answers along multiple axes including factuality, precision, possible harm, and bias.\n\nIn addition, we evaluate PaLM (a 540-billion parameter LLM) and its instruction-tuned variant, Flan-PaLM, on MultiMedQA. Using a combination of prompting strategies, Flan-PaLM achieves state-of-the-art accuracy on every MultiMedQA multiple-choice dataset (MedQA, MedMCQA, PubMedQA, MMLU clinical topics), including 67.6% accuracy on MedQA (US Medical License Exam questions), surpassing prior state-of-the-art by over 17%. However, human evaluation reveals key gaps in Flan-PaLM responses. To resolve this we introduce instruction prompt tuning, a parameter-efficient approach for aligning LLMs to new domains using a few exemplars. The resulting model, Med-PaLM, performs encouragingly, but remains inferior to clinicians.\n\nWe show that comprehension, recall of knowledge, and medical reasoning improve with model scale and instruction prompt tuning, suggesting the potential utility of LLMs in medicine. Our human evaluations reveal importa\n\n[经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md · vec=0.41512978076934814]\n# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 1/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n# On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n\n\nNiko HAUZENBERGER, Michael PFARRHOFER and Anna STELZER\\*\n\nUniversity of Salzburg\n\nIn this paper, we investigate the effectiveness of conventional and unconventional monetary policy measures by the European Central Bank (ECB) conditional on the prevailing level of uncertainty. To obtain exogenous variation in central bank policy, we rely on high-frequency surprises in financial market data for the euro area (EA) around policy announcement dates. We trace the dynamic effects of shocks to the short-term policy rate, forward guidance and quantitative easing on several key macroeconomic and financial quantities alongside survey-based measures of expectations. For this purpose, we propose a Bayesian smooth-transition vector autoregression (ST-VAR). Our results suggest that transmission channels are impaired when uncertainty is elevated. While conventional monetary policy is less effective during such periods, and sometimes also forward guidance, quantitative easing measures seem to work comparatively well in uncertain times.\n\nJEL: C32, E32, E52, E58\n\nKEYWORDS: Euro area, monetary policy, Bayesian smooth-transition vector autoregression, hierarchical global-local shrinkage\n\n## 1. Introduction\n\n\nConventional and unconventional monetary policies are widely used tools adopted in central banks to stimulate slacking economies and counteract disinflationary pressures stemming from recessionary episodes and economic uncertainty.¹ Research measuring the effects and transmission channels of monetary policy to the real and financial sectors has produced a voluminous body of literature (see, among many others, Kashyap and Stein, 2000; Kuttner, 2001; Bernanke et al., 2005; Gürkaynak et al., 2005; Sims and Zha, 2006; Tenreyro and Thwaites, 2016; Altavilla et al., 2019; Jarociński and Karadi, 2020). In this paper, we contribute to this line of work by assessing non-linear features in monetary transmission for the euro area (EA). We consider economic uncertainty as a key determinant of the effectiveness of policy measures enacted by the European Central Bank (ECB), and discuss factors that may render policy interventions in uncertain times less effective.\n\nA change in the m\n\n[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.3915775418281555]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md · vec=0.4177454710006714]\n# quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu（第 3/4 部分）\n章节: Benchmarking Noisy Intermediate Scale Quantum Error Mitigation Strategies for Ground State Preparation of the HCl Molecule > V. GROUND STATE PREPARATION\n## V. GROUND STATE PREPARATION\n\n\nBefore proceeding onto the quantum error mitigation benchmark, there are a few additional considerations to resolve. Firstly, one must identify a suitable ansatz circuit that is sufficiently expressible to realize the desired ground state. Secondly, we discuss the mapping of our circuits onto physical qubits, in particular for dual-state purification since one should be mindful of the added qubit connectivity constraints arising from parity computation stored on the ancilla qubit. Thirdly, despite not implementing any shot reduction methods in this work, we still wish to distribute the shot budget in an informed manner, preferably tailored to each device; this is the final point of discussion before moving onto the results of our benchmark.\n\n## A. Ansatz Construction\n\n\nInitially, we tested the noncontextual projection ansatz [54] derived from the 316-term CCSD operator. The projection into the 3-qubit contextual subspace yields a 6- term excitation pool from which we identify 4 operators via qubit-ADAPT-VQE that permit chemical precision. Despite this dramatic reduction in circuit depth from the full UCCSD ansatz, the resulting noncontextual projection ansatz consists of 12 CNOT gates which we found to be prohibitive in achieving chemical precision.\n\nTo remedy this, we abandon chemical intuition in the name of hardware efficiency. It is already known that an arbitrary 3-qubit quantum state may be prepared on quantum hardware using at most 4 CNOT gates [64]. In fact, we found that only 2 CNOT gates are sufficient in constructing a 3-qubit ansatz circuit that is sufficiently expressible for our electronic structure problem, presented in Figure 9. In Figure 10 we present the outcome of a noiseless VQE simulation over this ansatz to illustrate its expressibility.\n\nq0, q2, q1, q3\n\n![](images/55aae72c59b699306ede951f10623c917b5196b134b4a3ad8f6cdfc9e2decfee.jpg)\n\n![](images/c50ae14d63526cc959f1152197ca63119a57b4256defe999c4378592dbdb5cd3.jpg)  \n(e) ZIZ  \n(a) IIZ\n\n![](images/3f672f301d4e398d15a2d91ecc638ada0e475bd88a5644ec5ef831158243a240.jpg)  \nFIG. 9: Hardware efficient HCl 3-qubit contextual subspace ansatz; the Y-rotation gates are decomposed into native gates as $R _ { y } = \\sqrt { X } R\n\n[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md · vec=0.36520683765411377]\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani<sup>∗</sup> Google Brain avaswani@google.com\n\nNoam Shazeer<sup>∗</sup> Google Brain noam@google.com\n\nNiki Parmar<sup>∗</sup> Google Research nikip@google.com\n\nJakob Uszkoreit<sup>∗</sup> Google Research usz@google.com\n\nLlion Jones<sup>∗</sup> Google Research llion@google.com\n\nAidan N. Gomez<sup>∗</sup> <sup>†</sup> University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser<sup>∗</sup> Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin<sup>∗</sup> <sup>‡</sup> illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden \n\n[经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md · vec=0.3827718496322632]\n# finance__1909.07748__stock-market-microstructure-inference-via-mu（第 1/4 部分）\n章节: Stock market microstructure inference via multi-agent reinforcement learning\n# Stock market microstructure inference via multi-agent reinforcement learning\n\n\nJohann Lussange\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nIvan Lazarevich\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives,\n\nÉcole Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nLobachevsky State University of Nizhny Novgorod,\n\n23 Gagarina av., 603950, Niznhy Novgorod, Russia.\n\nSacha Bourgeois-Gironde\n\nInstitut Jean-Nicod, UMR 8129, Département des Études Cognitives,\n\nÉcole Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nLaboratoire d'Économie Mathématique et de Microéconomie Appliquée, EA 4442,\n\nUniversité Paris II Panthéon-Assas, 4 rue Blaise Desgoffe, 75006, Paris, France.\n\nStefano Palminteri\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d’Ulm, 75005, Paris, France.\n\nBoris Gutkin\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nCenter for Cognition and Decision Making, Department of Psychology,\n\nNU University Higher School of Economics, 8 Myasnitskaya st., 101000, Moscow, Russia. (Dated: October 18, 2019)\n\nQuantitative finance has had a long tradition of a bottom-up approach to complex systems inference via multi-agent systems (MAS). These statistical tools are based on modelling agents trading via a centralised order book, in order to emulate complex and diverse market phenomena. These past financial models have all relied on so-called zero-intelligence agents, so that the crucial issues of agent information and learning, central to price formation and hence to all market activity, could not be properly assessed. In order to address this, we designed a next-generation MAS stock market simulator, in which each agent learns to trade autonomously via model-free reinforcement learning. We calibrate the model to real market data from the London Stock Exchange over the years 2007 to 2018, and show that it can faithfully reproduce key market microstructure metrics, such as various price autocorrelation scalars over multiple time intervals. Agent learning thus enables model em\n\n[soul-cs-library/memory-conventions.md · vec=0.3897296190261841]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[soul-e2e-tester-024115/memory-conventions.md · vec=0.3897296190261841]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[soul-demo-qa/memory-conventions.md · vec=0.3897296190261841]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md · vec=0.39130908250808716]\n# power-systems__2607.03098__integrating-power-electronics-based-energy-s（第 3/5 部分）\n章节: Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges > 4.2. Issues and Solutions of Dynamic Analysis for Large-scale DC-PEESs\n## 4.2. Issues and Solutions of Dynamic Analysis for Large-scale DC-PEESs\n\n\n(c) Distributed connections  \n![](images/2fb074c9cf82c926b898ad24be3e6095d51b55a60daf6eb816ef184a9d797f4d.jpg)\n\n(a) Series connections  \n(b) Parallel connections  \n![](images/afb24cc14ab29ffee73b2f819bad060b85ebed9449f39b44d05eb4f16d174a8b.jpg)  \nFig 12. DC power systems integrated with large-scale PEESs.\n\nAs shown in Fig. 12, there are three types of connections for PEESs integrating to DC power systems: series, parallel, and distributed. The series connections were illustrated and analyzed in [133,134], clarifying the dynamic relations between the DC voltage and current, and thus verifying the reliability of series connections. The parallel connections were analyzed in [135]. where the model is established, and thus the instability risks of this connection are clarified. For these scenarios, the dynamic analysis process is similar to that of a single PEES because the transfer function of PEESs can be linearly obtained with that of a single PEES [112]. Considering that PEESs in series and parallel connections are very similar, the transfer function of N series-connected PEESs can be written as NGpEEs(s), and that of N parallel-connected PEESs can be written as $G _ { P E E S } ( s ) / N ,$ with the transfer function of each PEES being GPEEs(s).\n\n![](images/eed743ee1e42f7b46157ad81fb4e05a154f74fdbc6c4689b45f1134be75f2a24.jpg)  \nFig 13. Illustration of process of dynamic reconfiguration.\n\nHowever, if the PEESs are connected to the DC power system in a distributed way and each PEES is different from another, the equivalent method introduced is invalid. In this case, the interaction variables between PEESs and the DC power system are multiple. Traditional dynamic analysis methods for stability mechanism analysis, e.g., impedance-based and damping-based analysis methods, are inapplicable, as these methods require the interaction variables between the PEESs and the DC power system to be single or equivalent to be single. Although instability risks can still be obtained by modal calculation and timedomain simulation, the reason why this instability occurs is difficult to clarify using the numerical c\n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.4013195037841797]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；no",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k13.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 23.8
+}

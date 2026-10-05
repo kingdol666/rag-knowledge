@@ -1,0 +1,17 @@
+{
+ "tag": "wb_lineB_submit",
+ "mode": "async",
+ "request_prompt": "逐步执行：1) 创建知识库「e2e-lnB2-注塑单元产线-r3」（描述：PY-888 注塑单元产线的调参与克重记录）。2) 入库文档（标题：PY-888 注塑单元产线调参记录），正文必须逐字使用下面给出的原文，不得改写或补充：\n# PY-888 注塑单元产线调参记录（r3 专用）\n\n线体：ln-E2B-r3；产品：PY-888 注塑单元。\n- 保压压力：58 bar\n- 成品克重：33.05 g",
+ "http": 200,
+ "wall_s": 0.0,
+ "response": {
+  "success": true,
+  "mode": "async",
+  "task_id": "kbt_mup441ug_11bcb9b5",
+  "status": "running",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "poll": "GET /api/kb/agent/tasks/kbt_mup441ug_11bcb9b5"
+ },
+ "task_id": "kbt_mup441ug_11bcb9b5"
+}

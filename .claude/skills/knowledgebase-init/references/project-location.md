@@ -81,10 +81,10 @@ $d = Get-Location; foreach ($i in 1..5) {
 If methods 1-3 fail:
 
 ```
-❓ 项目代码放在哪里？
-  • 路径已存在且是本项目 → 直接使用
-  • 路径不存在 → 自动 git clone
-  • 路径存在但非本项目 → clone 到子目录
+❓ Where is the project code located?
+  • Path exists and is this project → use it directly
+  • Path does not exist → auto git clone
+  • Path exists but is not this project → clone into a subdirectory
 > 
 ```
 
@@ -106,15 +106,15 @@ HTTPS_PROXY=http://127.0.0.1:7890 git clone https://github.com/kingdol666/rag-kn
 Always confirm with user after locating:
 
 ```
-✅ 已定位 RAG Knowledge Platform
-  📁 路径: <RAG_ROOT>  🏷️ 版本: <VERSION>  🔗 来源: <method>
-  是否继续？[Y/n]:
+✅ RAG Knowledge Platform located
+  📁 Path: <RAG_ROOT>  🏷️ Version: <VERSION>  🔗 Source: <method>
+  Continue? [Y/n]:
 ```
 
 ## Optional Code Update (existing RAG_ROOT only, not fresh clone)
 
 ```
-是否拉取最新代码？(git pull --ff-only) [Y/n，默认 Y]:
+Pull the latest code? (git pull --ff-only) [Y/n, default Y]:
 ```
 
 On dirty working tree → skip pull, warn user. **Never** `git reset --hard`.

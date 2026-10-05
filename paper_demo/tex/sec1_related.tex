@@ -1,0 +1,27 @@
+% sec1_related.tex — 2026-09-30 new section (user request: explicit related
+% work in the storyline). Compact by design; the page budget belongs to the
+% system and evaluation sections.
+\section{Related Work}
+\label{sec:related}
+
+\textbf{Packed-context and self-assessing RAG.} Where packed-context
+pipelines lose provenance at pack time and fail
+silently~\cite{rag-lewis}, \sys{} keeps retrieval and reading as
+separate, recorded steps. Self-RAG trains
+reflection tokens~\cite{selfrag} and Corrective RAG scores retrieved
+documents with a lightweight task-trained evaluator~\cite{crag}; \sys{}'s
+judgment layer instead reads full candidate content with a general
+locally hosted engine, and its unavailability stops the pipeline rather
+than degrading it.
+
+\textbf{Hierarchy, graphs, and abstention.} RAPTOR recurses summaries
+into a tree index~\cite{raptor}; DeepRead navigates document
+hierarchy~\cite{deepread}; GraphRAG derives community
+graphs~\cite{graphrag}. Those systems index a corpus someone else
+curated; here the organization loop creates the very hierarchy retrieval
+later walks, and one identifier set carries placement, reads, and
+citations. \sys{}
+also makes abstention structural --- a rung with no plausible candidate
+is a terminal, reportable state (measured in
+Section~\ref{sec:eval}) --- complementing generator-side calibration
+and selective answering~\cite{kamath}.

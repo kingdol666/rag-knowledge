@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{8}
+\begin{thebibliography}{11}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -66,6 +66,37 @@
 \href{https://doi.org/10.18653/v1/2024.findings-acl.137}{doi:\nolinkurl{10.18653/v1/2024.findings-acl.137}}
 
 
+\bibitem[Edge et~al\mbox{.}(2024)]%
+        {graphrag}
+\bibfield{author}{\bibinfo{person}{Darren Edge}, \bibinfo{person}{Ha Trinh},
+  \bibinfo{person}{Newman Cheng}, \bibinfo{person}{Joshua Bradley},
+  \bibinfo{person}{Alex Chao}, \bibinfo{person}{Apurva Mody},
+  \bibinfo{person}{Steven Truitt}, \bibinfo{person}{Dasha Metropolitansky},
+  \bibinfo{person}{Robert~Osazuwa Ness}, {and} \bibinfo{person}{Jonathan
+  Larson}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{From Local to Global: A {GraphRAG} Approach to
+  Query-Focused Summarization}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2404.16130}}
+  (\bibinfo{year}{2024}).
+\newblock
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2404.16130}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Kamath et~al\mbox{.}(2020)]%
+        {kamath}
+\bibfield{author}{\bibinfo{person}{Amita Kamath}, \bibinfo{person}{Robin Jia},
+  {and} \bibinfo{person}{Percy Liang}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Selective Question Answering under Domain Shift}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the 58th Annual Meeting of the
+  Association for Computational Linguistics ({ACL})}}.
+  \bibinfo{pages}{5684--5696}.
+\newblock
+\href{https://doi.org/10.18653/v1/2020.acl-main.503}{doi:\nolinkurl{10.18653/v1/2020.acl-main.503}}
+
+
 \bibitem[Lewis et~al\mbox{.}(2020)]%
         {rag-lewis}
 \bibfield{author}{\bibinfo{person}{Patrick Lewis}, \bibinfo{person}{Ethan
@@ -111,6 +142,30 @@
 \shownote{Accessed September 19, 2026; specification revision 2025-11-25}.
 
 
+\bibitem[Robertson and Zaragoza(2009)]%
+        {bm25}
+\bibfield{author}{\bibinfo{person}{Stephen Robertson} {and}
+  \bibinfo{person}{Hugo Zaragoza}.} \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{The Probabilistic Relevance Framework: {BM25} and
+  Beyond}.
+\newblock \bibinfo{journal}{\emph{Foundations and Trends in Information
+  Retrieval}} \bibinfo{volume}{3}, \bibinfo{number}{4} (\bibinfo{year}{2009}),
+  \bibinfo{pages}{333--389}.
+\newblock
+
+
+\bibitem[Sarthi et~al\mbox{.}(2024)]%
+        {raptor}
+\bibfield{author}{\bibinfo{person}{Parth Sarthi}, \bibinfo{person}{Salman
+  Abdullah}, \bibinfo{person}{Aditi Tuli}, \bibinfo{person}{Shubh Khanna},
+  \bibinfo{person}{Anna Goldie}, {and} \bibinfo{person}{Christopher~D.
+  Manning}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{RAPTOR}: Recursive Abstractive Processing for
+  Tree-Organized Retrieval}. In \bibinfo{booktitle}{\emph{The Twelfth
+  International Conference on Learning Representations ({ICLR})}}.
+\newblock
+
+
 \bibitem[Wang et~al\mbox{.}(2024)]%
         {mineru}
 \bibfield{author}{\bibinfo{person}{Bin Wang}, \bibinfo{person}{Chao Xu},
@@ -140,24 +195,6 @@
   (\bibinfo{year}{2024}).
 \newblock
 \href{https://doi.org/10.48550/arXiv.2401.15884}{doi:\nolinkurl{10.48550/arXiv.2401.15884}}
-
-
-\bibitem[Zhao et~al\mbox{.}(2025)]%
-        {cyberbot}
-\bibfield{author}{\bibinfo{person}{Chengshuai Zhao}, \bibinfo{person}{Riccardo
-  {De Maria}}, \bibinfo{person}{Tharindu Kumarage},
-  \bibinfo{person}{Kumar~Satvik Chaudhary}, \bibinfo{person}{Garima Agrawal},
-  \bibinfo{person}{Yiwen Li}, \bibinfo{person}{Jongchan Park},
-  \bibinfo{person}{Ying-Chih Chen}, \bibinfo{person}{Yuli Deng}, {and}
-  \bibinfo{person}{Huan Liu}.} \bibinfo{year}{2025}\natexlab{}.
-\newblock \showarticletitle{{CyberBOT}: Ontology-Grounded Retrieval Augmented
-  Generation for Reliable Cybersecurity Education}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the 34th ACM International
-  Conference on Information and Knowledge Management}}.
-  \bibinfo{publisher}{Association for Computing Machinery},
-  \bibinfo{pages}{6752--6756}.
-\newblock
-\href{https://doi.org/10.1145/3746252.3761478}{doi:\nolinkurl{10.1145/3746252.3761478}}
 
 
 \end{thebibliography}

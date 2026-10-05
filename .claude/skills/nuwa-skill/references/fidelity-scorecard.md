@@ -1,63 +1,63 @@
-# 保真度评分卡（Fidelity Scorecard）
+# Fidelity Scorecard
 
-> 人物Skill的出厂质检报告。回答一个问题：**这个skill跑起来到底像不像、诚不诚实？**
+> The factory QC report for a person Skill. It answers one question: **when this skill runs, does it actually resemble the person, and is it honest?**
 >
-> 背景：SkillLens论文（arXiv 2605.23899）实证，LLM自评skill质量准确率仅46.4%（接近随机）。所以评分卡的铁律是：**答题agent和评分agent必须是两个独立agent，绝不自评自证。**
+> Background: the SkillLens paper (arXiv 2605.23899) showed empirically that an LLM self-assessing skill quality is only 46.4% accurate (near random). So the iron rule of the scorecard is: **the answering agent and the scoring agent must be two independent agents — never self-assess and self-certify.**
 
-## 五个维度（总分100）
+## Five Dimensions (100 points total)
 
-| # | 维度 | 分值 | 测什么 | 怎么测 |
-|---|------|------|--------|--------|
-| 1 | 立场一致性 | 30 | 对人物公开表态过的问题，skill的回答方向是否一致 | 3道已知立场题，每题10分：方向和细节都对=10，方向对细节偏=6，立场偏离=0 |
-| 2 | 风格辨识度 | 20 | 不看名字，能否从表达认出是谁 | 评分agent盲读回答：句式、用词、类比方式是否有该人物的指纹，还是通用AI腔 |
-| 3 | 边缘诚实度 | 20 | 遇到人物没公开谈过的问题，是标注推断还是斩钉截铁编造 | 1道超范围题：明确声明「这是基于框架的推断」并保留不确定性=满分；伪装成本人观点断言=0 |
-| 4 | 来源透明度 | 15 | 调研底稿是否可溯源 | 静态检查skill文件：有调研来源section、一手来源占比>50%、关键引语有出处 |
-| 5 | 结构完整度 | 15 | 是否具备防漂移和诚实运行的完整结构 | 静态检查：心智模型3-7个、诚实边界≥3条、内在张力≥2对、反模式清单、角色扮演规则含防漂移约束 |
+| # | Dimension | Points | What it measures | How it is measured |
+|---|-----------|--------|------------------|--------------------|
+| 1 | Stance consistency | 30 | On questions the person has publicly taken a stance on, does the skill's answer direction agree | 3 known-stance questions, 10 points each: direction and details both right = 10, direction right but details off = 6, stance deviates = 0 |
+| 2 | Style recognizability | 20 | Without seeing the name, can you tell who it is from the expression alone | The scoring agent blind-reads the answers: do sentence patterns, word choice, and analogy style carry this person's fingerprint, or a generic-AI voice |
+| 3 | Edge-case honesty | 20 | On questions the person never publicly discussed, does it flag inference or fabricate with total confidence | 1 out-of-scope question: explicitly declares "this is an inference from the framework" and preserves uncertainty = full marks; passes it off as the person's own asserted view = 0 |
+| 4 | Source transparency | 15 | Is the research trail traceable | Static check of skill files: has a research-sources section, first-hand source ratio > 50%, key quotes carry attribution |
+| 5 | Structural completeness | 15 | Does it have the full structure for anti-drift and honest operation | Static check: 3-7 mental models, honest boundaries ≥ 3 items, internal tensions ≥ 2 pairs, anti-pattern list, role-play rules containing anti-drift constraints |
 
-## 等级
+## Grades
 
-| 等级 | 分数 | 含义 |
-|------|------|------|
-| A | ≥85 | 出厂即精品，可放心作为思维顾问使用 |
-| B | 70-84 | 合格，个别维度有已标注的薄弱点 |
-| C | 55-69 | 能用但需谨慎，诚实边界必读 |
-| D | <55 | 不建议使用，需回炉重蒸 |
+| Grade | Score | Meaning |
+|-------|-------|---------|
+| A | ≥85 | Excellent out of the box; safe to use as a thinking advisor |
+| B | 70-84 | Qualified; individual dimensions have known, annotated weak spots |
+| C | 55-69 | Usable with caution; read the honest boundaries first |
+| D | <55 | Not recommended; needs to go back and be re-distilled |
 
-## 执行流程
+## Execution Process
 
-1. **出题**：3道已知立场题（选人物公开反复表态过的话题）+ 1道超范围题 + 1道风格样本题
-2. **答题agent**：只读该skill目录内的文件，按skill激活人物作答，禁止联网
-3. **评分agent**：独立agent，拿到答题结果+本rubric+skill文件路径，对照人物真实公开立场逐维打分
-4. **产出**：skill目录下生成 `FIDELITY.md`，含分数表、每题判定理由、测试日期、答题/评分所用模型
+1. **Write the questions**: 3 known-stance questions (topics the person repeatedly and publicly took a stance on) + 1 out-of-scope question + 1 style-sample question
+2. **Answering agent**: reads only files inside that skill directory, answers with the persona activated per the skill, and is forbidden from going online
+3. **Scoring agent**: an independent agent; receives the answers + this rubric + the skill file paths, and scores each dimension against the person's real public stances
+4. **Output**: generate `FIDELITY.md` in the skill directory, containing the score table, per-question verdict rationale, test date, and the models used for answering/scoring
 
-## 结果格式（FIDELITY.md模板）
+## Result Format (FIDELITY.md template)
 
 ```markdown
-# 保真度评分卡
+# Fidelity Scorecard
 
-**总分：NN/100 · 等级X** | 测试日期：YYYY-MM-DD | 答题/评分：独立双agent
+**Total: NN/100 · Grade X** | Test date: YYYY-MM-DD | Answering/scoring: independent dual agents
 
-| 维度 | 得分 | 判定摘要 |
-|------|------|---------|
-| 立场一致性 | NN/30 | ... |
-| 风格辨识度 | NN/20 | ... |
-| 边缘诚实度 | NN/20 | ... |
-| 来源透明度 | NN/15 | ... |
-| 结构完整度 | NN/15 | ... |
+| Dimension | Score | Verdict summary |
+|-----------|-------|-----------------|
+| Stance consistency | NN/30 | ... |
+| Style recognizability | NN/20 | ... |
+| Edge-case honesty | NN/20 | ... |
+| Source transparency | NN/15 | ... |
+| Structural completeness | NN/15 | ... |
 
-## 测试记录
-[每题的问题、回答摘要、对照的真实立场、判定]
+## Test Records
+[Per question: the question, answer summary, the real stance it was checked against, verdict]
 ```
 
-## 与女娲流程的关系
+## Relationship to the Nüwa Workflow
 
-- 女娲Phase 4的通过标准是**内部质检**（生成过程中的关卡）
-- 评分卡是**对外报告**（生成完成后的出厂检验，任何人可复跑验证）
-- 社区贡献的人物skill申请收录进 [COMMUNITY.md](../COMMUNITY.md) 索引时，评分卡≥B是准入门槛（见 [CONTRIBUTING.md](../CONTRIBUTING.md)）
+- The pass criterion for Nüwa Phase 4 is **internal QC** (a gate during generation)
+- The scorecard is the **external report** (factory inspection after generation completes; anyone can re-run and verify)
+- When a community-contributed person skill applies for inclusion in the [COMMUNITY.md](../COMMUNITY.md) index, a scorecard grade ≥ B is the admission threshold (see [CONTRIBUTING.md](../CONTRIBUTING.md))
 
-## 反作弊
+## Anti-Cheating
 
-- 答题agent不知道自己在被测试什么维度
-- 评分agent不参与答题，只对照公开事实
-- 出题避开skill文件里已有的示例对话（防止背答案）
-- 重要结论建议2个评分agent独立跑，分差>10分时人工复核
+- The answering agent does not know which dimensions it is being tested on
+- The scoring agent does not participate in answering; it only checks against public facts
+- Questions avoid example dialogues already present in the skill files (to prevent memorized answers)
+- For important conclusions, running 2 independent scoring agents is recommended; if their scores differ by > 10 points, a human re-review is required

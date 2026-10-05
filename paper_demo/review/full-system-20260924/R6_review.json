@@ -1,0 +1,287 @@
+{
+  "seat": "R6",
+  "score": 7.5,
+  "verdict": "minor",
+  "summary": "Prose is already in strong shape: a distinctive, disciplined voice; parallel structures (three design decisions, three scenarios) that aid scanning; abstract numbers that reconcile exactly with Section 4 and the Figure 3 strip; and the parts (322) vs. papers (100) distinction never blurs. Remaining work is line-level: two 50+-word abstract sentences that split for free at their semicolons; a handful of agency/parallelism faults (Sections 2.3 and 4); scattered terminology drift (routing vs. organization skill, out-of-corpus vs. absent-paper, six vs. 6, direct vs. cited answer, score-five vs. score-5); and one submission-blocking layout fact: Section 4 body text spills roughly 13 lines onto page 5, against the stated 4-page body limit (only the GenAI disclosure and references may overflow). Every fix below is local wording; none touches the story or adds content.",
+  "strengths": [
+    "Parallel architecture carries the reader end to end: the three design decisions in Section 1 map one-to-one onto the three demo scenarios and the three-mode results, and the abstract's scenario triad matches Section 3's paragraph headings verbatim.",
+    "The parts/documents distinction is maintained everywhere: 322 stored parts vs. 100 papers never blur, and the parenthetical '(35 near-pairs are parts of the same paper)' pre-empts the obvious misreading.",
+    "Every number in the abstract reconciles with Section 4 and the Figure 3 bottom strip (9/10 grounded, 10/10 bare-agent location, 6/10 keyword verification, 7--4--1 citation split, 113 s / $0.49 cost).",
+    "Typography discipline is high: non-breaking ties before every \\ref, en-dashes in all ranges (0--8, 7--4--1, November 9--11), and consistent hyphenation of content-guided, word-boundary, keyword-verified.",
+    "Limitations are stated plainly and memorably ('Correctness reflects our reading; the comparison is operational, not controlled') rather than buried."
+  ],
+  "issues": [
+    {
+      "id": "R6-1",
+      "priority": "P0",
+      "location": "sec4_eval.tex:50-61 (Costs and limitations) / pages/page-5.png, top of left column",
+      "issue": "Not a wording fault but it blocks submission: the Costs and limitations paragraph continues for about 13 lines onto page 5, above the GenAI disclosure. By the paper's own stated rule (main.tex header comment: body must be <=4 pages; only the disclosure and references may extend beyond), Section 4 body text on page 5 violates the limit. The line edits below recover only 3-4 lines, so roughly a column-inch must also come from captions or figure height.",
+      "evidence": "48 s/$0.18 dense): the gap is bought with multi-step reading, visible in the traces.",
+      "suggestion": "Reclaim about a column-inch before submission: apply the R6 line edits (about 3-4 lines), tighten the Figure 2 caption (the art already states the 6/5/4 branches, so 'After reassessment, usable score-5 evidence can support an attributed backstop answer; no usable evidence yields not-found.' is cuttable), and if still short, reduce Figure 3 from 0.92\\textwidth so Section 4 ends on page 4."
+    },
+    {
+      "id": "R6-2",
+      "priority": "P1",
+      "location": "sec0_abstract.tex:9-15",
+      "issue": "64-word sentence doing two jobs (organization skill; retrieval skill). The semicolon carries a load a period should carry; splitting costs zero space and lets the escalation chain read as its own arc.",
+      "evidence": "Packaged agent skills call tool APIs to parse documents, route them by content into category bases, and maintain tags; retrieval rewrites each query",
+      "suggestion": "Packaged agent skills call tool APIs to parse documents, route them by content into category bases, and maintain tags. Retrieval rewrites each query, recalls and reads candidates, gates them with a prompted 0--8 rubric (topic, scenario, evidence), and --- when nothing passes --- escalates from ranking to browsing base summaries and tag-matched shelves, returning a scoped not-found report instead of answering from the nearest neighbor."
+    },
+    {
+      "id": "R6-3",
+      "priority": "P1",
+      "location": "sec0_abstract.tex:17-22",
+      "issue": "Second 55-word sentence stacks all three modes' results in one breath. A period after the platform's figure lets each mode land; still zero net space cost.",
+      "evidence": "the platform grounds 9 of 10 designated-paper answers and keyword-verifies 9 of 10; the bare agent locates the designated paper in all 10 cases",
+      "suggestion": "the platform grounds 9 of 10 designated-paper answers and keyword-verifies 9 of 10. The bare agent locates the designated paper in all 10 cases yet passes conservative word-boundary verification in only 6, and dense retrieval grounds 9 and verifies 6."
+    },
+    {
+      "id": "R6-4",
+      "priority": "P2",
+      "location": "sec0_abstract.tex:16-17",
+      "issue": "Preposition: audits are performed by probes, not across them.",
+      "evidence": "and audited across ingest, storage, and retrieval probes.",
+      "suggestion": "and audited by ingest, storage, and retrieval probes."
+    },
+    {
+      "id": "R6-5",
+      "priority": "P2",
+      "location": "sec1_intro.tex:7-8",
+      "issue": "Opening repeats the abstract's first ten words verbatim; vary the verb phrase so the second telling earns its space ('documents' is restated two words later anyway).",
+      "evidence": "Research administrators maintaining shared paper collections must organize documents and show which passages support an answer.",
+      "suggestion": "Research administrators maintaining shared paper collections must organize them and show which passages support an answer."
+    },
+    {
+      "id": "R6-6",
+      "priority": "P2",
+      "location": "sec1_intro.tex:14-15",
+      "issue": "'through the addresses that answers cite' understates the contribution; the point of the one-address-space decision is that they are the same addresses.",
+      "evidence": "none manages the collection that retrieval consumes through the addresses that answers cite",
+      "suggestion": "none manages the collection that retrieval consumes through the same addresses that answers cite"
+    },
+    {
+      "id": "R6-7",
+      "priority": "P2",
+      "location": "sec1_intro.tex:22-23",
+      "issue": "'each acceptance records the rubric judgment that admitted it' is circular: the judgment admits the candidate, not the acceptance.",
+      "evidence": "so each acceptance records the rubric judgment that admitted it instead of a bare similarity value",
+      "suggestion": "so every accepted candidate carries the rubric judgment that admitted it instead of a bare similarity value"
+    },
+    {
+      "id": "R6-8",
+      "priority": "P2",
+      "location": "sec1_intro.tex:24-26",
+      "issue": "Actor wobble inside one event: the agent browses but the skill returns. Section 2.3 uses the skill as the consistent actor for exactly this escalation.",
+      "evidence": "when no candidate passes, the agent browses base summaries and tag-matched shelves, and the skill returns a scoped not-found report",
+      "suggestion": "when no candidate passes, the skill browses base summaries and tag-matched shelves and returns a scoped not-found report"
+    },
+    {
+      "id": "R6-9",
+      "priority": "P2",
+      "location": "sec1_intro.tex:33",
+      "issue": "'Figure~\\ref, Figure~\\ref' style; the plural-with-and form is the convention and saves characters.",
+      "evidence": "(Figure~\\ref{fig:teaser}, Figure~\\ref{fig:arch})",
+      "suggestion": "(Figures~\\ref{fig:teaser} and~\\ref{fig:arch})"
+    },
+    {
+      "id": "R6-10",
+      "priority": "P2",
+      "location": "sec1_intro.tex:34-35",
+      "issue": "Two stacked adverbial chains ('from citation to source across the three modes head to head') overload the middle verb of the triad.",
+      "evidence": "walk an answer's evidence from citation to source across the three modes head to head",
+      "suggestion": "walk an answer's evidence from citation to source while comparing the three modes head to head"
+    },
+    {
+      "id": "R6-11",
+      "priority": "P2",
+      "location": "sec1_intro.tex:36",
+      "issue": "'walks' repeats two lines after 'walk an answer's evidence'.",
+      "evidence": "Section~\\ref{sec:demo} walks these scenarios;",
+      "suggestion": "Section~\\ref{sec:demo} demonstrates these scenarios;"
+    },
+    {
+      "id": "R6-12",
+      "priority": "P1",
+      "location": "sec2_system.tex:8-10",
+      "issue": "'operate the same resources through the same tools' and 'they share data and operations' say the same thing twice in one sentence; the payoff is the contrast, which arrives late and diluted.",
+      "evidence": "Console, CLI, and MCP clients operate the same resources through the same tools; they share data and operations, not a reasoning policy --- only the packaged skill adds the gate.",
+      "suggestion": "Console, CLI, and MCP clients operate the same resources through the same tools; what they do not share is a reasoning policy --- only the packaged skill adds the gate."
+    },
+    {
+      "id": "R6-13",
+      "priority": "P2",
+      "location": "sec2_system.tex:12-13",
+      "issue": "'is optional and not the evaluated route' joins an adjective and a noun phrase under one 'is'; the 'X, not Y' construction is cleaner and shorter.",
+      "evidence": "graph navigation is optional and not the evaluated route.",
+      "suggestion": "graph navigation is optional, not the evaluated route."
+    },
+    {
+      "id": "R6-14",
+      "priority": "P1",
+      "location": "sec2_system.tex:26-30",
+      "issue": "Two faults in the rubric sentence: (a) after the colon expands the three criteria, the semicolon makes 'the full rubric ships in the repository' read as a fourth list item instead of a main-clause remark; (b) 'the query subject' breaks possessive parallelism with 'the query's problem'.",
+      "evidence": "whether the body is directly about the query subject, solves the query's problem, and carries directly quotable data or conclusions; the full rubric ships in the repository.",
+      "suggestion": "whether the body is directly about the query's subject, solves the query's problem, and carries directly quotable data or conclusions. The full rubric ships in the repository."
+    },
+    {
+      "id": "R6-15",
+      "priority": "P1",
+      "location": "sec2_system.tex:34-38",
+      "issue": "45-word sentence with an elliptical appositive ('initial or surfaced while browsing' needs 'whether') and a subjectless outcome: 'nothing usable yields a not-found report' makes the absence of evidence the agent. Split and give the skill the verb.",
+      "evidence": "A usable score-5 candidate, initial or surfaced while browsing, is retained as an explicitly attributed backstop and yields a qualified answer; candidates scoring at most 4 are discarded, and nothing usable yields a not-found report with scope, near miss, reason, and remedy.",
+      "suggestion": "A usable score-5 candidate, whether initial or surfaced while browsing, is retained as an explicitly attributed backstop and yields a qualified answer. Candidates scoring at most 4 are discarded; when nothing usable remains, the skill returns a not-found report with scope, near miss, reason, and remedy."
+    },
+    {
+      "id": "R6-16",
+      "priority": "P2",
+      "location": "sec3_demo.tex:7-8",
+      "issue": "Misplaced modifier: 'built by the ingest loop' can attach to 'five bases'.",
+      "evidence": "A prepared instance holds 100 papers in five bases, built by the ingest loop of Section~\\ref{sec:system};",
+      "suggestion": "A prepared instance, built by the ingest loop of Section~\\ref{sec:system}, holds 100 papers in five bases;"
+    },
+    {
+      "id": "R6-17",
+      "priority": "P2",
+      "location": "sec3_demo.tex:9-10",
+      "issue": "A range needs 'from'.",
+      "evidence": "A live answer takes ten seconds to about three minutes",
+      "suggestion": "A live answer takes from ten seconds to about three minutes"
+    },
+    {
+      "id": "R6-18",
+      "priority": "P2",
+      "location": "sec3_demo.tex:11-12",
+      "issue": "Idiom: the video walks the viewer through the scenarios, not the console through the scenarios.",
+      "evidence": "the accompanying video walks the web console through these scenarios.",
+      "suggestion": "the accompanying video walks through these scenarios in the web console."
+    },
+    {
+      "id": "R6-19",
+      "priority": "P2",
+      "location": "sec3_demo.tex:23",
+      "issue": "'part~1 of~2 first at 0.75' collides rank and score; a comma separates the two numbers.",
+      "evidence": "the vector-first search ranks the primer's part~1 of~2 first at 0.75 (0.66 cross-base)",
+      "suggestion": "the vector-first search ranks the primer's part~1 of~2 first, at 0.75 (0.66 cross-base)"
+    },
+    {
+      "id": "R6-20",
+      "priority": "P2",
+      "location": "sec3_demo.tex:33-34",
+      "issue": "Drops the article and the noun used everywhere else ('a scoped not-found report' in the abstract, Section 1, and Section 2.3).",
+      "evidence": "the skill returns scoped not-found instead of BERT's recipe",
+      "suggestion": "the skill returns a scoped not-found report instead of BERT's recipe"
+    },
+    {
+      "id": "R6-21",
+      "priority": "P2",
+      "location": "sec3_demo.tex:36",
+      "issue": "Adverb placement: 'bounds this collection only' momentarily reads as 'merely bounds'.",
+      "evidence": "and bounds this collection only.",
+      "suggestion": "and bounds only this collection."
+    },
+    {
+      "id": "R6-22",
+      "priority": "P1",
+      "location": "sec4_eval.tex:24",
+      "issue": "Terminology drift: the ingest actor is 'the organization skill' in Section 1 and Section 2.2; 'the routing skill' is a third name for it.",
+      "evidence": "the routing skill placed each by its content into one of five bases",
+      "suggestion": "the organization skill placed each by its content into one of five bases"
+    },
+    {
+      "id": "R6-23",
+      "priority": "P2",
+      "location": "sec4_eval.tex:25",
+      "issue": "Section 2.2 spells out '30,000-character ceiling' in prose; keep one form in running text (the table may keep '30k').",
+      "evidence": "the 30k-character ceiling split long texts into 322 stored parts",
+      "suggestion": "the 30,000-character ceiling split long texts into 322 stored parts"
+    },
+    {
+      "id": "R6-24",
+      "priority": "P2",
+      "location": "sec4_eval.tex:28",
+      "issue": "Counted, specific pairs need the article.",
+      "evidence": "(35 near-pairs are parts of the same paper)",
+      "suggestion": "(the 35 near-pairs are parts of the same paper)"
+    },
+    {
+      "id": "R6-25",
+      "priority": "P1",
+      "location": "sec4_eval.tex:35-39",
+      "issue": "Metric definitions break parallelism: the third has no '=' and no predicate, so 'citations pattern-matched over saved answers' reads as a fragment; and 'Grounded' is capitalized where 'keyword-verified' is not.",
+      "evidence": "Grounded = the trace cites the designated paper (strict arXiv-id match); keyword-verified = at least 60\\% of gold key facts, fixed in advance, at word boundaries (deterministic); citations pattern-matched over saved answers (part/section markers; script in the repository).",
+      "suggestion": "grounded = the trace cites the designated paper (strict arXiv-id match); keyword-verified = at least 60\\% of gold key facts, fixed in advance, at word boundaries (deterministic); citations = part/section markers pattern-matched over saved answers (script in the repository)."
+    },
+    {
+      "id": "R6-26",
+      "priority": "P2",
+      "location": "sec4_eval.tex:51-52",
+      "issue": "Mixed formats in one comparison ('113 s and $0.49', then '43 s/$0.16'), and the hyphenated modifier 'bare-agent' stands in for the noun 'the bare agent'.",
+      "evidence": "(113\\,s and \\$0.49 per question, versus 43\\,s/\\$0.16 bare-agent and 48\\,s/\\$0.18 dense)",
+      "suggestion": "(113\\,s and \\$0.49 per question, versus 43\\,s/\\$0.16 for the bare agent and 48\\,s/\\$0.18 for dense retrieval)"
+    },
+    {
+      "id": "R6-27",
+      "priority": "P2",
+      "location": "sec4_eval.tex:54-55",
+      "issue": "Double possessive 'BQ08's bare-agent answer's' ties the tongue; move the question id into a prepositional phrase.",
+      "evidence": "(BQ08's bare-agent answer's ``oxygen (anionic) redox'' and plural ``cathodes'' score 0/2 under word-boundary matching)",
+      "suggestion": "(on BQ08, the bare agent's ``oxygen (anionic) redox'' and plural ``cathodes'' score 0/2 under word-boundary matching)"
+    },
+    {
+      "id": "R6-28",
+      "priority": "P2",
+      "location": "sec4_eval.tex:59",
+      "issue": "Verbless fragment after two full clauses in the limitations series; 'was' costs two characters and restores the pattern.",
+      "evidence": "the comparison is operational, not controlled; cache state uncontrolled.",
+      "suggestion": "the comparison is operational, not controlled; cache state was uncontrolled."
+    },
+    {
+      "id": "R6-29",
+      "priority": "P2",
+      "location": "sec4_eval.tex:60",
+      "issue": "The same three probes are 'scripted out-of-corpus probes' in the abstract and 'absent-paper questions' here; one name should serve both.",
+      "evidence": "Three absent-paper questions exercise the scoped not-found reports",
+      "suggestion": "Three out-of-corpus questions exercise the scoped not-found reports"
+    },
+    {
+      "id": "R6-30",
+      "priority": "P2",
+      "location": "main.tex:56 (Figure 1 caption)",
+      "issue": "The figure is two four-panel rows (baseline and QDCVR); 'a four-panel storyboard' miscounts what the reader is looking at.",
+      "evidence": "QDCVR at a glance, as a four-panel storyboard.",
+      "suggestion": "QDCVR at a glance, as two four-panel storyboards."
+    },
+    {
+      "id": "R6-31",
+      "priority": "P2",
+      "location": "main.tex:84 (Figure 2 caption)",
+      "issue": "Caption drifts from body and art on three points: 'six' and 'score-five' vs. the numerals used everywhere else ('at least 6' in Section 2.3, '= 5' in the art); 'a direct answer' vs. the established 'a cited answer' (Section 2.3, Figure 1, the art, and the \\Description); and 'a conditional content assessment' vs. the established 'content gate' (Figure 1 caption, art).",
+      "evidence": "The packaged skill prescribes query rewriting, recall, reading, and a conditional content assessment. Scores of at least six permit a direct answer; lower initial scores invoke the librarian. After reassessment, usable score-five evidence can support an attributed backstop answer; no usable evidence yields not-found.",
+      "suggestion": "The packaged skill prescribes query rewriting, recall, reading, and the 0--8 content gate. Scores of at least 6 permit a cited answer; lower initial scores invoke the librarian. After reassessment, usable score-5 evidence can support an attributed backstop answer; no usable evidence yields not-found."
+    },
+    {
+      "id": "R6-32",
+      "priority": "P2",
+      "location": "main.tex:103 (Figure 3 caption)",
+      "issue": "Tie usage differs from Section 3's 'part~1 of~2'; keep the non-breaking space on both numbers.",
+      "evidence": "A quotes the source at part~1 of 2, section~2;",
+      "suggestion": "A quotes the source at part~1 of~2, section~2;"
+    },
+    {
+      "id": "R6-33",
+      "priority": "P2",
+      "location": "main.tex:108-110 (Figure 3 caption)",
+      "issue": "Comma chain leaves 'columns Platform, Bare agent, Dense retrieval' unclear against 'run aggregates'; semicolons separate the two levels.",
+      "evidence": "Bottom strip: run aggregates, columns Platform, Bare agent, Dense retrieval (definitions in Section~\\ref{sec:eval}).",
+      "suggestion": "Bottom strip: run aggregates; columns: Platform, Bare agent, Dense retrieval (definitions in Section~\\ref{sec:eval})."
+    },
+    {
+      "id": "R6-34",
+      "priority": "P2",
+      "location": "sec4_backmatter.tex:3-5",
+      "issue": "'implementation' appears twice in one list; name the artifacts 'code' and keep 'figure implementation'.",
+      "evidence": "inspection of implementation and experiment artifacts, figure implementation, and execution of the monitored reruns",
+      "suggestion": "figure implementation, inspection of code and experiment artifacts, and execution of the monitored reruns"
+    }
+  ]
+}

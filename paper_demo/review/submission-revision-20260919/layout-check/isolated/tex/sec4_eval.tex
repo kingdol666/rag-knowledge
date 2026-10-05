@@ -1,0 +1,36 @@
+% Evidence sources and discrepancies are retained in EVIDENCE-AUDIT.md.
+\section{Demonstration Evidence and Limitations}
+\label{sec:eval}
+
+We examine saved operational traces for ten questions and three out-of-corpus
+probes over 50 papers in five category bases, comprising 165 stored documents
+and parts. Track~A pairs tool-execution records with saved \sys{} answers; Track~B uses an external agent
+with file tools over exported papers; Track~C uses dense retrieval with a
+4{,}000-character context budget. A separate regression using the raw questions
+passes 9/10 cases: each pass requires the designated paper among the top three
+retrieved candidates and at least one literal gold keyword in their combined
+snippets. BQ06 retrieves its designated paper but lacks the required keyword.
+This checks snippet coverage, not final-answer correctness.
+
+The three out-of-corpus examples combine script-collected retrieval and
+catalog evidence with predefined agent-authored judgments and templated
+not-found reports. They illustrate the reporting format, not measured
+autonomous abstention. The census counts 165 catalog entries but retains
+153 document names; it does not establish exhaustive content inspection. C explicitly abstains in two of ten saved
+answers. These records illustrate how insufficient evidence is reported;
+non-abstention does not establish correctness. Gate scores are agent-authored rubric judgments, not independent
+correctness assessments. Attendees can inspect the recorded decisions alongside candidate
+text and source references, including where the available trace does not
+fully support an answer.
+
+The tracks use different evidence windows and execution configurations.
+A's scripted, fixed rewrites include expected-answer terms, precluding a fair
+retrieval comparison. B's file references are self-reported without retained
+read events. C loses document metadata at the logging adapter, a limitation
+of this reproduction rather than dense retrieval. Resolved LLM configurations
+are not archived per answer, and cache state and parametric knowledge are
+uncontrolled. A records retrieval and read times but not answer-authoring time,
+so its end-to-end latency is unavailable. These selected traces support an
+operational demonstration, not claims of answer accuracy, speed advantage,
+or general efficacy.
+

@@ -1,0 +1,29 @@
+{
+ "qid": "Q1",
+ "question": "Which three independent ontologies subdivide the Gene Ontology, and what biological aspects do they represent?",
+ "track": "bare",
+ "answer": "The Gene Ontology is subdivided into three independent, non-redundant ontologies representing different biological aspects: Molecular Function (MF), Biological Process (BP), and Cellular Component (CC). Molecular Function covers activities of gene products at the molecular level, Biological Process covers the larger processes or programs accomplished by multiple molecular activities, and Cellular Component covers the parts of a cell or its extracellular environment where these functions act. All three share a common space of identifiers and a well-specified syntax (source: genomics__1602.01876__primer-on-the-gene-ontology.md, Section 2 'What is the Gene Ontology?', ~lines 47-49).",
+ "steps": [
+  {
+   "step": 1,
+   "tool": "search_text",
+   "args": {
+    "pattern": "Gene Ontology",
+    "max_hits": 20
+   },
+   "tool_s": 0.1
+  },
+  {
+   "step": 2,
+   "tool": "read_file",
+   "args": {
+    "name": "genomics__1602.01876__primer-on-the-gene-ontology.md",
+    "start_line": 44,
+    "max_lines": 20
+   },
+   "tool_s": 0.0
+  }
+ ],
+ "seconds": 34.0,
+ "tool_calls": 2
+}

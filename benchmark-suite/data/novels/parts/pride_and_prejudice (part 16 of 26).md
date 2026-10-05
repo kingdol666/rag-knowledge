@@ -1,0 +1,568 @@
+# pride_and_prejudice（第 16/26 部分）
+Their affectionate mother shared all their grief; she remembered what
+she had herself endured on a similar occasion five-and-twenty years ago.
+
+“I am sure,” said she, “I cried for two days together when Colonel
+Miller’s regiment went away. I thought I should have broke my heart.”
+
+“I am sure I shall break _mine_,” said Lydia.
+
+“If one could but go to Brighton!” observed Mrs. Bennet.
+
+“Oh yes!--if one could but go to Brighton! But papa is so disagreeable.”
+
+“A little sea-bathing would set me up for ever.”
+
+“And my aunt Philips is sure it would do _me_ a great deal of good,”
+added Kitty.
+
+Such were the kind of lamentations resounding perpetually through
+Longbourn House. Elizabeth tried to be diverted by them; but all sense
+of pleasure was lost in shame. She felt anew the justice of Mr. Darcy’s
+objections; and never had she before been so much disposed to pardon his
+interference in the views of his friend.
+
+But the gloom of Lydia’s prospect was shortly cleared away; for she
+received an invitation from Mrs. Forster, the wife of the colonel of the
+regiment, to accompany her to Brighton. This invaluable friend was a
+very young woman, and very lately married. A resemblance in good-humour
+and good spirits had recommended her and Lydia to each other, and out of
+their _three_ months’ acquaintance they had been intimate _two_.
+
+The rapture of Lydia on this occasion, her adoration of Mrs. Forster,
+the delight of Mrs. Bennet, and the mortification of Kitty, are scarcely
+to be described. Wholly inattentive to her sister’s feelings, Lydia flew
+about the house in restless ecstasy, calling for everyone’s
+congratulations, and laughing and talking with more violence than ever;
+whilst the luckless Kitty continued in the parlour repining at her fate
+in terms as unreasonable as her accent was peevish.
+
+“I cannot see why Mrs. Forster should not ask _me_ as well as Lydia,”
+said she, “though I am _not_ her particular friend. I have just as much
+right to be asked as she has, and more too, for I am two years older.”
+
+In vain did Elizabeth attempt to make her reasonable, and Jane to make
+her resigned. As for Elizabeth herself, this invitation was so far from
+exciting in her the same feelings as in her mother and Lydia, that she
+considered it as the death-warrant of all possibility of common sense
+for the latter; and detestable as such a step must make her, were it
+known, she could not help secretly advising her father not to let her
+go. She represented to him all the improprieties of Lydia’s general
+behaviour, the little advantage she could derive from the friendship of
+such a woman as Mrs. Forster, and the probability of her being yet more
+imprudent with such a companion at Brighton, where the temptations must
+be greater than at home. He heard her attentively, and then said,--
+
+“Lydia will never be easy till she has exposed herself in some public
+place or other, and we can never expect her to do it with so little
+expense or inconvenience to her family as under the present
+circumstances.”
+
+“If you were aware,” said Elizabeth, “of the very great disadvantage to
+us all, which must arise from the public notice of Lydia’s unguarded and
+imprudent manner, nay, which has already arisen from it, I am sure you
+would judge differently in the affair.”
+
+“Already arisen!” repeated Mr. Bennet. “What! has she frightened away
+some of your lovers? Poor little Lizzy! But do not be cast down. Such
+squeamish youths as cannot bear to be connected with a little absurdity
+are not worth a regret. Come, let me see the list of the pitiful fellows
+who have been kept aloof by Lydia’s folly.”
+
+“Indeed, you are mistaken. I have no such injuries to resent. It is not
+of peculiar, but of general evils, which I am now complaining. Our
+importance, our respectability in the world, must be affected by the
+wild volatility, the assurance and disdain of all restraint which mark
+Lydia’s character. Excuse me,--for I must speak plainly. If you, my dear
+father, will not take the trouble of checking her exuberant spirits, and
+of teaching her that her present pursuits are not to be the business of
+her life, she will soon be beyond the reach of amendment. Her character
+will be fixed; and she will, at sixteen, be the most determined flirt
+that ever made herself and her family ridiculous;--a flirt, too, in the
+worst and meanest degree of flirtation; without any attraction beyond
+youth and a tolerable person; and, from the ignorance and emptiness of
+her mind, wholly unable to ward off any portion of that universal
+contempt which her rage for admiration will excite. In this danger Kitty
+is also comprehended. She will follow wherever Lydia leads. Vain,
+ignorant, idle, and absolutely uncontrolled! Oh, my dear father, can you
+suppose it possible that they will not be censured and despised wherever
+they are known, and that their sisters will not be often involved in the
+disgrace?”
+
+Mr. Bennet saw that her whole heart was in the subject; and,
+affectionately taking her hand, said, in reply,--
+
+“Do not make yourself uneasy, my love. Wherever you and Jane are known,
+you must be respected and valued; and you will not appear to less
+advantage for having a couple of--or I may say, three--very silly
+sisters. We shall have no peace at Longbourn if Lydia does not go to
+Brighton. Let her go, then. Colonel Forster is a sensible man, and will
+keep her out of any real mischief; and she is luckily too poor to be an
+object of prey to anybody. At Brighton she will be of less importance
+even as a common flirt than she has been here. The officers will find
+women better worth their notice. Let us hope, therefore, that her being
+there may teach her her own insignificance. At any rate, she cannot grow
+many degrees worse, without authorizing us to lock her up for the rest
+of her life.”
+
+With this answer Elizabeth was forced to be content; but her own opinion
+continued the same, and she left him disappointed and sorry. It was not
+in her nature, however, to increase her vexations by dwelling on them.
+She was confident of having performed her duty; and to fret over
+unavoidable evils, or augment them by anxiety, was no part of her
+disposition.
+
+Had Lydia and her mother known the substance of her conference with her
+father, their indignation would hardly have found expression in their
+united volubility. In Lydia’s imagination, a visit to Brighton comprised
+every possibility of earthly happiness. She saw, with the creative eye
+of fancy, the streets of that gay bathing-place covered with officers.
+She saw herself the object of attention to tens and to scores of them at
+present unknown. She saw all the glories of the camp: its tents
+stretched forth in beauteous uniformity of lines, crowded with the young
+and the gay, and dazzling with scarlet; and, to complete the view, she
+saw herself seated beneath a tent, tenderly flirting with at least six
+officers at once.
+
+[Illustration:
+
+“Tenderly flirting”
+
+[_Copyright 1894 by George Allen._]]
+
+Had she known that her sister sought to tear her from such prospects and
+such realities as these, what would have been her sensations? They could
+have been understood only by her mother, who might have felt nearly the
+same. Lydia’s going to Brighton was all that consoled her for the
+melancholy conviction of her husband’s never intending to go there
+himself.
+
+But they were entirely ignorant of what had passed; and their raptures
+continued, with little intermission, to the very day of Lydia’s leaving
+home.
+
+Elizabeth was now to see Mr. Wickham for the last time. Having been
+frequently in company with him since her return, agitation was pretty
+well over; the agitations of former partiality entirely so. She had even
+learnt to detect, in the very gentleness which had first delighted her,
+an affectation and a sameness to disgust and weary. In his present
+behaviour to herself, moreover, she had a fresh source of displeasure;
+for the inclination he soon testified of renewing those attentions which
+had marked the early part of their acquaintance could only serve, after
+what had since passed, to provoke her. She lost all concern for him in
+finding herself thus selected as the object of such idle and frivolous
+gallantry; and while she steadily repressed it, could not but feel the
+reproof contained in his believing, that however long, and for whatever
+cause, his attentions had been withdrawn, her vanity would be gratified,
+and her preference secured, at any time, by their renewal.
+
+On the very last day of the regiment’s remaining in Meryton, he dined,
+with others of the officers, at Longbourn; and so little was Elizabeth
+disposed to part from him in good-humour, that, on his making some
+inquiry as to the manner in which her time had passed at Hunsford, she
+mentioned Colonel Fitzwilliam’s and Mr. Darcy’s having both spent three
+weeks at Rosings, and asked him if he were acquainted with the former.
+
+He looked surprised, displeased, alarmed; but, with a moment’s
+recollection, and a returning smile, replied, that he had formerly seen
+him often; and, after observing that he was a very gentlemanlike man,
+asked her how she had liked him. Her answer was warmly in his favour.
+With an air of indifference, he soon afterwards added, “How long did you
+say that he was at Rosings?”
+
+“Nearly three weeks.”
+
+“And you saw him frequently?”
+
+“Yes, almost every day.”
+
+“His manners are very different from his cousin’s.”
+
+“Yes, very different; but I think Mr. Darcy improves on acquaintance.”
+
+“Indeed!” cried Wickham, with a look which did not escape her. “And pray
+may I ask--” but checking himself, he added, in a gayer tone, “Is it in
+address that he improves? Has he deigned to add aught of civility to his
+ordinary style? for I dare not hope,” he continued, in a lower and more
+serious tone, “that he is improved in essentials.”
+
+“Oh, no!” said Elizabeth. “In essentials, I believe, he is very much
+what he ever was.”
+
+While she spoke, Wickham looked as if scarcely knowing whether to
+rejoice over her words or to distrust their meaning. There was a
+something in her countenance which made him listen with an apprehensive
+and anxious attention, while she added,--
+
+“When I said that he improved on acquaintance, I did not mean that
+either his mind or manners were in a state of improvement; but that,
+from knowing him better, his disposition was better understood.”
+
+Wickham’s alarm now appeared in a heightened complexion and agitated
+look; for a few minutes he was silent; till, shaking off his
+embarrassment, he turned to her again, and said in the gentlest of
+accents,--
+
+“You, who so well know my feelings towards Mr. Darcy, will readily
+comprehend how sincerely I must rejoice that he is wise enough to assume
+even the _appearance_ of what is right. His pride, in that direction,
+may be of service, if not to himself, to many others, for it must deter
+him from such foul misconduct as I have suffered by. I only fear that
+the sort of cautiousness to which you, I imagine, have been alluding, is
+merely adopted on his visits to his aunt, of whose good opinion and
+judgment he stands much in awe. His fear of her has always operated, I
+know, when they were together; and a good deal is to be imputed to his
+wish of forwarding the match with Miss de Bourgh, which I am certain he
+has very much at heart.”
+
+Elizabeth could not repress a smile at this, but she answered only by a
+slight inclination of the head. She saw that he wanted to engage her on
+the old subject of his grievances, and she was in no humour to indulge
+him. The rest of the evening passed with the _appearance_, on his side,
+of usual cheerfulness, but with no further attempt to distinguish
+Elizabeth; and they parted at last with mutual civility, and possibly a
+mutual desire of never meeting again.
+
+When the party broke up, Lydia returned with Mrs. Forster to Meryton,
+from whence they were to set out early the next morning. The separation
+between her and her family was rather noisy than pathetic. Kitty was the
+only one who shed tears; but she did weep from vexation and envy. Mrs.
+Bennet was diffuse in her good wishes for the felicity of her daughter,
+and impressive in her injunctions that she would not miss the
+opportunity of enjoying herself as much as possible,--advice which there
+was every reason to believe would be attended to; and, in the clamorous
+happiness of Lydia herself in bidding farewell, the more gentle adieus
+of her sisters were uttered without being heard.
+
+[Illustration:
+
+The arrival of the
+Gardiners
+]
+
+CHAPTER XLII.
+
+[Illustration]
+
+Had Elizabeth’s opinion been all drawn from her own family, she could
+not have formed a very pleasing picture of conjugal felicity or domestic
+comfort. Her father, captivated by youth and beauty, and that appearance
+of good-humour which youth and beauty generally give, had married a
+woman whose weak understanding and illiberal mind had very early in
+their marriage put an end to all real affection for her. Respect,
+esteem, and confidence had vanished for ever; and all his views of
+domestic happiness were overthrown. But Mr. Bennet was not of a
+disposition to seek comfort for the disappointment which his own
+imprudence had brought on in any of those pleasures which too often
+console the unfortunate for their folly or their vice. He was fond of
+the country and of books; and from these tastes had arisen his principal
+enjoyments. To his wife he was very little otherwise indebted than as
+her ignorance and folly had contributed to his amusement. This is not
+the sort of happiness which a man would in general wish to owe to his
+wife; but where other powers of entertainment are wanting, the true
+philosopher will derive benefit from such as are given.
+
+Elizabeth, however, had never been blind to the impropriety of her
+father’s behaviour as a husband. She had always seen it with pain; but
+respecting his abilities, and grateful for his affectionate treatment of
+herself, she endeavoured to forget what she could not overlook, and to
+banish from her thoughts that continual breach of conjugal obligation
+and decorum which, in exposing his wife to the contempt of her own
+children, was so highly reprehensible. But she had never felt so
+strongly as now the disadvantages which must attend the children of so
+unsuitable a marriage, nor ever been so fully aware of the evils arising
+from so ill-judged a direction of talents--talents which, rightly used,
+might at least have preserved the respectability of his daughters, even
+if incapable of enlarging the mind of his wife.
+
+When Elizabeth had rejoiced over Wickham’s departure, she found little
+other cause for satisfaction in the loss of the regiment. Their parties
+abroad were less varied than before; and at home she had a mother and
+sister, whose constant repinings at the dulness of everything around
+them threw a real gloom over their domestic circle; and, though Kitty
+might in time regain her natural degree of sense, since the disturbers
+of her brain were removed, her other sister, from whose disposition
+greater evil might be apprehended, was likely to be hardened in all her
+folly and assurance, by a situation of such double danger as a
+watering-place and a camp. Upon the whole, therefore, she found, what
+has been sometimes found before, that an event to which she had looked
+forward with impatient desire, did not, in taking place, bring all the
+satisfaction she had promised herself. It was consequently necessary to
+name some other period for the commencement of actual felicity; to have
+some other point on which her wishes and hopes might be fixed, and by
+again enjoying the pleasure of anticipation, console herself for the
+present, and prepare for another disappointment. Her tour to the Lakes
+was now the object of her happiest thoughts: it was her best consolation
+for all the uncomfortable hours which the discontentedness of her mother
+and Kitty made inevitable; and could she have included Jane in the
+scheme, every part of it would have been perfect.
+
+“But it is fortunate,” thought she, “that I have something to wish for.
+Were the whole arrangement complete, my disappointment would be certain.
+But here, by carrying with me one ceaseless source of regret in my
+sister’s absence, I may reasonably hope to have all my expectations of
+pleasure realized. A scheme of which every part promises delight can
+never be successful; and general disappointment is only warded off by
+the defence of some little peculiar vexation.”
+
+When Lydia went away she promised to write very often and very minutely
+to her mother and Kitty; but her letters were always long expected, and
+always very short. Those to her mother contained little else than that
+they were just returned from the library, where such and such officers
+had attended them, and where she had seen such beautiful ornaments as
+made her quite wild; that she had a new gown, or a new parasol, which
+she would have described more fully, but was obliged to leave off in a
+violent hurry, as Mrs. Forster called her, and they were going to the
+camp; and from her correspondence with her sister there was still less
+to be learnt, for her letters to Kitty, though rather longer, were much
+too full of lines under the words to be made public.
+
+After the first fortnight or three weeks of her absence, health,
+good-humour, and cheerfulness began to reappear at Longbourn. Everything
+wore a happier aspect. The families who had been in town for the winter
+came back again, and summer finery and summer engagements arose. Mrs.
+Bennet was restored to her usual querulous serenity; and by the middle
+of June Kitty was so much recovered as to be able to enter Meryton
+without tears,--an event of such happy promise as to make Elizabeth
+hope, that by the following Christmas she might be so tolerably
+reasonable as not to mention an officer above once a day, unless, by
+some cruel and malicious arrangement at the War Office, another regiment
+should be quartered in Meryton.
+
+The time fixed for the beginning of their northern tour was now fast
+approaching; and a fortnight only was wanting of it, when a letter
+arrived from Mrs. Gardiner, which at once delayed its commencement and
+curtailed its extent. Mr. Gardiner would be prevented by business from
+setting out till a fortnight later in July, and must be in London again
+within a month; and as that left too short a period for them to go so
+far, and see so much as they had proposed, or at least to see it with
+the leisure and comfort they had built on, they were obliged to give up
+the Lakes, and substitute a more contracted tour; and, according to the
+present plan, were to go no farther northward than Derbyshire. In that
+county there was enough to be seen to occupy the chief of their three
+weeks; and to Mrs. Gardiner it had a peculiarly strong attraction. The
+town where she had formerly passed some years of her life, and where
+they were now to spend a few days, was probably as great an object of
+her curiosity as all the celebrated beauties of Matlock, Chatsworth,
+Dovedale, or the Peak.
+
+Elizabeth was excessively disappointed: she had set her heart on seeing
+the Lakes; and still thought there might have been time enough. But it
+was her business to be satisfied--and certainly her temper to be happy;
+and all was soon right again.
+
+With the mention of Derbyshire, there were many ideas connected. It was
+impossible for her to see the word without thinking of Pemberley and its
+owner. “But surely,” said she, “I may enter his county with impunity,
+and rob it of a few petrified spars, without his perceiving me.”
+
+The period of expectation was now doubled. Four weeks were to pass away
+before her uncle and aunt’s arrival. But they did pass away, and Mr. and
+Mrs. Gardiner, with their four children, did at length appear at
+Longbourn. The children, two girls of six and eight years old, and two
+younger boys, were to be left under the particular care of their cousin
+Jane, who was the general favourite, and whose steady sense and
+sweetness of temper exactly adapted her for attending to them in every
+way--teaching them, playing with them, and loving them.
+
+The Gardiners stayed only one night at Longbourn, and set off the next
+morning with Elizabeth in pursuit of novelty and amusement. One
+enjoyment was certain--that of suitableness as companions; a
+suitableness which comprehended health and temper to bear
+inconveniences--cheerfulness to enhance every pleasure--and affection
+and intelligence, which might supply it among themselves if there were
+disappointments abroad.
+
+It is not the object of this work to give a description of Derbyshire,
+nor of any of the remarkable places through which their route thither
+lay--Oxford, Blenheim, Warwick, Kenilworth, Birmingham, etc., are
+sufficiently known. A small part of Derbyshire is all the present
+concern. To the little town of Lambton, the scene of Mrs. Gardiner’s
+former residence, and where she had lately learned that some
+acquaintance still remained, they bent their steps, after having seen
+all the principal wonders of the country; and within five miles of
+Lambton, Elizabeth found, from her aunt, that Pemberley was situated. It
+was not in their direct road; nor more than a mile or two out of it. In
+talking over their route the evening before, Mrs. Gardiner expressed an
+inclination to see the place again. Mr. Gardiner declared his
+willingness, and Elizabeth was applied to for her approbation.
+
+“My love, should not you like to see a place of which you have heard so
+much?” said her aunt. “A place, too, with which so many of your
+acquaintance are connected. Wickham passed all his youth there, you
+know.”
+
+Elizabeth was distressed. She felt that she had no business at
+Pemberley, and was obliged to assume a disinclination for seeing it. She
+must own that she was tired of great houses: after going over so many,
+she really had no pleasure in fine carpets or satin curtains.
+
+Mrs. Gardiner abused her stupidity. “If it were merely a fine house
+richly furnished,” said she, “I should not care about it myself; but the
+grounds are delightful. They have some of the finest woods in the
+country.”
+
+Elizabeth said no more; but her mind could not acquiesce. The
+possibility of meeting Mr. Darcy, while viewing the place, instantly
+occurred. It would be dreadful! She blushed at the very idea; and
+thought it would be better to speak openly to her aunt, than to run such
+a risk. But against this there were objections; and she finally resolved
+that it could be the last resource, if her private inquiries as to the
+absence of the family were unfavourably answered.
+
+Accordingly, when she retired at night, she asked the chambermaid
+whether Pemberley were not a very fine place, what was the name of its
+proprietor, and, with no little alarm, whether the family were down for
+the summer? A most welcome negative followed the last question; and her
+alarms being now removed, she was at leisure to feel a great deal of
+curiosity to see the house herself; and when the subject was revived the
+next morning, and she was again applied to, could readily answer, and
+with a proper air of indifference, that she had not really any dislike
+to the scheme.
+
+To Pemberley, therefore, they were to go.
+
+[Illustration:
+
+     “Conjecturing as to the date”
+]
+
+CHAPTER XLIII.
+
+[Illustration]
+
+Elizabeth, as they drove along, watched for the first appearance of
+Pemberley Woods with some perturbation; and when at length they turned
+in at the lodge, her spirits were in a high flutter.
+
+The park was very large, and contained great variety of ground. They
+entered it in one of its lowest points, and drove for some time through
+a beautiful wood stretching over a wide extent.
+
+Elizabeth’s mind was too full for conversation, but she saw and admired
+every remarkable spot and point of view. They gradually ascended for
+half a mile, and then found themselves at the top of a considerable
+eminence, where the wood ceased, and the eye was instantly caught by
+Pemberley House, situated on the opposite side of the valley, into which
+the road with some abruptness wound. It was a large, handsome stone
+building, standing well on rising ground, and backed by a ridge of high
+woody hills; and in front a stream of some natural importance was
+swelled into greater, but without any artificial appearance. Its banks
+were neither formal nor falsely adorned. Elizabeth was delighted. She
+had never seen a place for which nature had done more, or where natural
+beauty had been so little counteracted by an awkward taste. They were
+all of them warm in their admiration; and at that moment she felt that
+to be mistress of Pemberley might be something!
+
+They descended the hill, crossed the bridge, and drove to the door; and,
+while examining the nearer aspect of the house, all her apprehension of
+meeting its owner returned. She dreaded lest the chambermaid had been
+mistaken. On applying to see the place, they were admitted into the
+hall; and Elizabeth, as they waited for the housekeeper, had leisure to
+wonder at her being where she was.
+
+The housekeeper came; a respectable looking elderly woman, much less
+fine, and more civil, than she had any notion of finding her. They
+followed her into the dining-parlour. It was a large, well-proportioned
+room, handsomely fitted up. Elizabeth, after slightly surveying it, went
+to a window to enjoy its prospect. The hill, crowned with wood, from
+which they had descended, receiving increased abruptness from the
+distance, was a beautiful object. Every disposition of the ground was
+good; and she looked on the whole scene, the river, the trees scattered
+on its banks, and the winding of the valley, as far as she could trace
+it, with delight. As they passed into other rooms, these objects were
+taking different positions; but from every window there were beauties
+to be seen. The rooms were lofty and handsome, and their furniture
+suitable to the fortune of their proprietor; but Elizabeth saw, with
+admiration of his taste, that it was neither gaudy nor uselessly
+fine,--with less of splendour, and more real elegance, than the
+furniture of Rosings.
+
+“And of this place,” thought she, “I might have been mistress! With
+these rooms I might have now been familiarly acquainted! Instead of
+viewing them as a stranger, I might have rejoiced in them as my own, and
+welcomed to them as visitors my uncle and aunt. But, no,” recollecting
+herself, “that could never be; my uncle and aunt would have been lost to
+me; I should not have been allowed to invite them.”
+
+This was a lucky recollection--it saved her from something like regret.
+
+She longed to inquire of the housekeeper whether her master were really
+absent, but had not courage for it. At length, however, the question was
+asked by her uncle; and she turned away with alarm, while Mrs. Reynolds
+replied, that he was; adding, “But we expect him to-morrow, with a large
+party of friends.” How rejoiced was Elizabeth that their own journey had
+not by any circumstance been delayed a day!
+
+Her aunt now called her to look at a picture. She approached, and saw
+the likeness of Mr. Wickham, suspended, amongst several other
+miniatures, over the mantel-piece. Her aunt asked her, smilingly, how
+she liked it. The housekeeper came forward, and told them it was the
+picture of a young gentleman, the son of her late master’s steward, who
+had been brought up by him at his own expense. “He is now gone into the
+army,” she added; “but I am afraid he has turned out very wild.”
+
+Mrs. Gardiner looked at her niece with a smile, but Elizabeth could not
+return it.
+
+“And that,” said Mrs. Reynolds, pointing to another of the miniatures,
+“is my master--and very like him. It was drawn at the same time as the
+other--about eight years ago.”
+
+“I have heard much of your master’s fine person,” said Mrs. Gardiner,
+looking at the picture; “it is a handsome face. But, Lizzy, you can tell
+us whether it is like or not.”
+
+Mrs. Reynolds’ respect for Elizabeth seemed to increase on this
+intimation of her knowing her master.
+
+“Does that young lady know Mr. Darcy?”
+
+Elizabeth coloured, and said, “A little.”
+
+“And do not you think him a very handsome gentleman, ma’am?”
+
+“Yes, very handsome.”
+
+“I am sure _I_ know none so handsome; but in the gallery upstairs you
+will see a finer, larger picture of him than this. This room was my late
+master’s favourite room, and these miniatures are just as they used to
+be then. He was very fond of them.”
+
+This accounted to Elizabeth for Mr. Wickham’s being among them.
+
+Mrs. Reynolds then directed their attention to one of Miss Darcy, drawn
+when she was only eight years old.
+
+“And is Miss Darcy as handsome as her brother?” said Mr. Gardiner.
+
+“Oh, yes--the handsomest young lady that ever was seen; and so
+accomplished! She plays and sings all day long. In the next room is a
+new instrument just come down for her--a present from my master: she
+comes here to-morrow with him.”
+
+Mr. Gardiner, whose manners were easy and pleasant, encouraged her
+communicativeness by his questions and remarks: Mrs. Reynolds, either
+from pride or attachment, had evidently great pleasure in talking of her
+master and his sister.
+
+“Is your master much at Pemberley in the course of the year?”
+
+“Not so much as I could wish, sir: but I dare say he may spend half his
+time here; and Miss Darcy is always down for the summer months.”
+
+“Except,” thought Elizabeth, “when she goes to Ramsgate.”
+
+“If your master would marry, you might see more of him.”
+
+“Yes, sir; but I do not know when _that_ will be. I do not know who is
+good enough for him.”
+
+Mr. and Mrs. Gardiner smiled. Elizabeth could not help saying, “It is
+very much to his credit, I am sure, that you should think so.”
+
+“I say no more than the truth, and what everybody will say that knows
+him,” replied the other. Elizabeth thought this was going pretty far;
+and she listened with increasing astonishment as the housekeeper added,
+“I have never had a cross word from him in my life, and I have known him
+ever since he was four years old.”

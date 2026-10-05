@@ -1,0 +1,317 @@
+[
+ {
+  "step": "kb_create(A)",
+  "ok": true,
+  "ms": 477,
+  "detail": "kb_id=177ba7b4-a2e7-4169-9974-c65e12958235",
+  "evidence": "{'success': True, 'knowledgeBase': {'id': '177ba7b4-a2e7-4169-9974-c65e12958235', 'name': 's-audit-a-20260927', 'description': 'skill fulltest sandbox A', 'parentId': None, 'path': 's-audit-a-20260927', 'type': 'folder', 'childCount': 0, 'documentCount': 0, 'isKnowledgeBase': True, 'kb_id': '177ba7b4-a2e7-4169-9974-c65e12958235', 'createdAt': '2026-09-27T06:22:04.104Z', 'updatedAt': '2026-09-27T06:22:04.104Z'}}"
+ },
+ {
+  "step": "kb_create(B)",
+  "ok": true,
+  "ms": 277,
+  "detail": "kb_id=4d9f1f52-9563-4d42-a5c3-28d79f4ca44f",
+  "evidence": "{'success': True, 'knowledgeBase': {'id': '4d9f1f52-9563-4d42-a5c3-28d79f4ca44f', 'name': 's-audit-b-20260927', 'description': 'skill fulltest sandbox B', 'parentId': None, 'path': 's-audit-b-20260927', 'type': 'folder', 'childCount': 0, 'documentCount': 0, 'isKnowledgeBase': True, 'kb_id': '4d9f1f52-9563-4d42-a5c3-28d79f4ca44f', 'createdAt': '2026-09-27T06:22:04.381Z', 'updatedAt': '2026-09-27T06:22:04.381Z'}}"
+ },
+ {
+  "step": "kb_doc_save_parsed(A5 存储+.md命名)",
+  "ok": true,
+  "ms": 270,
+  "detail": "saved name='zephyr7-spec.md'",
+  "evidence": "{'success': True, 'savedCount': 1, 'files': [{'id': 'fbfb7283-d7f2-4349-9a34-c67a7929d812', 'name': 'zephyr7-spec.md', 'parentId': '177ba7b4-a2e7-4169-9974-c65e12958235', 'path': 's-audit-a-20260927\\\\zephyr7-spec.md', 'fileType': 'md', 'fileSize': 235, 'mimeType': 'text/markdown', 'type': 'file', 'status': 'completed', 'metadata': {'sourcePdf': 'zephyr7-spec.md', 'parseMethod': '', 'imageDir': '', 'markdownPath': '', 'imageCount': 0, 'imagePaths': [], 'parsedAt': '2026-09-27T06:22:04.649Z'}, 'description': 'Zephyr-7 widget spec with coolant 42 liters fact', 'createdAt': '2026-09-27T06:22:04.64"
+ },
+ {
+  "step": "kb_doc_create(doc2+tags)",
+  "ok": true,
+  "ms": 548,
+  "detail": "{'success': True, 'source_chars': 160, 'document': {'id': '90f781d5-f007-4f47-8e0a-f5de07962af1', 'n",
+  "evidence": "{'success': True, 'source_chars': 160, 'document': {'id': '90f781d5-f007-4f47-8e0a-f5de07962af1', 'name': 'aurora9-protocol.md', 'parentId': '177ba7b4-a2e7-4169-9974-c65e12958235', 'path': 's-audit-a-20260927\\\\aurora9-protocol.md', 'fileType': 'md', 'fileSize': 160, 'mimeType': 'text/markdown', 'type': 'file', 'status': 'completed', 'metadata': {}, 'description': 'Aurora-9 handshake protocol', 'createdAt': '2026-09-27T06:22:04.921Z', 'updatedAt': '2026-09-27T06:22:04.921Z'}, '_tags_applied': True, '_auto_index': {'triggered': True, 'task_id': '911a1ce6280b', 'note': 'Background indexing (vecto"
+ },
+ {
+  "step": "kb_doc_create(identical)→A0 去重不落盘",
+  "ok": true,
+  "ms": 1086,
+  "detail": "deduped=True catalog=2 (A0 去重契约)",
+  "evidence": "{'success': True, 'source_chars': 235, 'document': {'id': 'fbfb7283-d7f2-4349-9a34-c67a7929d812', 'name': 'zephyr7-spec.md', 'parentId': '177ba7b4-a2e7-4169-9974-c65e12958235', 'path': 's-audit-a-20260927\\\\zephyr7-spec.md', 'fileType': 'md', 'fileSize': 235, 'mimeType': 'text/markdown', 'type': 'file', 'status': 'completed', 'metadata': {'sourcePdf': 'zephyr7-spec.md', 'parseMethod': '', 'imageDir': '', 'markdownPath': '', 'imageCount': 0, 'imagePaths': [], 'parsedAt': '2026-09-27T06:22:04.649Z'}, 'description': 'Zephyr-7 widget spec with coolant 42 liters fact', 'createdAt': '2026-09-27T06:22"
+ },
+ {
+  "step": "kb_doc_create(near-dup)落盘=3",
+  "ok": true,
+  "ms": 1083,
+  "detail": "catalog=3 near-dup 落盘",
+  "evidence": "{'success': True, 'source_chars': 295, 'document': {'id': '127c7394-7a57-4cb8-bb5f-afafa9367f45', 'name': 'zephyr7-spec-copy.md', 'parentId': '177ba7b4-a2e7-4169-9974-c65e12958235', 'path': 's-audit-a-20260927\\\\zephyr7-spec-copy.md', 'fileType': 'md', 'fileSize': 295, 'mimeType': 'text/markdown', 'type': 'file', 'status': 'completed', 'metadata': {}, 'description': 'near-duplicate of spec (one line differs)', 'createdAt': '2026-09-27T06:22:06.561Z', 'updatedAt': '2026-09-27T06:22:06.561Z'}, '_tags_applied': True, '_auto_index': {'triggered': True, 'task_id': 'ae22d2af2e64', 'note': 'Background"
+ },
+ {
+  "step": "kb_doc_update_tags(A3b 标签)",
+  "ok": true,
+  "ms": 265,
+  "detail": "{'success': True, 'kb_id': '177ba7b4-a2e7-4169-9974-c65e12958235', 'kb_path': 's-audit-a-20260927', ",
+  "evidence": "{'success': True, 'kb_id': '177ba7b4-a2e7-4169-9974-c65e12958235', 'kb_path': 's-audit-a-20260927', 'docPath': 's-audit-a-20260927/zephyr7-spec.md', 'tags': ['audit', 'zephyr'], '_note': 'Tags updated. Graph reindex triggered in background.'}"
+ },
+ {
+  "step": "kb_index_document(A6 索引 doc1)",
+  "ok": true,
+  "ms": 305,
+  "detail": "{'success': True, 'vector_index': {'collection': 'kb_177ba7b4-a2e7-4169-9974-c65e12958235', 'chunk_i",
+  "evidence": "{'success': True, 'vector_index': {'collection': 'kb_177ba7b4-a2e7-4169-9974-c65e12958235', 'chunk_id_prefix': 's-audit-a-20260927/zephyr7-spec.md__chunk_', 'total_chunks': 1, 'embedding_model': 'bge-m3', 'indexed_at': '2026-09-27T06:22:07.859061+00:00', 'graph_doc_id': 'doc::s-audit-a-20260927/zephyr7-spec.md'}, 'graph_index': {}, 'graph_stats': {}}"
+ },
+ {
+  "step": "kb_batch_index(batch 全量)",
+  "ok": true,
+  "ms": 301,
+  "detail": "{'success': True, 'indexed': [{'doc_path': 'aurora9-protocol.md', 'vector_index': {'collection': 'kb",
+  "evidence": "{'success': True, 'indexed': [{'doc_path': 'aurora9-protocol.md', 'vector_index': {'collection': 'kb_177ba7b4-a2e7-4169-9974-c65e12958235', 'chunk_id_prefix': 's-audit-a-20260927/aurora9-protocol.md__chunk_', 'total_chunks': 1, 'embedding_model': 'bge-m3', 'indexed_at': '2026-09-27T06:22:08.017206+00:00', 'graph_doc_id': 'doc::s-audit-a-20260927/aurora9-protocol.md'}, 'graph_index': {}}, {'doc_path': 'zephyr7-spec-copy.md', 'vector_index': {'collection': 'kb_177ba7b4-a2e7-4169-9974-c65e12958235', 'chunk_id_prefix': 's-audit-a-20260927/zephyr7-spec-copy.md__chunk_', 'total_chunks': 1, 'embeddin"
+ },
+ {
+  "step": "kb_get_documents(catalog=3)",
+  "ok": true,
+  "ms": 527,
+  "detail": "docs=3 ['aurora9-protocol.md', 'zephyr7-spec-copy.md', 'zephyr7-spec.md']",
+  "evidence": "['aurora9-protocol.md', 'zephyr7-spec-copy.md', 'zephyr7-spec.md']"
+ },
+ {
+  "step": "kb_doc_read(A7 终检·by doc_id)",
+  "ok": true,
+  "ms": 774,
+  "detail": "content 含 42 liters",
+  "evidence": "{\"success\": true, \"path\": \"s-audit-a-20260927\\\\zephyr7-spec.md\", \"content\": \"# Zephyr-7 Quantum Widg"
+ },
+ {
+  "step": "kb_search_vector(命中≥0.35)",
+  "ok": true,
+  "ms": 592,
+  "detail": "top_score=0.7326109409332275",
+  "evidence": "{\"content\": \"# Zephyr-7 Quantum Widget Specification\\n\\nThe Zephyr-7 quantum widget has a coolant capacity of 42 liters.\\n\\nOperating frequency is 18."
+ },
+ {
+  "step": "kb_search_two_stage(命中)",
+  "ok": true,
+  "ms": 11060,
+  "detail": "two_stage 命中 aurora",
+  "evidence": "{\"success\": true, \"query\": \"how many round trips does Aurora-9 need\", \"stage1\": {\"candidates\": [{\"doc_path\": \"s-audit-a-20260927/aurora9-protocol.md\","
+ },
+ {
+  "step": "librarian complete_recall(保真)",
+  "ok": true,
+  "ms": 1164,
+  "detail": "complete_recall 保留 Zephyr 事实",
+  "evidence": "{\"query\": \"Zephyr-7 coolant capacity specification\", \"criterion\": \"evidence\", \"catalog\": [{\"kb_id\": \"177ba7b4-a2e7-4169-9974-c65e12958235\", \"name\": \"s"
+ },
+ {
+  "step": "kb_find_duplicates(organize 检出近重复)",
+  "ok": true,
+  "ms": 825,
+  "detail": "total=1 near=1 sims=[0.9947] (≥0.90 阈值)",
+  "evidence": "[{\"type\": \"near\", \"similarity\": 0.9947, \"documents\": [{\"kb_id\": \"177ba7b4-a2e7-4169-9974-c65e12958235\", \"doc_path\": \"s-audit-a-20260927/zephyr7-spec.m"
+ },
+ {
+  "step": "kb_doc_update_meta(manage 改名)",
+  "ok": true,
+  "ms": 282,
+  "detail": "{'success': True, 'document': {'id': '127c7394-7a57-4cb8-bb5f-afafa9367f45', 'name': 'zephyr7-spec-v",
+  "evidence": "{'success': True, 'document': {'id': '127c7394-7a57-4cb8-bb5f-afafa9367f45', 'name': 'zephyr7-spec-v2.md', 'parentId': '177ba7b4-a2e7-4169-9974-c65e12958235', 'path': 's-audit-a-20260927\\\\zephyr7-spec-v2.md', 'fileType': 'md', 'fileSize': 295, 'mimeType': 'text/markdown', 'type': 'file', 'status': 'completed', 'metadata': {}, 'description': 'near-duplicate of spec (one line differs)', 'createdAt': '2026-09-27T06:22:06.561Z', 'updatedAt': '2026-09-27T06:22:23.460Z'}}"
+ },
+ {
+  "step": "kb_doc_move(A→B)",
+  "ok": true,
+  "ms": 613,
+  "detail": "{'success': True, 'document': {'id': '127c7394-7a57-4cb8-bb5f-afafa9367f45', 'name': 'zephyr7-spec-v",
+  "evidence": "{'success': True, 'document': {'id': '127c7394-7a57-4cb8-bb5f-afafa9367f45', 'name': 'zephyr7-spec-v2.md', 'parentId': '4d9f1f52-9563-4d42-a5c3-28d79f4ca44f', 'path': 's-audit-b-20260927\\\\zephyr7-spec-v2.md', 'fileType': 'md', 'fileSize': 295, 'mimeType': 'text/markdown', 'type': 'file', 'status': 'completed', 'metadata': {}, 'description': 'near-duplicate of spec (one line differs)', 'createdAt': '2026-09-27T06:22:06.561Z', 'updatedAt': '2026-09-27T06:22:23.740Z'}, 'index_hygiene': {'sourceKb': '177ba7b4-a2e7-4169-9974-c65e12958235', 'oldPath': 's-audit-a-20260927\\\\zephyr7-spec-v2.md', 'vecto"
+ },
+ {
+  "step": "move 后计数 A=2 B=1",
+  "ok": true,
+  "ms": 1050,
+  "detail": "A=2 B=1",
+  "evidence": "(2, 1)"
+ },
+ {
+  "step": "kb_search_stats(verify 向量面)",
+  "ok": true,
+  "ms": 30,
+  "detail": "collections=24",
+  "evidence": "{'success': True, 'stats': {'collections': [{'collection': 'kb_455137b4-a0be-46ed-acf5-d8b475dc5d70', 'chunk_count': 152"
+ },
+ {
+  "step": "kb_graph_build(轮询至完成)",
+  "ok": true,
+  "ms": 4007,
+  "detail": "task→done",
+  "evidence": "{'task_id': '307cabfd8910', 'kind': 'kb_graph_build', 'status': 'done', 'created_at': '2026-09-27T06:22:25+00:00', 'finished_at': '2026-09-27T06:22:26+00:00', 'result': {'success': True, 'result': {'success': True, 'kb_id': '177ba7b4-a2e7-4169-9974-c65e12958235', 'kb_path': 's-audit-a-20260927', 'docs_processed': 2, 'docs_skipped': 0, 'total_relations': 7, 'sub_kb_count': 0, 'sub_kbs': [], 'errors': []}}, 'error': None, 'success': True}"
+ },
+ {
+  "step": "kb_graph_search(zephyr)",
+  "ok": true,
+  "ms": 264,
+  "detail": "图谱含 zephyr 节点",
+  "evidence": "{\"success\": true, \"keyword\": \"zephyr\", \"documents\": [{\"graph_doc_id\": \"doc::s-audit-a-20260927/zephyr7-spec.md\", \"path\": \"s-audit-a-20260927/zephyr7-s"
+ },
+ {
+  "step": "kb_graph_central_documents",
+  "ok": true,
+  "ms": 7,
+  "detail": "{'success': True, 'documents': [{'gid': 'doc::s-audit-a-20260927/aurora9-protocol.md', 'name': 'auro",
+  "evidence": "{'success': True, 'documents': [{'gid': 'doc::s-audit-a-20260927/aurora9-protocol.md', 'name': 'aurora9-protocol.md', 'path': 's-audit-a-20260927/aurora9-protocol.md', 'degree': 3, 'tw': 2.06}, {'gid': 'doc::s-audit-a-20260927/zephyr7-spec.md', 'name': 'zephyr7-spec.md', 'path': 's-audit-a-20260927/zephyr7-spec.md', 'degree': 3, 'tw': 1.66}], 'count': 2}"
+ },
+ {
+  "step": "experience_create",
+  "ok": true,
+  "ms": 283,
+  "detail": "exp_id=exp-95be2aec060b",
+  "evidence": "{'success': True, 'experience': {'id': 'exp-95be2aec060b', 'title': '[SkillAudit] near-duplicate detection', 'path': 's-audit-a-20260927/experience/exp-95be2aec060b.md', 'scenario': 'fulltest sandbox ingest', 'category': 'tip', 'problem': 'copy of spec doc could pollute retrieval', 'solution': 'kb_find_duplicates flags near-duplicates before indexing', 'result': 'success', 'key_lessons': ['always run duplicate audit after bulk ingest'], 'tags': ['skillaudit'], 'severity': 'normal', 'status': 'published', 'related_docs': [], 'prerequisites': [], 'metrics': {}, 'auto_extracted': False, 'harness'"
+ },
+ {
+  "step": "experience_search_global(命中)",
+  "ok": true,
+  "ms": 287,
+  "detail": "经验检索命中",
+  "evidence": "{\"success\": true, \"query\": \"near-duplicate detection audit\", \"count\": 1, \"experiences\": [{\"id\": \"exp-95be2aec060b\", \"title\": \"[SkillAudit] near-duplic"
+ },
+ {
+  "step": "experience_update(exp_id+合法枚举)",
+  "ok": true,
+  "ms": 202,
+  "detail": "{'success': True, 'experience': {'id': 'exp-95be2aec060b', 'title': '[SkillAudit] near-duplicate det",
+  "evidence": "{'success': True, 'experience': {'id': 'exp-95be2aec060b', 'title': '[SkillAudit] near-duplicate detection', 'path': 's-audit-a-20260927/experience/exp-95be2aec060b.md', 'scenario': 'fulltest sandbox ingest', 'category': 'tip', 'problem': 'copy of spec doc could pollute retrieval', 'solution': 'kb_find_duplicates flags near-duplicates before indexing', 'result': 'success', 'key_lessons': ['always run duplicate audit after bulk ingest'], 'tags': ['skillaudit'], 'severity': 'important', 'status': 'published', 'related_docs': [], 'prerequisites': [], 'metrics': {}, 'auto_extracted': False, 'harne"
+ },
+ {
+  "step": "experience_list(回读校验)",
+  "ok": true,
+  "ms": 9,
+  "detail": "update 落盘可见",
+  "evidence": "{\"success\": true, \"count\": 1, \"experiences\": [{\"id\": \"exp-95be2aec060b\", \"title\": \"[SkillAudit] near-duplicate detection\", \"path\": \"s-audit-a-20260927"
+ },
+ {
+  "step": "experience_delete(清理)",
+  "ok": true,
+  "ms": 46,
+  "detail": "{'success': True, 'deleted_id': 'exp-95be2aec060b'}",
+  "evidence": "{'success': True, 'deleted_id': 'exp-95be2aec060b'}"
+ },
+ {
+  "step": "soul_init(异步 task_id)",
+  "ok": true,
+  "ms": 1438,
+  "detail": "task_id=5839671f0511 profile_pending=True",
+  "evidence": "{'success': True, 'kb_id': '5192ddb6-c950-4794-bc04-0e4d0bb495a6', 'name': 'soul-skillaudit', 'docs_created': [{'name': 'soul-definition.md', 'ok': True}, {'name': 'values.md', 'ok': True}, {'name': 'thinking-style.md', 'ok': True}, {'name': 'memory-conventions.md', 'ok': True}], 'profile_summary_generated': False, 'profile_pending': True, 'profile_task_id': 'b63b6fe194b2', 'meditation_config_created': True, 'task_id': '5839671f0511', 'note': 'indexing and profile summary run in background; poll kb_task_status(task_id) / profile_task_id'}"
+ },
+ {
+  "step": "kb_task_status(init 轮询→done)",
+  "ok": true,
+  "ms": 4005,
+  "detail": "status=done",
+  "evidence": "{'task_id': '5839671f0511', 'kind': 'soul_init_index', 'status': 'done', 'created_at': '2026-09-27T06:22:31+00:00', 'finished_at': '2026-09-27T06:22:32+00:00', 'result': {'success': True, 'indexed': ['soul-definition.md', 'values.md', 'thinking-style.md', 'memory-conventions.md']}, 'error': None, 'success': True}"
+ },
+ {
+  "step": "soul_status(预算面)",
+  "ok": true,
+  "ms": 9,
+  "detail": "cost≈0.0",
+  "evidence": "{\"success\": true, \"soul_kb_id\": \"5192ddb6-c950-4794-bc04-0e4d0bb495a6\", \"drafts_pending_review\": 0, \"total_memories\": 0, \"total_gaps\": 0, \"judge_diver"
+ },
+ {
+  "step": "soul_qdcvr_ask(检索+人格作答 42+citations)",
+  "ok": true,
+  "ms": 24020,
+  "detail": "pas=5.0 citations=3 answer[:60]='结论: Zephyr-7 的冷却液容量为 42 升。\\n\\n依据(分点陈述, 引用必带出处):\\n1. Zephyr-7 Qu'",
+  "evidence": "{\"success\": true, \"answer\": \"结论: Zephyr-7 的冷却液容量为 42 升。\\n\\n依据(分点陈述, 引用必带出处):\\n1. Zephyr-7 Quantum Widget Specification 明确记载 \\\"coolant capacity of 42 liters\\\" [s-audit-a-20260927/zephyr7-spec.md]。\\n2. 同目录下的副本文件给出完全一致的数值 42 liters [s-audit-a-20260927/zephyr7-spec-copy.md];该副本仅额外增加一行用于重复审计的说明, 不影响容量数据本"
+ },
+ {
+  "step": "soul_ask(自动路由或诚实拒答)",
+  "ok": true,
+  "ms": 36025,
+  "detail": "routed→e2e91a7d-e602-4c38-b4c1-aa3f60b18b42 answer[:60]='结论：无法回答。检索到的知识片段中没有任何关于“Aurora-9”或“往返次数（round trips）”的信息，我不能'",
+  "evidence": "{\"success\": true, \"answer\": \"结论：无法回答。检索到的知识片段中没有任何关于“Aurora-9”或“往返次数（round trips）”的信息，我不能编造数字。[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md]\\n\\n依据与边界：\\n1. 本轮返回的 9 个片段全部来自两篇文档——《Attention Is All You Need》与光合作用主题——"
+ },
+ {
+  "step": "预算 reverence 检查",
+  "ok": true,
+  "ms": 0,
+  "detail": "estimated_cost_usd=0.0 (≤0.15 才训)",
+  "evidence": "0.0"
+ },
+ {
+  "step": "soul_train_rl(rounds=1)",
+  "ok": true,
+  "ms": 330094,
+  "detail": "status=done reward=2.75",
+  "evidence": "{\"success\": true, \"degraded\": false, \"rounds_completed\": 1, \"per_round\": [{\"round\": 1, \"elapsed_sec\": 320.8, \"reward\": 2.75, \"scores\": {\"identity\": 2.0, \"values\": 3.0, \"thinking\": 3.0, \"language\": 4.0, \"knowledge\": 2.0, \"coherence\": 2.5}, \"converged\": false, \"cognition\": {\"auto_applied\": 0, \"pending"
+ },
+ {
+  "step": "soul_review_drafts(list)",
+  "ok": true,
+  "ms": 279,
+  "detail": "drafts=5",
+  "evidence": "{'success': True, 'drafts': [{'draft_id': '20260927-2313c1c8ca05', 'question': 'Aurora-9 协议中每一次往返的超时时间是多少毫秒？', 'answer_t"
+ },
+ {
+  "step": "soul_checkpoint",
+  "ok": true,
+  "ms": 22,
+  "detail": "ckpt=b31f68e79c53406a8d5652d7145ef155",
+  "evidence": "{'success': True, 'checkpoint_id': 'b31f68e79c53406a8d5652d7145ef155', 'manifest_path': 'D:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\storage\\\\tree-file-system\\\\soul-skillaudit\\\\checkpoints\\\\b31f68e79c53406a8d5652d7145ef155.json', 'file_count': 15}"
+ },
+ {
+  "step": "soul_rollback(回滚到检查点)",
+  "ok": true,
+  "ms": 5710,
+  "detail": "{'success': True, 'rolled_back_to': 'b31f68e79c53406a8d5652d7145ef155', 'restored_memories': 5, 'res",
+  "evidence": "{'success': True, 'rolled_back_to': 'b31f68e79c53406a8d5652d7145ef155', 'restored_memories': 5, 'restored_drafts': 5, 'stale_experiences': 0}"
+ },
+ {
+  "step": "soul_reflect",
+  "ok": true,
+  "ms": 4990,
+  "detail": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\storage\\tree-file-system\\soul-skillaudit\\reports\\drift-",
+  "evidence": "{'success': True, 'report_path': 'D:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\storage\\\\tree-file-system\\\\soul-skillaudit\\\\reports\\\\drift-20260927.md', 'drift_detected': False, 'traits_diff_summary': {'identity': {'has_diff': False, 'added_count': 0, 'removed_count': 0, 'changed_count': 0}, 'values': {'has_diff': False, 'added_count': 0, 'removed_count': 0, 'changed_count': 0}, 'thinking': {'has_diff': False, 'added_count': 0, 'removed_count': 0, 'changed_count': 0}, 'language': {'has_diff': False, 'added_count': 0, 'removed_count': 0, 'changed_count': 0}}}"
+ },
+ {
+  "step": "soul_export(高分导出)",
+  "ok": true,
+  "ms": 12,
+  "detail": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\storage\\tree-file-system\\soul-skillaudit\\training\\expor",
+  "evidence": "{'success': True, 'export_path': 'D:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\storage\\\\tree-file-system\\\\soul-skillaudit\\\\training\\\\export-20260927-4_9.jsonl', 'record_count': 0, 'min_score_applied': 4.9}"
+ },
+ {
+  "step": "边界: kb_create 重名拒绝(fail-closed)",
+  "ok": true,
+  "ms": 308,
+  "detail": "重名 KB 被结构化拒绝 ✓",
+  "evidence": "{'success': False, 'error': '{\\n  \"error\": true,\\n  \"url\": \"http://localhost:6789/api/kb/create\",\\n  \"statusCode\": 409,\\"
+ },
+ {
+  "step": "边界: soul_init 保留名拒绝",
+  "ok": true,
+  "ms": 2,
+  "detail": "Windows 保留名被结构化拒绝 ✓",
+  "evidence": "{'success': False, 'error': 'invalid_soul_name', 'detail': 'Windows 保留名'}"
+ },
+ {
+  "step": "边界: 空查询拒绝(新门禁)",
+  "ok": true,
+  "ms": 2,
+  "detail": "空查询被拒 ✓",
+  "evidence": "{'success': False, 'error': 'query must not be empty'}"
+ },
+ {
+  "step": "边界: parse_doc .md 显式拒绝(新门禁)",
+  "ok": true,
+  "ms": 1,
+  "detail": ".md 被 parse_doc 显式拒绝 ✓",
+  "evidence": "{'success': False, 'error': 'unsupported parse format: .md — parse_doc supports pdf/png/jpg/jpeg/docx/xlsx only; save text formats (.md/.txt) directly"
+ },
+ {
+  "step": "soul_delete(清理+验证)",
+  "ok": true,
+  "ms": 4905,
+  "detail": "deleted, soul_list 无残留=True",
+  "evidence": "{'success': True, 'checkpoint_saved': 'c3e373c781124452be69fbbe05406522', 'deleted': {'success': True, 'deletedId': '5192ddb6-c950-4794-bc04-0e4d0bb495a6', 'message': 'Folder \"soul-skillaudit\" deleted successfully'}, 'purged': False}"
+ },
+ {
+  "step": "kb_delete(A/B 清理+验证)",
+  "ok": true,
+  "ms": 2731,
+  "detail": "177ba7b4-a2e7-4169-9974-c65e12958235=deleted 4d9f1f52-9563-4d42-a5c3-28d79f4ca44f=deleted 残留=False",
+  "evidence": "['177ba7b4-a2e7-4169-9974-c65e12958235=deleted', '4d9f1f52-9563-4d42-a5c3-28d79f4ca44f=deleted']"
+ }
+]

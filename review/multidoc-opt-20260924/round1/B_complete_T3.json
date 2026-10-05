@@ -1,0 +1,283 @@
+{
+  "mode": "B_complete",
+  "id": "T3",
+  "scenario": "paraphrase zero-overlap",
+  "query": "How should a farmer split planting area between decoy plants and the main crop to control insect pests without pesticides and keep the harvest high?",
+  "seconds": 306.8,
+  "scan": {
+    "descriptions_scanned": 329,
+    "overlap_docs": 30,
+    "zero_overlap_unread": 299,
+    "docs_read": 30
+  },
+  "judge": {
+    "abs_kept": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "relative_cut": 0.849,
+    "global_best": 0.949,
+    "doc_scores": [
+      {
+        "doc": "计算机与人工智能\\statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 2 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8717,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8981,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9154,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8706,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8902,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8692,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.837,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8781,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 7 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.871,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8684,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9016,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8783,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.888,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8579,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 4 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9271,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 2 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9018,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 3 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9059,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.9069,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 2 of 4).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8819,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 4 of 4).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8919,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 2 of 3).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8845,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 3 of 7).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.9226,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8848,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 3 of 3).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8662,
+        "kept": true
+      },
+      {
+        "doc": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.8851,
+        "kept": true
+      },
+      {
+        "doc": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.9064,
+        "kept": true
+      },
+      {
+        "doc": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.8837,
+        "kept": true
+      },
+      {
+        "doc": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.9494,
+        "kept": true
+      },
+      {
+        "doc": "经济与社会\\finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "score": 0.8947,
+        "kept": true
+      },
+      {
+        "doc": "经济与社会\\economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md",
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "score": 0.8708,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 273,
+    "total_segments": 273
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能\\statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 2 of 5).md",
+    "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+    "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+    "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+    "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+    "计算机与人工智能\\artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 7 of 13).md",
+    "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md",
+    "计算机与人工智能\\artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 4 of 4).md",
+    "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md",
+    "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+    "计算机与人工智能\\neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md",
+    "计算机与人工智能\\statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 4 of 5).md",
+    "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 2 of 5).md",
+    "计算机与人工智能\\databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 3 of 5).md",
+    "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+    "自然科学与地球科学\\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 2 of 4).md",
+    "自然科学与地球科学\\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 4 of 4).md",
+    "自然科学与地球科学\\oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 2 of 3).md",
+    "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 3 of 7).md",
+    "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md",
+    "生命科学与医学\\immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 3 of 3).md",
+    "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+    "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+    "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+    "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+    "经济与社会\\finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+    "经济与社会\\economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md"
+  ],
+  "evidence_pack": "[计算机与人工智能\\statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 2 of 5).md]\n# statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md.md（第 2/5 部分）\n章节: Causal inference via algebraic geometry: feasibility tests for functional causal structures with two binary observed variables > 3 Deriving the feasibility tests\n## 3 Deriving the feasibility tests\n\n\nWe begin with an introduction to some of the main concepts of algebraic geometry following the presentation given in [7]. For a more detailed discussion, see appendix A.\n\nDenote the set of all polynomials in variables $x _ { 1 } , \\ldots , x _ { n }$ with coefficients in some field k by $k [ x _ { 1 } , \\dots , x _ { n } ]$ . When dealing with polynomials, we are mainly interested in the solution set of systems of polynomial equations. This leads us to the main geometrical objects studied in algebraic geometry, algebraic varieties and semi-algebraic sets.\n\nAn algebraic variety² $\\begin{array} { r l r } { { \\mathbf V } ( f _ { 1 } , \\ldots , f _ { s } ) } & { { } \\subset } & { k ^ { n } } \\end{array}$ is the solution set of the system of polynomial equations $f _ { 1 } ( x _ { 1 } , \\ldots , x _ { n } ) = \\cdots = f _ { s } ( x _ { 1 } , \\ldots , x _ { n } ) = 0 .$ A basic semi-algebraic set is defined to be the solution set of a system of polynomial equalities and inequalities, that is, {x ∈ $\\mathbb { R } ^ { n } : g _ { i } ( x )  0 , \\forall i = 1 , \\ldots , m \\}$ , whereg $\\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad \\quad\n\n[计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md]\n# artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions（第 3/5 部分）\n章节: Augmenting the action space with conventions to improve multi-agent cooperation in Hanabi > 4.3 Preliminary Results on Small Hanabi\n## 4.3 Preliminary Results on Small Hanabi\n\n\nTo test the viability and capabilities of conventions, we conduct initial tests using the Small Hanabi environment, since it offers a smaller state-action space and allows for a pure convention space12. We compare a pure convention space and an augmented action-convention space, as discussed in Section 3.2, against their primitive action benchmarks. Due to Hanabi having a long list of intricate conventions, in addition to augmenting the action space with conventions, we experiment with the idea of simplifying the list of conventions during augmentation13. This simplified list consists of the conventions that were the most straightforward and natural to develop, and were also the most common ones to occur in a game. The removed conventions can be considered edge-case or specific to certain game states that are very uncommon, and often result in uncertainty regarding their effectiveness.\n\nSmall Hanabi has a deck reduced to 20 cards with only two suits, is limited to only two players, and the player hand size is reduced to two cards. Furthermore, the life tokens have been reduced to one, and the hint tokens to three, otherwise the game shares all the core mechanics as regular Hanabi. This results in the problem having a significantly smaller state-action space and allows for initial testing and development of algorithms, with the aim of solving the full Hanabi problem. Even though this problem is considered simpler than Hanabi, it is by no means an easy problem to solve, with a perfect score of 10/10 being difficult to achieve. Player hands are often “locked\" with important cards that must not be discarded (called critical cards), hint tokens run out almost immediately, and players are often forced into no-win scenarios where they must choose a bad action or risk losing their single life token.\n\nIn these tests, we use our in-house learning environment as well as the open-sourced learning environment developed by Bard et al. [37]. We implement our own rudimentary conventions specific to Small Hanabi, which we developed through multiple human plays, presented and discussed in Appendix A.1. Fig. 3a shows the result for independent Deep Q-learning (DQN) with a primitive-action space compared t\n\n[计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]\n# artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult（第 2/3 部分）\n章节: Learning Reward Machines in Cooperative Multi-Agent Tasks > 3.2 Learn Individual Reward Machines\n## 3.2 Learn Individual Reward Machines\n\n\nWe propose to decompose the global task into sub-tasks, each of which can be independently solved by one of the agents. Note that even though an agent is assigned a sub-task, it does not have any information about its structure nor how to solve it. This is in fact what the proposed approach intends to tackle: learning the RM encoding the structure of the sub-task. This should be simpler than learning a global RM since the number of constituent states becomes smaller.\n\nGiven a set of N agents, we assume that the global task can be decomposed into N sub-task MDPs. Similarly to Neary et al. $[ 1 6 ] _ { : }$ we assume each agent's MDP has its own state space $s _ { i }$ , action space ${ \\mathcal { A } } _ { i } ,$ transition function $\\mathcal { P } i$ , and termination function $\\tau _ { i } .$ In addition, each agent has its own labeling function $l _ { i } ;$ hence, the agent may only observe a subset $\\mathcal { P } _ { i } \\subseteq \\mathcal { S }$ . Note that the termination function is particular to each agent; for instance, agent $A _ { 2 }$ in THREEBUTTONS will complete its sub-task by pressing the green button, then the red button until it observes the signal $R _ { B }$ indicating that $A _ { 3 }$ is also pressing it. Ideally, the parallel composition of the learned RMs captures the collective goal.\n\nWe propose an algorithm that interleaves the induction of the RMs from a collection of label traces and the learning of the associated Q-functions, akin to that by Furelos-Blanco et al. [9] in the single agent setting. The decentralised learning of the Q-functions is performed using the method by Neary et al. [16], briefly outlined in Section 2.2.3. The induction of the RMs is done using a stateof-the-art inductive logic programming system called ILASP [15], which learns the transition function of an RM as a set of logic rules from example traces observed by the agent.\n\nExample 3.1. The leftmost edge in Figure 2a corresponds to the rule $\\delta ( u _ { 0 } ^ { 1 } , u _ { 1 } ^ { 1 } , \\top ) : - \\mathsf { p r o p } ( Y _ { B } , \\top )$ . The $\\delta ( { \\sf X } , { \\sf Y } , { \\sf T } )$ predicate expresses that the transition from X to Y is satisfied at time T, while the prop(P, T) predicate indicates that propositi\n\n[计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 2/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations > 4.3 Ablation Study\n## 4.3 Ablation Study\n\n\nTo provide insights into the effectiveness of InstructDS, we conduct ablation studies on InstructDS variants to answer two fundamental questions: 1) How do augmented QDS triples contribute to general and query-based dialogue summarization? 2) What is the effect of length awareness augmentation on general and length-controllable dialogue summarization?\n\nModel variants. We examine five model variants of InstructDS across four evaluation datasets. Each variant is trained with distinct training data: 1) MixDS: Mixing three dialogue summarization datasets, 2) MixDS+QDS: MixDS and synthesized QDS triples, 3) MixDS+Length: MixDS and length augmentation, 4) InstructDS: MixDS, synthesized QDS triples and length augmentation, 5) InstructDS+DREAM: MixDS, synthesized QDS triples, human-written QDS triples from DREAM, and length augmentation. All other hyperparameters and evaluation protocols are kept identical for fair comparisons.\n\n![](images/7f33a31120c1e6f1051c0df6bade961efc3001c23e4bebfd1ea7fcb1f86847f4.jpg)\n\n![](images/86567a789c610eb3187a068e7c7c08b286f56b70090270026c9b6a912028fef9.jpg)\n\n![](images/e404c5f35ec709354d87e306dccf594317d144dcd32749373ec1d4f11c75695c.jpg)\n\n![](images/2d1dfee957e67af79332cafa5ddf75fa81eed45f9db91347a7c32068ad30ae1d.jpg)  \nFigure 3: Ablation study on different variants of InstructDS. Averaged ROUGE-1/2/L score is reported for dialogue summarization datasets, including SAMSum, DialogSum and TODSum. Accuracy is computed for DREAM dataset.\n\n![](images/b7a672e86c5d43e0467b46d5d07afe044089e23bc6741d6f5861d54e44e6c57e.jpg)  \nFigure 4: Ablation study on the number of included QDS triples. Performance on SAMSum (left, averaged ROUGE) and DREAM (right, accuracy) datasets are reported.\n\nThe ablation results are presented in Table 3. First, on SAMSum and DialogSum datasets, the full InstructDS model demonstrates the best performance. Incorporating both synthesized QDS triples and length augmentation techniques contributes to an overall performance improvement. We attribute these performance boosts on the enhanced dialogue understanding and length awareness capabilities. On DREAM dataset, the inclusion of synthesized QDS triples leads to an improvement in query-based dialogue summarization performance, elevating it from 56.4 to 59.1. Notably, the performance is further\n\n[计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md]\n# large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference（第 4/4 部分）\n章节: An Example of Our Generated Queries > C Understanding Llama Behavior\n## C Understanding Llama Behavior\n\n\nTo better understand the performance drop in our attack for the Llama model, we examine the MIA score under two scenarios:\n\n<table><tr><td>Attack</td><td>Query</td></tr><tr><td>Target Document</td><td>This paper serves as a companion or extension to the “Inside PageRank&quot; paper by Bianchini et al. [19]. It is a comprehensive survey of all issues associated with PageRank, covering the basic PageRank model, available and recommended solution methods, storage issues, existence, uniqueness, and convergence properties, possible alterations to the basic model, suggested alternatives to the traditional solution methods, sensitivity and conditioning, and finally the updating problem. We introduce a few new results, provide an extensive reference list, and speculate about exciting areas of future research.</td></tr><tr><td>RAG-MIA[2]</td><td>Does this:\\n“This paper serves as a companion or extension to the “Inside PageRank&quot; paper by Bianchini et al. [19]. It is a comprehensive survey of all issues associated with PageRank, covering the basic PageRank model, available and recommended solution methods, storage issues, existence, uniqueness, and convergence properties, possible alterations to the basic model, suggested alternatives to the traditional solut",
+  "_gold": {
+    "2508.05896": {
+      "judged": false,
+      "kept": false,
+      "in_evidence": false,
+      "score": null
+    },
+    "_summary": {
+      "golds_total": 1,
+      "golds_judged": 0,
+      "golds_kept": 0,
+      "golds_in_evidence": 0
+    }
+  }
+}

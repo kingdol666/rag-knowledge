@@ -1,0 +1,98 @@
+{
+ "track": "b",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "answer": "**Answer:** MAMELOSHNLM is, per the paper, \"the first open-source large language model for Yiddish,\" named after the traditional Yiddish term *mame-loshn* (\"mother tongue\"). Its parameter scale is **8B** — it was built by continued pretraining of the **Llama-3.1-8B** base model on a Yiddish-dominant corpus (≈5.7B tokens, 72% Yiddish words) over one epoch on a single NVIDIA H200 GPU (~207 GPU-hours). The paper evaluates it against other open-weight baselines \"of similar scale\" including Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, and EuroLLM 9B.\n\n**File used:** `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md` (Section 5 \"MAMELOSHNLM\" and Section 6 \"Experimental Setup\").",
+ "is_error": false,
+ "latency_s": 157.7,
+ "sdk_duration_ms": 154677,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MameLoshn|Mameloshn|MameLoshnLM|MameloshnLM"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\nlp__2608.05850__mameloshnlm-yiddish-languag"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 10876,
+  "output": 603,
+  "cache_read": 157568,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.148239,
+ "timeline": [
+  {
+   "t": 3.07,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 35.29,
+   "event": "text",
+   "detail": "47"
+  },
+  {
+   "t": 35.31,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 35.33,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 82.83,
+   "event": "text",
+   "detail": "90"
+  },
+  {
+   "t": 82.84,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 120.95,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 157.7,
+   "event": "text",
+   "detail": "698"
+  },
+  {
+   "t": 157.71,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the directory for relevant files.\n\n",
+  "I found the paper. Let me read the model description section to get the parameter scale.\n\n",
+  "**Answer:** MAMELOSHNLM is, per the paper, \"the first open-source large language model for Yiddish,\" named after the traditional Yiddish term *mame-loshn* (\"mother tongue\"). Its parameter scale is **8B** — it was built by continued pretraining of the **Llama-3.1-8B** base model on a Yiddish-dominant corpus (≈5.7B tokens, 72% Yiddish words) over one epoch on a single NVIDIA H200 GPU (~207 GPU-hours). The paper evaluates it against other open-weight baselines \"of similar scale\" including Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, and EuroLLM 9B.\n\n**File used:** `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md` (Section 5 \"MAMELOSHNLM\" and Section 6 \"Experimental Setup\")."
+ ],
+ "qid": "BQ07",
+ "via": "chat"
+}

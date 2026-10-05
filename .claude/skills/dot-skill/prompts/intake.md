@@ -1,135 +1,134 @@
-# 基础信息录入脚本
+# Basic Info Intake Script
 
-## 开场白
+## Opening
 
 ```
-我来帮你创建这位同事的 Skill。只需要回答 3 个问题，每个都可以跳过。
+I'll help you create this colleague's Skill. Just answer 3 questions — you can skip any of them.
 ```
 
 ---
 
-## 问题序列
+## Question Sequence
 
-### Q1：花名/代号
+### Q1: Alias / Codename
 
 ```
-这位同事怎么称呼？（花名、昵称或代号都行，多个字用 - 连接）
+What should we call this colleague? (An alias, nickname, or codename all work; join multi-word names with -)
 
-例：qing-yun
+Example: qing-yun
 ```
 
-- 接受任意字符串
-- 生成的 slug 统一用 `-` 连接（不用下划线）
-- 中文自动转拼音再用 `-` 连接（"青云" → `qing-yun`，"小李" → `xiao-li`）
-- 英文直接小写 `-` 连接（"Big Mike" → `big-mike`）
+- Accept any string
+- Generated slugs always use `-` as the separator (never underscores)
+- Chinese names are auto-converted to pinyin and joined with `-` ("青云" → `qing-yun`, "小李" → `xiao-li`)
+- English names are lowercased and joined with `-` ("Big Mike" → `big-mike`)
 
 ---
 
-### Q2：基本信息
+### Q2: Basic Info
 
-把公司、职级、职位、性别放在一个问题里，让用户一句话说完：
-
-```
-用一句话描述他的基本信息——公司、职级、职位、性别，想到什么写什么，跳过也行。
-
-例：字节 2-1 后端工程师 男
-```
-
-从用户的回答中解析以下字段（缺失的留空）：
-- **公司**
-- **职级**
-- **职位**
-- **性别**
-
-#### 职级对照参考表
-
-| 公司 | 职级格式 | 工程师/研究员 | 高级工程师 | 资深/专家 | Staff/Principal |
-|------|---------|------------|---------|---------|----------------|
-| 字节跳动 | X-Y | 2-1, 2-2 | 3-1, 3-2 | 3-3 | 3-3+（O级） |
-| 阿里巴巴 | P级 | P5, P6 | P7 | P8 | P9+ |
-| 腾讯 | T级 | T1-1~T2-2 | T3-1, T3-2 | T4 | T4+ |
-| 百度 | T级 | T5, T6 | T7 | T8 | T9+ |
-| 美团 | P级 | P4, P5 | P6 | P7 | P8+ |
-| 华为 | 数字级 | 13-15 | 16-17 | 18-19 | 20-21 |
-| 网易 | P级 | P1-P3 | P4 | P5 | P6+ |
-| 京东 | T级 | T3-T4 | T5 | T6 | T7+ |
-| 小米 | 数字级 | 1-3 | 4-5 | 6-7 | 8+ |
-
-**跨公司粗略对应**：
+Bundle company, level, role, and gender into a single question so the user can answer in one sentence:
 
 ```
-字节 2-1/2-2  ≈  阿里 P6   ≈  腾讯 T2  ≈  百度 T6
-字节 3-1      ≈  阿里 P7   ≈  腾讯 T3-1 ≈  百度 T7
-字节 3-2      ≈  阿里 P7+  ≈  腾讯 T3-2
-字节 3-3      ≈  阿里 P8   ≈  腾讯 T4
+Describe their basic info in one sentence — company, level, role, gender. Write whatever comes to mind; skipping is fine.
+
+Example: ByteDance 2-1 backend engineer male (字节 2-1 后端工程师 男)
 ```
 
-> 注：字节 2-1 是工程师职称，3-1 起为高级工程师；
-> 2-1 约等于阿里 P6，是独立完成任务的主力工程师级别。
+Parse the following fields from the user's answer (leave missing ones empty):
+- **Company**
+- **Level**
+- **Role**
+- **Gender**
+
+#### Job-Level Reference Table
+
+| Company | Level format | Engineer/Researcher | Senior Engineer | Senior/Expert | Staff/Principal |
+|---------|--------------|---------------------|-----------------|---------------|-----------------|
+| ByteDance | X-Y | 2-1, 2-2 | 3-1, 3-2 | 3-3 | 3-3+ (O level) |
+| Alibaba | P-level | P5, P6 | P7 | P8 | P9+ |
+| Tencent | T-level | T1-1~T2-2 | T3-1, T3-2 | T4 | T4+ |
+| Baidu | T-level | T5, T6 | T7 | T8 | T9+ |
+| Meituan | P-level | P4, P5 | P6 | P7 | P8+ |
+| Huawei | Numeric | 13-15 | 16-17 | 18-19 | 20-21 |
+| NetEase | P-level | P1-P3 | P4 | P5 | P6+ |
+| JD | T-level | T3-T4 | T5 | T6 | T7+ |
+| Xiaomi | Numeric | 1-3 | 4-5 | 6-7 | 8+ |
+
+**Rough cross-company equivalents**:
+
+```
+ByteDance 2-1/2-2  ≈  Alibaba P6   ≈  Tencent T2    ≈  Baidu T6
+ByteDance 3-1      ≈  Alibaba P7   ≈  Tencent T3-1  ≈  Baidu T7
+ByteDance 3-2      ≈  Alibaba P7+  ≈  Tencent T3-2
+ByteDance 3-3      ≈  Alibaba P8   ≈  Tencent T4
+```
+
+> Note: ByteDance 2-1 is the engineer title; 3-1 and above are senior engineer.
+> 2-1 roughly equals Alibaba P6 — the level of an independent engineer who owns complete tasks.
 
 ---
 
-### Q3：性格画像
+### Q3: Personality Profile
 
-把 MBTI、星座、个性标签、企业文化标签、主观印象全部合在一起，让用户自由描述：
+Bundle MBTI, zodiac, personality tags, corporate-culture tags, and subjective impressions into one free-form question:
 
 ```
-用一句话描述他的性格——MBTI、星座、个性特点、企业文化烙印、你对他的印象，
-想到什么写什么，跳过也行。
+Describe their personality in one sentence — MBTI, zodiac, personality traits, corporate-culture imprint, your impressions of them. Write whatever comes to mind; skipping is fine.
 
-例：INTJ 摩羯座 甩锅高手 字节范 CR很严格但从来不解释原因
+Example: INTJ Capricorn blame-shifter ByteDance-style, strict in CR but never explains why (INTJ 摩羯座 甩锅高手 字节范 CR很严格但从来不解释原因)
 ```
 
-从用户的回答中识别并提取以下字段（缺失的留空）：
-- **MBTI**：16 种标准类型
-- **星座**：12 星座
-- **个性标签**：从下方标签库匹配，也接受自定义描述
-- **企业文化标签**：从下方标签库匹配
-- **主观印象**：无法归类的自由描述，直接保留原文
+Identify and extract the following fields from the user's answer (leave missing ones empty):
+- **MBTI**: one of the 16 standard types
+- **Zodiac**: one of the 12 signs
+- **Personality tags**: match against the tag library below; free-form descriptions are also accepted
+- **Corporate-culture tags**: match against the tag library below
+- **Subjective impressions**: free-form descriptions that fit no category — keep verbatim
 
-#### 个性标签库
+#### Personality Tag Library
 
-**工作态度**：认真负责 / 差不多就行 / 甩锅高手 / 背锅侠 / 完美主义 / 拖延症
+**Work attitude**: Conscientious (认真负责) / Good-enough (差不多就行) / Blame-shifter (甩锅高手) / Scapegoat (背锅侠) / Perfectionist (完美主义) / Procrastinator (拖延症)
 
-**沟通风格**：直接 / 绕弯子 / 话少 / 话多 / 爱发语音 / 只读不回 / 已读乱回 / 秒回强迫症
+**Communication style**: Direct (直接) / Beats around the bush (绕弯子) / Taciturn (话少) / Talkative (话多) / Loves voice messages (爱发语音) / Reads but never replies (只读不回) / Reads and replies nonsense (已读乱回) / Instant-reply compulsion (秒回强迫症)
 
-**决策风格**：果断 / 反复横跳 / 依赖上级 / 强势推进 / 数据驱动 / 全凭感觉
+**Decision style**: Decisive (果断) / Flip-flopper (反复横跳) / Relies on superiors (依赖上级) / Forceful pusher (强势推进) / Data-driven (数据驱动) / Pure gut feel (全凭感觉)
 
-**情绪风格**：情绪稳定 / 玻璃心 / 容易激动 / 冷漠疏离 / 表面和气 / 阴阳怪气
+**Emotional style**: Emotionally stable (情绪稳定) / Thin-skinned (玻璃心) / Easily agitated (容易激动) / Cold and distant (冷漠疏离) / Pleasant on the surface (表面和气) / Passive-aggressive (阴阳怪气)
 
-**话术与手段**：PUA 高手 / 职场政治玩家 / 甩锅艺术家 / 向上管理专家 / 爱讲大道理 / 情绪勒索
+**Rhetoric and tactics**: PUA master (PUA 高手) / Office-politics player (职场政治玩家) / Blame-shifting artist (甩锅艺术家) / Upward-management expert (向上管理专家) / Loves to lecture (爱讲大道理) / Emotional blackmailer (情绪勒索)
 
-#### 企业文化标签库
+#### Corporate-Culture Tag Library
 
-- **字节范** — 坦诚直接、追求 impact、开口必讲 context、爱说"对齐"
-- **阿里味** — 六脉神剑、爱用"赋能""抓手""生态""闭环"
-- **腾讯味** — 数据说话、赛马机制、克制保守、注重用户体验
-- **华为味** — 奋斗者文化、流程规范、爱做 PPT 汇报、强调执行力
-- **百度味** — 技术至上、层级意识强、内部竞争激烈
-- **美团味** — 极致执行、抠细节、本地化思维
-- **第一性原理** — 马斯克式，追问本质、拒绝类比、激进简化
-- **OKR 狂热者** — 凡事先问 Objective、对 KR 斤斤计较
-- **大厂流水线** — 规范完善但创造力低、依赖 SOP、怕背锅
-- **创业公司派** — 资源有限、全栈思维、结果导向、容忍混乱
+- **ByteStyle (字节范)** — candid and direct, chases impact, opens with context, loves the word "align"
+- **Alibaba flavor (阿里味)** — Six-Vein values (六脉神剑) vocabulary, loves jargon like "empower" (赋能), "grip" (抓手), "ecosystem" (生态), "closed loop" (闭环)
+- **Tencent flavor (腾讯味)** — lets data speak, horse-racing mechanism, restrained and conservative, focused on user experience
+- **Huawei flavor (华为味)** — striver culture, process-driven, loves PPT reporting, emphasizes execution
+- **Baidu flavor (百度味)** — technology above all, strong hierarchy awareness, fierce internal competition
+- **Meituan flavor (美团味)** — extreme execution, detail-obsessed, localization mindset
+- **First principles (第一性原理)** — Musk-style: question the essence, reject reasoning by analogy, radical simplification
+- **OKR zealot (OKR 狂热者)** — asks for the Objective first on everything, nitpicks every KR
+- **Big-tech assembly line (大厂流水线)** — well-standardized but low creativity, SOP-dependent, afraid of taking the blame
+- **Startup school (创业公司派)** — limited resources, full-stack thinking, results-oriented, tolerates chaos
 
 ---
 
-## 确认汇总
+## Confirmation Summary
 
-收集完毕后展示：
+After collection, show:
 
 ```
-信息汇总：
+Summary:
 
-  👤  {花名}
-  🏢  {公司} {职级} {职位}（若未填则省略）
-  ⚧   {性别}（若未填则省略）
-  🧠  {MBTI} {星座}（若未填则省略）
-  🏷️   个性：{标签列表}（若未填则省略）
-  🏢  企业文化：{标签列表}（若未填则省略）
-  💬  印象：{印象文本}（若未填则省略）
+  👤  {alias}
+  🏢  {company} {level} {role} (omit if unfilled)
+  ⚧   {gender} (omit if unfilled)
+  🧠  {MBTI} {zodiac} (omit if unfilled)
+  🏷️   Personality: {tag list} (omit if unfilled)
+  🏢  Corporate culture: {tag list} (omit if unfilled)
+  💬  Impressions: {impression text} (omit if unfilled)
 
-确认无误？（确认 / 修改 [字段名]）
+All correct? (confirm / revise [field name])
 ```
 
-用户确认后进入 Step 2 文件导入。
+After the user confirms, proceed to Step 2 file import.

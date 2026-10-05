@@ -1,41 +1,36 @@
-% sec1_intro.tex — System/demo framing, compressed for the body budget.
+% sec1_intro.tex — 2026-09-30 rewrite: layered retrieval (逐级检索) as the
+% central contribution; compacted 2026-10-01 for the four-page body budget.
 \section{Introduction}
+\label{sec:intro}
 
-Research administrators maintaining shared paper collections must organize
-documents and explain which passages support an answer. Filenames can obscure
-content, and relevant passages may not answer a question. Administrators need
-usable collection tools and records that expose retrieval decisions.
+Maintaining a shared paper collection is organizational work before it is
+retrieval work: someone must keep the corpus ordered and be able to show
+which passages support an answer. Packed-context RAG collapses retrieval
+into an opaque context: provenance is lost at pack time, similarity stands
+in for reading, and a failed retrieval passes
+silently~\cite{rag-lewis}. Self-RAG and Corrective RAG add
+self-assessment~\cite{selfrag,crag}; DeepRead and RAPTOR add document
+hierarchy~\cite{deepread,raptor} --- but each treats the corpus as
+given; to our knowledge, none manages the corpus that retrieval consumes
+through the same addresses that answers cite.
 
-Retrieval-augmented generation connects answers to retrieved
-material~\cite{rag-lewis}. Self-RAG and Corrective RAG assess retrieval or
-generation and adapt later processing~\cite{selfrag,crag}.
-DeepRead exposes document hierarchies and paragraph coordinates to locate
-passages before reading them~\cite{deepread}. CyberBOT grounds generation and
-verification in an ontology~\cite{cyberbot}. QDCVR complements these approaches
-with content-guided collection management and a reusable evidence workflow
-built on tool APIs. The integration problem is to carry a document
-from administrative placement into evidence an agent can locate and a user
-can inspect. QDCVR connects movement/tagging tools to the same document-part
-identifiers used by search and reading. Attendees can therefore inspect a
-routing decision and then follow the placed document into an answer or a
-scoped failure report, rather than evaluate a retrieval controller alone.
+\sys{} (Query-Driven Content-Verified Retrieval) closes this gap with
+three design decisions. \emph{One address space}: parsed documents are
+indexed as base\slash document\slash part\slash section, and the same
+identifiers serve organization, search, and citation. \emph{The ladder
+proposes; the judge disposes}: recall runs through a layered ladder ---
+catalog, shelf descriptions, wide vector nets --- but acceptance is
+decided per segment by a locally hosted engine that reads the candidate
+content and grades it against the query; verdicts are fail-closed,
+similarity never overrules them, and every positive segment is kept.
+\emph{Failure is a first-class output}: when a rung finds no plausible
+candidate the search stops there and reports honestly --- shelves
+scanned, descriptions read, nothing matched.
 
-Packaged agent skills call these APIs to organize and query a collection.
-Routing uses document content to select among existing category bases, without
-requiring a new taxonomy. Parsed text, document parts, and tags support search
-and reading. Vector recall feeds a prompted content gate, followed by further
-search or reading when needed. Gate scores record the agent's judgment, not a
-semantic guarantee. Source references and explicit not-found reports make
-that judgment inspectable. Figure~\ref{fig:teaser} shows the workflow;
-Figure~\ref{fig:arch} presents the architecture.
-
-The demonstration contributes three connected capabilities:
-\begin{itemize}
-  \item Document parsing, content-guided routing, and tag maintenance.
-  \item Reusable agent skills that coordinate tool calls.
-  \item Retrieval records exposing candidate reads, gate judgments, further
-  searches, and failure reports.
-\end{itemize}
-Section~\ref{sec:demo} invites attendees to follow these operations and inspect
-their outputs. Section~\ref{sec:eval} examines saved traces and provenance
-limits as operational evidence, not a general efficacy comparison.
+Packaged agent skills execute both halves over one tool surface: the
+organization skill parses PDFs, routes them by content into category
+bases, and tags and indexes the parts; the retrieval skills walk the
+ladder, apply the graded judgment, and cite the survivors
+(Figures~\ref{fig:teaser} and~\ref{fig:arch}). The rest of this
+paper details the loops, walks the demonstration, and reads a monitored
+three-mode run plus a 27-run stability suite (Section~\ref{sec:eval}).

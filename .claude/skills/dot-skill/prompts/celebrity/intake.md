@@ -13,14 +13,14 @@ Detect the user's intent and route accordingly:
 
 ### Direct Path
 
-User names a specific person (e.g., "distill Paul Graham", "做一个张一鸣的 Skill").
+User names a specific person (e.g., "distill Paul Graham", "make a Zhang Yiming Skill" (做一个张一鸣的 Skill)).
 
 → Go straight to Q1–Q5 below.
 
 ### Diagnostic Path
 
 User describes a vague need without naming a person (e.g., "I want someone who's
-good at product thinking", "我想找一个能帮我做投资决策的人").
+good at product thinking", "I want someone who can help me make investment decisions" (我想找一个能帮我做投资决策的人)).
 
 → Run the diagnostic sub-flow before Q1.
 

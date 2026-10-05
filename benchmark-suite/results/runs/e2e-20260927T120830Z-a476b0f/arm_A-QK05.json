@@ -1,0 +1,336 @@
+{
+  "status": "ok",
+  "query": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 23,
+    "vector_dedup_docs": 17,
+    "recall_seconds": 3.1,
+    "docs_read": 15,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k17.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k16.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 6.8
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9647,
+    "scored_segments": 89,
+    "total_segments": 89,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.4700903296470642,
+      "judge_score": 0.9647,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+      "vector_score": 0.4776342511177063,
+      "judge_score": 0.9547,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+      "vector_score": 0.4662010669708252,
+      "judge_score": 0.9526,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+      "vector_score": 0.5173228979110718,
+      "judge_score": 0.949,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "vector_score": 0.48204076290130615,
+      "judge_score": 0.9303,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.4460180401802063,
+      "judge_score": 0.9245,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+      "vector_score": 0.5018923282623291,
+      "judge_score": 0.92,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+      "vector_score": 0.3975956439971924,
+      "judge_score": 0.9112,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+      "vector_score": 0.3870408535003662,
+      "judge_score": 0.9046,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "vector_score": 0.468627393245697,
+      "judge_score": 0.9042,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+      "vector_score": 0.7838482856750488,
+      "judge_score": 0.887,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.41223883628845215,
+      "judge_score": 0.8697,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/thinking-style.md",
+      "vector_score": 0.36386561393737793,
+      "judge_score": 0.8395,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/thinking-style.md",
+      "vector_score": 0.36386561393737793,
+      "judge_score": 0.8395,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/thinking-style.md",
+      "vector_score": 0.36386561393737793,
+      "judge_score": 0.8395,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.4700903296470642,
+      "judge_score": 0.9647,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+      "name": "mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+      "vector_score": 0.4776342511177063,
+      "judge_score": 0.9547,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+      "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+      "vector_score": 0.4662010669708252,
+      "judge_score": 0.9526,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+      "name": "databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+      "vector_score": 0.5173228979110718,
+      "judge_score": 0.949,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "name": "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "vector_score": 0.48204076290130615,
+      "judge_score": 0.9303,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.4460180401802063,
+      "judge_score": 0.9245,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+      "name": "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+      "vector_score": 0.5018923282623291,
+      "judge_score": 0.92,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+      "name": "pride_and_prejudice (part 11 of 26).md",
+      "vector_score": 0.3975956439971924,
+      "judge_score": 0.9112,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+      "name": "pride_and_prejudice (part 20 of 26).md",
+      "vector_score": 0.3870408535003662,
+      "judge_score": 0.9046,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "vector_score": 0.468627393245697,
+      "judge_score": 0.9042,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+      "name": "agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+      "vector_score": 0.7838482856750488,
+      "judge_score": 0.887,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.41223883628845215,
+      "judge_score": 0.8697,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.36386561393737793,
+      "judge_score": 0.8395,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.36386561393737793,
+      "judge_score": 0.8395,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.36386561393737793,
+      "judge_score": 0.8395,
+      "truncated": false,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+    "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+    "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+    "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+    "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+    "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "soul-cs-library/thinking-style.md",
+    "soul-e2e-tester-024115/thinking-style.md",
+    "soul-demo-qa/thinking-style.md"
+  ],
+  "evidence_pack": "[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.4700903296470642]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md · vec=0.4776342511177063]\n# mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md.md（第 1/5 部分）\nDOI: xxx/xxxx\n\nARTICLE TYPE\n\n\n\n# Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications\n\n\nRien Quirynen\\* | Stefano Di Cairano\n\n1Control for Autonomy, Mitsubishi Electric Research Laboratories, Massachusetts, USA\n\nCorrespondence\n\n\\*Email: quirynen@merl.com\n\nPresent Address   \n201 Broadway, 8th Floor, Cambridge, MA   \n02139-1955\n\n## Abstract\n\n\nMixed-integer model predictive control (MI-MPC) can be a powerful tool for controlling hybrid systems. In case of a linear-quadratic objective in combination with linear or piecewise-linear system dynamics and inequality constraints, MI-MPC needs to solve a mixed-integer quadratic program (MIQP) at each sampling time step. This paper presents a collection of exact block-sparse presolve techniques to efficiently remove decision variables, and to remove or tighten inequality constraints, tailored to mixed-integer optimal control problems. In addition, we describe a novel approach based on a heuristic presolve algorithm to compute a feasible but possibly suboptimal MIQP solution. We present benchmarking results for a C code implementation of the proposed BB-ASIPM solver, including a branch-and-bound (B&B) method with the proposed tailored presolve techniques and an active-set based interior point method (ASIPM), compared against multiple state-of-the-art MIQP solvers on a case study of motion planning with obstacle avoidance constraints. Finally, we demonstrate the feasibility and computational performance of the BB-ASIPM solver in embedded system on a dSPACE Scalexio real-time rapid prototyping unit for a second case study of stabilization for an underactuated cart-pole with soft contacts.\n\nKEYWORDS:\n\nMixed-integer programming, Numerical optimization algorithms, Hybrid model predictive control\n\n## 1  INTRODUCTION\n\n\nOptimization-based motion planning and control techniques, such as model predictive control (MPC), allow a model-based design framework in which the dynamics, constraints and objectives are directly taken into account ¹. This framework has been extended to hybrid systems², providing a powerful technique to model a large range of hybrid control problems, e.g., including switched dynamical systems³,4, discrete/quantized actuation⁵, motion planning with obstacle avoidance6, logic rules and temporal logic specifications'. However, the resulting optimal control problems (OCPs\n\n[经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md · vec=0.4662010669708252]\n# economics__1911.06206__bayesian-state-space-modeling-for-analyzing（第 3/5 部分）\n章节: Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy > Assessing heterogeneity and clustering of industries\n## Assessing heterogeneity and clustering of industries\n\n\nIn this section, we shed light on industry-specific effects over time. As a first step, we abstract from the time dimension and assess clusterings of industries based on average values over the full sample period. The methods proposed in our paper do not allow for clustering the impacts in a unified econometric approach. This is due to non-linearities in the conditional mean of the model, and because the effects of interest are non-linear functions depending the reduced form parameters (see Section 2.1).\n\nAs a solution, we rely on k-means clustering of industries using the joint distribution of total and network effects based on each individual draw from the posterior. We choose total and network effects for assessing clusters based on arguments of structural differences arising from how close the respective industries are to end-consumers, provided in Ozdagli and Weber (2020).\n\nOur analysis requires the number of clusters k to be chosen a priori. A common way to choose k is to rely on silhouette analysis to study the separation distance between the resulting clusters. We set the maximum number of clusters to 15 and compute so-called silhouette coefficients for all of them. For all draws, we choose the optimal number of clusters based on this coefficient, which yields an empirical distribution of the number of clusters. Our findings are displayed in Table 4. The procedure selects k = 2 in 86.9 percent of the draws, and more clusters than k = 5 are never supported. Consequently, we choose k = 2 for all subsequent analyses.\n\nTable 4: Identifying the number of clusters.\n<table><tr><td>Number of clusters</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>Probability (%)</td><td>86.9</td><td>8.5</td><td>2.4</td><td>2.2</td></tr></table>\n\nNotes: Industries are clustered based on total and network effects per industry. We use silhouette analysis for all posterior draws using a maximum value of 15 clusters. The number of clusters is selected based on the so-called silhouette coefficient, which yields an empirical distribution for the most adequate number of clusters.\n\nThe procedure outlined above produces empirical inclusion probabilities in clusters for all industries, a\n\n[计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md · vec=0.5173228979110718]\n# databases__2102.02440__online-sketch-based-query-optimization.md.md（第 3/5 部分）\n章节: Online Sketch-based Query Optimization > 6 FAST-AGMS SKETCH JOIN ORDER ENUMERATION\n## 6 FAST-AGMS SKETCH JOIN ORDER ENUMERATION\n\n\nIn this section, we present how merged Fast-AGMS sketches are integrated into a novel plan enumeration algorithm we introduce in this work. It is important to emphasize that – due to the proposed generalization to multi-way joins – Fast-AGMS sketches can be embedded into any enumeration algorithm. According to the investigation of different join order enumeration algorithms performed in [30, 28], plan enumeration is not the most critical component of a query optimizer—it has a relatively small impact on plan quality compared to cardinality estimation accuracy. This confirms the approach taken by many query optimizers [78, 77] that consider only a plan subset —left- or right-deep plans, which are a permutation of the query tables. We follow a similar approach and introduce an heuristic plan enumeration algorithm that allows us to explore the overall impact of merged Fast-AGMS sketches. Although this algorithm borrows ideas from previous work [52], we argue that it is original in the presented form.\n\nCOMPASS uses the join graph (Figure 1) in plan enumeration. This guarantees that only valid join order plans are considered and cross products are ignored. Plan enumeration becomes a graph traversal problem. We design a depth-first search (DFS) traversal algorithm (Algorithm 1) that enumerates left-deep plans following the edges in the join graph. This is achieved by considering all the vertices as the source of DFS and backtracking whenever a complete plan is reached (line 26). The number of plans explored from a source vertex is controlled by a user-defined parameter max\\_plans (line 25) that plays a similar role to the timeout used to confine the plan search space in [29]. However, our algorithm does not require bottom-up plan enumeration since sketches can be merged and combined in any order. The max\\_plans parameter also allows the plan search to restart from other sources in the presence of high-degree vertices and cycles—instead of getting locked on the initial selections. On a continuum spectrum that has left-deep greedy search at one extreme and exhaustive enumeration at the other [14], the proposed algorithm can be configured anywhere in-between by controlling the value of parameter max\\_plans. When a single plan is enumerated from every vert\n\n[自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md · vec=0.48204076290130615]\n# quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu（第 3/4 部分）\n章节: Benchmarking Noisy Intermediate Scale Quantum Error Mitigation Strategies for Ground State Preparation of the HCl Molecule > V. GROUND STATE PREPARATION\n## V. GROUND STATE PREPARATION\n\n\nBefore proceeding onto the quantum error mitigation benchmark, there are a few additional considerations to resolve. Firstly, one must identify a suitable ansatz circuit that is sufficiently expressible to realize the desired ground state. Secondly, we discuss the mapping of our circuits onto physical qubits, in particular for dual-state purification since one should be mindful of the added qubit connectivity constraints arising from parity computation stored on the ancilla qubit. Thirdly, despite not implementing any shot reduction methods in this work, we still wish to distribute the shot budget in an informed manner, preferably tailored to each device; this is the final point of discussion before moving onto the results of our benchmark.\n\n## A. Ansatz Construction\n\n\nInitially, we tested the noncontextual projection ansatz [54] derived from the 316-term CCSD operator. The projection into the 3-qubit contextual subspace yields a 6- term excitation pool from which we identify 4 operators via qubit-ADAPT-VQE that permit chemical precision. Despite this dramatic reduction in circuit depth from the full UCCSD ansatz, the resulting noncontextual projection ansatz consists of 12 CNOT gates which we found to be prohibitive in achieving chemical precision.\n\nTo remedy this, we abandon chemical intuition in the name of hardware efficiency. It is already known that an arbitrary 3-qubit quantum state may be prepared on quantum hardware using at most 4 CNOT gates [64]. In fact, we found that only 2 CNOT gates are sufficient in constructing a 3-qubit ansatz circuit that is sufficiently expressible for our electronic structure problem, presented in Figure 9. In Figure 10 we present the outcome of a noiseless VQE simulation over this ansatz to illustrate its expressibility.\n\nq0, q2, q1, q3\n\n![](images/55aae72c59b699306ede951f10623c917b5196b134b4a3ad8f6cdfc9e2decfee.jpg)\n\n![](images/c50ae14d63526cc959f1152197ca63119a57b4256defe999c4378592dbdb5cd3.jpg)  \n(e) ZIZ  \n(a) IIZ\n\n![](images/3f672f301d4e398d15a2d91ecc638ada0e475bd88a5644ec5ef831158243a240.jpg)  \nFIG. 9: Hardware efficient HCl 3-qubit contextual subspace ansatz; the Y-rotation gates are decomposed into native gates as $R _ { y } = \\sqrt { X } R\n\n[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md · vec=0.4460180401802063]\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani<sup>∗</sup> Google Brain avaswani@google.com\n\nNoam Shazeer<sup>∗</sup> Google Brain noam@google.com\n\nNiki Parmar<sup>∗</sup> Google Research nikip@google.com\n\nJakob Uszkoreit<sup>∗</sup> Google Research usz@google.com\n\nLlion Jones<sup>∗</sup> Google Research llion@google.com\n\nAidan N. Gomez<sup>∗</sup> <sup>†</sup> University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser<sup>∗</sup> Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin<sup>∗</sup> <sup>‡</sup> illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden \n\n[自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md · vec=0.5018923282623291]\n# climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma（第 1/2 部分）\n章节: GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution\n# GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution\n\n\nHiroshi G. Takahashi\n\nTokyo Metropolitan University\n\nhiroshi3@tmu.ac.jp\n\nSeptember 17, 2024\n\n## Abstract\n\n\nThis paper presents a new precipitation dataset that is daily, has a spatial resolution of one degree on a quasi-global scale, and spans more than 42 years, using machine learning techniques. The ultimate goal of this dataset is to provide a homogeneous daily precipitation dataset for several decades without gaps, which is suitable for climate analysis. As a first step, 42 years of daily precipitation data was generated using machine learning techniques. The machine learning methods are supervised learning, and the reference data are estimated precipitation datasets from 2001 to 2020. Three machine learning methods are used: random forest, gradient-boosted decision trees, and convolutional neural networks. The input data are satellite observations and atmospheric circulations from reanalysis, which are somewhat modified based on knowledge of the climatological background. Using the trained statistical models, we predict back to 1979. when daily precipitation data was almost unavailable globally. The detailed procedures are described in this paper. The produced data have been partially evaluated. However, additional evaluations from different perspectives are needed. The advantages and disadvantages of this precipitation dataset are also discussed. Currently, this GPC/m precipitation dataset version is GPC/m-v1-2024.\n\n## 1 Introduction\n\n\nThe importance of precipitation datasets has increased in recent years as they are extensively used for climate and meteorological analyses, such as precipitation variability, water budget, evaluation of climate model, and related research (e.g., Trenberth, 2011). However, the available precipitation data have some limitations, especially difficulties in using precipitation data globally, including over the ocean over long periods (Becker et al., 2013). This study produces a prototype of the precipitation dataset using machine learning methods. This machine learning-based precipitation can be used in climate and related studies. Additionally, this study can contribute to discussing not only the adva\n\n[Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md · vec=0.3975956439971924]\n# pride_and_prejudice（第 11/26 部分）\nFour weeks passed away, and Jane saw nothing of him. She endeavoured to\npersuade herself that she did not regret it; but she could no longer be\nblind to Miss Bingley’s inattention. After waiting at home every morning\nfor a fortnight, and inventing every evening a fresh excuse for her, the\nvisitor did at last appear; but the shortness of her stay, and, yet\nmore, the alteration of her manner, would allow Jane to deceive herself\nno longer. The letter which she wrote on this occasion to her sister\nwill prove what she felt:--\n\n     “My dearest Lizzy will, I am sure, be incapable of triumphing in\n     her better judgment, at my expense, when I confess myself to have\n     been entirely deceived in Miss Bingley’s regard for me. But, my\n     dear sister, though the event has proved you right, do not think me\n     obstinate if I still assert that, considering what her behaviour\n     was, my confidence was as natural as your suspicion. I do not at\n     all comprehend her reason for wishing to be intimate with me; but,\n     if the same circumstances were to happen again, I am sure I should\n     be deceived again. Caroline did not return my visit till yesterday;\n     and not a note, not a line, did I receive in the meantime. When she\n     did come, it was very evident that she had no pleasure in it; she\n     made a slight, formal apology for not calling before, said not a\n     word of wishing to see me again, and was, in every respect, so\n     altered a creature, that when she went away I was perfectly\n     resolved to continue the acquaintance no longer. I pity, though I\n     cannot help blaming, her. She was very wrong in singling me out as\n     she did; I can safely say, that every advance to intimacy began on\n     her side. But I pity her, because she must feel that she has been\n     acting wrong, and because I am very sure that anxiety for her\n     brother is the cause of it. I need not explain myself farther; and\n     though _we_ know this anxiety to be quite needless, yet if she\n     feels it, it will easily account for her behaviour to me; and so\n     deservedly dear as he is to his sister, whatever anxiety she may\n     feel on his behalf is natural and amiable. I cannot but wonder,\n     however, at her having any such fears now, because if he had at all\n     cared about me, we must have met long, long ago. He knows of my\n     being in town, I am certain, from something she said herself; and\n     yet it would seem, by her manne\n\n[Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md · vec=0.3870408535003662]\n# pride_and_prejudice（第 20/26 部分）\nBut before they heard again from Mr. Gardiner, a letter arrived for\ntheir father, from a different quarter, from Mr. Collins; which, as Jane\nhad received directions to open all that came for him in his absence,\nshe accordingly read; and Elizabeth, who knew what curiosities his\nletters always were, looked over her, and read it likewise. It was as\nfollows:--\n\n     /* “My dear Sir, */\n\n     “I feel myself called upon, by our relationship, and my situation\n     in life, to condole with you on the grievous affliction you are now\n     suffering under, of which we were yesterday informed by a letter\n     from Hertfordshire. Be assured, my dear sir, that Mrs. Collins and\n     myself sincerely sympathize with you, and all your respectable\n     family, in your present distress, which must be of the bitterest\n     kind, because proceeding from a cause which no time can remove. No\n     arguments shall be wanting on my part, that can alleviate so severe\n     a misfortune; or that may comfort you, under a circumstance that\n     must be, of all others, most afflicting to a parent’s mind. The\n     death of your daughter would have been a blessing in comparison of\n     this. And it is the more to be lamented, because there is reason to\n     suppose, as my dear Charlotte informs me, that this licentiousness\n     of behaviour in your\n\n     [Illustration:\n\n“To whom I have related the affair”\n\n     [_Copyright 1894 by George Allen._]]\n\n     daughter has proceeded from a faulty degree of indulgence; though,\n     at the same time, for the consolation of yourself and Mrs. Bennet,\n     I am inclined to think that her own disposition must be naturally\n     bad, or she could not be guilty of such an enormity, at so early an\n     age. Howsoever that may be, you are grievously to be pitied; in\n     which opinion I am not only joined by Mrs. Collins, but likewise by\n     Lady Catherine and her daughter, to whom I have related the affair.\n     They agree with me in apprehending that this false step in one\n     daughter will be injurious to the fortunes of all the others: for\n     who, as Lady Catherine herself condescendingly says, will connect\n     themselves with such a family? And this consideration leads me,\n     moreover, to reflect, with augmented satisfaction, on a certain\n     event of last November; for had it been otherwise, I must have been\n     involved in all your sorrow and disgrace. Let me advise you, then,\n     my dear sir, to console yo\n\n[经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md · vec=0.468627393245697]\n# finance__1909.07748__stock-market-microstructure-inference-via-mu（第 1/4 部分）\n章节: Stock market microstructure inference via multi-agent reinforcement learning\n# Stock market microstructure inference via multi-agent reinforcement learning\n\n\nJohann Lussange\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Pa",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k17.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k16.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 19.9
+}

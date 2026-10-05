@@ -1,0 +1,51 @@
+{
+ "qid": "QK01",
+ "method": "rerank",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "2110.07844",
+  "2503.21676",
+  "1810.04805",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "2110.07844",
+  "2503.21676",
+  "1810.04805",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 20.1,
+ "latency_s": 60.3,
+ "answer": "**Answer (from the provided evidence only):**\n\nThe evidence describes attention computation as follows: an attention head transforms its inputs into query, key, and value vectors, computes attention weights as a normalized dot product between the query and key vectors, and produces its output as a weighted sum of the value vectors [2110.07844]. The Transformer applies this via multi-headed self-attention, and is presented as the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures [1706.03762]. As for motivation, the evidence states that the key strength of the Transformer lies in its attention mechanism, which learns to focus on relevant parts of the input data, thereby enabling powerful representations [2510.13343]. Note that the evidence does **not** explicitly explain why *convolution* is replaced — the [1706.03762] excerpt is truncated and only names recurrent layers — so that part cannot be answered from the evidence.\n\n**Sources:**\n- [1706.03762] — Conclusion section (\"...first sequence transduction model based entirely on attention, replacing the recurrent layers... with multi-headed self-attention\")\n- [2110.07844] — chunk describing cross-attention head computation (query/key/value vectors, normalized dot-product weights, weighted sum of values)\n- [2510.13343] — Section 3.3 \"Multi-Agent Transformer Approach\" (attention learns to focus on relevant parts of the input)",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 46,
+  "output": 1678,
+  "cache_read": 47808,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0662804,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

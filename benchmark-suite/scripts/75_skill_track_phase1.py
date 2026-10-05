@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """Track A (QDCVR v2 skill 流程) — Phase 0/1 采集.
 
 对 10 题逐题执行 skill 流程的工具调用段并计时:

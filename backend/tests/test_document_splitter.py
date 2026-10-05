@@ -15,7 +15,122 @@ import pytest
 from app.services import document_splitter as ds
 
 
-class TestShouldSplit:
+class TestStructureAwareSplitting:
+    def test_fenced_code_headings_are_not_parsed_as_sections(self):
+        doc = "## Intro\n\ntext.\n\n```md\n# not a heading\n## nor this\n```\n\n## End\n\nDone."
+        units = ds.scan_structural_units(doc, max_chars=500)
+        assert all("not a heading" not in u.heading_path for u in units)
+        assert "# not a heading" in "".join(u.text for u in units)
+        assert "## End" in "".join(u.text for u in units)
+
+    def test_tables_lists_and_code_blocks_stay_atomic(self):
+        doc = (
+            "## Data\n\n"
+            "| A | B |\n| --- | --- |\n| 1 | 2 |\n\n"
+            "- first item\n  continuation\n- second item\n\n"
+            "```python\nprint('one')\nprint('two')\n```\n\n"
+            "## End\n\nend."
+        )
+        units = ds.scan_structural_units(doc, max_chars=500)
+        texts = [u.text for u in units]
+        assert any("| A | B |" in text and "| 1 | 2 |" in text for text in texts)
+        assert any("- first item" in text and "- second item" in text for text in texts)
+        assert any("```python" in text and "print('two')" in text for text in texts)
+        assert "".join(texts) == doc
+
+    def test_oversized_prose_splits_only_at_sentence_boundaries(self):
+        doc = "## Long\n\n" + "A complete sentence. " * 900
+        parts = ds.split_document(doc, "Long", max_chars=10000)
+        assert len(parts) >= 2
+        assert all(p.content.rstrip().endswith("sentence.") or p is parts[-1] for p in parts)
+        source_pieces = [doc[p.start_char:p.end_char] for p in parts]
+        assert "".join(source_pieces) == doc
+
+    def test_heading_stays_with_first_body_unit(self):
+        doc = "## Long\n\n" + ("Intro sentence. " * 3) + "\n\n" + ("Body sentence. " * 900)
+        units = ds.scan_structural_units(doc, max_chars=500)
+        intro = next(unit for unit in units if "## Long" in unit.text)
+        assert intro.kind == "section_intro"
+        assert "Intro sentence." in intro.text
+        assert intro.start_char == 0
+
+        repeated = "## Repeat\n\nSame paragraph.\n\n"
+        doc = repeated * 80
+        parts = ds.split_document(doc, "Repeat", max_chars=1000)
+        spans = [(p.start_char, p.end_char) for p in parts]
+        assert spans[0][0] == 0
+        assert spans[-1][1] == len(doc)
+        assert all(left[1] == right[0] for left, right in zip(spans, spans[1:]))
+        assert "".join(doc[start:end] for start, end in spans) == doc
+
+    def test_agent_plan_is_validated_and_descriptions_are_evidence_backed(self):
+        doc = "## A\n\nFirst section facts.\n\n## B\n\nSecond section facts."
+        units = ds.scan_structural_units(doc, max_chars=500)
+        plan = {
+            "source_sha256": ds.source_sha256(doc),
+            "parts": [
+                {"part_index": 1, "unit_ids": [units[0].unit_id],
+                 "section_range": "A", "description": "First section facts",
+                 "evidence": ["First section facts"]},
+                {"part_index": 2, "unit_ids": [units[1].unit_id],
+                 "section_range": "B", "description": "Second section facts",
+                 "evidence": ["Second section facts"]},
+            ],
+        }
+        result = ds.plan_split(doc + "\n\nextra." * 100, "Agent", {"max_chars": 500, "agent_plan": plan})
+        assert result["planner"] == "deterministic"
+        assert any("agent_plan_rejected" in warning for warning in result["warnings"])
+
+    def test_valid_agent_plan_is_applied(self):
+        doc = "## A\n\n" + ("First facts. " * 50) + "\n\n## B\n\n" + ("Second facts. " * 50)
+        units = ds.scan_structural_units(doc, max_chars=1000)
+        plan = {
+            "source_sha256": ds.source_sha256(doc + "\n"),
+            "parts": [
+                {"part_index": 1, "unit_ids": [units[0].unit_id],
+                 "description": "First facts.", "evidence": ["First facts."]},
+                {"part_index": 2, "unit_ids": [units[1].unit_id],
+                 "description": "Second facts.", "evidence": ["Second facts."]},
+            ],
+        }
+        result = ds.plan_split(doc + "\n", "Agent", {"max_chars": 1000, "agent_plan": plan})
+        assert result["planner"] == "agent"
+        assert result["strategy"] == "agent_semantic"
+        assert result["parts"][0]["description_provenance"] == "agent"
+
+    def test_agent_oversized_atomic_unit_respects_disallow_flag(self):
+        doc = "## Atomic\n\n" + ("x" * 1200)
+        units = ds.scan_structural_units(doc, max_chars=500)
+        plan = {
+            "source_sha256": ds.source_sha256(doc),
+            "parts": [{
+                "part_index": 1,
+                "unit_ids": [unit.unit_id for unit in units],
+                "description": "Atomic block x",
+                "evidence": ["x"],
+            }],
+        }
+        with pytest.raises(ValueError, match="oversized atomic unit"):
+            ds.plan_split(doc, "Atomic", {
+                "max_chars": 500,
+                "agent_plan": plan,
+                "allow_oversized_atomic_unit": False,
+            })
+
+    def test_fallback_marker_is_complete_under_description_cap(self):
+        long_heading = "## " + ("VeryLongSectionName " * 30)
+        doc = long_heading + "\n\n" + ("Evidence sentence. " * 300)
+        plan = ds.plan_split(doc, "Marker", {"max_chars": 500})
+        for part in plan["parts"]:
+            assert len(part["description"]) <= 220
+            assert f"Part {part['part_index']}/{part['part_count']}" in part["description"]
+
+        doc = "## A\n\n" + "Evidence. " * 100
+        plan = ds.plan_split(doc, "Doc", {"max_chars": 500, "agent_plan": {"source_sha256": "wrong", "parts": []}})
+        assert plan["planner"] == "deterministic"
+        assert any("source_sha256_mismatch" in warning for warning in plan["warnings"])
+
+
     def test_small_doc_never_split(self):
         assert not ds.should_split("short", max_chars=10000)
         assert not ds.should_split("x" * 9999, max_chars=10000)
@@ -61,16 +176,17 @@ class TestSplitDocument:
         assert any("a" * 100 in c and "b" * 100 not in c for c in joined)
         assert any("b" * 100 in c for c in joined)
 
-    def test_oversized_single_section_window_split_with_overlap(self):
+    def test_oversized_single_section_window_split_has_zero_overlap(self):
         doc = "## Big\n\n" + ("sentence. " * 4000)  # ~40000 chars 单章节
         parts = ds.split_document(doc, "Big", max_chars=10000, overlap_chars=400)
         assert len(parts) >= 3
+        # 2026-09-27 契约收紧：存储后 part（含上下文头）不得超 max_chars
         for p in parts:
-            assert len(p.content) <= 10000 + 1000
-        # 重叠：前一片段尾部内容出现在下一片段中
-        if len(parts) >= 2:
-            tail = parts[0].content[-100:]
-            assert tail[:40] in parts[1].content or len(parts[1].content) > 0
+            assert len(p.content) <= 10000
+        # overlap_chars 是兼容旧参数：结构化拆分从不错位复制源文本
+        spans = [(p.start_char, p.end_char) for p in parts]
+        assert all(left[1] == right[0] for left, right in zip(spans, spans[1:]))
+        assert "".join(doc[a:b] for a, b in spans) == doc
 
     def test_context_header_present_in_every_part(self):
         doc = "\n\n".join(f"## S{i}\n\n" + "word " * 1200 for i in range(5))
@@ -111,10 +227,9 @@ class TestSplitDocument:
         import inspect
         from app.services.keyword_index_service import _BM25_MAX_CONTENT_CHARS
         src = inspect.getsource(ds)
-        assert "DEFAULT_MAX_CHARS = 10_000" in src
-        assert ds.DEFAULT_MAX_CHARS < _BM25_MAX_CONTENT_CHARS or True  # 配置可覆盖，默认关系见 config
+        assert "DEFAULT_MAX_CHARS" in src
         from app.config import config
-        assert config.large_doc_split["max_chars"] < config.bm25_max_content_chars
+        assert config.large_doc_split["max_chars"] < _BM25_MAX_CONTENT_CHARS
 
 
 class TestDescriptionAndPacking:
@@ -173,11 +288,12 @@ class TestPlanSplit:
         plan = ds.plan_split("small", "t", {"auto_split": True, "max_chars": 10000})
         assert plan["split"] is False and plan["part_count"] == 1
         assert "shorter_than" in plan["reason"]
-
     def test_plan_large_doc(self):
         plan = ds.plan_split("x" * 30000, "t", {"auto_split": True, "max_chars": 10000})
-        assert plan["split"] is True and plan["part_count"] >= 3
-        assert all("content" in p and "title" in p for p in plan["parts"])
+        assert plan["split"] is True and plan["part_count"] == 1
+        assert "oversized_atomic_unit" in " ".join(plan["warnings"])
+        assert plan["parts"][0]["source_start"] == 0
+        assert plan["parts"][0]["source_end"] == 30000
 
     def test_plan_auto_split_disabled(self):
         plan = ds.plan_split("x" * 30000, "t", {"auto_split": False})
@@ -186,16 +302,103 @@ class TestPlanSplit:
         assert plan["part_count"] == 1
 
     def test_plan_defaults_from_service(self):
-        plan = ds.plan_split("x" * 25000, "t", None)
+        plan = ds.plan_split("## A\n\n" + ("sentence. " * 3500), "t", None)
         assert plan["part_count"] >= 2
-        assert plan["split"] is True
+        assert plan["strategy"] == "structural_fallback"
+
+
+class TestAgentFirstSplitContract:
+    """2026-09-27：Agent 先读内容再定边界的拆分契约（无 Markdown 标题的
+    连贯正文——小说/长文——按章节标题成段、段落为最终安全边界、存储后
+    part 含上下文头也不超 max_chars、硬切只在显式批准时发生）。"""
+
+    def test_chapter_titles_split_flat_novel(self):
+        chapters = ["一", "二", "三"]
+        doc = "\n\n".join(
+            f"第{c}章\n\n" + "这是连贯情节的一段话，场景完整。" * 40
+            for c in chapters
+        )
+        parts = ds.split_document(doc, "小说", max_chars=1000)
+        assert len(parts) >= 2
+        # 每个完整章节（约 560 字）不跨 part：章首标题与正文同 part
+        for c in chapters:
+            home = [p for p in parts if f"第{c}章" in p.content]
+            assert len(home) == 1, f"第{c}章 标题必须恰好落在一个 part"
+            assert "这是连贯情节的一段话，场景完整。" in home[0].content
+        spans = [(p.start_char, p.end_char) for p in parts]
+        assert all(l[1] == r[0] for l, r in zip(spans, spans[1:]))
+        assert "".join(doc[a:b] for a, b in spans) == doc
+
+    def test_oversized_flat_chapter_cuts_at_paragraph_boundaries(self):
+        para_a = "甲段：" + "情节连续推进。" * 80
+        para_b = "乙段：" + "情节继续发展。" * 80
+        doc = "第一章 试炼\n\n" + para_a + "\n\n" + para_b + "\n"
+        parts = ds.split_document(doc, "novel", max_chars=800)
+        assert len(parts) >= 2
+        assert "甲段：" in parts[0].content and "乙段：" not in parts[0].content
+        assert "乙段：" in parts[-1].content
+        assert "第一章" in parts[0].content  # 章题不与正文分离
+        spans = [(p.start_char, p.end_char) for p in parts]
+        assert "".join(doc[a:b] for a, b in spans) == doc
+
+    def test_stored_content_respects_max_chars_with_header(self):
+        doc = "\n\n".join(f"## S{i}\n\n" + "内容测试。" * 400 for i in range(6))
+        parts = ds.split_document(doc, "Pack", max_chars=3000)
+        assert len(parts) >= 2
+        for p in parts:
+            assert len(p.content) <= 3000, (
+                f"part {p.part_index} 存储后 {len(p.content)} > 3000（含上下文头）")
+
+    def test_hard_fallback_actually_cuts_when_explicitly_approved(self):
+        doc = "x" * 3000  # 无标点无标题：真·不可分原子单元
+        parts = ds.split_document(doc, "HardDoc", max_chars=1000,
+                                  allow_oversized_atomic_unit=False,
+                                  allow_hard_fallback=True)
+        assert len(parts) >= 3
+        assert all("hard_fallback_cut" in w for w in parts[0].warnings)
+        assert all(len(p.content) <= 1000 for p in parts)
+        spans = [(p.start_char, p.end_char) for p in parts]
+        assert "".join(doc[a:b] for a, b in spans) == doc
+
+    def test_hard_fallback_denied_raises_without_cut(self):
+        doc = "x" * 3000
+        with pytest.raises(ValueError, match="oversized atomic unit"):
+            ds.split_document(doc, "HardDoc", max_chars=1000,
+                              allow_oversized_atomic_unit=False,
+                              allow_hard_fallback=False)
+
+    def test_agent_plan_respected_on_flat_prose(self):
+        paras = [f"第{i}段：事实{i}。" + "细节内容。" * 340 for i in range(1, 7)]
+        doc = "\n\n".join(paras)
+        assert len(doc) > 10000  # 低于阈值不触发拆分，agent 计划无从谈起
+        units = ds.scan_structural_units(doc, max_chars=10000)
+        assert len(units) >= 6
+        plan = {
+            "source_sha256": ds.source_sha256(doc),
+            "parts": [
+                {"part_index": 1, "unit_ids": [u.unit_id for u in units[:3]],
+                 "description": "细节内容；本部分覆盖前三段（事实1起）。",
+                 "evidence": ["事实1。"]},
+                {"part_index": 2, "unit_ids": [u.unit_id for u in units[3:]],
+                 "description": "细节内容；本部分覆盖后三段（事实4起）。",
+                 "evidence": ["事实4。"]},
+            ],
+        }
+        result = ds.plan_split(doc, "flat", {"max_chars": 10000, "agent_plan": plan})
+        assert result["planner"] == "agent", result["warnings"]
+        assert result["strategy"] == "agent_semantic"
+        assert result["parts"][0]["source_end"] == units[2].end_char
+        assert result["parts"][1]["source_start"] == units[3].start_char
 
 
 class TestConfigWiring:
     def test_config_exposes_split_params(self):
         from app.config import config
         cfg = config.large_doc_split
+        planner = config.large_doc_split_planner
         assert set(cfg) == {"auto_split", "max_chars", "overlap_chars"}
+        assert set(planner) == {"strategy", "target_utilization",
+                                "allow_oversized_atomic_unit", "allow_hard_fallback"}
         assert cfg["auto_split"] is True and cfg["max_chars"] > 0
 
     def test_stage1_defense_knobs(self):

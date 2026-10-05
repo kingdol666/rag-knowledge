@@ -1,0 +1,260 @@
+{
+ "run": "run-20260924T052520Z-0968033",
+ "manifest": {
+  "git_commit": "0968033",
+  "config_hash": "9fb259c0cf2b6dea",
+  "prompt_version": "v3-neutral",
+  "started_utc": "2026-09-24T05:25:20.995809+00:00",
+  "tracks": [
+   "a2",
+   "bm25",
+   "vector",
+   "rrf",
+   "rerank"
+  ],
+  "questions": 1,
+  "seed": 0,
+  "max_turns": 12,
+  "shuffled": true,
+  "selfheal": true,
+  "monitor_system": false,
+  "dry_run": false,
+  "n_rows": 5,
+  "total_cost_usd": 1.0497,
+  "tokens_out_total": 1554
+ },
+ "methods": [
+  "a2",
+  "bm25",
+  "rerank",
+  "rrf",
+  "vector"
+ ],
+ "per_method": {
+  "a2": {
+   "n": 1,
+   "latency_avg_s": 96.8,
+   "latency_median_s": 96.8,
+   "tokens_in_total": 106691,
+   "tokens_out_total": 987,
+   "cost_usd_total": 0.6149,
+   "cost_usd_avg": 0.6149,
+   "tools_avg": 6.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 0,
+   "errors": 0,
+   "system_peak": null
+  },
+  "bm25": {
+   "n": 1,
+   "latency_avg_s": 18.9,
+   "latency_median_s": 18.9,
+   "tokens_in_total": 38145,
+   "tokens_out_total": 118,
+   "cost_usd_total": 0.1937,
+   "cost_usd_avg": 0.1937,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 0,
+   "errors": 0,
+   "system_peak": null
+  },
+  "rerank": {
+   "n": 1,
+   "latency_avg_s": 32.4,
+   "latency_median_s": 32.4,
+   "tokens_in_total": 244,
+   "tokens_out_total": 97,
+   "cost_usd_total": 0.0222,
+   "cost_usd_avg": 0.0222,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 0,
+   "errors": 0,
+   "system_peak": null
+  },
+  "rrf": {
+   "n": 1,
+   "latency_avg_s": 11.5,
+   "latency_median_s": 11.5,
+   "tokens_in_total": 956,
+   "tokens_out_total": 193,
+   "cost_usd_total": 0.0282,
+   "cost_usd_avg": 0.0282,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 0,
+   "errors": 0,
+   "system_peak": null
+  },
+  "vector": {
+   "n": 1,
+   "latency_avg_s": 15.2,
+   "latency_median_s": 15.2,
+   "tokens_in_total": 37359,
+   "tokens_out_total": 159,
+   "cost_usd_total": 0.1908,
+   "cost_usd_avg": 0.1908,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 0,
+   "errors": 0,
+   "system_peak": null
+  }
+ },
+ "self_checks": [
+  {
+   "check": "每 (qid,method) 都有结果",
+   "ok": true,
+   "detail": "0 缺失"
+  },
+  {
+   "check": "无重复单元",
+   "ok": true,
+   "detail": "ok"
+  },
+  {
+   "check": "无 error 单元",
+   "ok": true,
+   "detail": "0 个 error"
+  },
+  {
+   "check": "成本合计 = 各方法之和",
+   "ok": true,
+   "detail": "sum(method)=1.0498 · manifest=1.0497"
+  },
+  {
+   "check": "单元数 = 题数 × 方法数",
+   "ok": true,
+   "detail": "rows=5 vs 1×5=5"
+  },
+  {
+   "check": "provenance 完整",
+   "ok": true,
+   "detail": "prompt_version=v3-neutral seed=0"
+  }
+ ],
+ "per_question": {
+  "R2Q01": {
+   "a2": {
+    "latency_s": 96.8,
+    "retrieval_s": null,
+    "tokens_in": 106691,
+    "tokens_out": 987,
+    "cost_usd": 0.6148659999999999,
+    "tools": 6,
+    "ranked": [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "2510.13343"
+    ],
+    "gold": [
+     "2510.13343"
+    ],
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "latency_s": 18.9,
+    "retrieval_s": 0.0,
+    "tokens_in": 38145,
+    "tokens_out": 118,
+    "cost_usd": 0.19367499999999999,
+    "tools": 0,
+    "ranked": [
+     "2510.13343",
+     "1909.07748",
+     "2412.06333",
+     "2310.10981",
+     "2303.14061",
+     "2402.12317",
+     "2212.13138",
+     "2503.21676",
+     "2011.14424",
+     "2401.06823"
+    ],
+    "gold": [
+     "2510.13343"
+    ],
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "latency_s": 32.4,
+    "retrieval_s": 8.9,
+    "tokens_in": 244,
+    "tokens_out": 97,
+    "cost_usd": 0.022205,
+    "tools": 0,
+    "ranked": [
+     "2510.13343"
+    ],
+    "gold": [
+     "2510.13343"
+    ],
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "latency_s": 11.5,
+    "retrieval_s": 0.0,
+    "tokens_in": 956,
+    "tokens_out": 193,
+    "cost_usd": 0.028197,
+    "tools": 0,
+    "ranked": [
+     "2510.13343",
+     "1909.07748",
+     "2412.06333",
+     "2310.10981",
+     "2303.14061",
+     "2402.12317",
+     "2212.13138",
+     "2503.21676",
+     "2011.14424",
+     "2401.06823"
+    ],
+    "gold": [
+     "2510.13343"
+    ],
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "latency_s": 15.2,
+    "retrieval_s": 0.0,
+    "tokens_in": 37359,
+    "tokens_out": 159,
+    "cost_usd": 0.19077000000000002,
+    "tools": 0,
+    "ranked": [
+     "2510.13343"
+    ],
+    "gold": [
+     "2510.13343"
+    ],
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   }
+  }
+ }
+}

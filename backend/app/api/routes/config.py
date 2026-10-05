@@ -245,8 +245,10 @@ async def get_config() -> dict[str, Any]:
         "app_mode": mode,
         "backend_port": str(config.server_port),
         "frontend_port": config.frontend_port,
-        "backend_url": os.environ.get("BACKEND_URL") or str(
-            combined.get("server", {}).get(mode, {}).get("backend_url", "")
+        "backend_url": os.environ.get("BACKEND_URL") or (
+            # O2 fix: follow the ACTUAL resolved port (.env BACKEND_PORT may
+            # override config.yml's backend_url, e.g. 8771 vs 8770).
+            f"http://127.0.0.1:{config.server_port}"
         ),
         "tree_storage_path": config.storage_tree_fs_root,
         "vector_enabled": config.vector_enabled,

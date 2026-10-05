@@ -7,7 +7,7 @@
    "field": "artificial-intelligence",
    "arxiv_id": "1706.03762",
    "title": "Attention Is All You Need",
-   "parse_seconds": 16.4,
+   "parse_seconds": 48.6,
    "chars": 42400,
    "excerpt": "Provided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani\\* Google Brain avaswani@google.com\n\nNoam Shazeer\\* Google Brain noam@google.com\n\nNiki Parmar\\* Google Research nikip@google.com\n\nJakob Uszkoreit\\* Google Research usz@google.com\n\nLlion Jones\\* Google Research 1lion@google.com\n\nAidan N. Gomez\\* † University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser\\* Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin\\* ↓ illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,"
   },
@@ -25,7 +25,7 @@
    "field": "large-language-models",
    "arxiv_id": "2005.14165",
    "title": "Language Models are Few-Shot Learners",
-   "parse_seconds": 56.4,
+   "parse_seconds": 48.4,
    "chars": 269229,
    "excerpt": "# Language Models are Few-Shot Learners\n\nTom B. Brown\\* Benjamin Mann\\* Nick Ryder\\* Melanie Subbiah\\*\n\nJared Kaplan† Prafulla DhariwalArvind NeelakantanPranav ShyamGirish Sastry\n\nAmanda Askell Sandhini Agarwal Ariel Herbert-Voss Gretchen Krueger Tom Henighan\n\nRewon Child Aditya Ramesh Daniel M. Ziegler Jeffrey Wu Clemens Winter\n\nChristopher Hesse Mark Chen Eric Sigler Mateusz Litwin Scott Gray\n\nBenjamin Chess Jack Clark\n\nChristopher Berner\n\nSam McCandlish Alec Radford\n\nIlya Sutskever Dario Amodei\n\nOpenAI\n\n## Abstract\n\nRecent work has demonstrated substantial gains on many NLP tasks and benchmarks by pre-training on a large corpus of text followed by fine-tuning on a specific task. While typically task-agnostic in architecture, this method still requires task-specific fine-tuning datasets of thousands or tens of thousands of examples. By contrast, humans can generally perform a new language task from only a few examples or from simple instructions – something which current NLP systems still largely struggle to do. Here we show that scaling up language models greatly improves task-agnostic, few-shot performance, sometimes even reaching competitiveness with prior state-of-the-art finetuning approaches. Specifically, we train GPT-3, an autoregressive language model with 175 billion parameters, 10x more than any previous non-sparse language model, and test its performance in the fe"
   },
@@ -97,7 +97,7 @@
    "field": "neuroscience",
    "arxiv_id": "1906.10015",
    "title": "A Review on Neural Network Models of Schizophrenia and Autism Spectrum Disorder",
-   "parse_seconds": 24.3,
+   "parse_seconds": 32.3,
    "chars": 160537,
    "excerpt": "# A Review on Neural Network Models of Schizophrenia and Autism Spectrum Disorder\n\nPablo Lanillosa,\\*, Daniel Olivaa,\\*, Anja Philippsenb,\\*, Yuichi Yamashitac, Yukie Nagaib, Gordon Chenga\n\naInstitute for Cognitive Systems, Technical University of Munich, Arcisstraße 21, Munich, Germany\n\nbInternational Research Center for Neurointelligence, The University of Tokyo, 7-3-1 Hongo, Bunkyo-ku, Tokyo, Japan\n\ncDepartment of Functional Brain Research, National Center of Neurology and Psychiatry, 4-1-1 Ogawa-Higashi, Kodaira, Tokyo, Japan\n\n## Abstract\n\nThis survey presents the most relevant neural network models of autism spectrum disorder and schizophrenia, from the first connectionist models to recent deep network architectures. We analyzed and compared the most representative symptoms with its neural model counterpart, detailing the alteration introduced in the network that generates each of the symptoms, and identifying their strengths and weaknesses. We additionally cross-compared Bayesian and free-energy approaches, as they are widely applied to modeling psychiatric disorders and share basic mechanisms with neural networks. Models of schizophrenia mainly focused on hallucinations and delusional thoughts using neural dysconnections or inhibitory imbalance as the predominating alteration. Models of autism rather focused on perceptual difficulties, mainly excessive attention to envir"
   },
@@ -124,7 +124,7 @@
    "field": "artificial-intelligence",
    "arxiv_id": "1706.05261",
    "title": "From Propositional Logic to Plausible Reasoning: A Uniqueness Theorem",
-   "parse_seconds": 32.3,
+   "parse_seconds": 32.4,
    "chars": 114472,
    "excerpt": "# From Propositional Logic to Plausible Reasoning: A Uniqueness Theorem\n\nKevin S. Van Horn\n\nAdobe Systems, 3900 Adobe Way, Lehi, UT 84043, United States\n\n## Abstract\n\nWe consider the question of extending propositional logic to a logic of plausible reasoning, and posit four requirements that any such extension should satisfy. Each is a requirement that some property of classical propositional logic be preserved in the extended logic; as such, the requirements are simpler and less problematic than those used in Cox's Theorem and its variants. As with Cox's Theorem, our requirements imply that the extended logic must be isomorphic to (finite-set) probability theory. We also obtain specific numerical values for the probabilities, recovering the classical definition of probability as a theorem, with truth assignments that satisfy the premise playing the role of the \"possible cases.\"\n\nKeywords: Bayesian, Carnap, Cox, Jaynes, logic, probability\n\n## 1. Introduction\n\nE. T. Jaynes [13, p. xxii] proposes the view that probability theory is the uniquely determined extension of classical propositional logic (CPL) to a \"logic of plausible reasoning\" :\n\nOur theme is simply: probability theory as extended logic. ...the mathematical rules of probability theory are not merely rules for calculating frequencies of random variables'; they are also the unique consistent rules for conducting inferen"
   },
@@ -133,7 +133,7 @@
    "field": "nlp",
    "arxiv_id": "2503.21676",
    "title": "How do language models learn facts? Dynamics, curricula and hallucinations",
-   "parse_seconds": 24.3,
+   "parse_seconds": 24.4,
    "chars": 107686,
    "excerpt": "# How do language models learn facts? Dynamics, curricula and hallucinations\n\nNicolas Zucchet1,+, Jörg Bornschein2, Stephanie Chan2, Andrew Lampinen², Razvan Pascanu² and Soham De²\n\n1ETH Zürich, 2Google DeepMind, +Work done at Google DeepMind\n\nLarge language models accumulate vast knowledge during pre-training, yet the dynamics governing this acquisition remain poorly understood. This work investigates the learning dynamics of language models on a synthetic factual recall task, uncovering three key findings: First, language models learn in three phases, exhibiting a performance plateau before acquiring precise factual knowledge. Mechanistically, this plateau coincides with the formation of attention-based circuits that support recall. Second, the training data distribution significantly impacts learning dynamics, as imbalanced distributions lead to shorter plateaus. Finally, hallucinations emerge simultaneously with knowledge, and integrating new knowledge into the model through fine-tuning is challenging, as it quickly corrupts its existing parametric memories. Our results emphasize the importance of data distribution in knowledge acquisition and suggest novel data scheduling strategies to accelerate neural network training.\n\nLarge language models offer a powerful and intuitive interface to access the vast amounts of knowledge on which they were trained. The learning process a"
   },
@@ -151,7 +151,7 @@
    "field": "large-language-models",
    "arxiv_id": "2402.11690",
    "title": "Vision-Flan: Scaling Human-Labeled Tasks in Visual Instruction Tuning",
-   "parse_seconds": 40.4,
+   "parse_seconds": 48.4,
    "chars": 204591,
    "excerpt": "# Vision-Flan: Scaling Human-Labeled Tasks in Visual Instruction Tuning\n\nZhiyang Xu\\* Chao Feng\\* Rulin Shao Trevor Ashby\\* Ying Shen\\*\n\nDi Jin Yu Cheng Qifan Wang Lifu Huang\\*\n\n\\*Virginia TechUniversity of WashingtonUniversity of Michigan\n\nAmazon Inc. Microsoft Meta AI\n\n{zhiyangx,lifuh}@vt.edu\n\n## Abstract\n\nDespite vision-language models’ (VLMs) remarkable capabilities as versatile visual assistants, two substantial challenges persist within the existing VLM frameworks: (1) lacking task diversity in pretraining and visual instruction tuning, and (2) annotation error and bias in GPT-4 synthesized instruction tuning data. Both challenges lead to issues such as poor generalizability, hallucination, and catastrophic forgetting. To address these challenges, we construct VISION-FLAN, the most diverse publicly available visual instruction tuning dataset to date, comprising 187 diverse tasks and 1,664,261 instances sourced from academic datasets, and each task is accompanied by an expert-written instruction. In addition, we propose a two-stage instruction tuning framework, in which VLMs are firstly finetuned on VISION-FLAN and further tuned on GPT-4 synthesized data. We find this two-stage tuning framework significantly outperforms the traditional single-stage visual instruction tuning framework and achieves the state-of-the-art performance across a wide range of multi-modal evaluatio"
   },
@@ -223,7 +223,7 @@
    "field": "economics",
    "arxiv_id": "1901.03951",
    "title": "Inequality, mobility and the financial accumulation process: A computational economic analysis",
-   "parse_seconds": 16.3,
+   "parse_seconds": 24.3,
    "chars": 76405,
    "excerpt": "# Inequality, mobility and the financial accumulation process: A computational economic analysis \\*\n\nYuri Biondi¹ and Simone Righi2,3\n\n1Cnrs - IRISSO (University Paris Dauphine PSL), Place Mar. Lattre Tassigny 75016 Paris. yuri.biondi@gmail.com   \n2University College London, Department of Computer Science, Gower Street 66-72, Office 3.10, WC1E 6EA London (UK). s.righi@ucl.ac.uk\n\n3MTA TK “Lendület\" Research Center for Educational and Network Studies (RECENS), Hungarian Academy of Sciences.\n\nJanuary 27, 2019\n\n## Abstract\n\nOur computational economic analysis investigates the relationship between inequality, mobility and the financial accumulation process. Extending the baseline model by Levy et al., we characterise the economic process through stylised return structures generating alternative evolutions of income and wealth through time. First, we explore the limited heuristic contribution of one and two factors models comprising one single stock (capital wealth) and one single flow factor (labour) as pure drivers of income and wealth generation and allocation over time. Second, we introduce heuristic modes of taxation in line with the baseline approach. Our computational economic analysis corroborates that the financial accumulation process featuring compound returns plays a significant role as source of inequality, while institutional arrangements including taxation play a signi"
   },
@@ -286,7 +286,7 @@
    "field": "robotics",
    "arxiv_id": "2509.14191",
    "title": "MCGS-SLAM: A Multi-Camera SLAM Framework Using Gaussian Splatting for High-Fidelity Mapping",
-   "parse_seconds": 24.3,
+   "parse_seconds": 16.3,
    "chars": 50879,
    "excerpt": "# MCGS-SLAM: A Multi-Camera SLAM Framework Using Gaussian Splatting for High-Fidelity Mapping\n\nZhihao Cao¹, Hanyu Wu2, Li Wa Tang2, Zizhou Luo3, Wei Zhang4, Marc Pollefeys5,6, Zihan Zhu5,\\*, and Martin R. Oswald7\n\n![](images/982d3a8f812e840c9d1636c3aa7c82ca17f4fd403c51fb16f5db476081d9b5d3.jpg)  \nFig. 1: MCGS-SLAM synchronizes RGB inputs from the front, left, and right cameras of the multi-camera rig in the Waymo dataset and fuses them into a unified 3D Gaussian Splatting map. The system performs real-time tracking and mapping, enabling high-fidelity reconstruction of both color and depth views from each individual camera. Through joint multi-camera optimization, MCGS-SLAM ensures accurate pose and geometry alignment, while supporting comprehensive multi-view rendering for photorealistic visualization. https://zhihao-ethz.github.io/mcgs-slam/\n\nAbstract—Recent progress in dense SLAM has primarily targeted monocular setups, often at the expense of robustness and geometric coverage. We present MCGS-SLAM, the first purely RGB-based multi-camera SLAM system built on 3D Gaussian Splatting (3DGS). Unlike prior methods relying on sparse maps or inertial data, MCGS-SLAM fuses dense RGB inputs from multiple viewpoints into a unified, continuously optimized Gaussian map. A multi-camera bundle adjustment (MCBA) jointly refines poses and depths via dense photometric and geometric residuals, "
   },
@@ -304,7 +304,7 @@
    "field": "mathematics",
    "arxiv_id": "2211.12700",
    "title": "Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications",
-   "parse_seconds": 32.3,
+   "parse_seconds": 32.4,
    "chars": 138294,
    "excerpt": "DOI: xxx/xxxx\n\nARTICLE TYPE\n\n# Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications\n\nRien Quirynen\\* | Stefano Di Cairano\n\n1Control for Autonomy, Mitsubishi Electric Research Laboratories, Massachusetts, USA\n\nCorrespondence\n\n\\*Email: quirynen@merl.com\n\nPresent Address   \n201 Broadway, 8th Floor, Cambridge, MA   \n02139-1955\n\n## Abstract\n\nMixed-integer model predictive control (MI-MPC) can be a powerful tool for controlling hybrid systems. In case of a linear-quadratic objective in combination with linear or piecewise-linear system dynamics and inequality constraints, MI-MPC needs to solve a mixed-integer quadratic program (MIQP) at each sampling time step. This paper presents a collection of exact block-sparse presolve techniques to efficiently remove decision variables, and to remove or tighten inequality constraints, tailored to mixed-integer optimal control problems. In addition, we describe a novel approach based on a heuristic presolve algorithm to compute a feasible but possibly suboptimal MIQP solution. We present benchmarking results for a C code implementation of the proposed BB-ASIPM solver, including a branch-and-bound (B&B) method with the proposed tailored presolve techniques and an active-set based interior point method (ASIPM), compared against multiple state-of-the-art MIQP solvers on a case study of motion p"
   },
@@ -322,7 +322,7 @@
    "field": "statistics",
    "arxiv_id": "1506.03880",
    "title": "Causal inference via algebraic geometry: feasibility tests for functional causal structures with two binary observed variables",
-   "parse_seconds": 40.3,
+   "parse_seconds": 40.4,
    "chars": 120797,
    "excerpt": "# Causal inference via algebraic geometry: feasibility tests for functional causal structures with two binary observed variables\n\nCiarán M. Lee\\* Department of Computer Science, University of Oxford, Oxford, UK OX1 3QD\n\n## Abstract\n\nWe provide a scheme for inferring causal relations from uncontrolled statistical data based on tools from computational algebraic geometry, in particular, the computation of Groebner bases. We focus on causal structures containing just two observed variables, each of which is binary. We consider the consequences of imposing different restrictions on the number and cardinality of latent variables and of assuming different functional dependences of the observed variables on the latent ones (in particular, the noise need not be additive). We provide an inductive scheme for classifying functional causal structures into distinct observational equivalence classes. For each observational equivalence class, we provide a procedure for deriving constraints on the joint distribution that are necessary and sufficient conditions for it to arise from a model in that class. We also demonstrate how this sort of approach provides a means of determining which causal parameters are identifiable and how to solve for these. Prospects for expanding the scope of our scheme, in particular to the problem of quantum causal inference, are also discussed.\n\n## 1 Introduction\n\nC"
   },
@@ -358,7 +358,7 @@
    "field": "immunology",
    "arxiv_id": "2604.01385",
    "title": "Strategies for tumor elimination and control under immune evasion and chemotherapy resistance",
-   "parse_seconds": 24.3,
+   "parse_seconds": 24.4,
    "chars": 75912,
    "excerpt": "# Strategies for tumor elimination and control under immune evasion and chemotherapy resistance\n\nNazanin Mokari & Bryce Morsky\n\nDepartment of Mathematics, Florida State University, Tallahassee, FL, USA\n\nApril 3, 2026\n\n## Abstract\n\nThe evolutionary and ecological dynamics of tumors under immune responses and therapeutic interventions pose major challenges to long-term treatment success. Although treatment may initially achieve short-term disease control, resistant cancer cell subpopulations often arise, leading to relapse with more aggressive and treatment-resistant forms of the disease. Here, we develop and analyze mathematical models describing the interactions among effector cells, chemo-resistant tumor cells, and immuno-resistant tumor cells under distinct immune-evasion strategies. The models incorporate competition and cooperation between resistant and sensitive tumor subpopulations. We identify threshold conditions governing tumor persistence, elimination, and phenotype dominance under varying therapeutic intensities. These findings provide a theoretical framework for designing targeted and combination therapies and offer insights into strategies for mitigating the treatment resistance.\n\nKeywords: adaptive therapy, cancer modeling, chemotherapy, immunotherapy\n\n## 1 Introduction\n\nCancer is a genetic disorder driven by the process of somatic evolution. This disease is chara"
   },
@@ -367,7 +367,7 @@
    "field": "oceanography",
    "arxiv_id": "1104.2730",
    "title": "Approximate deconvolution large eddy simulation of a barotropic ocean circulation model",
-   "parse_seconds": 24.3,
+   "parse_seconds": 16.3,
    "chars": 59895,
    "excerpt": "# Approximate deconvolution large eddy simulation of a barotropic ocean circulation model\n\nOmer Sana,\\*, Anne E. Staplesa, Zhu Wangb, Traian Iliescub\n\naDepartment of Engineering Science and Mechanics, Virginia Tech, Blacksburg, VA, USA b Department of Mathematics, Virginia Tech, Blacksburg, VA, USA\n\n## Abstract\n\nThis paper puts forth a new large eddy simulation closure modeling strategy for two-dimensional turbulent geophysical flows. This closure modeling approach utilizes approximate deconvolution, which is based solely on mathematical approximations and does not employ additional phenomenological arguments to the model. The new approximate deconvolution model is tested in the numerical simulation of the wind-driven circulation in a shallow ocean basin, a standard prototype of more realistic ocean dynamics. The model employs the barotropic vorticity equation driven by a symmetric double-gyre wind forcing, which yields a four-gyre circulation in the time mean. The approximate deconvolution model yields the correct four-gyre circulation structure predicted by a direct numerical simulation, on a coarser mesh but at a fraction of the computational cost. This first step in the numerical assessment of the new model shows that approximate deconvolution could represent a viable tool for under-resolved computations in the large eddy simulation of more realistic turbulent geophysical f"
   },
@@ -376,7 +376,7 @@
    "field": "seismology",
    "arxiv_id": "1308.1846",
    "title": "Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique",
-   "parse_seconds": 24.3,
+   "parse_seconds": 16.3,
    "chars": 83880,
    "excerpt": "# Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique\n\nAnthony Astoul, Christopher Filliter, Eric Mason, Andrew Rau-Chaplin, Kunal Shridhar, Blesson Varghese and Naman Varshney\n\nReceived: 5 September 2012 / Accepted: 22 June 2013\n\nAbstract An automated, real-time, multiple sensor dat: source relying and globally applicable earthquake loss model and visualiser is desirable for post-event earthquake analysis. To achieve this there is a need to support rapid data ingestion, loss estimation and integration of data from multiple data sources and rapid visualisation at multiple geographic levels. In this paper, the design and development of the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) system for real-time estimation and visualisation of insured losses incurred due to earthquakes is presented. A model for estimating ground up and net of facultative losses due to earthquakes in near real-time is implemented. Since post-event data is often available immediately from multiple disparate sources, a geo-browser is employed to facilitate the visualisation and integration of earthquake hazard, exposure and loss data. The feasibility of APE-ELEV is demonstrated using a test case earthquake that occurred in Tohoku, Japan (2011). The APE-ELEV model is further validated for ten global earthquakes usi"
   },
@@ -412,7 +412,7 @@
    "field": "databases",
    "arxiv_id": "2102.02440",
    "title": "Online Sketch-based Query Optimization",
-   "parse_seconds": 16.3,
+   "parse_seconds": 24.3,
    "chars": 117774,
    "excerpt": "# Online Sketch-based Query Optimization\n\nYesdaulet Izenov, Asoke Datta, Florin Rusu, Jun Hyung Shin {yizenov,adatta2,frusu,jshin33} @ucmerced.edu University of California Merced\n\nFebruary 2021\n\n## Abstract\n\nCost-based query optimization remains a critical task in relational databases even after decades of research and industrial development. Query optimizers rely on a large range of statistical synopses – including attribute-level histograms and table-level samples – for accurate cardinality estimation. As the complexity of selection predicates and the number of join predicates increase, two problems arise. First, statistics cannot be incrementally composed to effectively estimate the cost of the sub-plans generated in plan enumeration. Second, small errors are propagated exponentially through join operators, which can lead to severely sub-optimal plans.\n\nIn this paper, we introduce COMPASS, a novel query optimization paradigm for in-memory databases based on a single type of statistics—Fast-AGMS sketches. In COMPASS, query optimization and execution are intertwined. Selection predicates and sketch updates are pushed-down and evaluated online during query optimization. This allows Fast-AGMS sketches to be computed only over the relevant tuples—which enhances cardinality estimation accuracy. Plan enumeration is performed over the query join graph by incrementally composing attr"
   },
@@ -430,7 +430,7 @@
    "field": "mathematics",
    "arxiv_id": "1810.09292",
    "title": "Optimal distributed control of a stochastic Cahn-Hilliard equation",
-   "parse_seconds": 40.4,
+   "parse_seconds": 32.4,
    "chars": 142886,
    "excerpt": "# Optimal distributed control of a stochastic Cahn-Hilliard equation \\*\n\nLUCA SCARPA\n\nE-mail: luca.scarpa@univie.ac.at\n\nFaculty of Mathematics, University of Vienna Oskar-Morgenstern-Platz 1, 1090 Vienna, Austria\n\n## Abstract\n\nWe study an optimal distributed control problem associated to a stochastic Cahn-Hilliard equation with a classical double-well potential and Wiener multiplicative noise, where the control is represented by a source-term in the definition of the chemical potential. By means of probabilistic and analytical compactness arguments, existence of an optimal control is proved. Then the linearized system and the corresponding backward adjoint system are analysed through monotonicity and compactness arguments, and first-order necessary conditions for optimality are proved.\n\nAMS Subject Classification: 35K55, 35R60, 60H15, 80A22, 82C26.\n\nKey words and phrases: stochastic Cahn-Hilliard equation, phase separation, optimal control, linearized state system, adjoint state system, first-order optimality conditions.\n\n## 1 Introduction\n\nThe pure Cahn-Hilliard equation on a smooth bounded domain $D \\subset \\mathbb { R } ^ { N } , N = 2 , 3 .$ can be written in its simplest form as\n\n$$\n\\partial _ { t } y - \\Delta w = 0 , \\quad w = - \\Delta y + \\Psi ^ { \\prime } ( y ) - u \\qquad \\mathrm { i n ~ } ( 0 , T ) \\times D ,\n$$\n\nwhere $T > 0$ is a fixed final time, y and w denote the "
   },

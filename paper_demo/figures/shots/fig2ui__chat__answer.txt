@@ -1,0 +1,9 @@
+Claude
+
+The Gene Ontology is subdivided by three independent ontologies:
+
+**Molecular Function (MF)** — the activities or tasks performed by individual gene products (e.g., "ATP binding," "kinase activity").
+**Biological Process (BP)** — the larger biological programs, pathways, or processes accomplished by ordered assemblies of molecular functions (e.g., "signal transduction," "cell division").
+**Cellular Component (CC)** — the locations or parts of a cell where gene products are active, spanning subcellular structures and macromolecular complexes (e.g., "mitochondrion," "ribosome").
+
+These three are orthogonal vocabularies: the same gene product is typically annotated separately in each, which is why most GO-based annotation and enrichment workflows report them independently rather than as one merged set of terms.

@@ -18,28 +18,30 @@ Read existing `.env` and `config.yml`. For each item below, if already valid →
 | Neo4j password | .env NEO4J_PASSWORD | Ask, default `123456` |
 | Model source | config.yml `embedding.model_source` | Ask, default modelscope |
 
-### Phase 6b — MinerU 部署模式选择（必问一次，除非已配置）
+### Phase 6b — MinerU Deployment Mode Selection (ask once, mandatory, unless already configured)
 
-`mineru.mode` 决定 PDF 解析引擎走哪条路（详见 [mineru-mode.md](mineru-mode.md)）：
+`mineru.mode` decides which path the PDF parsing engine takes (see [mineru-mode.md](mineru-mode.md) for details):
 
 ```
-MinerU 解析引擎模式？
-1) 远程 API（推荐/默认）— 解析走 mineru-api HTTP 端点，不占本机 GPU/内存；
-   端点不可用时自动回退本地引擎。需要提供 API 地址（+ 可选 token）。
-2) 本地部署 — 本机安装 mineru + 下载模型，完全离线。
+MinerU parsing engine mode?
+1) Remote API (recommended/default) — parsing goes to the mineru-api HTTP endpoint, no local GPU/memory usage;
+   automatically falls back to the local engine when the endpoint is unavailable. Requires an API address (+ optional token).
+2) Local deployment — install mineru on this machine + download models, fully offline.
 ```
 
-- **选远程**：收集 `base_url`（必填，http/https）与 token（可选，只写入 `.env` 的 `MINERU_API_TOKEN`，
-  绝不写进 config.yml 或任何源码/示例）→ 写 backend/config.yml 的 `mineru.mode: remote` + `remote.base_url`
-  → 立即验证 `GET {base_url}/health`（200 即通过；不通则提示检查地址/网络，或回退选择本地）。
-- **选本地**：跳转 [mineru-mode.md](mineru-mode.md) §本地安装流程 —— 增量检查 venv 中 mineru 是否已装
-  （`backend/.venv/Scripts/mineru-api.exe` 或 `bin/mineru-api`）、模型是否已下载（`ragctl mineru-model`），
-  只补缺失项，最后以 `GET /api/v1/mineru/status` 的 `available:true` 收尾。
+- **Choose remote**: collect `base_url` (required, http/https) and the token (optional, written ONLY into `.env` as
+  `MINERU_API_TOKEN`, never into config.yml or any source/examples) → write `mineru.mode: remote` + `remote.base_url`
+  into backend/config.yml → immediately verify `GET {base_url}/health` (200 = pass; if unreachable, prompt to check
+  the address/network or fall back to choosing local).
+- **Choose local**: jump to [mineru-mode.md](mineru-mode.md) §Local install procedure — incrementally check whether
+  mineru is already installed in the venv (`backend/.venv/Scripts/mineru-api.exe` or `bin/mineru-api`) and whether
+  models are already downloaded (`ragctl mineru-model`), fill in only what is missing, and finish by confirming
+  `available:true` from `GET /api/v1/mineru/status`.
 
 ### All config valid → skip asking, show summary
 
 ```
-📋 现有配置（已完整）  是否修改？[y/N]:
+📋 Existing configuration (complete)  Modify? [y/N]:
 ```
 
 ### Write config (only changed items)

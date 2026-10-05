@@ -15,6 +15,8 @@ interface ParsedFileResult extends BatchParsePDFFileVTItem {
 interface SaveParsedFilesRequest {
   parentId: string
   results: ParsedFileResult[]
+  split?: boolean
+  agentPlan?: Record<string, unknown>
 }
 
 /**
@@ -116,7 +118,10 @@ export default defineEventHandler(async (event) => {
       if (result.markdown) {
         markdownBuffer = Buffer.from(result.markdown, 'utf-8')
         fileSize = markdownBuffer.length
-        const stem = (result.source_filename || result.filename || 'document').replace(/\.(pdf|png|jpg|jpeg|docx|xlsx)$/i, '')
+        // Strip KNOWN parse-source extensions; .md/.txt sources keep their stem too
+        // (otherwise a "x.md" source would become "x.md.md" on disk).
+        const stem = (result.source_filename || result.filename || 'document')
+          .replace(/\.(pdf|png|jpg|jpeg|docx|xlsx|md|markdown|txt)$/i, '')
         fileName = `${stem}.md`
       } else if (result.markdown_path) {
         // markdown_path comes from client POST body, must be within allowed roots to block path traversal
@@ -151,10 +156,19 @@ export default defineEventHandler(async (event) => {
       const markdownText = markdownBuffer.toString('utf-8')
       const largeDoc = getLargeDocConfig()
       if ((body as any).split === true && largeDoc.autoSplit
-          && markdownText.length > largeDoc.maxChars) {
+          && Array.from(markdownText).length > largeDoc.maxChars) {
         try {
-          const plan = await requestSplitPlan(fileName, markdownText, true)
-          if (plan?.success && plan.split && Array.isArray(plan.parts) && plan.parts.length > 1) {
+          const plan = await requestSplitPlan(fileName, markdownText, true, body.agentPlan)
+          const validParts = plan?.success && plan.split && Array.isArray(plan.parts)
+            && plan.parts.length >= 1
+            && plan.parts.every((part) => String(part.content || '').length > 0)
+          if (!validParts) {
+            throw createError({
+              statusCode: 422,
+              statusMessage: 'Parsed oversized document requires a valid structure-aware split plan; raw content was not stored',
+            })
+          }
+          {
             // Determine the KB folder path for image copying (once for all parts)
             const norm = (p: string) => p.replace(/\\/g, '/').toLowerCase()
             const parentFolder = (service as any).metadata.folders.find(
@@ -191,8 +205,14 @@ export default defineEventHandler(async (event) => {
                 largeDocSplit: {
                   part_index: part.part_index,
                   part_count: part.part_count,
-                  source_chars: plan.source_chars ?? markdownText.length,
+                  source_chars: plan.source_chars ?? Array.from(markdownText).length,
                   max_chars: plan.max_chars ?? largeDoc.maxChars,
+                  strategy: plan.strategy,
+                  planner: plan.planner,
+                  source_start: part.source_start ?? part.start_char,
+                  source_end: part.source_end ?? part.end_char,
+                  section_range: part.section_range,
+                  warnings: part.warnings,
                 },
               }
               const updatedFile = await service.updateFile(fileRecord.id, { metadata })
@@ -205,7 +225,11 @@ export default defineEventHandler(async (event) => {
             continue
           }
         } catch (splitErr: any) {
-          console.warn(`Large-doc split failed for ${result.filename}; falling back to single-doc save:`, splitErr?.message || splitErr)
+          console.error(`Large-doc split rejected for ${result.filename}; raw content was not stored:`, splitErr?.message || splitErr)
+          throw splitErr?.statusCode ? splitErr : createError({
+            statusCode: 422,
+            statusMessage: `Parsed oversized document split failed; raw content was not stored: ${splitErr?.message || splitErr}`,
+          })
         }
       }
 
@@ -269,6 +293,9 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error: any) {
     console.error('Save parsed files error:', error)
+    if (error?.statusCode) {
+      throw error
+    }
     throw createError({
       statusCode: 500,
       statusMessage: error.message || 'Failed to save parsed files',

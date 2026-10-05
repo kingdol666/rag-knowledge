@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """三轨对照 QA 报告 — 分轨汇整(每轨独立小节: 汇总表 + 逐题回答全文)."""
 from __future__ import annotations
 

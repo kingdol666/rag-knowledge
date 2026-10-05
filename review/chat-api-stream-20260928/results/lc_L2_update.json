@@ -1,0 +1,24 @@
+{
+ "case": "L2_update",
+ "wall_s": 55.8,
+ "turns": 9,
+ "cost": 1.3505861999999995,
+ "tools_used": [
+  "Agent",
+  "Skill",
+  "Skill",
+  "Read",
+  "Grep",
+  "Glob",
+  "Read",
+  "mcp__kb-mcp__backend_status",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_update_content",
+  "mcp__kb-mcp__kb_index_document",
+  "mcp__kb-mcp__kb_doc_read"
+ ],
+ "reply": "Read-back confirms the append landed with original content intact.\n\n**关于子 Agent 报告**：我委派的 Archival 子 Agent 报告 MCP 工具不可用并中止——那是它所在工具上下文的问题。我在本会话中实测 `mcp__kb-mcp__backend_status` 正常返回 healthy，因此直接在本会话按 MCP 优先原则执行，未走 HTTP 兜底。该子 Agent 未对文档做任何写入。\n\n## Result\n\n**任务**：更新「e2e-sandbox-20260930b」中《生命周期测试文档A.md》正文，保留原内容并在末尾追加 v2 段落。\n\n| 项目 | 结果 |\n|---|---|\n| **kb_id** | `c42b4044-52e9-4b00-81c2-975ae6ffda14`（e2e-sandbox-20260930b） |\n| **doc_id** | `049fb387-13fe-4931-a49e-d4a6f8cc2f53` |\n| **doc_path** | `e2e-sandbox-20260930b\\生命周期测试文档A.md` |\n| **更新是否成功** | ✅ `kb_doc_update_content` 返回 success |\n| **重读确认追加** | ✅ 关键词「橙色海豚跳跃」存在于文末「## v2 追加段落」 |\n| **原内容保留** | ✅ 全部原样保留（标题 + v1 版本段未被改动） |\n| **内容长度** | 124 字符 → 186 字符（文件大小 316 字节） |\n| **行数** | 5 行 → 9 行 |\n| **chunk 数** | 2（collection `kb_c42b4044-52e9-4b00-81c2-975ae6ffda14`，`total_chunks` 2 ≥ 1） |\n| **索引** | ✅ 显式 `kb_index_document` 完成，embedding=bge-m3，graph_doc_id `doc::e2e-sandbox-20260930b/生命周期测试文档A.md` |\n\n**更新后全文**（read-back 实测）：\n\n```\n# 生命周期测试 A\n\n版本：v1。\n内容：本文档用于验证 agent/chat 的文档全生命周期管理（创建→更新→移动→打标）。当前处于创建阶段。\n\n## v2 追加段落\n\n本段由更新流程写入，用于验证 kb_doc_update_content 生效。验证关键词：橙色海豚跳跃。\n```\n\n**结论**：`kb_doc_update_content` 生效，追加段落已落盘并通过重读验证，原文完整无损，向量索引已重建（2 c",
+ "session_id": "89adbacb-aef4-4625-a578-a8bca22f755c"
+}

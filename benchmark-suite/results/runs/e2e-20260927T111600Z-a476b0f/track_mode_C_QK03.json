@@ -1,0 +1,48 @@
+{
+ "qid": "QK03",
+ "question": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "**Answer:** The dynamic electrical model explains hysteretic J–V characteristics through a simple ansatz for **polarization relaxation**. Working from that ansatz, the model reproduces both qualitatively and quantitatively the detailed features of measured J–V curves, including pre-poling effects (differences between initially over- and under-polarized samples) and the current overshoot seen in reverse characteristics. Hysteresis behavior is analyzed with respect to bias scan rate, yielding hysteresis amplitude that is maximum at intermediate scan rates and negligible at very slow or very fast rates, plus effects from different relaxation time scales.\n\n**Caveats:** The evidence does not specify the microscopic origin of the polarization relaxation itself; it only lists competing literature attributions for the anomalous hysteresis (giant photoinduced dielectric response, ferroelectric effects, ion migration with charge trapping/detrapping, unbalanced electron/hole distributions). Any statement about the model's internal equations beyond the polarization-relaxation ansatz is not supported by this evidence.\n\n**Source used:** `materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs` (part 1/2) — Abstract and Section 1 (Introduction) of Nemnes et al., \"Dynamic electrical behavior of halide perovskite based solar cells.\"",
+ "is_error": false,
+ "latency_s": 58.8,
+ "retrieval_s": 51.0,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38233,
+  "output": 918,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.21411500000000003,
+ "ranked": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/photosynthesis.md",
+  "demo-qa-20260927/voyager-1.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+  "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+  "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 2 of 3).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+  "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+  "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+  "自然科学与地球科学/climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.md.md"
+ ],
+ "evidence_sources": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/photosynthesis.md",
+  "demo-qa-20260927/voyager-1.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 14,
+  "b_docs": 46,
+  "consensus": 2,
+  "merged": 12
+ }
+}

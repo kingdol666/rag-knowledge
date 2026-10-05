@@ -1,0 +1,26 @@
+{
+ "GET /api/kb/catalog": {
+  "ok": true,
+  "detail": "HTTP 200 · 0.1s · 19 KBs"
+ },
+ "POST /api/kb/native-search": {
+  "ok": true,
+  "detail": "HTTP 200 · 25.9s · answer 1006ch · 数值命中=True"
+ },
+ "POST /api/kb/agent/chat (async submit)": {
+  "ok": true,
+  "detail": "HTTP 200 · task_id=kbt_mukwfz3g_8c7385f3"
+ },
+ "GET  /api/kb/agent/tasks/:id (poll → result)": {
+  "ok": false,
+  "detail": "397.9s · answer 0ch · WordPiece 命中=False"
+ },
+ "POST /api/claude/chat (kbEnhanced SSE)": {
+  "ok": true,
+  "detail": "done=True · 51.3s · answer 1325ch · 2013 命中=True"
+ },
+ "POST /api/kb/agent/tasks/:id (poll → result)": {
+  "ok": true,
+  "detail": "completed 393.7s · reply 2494ch · WordPiece 逐字验证 · 56 tools · 11 turns (result.reply 字段; 首跑轮询预算 398s 略短于任务 393s 属脚本余量问题已修)"
+ }
+}

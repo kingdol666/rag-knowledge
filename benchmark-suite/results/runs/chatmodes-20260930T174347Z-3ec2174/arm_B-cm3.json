@@ -1,0 +1,29 @@
+{
+ "mode": "B",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 33.9,
+ "duration_ms": 32546,
+ "turns": 7,
+ "cost_usd": 0.3549936,
+ "session_id": "33188ecf-7fdb-4e64-ae0f-5405fc1ca353",
+ "answer_chars": 2875,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "The engine's only survivor is a gravitational-wave interferometer paper (high-frequency response functions) — it matched on generic \"detector/response\" vocabulary, not on collider benchmarks. No particle-physics/collider content exists.\n\n---\n\n**The knowledge base contains no content on the \"Herbert-Moulton collider benchmark\" or on particle-physics detector drift — this is an honest NOT_FOUND, not a partial answer.**\n\n**What I searched (full-library spine, 2026-10-01):**\n- `kb_list(lightweight=true)` → 19 shelves scanned by name + description. No shelf covers particle/collider physics. The phy",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

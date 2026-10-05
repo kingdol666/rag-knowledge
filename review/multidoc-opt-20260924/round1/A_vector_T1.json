@@ -1,0 +1,71 @@
+{
+  "mode": "A_vector",
+  "id": "T1",
+  "scenario": "enumeration/instance",
+  "query": "Which evaluation datasets and baseline methods does InstructDS compare against in its experiments?",
+  "seconds": 103.4,
+  "docs_read": 5,
+  "judge": {
+    "abs_kept": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "relative_cut": 0.789,
+    "global_best": 0.889,
+    "doc_scores": [
+      {
+        "doc": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8893,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8589,
+        "kept": true
+      },
+      {
+        "doc": "e2e-demo-0923-022632/global-rag-benchmark.md",
+        "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+        "score": 0.8838,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8713,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 34,
+    "total_segments": 34
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md"
+  ],
+  "evidence_pack": "[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 2/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations > 4.3 Ablation Study\n## 4.3 Ablation Study\n\n\nTo provide insights into the effectiveness of InstructDS, we conduct ablation studies on InstructDS variants to answer two fundamental questions: 1) How do augmented QDS triples contribute to general and query-based dialogue summarization? 2) What is the effect of length awareness augmentation on general and length-controllable dialogue summarization?\n\nModel variants. We examine five model variants of InstructDS across four evaluation datasets. Each variant is trained with distinct training data: 1) MixDS: Mixing three dialogue summarization datasets, 2) MixDS+QDS: MixDS and synthesized QDS triples, 3) MixDS+Length: MixDS and length augmentation, 4) InstructDS: MixDS, synthesized QDS triples and length augmentation, 5) InstructDS+DREAM: MixDS, synthesized QDS triples, human-written QDS triples from DREAM, and length augmentation. All other hyperparameters and evaluation protocols are kept identical for fair comparisons.\n\n![](images/7f33a31120c1e6f1051c0df6bade961efc3001c23e4bebfd1ea7fcb1f86847f4.jpg)\n\n![](images/86567a789c610eb3187a068e7c7c08b286f56b70090270026c9b6a912028fef9.jpg)\n\n![](images/e404c5f35ec709354d87e306dccf594317d144dcd32749373ec1d4f11c75695c.jpg)\n\n![](images/2d1dfee957e67af79332cafa5ddf75fa81eed45f9db91347a7c32068ad30ae1d.jpg)  \nFigure 3: Ablation study on different variants of InstructDS. Averaged ROUGE-1/2/L score is reported for dialogue summarization datasets, including SAMSum, DialogSum and TODSum. Accuracy is computed for DREAM dataset.\n\n![](images/b7a672e86c5d43e0467b46d5d07afe044089e23bc6741d6f5861d54e44e6c57e.jpg)  \nFigure 4: Ablation study on the number of included QDS triples. Performance on SAMSum (left, averaged ROUGE) and DREAM (right, accuracy) datasets are reported.\n\nThe ablation results are presented in Table 3. First, on SAMSum and DialogSum datasets, the full InstructDS model demonstrates the best performance. Incorporating both synthesized QDS triples and length augmentation techniques contributes to an overall performance improvement. We attribute these performance boosts on the enhanced dialogue understanding and length awareness capabilities. On DREAM dataset, the inclusion of synthesized QDS triples leads to an improvement in query-based dialogue summarization performance, elevating it from 56.4 to 59.1. Notably, the performance is further\n\n[生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md]\n# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 2/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance > 6. Experiment 1: Evaluation\n## 6. Experiment 1: Evaluation\n\n\nIn this experiment, we evaluate different approaches to segmenting an entire new biomedical dataset. We compare MultiverSeg to ScribblePrompt, SAM, SegNext, SAM-Med2D, IMIS-Net, and MedSAM, which perform interactive segmentation of each image independently, and to SP+UVS, which combines ScribblePrompt with an incontext segmentation model (UniverSeg). We show that MultiverSeg outperforms all of the baselines.\n\n## 6.1. Setup\n\n\nWe evaluate the number of interactions required to achieve a target Dice score on each image using different methods, or a maximum number of interactions if the score was not reached. We use 90% as a target Dice score, because our collection of fully-supervised task-specific nnUNet models achieves an average Dice of 88 $3 . 6 7 \\pm 0 . 4 7$ on the same test data. We set 20 center clicks or 10 steps of centerline scribbles as the maximum number of interactions.\n\nFor each method and task, we begin by interactively segmenting one randomly sampled image from the training split $1 0 \\geq 9 0 \\%$ Dice using ScribblePrompt. This example is used to seed the context set. We then randomly sample (without replacement) 18 images from the test split, and simulate sequentially segmenting each image.\n\nData. We report results averaged across 200 simulations for each held-out segmentation task. We exclude tasks with fewer than 18 test examples, leaving 161 tasks from 8 evaluation datasets [1-3, 11, 42, 122, 129, 146]. We further discuss the choice of this cutoff in Appendix E.1.\n\n## 6.2. Results\n\n\nInteractions per image as a function of dataset size. As more examples are segmented and the context set grows, the number of interactions required to get to 90% Dice (NoI90) on the $\\mathrm { n ^ { t h } }$ example using MultiverSeg decreases substantially (Fig. 3). For interactive segmentation methods, NoI90 is approximately constant, because they are not designed to learn from previous examples. With SP+UVS, the number of interactions decreases as more examples are segmented, but it requires more interactions than MultiverSeg. Results by task in Appendix E.2 show a similar trend. Fig. 5 shows predictions for the $1 0 ^ { t h }$ example after 1 step of interaction.\n\nTotal interactions. On average, using Mu\n\n[e2e-demo-0923-022632/global-rag-benchmark.md]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md]\n# Deep Spatial Learning with Molecular Vibration\n\nZiyang Zhang National University of Singapore Singapore 119077 E0546242@u.nus.edu\n\nYingtao Luo   \nUniversity of Washington   \nSeattle, WA 98195   \nyl3851@uw.edu\n\n## Abstract\n\nMachine learning over-fitting caused by data scarcity greatly limits the application of machine learning for molecules. Due to manufacturing processes difference, big data is not always rendered available through computational chemistry methods for some tasks, causing data scarcity problem for machine learning algorithms. Here we propose to extract the natural features of molecular structures and rationally distort them to augment the data availability. This method allows a machine learning project to leverage the powerful fit of physics-informed augmentation for providing significant boost to predictive accuracy. Successfully verified by the prediction of rejection rate and flux of thin film polyamide nanofiltration membranes, with the relative error dropping from 16.34% to 6.71% and the coefficient of determination rising from 0.16 to 0.75, the proposed deep spatial learning with molecular vibration is widely instructive for molecular science. Experimental comparison unequivocally demonstrates its superiority over common learning algorithms.\n\n## 1 Introduction\n\nMachine learning powered by big data is an efficient solution to learn data representations of high dimensions and huge complexity. Lake et al. [2015] Butler et al. [2018] The effectiveness of deep learning depends on the quality and quantity of data. Some systems have existing databases available, such as the Cambridge Crystallographic Data Center for crystallographic graphic classification. Wang et al. [2018] For other systems lacking the database availability, big data is rendered available through computational chemistry methods like Molecular Dynamics. Ye et al. [2019] However, an extensive universal database is not readily available with other materials that involve consecutive experiments with too many parameters to calculate on computational software, such as the polyamide thin film composite nanofiltration membranes. While direct calculation is about to consume unnecessarily huge computing resources, our motivation here is to apply few-shot learning methods based on data augmentation to make deep learning effective with limited data sources.\n\nIn thermodynamics, molecular vibration is a natural property to describe the motion of a multi-atom molecule. In 3D space, the ",
+  "_gold": {
+    "2310.10981": {
+      "judged": true,
+      "kept": true,
+      "in_evidence": false,
+      "score": 0.8893
+    },
+    "_summary": {
+      "golds_total": 1,
+      "golds_judged": 1,
+      "golds_kept": 1,
+      "golds_in_evidence": 0
+    }
+  }
+}

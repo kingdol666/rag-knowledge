@@ -1,0 +1,607 @@
+{
+ "mode": "B",
+ "ok": true,
+ "seconds": 7.9,
+ "wall_s": 7.9,
+ "real_engine": true,
+ "status": "ok",
+ "n_result_docs": 9,
+ "kept_doc_paths": [
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+  "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+  "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+  "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+  "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+  "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md"
+ ],
+ "judge": {
+  "backend": "laya_sdk",
+  "engine": "laya",
+  "criterion": "evidence",
+  "candidates": 70,
+  "scored": 70,
+  "survivors_kept": 70,
+  "errors": []
+ },
+ "trace": {
+  "mcp_calls": 10,
+  "l0_kbs": 19,
+  "l1_kept_shelves": [
+   "自然科学与地球科学"
+  ],
+  "l2_docs": 75,
+  "l3_untrusted": 0,
+  "l4_overlap_docs": 8,
+  "l4_docs_read": 9,
+  "l4_trust_heads": 0,
+  "unscanned_count": 66
+ },
+ "evidence_pack": "[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md]\n# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 1/4 部分）\n章节: Machine learning for molecular simulation\n# Machine learning for molecular simulation\n\n\nFrank Noé1,2,3,4,\\*, Alexandre Tkatchenko6,†, Klaus-Robert Müller7,8,9,†, Cecilia Clementi1,3,4,5,\n\nNovember 11, 2019\n\n1 Freie Universität Berlin, Department of Mathematics and Computer Science, Arnimallee 6, 14195 Berlin, Germany\n\n2 Freie Universität Berlin, Department of Physics, Arnimallee 6, 14195 Berlin, Germany\n\n3 Rice University, Department of Chemistry, Houston TX, 77005, United States\n\n4 Rice University, Center for Theoretical Biological Physics, Houston, Texas 77005, United States\n\n5 Rice University, Department of Physics, Houston TX, 77005, United States\n\n6 Physics and Materials Science Research Unit, University of Luxembourg, L-1511 Luxembourg, Luxembourg\n\n7 Technical University Berlin, Department of Computer Science, Marchstr. 23, 10587 Berlin, Germany\n\n8 Max-Planck-Institut für Informatik, Saarbrücken, Germany\n\n9 Dept. of Brain and Cognitive Engineering, Korea University, Seoul, South Korea\n\n\\*: frank.noe@fu-berlin.de\n\n†: alexandre.tkatchenko@uni.lu\n\n‡: klaus-robert.mueller@tu-berlin.de\n\n◇: cecilia@rice.edu\n\nKeywords: Machine Learning, Neural Networks, Molecular Simulation, Quantum Mechanics, Coarse-graining, Kinetics\n\n## Abstract\n\n\nMachine learning (ML) is transforming all areas of science. The complex and time-consuming calculations in molecular simulations are particularly suitable for a machine learning revolution and have already been profoundly impacted by the application of existing ML methods. Here we review recent ML methods for molecular simulation, with particular focus on (deep) neural networks for the prediction of quantum-mechanical energies and forces, coarse-grained molecular dynamics, the extraction of free energy surfaces and kinetics and generative network approaches to sample molecular equilibrium structures and compute thermodynamics. To explain these methods and illustrate open methodological problems, we review some important principles of molecular physics and describe how they can be incorporated into machine learning structures. Finally, we identify and describe a list of open challenges for the interface between ML and molecular simulation.\n\n## 1 Introduction\n\n\nIn 1929 Paul Dirac stated that:\n\n“The underlying physical laws necessary for the mathematical theory of a large part of physics and the whole of chemistry are thus completely known, and the difficulty is only that the exact application of these laws leads to equations much too complicated to be soluble. It therefore becomes desirable that approximate practical methods of applying quantum mechanics should be developed, which can lead to an explanation of the main features of complex atomic systems without too much computation.\" [1]\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md]\nNinety years later, this quote is still state of the art. However, in the last decade, new tools from the rapidly developing field of machine learning (ML) have started to make significant impact on the development of approximate methods for complex atomic systems, bypassing the direct solution of “equations much too complicated to be soluble”.\n\nML aims at extracting complex patterns and relationships from large data sets, to predict specific properties of the data. A classical application of machine learning is to the problem of image classification where descriptive labels need to be associated to images that are presented in terms of sets of pixels. The “machine\" is trained on a large number of examples and “learns\" how to classify new images. The underlying idea is that there exists a complex relationship between the input (the pixels) and the output (the labels) that is unknown in its explicit form but can be inferred by a suitable algorithm. Clearly, such an operating principle can be very useful in the description of atomic and molecular systems as well. We know that atomistic configurations dictate the chemical properties, and the machine can learn to associate the latter to the former without solving first principle equations, if presented with enough examples.\n\nAlthough different machine learning tools are available and have been applied to molecular simulation (e.g., kernel methods [2]), here we mostly focus on the use of neural networks, now often synonymously used with the term “deep learning\". We assume the reader has basic knowledge of machine learning and we refer to the literature for an introduction to statistical learning theory [3, 4] and deep learning [5, 6].\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md]\nOne of the first applications of machine learning in Chemistry has been to extract classical potential energy surfaces from quantum mechanical (QM) calculations, in order to efficiently perform molecular dynamics (MD) simulations that can incorporate quantum effects. The seminal work of Behler and Parrinello in this direction [7 has opened the way to a now rapidly advancing area of research [8, 9, 10, 11, 12, 13, 14, 15]. In addition to atomistic force fields, it has been recently shown that, in the same spirit, effective molecular models at resolution coarser than atomistic can be designed by ML [16, 17, 18]. Analysis and simulation of MD trajectories has also been affected by ML, for instance for the definition of optimal reaction coordinates [19, 20, 21, 22, 23, 24], the estimate of free energy surfaces [25, 26, 27, 22], the construction of Markov State Models [21, 23, 28], and for enhancing MD sampling by learning bias potentials [29, 30, 31, 32, 33] or selecting starting configurations by active learning [34, 35, 36]. Finally ML can be used to generate samples from the equilibrium distribution of a molecular system without performing MD altogether, as proposed in the recently introduced Boltzmann Generators [37]. A selection of these topics will be reviewed and discussed in the following.\n\nAll these different aspects of molecular simulation have evolved independently so far. For instance, ML-generated force-fields have mostly been developed and applied on small molecules and ordered solids, while the analysis of MD trajectories is mostly relevant for the simulation of large flexible molecules, like proteins. In order to really revolutionize the field, these tools and methods need to evolve, become more scalable and transferable, and converge into a complete pipeline for the simulation and analysis of molecular systems. There are still some significant challenges towards this goal, as we will discuss in the following, but considering the rapid progress of the last few years, we envision that in the near future machine learning will have transformed the way molecular systems are studied in silico.\n\nThis review focuses on physics-based ML approaches for molecular simulation. ML is also having a big impact in other areas of Chemistry without involving a physics-based model, for example by directly attempting to make predictions of physicochemical or pharmaceutical properties [38, 39, 40, 41], or to designing materials and molecules with certain desirable properties using generative learning [42, 43, 44, 45]. We refer the interested reader to other recent reviews on the subject [46, 47].\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md]\nThe review is organized as follows. We start by describing the most important machine learning problems and principles for molecular simulation (Sec. 2). A crucial aspect of the application of ML in molecular simulations is to incorporate physical constraints and we will discuss this for the most commonly used physical symmetries and invariances for molecular systems (Sec. 3). We will then provide examples of specific ML methods and applications for molecular simulation tasks, focusing on deep learning and the neural network architectures involved (Sec. 4). We conclude by outlining open challenges and pointing out possible approaches to their solution (Sec. 5).\n\n## 2 Machine Learning Problems for Molecular Simulation\n\n\nIn this section we discuss how several of the open challenges in the simulation of molecular systems can be formulated as machine learning problems, and the recent efforts to address them.\n\n## 2.1 Potential energy surfaces\n\n\nMolecular dynamics (MD) and Markov Chain Monte Carlo (MCMC) simulations employing classical force fields within the Born-Oppenheimer approximation constitute the cornerstone of contemporary atomistic modeling in chemistry, biology, and materials science. These methods perform importance sampling, i.e. in the long run, they sample states x from the molecular system's equilibrium distribution which has the general form:\n\n$$\n\\begin{array} { r } { \\mu ( \\mathbf { x } ) \\propto \\operatorname { e } ^ { - u ( \\mathbf { x } ) } . } \\end{array}\\tag{1}\n$$\n\nThe reduced potential $u ( { \\bf x } )$ contains terms depending on the thermodynamic constraints (e.g. fixed temperature, pressure, etc.). In the canonical ensemble (fixed number of particles, volume and temperature), $u ( \\mathbf { x } ) = U ( \\mathbf { x } ) / k _ { B } T$ where $k _ { B } T$ is the thermal energy at temperature T.\n\nHowever, the predictive power of these simulations is only as good as the underlying potential energy surface (PES). Hence, predictive simulations of properties and functions of molecular systems require an accurate description of the global PES, $U ( \\mathbf { x } )$ , where x indicates the nuclear Cartesian coordinates. All many-body interactions between electrons are encoded in the $U ( \\mathbf { x } )$ function. Although $U ( \\mathbf { x } )$ could be obtained on the fly using explicit ab initio calculations, more efficient approaches that can access long time scales are required to understand relevant phenomena in large molecular systems. A plethora of classical mechanistic approximations to $U ( \\mathbf { x } )$ exist, in which the parameters are typically fitted to a small set of ab initio calculations or experimental data [48, 49, 50, 51|. Unfortunately, these classical approximations often suffer from the lack of transferability and can yield accurate results only close to the conditions (geometries) they have been fitted to.\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md]\nAlternatively, sophisticated ML approaches that can accurately reproduce the global potential energy surface (PES) for elemental materials [7, 52, 9, 53, 14, 54] and small molecules [55, 56, 11, 10, 57, 54, 58] have been recently developed (see Fig. 1). Such methods learn a model of the PES, $\\hat { U } ( \\mathbf { x } , \\theta )$ , where the parameters θ are optimized either by energy matching and/or force matching. In energy matching, an ML model is trained to minimize the loss function:\n\n$$\nL _ { \\mathrm { e n e } } = \\sum _ { i } ( \\hat { U } ( \\mathbf { x } _ { i } , \\theta ) - U _ { i } ) ^ { 2 }\\tag{2}\n$$\n\nwhere $U _ { i }$ are energy values obtained by QM calculations at specific configurations (see Fig. 1). For force matching we compute the QM forces at specified configurations\n\n$$\n\\mathbf { f } ( \\mathbf { x } ) = \\nabla U ( \\mathbf { x } )\\tag{3}\n$$\n\nand minimize the loss function:\n\n$$\nL _ { \\mathrm { f o r c e } } = \\sum _ { i } \\left\\| \\nabla \\hat { U } ( \\mathbf { x } _ { i } , \\theta ) + \\mathbf { f } _ { i } \\right\\| ^ { 2 } .\\tag{4}\n$$\n\nThe existing ML PES models are based either on non-linear kernel learning [9, 53, 57, 10] or (deep) neural networks [52, 14, 58]. Specific neural network architectures will be discussed in Sec. 4.1 and 4.2. Both approaches have\n\n![](images/f28a82069959e744419cd2d448b0488bec11bc58ff0efe8a6454fce45c78b8be.jpg)\n\n![](images/2ff1a041c80a1fd5f8dcb083e5861385210dbf58f103175ad94b4f8b6eff1b9e.jpg)\n\n![](images/f2845c68f3d7fc9bf4450d7a8afe5ea214db68b04ab84d76f300dc3abf9c9793.jpg)  \nFigure 1: Constructing force field models with ML: a) Reference geometries are sampled from a MD trajectory that is sufficiently long to ensure an optimal coverage of the configuration space. b) For a small subset of geometries, energy and force labels are then computed at a high level of theory to form the training, validation and test datasets. A globally consistent atom-atom assignment across the whole training set enables the identification and reconstructive exploitation of relevant spatial and temporal physical symmetries of the MD. c) The resulting ML model of the PES is finally used to speed up sampling intensive path-integral MD simulations at the accuracy of the reference electronic structure method [10].\n\nadvantages and limitations. The advantage of the kernel methods is their convex nature yielding a unique solution, whose behavior can be controlled outside of the training data. Neural networks are non-convex ML models and often harder to interpret and generalize outside of the training manifold.\n\n## 2.2 Free energy surfaces\n\n\nGiven the Cartesian coordinates of a molecule with N atoms, $\\mathbf { x } \\in \\mathbb { R } ^ { 3 N }$ , we define the collective coordinates by the encoding:\n\n$$\n\\mathbf { y } = E ( \\mathbf { x } )\\tag{5}\n$$\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md]\nwhere $\\mathbf { y } \\in \\mathbb { R } ^ { m }$ and m is a small number. In machine learning terms, the coordinates y define a latent space. In molecular simulations, the collective coordinates are often defined to describe the slowest processes of the system [59]. In general, the mapping (or encoding) E can be highly non-linear. If the energy function $U ( \\mathbf { x } )$ associated with the atomistic representation is known, an important quantity to compute, for instance to connect with experimental measurements, is the free energy of the system as a function of the collective variables. The free energy is defined as:\n\n$$\nF ( \\mathbf { y } ) = - \\log \\mu _ { Y } ( \\mathbf { y } ) + \\mathrm { c o n s t }\\tag{6}\n$$\n\nwhere $\\mu _ { Y } ( \\mathbf { y } )$ is the marginal distribution on y of the equilibrium distribution $\\mu ( \\mathbf { x } )$ given by Eq. (1):\n\n$$\n\\mu _ { Y } ( \\mathbf { y } ) = \\int _ { \\mathbf { x } | M ( \\mathbf { x } ) = \\mathbf { y } } \\mu ( \\mathbf { x } ) \\mathrm { d } \\mathbf { x } .\\tag{7}\n$$\n\nThe integral in Eq. (7) is in practice impossible to compute analytically for high dimensional systems, and several methods have been developed for its numerical estimation by enhancing the sampling of the equilibrium distribution in molecular dynamics simulations of the system.\n\nThe definition of the free energy can also be formulated as a learning problem: the aim is to optimize the parameters θ of a free energy function model $\\hat { F } ( \\mathbf { y } , \\theta )$ such that Eqs. (6-7) are satisfied to a good approximation Fulfilling these equations is usually referred to as enforcing thermodynamic consistency.\n\nUsing methods that estimate the free energy $F ^ { \\lambda }$ (or its gradient $\\nabla F ^ { \\lambda } )$ at a given set of points in the collective variables space $\\mathbf { y } ^ { \\lambda } \\left( \\lambda = 1 , \\ldots , M \\right)$ , one can use the free energy loss:\n\n$$\nL _ { e n e } = \\sum _ { \\lambda = 1 } ^ { M } \\Vert F ^ { \\lambda } - \\hat { F } ( \\mathbf { y } ^ { \\lambda } , \\boldsymbol { \\theta } ) \\Vert ^ { 2 }\n$$\n\nor the free energy gradient loss:\n\n$$\nL _ { g r a d } = \\sum _ { \\lambda = 1 } ^ { M } \\| \\nabla F ^ { \\lambda } - \\nabla \\hat { F } ( \\mathbf { y } ^ { \\lambda } , \\boldsymbol { \\theta } ) \\| ^ { 2 }\n$$\n\nwith these free energy estimates in order to reconstruct the entire surface $\\hat { F } ( \\mathbf { y } , \\theta )$ . Both kernel regression [25] and neural networks [27] have been used to this purpose. Machine learning has also been used in combination with enhanced sampling methods to learn the free energy surface on-the-fly [26, 60, 61, 22, 62, 63, 64, 65]\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md]\nAn alternative way to learn (6) is by using force matching [66, 67]. It has been demonstrated [68] that, given the forces $\\nabla _ { \\mathbf x } U$ of the atomistic system collected along a molecular dynamic trajectory, $\\mathbf x _ { t } , t = 1 , \\dots , T$ , the gradient of a free energy model $\\hat { F } ( \\mathbf { y } , \\theta )$ that best satisfies Eq. (6) also minimizes the force matching loss:\n\n$$\nL _ { \\mathrm { f o r c e } } = \\sum _ { t } \\left\\| \\nabla _ { \\mathbf { y } } \\hat { F } ( E ( \\mathbf { x } _ { t } ) , \\theta ) + f _ { l m f } ^ { \\mathbf { y } } ( \\mathbf { x } _ { t } ) \\right\\| ^ { 2 }\\tag{8}\n$$\n\nwhere the term $f _ { l m f } ^ { \\mathbf { y } }$ is the local mean force:\n\n$$\n\\begin{array} { r l } & { f _ { l m f } ^ { \\mathbf { y } } ( \\mathbf { x } ) = \\nabla _ { \\mathbf { x } } U \\cdot G ^ { \\mathbf { y } } + \\nabla _ { \\mathbf { x } } \\cdot G ^ { \\mathbf { y } } } \\\\ & { \\qquad G ^ { \\mathbf { y } } = \\nabla _ { \\mathbf { x } } E [ ( \\nabla _ { \\mathbf { x } } E ) ^ { T } \\nabla _ { \\mathbf { x } } E ] ^ { - 1 } } \\end{array}\n$$\n\nthat is, the projection of the atomistic force $\\nabla _ { \\mathbf x } U$ on the collective variable space through the mapping E.\n\nIn practice, the estimator (8) is very noisy: because of the dimensionality reduction from x to y, multiple realizations of the projected force $f _ { l m f } ^ { \\mathbf { y } }$ can be associated to the same value of the collective coordinates y and the minimum of the loss function (8) can not go to zero. By invoking statistical estimator theory it can be shown that this loss can be broken down into a bias, variance and noise terms [18].\n\n## 2.3 Coarse-graining\n\n\nThe use of coarse-grained models of complex molecular systems, such as proteins, presents an attractive alternative to atomistic models that are very expensive to simulate [69, 67].\n\nThe design of a coarse-grained model for a system with N atoms into a reduced representation with n effective \"beads\" starts by the definition of a mapping similar to Eq. (5) where now $\\mathbf { y } \\in \\mathbb { R } ^ { 3 n }$ are the coordinates of the coarse-grained beads. In this case, the mapping is usually a linear function, as in general the beads are defined as a subset or a linear combination of sets of atoms in the original system, in a way that allows to keep some information about the geometry of the molecule. For instance, in protein systems, a coarse-grained mapping can be defined by replacing all the atoms in a residue by a bead centered on the corresponding $C _ { \\alpha }$ atom. There is at present no general theory to define the optimal coarse-graining mapping for a specific system. A few methods have been proposed in this direction, by optimizing the mapping E to preserve certain properties of the original system. Examples include the definition of a system's dynamical assembly units [70] or the use of an autoencoder to minimize the reconstruction error [71].\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md]\nOnce the coarse-graining mapping is given, several strategies exist to define the model energy function, either to match experimental observables (top-down), or to reproduce specific properties of the atomistic system (bottom-up) [67]. If one wants to define a coarse-grained model that is thermodynamically consistent with the original model (Eqs. 6-7), then, the definition of the energy function associated with a coarse-grained molecular model can be seen as a special case of free energy learning discussed in the previous section [66]. The effective energy of the coarse-grained model is the free energy defined by Eq. (6) where y are now the coarse variables. Therefore, once the coarse-graining map is defined, the definition of the effective potential can also be seen as a learning problem. In particular, the force matching loss function given by Eq. (8) can be used to train the effective energy of the model from the atomistic forces. In the case of a linear mapping with a crisp assignment of atoms into beads, a matrix $\\mathbf { M } \\in \\mathbb { R } ^ { 3 n \\times 3 N }$ exists such that $\\mathbf { y } = \\mathbf { M } \\mathbf { x }$ and the expression for the loss, Eq. (8), reduces to:\n\n$$\nL _ { f o r c e } = \\sum _ { t } \\| \\nabla _ { \\mathbf { y } } \\hat { F } ( \\mathbf { M } \\mathbf { x } _ { t } , \\theta ) + f ( \\mathbf { x } _ { t } ) \\| ^ { 2 }\\tag{9}\n$$\n\nwhere for each bead $\\begin{array} { r } { I , f _ { I } = \\sum _ { i \\in I } \\nabla _ { \\mathbf\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]\n# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 2/4 部分）\n章节: Machine learning for molecular simulation > 2.5 Sampling and Thermodynamics\n## 2.5 Sampling and Thermodynamics\n\n\nMD time steps are on the order of one femtosecond $\\left( 1 0 ^ { - 1 5 } \\mathrm { ~ s \\right) }$ , while configuration changes governing molecular function are often rare events that may take $1 0 ^ { - 3 }$ to $1 0 ^ { 3 } ~ \\mathrm { s } .$ Even when evaluating the potential and the forces it generates is fast, simulating single protein folding and unfolding events by direct MD simulation may take years to centuries on a supercomputer. To avoid this sampling problem, machine learning methods can be employed to learn generating equilibrium samples from $\\mu ( \\mathbf { x } )$ more efficiently, or even by generating statistically independent samples in “one shot” (Sec. 2.5).\n\nLearning to sample probability distributions is the realm of generative learning [87, 88, 89, 90]. In the past few years, directed generative networks, such as variational Autoencoders (VAEs) [88], generative adversarial networks (GANs) [89], and flows [91, 90], have had a particular surge of interest. Such networks are trained to transform samples from an easy-to-sample probability distribution, such as Gaussian noise, into realistic samples of the objects of interest. These methods have been used to draw photorealistic images [92, 93], generate speech or music audio [94] and generate chemical structures to design molecules or materials with certain properties [42, 43, 44, 45].\n\nIf the aim is to learn a probability distribution from sampling data (density estimation) or learn to efficiently sample from a given probability distribution (Boltzmann generation [37]), one typically faces the challenge of matching the probability distribution of the trained model with a reference.\n\nMatching probability distributions can be achieved by minimizing probability distances. The most commonly used probability distance is the Kullback-Leibler (KL) divergence, also called relative entropy between two distributions q and $p \\mathrm { : }$\n\n$$\n\\mathrm { K L } ( q \\parallel p ) = \\int q ( \\mathbf { x } ) \\left[ \\log q ( \\mathbf { x } ) - \\log p ( \\mathbf { x } ) \\right] \\mathrm { d } \\mathbf { x } .\\tag{16}\n$$\n\nIn Boltzmann generation [37], we aim to efficiently sample the equilibrium distribution $\\mu ( \\mathbf { x } )$ of a many-body system defined by its energy function $u ( \\mathbf { x } ) \\ \\left( \\mathrm { E q . ~ \\ 1 } \\right)$ . We can learn the parameters θ of a neural network that generates samples from the distribution $p _ { X } ( \\mathbf { x } ; \\pmb { \\theta } )$ by making its generated distribution similar to the target equilibrium distribution. Choosing $q \\equiv p _ { X } ( \\mathbf { x } )$ and $p \\equiv \\mu ( \\mathbf { x } )$ in Eq. (16), we can minimize the KLθ $\\left[ q _ { X } \\parallel \\mu _ { X } \\right]$ with the energy loss:\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]\n$$\n\\begin{array} { r } { \\mathrm { E L } = \\mathbb { E } _ { \\mathbf { x } \\sim p _ { X } ( \\mathbf { x } ; \\pmb { \\theta } ) } \\left[ \\log p _ { X } ( \\mathbf { x } ; \\pmb { \\theta } ) + u ( \\mathbf { x } ) \\right] . } \\end{array}\\tag{17}\n$$\n\nAs the network samples from an energy surface $u ( \\mathbf { x } ; \\pmb { \\theta } ) = - \\log p _ { X } ( \\mathbf { x } ; \\pmb { \\theta } )$ + const $\\left( \\mathrm { E q . } \\ 1 \\right)$ , this loss is performing energy matching, similar as in Sec. 2.1. In order to evaluate the loss $( 1 7 )$ , we need not only to be able to generate samples $\\mathbf { x } \\sim p _ { X } ( \\mathbf { x } ; \\pmb { \\theta } )$ from the network, but also to be able to compute $p _ { X } ( \\mathbf { x } ; \\pmb \\theta )$ for every sample x. See Sec. 4.5 for an example.\n\nThe reverse case is density estimation. Suppose we have simulation data x, and we want to train the probability distribution $p _ { X } ( \\mathbf { x } ; \\pmb \\theta )$ to resemble the data distribution. We choose $q ( \\mathbf { x } )$ as the data distribution and $p \\equiv p _ { X } ( \\mathbf { x } ; \\pmb \\theta )$ in Eq. (16), and exploit that $\\mathbb { E } _ { \\mathbf { x } \\sim d a t a } \\left[ \\log q ( \\mathbf { x } ) \\right]$ is a constant that does not depend on the parameters θ. Then we can minimize the loss:\n\n$$\n\\mathrm { N L } = - \\mathbb { E } _ { \\mathbf { x } \\sim \\mathrm { d a t a } } \\left[ \\log p _ { X } ( \\mathbf { x } ; \\pmb { \\theta } ) \\right] .\\tag{18}\n$$\n\nThis loss is the negative likelihood that the model generates the observed sample, hence minimizing it corresponds to a maximum likelihood approach. Likelihood maximization is abundantly used in machine learning, in this review we will discuss it in Sec. 4.5.\n\n## 3 Incorporating Physics into Machine Learning\n\n## 3.1 Why incorporate physics?\n\n\nCompared to classical ML problems such as image classification, we have a decisive advantage when working with molecular problems: we know a lot of physical principles that restrict the possible predictions of our machine to the physically meaningful ones\n\nLet us start with a simple example to illustrate this. We are interested in predicting the potential energy and the atom-wise forces of the diatomic molecule $O _ { 2 }$ with positions $\\mathbf { x } _ { 1 } , \\mathbf { x } _ { 2 }$ in vacuum (without external forces) Independent of the details of our learning algorithm, physics tells us that a few general rules must hold:\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]\n1. The energy is invariant when translating or rotating the molecule. We can thus arbitrarily choose the positions $\\mathbf { x } _ { 1 } = ( 0 , 0 , 0 ) ; \\mathbf { x } _ { 2 } = ( d , 0 , 0 )$ , and the energy becomes a function of the interatomic distance only: $U ( \\mathbf { x } )  U ( d )$\n\n2. Energy conservation: the energy U and the force of the molecule are related by $\\mathbf { F } ( \\mathbf { x } ) = - \\nabla U ( \\mathbf { x } )$ . Now we can compute the components of the force as: $\\begin{array} { r } { \\mathbf { f } _ { 1 } = ( \\frac { \\partial U ( d ) } { \\partial d } , 0 , 0 ) ; \\mathbf { f } _ { 2 } = ( - \\frac { \\partial U ( d ) } { \\partial d } , 0 , 0 ) } \\end{array}$\n\n3. Indistinguishability of identical particles: The energy is unchanged if we exchange the labels $^ { 6 6 } 1 ^ { \\mathfrak { n } }$ and $^ { 6 6 } 2 ^ { 5 }$ of the identical oxygen atoms.\n\nIn machine learning, there are two principal approaches when dealing with such invariances or symmetries: (i) Data augmentation, and (ii) Building the invariances into the ML model.\n\n## 3.2 Data augmentation\n\n\nData augmentation means we learn invariances “by heart\" by artificially generating more training data and applying the known invariances to it. For example, given a training data point for positions and energy/force labels, $( \\mathbf { x } ; U , \\mathbf { f } )$ we can augment this data point with translation invariance of energy and force by adding more training data $( \\mathbf { x } + \\Delta \\mathbf { x } ; U , \\mathbf { f } )$ with random displacements ∆x. Data augmentation makes the ML model more robust and will help to predicting the invariances approximately. It is an important ML tool, as it is easy to do, while for certain invariances it is conceptually difficult or computationally expensive to hard-wire them into the ML model.\n\nHowever, data augmentation is statistically inefficient, as additional training data are needed, and inaccurate because a network that does not have translation invariance hard-wired into it will never predict that the energy is exactly constant when translating the molecule. This inaccuracy may lead to unphysical, and potentially catastrophic predictions when such energy model is inserted into an MD integrator.\n\n## 3.3 Building physical constraints into the ML model\n\n\nThe more accurate, statistical efficient and also more elegant approach to incorporating physical constraints is to directly build them into the ML model. Doing so involves accounting for two related aspects that are both essential to make the learning problem efficient: (i) equivariances: the ML model should have the same invariances and symmetries as the modeled physics problem, (ii) parameter sharing: whenever there is an invariance or symmetry this should be reflected by sharing model parameters in different parts of the network.\n\n## 3.4 Invariance and Equivariance\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]\nIf we can hard-wire the physical symmetries into the ML structure, we can reduce the dimensionality of the problem. In the example of the $O _ { 2 }$ molecule above, the energy and force are one- and six-dimensional functions defined for each point x in 6-dimensional configuration space. However, when we use the invariances described above we only have to learn a one-dimensional energy function over a one-dimensional space, and can compute the full force field from it. The learning problem has become much simpler because we now learn only in the manifold of physically meaningful solutions (Fig. 2a).\n\nAn important concept related to invariance is equivariance. A function is equivariant if it transforms the same way as its argument. For example, the force is defined by the negative gradient of the ener $\\mathrm { g y } , - \\nabla U ( \\mathbf { x } )$ . If we rotate the molecule by applying the rotation $\\mathbf { R } \\cdot$ , the energy is invariant, but the force is equivariant as it rotates in the same way as x (Fig. 2b):\n\n$$\n\\begin{array} { r l r } { \\mathbf { x } } & { \\xrightarrow { \\mathbf { R } \\cdot } } & { \\mathbf { R } \\mathbf { x } } \\\\ { \\downarrow \\nabla U ( \\cdot ) } & { } & { \\downarrow \\nabla U ( \\cdot ) } \\\\ { \\nabla U ( \\mathbf { x } ) } & { \\xrightarrow { \\mathbf { R } \\cdot } } & { \\mathbf { R } \\nabla U ( \\mathbf { x } ) = \\nabla U ( \\mathbf { R } \\mathbf { x } ) } \\end{array}\n$$\n\nEquivariances are closely linked to convolutions in machine learning. For example, standard convolutions are translation invariant: Each convolution kernel is a feature detector that is applied to each pixel neighborhood [95]. When that feature is present in the image, the convolved image will show a signal in the corresponding position (Fig. 2c). When translating the input, the convolved image translates in the same way (Fig. 2c).\n\nWe will briefly review below common invariances/equivariances useful for applications to molecular simulations, and discuss strategies to incorporate them in an ML algorithm.\n\n## 3.4.1 Rototranslational invariance/equivariance\n\n\nPhysical quantities that only depend on the interactions of the atoms within a molecule should be invariant with respect to translation T and rotation R.. Examples include potential and free energies of a molecule without an external field:\n\n$$\nU ( \\mathbf { R } \\mathbf { x } + \\mathbf { T } ) = U ( \\mathbf { x } ) .\n$$\n\nThe force is equivariant to rotation, but invariant to translation $( \\mathrm { F i g . ~ 2 b , 5 e c . ~ 3 . 4 } ) $\n\n$$\n- \\nabla U ( \\mathbf { R } \\mathbf { x } + \\mathbf { T } ) = - \\mathbf { R } \\nabla U ( \\mathbf { x } )\n$$\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]\n![](images/f9741f3829f344c60ec83aafccf794a6917937d4df52e9aaa068ad472dbccc9b.jpg)  \nFigure 2: Physical constraints a) Physical constraints define a manifold of physically valid solutions for a given ML model class, e.g. a given neural network architecture: only certain combinations of parameters will obey these physical constraints. Using data augmentation, the network can learn \"by heart\" to make almost physically valid predictions. Directly building physical constraints into the ML model is more data-efficient and accurate, as then every prediction is physically meaningful. b) Invariance and equivariance: Upon rotating the beads, the spring energy is invariant, but the forces of the beads are equivariant, i.e. they rotate in the same way. $\\mathbf { c } )$ Translational equivariance in convolutional layers: convolving a translated image with a filter results in a translated feature map. Modified from https://en.wikipedia.org/wiki/File:Cat\\_November\\_2010-1a.jpg.\n\nRototranslational invariance can be achieved by transforming the configuration x into roto-translationally invariant features, such as intramolecular distances or angles. Equivariance of the force can then be achieved by computing the force explicitly by a network layer that computes the derivatives with respect to x, as it is done, e.g., in SchNet [96] and CGnet [18] (Fig. 5a). Note that periodic systems, such as crystals and explicit-solvent boxes have translational but not rotational invariances/equivariances\n\n## 3.4.2 Permutational invariance/equivariance.\n\n\nPhysical quantities, such as quantum mechanical energies, are invariant if we exchange the labels of identical atoms, e.g., Carbons. As the number of possible permutations increases exponentially with the number of identical particles trying to learn permutation invariance by data augmentation is hopeless. Permutation invariance can be built into the ML model by choosing a functional form to compute the quantity of interest that is permutation invariant – see [97] for the general conditions. Following pioneering work of [98, 99, 100, 101], a specific choice that is common for networks that compute extensive quantities such as potential energies $U ( \\mathbf { x } )$ is to model it as a sum\n\n$$\nU ( \\mathbf { x } ) = \\sum _ { i } U _ { i } ( \\mathbf { x } ) ,\\tag{19}\n$$\n\nwhere $U _ { i }$ is the contribution of the energy by the ith atom in its chemical environment [7, 11, 58, 96]. In order to account for the multi-body character of quantum mechanics, $U _ { i } ( \\mathbf { x } )$ must generally also be a multi-body function. Eq. (19) can be implemented by using separate networks for the individual contributions $U _ { i }$ and adding up their results (Fig. 3). The force resulting from Eq. (19) is automatically permutation equivariant.\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]\nClassical MD force fields define bonded interactions by assigning atoms to nodes in a bond graph, and thus exchanging of individual atom pairs no longer preserves the energy. However, the energy is still invariant to the exchange of identical molecules, e.g., solvent, and is important to take that into account for coarse-graining [18] and generating samples from the equilibrium density [37].\n\nA simple alternative to building permutation invariance into the ML function is to map all training and test data to a reference permutation. This can be done efficiently by so-called bipartite graph matching methods such as the Hungarian method [102], that are frequently used in recent learning models [103, 10, 37].\n\n## 3.4.3 Energy conservation\n\n\nClosed physical systems are energy-conserving, which implies that the force field is defined by the gradient of the energy (Eq. 3). When learning potential energy, it can be a great advantage to use force information, because each N-atom configuration is associated with only one energy but 3N forces, which may result in superior data efficiency when force labels are used during learning [57, 10]. If we use supervised learning for coarse-graining with thermodynamic consistency, we can only use forces, as no labels for the free energies are available (Sec. 2.3).\n\nIn these examples, we have labeled training data $( \\mathbf { x } , \\mathbf { f } ( \\mathbf { x } ) ) .$ i. Using a network that directly predicts the forces would not guarantee that Eq. (3) holds. Therefore, when Eq. (3) holds, it is common to learn an energy $U ( \\mathbf { x } )$ and then computing the force in the network using a gradient layer [96, 18] (Fig. 5a). An alternative to ensure Eq. (3) is gradient-domain machine learning [57]]\n\n## 3.4.4 Probability conservation and stochasticity\n\n\nIn statistical mechanics (both equilibrium and non-equilibrium), we are interested in the probability of events. An important principle is thus probability conservation, i.e. that the sum over all events is 1. A common approach to encode the probability of classes or events with a neural network is to use a SoftMax output layer, where the activation of each neuron can be defined as\n\n$$\ny _ { i } ( \\mathbf { u } ) = \\frac { \\mathrm { e } ^ { - u _ { i } } } { \\sum _ { j } \\mathrm { e } ^ { - u _ { j } } }\\tag{20}\n$$\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]\nwhere $j$ runs over all neurons in the layer. In this representation, u can be seen as a vector of energies giving rise to the Boltzmann probabilities $y _ { i } ( \\mathbf { u } ) . \\ y _ { i } ( \\mathbf { u } )$ are nonnegative because of the exponential functions and sum up to 1. In Markov state models (MSMs) of molecular kinetics, we would like to obtain a Markov transition matrix P which is stochastic, i.e. $p _ { i j } \\geq 0$ for all elements and $\\textstyle \\sum _ { j } p _ { i j } = 1$ for all i. If the encoder $E ( \\mathbf { x } )$ uses a SoftMax, then the estimator (14) will result in a transition matrix P that conserves probability $( \\sum _ { j } p _ { i j } = 1$ for all i). SoftMax can be exploited in VAMPnets to simultaneously learn an embedding $E ( \\mathbf { x } )$ from configurations to metastable states, and a Markov transition matrix P (Sec. 4.4) [21].\n\n## 3.4.5 Detailed balance\n\n\nDetailed balance connects thermodynamics and dynamics. In a dynamical system that evolves purely in thermal equilibrium, i.e. without applying external forces, the equilibrium distribution $\\mu ( \\mathbf { x } )$ and the transition probability $p ( \\mathbf { y } \\mid \\mathbf { x } )$ are related by the following symmetry:\n\n$$\n\\mu ( \\mathbf { x } ) p ( \\mathbf { y } \\mid \\mathbf { x } ) = \\mu ( \\mathbf { y } ) p ( \\mathbf { x } \\mid \\mathbf { y } ) .\\tag{21}\n$$\n\nThus, the unconditional probabilities of forward- and backward-trajectories are equal. Enforcing Eq. (21) in kinetic ML models ensures the spectral decomposition (11) is real-valued, which is useful for many analyses.\n\nIn order to learn a kinetic model that obeys detailed balance, other estimators than Eq. (14) must be used, that typically enforce the unconditional transition probabilities $p ( \\mathbf { x } , \\mathbf { y } ) = \\mu ( \\mathbf { x } ) p ( \\mathbf { y } \\mid \\mathbf { x } )$ to be symmetric. See [86 for details.\n\n## 3.5 Parameter sharing and convolutions\n\n\nA decisive advance in the performance of neural networks for classical computer vision problems such as text or digit recognition came with going from fully connected “dense\" networks to convolutional neural networks (CNN) [95]. Convolution layers are not only equivariant, and thus help with the detection of an object independent of its location $\\mathrm { ( F i g . \\ 2 c ) }$ , the real efficiency of CNNs is due to parameter sharing",
+ "evidence_chars": 39899,
+ "gold_hit": true,
+ "survivors": [
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 49,
+   "score": 0.8
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 50,
+   "end_line": 55,
+   "score": 0.8147
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 56,
+   "end_line": 61,
+   "score": 0.7482
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 62,
+   "end_line": 81,
+   "score": 0.6605
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 82,
+   "end_line": 119,
+   "score": 0.8165
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 120,
+   "end_line": 149,
+   "score": 0.8123
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 150,
+   "end_line": 172,
+   "score": 0.8468
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 173,
+   "end_line": 179,
+   "score": 0.7645
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 19,
+   "score": 0.8711
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 20,
+   "end_line": 42,
+   "score": 0.883
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 43,
+   "end_line": 64,
+   "score": 0.6159
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 66,
+   "end_line": 92,
+   "score": 0.7631
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 93,
+   "end_line": 108,
+   "score": 0.6572
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 109,
+   "end_line": 128,
+   "score": 0.7599
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 129,
+   "end_line": 148,
+   "score": 0.8715
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 149,
+   "end_line": 159,
+   "score": 0.7554
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 14,
+   "score": 0.8165
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 15,
+   "end_line": 23,
+   "score": 0.7881
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 25,
+   "end_line": 38,
+   "score": 0.7868
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 39,
+   "end_line": 54,
+   "score": 0.8258
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 55,
+   "end_line": 68,
+   "score": 0.8629
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 69,
+   "end_line": 82,
+   "score": 0.8579
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 83,
+   "end_line": 102,
+   "score": 0.7281
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 104,
+   "end_line": 113,
+   "score": 0.7158
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 39,
+   "score": 0.7508
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 40,
+   "end_line": 71,
+   "score": 0.7471
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 72,
+   "end_line": 101,
+   "score": 0.6315
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 102,
+   "end_line": 131,
+   "score": 0.7003
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 132,
+   "end_line": 163,
+   "score": 0.7805
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 164,
+   "end_line": 191,
+   "score": 0.7182
+  },
+  {
+   "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 192,
+   "end_line": 200,
+   "score": 0.8013
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 23,
+   "score": 0.8809
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 24,
+   "end_line": 27,
+   "score": 0.8596
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 28,
+   "end_line": 35,
+   "score": 0.7914
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 37,
+   "end_line": 66,
+   "score": 0.8105
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 67,
+   "end_line": 91,
+   "score": 0.8688
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 92,
+   "end_line": 136,
+   "score": 0.8189
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 137,
+   "end_line": 141,
+   "score": 0.7253
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 142,
+   "end_line": 151,
+   "score": 0.7791
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 50,
+   "score": 0.885
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 51,
+   "end_line": 63,
+   "score": 0.8044
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 64,
+   "end_line": 76,
+   "score": 0.8543
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 77,
+   "end_line": 88,
+   "score": 0.7805
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 89,
+   "end_line": 95,
+   "score": 0.8384
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 96,
+   "end_line": 103,
+   "score": 0.7801
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 104,
+   "end_line": 119,
+   "score": 0.7688
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 120,
+   "end_line": 130,
+   "score": 0.8905
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 9,
+   "score": 0.8452
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 10,
+   "end_line": 15,
+   "score": 0.84
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 17,
+   "end_line": 38,
+   "score": 0.8
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 39,
+   "end_line": 60,
+   "score": 0.7825
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 61,
+   "end_line": 96,
+   "score": 0.7937
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 97,
+   "end_line": 126,
+   "score": 0.7868
+  },
+  {
+   "doc_path": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 127,
+   "end_line": 149,
+   "score": 0.7206
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 16,
+   "score": 0.8235
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 17,
+   "end_line": 37,
+   "score": 0.7674
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 38,
+   "end_line": 58,
+   "score": 0.7512
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 59,
+   "end_line": 71,
+   "score": 0.7716
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 72,
+   "end_line": 88,
+   "score": 0.8044
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 89,
+   "end_line": 104,
+   "score": 0.7089
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 105,
+   "end_line": 119,
+   "score": 0.7452
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 121,
+   "end_line": 130,
+   "score": 0.7798
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 23,
+   "score": 0.8159
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 24,
+   "end_line": 29,
+   "score": 0.6724
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 30,
+   "end_line": 44,
+   "score": 0.7142
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 45,
+   "end_line": 54,
+   "score": 0.7089
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 55,
+   "end_line": 68,
+   "score": 0.7396
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 70,
+   "end_line": 85,
+   "score": 0.7978
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 86,
+   "end_line": 116,
+   "score": 0.7362
+  },
+  {
+   "doc_path": "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 118,
+   "end_line": 123,
+   "score": 0.775
+  }
+ ]
+}

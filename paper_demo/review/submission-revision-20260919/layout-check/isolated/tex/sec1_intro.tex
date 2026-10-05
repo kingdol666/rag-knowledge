@@ -1,0 +1,41 @@
+% sec1_intro.tex — System/demo framing, compressed for the body budget.
+\section{Introduction}
+
+Research administrators maintaining shared paper collections must organize
+documents and explain which passages support an answer. Filenames can obscure
+content, and relevant passages may not answer a question. Administrators need
+usable collection tools and records that expose retrieval decisions.
+
+Retrieval-augmented generation connects answers to retrieved
+material~\cite{rag-lewis}. Self-RAG and Corrective RAG assess retrieval or
+generation and adapt later processing~\cite{selfrag,crag}.
+DeepRead exposes document hierarchies and paragraph coordinates to locate
+passages before reading them~\cite{deepread}. CyberBOT grounds generation and
+verification in an ontology~\cite{cyberbot}. QDCVR complements these approaches
+with content-guided collection management and a reusable evidence workflow
+built on tool APIs. The integration problem is to carry a document
+from administrative placement into evidence an agent can locate and a user
+can inspect. QDCVR connects movement/tagging tools to the same document-part
+identifiers used by search and reading. Attendees can therefore inspect a
+routing decision and then follow the placed document into an answer or a
+scoped failure report, rather than evaluate a retrieval controller alone.
+
+Packaged agent skills call these APIs to organize and query a collection.
+Routing uses document content to select among existing category bases, without
+requiring a new taxonomy. Parsed text, document parts, and tags support search
+and reading. Vector recall feeds a prompted content gate, followed by further
+search or reading when needed. Gate scores record the agent's judgment, not a
+semantic guarantee. Source references and explicit not-found reports make
+that judgment inspectable. Figure~\ref{fig:teaser} shows the workflow;
+Figure~\ref{fig:arch} presents the architecture.
+
+The demonstration contributes three connected capabilities:
+\begin{itemize}
+  \item Document parsing, content-guided routing, and tag maintenance.
+  \item Reusable agent skills that coordinate tool calls.
+  \item Retrieval records exposing candidate reads, gate judgments, further
+  searches, and failure reports.
+\end{itemize}
+Section~\ref{sec:demo} invites attendees to follow these operations and inspect
+their outputs. Section~\ref{sec:eval} examines saved traces and provenance
+limits as operational evidence, not a general efficacy comparison.
