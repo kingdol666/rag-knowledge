@@ -3,6 +3,21 @@
 本目录是为 **Knowledge-Based Systems** (Elsevier) 撰写的完整论文及其全部实验产物。
 论文系统 = `D:\codes\ragproject\rag-knowledge`(QDCVR 平台 v2.3.0)。
 
+## ⭐ IEEE TII 版本 (tex-ieee/, 2026-10-09)
+
+目标期刊由 KBS 转向 **IEEE TII**。`tex-ieee/main_tii.pdf` 为 IEEEtran 双栏
+**9 页**编译稿(tectonic, 0错误/0未解析引用),已做:
+- elsarticle→IEEEtran 转换、Index Terms、IEEEtran.bst 引用重排(28条,含新增的
+  两篇同方向 TII 论文 CoMA-IKG (TII 22(6)) 与 RRPDG (TII 20(4)));
+- **双盲匿名化**(作者块/致谢/仓库链接均已匿名——TII 是 double-anonymous 评审);
+- 工业信息学叙事重构(工业 PV 产线语料前置,Industry 应用导向);
+- 7 张 IEEE 尺寸图(单栏 89mm×5 + 跨栏 181mm×1 + 新数据图×2:
+  fig5 切割线 margin 重放曲线、fig6 OOD 弃答探针柱状),由
+  `figures/figures_ieee.py` 生成;
+- 内容压缩:题集表并入仓库引用、高亮/KBS声明移除、章节合并。
+**投稿前 AUTHOR ACTION**: 全员 ORCID(TII必填);录用后去匿名(作者块/仓库链接/
+致谢恢复);IEEE Author Portal 提交。页数 9<10 无超页费。
+
 ## 目录结构
 
 ```
