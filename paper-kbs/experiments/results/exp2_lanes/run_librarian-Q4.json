@@ -1,0 +1,28 @@
+{
+ "run": {
+  "arm": "librarian",
+  "qid": "Q4",
+  "http": 200,
+  "success": false,
+  "error": "",
+  "wall_s": 84.3,
+  "duration_ms": 37831,
+  "turns": 6,
+  "cost_usd": 0,
+  "answer_chars": 953,
+  "answer_head": "**结论：POE胶膜的水汽阻隔率优于EVA（WVTR比EVA低约一个数量级），但其层压窗口更苛刻——层压温度更高（155–165℃ vs EVA的145–150℃）、交联度要求更高（>90% vs ≥85%）。**\n\n**水汽阻隔特性**\n- POE的结晶相位阻隔使其「WVTR比EVA低一个数量级」，这是其抗PID、抗腐蚀的物理依据（P0，《EVA封装膜湿热老化失效物理机理》，光伏组件失效分析库）。\n- 对照数值：EVA的WVTR约「~15 g/m²·day」，且水汽在EVA中服从Fick扩散，与乙酸乙烯酯单元水解生成乙酸（pH可降至4以下），腐蚀铜焊带——POE无此水解通道（《POE胶膜工艺要点》亦载明其「可降低组件运行期的水汽侵入与PID风险」，aw-industrial库，P1）。\n\n**层压工艺差异（POE vs EVA）**\n\n| 参数 | POE | EVA |\n|---|---|---|\n| 层压温度 | 155–165℃ | 145–150℃（>150℃易黄变、气泡） |\n| 交联度 | >90% | ≥85% |\n| 压力/时间 | 库内未载POE具体值 | 0.8–1.0 MPa，12–15 min |\n\n- EVA侧约束：温度按Arrhenius控制交联——温度漂移−8℃交联度损失15–20个百分点（EL-2025-0317案例：−8℃致交联度61–68%、1",
+  "answer_full_len": 953,
+  "doc_citation_hit": true,
+  "gold_hits": [
+   "POE胶膜工艺要点"
+  ],
+  "fact_hits": [
+   "水汽",
+   "POE"
+  ],
+  "n_fact_hits": 2,
+  "refusal": false,
+  "session_id": ""
+ },
+ "question": "POE光伏封装胶膜的水汽阻隔特性如何？层压工艺与EVA相比有什么差异？"
+}

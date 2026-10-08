@@ -1,0 +1,2142 @@
+{
+ "corpus_docs": 42,
+ "bm25_build_s": 0.61,
+ "corpus_fetch_s": 0.0,
+ "rows": [
+  {
+   "method": "bm25",
+   "qid": "Q1",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q1",
+   "latency_s": 0.018,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md"
+   ],
+   "n_ranked": 4
+  },
+  {
+   "method": "rrf",
+   "qid": "Q1",
+   "latency_s": 0.006,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q1",
+   "latency_s": 0.048,
+   "hit@5": true,
+   "recall@5": 0.5,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q1",
+   "latency_s": 0.029,
+   "hit@5": true,
+   "recall@5": 0.5,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md"
+   ],
+   "n_ranked": 2
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q1",
+   "latency_s": 0.068,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q1",
+   "latency_s": 0.507,
+   "hit@5": true,
+   "recall@5": 0.5,
+   "best_rank": 4,
+   "mrr": 0.25,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.9194,
+     0.8893
+    ],
+    "nongold_mean": 0.8912,
+    "nongold_max": 0.9346,
+    "all": {
+     "光伏电站运维知识库/逆变器告警处置手册.md": 0.9346,
+     "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md": 0.9323,
+     "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md": 0.9298,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.9194,
+     "薄膜工艺知识库/PP流延薄膜工艺规程.md": 0.9059,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.9008,
+     "aw-industrial/【演示线1-挤出主机PLC-失热故障态·TC0复活终态】瞬态脉冲列未持续——15-08-00崩塌124.27℃回归~180℃原故障平衡位,「复活后残余衰减」按终态修正入档": 0.895,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.8931,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.8928,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.8893,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.861,
+     "aw-industrial/POE胶膜工艺要点.md": 0.7663
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q2",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "光伏电站运维知识库/电站运维经验教训.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q2",
+   "latency_s": 0.018,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/experience/exp-22fb6fbd62b4.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 6
+  },
+  {
+   "method": "rrf",
+   "qid": "Q2",
+   "latency_s": 0.021,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q2",
+   "latency_s": 0.084,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [],
+   "n_ranked": 0
+  },
+  {
+   "method": "twostage",
+   "qid": "Q2",
+   "latency_s": 0.041,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md"
+   ],
+   "n_ranked": 3
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q2",
+   "latency_s": 0.074,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏电站运维知识库/电站运维经验教训.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q2",
+   "latency_s": 0.664,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb工况】哨兵批筛+扰动响应(regime_key=line1-extruder-disturb-20261006).md",
+    "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8463
+    ],
+    "nongold_mean": 0.861,
+    "nongold_max": 0.9261,
+    "all": {
+     "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md": 0.9261,
+     "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md": 0.9076,
+     "aw-industrial/【演示线1-挤出主机PLC-disturb工况】哨兵批筛+扰动响应(regime_key=line1-extruder-disturb-20261006).md": 0.8961,
+     "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)": 0.895,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.8943,
+     "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md": 0.8874,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.8805,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.8463,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.8416,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.8308,
+     "光伏电站运维知识库/组串失配分析方法.md": 0.8056,
+     "aw-industrial/POE胶膜工艺要点.md": 0.7061
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q3",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏电站运维知识库/组件热斑检测与处置规程.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q3",
+   "latency_s": 0.017,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "aw-industrial/POE胶膜工艺要点.md"
+   ],
+   "n_ranked": 4
+  },
+  {
+   "method": "rrf",
+   "qid": "Q3",
+   "latency_s": 0.009,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏电站运维知识库/组件热斑检测与处置规程.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q3",
+   "latency_s": 0.077,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q3",
+   "latency_s": 0.031,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md"
+   ],
+   "n_ranked": 3
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q3",
+   "latency_s": 0.066,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q3",
+   "latency_s": 0.579,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8965
+    ],
+    "nongold_mean": 0.8544,
+    "nongold_max": 0.8961,
+    "all": {
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.8965,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.8961,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.887,
+     "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md": 0.8866,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.8741,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.8643,
+     "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md": 0.8533,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.8513,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.8447,
+     "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md": 0.8252,
+     "光伏电站运维知识库/组串失配分析方法.md": 0.8223,
+     "aw-industrial/POE胶膜工艺要点.md": 0.7937
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q4",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/POE胶膜工艺要点.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q4",
+   "latency_s": 0.017,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/POE胶膜工艺要点.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md"
+   ],
+   "n_ranked": 4
+  },
+  {
+   "method": "rrf",
+   "qid": "Q4",
+   "latency_s": 0.008,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/POE胶膜工艺要点.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q4",
+   "latency_s": 0.073,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [],
+   "n_ranked": 0
+  },
+  {
+   "method": "twostage",
+   "qid": "Q4",
+   "latency_s": 0.03,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/POE胶膜工艺要点.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 2
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q4",
+   "latency_s": 0.045,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/POE胶膜工艺要点.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q4",
+   "latency_s": 0.386,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "光伏电站运维知识库/电站运维经验教训.md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8553
+    ],
+    "nongold_mean": 0.8572,
+    "nongold_max": 0.9405,
+    "all": {
+     "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md": 0.9405,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.9203,
+     "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md": 0.9176,
+     "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md": 0.9143,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.8838,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.8624,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.862,
+     "aw-industrial/POE胶膜工艺要点.md": 0.8553,
+     "薄膜工艺知识库/PP流延薄膜工艺规程.md": 0.8478,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.8099,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.7449,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.7257
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q5",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q5",
+   "latency_s": 0.017,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md"
+   ],
+   "n_ranked": 6
+  },
+  {
+   "method": "rrf",
+   "qid": "Q5",
+   "latency_s": 0.008,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q5",
+   "latency_s": 0.068,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md"
+   ],
+   "n_ranked": 5
+  },
+  {
+   "method": "twostage",
+   "qid": "Q5",
+   "latency_s": 0.041,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md"
+   ],
+   "n_ranked": 2
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q5",
+   "latency_s": 0.07,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q5",
+   "latency_s": 0.636,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.9272,
+     0.8582
+    ],
+    "nongold_mean": 0.9119,
+    "nongold_max": 1.0,
+    "all": {
+     "光伏电站运维知识库/逆变器告警处置手册.md": 1.0,
+     "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md": 0.9957,
+     "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md": 0.9694,
+     "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)": 0.9517,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案": 0.9399,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.9272,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md": 0.9242,
+     "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md": 0.9004,
+     "aw-industrial/【演示线1-挤出主机PLC-disturb工况】哨兵批筛+扰动响应(regime_key=line1-extruder-disturb-20261006).md": 0.8684,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.8582,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.8523,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.7174
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q6",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q6",
+   "latency_s": 0.016,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md"
+   ],
+   "n_ranked": 6
+  },
+  {
+   "method": "rrf",
+   "qid": "Q6",
+   "latency_s": 0.008,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q6",
+   "latency_s": 0.052,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q6",
+   "latency_s": 0.04,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q6",
+   "latency_s": 0.047,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q6",
+   "latency_s": 0.359,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8241
+    ],
+    "nongold_mean": 0.8827,
+    "nongold_max": 0.9318,
+    "all": {
+     "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md": 0.9318,
+     "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md": 0.9285,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md": 0.9228,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案": 0.92,
+     "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md": 0.9185,
+     "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md": 0.9137,
+     "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md": 0.9102,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.8557,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.8416,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.8241,
+     "薄膜工艺知识库/PP流延薄膜工艺规程.md": 0.8047,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.7621
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q7",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 3,
+   "mrr": 0.3333333333333333,
+   "ranked_top5": [
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q7",
+   "latency_s": 0.018,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 5,
+   "mrr": 0.2,
+   "ranked_top5": [
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1-挤出主机PLC-TC0复活暂态】14-17-45加热输出恢复签名双源确认-峰210.1℃单点触限,200℃平台未达GOAL,晶点从站冻结吐值",
+    "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md"
+   ],
+   "n_ranked": 7
+  },
+  {
+   "method": "rrf",
+   "qid": "Q7",
+   "latency_s": 0.02,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 3,
+   "mrr": 0.3333333333333333,
+   "ranked_top5": [
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1-挤出主机PLC-TC0复活暂态】14-17-45加热输出恢复签名双源确认-峰210.1℃单点触限,200℃平台未达GOAL,晶点从站冻结吐值",
+    "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q7",
+   "latency_s": 0.068,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [],
+   "n_ranked": 0
+  },
+  {
+   "method": "twostage",
+   "qid": "Q7",
+   "latency_s": 0.652,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 3,
+   "mrr": 0.3333333333333333,
+   "ranked_top5": [
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md"
+   ],
+   "n_ranked": 3
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q7",
+   "latency_s": 0.076,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 5,
+   "mrr": 0.2,
+   "ranked_top5": [
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1-挤出主机PLC-TC0复活暂态】14-17-45加热输出恢复签名双源确认-峰210.1℃单点触限,200℃平台未达GOAL,晶点从站冻结吐值",
+    "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q7",
+   "latency_s": 0.684,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 3,
+   "mrr": 0.3333333333333333,
+   "ranked_top5": [
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "aw-industrial/【演示线1-挤出主机PLC-TC0复活暂态】14-17-45加热输出恢复签名双源确认-峰210.1℃单点触限,200℃平台未达GOAL,晶点从站冻结吐值",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8893
+    ],
+    "nongold_mean": 0.8478,
+    "nongold_max": 0.9152,
+    "all": {
+     "薄膜工艺知识库/PP流延薄膜工艺规程.md": 0.9152,
+     "aw-industrial/【演示线1-挤出主机PLC-TC0复活暂态】14-17-45加热输出恢复签名双源确认-峰210.1℃单点触限,200℃平台未达GOAL,晶点从站冻结吐值": 0.895,
+     "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md": 0.8893,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案": 0.8866,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.8866,
+     "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)": 0.8801,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.8759,
+     "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)": 0.8643,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.8518,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.8432,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.8384,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.589
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q8",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q8",
+   "latency_s": 0.017,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/POE胶膜工艺要点.md"
+   ],
+   "n_ranked": 4
+  },
+  {
+   "method": "rrf",
+   "qid": "Q8",
+   "latency_s": 0.009,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q8",
+   "latency_s": 0.046,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q8",
+   "latency_s": 0.064,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 3
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q8",
+   "latency_s": 0.047,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q8",
+   "latency_s": 0.392,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【演示线1-挤出主机PLC-方案A稳态驻留207.8】227工作点恢复段哨兵全窗批筛证据(regime_key=ln-d7e0a2a2-melt-step227-steady-20261007).md",
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8684
+    ],
+    "nongold_mean": 0.8682,
+    "nongold_max": 0.9394,
+    "all": {
+     "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md": 0.9394,
+     "aw-industrial/【演示线1-挤出主机PLC-方案A稳态驻留207.8】227工作点恢复段哨兵全窗批筛证据(regime_key=ln-d7e0a2a2-melt-step227-steady-20261007).md": 0.9226,
+     "光伏电站运维知识库/组件热斑检测与处置规程.md": 0.92,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.9001,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.899,
+     "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)": 0.8986,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.8809,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.8684,
+     "薄膜工艺知识库/PP流延薄膜工艺规程.md": 0.8661,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.8395,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.82,
+     "aw-industrial/POE胶膜工艺要点.md": 0.6641
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q9",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q9",
+   "latency_s": 0.034,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)"
+   ],
+   "n_ranked": 7
+  },
+  {
+   "method": "rrf",
+   "qid": "Q9",
+   "latency_s": 0.01,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q9",
+   "latency_s": 0.05,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q9",
+   "latency_s": 0.04,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md"
+   ],
+   "n_ranked": 3
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q9",
+   "latency_s": 0.063,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q9",
+   "latency_s": 0.667,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案",
+    "aw-industrial/【演示线1-挤出主机PLC-方案A稳态驻留207.8】227工作点恢复段哨兵全窗批筛证据(regime_key=ln-d7e0a2a2-melt-step227-steady-20261007).md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8373
+    ],
+    "nongold_mean": 0.834,
+    "nongold_max": 0.924,
+    "all": {
+     "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md": 0.924,
+     "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md": 0.8885,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】熔体206→180非受控跌落,GOAL破窗25.5℃,晶点10倍超护栏,阶梯纠偏提案": 0.8784,
+     "aw-industrial/【演示线1-挤出主机PLC-方案A稳态驻留207.8】227工作点恢复段哨兵全窗批筛证据(regime_key=ln-d7e0a2a2-melt-step227-steady-20261007).md": 0.8784,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.8615,
+     "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)": 0.8463,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.8437,
+     "光伏电站运维知识库/逆变器告警处置手册.md": 0.8373,
+     "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md": 0.8314,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.8308,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.7757,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.615
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q10",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q10",
+   "latency_s": 0.017,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md"
+   ],
+   "n_ranked": 7
+  },
+  {
+   "method": "rrf",
+   "qid": "Q10",
+   "latency_s": 0.01,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "光伏电站运维知识库/组串失配分析方法.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q10",
+   "latency_s": 0.078,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组件热斑检测与处置规程.md"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q10",
+   "latency_s": 0.04,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md"
+   ],
+   "n_ranked": 2
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q10",
+   "latency_s": 0.072,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q10",
+   "latency_s": 0.675,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 3,
+   "mrr": 0.3333333333333333,
+   "ranked_top5": [
+    "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/组件热斑检测与处置规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8771
+    ],
+    "nongold_mean": 0.7889,
+    "nongold_max": 0.9099,
+    "all": {
+     "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)": 0.9099,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.8874,
+     "光伏电站运维知识库/组件热斑检测与处置规程.md": 0.8771,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.8728,
+     "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md": 0.8246,
+     "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)": 0.7943,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.7831,
+     "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)": 0.7736,
+     "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md": 0.7716,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md": 0.7354,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.7077,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.6176
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q11",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q11",
+   "latency_s": 0.017,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 2,
+   "mrr": 0.5,
+   "ranked_top5": [
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "光伏组件失效分析库/experience/exp-22fb6fbd62b4.md"
+   ],
+   "n_ranked": 5
+  },
+  {
+   "method": "rrf",
+   "qid": "Q11",
+   "latency_s": 0.02,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q11",
+   "latency_s": 0.085,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组串失配分析方法.md"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q11",
+   "latency_s": 0.042,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md"
+   ],
+   "n_ranked": 3
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q11",
+   "latency_s": 0.066,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 2,
+   "mrr": 0.5,
+   "ranked_top5": [
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q11",
+   "latency_s": 0.665,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "光伏电站运维知识库/光伏电站发电量骤降排查手册.md",
+    "aw-industrial/【演示线1-挤出主机PLC-修复恢复-heatdecay092跌落-227补偿恢复】R3全窗哨兵巡检2026-10-06T1806-10-07T0317-120条告警全簇对账在册-零新非受控簇-不新提案-regime_key=ln-d7e0a2a2-extruder-heatdecay092-recovery-20261007.md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.711
+    ],
+    "nongold_mean": 0.7693,
+    "nongold_max": 0.8909,
+    "all": {
+     "光伏电站运维知识库/逆变器告警处置手册.md": 0.8909,
+     "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md": 0.8543,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md": 0.8416,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.8099,
+     "aw-industrial/【演示线1-挤出主机PLC-修复恢复-heatdecay092跌落-227补偿恢复】R3全窗哨兵巡检2026-10-06T1806-10-07T0317-120条告警全簇对账在册-零新非受控簇-不新提案-regime_key=ln-d7e0a2a2-extruder-heatdecay092-recovery-20261007.md": 0.7959,
+     "aw-industrial/【演示线1-挤出主机PLC-disturb强化】0604-0857全窗批筛143条=受控稳态SPC噪声指纹,GOAL护栏双过,不提案(regime_key=line1-extruder-disturb3-20261006).md": 0.7653,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.7541,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.7354,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.721,
+     "光伏电站运维知识库/组串失配分析方法.md": 0.711,
+     "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md": 0.6844,
+     "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)": 0.6097
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q12",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/【演示线1-挤出主机PLC-运行中】AML训练腿终局门禁表与根因定性（基线最优+门限差距，双重缩放修正版）.md",
+    "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q12",
+   "latency_s": 0.018,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)"
+   ],
+   "n_ranked": 4
+  },
+  {
+   "method": "rrf",
+   "qid": "Q12",
+   "latency_s": 0.008,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "aw-industrial/【演示线1-挤出主机PLC-运行中】AML训练腿终局门禁表与根因定性（基线最优+门限差距，双重缩放修正版）.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q12",
+   "latency_s": 0.075,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q12",
+   "latency_s": 0.039,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md"
+   ],
+   "n_ranked": 2
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q12",
+   "latency_s": 0.068,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "薄膜工艺知识库/PP流延薄膜工艺规程.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "aw-industrial/【线1_挤出主机PLC_206工况保持】最终闭环判读+纯稳态哨兵复筛+AML交叉引用(regime_key=line1-extruder-206hold-20261006).md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q12",
+   "latency_s": 0.584,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "光伏电站运维知识库/逆变器告警处置手册.md",
+    "aw-industrial/【线1_挤出主机PLC_206工况保持】最终闭环判读+纯稳态哨兵复筛+AML交叉引用(regime_key=line1-extruder-206hold-20261006).md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8759
+    ],
+    "nongold_mean": 0.8834,
+    "nongold_max": 0.9419,
+    "all": {
+     "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md": 0.9419,
+     "光伏电站运维知识库/逆变器告警处置手册.md": 0.9313,
+     "aw-industrial/【线1_挤出主机PLC_206工况保持】最终闭环判读+纯稳态哨兵复筛+AML交叉引用(regime_key=line1-extruder-206hold-20261006).md": 0.9261,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.9259,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.9253,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.9029,
+     "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)": 0.899,
+     "薄膜工艺知识库/PP流延薄膜工艺规程.md": 0.8759,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.8533,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.8513,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.8123,
+     "aw-industrial/POE胶膜工艺要点.md": 0.7482
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q13",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【演示线1-挤出主机PLC-运行中】AML训练腿终局门禁表与根因定性（基线最优+门限差距，双重缩放修正版）.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q13",
+   "latency_s": 0.016,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【线1_挤出主机PLC_新运行区206】AML训练结论_regime_key_line1-extruder-reg206-20261006.md"
+   ],
+   "n_ranked": 9
+  },
+  {
+   "method": "rrf",
+   "qid": "Q13",
+   "latency_s": 0.009,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q13",
+   "latency_s": 0.064,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q13",
+   "latency_s": 0.026,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 5
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q13",
+   "latency_s": 0.047,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【线1_挤出主机PLC_新运行区206】AML训练结论_regime_key_line1-extruder-reg206-20261006.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q13",
+   "latency_s": 0.421,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 2,
+   "mrr": 0.5,
+   "ranked_top5": [
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【线1_挤出主机PLC_新运行区206】AML训练结论_regime_key_line1-extruder-reg206-20261006.md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.8702
+    ],
+    "nongold_mean": 0.8277,
+    "nongold_max": 0.8893,
+    "all": {
+     "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md": 0.8893,
+     "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md": 0.8702,
+     "aw-industrial/【线1_挤出主机PLC_新运行区206】AML训练结论_regime_key_line1-extruder-reg206-20261006.md": 0.8693,
+     "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md": 0.8666,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md": 0.8629,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.8538,
+     "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md": 0.8528,
+     "aw-industrial/【演示线1-挤出主机PLC-disturb工况】哨兵批筛+扰动响应(regime_key=line1-extruder-disturb-20261006).md": 0.8405,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.8129,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.7975,
+     "薄膜工艺知识库/PP流延薄膜工艺规程.md": 0.7709,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.6878
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q14",
+   "latency_s": 0.0,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜reg206-AML】v2大考阶段四：训练腿工具未挂载,AML底料与门禁基准备案,模型id待平台回填.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q14",
+   "latency_s": 0.017,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+    "aw-industrial/【演示线1-挤出主机PLC-修复恢复-heatdecay092跌落-227补偿恢复】R3全窗哨兵巡检2026-10-06T1806-10-07T0317-120条告警全簇对账在册-零新非受控簇-不新提案-regime_key=ln-d7e0a2a2-extruder-heatdecay092-recovery-20261007.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "rrf",
+   "qid": "Q14",
+   "latency_s": 0.009,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜reg206-AML】v2大考阶段四：训练腿工具未挂载,AML底料与门禁基准备案,模型id待平台回填.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q14",
+   "latency_s": 0.068,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md"
+   ],
+   "n_ranked": 1
+  },
+  {
+   "method": "twostage",
+   "qid": "Q14",
+   "latency_s": 0.024,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md",
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 5
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q14",
+   "latency_s": 0.049,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+    "aw-industrial/【演示线1-挤出主机PLC-修复恢复-heatdecay092跌落-227补偿恢复】R3全窗哨兵巡检2026-10-06T1806-10-07T0317-120条告警全簇对账在册-零新非受控簇-不新提案-regime_key=ln-d7e0a2a2-extruder-heatdecay092-recovery-20261007.md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q14",
+   "latency_s": 0.402,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【演示线1-挤出主机PLC-修复恢复-heatdecay092跌落-227补偿恢复】R3全窗哨兵巡检2026-10-06T1806-10-07T0317-120条告警全簇对账在册-零新非受控簇-不新提案-regime_key=ln-d7e0a2a2-extruder-heatdecay092-recovery-20261007.md",
+    "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md"
+   ],
+   "n_ranked": 11,
+   "judge_scores": {
+    "gold": [
+     0.9338
+    ],
+    "nongold_mean": 0.7538,
+    "nongold_max": 0.8634,
+    "all": {
+     "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md": 0.9338,
+     "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md": 0.8634,
+     "aw-industrial/【演示线1-挤出主机PLC-修复恢复-heatdecay092跌落-227补偿恢复】R3全窗哨兵巡检2026-10-06T1806-10-07T0317-120条告警全簇对账在册-零新非受控簇-不新提案-regime_key=ln-d7e0a2a2-extruder-heatdecay092-recovery-20261007.md": 0.8032,
+     "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)": 0.8019,
+     "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md": 0.7956,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.7949,
+     "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md": 0.7805,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.7419,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.7411,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.6236,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.5915
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q15",
+   "latency_s": 0.0,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【注塑一线-克重寻优-阶梯激励】run1 闭环调优记录(regime_key=inj-weight-ln5b-run1-staircase).md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q15",
+   "latency_s": 0.017,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【演示线1·挤出主机PLC·steady206】1006T1004全窗批筛159条=受控稳态SPC噪声指纹(归档不提案).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md"
+   ],
+   "n_ranked": 8
+  },
+  {
+   "method": "rrf",
+   "qid": "Q15",
+   "latency_s": 0.008,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发",
+    "aw-industrial/【演示线1·挤出主机PLC·steady206】1006T1004全窗批筛159条=受控稳态SPC噪声指纹(归档不提案).md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q15",
+   "latency_s": 0.066,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发"
+   ],
+   "n_ranked": 2
+  },
+  {
+   "method": "twostage",
+   "qid": "Q15",
+   "latency_s": 0.035,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)"
+   ],
+   "n_ranked": 5
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q15",
+   "latency_s": 0.05,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md",
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/【演示线1·挤出主机PLC·steady206】1006T1004全窗批筛159条=受控稳态SPC噪声指纹(归档不提案).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q15",
+   "latency_s": 0.39,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 5,
+   "mrr": 0.2,
+   "ranked_top5": [
+    "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md",
+    "aw-industrial/演示线1-挤出主机PLC-稳态+SP阶跃窗-熔体温度-二区SP-哨兵批筛结论(regime_key=line1-extruder-steady-step-20261006).md",
+    "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [
+     0.9152
+    ],
+    "nongold_mean": 0.8832,
+    "nongold_max": 0.9385,
+    "all": {
+     "aw-industrial/【注塑一线-FT全功能大考】P0优化后全链回归(regime_key=inj-weight-ln5b-ft-fulltest).md": 0.9385,
+     "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md": 0.9228,
+     "aw-industrial/【注塑一线-闭环优化R2-新频道接管】保压50→58 拉回窗口(regime_key=inj-weight-ln5b-r2-fresh-channel).md": 0.9185,
+     "aw-industrial/演示线1-挤出主机PLC-稳态+SP阶跃窗-熔体温度-二区SP-哨兵批筛结论(regime_key=line1-extruder-steady-step-20261006).md": 0.9182,
+     "aw-industrial/【注塑一线-多源异构-三模态闭环】向量+图像+标量融合诊断与保压回归(regime_key=inj-weight-ln5b-multimode-run10).md": 0.9152,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.9063,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.9056,
+     "aw-industrial/【演示线1·挤出主机PLC·steady206】1006T1004全窗批筛159条=受控稳态SPC噪声指纹(归档不提案).md": 0.8881,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.8754,
+     "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md": 0.8308,
+     "光伏电站运维知识库/组串失配分析方法.md": 0.8123,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.7988
+    }
+   }
+  },
+  {
+   "method": "bm25",
+   "qid": "Q16",
+   "latency_s": 0.001,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 1,
+   "mrr": 1.0,
+   "ranked_top5": [
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1-挤出主机PLC-修复恢复-heatdecay092跌落-227补偿恢复】R3全窗哨兵巡检2026-10-06T1806-10-07T0317-120条告警全簇对账在册-零新非受控簇-不新提案-regime_key=ln-d7e0a2a2-extruder-heatdecay092-recovery-20261007.md",
+    "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "dense",
+   "qid": "Q16",
+   "latency_s": 0.017,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md"
+   ],
+   "n_ranked": 8
+  },
+  {
+   "method": "rrf",
+   "qid": "Q16",
+   "latency_s": 0.01,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 2,
+   "mrr": 0.5,
+   "ranked_top5": [
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md"
+   ],
+   "n_ranked": 10
+  },
+  {
+   "method": "graph",
+   "qid": "Q16",
+   "latency_s": 0.092,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [],
+   "n_ranked": 0
+  },
+  {
+   "method": "twostage",
+   "qid": "Q16",
+   "latency_s": 0.053,
+   "hit@5": true,
+   "recall@5": 1.0,
+   "best_rank": 2,
+   "mrr": 0.5,
+   "ranked_top5": [
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092补偿后验证】R2工况恢复闭环复核-熔体207.8℃稳态·哨兵补偿后零告警·配方固化建议(regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)",
+    "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heatdecay092偏移】熔体温度208.8→192℃非受控跌落·SP补偿提案与判读 (regime_key=ln-d7e0a2a2-挤出主机PLC-heatdecay092-20261007)"
+   ],
+   "n_ranked": 4
+  },
+  {
+   "method": "fusion_only",
+   "qid": "Q16",
+   "latency_s": 0.082,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md"
+   ],
+   "n_ranked": 12
+  },
+  {
+   "method": "qdcvr_hybrid",
+   "qid": "Q16",
+   "latency_s": 0.657,
+   "hit@5": false,
+   "recall@5": 0.0,
+   "best_rank": null,
+   "mrr": 0.0,
+   "ranked_top5": [
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md",
+    "光伏电站运维知识库/电站运维经验教训.md"
+   ],
+   "n_ranked": 12,
+   "judge_scores": {
+    "gold": [],
+    "nongold_mean": 0.8339,
+    "nongold_max": 0.9079,
+    "all": {
+     "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md": 0.9079,
+     "aw-industrial/【演示线1-挤出主机PLC-heaterDecay5跌落】step1闭环判读-SP杠杆增益实测归零,阶梯纠偏停步,上报换杠杆决策(双窗证据).md": 0.8746,
+     "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md": 0.8693,
+     "aw-industrial/【演示线1｜挤出主机PLC｜tc0修复恢复稳态】R2复筛T17窗零告警——熔体200℃平台保持,晶点传感器复冻待检修,归档不提案.md": 0.8647,
+     "光伏电站运维知识库/电站运维经验教训.md": 0.8478,
+     "aw-industrial/【演示线1｜挤出主机PLC｜decay5recovery】TC0死回路全窗复核+恢复期受控类稳态——零写入维持,不提案(61条告警=在册事件复核与阶跃余波).md": 0.8447,
+     "薄膜工艺知识库/EVA封装膜工艺要点.md": 0.8341,
+     "光伏电站运维知识库/光伏电站发电量骤降排查手册.md": 0.8302,
+     "生产值守条款/注塑验收线1027-收口件克重警报值守条款-31.35g±0.05g-持续5min触发": 0.8189,
+     "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md": 0.8111,
+     "aw-industrial/【演示线1-挤出主机PLC(Modbus TCP)-steady206】1006T0940全窗批筛137条=受控稳态SPC噪声指纹(归档不提案).md": 0.7949,
+     "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md": 0.7081
+    }
+   }
+  }
+ ]
+}

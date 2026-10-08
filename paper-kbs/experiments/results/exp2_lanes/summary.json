@@ -1,0 +1,34 @@
+{
+ "search": {
+  "n": 4,
+  "doc_hit_rate": 1.0,
+  "fact_rate": 1.0,
+  "wall_mean_s": 61.3,
+  "turns_mean": 5.5,
+  "refusals": 0
+ },
+ "librarian": {
+  "n": 4,
+  "doc_hit_rate": 1.0,
+  "fact_rate": 1.0,
+  "wall_mean_s": 71.3,
+  "turns_mean": 5.5,
+  "refusals": 0
+ },
+ "hybrid": {
+  "n": 4,
+  "doc_hit_rate": 1.0,
+  "fact_rate": 1.0,
+  "wall_mean_s": 56.7,
+  "turns_mean": 3.8,
+  "refusals": 1
+ },
+ "bare": {
+  "n": 4,
+  "doc_hit_rate": 0.0,
+  "fact_rate": 0.5,
+  "wall_mean_s": 57.2,
+  "turns_mean": 1.0,
+  "refusals": 2
+ }
+}

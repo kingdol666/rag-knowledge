@@ -1,0 +1,28 @@
+{
+ "run": {
+  "arm": "search",
+  "qid": "Q7",
+  "http": 200,
+  "success": false,
+  "error": "",
+  "wall_s": 73.6,
+  "duration_ms": 38391,
+  "turns": 8,
+  "cost_usd": 0,
+  "answer_chars": 785,
+  "answer_head": "**最终定案的根因是：z2/z3 加热区输出丢失（TC=0 死回路）——即加热器热输出完全丢失导致熔体从 206℃ 非受控崩落至 180℃。**\n\n依据库内定案文档《【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案，SP写入冻结约定生效》（KB `2c353c50`，aw-industrial，regime_key=line1-extruder-decay5-20261006）：\n\n- **根因定案**：跨频道协作（工况A-线1温度GOAL-lead，证据回执 a69a6cdd）确认「z2/z3 加热输出丢失（TC=0，2026-10-06 10:59:08 系统告警『加热区2SP/3SP temp-tc=0 低于下限 120』）为熔体 206→180℃ 崩落的设备级根因」。此表述**覆盖**了系列前三篇的「heaterDecay 5.0 功率衰减」假设（P0 直接证据）。\n- **零增益实证**：13:27 step1 将 SP 下发 206→208.8℃ 后，双窗熔体均值仅 180.12/180.29℃，与下发前 179.85~180.02℃ 平台差 Δ≈+0.1~0.3℃（噪声带内）——预期增益 +3.2~4.6℃ 实测≈0，证明「TC 死回路下 SP→熔体通道增益=0」，原「SP 上调可抬升平台」假设被实验证伪。\n- **后",
+  "answer_full_len": 785,
+  "doc_citation_hit": true,
+  "gold_hits": [
+   "根因修订与跨频道对齐"
+  ],
+  "fact_hits": [
+   "TC",
+   "死回路"
+  ],
+  "n_fact_hits": 2,
+  "refusal": false,
+  "session_id": ""
+ },
+ "question": "演示线1挤出主机熔体温度从206℃跌落到180℃事件，最终定案的根因是什么？"
+}

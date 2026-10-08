@@ -1,0 +1,28 @@
+{
+ "run": {
+  "arm": "hybrid",
+  "qid": "Q4",
+  "http": 200,
+  "success": false,
+  "error": "",
+  "wall_s": 63.0,
+  "duration_ms": 34211,
+  "turns": 7,
+  "cost_usd": 0,
+  "answer_chars": 664,
+  "answer_head": "**结论：库内证据明确 POE 水汽阻隔率优于 EVA，可降低组件运行期水汽侵入与 PID 风险；其层压工艺要求为层压温度 155–165 ℃、交联度 > 90%。**\n\n依据（唯一命中文献：《POE胶膜工艺要点.md》，aw-industrial，库 2c353c50）：\n\n**1. 水汽阻隔特性**（P0 直接引文）\n- “POE（聚烯烃弹性体，Polyolefin Elastomer）是光伏组件封装材料，其水汽阻隔率优于 EVA，可降低组件运行期的水汽侵入与 PID 风险。”\n\n**2. 与 EVA 的层压工艺差异**\n库内给出的 POE 工艺参数（P0）：\n| 项目 | 要求 |\n|---|---|\n| 层压温度 | 155–165 ℃ |\n| 交联度 | > 90% |\n\n但该文档**未提供 EVA 的对应基准值**（如 EVA 常规层压温度约 140–150 ℃、交联度通常 75–85% 属行业常识，库内无直接记载），因此无法从库内证据逐项对比“差异”具体数值，仅能给出 POE 自身要求。\n\n**检索事实与局限**：在指定库执行 kb_search_two_stage（query: \"POE 光伏封装胶膜 水汽阻隔 透湿率 EVA 层压工艺差异”，候选 13 篇，二阶段幸存 5 条，仅 1 篇相关），并已读全文（19 行，未截断）。库内**未找到**：具体透湿率/WVT",
+  "answer_full_len": 664,
+  "doc_citation_hit": true,
+  "gold_hits": [
+   "POE胶膜工艺要点"
+  ],
+  "fact_hits": [
+   "水汽",
+   "POE"
+  ],
+  "n_fact_hits": 2,
+  "refusal": false,
+  "session_id": ""
+ },
+ "question": "POE光伏封装胶膜的水汽阻隔特性如何？层压工艺与EVA相比有什么差异？"
+}

@@ -1,0 +1,26 @@
+{
+ "run": {
+  "arm": "bare",
+  "qid": "Q4",
+  "http": 200,
+  "success": false,
+  "error": "",
+  "wall_s": 99.1,
+  "duration_ms": 98986,
+  "turns": 1,
+  "cost_usd": 0,
+  "answer_chars": 1660,
+  "answer_head": "以下仅凭我自己的知识作答，未查证任何资料；具体数值依赖测试条件与厂商配方，我会在不确定处标注。\n\n## 一、POE 的水汽阻隔特性\n\n**核心结论：POE 的水汽阻隔比 EVA 好约一个数量级，这是它在双玻/N 型组件中取代 EVA 的根本原因。**\n\n| 指标 | EVA | POE | 备注 |\n|---|---|---|---|\n| 水汽透过率 WVTR | ~15–30 g/(m²·day) | ~1–3 g/(m²·day) | 38 °C/90%RH 典型量级；60 °C/90%RH 下 EVA 会显著升高。确切数值随牌号、测试标准（ASTM E96/F1249 类）变化大，此处只保证量级 |\n| 吸水率 | ~0.5–1%（VA 含量越高越大） | <0.2–0.5% | POE 主体是非极性乙烯-辛烯共聚物，几乎无极性基团 |\n| 体积电阻率 | 新鲜时 ~10¹⁴ Ω·cm，湿热后可下降 1–2 个数量级 | ≥10¹⁵–10¹⁶ Ω·cm，湿热老化后稳定 | 这是 POE 抗 PID 的直接机理 |\n\n机理与衍生效果：\n\n- **无水解副产物**：EVA 的 VA 酯基湿热水解生成乙酸，腐蚀焊带、银电极并诱发 PID（尤其 PID-s）；POE 主链无酯基，不产酸。\n- **低水汽 + 高绝缘 → 抗 PID**：N 型 TOPCon/HJT 对 PID 更敏感",
+  "answer_full_len": 1660,
+  "doc_citation_hit": false,
+  "gold_hits": [],
+  "fact_hits": [
+   "水汽",
+   "POE"
+  ],
+  "n_fact_hits": 2,
+  "refusal": false,
+  "session_id": ""
+ },
+ "question": "POE光伏封装胶膜的水汽阻隔特性如何？层压工艺与EVA相比有什么差异？"
+}

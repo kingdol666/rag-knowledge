@@ -1,0 +1,245 @@
+{
+ "probes": [
+  {
+   "qid": "O1",
+   "topic": "lithium battery thermal runaway",
+   "vector_top_score": 0.596,
+   "vector_above_0.35": 4,
+   "merge_n": 43,
+   "kept_n": 11,
+   "kept_scores": [
+    0.968,
+    0.937,
+    0.922,
+    0.89,
+    0.864,
+    0.847,
+    0.81,
+    0.791,
+    0.74,
+    0.568,
+    0.5
+   ],
+   "reads_n": 5,
+   "elapsed_s": 0.7
+  },
+  {
+   "qid": "O2",
+   "topic": "child vaccination schedule",
+   "vector_top_score": 0.397,
+   "vector_above_0.35": 8,
+   "merge_n": 42,
+   "kept_n": 11,
+   "kept_scores": [
+    0.99,
+    0.955,
+    0.942,
+    0.938,
+    0.935,
+    0.927,
+    0.897,
+    0.857,
+    0.847,
+    0.844,
+    0.828
+   ],
+   "reads_n": 5,
+   "elapsed_s": 0.15
+  },
+  {
+   "qid": "O3",
+   "topic": "Python multiprocessing vs threading",
+   "vector_top_score": 0.511,
+   "vector_above_0.35": 10,
+   "merge_n": 43,
+   "kept_n": 9,
+   "kept_scores": [
+    0.93,
+    0.893,
+    0.877,
+    0.872,
+    0.855,
+    0.836,
+    0.834,
+    0.772,
+    0.674
+   ],
+   "reads_n": 5,
+   "elapsed_s": 0.16
+  },
+  {
+   "qid": "O4",
+   "topic": "injection mold vent design",
+   "vector_top_score": 0.538,
+   "vector_above_0.35": 7,
+   "merge_n": 43,
+   "kept_n": 11,
+   "kept_scores": [
+    0.934,
+    0.903,
+    0.902,
+    0.885,
+    0.879,
+    0.87,
+    0.807,
+    0.783,
+    0.775,
+    0.773,
+    0.747
+   ],
+   "reads_n": 5,
+   "elapsed_s": 0.16
+  }
+ ],
+ "cut_replay": {
+  "0.05": {
+   "gold_kept": 8,
+   "gold_pool": 17,
+   "mean_kept": 6.4
+  },
+  "0.1": {
+   "gold_kept": 14,
+   "gold_pool": 17,
+   "mean_kept": 8.9
+  },
+  "0.15": {
+   "gold_kept": 16,
+   "gold_pool": 17,
+   "mean_kept": 10.4
+  },
+  "0.2": {
+   "gold_kept": 17,
+   "gold_pool": 17,
+   "mean_kept": 11.1
+  },
+  "0.25": {
+   "gold_kept": 17,
+   "gold_pool": 17,
+   "mean_kept": 11.4
+  },
+  "0.3": {
+   "gold_kept": 17,
+   "gold_pool": 17,
+   "mean_kept": 11.7
+  },
+  "0.35": {
+   "gold_kept": 17,
+   "gold_pool": 17,
+   "mean_kept": 11.9
+  }
+ },
+ "gold_ranks": [
+  {
+   "qid": "Q1",
+   "n_cand": 12,
+   "gold_ranks": [
+    4,
+    10
+   ]
+  },
+  {
+   "qid": "Q2",
+   "n_cand": 12,
+   "gold_ranks": [
+    8
+   ]
+  },
+  {
+   "qid": "Q3",
+   "n_cand": 12,
+   "gold_ranks": [
+    1
+   ]
+  },
+  {
+   "qid": "Q4",
+   "n_cand": 12,
+   "gold_ranks": [
+    8
+   ]
+  },
+  {
+   "qid": "Q5",
+   "n_cand": 12,
+   "gold_ranks": [
+    6,
+    10
+   ]
+  },
+  {
+   "qid": "Q6",
+   "n_cand": 12,
+   "gold_ranks": [
+    10
+   ]
+  },
+  {
+   "qid": "Q7",
+   "n_cand": 12,
+   "gold_ranks": [
+    3
+   ]
+  },
+  {
+   "qid": "Q8",
+   "n_cand": 12,
+   "gold_ranks": [
+    8
+   ]
+  },
+  {
+   "qid": "Q9",
+   "n_cand": 12,
+   "gold_ranks": [
+    8
+   ]
+  },
+  {
+   "qid": "Q10",
+   "n_cand": 12,
+   "gold_ranks": [
+    3
+   ]
+  },
+  {
+   "qid": "Q11",
+   "n_cand": 12,
+   "gold_ranks": [
+    10
+   ]
+  },
+  {
+   "qid": "Q12",
+   "n_cand": 12,
+   "gold_ranks": [
+    8
+   ]
+  },
+  {
+   "qid": "Q13",
+   "n_cand": 12,
+   "gold_ranks": [
+    2
+   ]
+  },
+  {
+   "qid": "Q14",
+   "n_cand": 11,
+   "gold_ranks": [
+    1
+   ]
+  },
+  {
+   "qid": "Q15",
+   "n_cand": 12,
+   "gold_ranks": [
+    5
+   ]
+  },
+  {
+   "qid": "Q16",
+   "n_cand": 12,
+   "gold_ranks": []
+  }
+ ]
+}
