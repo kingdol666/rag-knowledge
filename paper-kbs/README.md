@@ -3,6 +3,12 @@
 本目录是为 **Knowledge-Based Systems** (Elsevier) 撰写的完整论文及其全部实验产物。
 论文系统 = `D:\codes\ragproject\rag-knowledge`(QDCVR 平台 v2.3.0)。
 
+> **2026-10-09 KBS 稿现状**: `tex/main.pdf` 32 页(elsarticle preprint 12pt,
+> tectonic 编译,0 错误/0 未解析引用,视觉验收 6 关键页全 PASS)。
+> 8 图 5 表 + 附录 A(16题×9配置逐题 best_rank,由 `experiments/derive_appendix.py`
+> 生成)。检索有效性主线:Exp5 judge-as-filter(Hit@5 0.44→0.94,符号检验
+> 8胜0负 p=0.008)+ Figure 7 真实查询解剖图(Q2 全链路,`experiments/exp5b_q2_anatomy.py`)。
+
 ## ⭐ IEEE TII 版本 (tex-ieee/, 2026-10-09)
 
 目标期刊由 KBS 转向 **IEEE TII**。`tex-ieee/main_tii.pdf` 为 IEEEtran 双栏

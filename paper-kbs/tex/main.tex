@@ -6,6 +6,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -18,6 +19,7 @@
 \newcommand{\no}{--}
 
 \graphicspath{{figs/}}
+\setlength{\emergencystretch}{1.5em}
 
 \journal{Knowledge-Based Systems}
 
@@ -120,7 +122,8 @@ speculative answer.
 
 We assess the platform with two experiment tiers on a production corpus of
 five industrial photovoltaic knowledge bases (42 documents): a tool-layer
-comparison of seven retrieval methods on sixteen gold-annotated questions, and
+comparison of seven retrieval pipelines plus two derived configurations
+on sixteen gold-annotated questions, and
 16 end-to-end agentic runs that answer four questions through the platform's
 public chat API in four arms (three lanes plus a bare agent without
 knowledge-base tools). The contributions are:
@@ -274,7 +277,7 @@ from a library catalog rather than a directory path.
 \item[P2 -- MCP-first machine interface.] Every capability is exposed as a
 tool of a Model Context Protocol server \cite{mcp}: 97 tools in eight groups
 (search, graph, judging, experience, persona management (SOUL),
-ingestion/parsing, library lifecycle, filesystem/tags). Web, HTTP, CLI, and MCP clients sit on
+ingestion/\allowbreak parsing, library lifecycle, filesystem/\allowbreak tags). Web, HTTP, CLI, and MCP clients sit on
 the same layer, so a capability added once is available to every harness.
 \item[P3 -- Verification before promotion.] No similarity score, however
 high, promotes a document into an answer; a judging model must read the
@@ -501,15 +504,16 @@ via \texttt{index-document}) and one library whose collection had been
 silently lost (rebuilt via \texttt{reindex}); both incidents are instances
 of the failure class discussed in Section~\ref{sec:discussion}.
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \caption{Gold-annotated question set over the five production knowledge
 bases. ``Gold'' lists unique filename fragments of the ground-truth
 documents. All sixteen questions serve the tool-layer experiment; Q2, Q4, Q6, Q7 also
 serve the agentic experiment.}
 \label{tab:questions}
-\begin{tabular}{p{0.5cm}p{6.3cm}p{4.6cm}p{3.4cm}}
+\begin{tabular}{lp{5.3cm}p{4.0cm}p{2.8cm}}
 \toprule
 \# & Question (abridged, translated) & Gold document(s) & Design intent \\
 \midrule
@@ -555,6 +559,7 @@ confuser density \\
 \end{table}
 
 \subsection{Methods and arms}
+\sloppypar
 \emph{Tool layer} (Section~\ref{sec:retrieval}): seven methods answer ``which
 documents back this question'' with top-5 document lists: BM25 (jieba+Okapi,
 $k_1{=}1.5$, $b{=}0.75$, built over all 42 full texts), Dense
@@ -622,6 +627,8 @@ are automated string matches against the released transcripts; no human
 rater was involved. For the verifier analysis we log per-candidate judge
 scores from the hybrid response. Hardware: one RTX 5060 (8\,GB) serves
 embeddings and the judge worker; all services run locally on Windows.
+Per-question best ranks for all nine retrieval configurations are
+tabulated in Appendix~\ref{app:perq}.
 
 \section{Results}
 \label{sec:results}
@@ -632,6 +639,7 @@ embeddings and the judge worker; all services run locally on Windows.
 \begin{table}[t]
 \centering
 \footnotesize
+\setlength{\tabcolsep}{4pt}
 \caption{Tool-layer retrieval on the 42-document production corpus (mean
 over 16 gold-annotated questions; top-5 document lists; latency per call,
 warmed).}
@@ -645,10 +653,20 @@ Dense (BGE-M3)        & 0.94 & 0.94 & 0.856 & 18\,ms     & 17\,ms \\
 RRF (BM25$\|$Dense)   & 1.00 & 1.00 & 0.927 & 11\,ms     & 9\,ms \\
 Graph (Neo4j)         & 0.56 & 0.53 & 0.562 & 68\,ms     & 68\,ms \\
 Two-stage             & 1.00 & 0.97 & 0.927 & 77\,ms     & 40\,ms \\
-Fusion-only (no judge)& 0.94 & 0.94 & 0.856 & 62\,ms     & 66\,ms \\
+Fusion-only            & 0.94 & 0.94 & 0.856 & 62\,ms     & 66\,ms \\
 QDCVR-Hybrid (judge)  & 0.44 & 0.41 & 0.226 & 542\,ms    & 582\,ms \\
+\midrule
+\multicolumn{6}{l}{\emph{Derived (offline, same logged hybrid pools):}}\\
+\quad Judge-as-filter$^{\dagger}$ & 0.94 & 0.94 & 0.856 & \multicolumn{2}{l}{$^{\dagger}$542\,ms / 582\,ms} \\
+\quad RRF-fuse & 0.88 & 0.88 & 0.606 & \multicolumn{2}{l}{(same single call)} \\
 \bottomrule
 \end{tabular}
+\par\smallskip
+\raggedright\footnotesize
+$^{\dagger}$\,Derived rows replay the QDCVR-Hybrid run's own logged
+12-candidate pools and judge scores, so they reuse that call's latency;
+the judge executes once either way. Per-question ranks for all nine
+configurations: Appendix~\ref{app:perq}.
 \end{table}
 
 \begin{figure}[t]
@@ -684,8 +702,14 @@ QDCVR-Hybrid arm loses top-5 hits relative to its own fusion stage
 (Q2, Q4, Q5, Q6, Q8, Q9, Q11, Q12) the gold document \emph{was} judged and
 the gate's verdicts reordered same-domain confusers above it; on Q16 the
 gold never reached the judge at all --- all twelve candidate slots were
-taken by confusers upstream in the fusion stage. Both halves trace to the
-same root cause, quantified next.
+taken by confusers upstream in the fusion stage. Keeping the verdicts but
+discarding the induced ordering --- the \emph{judge-as-filter} rows of
+Table~\ref{tab:retrieval} --- repairs every one of the eight losses and
+regresses none (8 wins, 0 losses, 8 ties on Hit@5; exact binomial
+$p = 0.008$, two-sided), restoring Hit@5 to 0.94 and MRR to 0.856 with
+every returned citation still judge-verified; the only ranking regression
+anywhere is Q7, where the gold slips from third to fifth. Both halves
+trace to the same root cause, quantified next.
 
 \textbf{Two-stage fusion recovers its inputs here.} On the healthy corpus
 the BM25+graph-then-dense pipeline reaches Hit@5 1.00 (Recall@5 0.97, one
@@ -841,8 +865,9 @@ clause), the fusion ranking placed the gold clause document first, but the
 judged re-ranking promoted five unrelated telemetry reports (0.92--0.93)
 while the gold document scored 0.82 --- pushing the gold document out of
 the top-5 that the answer agent reads in full; the same pattern recurs on
-Q2, where extruder-telemetry reports and an unrelated PET process document
-(0.89--0.93) outrank the gold EL report (0.85). Even the relative cut participates in the failure: it
+Q2 (Fig.~\ref{fig:anatomy}), where five extruder-telemetry reports and an
+unrelated PET process document (0.887--0.926) outrank the gold EL report
+(0.846). Even the relative cut participates in the failure: it
 bound in most rounds (trimming one to five tail candidates), and on Q11
 its best-minus-0.15 line fell \emph{above} the gold's score (0.741 vs.\
 0.711), deleting the gold from the kept set outright.
@@ -888,6 +913,21 @@ itself: domain-aware negative training, score normalization against a
 per-library null distribution, or pairing the judge with a contradiction
 check. We report this as a measured open problem rather than a solved
 one.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig8_anatomy}
+\caption{Anatomy of one real query (Q2; single logged QDCVR-Hybrid call).
+Each line is one of the 12 fused candidates; the green band is the top-5
+window the answer agent reads in full. (a)~The shipped re-ranking: the
+judge scores five extruder-PLC telemetry reports $0.887$--$0.926$ and the
+gold root-cause report $0.846$, demoting it from fusion rank~1 to
+rank~8 --- outside the read window. (b)~The same call with the verdicts
+used only as a filter: all 12 pass, the fusion order stands, and the gold
+is the first document read. Same pool, same scores, same verdicts; only
+the role of the induced ordering differs.}
+\label{fig:anatomy}
+\end{figure}
 
 \begin{figure}[t]
 \centering
@@ -1067,6 +1107,25 @@ Writing -- review \& editing, Supervision. %% AUTHOR ACTION: adjust.
 \section*{Acknowledgments}
 This research did not receive any specific grant from funding agencies in
 the public, commercial, or not-for-profit sectors. %% AUTHOR ACTION
+
+\appendix
+\setcounter{table}{0}
+\section{Per-question tool-layer results}
+\label{app:perq}
+Table~\ref{tab:appendixranks} breaks Table~\ref{tab:retrieval} down to
+individual questions: the best gold rank each configuration reached in
+its top-5 window, for every gold-annotated question. Reading the columns
+side by side localizes every aggregate number in the paper: BM25 and RRF
+miss at most one question (Q16's confuser family and Q7's telemetry
+cluster account for the remaining sub-1.0 MRRs); the judged hybrid's nine
+misses are exactly the questions where same-domain confusers outranked
+the gold (Q2, Q4, Q5, Q6, Q8, Q9, Q11, Q12) or crowded it out upstream
+(Q16); and judge-as-filter restores the gold on every one of the eight
+judging losses while inheriting Q16's upstream failure --- the
+decomposition that Fig.~\ref{fig:marginvariants}(b) aggregates and
+Fig.~\ref{fig:anatomy} dissects one query at a time.
+
+\input{tab_appendix_ranks}
 
 \bibliographystyle{unsrtnat}
 \bibliography{refs}

@@ -96,15 +96,17 @@ def fig_architecture():
     layer(33.0, 12.5, "Retrieval lanes (Section 4)")
     box(ax, 20, 33.6, 25, 7.6,
         "Lane A  Search\nquery rewrite → dense top-30\n→ citation-only judging gate",
-        fc="#E8F5F1", ec=C["green"], fs=6.6)
+        fc="#E8F5F1", ec=C["green"], fs=6.1)
     box(ax, 47.5, 33.6, 25, 7.6,
         "Lane B  Librarian\ncatalog → scan → route → judge\n(≤6 refs/batch) → read survivors",
-        fc="#E8F5F1", ec=C["green"], fs=6.6)
+        fc="#E8F5F1", ec=C["green"], fs=6.1)
     box(ax, 75, 33.6, 22, 7.6,
-        "Lane C  Hybrid\nsingle server-side call:\nmerge → judge → cut → read",
-        fc="#E8F5F1", ec=C["green"], fs=6.6)
+        "Lane C  Hybrid\nsingle server-side call:\nmerge→judge→cut→read",
+        fc="#E8F5F1", ec=C["green"], fs=6.1)
     arrow(ax, 45.1, 37.4, 47.4, 37.4, color=C["verm"], lw=1.0, ms=5)
-    ax.text(46.25, 38.5, "fallback", fontsize=5.6, color=C["verm"], ha="center")
+    ax.text(46.25, 38.9, "fallback", fontsize=5.0, color=C["verm"],
+            ha="center", zorder=5,
+            bbox=dict(fc="white", ec="none", alpha=0.9, pad=1.0))
 
     # ---- MCP tool layer
     layer(21.5, 10.0, "MCP tool layer — kb-mcp server (97 tools in 8 groups)")
@@ -146,16 +148,16 @@ def fig_architecture():
     ax.add_patch(FancyBboxPatch((1.0, 2.0), 14.5, 67.0,
                                 boxstyle="round,pad=0.02,rounding_size=1.0",
                                 fc="#FBFBFB", ec="#BBBBBB", lw=0.6, zorder=1))
-    ax.text(8.2, 66.6, "Ingestion pipeline", fontsize=6.2, color="#777777",
-            style="italic", ha="center")
-    steps = ["Upload\n(PDF/Office/scan)", "Parse\nMinerU OCR engine",
-             "Semantic split\n>30 k chars, agent plan",
-             "Content-derived tags\n+ descriptions",
-             "Index\nvector + graph + BM25",
-             "Post-condition check\nretrievability gate"]
+    ax.text(8.2, 68.4, "Ingestion", fontsize=6.2, color="#777777",
+            style="italic", ha="center", va="top")
+    steps = ["Upload\n(PDF/Office/scan)", "Parse\nMinerU OCR",
+             "Semantic split\nagent-planned,\n>30 k chars",
+             "Content tags\n+ descriptions",
+             "Index\nvector + graph\n+ BM25",
+             "Post-condition\nretrievability gate"]
     y = 60.5
     for i, s in enumerate(steps):
-        box(ax, 2.2, y, 12.1, 6.6, s, fc="#FFFFFF", ec=C["blue"], fs=6.1)
+        box(ax, 1.9, y, 12.8, 6.6, s, fc="#FFFFFF", ec=C["blue"], fs=5.6)
         if i < len(steps) - 1:
             arrow(ax, 8.2, y - 0.1, 8.2, y - 2.4, lw=0.9)
         y -= 9.2
@@ -515,6 +517,87 @@ def fig_ood_kbs():
     save(fig, "fig7_ood")
 
 
+# ===========================================================================
+# Fig 8 — anatomy of one real query (Q2, logged QDCVR-Hybrid traces)
+# ===========================================================================
+def fig_anatomy():
+    d = json.loads((RESULTS / "exp5_q2_anatomy.json").read_text(
+        encoding="utf-8"))
+    r = d["response"]
+    fusion = [p.replace("\\", "/") for p in r["merge"]["judged_candidates"]]
+    kept = {p.replace("\\", "/"): float(k["score"])
+            for k in r["cut"]["kept"] for p in [k["doc_path"]]}
+    judged = sorted(kept, key=lambda p: -kept[p])
+
+    def cls(p):
+        if "EL-2025-0317" in p:
+            return "gold"
+        if "aw-industrial/【演示线1" in p:
+            return "plc"
+        return "other"
+
+    col = {"gold": C["blue"], "plc": C["verm"], "other": "#C8C8C8"}
+    lw = {"gold": 1.7, "plc": 1.0, "other": 0.8}
+    ms = {"gold": 3.6, "plc": 2.6, "other": 2.4}
+
+    fig, axes = plt.subplots(1, 2, figsize=(190 * MM, 74 * MM),
+                             sharey=True)
+    panels = [
+        (axes[0], judged, "(a) Judge as re-ranker (shipped ordering)",
+         "score order"),
+        (axes[1], fusion, "(b) Judge as filter (verdicts only)",
+         "fusion order\n(all 12 verdicts $\\geq$ 0.5 kept, order untouched)"),
+    ]
+    for ax, order, title, xright in panels:
+        pos = {p: i + 1 for i, p in enumerate(order)}
+        ax.axhspan(0.5, 5.5, color="#EDF6EA", zorder=0)
+        ax.text(-0.30, 5.15, "top-5 read window", fontsize=5.6,
+                color=C["green"], va="center", zorder=4,
+                bbox=dict(fc="white", ec="none", alpha=0.85, pad=1.2))
+        for p in fusion:
+            k = cls(p)
+            ax.plot([0, 1], [fusion.index(p) + 1, pos[p]], "-",
+                    color=col[k], lw=lw[k], zorder=3 if k == "gold" else 2,
+                    marker="o", ms=ms[k], mfc=col[k], mec="white", mew=0.4,
+                    solid_capstyle="round")
+        ax.set_xlim(-0.38, 1.42)
+        ax.set_ylim(12.7, 0.35)
+        ax.set_xticks([0, 1])
+        ax.set_xticklabels(["fusion rank", xright], fontsize=6.4)
+        ax.tick_params(length=0, labelsize=6.0)
+        ax.set_yticks(range(1, 13))
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+        ax.set_title(title, fontsize=7, loc="left")
+    axes[0].set_yticklabels([str(i) for i in range(1, 13)])
+
+    # score annotations (real logged scores)
+    axes[0].annotate("PLC telemetry 0.926", xy=(1, 1), xytext=(6, 2),
+                     textcoords="offset points", fontsize=5.8,
+                     color=C["verm"], va="center")
+    axes[0].annotate("gold 0.846\n→ not read", xy=(1, 8),
+                     xytext=(6, 0), textcoords="offset points",
+                     fontsize=5.8, color=C["blue"], va="center")
+    axes[1].annotate("gold read first (0.846)", xy=(1, 1),
+                     xytext=(6, 0), textcoords="offset points",
+                     fontsize=5.8, color=C["blue"], va="center")
+
+    from matplotlib.lines import Line2D
+    handles = [
+        Line2D([], [], color=col["gold"], lw=1.7, marker="o", ms=3.6,
+               label="gold: EL-2025-0317 delamination RCA report"),
+        Line2D([], [], color=col["plc"], lw=1.0, marker="o", ms=2.6,
+               label="extruder-PLC demo telemetry reports (5)"),
+        Line2D([], [], color=col["other"], lw=0.8, marker="o", ms=2.4,
+               label="other corpus documents (6)"),
+    ]
+    fig.legend(handles=handles, frameon=False, fontsize=6.0,
+               loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0.0),
+               borderaxespad=0, handlelength=1.8, columnspacing=1.2)
+    fig.tight_layout(rect=(0, 0.07, 1, 1), w_pad=2.2)
+    save(fig, "fig8_anatomy")
+
+
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     if which in ("all", "1"):
@@ -531,3 +614,5 @@ if __name__ == "__main__":
         fig_margin_variants()
     if which in ("all", "7"):
         fig_ood_kbs()
+    if which in ("all", "8"):
+        fig_anatomy()
