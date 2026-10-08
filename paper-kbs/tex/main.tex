@@ -562,8 +562,14 @@ $k_1{=}1.5$, $b{=}0.75$, built over all 42 full texts), Dense
 fusion of the two), Graph (\texttt{kb\_graph\_search} over top jieba
 keywords, best-rank merge), Two-stage (\texttt{kb\_search\_two-stage}:
 BM25+graph candidates then dense refine), Fusion-only (the hybrid lane's
-merge order without judging), and QDCVR-Hybrid (the full single-call lane
-with judging and relative cut). All seven methods run over the full
+merge order without judging), QDCVR-Hybrid (the full single-call lane
+with judging and relative cut), and two \emph{derived} configurations
+computed offline from the QDCVR-Hybrid run's own logged pools ---
+\emph{judge-as-filter} (verdicts accept or reject; fusion order
+preserved) and \emph{RRF-fuse} (reciprocal-rank fusion of the fusion and
+judge orderings) --- which isolate whether the retrieval loss comes from
+the verdicts or from the ordering they induce. The seven pipeline methods
+run over the full
 42-document catalog with no library pinning; all output document-level
 rankings (BM25 scores full texts; dense aggregates chunks by max-pooling),
 so lists are directly comparable. Two construction asymmetries should be
@@ -790,6 +796,19 @@ recall, and the bare agent cannot ground citations at all.}
 
 %% old fig:e2e environment removed (merged into Section 7.2 above)
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.86\textwidth]{fig6_margin_variants}
+\caption{Attributing and repairing the verification loss. (a)~Offline
+replay of the relative cut: the shipped 0.15 margin loses one gold;
+0.20 retains all 17. (b)~The same QDCVR-Hybrid pipeline with three roles
+for the verdicts: as a re-ranking signal the gate costs 0.50 Hit@5; as a
+filter (fusion order preserved) retrieval returns to the fusion stage's
+0.94 with every citation still judge-verified; score-level fusion with
+the noisy ordering (RRF) recovers only 0.88.}
+\label{fig:marginvariants}
+\end{figure}
+
 \subsection{The verifier's own failure mode: same-domain inflation}
 \label{sec:inflation}
 
@@ -870,6 +889,17 @@ per-library null distribution, or pairing the judge with a contradiction
 check. We report this as a measured open problem rather than a solved
 one.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.62\textwidth]{fig7_ood}
+\caption{Out-of-corpus probes at the tool layer: for every probe the
+judged hybrid keeps 9--11 of its 12 candidates and dense retrieval passes
+chunks above the 0.35 threshold---the threshold alone never abstains. At
+the agent layer, all six probe runs returned explicit not-found reports
+with zero fabricated citations.}
+\label{fig:ood}
+\end{figure}
+
 \subsection{Honest abstention under out-of-corpus probes}
 \label{sec:abstention}
 
@@ -877,7 +907,8 @@ The lanes' final contract --- an explicit not-found instead of speculation
 --- was never exercised by the gold questions, all of which are in-corpus.
 Four out-of-corpus probe queries (lithium-battery thermal runaway, child
 vaccination schedules, Python concurrency, injection-mold vent design)
-close that gap, at both layers. At the tool layer, abstention does
+close that gap at both layers (Fig.~\ref{fig:ood}). At the tool layer,
+abstention does
 \emph{not} happen: as Section~\ref{sec:inflation} showed, the acceptance
 threshold keeps 9--11 of 12 candidates even for vaccination or battery
 queries. At the agent layer, the contract holds without exception: all six

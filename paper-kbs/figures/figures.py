@@ -417,6 +417,104 @@ def _short(qid):
     return m.get(qid, qid)
 
 
+# ===========================================================================
+# Fig 6 — cut-margin replay + ordering-vs-filter (KBS single-column size)
+# ===========================================================================
+def fig_margin_variants():
+    d = json.loads((RESULTS / "exp3_abstention.json").read_text(encoding="utf-8"))
+    rp = d["cut_replay"]
+    margins = sorted(float(k) for k in rp)
+    golds = [rp[str(m)]["gold_kept"] if str(m) in rp else rp[m]["gold_kept"]
+             for m in margins]
+    kept = [rp[str(m)]["mean_kept"] if str(m) in rp else rp[m]["mean_kept"]
+            for m in margins]
+    e5 = json.loads((RESULTS / "exp5_judge_filter.json").read_text(
+        encoding="utf-8"))["summary"]
+
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(150 * MM, 58 * MM),
+                                 gridspec_kw={"width_ratios": [1.15, 1]})
+    ax = a1
+    ax.plot(margins, golds, "-o", color=C["blue"], lw=1.1, ms=3.2,
+            label="golds kept (of 17)")
+    ax.set_xlabel("relative cut margin (best $-$ m)", fontsize=7)
+    ax.set_ylabel("golds kept", color=C["blue"], fontsize=7)
+    ax.set_ylim(6, 17.6)
+    ax.tick_params(labelsize=6.2, length=2)
+    ax2 = ax.twinx()
+    ax2.plot(margins, kept, "-s", color=C["verm"], lw=1.1, ms=3.0,
+             label="mean kept set")
+    ax2.set_ylabel("mean kept set size (of 12)", color=C["verm"],
+                   fontsize=7)
+    ax2.set_ylim(6, 12.4)
+    ax2.tick_params(labelsize=6.2, length=2)
+    ax.axvline(0.15, color=C["dgrey"], lw=0.7, ls="--")
+    ax.text(0.152, 6.6, "shipped\n0.15", fontsize=5.4, color=C["dgrey"],
+            va="bottom")
+    ax.axvline(0.20, color=C["green"], lw=0.7, ls="--")
+    ax.text(0.206, 6.6, "0.20", fontsize=5.4, color=C["green"],
+            va="bottom")
+    for sp in ("top",):
+        ax.spines[sp].set_visible(False)
+        ax2.spines[sp].set_visible(False)
+    ax.set_title("(a) cut-margin replay", fontsize=7, loc="left")
+
+    ax = a2
+    names = ["Fusion\n(no judge)", "Judged\n(re-rank)", "Judge as\nfilter",
+             "RRF\nfuse"]
+    vals = [0.94, e5["judged"]["hit@5"], e5["filter_only"]["hit@5"],
+            e5["rrf_fuse"]["hit@5"]]
+    cols = [C["orange"], C["verm"], C["green"], C["grey"]]
+    ax.bar(range(4), vals, color=cols, edgecolor="white", linewidth=0.4,
+           width=0.62)
+    for i, v in enumerate(vals):
+        ax.text(i, v + 0.02, f"{v:.2f}", ha="center", fontsize=6.4)
+    ax.set_xticks(range(4))
+    ax.set_xticklabels(names, fontsize=6.0)
+    ax.set_ylabel("Hit@5", fontsize=7)
+    ax.set_ylim(0, 1.1)
+    ax.tick_params(length=2, labelsize=6.2)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.set_title("(b) same pipeline, three verdict roles", fontsize=7,
+                 loc="left")
+    fig.tight_layout(w_pad=1.4)
+    save(fig, "fig6_margin_variants")
+
+
+# ===========================================================================
+# Fig 7 — OOD probes (KBS size)
+# ===========================================================================
+def fig_ood_kbs():
+    d = json.loads((RESULTS / "exp3_abstention.json").read_text(encoding="utf-8"))
+    pr = d["probes"]
+    topics = ["lithium thermal\nrunaway", "vaccination\nschedule",
+              "Python\nconcurrency", "mold vent\ndesign"]
+    kept = [p["kept_n"] for p in pr]
+    over = [p["vector_above_0.35"] for p in pr]
+    x = range(len(pr))
+    w = 0.36
+    fig, ax = plt.subplots(figsize=(120 * MM, 52 * MM))
+    ax.bar([i - w / 2 for i in x], kept, width=w, color=C["verm"],
+           label="judged candidates kept (of 12)", edgecolor="white",
+           linewidth=0.3)
+    ax.bar([i + w / 2 for i in x], over, width=w, color=C["sky"],
+           label="dense chunks above 0.35 threshold", edgecolor="white",
+           linewidth=0.3)
+    for xi, v in zip(x, kept):
+        ax.text(xi - w / 2, v + 0.25, str(v), ha="center", fontsize=6.2)
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(topics, fontsize=6.4)
+    ax.set_ylabel("count", fontsize=7)
+    ax.set_ylim(0, 16)
+    ax.legend(frameon=False, fontsize=6.4, loc="lower center",
+              bbox_to_anchor=(0.5, 1.0), ncol=2)
+    ax.tick_params(length=2, labelsize=6.5)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    fig.tight_layout()
+    save(fig, "fig7_ood")
+
+
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     if which in ("all", "1"):
@@ -429,3 +527,7 @@ if __name__ == "__main__":
         fig_inflation()
     if which in ("all", "5"):
         fig_e2e()
+    if which in ("all", "6"):
+        fig_margin_variants()
+    if which in ("all", "7"):
+        fig_ood_kbs()

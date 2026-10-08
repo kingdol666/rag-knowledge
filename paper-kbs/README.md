@@ -36,6 +36,7 @@ paper-kbs/
 │   └── fig1..fig5 .pdf/.png
 ├── experiments/
 │   ├── kbcommon.py         # 公共库: MCP SSE 客户端 / chat API / 16 金标题集
+│   ├── exp5_judge_filter.py# Exp5: 判卷门角色实验(filter-only 0.94 恢复)
 │   ├── exp1_retrieval.py   # Exp1: 机器级 7 方法 × 16 题检索对照
 │   ├── exp2_lanes.py       # Exp2: agentic 3 lane + bare × 4 题端到端 × 两轮 (真实 omp)
 │   ├── exp3_abstention.py  # Exp3: OOD弃答探针(机器层) + 切割线重放 + 金标秩次
@@ -76,6 +77,10 @@ cd ../tex && pdflatex main && bibtex main && pdflatex main && pdflatex main
 - **Exp4 (agent层弃答)**: 3臂×2条OOD题,6/6诚实not-found,零编造引用。
 - **判卷膨胀分析**: 191个judged候选分数,金标(n=17)与非金标(n=174)分布
   Mann-Whitney p=0.26 无可检出分离 (图4)。
+- **Exp5 (判卷门角色, 检索有效性修复)**: 同一管线三种verdict角色——
+  按分重排0.44 / **只过滤不过滤序 0.94(恢复)** / RRF融合0.88。
+  失败归因=排序而非判卷本身;修复=配置级变更 (图6b)。
+- **图**: KBS版7张 (新增fig6 margin重放+变体对比、fig7 OOD探针)。
 
 ## 主要发现(详见论文 §7)
 
