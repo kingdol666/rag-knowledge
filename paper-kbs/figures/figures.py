@@ -395,7 +395,7 @@ def fig_e2e():
         a2.scatter([turns + xd], [hit], s=46, color=colors[k], zorder=3,
                    label=arm_labels[k].replace("\n", " "), edgecolors="white",
                    linewidths=0.5)
-        offs = {0: (9, 7), 1: (-9, -15), 2: (9, -15), 3: (9, 7)}
+        offs = {0: (9, 7), 1: (-9, -15), 2: (-11, 12), 3: (9, -16)}
         ha = {0: "left", 1: "right", 2: "left", 3: "left"}
         a2.annotate(arm_labels[k].split("\n")[0], (turns + xd, hit),
                     textcoords="offset points", xytext=offs[k], ha=ha[k],

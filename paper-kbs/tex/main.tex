@@ -39,29 +39,26 @@ City, Country}, city={City}, country={Country}}
 
 \begin{abstract}
 Retrieval-augmented generation (RAG) grounds large language models in
-corporate document stores, yet the evidence itself is rarely verified: a
-top-ranked document can enter an answer without its content ever being
-checked against the question. We present
-QDCVR (Query-Driven Content-Verified Retrieval), a self-hosted
-knowledge-base platform in which every candidate citation must pass a
-verification gate --- a locally hosted judge that reads the fetched
-document and scores whether it contains direct evidence for the query ---
-and three interchangeable retrieval lanes that all terminate at this gate. We evaluate the
-platform on a production corpus of five industrial photovoltaic knowledge
-bases (42 documents, 16 gold-annotated questions). The judge's verdicts expose a
-same-domain inflation failure: non-gold documents receive scores (median
-0.86, $n = 174$) with no statistically detectable separation from gold
-documents (median 0.88, $n = 17$; Mann--Whitney $p = 0.26$), and the judged
-pipeline's Hit@5 falls from its fusion stage's 0.94 to 0.44 --- while an
-offline cut-margin replay retains every judged gold at margin 0.20. Out-of-corpus probes show the threshold alone never abstains; honest
-not-found behavior lives in the reading-and-answer layer. In agentic
-runs (the full grid run twice), all knowledge-base-grounded lanes named
-the gold document in all twelve runs and reproduced its fact markers
-(decontamination-checked in round 1), whereas a bare agent never cited
-one; wall-clock time is dominated by agent turns ($\approx$12--15\,s)
-rather than retrieval, and the hybrid lane reaches grounded answers with
-the fewest turns. Verifier calibration is the open problem; honesty needs
-an enforcement layer; silent index loss must be treated as failure.
+document stores, yet the evidence itself is rarely verified: a top-ranked
+document can enter an answer without its content being checked against the
+question. We present QDCVR, a self-hosted knowledge-base platform in which
+every candidate citation must pass a verification gate --- a locally hosted
+judge that reads the fetched document and scores whether it contains direct
+evidence --- and three retrieval lanes terminating at this gate. On a
+deployed industrial corpus (five knowledge bases, 42 documents, 16
+gold-annotated questions) the judge exposes a same-domain score-inflation
+failure consistent with known LLM-judge miscalibration: non-gold scores
+(median 0.86, $n = 174$) are indistinguishable from gold (median 0.88,
+$n = 17$; Mann--Whitney $p = 0.26$), and judged re-ranking lowers Hit@5
+from its fusion stage's 0.94 to 0.44. Reusing the same verdicts as a binary
+filter restores 0.94 (sign test $p = 0.008$); an in-sample cut-margin
+replay retains every judged gold at margin 0.20. Out-of-corpus probes show
+the threshold alone never abstains: honest not-found behavior lives in the
+reading-and-answer layer. In a $4\times4$ agentic grid run twice, grounded
+lanes named the gold document in all twelve first-round runs --- six
+against pinned libraries of only one to two documents --- while a bare
+agent never cited one. Verifier calibration is the open problem; honesty
+needs an enforcement layer.
 \end{abstract}
 
 \begin{keyword}
@@ -98,8 +95,8 @@ This paper argues that a primitive most deployed RAG stacks leave implicit
 is an \emph{explicit content-verification gate}: before a candidate document
 is allowed to support an answer, its actual text must be fetched and judged
 against the query by a model whose only job is to answer ``does this text
-contain direct evidence for this question?'' Vectors are fast; content is
-accurate. We built QDCVR (Query-Driven Content-Verified Retrieval), a
+contain direct evidence for this question?'' Vectors are fast; only the
+content can confirm. We built QDCVR (Query-Driven Content-Verified Retrieval), a
 self-hosted platform that makes this primitive the backbone of a complete
 knowledge-base system --- content-routed organization at ingestion, a
 97-tool MCP server as the machine interface \cite{mcp}, and three retrieval
@@ -120,8 +117,10 @@ top-5 floor, and returns full text for the top documents. All lanes fail
 closed: zero verified evidence yields an explicit not-found report, never a
 speculative answer.
 
-We assess the platform with two experiment tiers on a production corpus of
-five industrial photovoltaic knowledge bases (42 documents): a tool-layer
+We assess the platform with two experiment tiers on a deployed industrial
+corpus of five knowledge bases spanning photovoltaic materials, module
+failure analysis, plant O\&M, and discrete-manufacturing telemetry
+(42 documents): a tool-layer
 comparison of seven retrieval pipelines plus two derived configurations
 on sixteen gold-annotated questions, and
 16 end-to-end agentic runs that answer four questions through the platform's
@@ -147,11 +146,17 @@ the agent layer, all knowledge-base-grounded lanes ground their answers in
 gold documents while end-to-end latency is almost entirely LLM turns
 (machine retrieval is sub-second).
 \item \textbf{A quantified verifier-failure analysis} (Section
-\ref{sec:inflation}): the same-domain evidence-inflation phenomenon ---
-non-gold documents scoring a median 0.86 versus gold 0.88 on an
-evidence-criterion judge (Mann--Whitney $p = 0.26$, i.e.\ no separation) ---
-together with the mitigations (hierarchical
-reading, relative cuts with floors, and calibration as future work).
+\ref{sec:inflation}): an operational quantification, inside a deployed
+verified-retrieval pipeline, of LLM-judge miscalibration --- whose
+general causes (score compression, self-preference) are documented in the
+judging literature \cite{zheng-llmjudge,panickssery-selfpref} but whose
+pipeline-level consequences we decompose and measure: same-domain evidence
+inflation (non-gold median 0.86 versus gold 0.88; Mann--Whitney $p = 0.26$,
+i.e.\ no separation), a verdict role asymmetry (verdicts are safe as a
+binary filter --- Hit@5 restored to 0.94, sign test $p = 0.008$ --- and
+unsafe as an ordering), and a threshold that never abstains out of corpus.
+Mitigations (hierarchical reading, relative cuts with floors, calibration)
+are scoped to what this decomposition supports.
 \item \textbf{Operational lessons from production use} (Section
 \ref{sec:discussion}): three documented incidents, each with its detection
 symptom and fix --- resident judge workers (batch judging 10--12\,s
@@ -161,9 +166,13 @@ embedding and judging workloads.
 \end{enumerate}
 
 A preliminary demo describing the platform's organization and retrieval
-layers was accepted as a CIKM~2026 demo \cite{qdcvr-demo}. This paper extends it
-with the multi-lane agentic retrieval methodology, the end-to-end agentic
-evaluation, the verifier-failure analysis, and the deployment lessons.
+layers was accepted as a CIKM~2026 demo \cite{qdcvr-demo}. This paper extends
+it with three components that do not appear in the demo: (i)~the multi-lane
+agentic retrieval methodology with enforced per-lane tool budgets; (ii)~the
+verifier-failure analysis --- quantified same-domain inflation, the
+filter/re-ranker role decomposition, and its configuration-level repair;
+and (iii)~the two-tier empirical evaluation on the deployed corpus with all
+per-run logs released.
 
 \section{Related work}
 \label{sec:related}
@@ -175,7 +184,11 @@ space \cite{dpr} and multi-lingual, multi-granularity embedders such as
 BGE-M3 support hybrid dense--sparse signals \cite{bge-m3}. Lexical
 probabilistic ranking remains a strong baseline in many regimes \cite{bm25},
 and reciprocal-rank fusion is a standard parameter-light way to merge ranked
-lists \cite{rrf-cormack}. Our tool-layer evaluation confirms this picture on
+lists \cite{rrf-cormack}. Surveys systematize the design space as
+retrieve-then-read pipelines \cite{gao-ragsurvey} and as modular,
+reconfigurable stacks \cite{modular-rag}; QDCVR is naturally read as a
+modular-RAG instantiation whose added module is the verification gate.
+Our tool-layer evaluation confirms this picture on
 a curated industrial corpus: BM25 and RRF match or beat dense retrieval at
 Hit@5, at millisecond latency. QDCVR uses dense, BM25, and graph signals, but
 treats all of them as \emph{candidate generators} whose output must still
@@ -192,7 +205,12 @@ serves two engineering purposes (two-stage candidate expansion and
 cross-library navigation) rather than global summarization. Our measurements
 show the keyword-limited graph search is the weakest standalone signal on
 this corpus (Hit@5 0.56), which is why the platform never lets it answer
-alone.
+alone. Industrial deployments in adjacent domains --- reliability-preserving
+diagnosis for distributed drive systems \cite{rrpdg} and LLM-multi-agent
+knowledge-graph QA for industrial models \cite{comaikg} --- share QDCVR's
+concern that domain answers be inspectable; QDCVR differs by making the
+inspection a standalone, fail-closed gate rather than a property of the
+answering agent.
 
 \subsection{Verification, correction, and abstention}
 Self-RAG trains a generator to critique retrieved evidence and its own output
@@ -201,13 +219,39 @@ re-queries when retrieval quality is low \cite{crag}; FLARE interleaves
 generation with forward-looking retrieval triggers \cite{flare}; Kamath et
 al.\ formalize selective prediction under domain shift \cite{kamath}; and
 CyberBOT applies ontology-grounded retrieval for reliability-critical
-domains \cite{cyberbot}.
+domains \cite{cyberbot}. Verifiability measurement in generative search
+\cite{liu-verifiability} and citation-capable generation \cite{gao-citations}
+frame the problem QDCVR attacks: citations that are present but not
+supportive.
+
+\emph{LLM-as-a-judge.} The verification gate is an LLM judge, and the
+judging literature documents exactly the failure modes our measurements
+expose. MT-Bench/Chatbot-Arena established the paradigm and its bias
+taxonomy \cite{zheng-llmjudge}; LLM relevance judges agree imperfectly with
+human relevance \cite{sun-urara}; listwise LLM re-rankers trade quality for
+instability at scale \cite{rankgpt}; evaluator scores are sensitive to
+ordering and other spurious context, and evaluators favor generations that
+resemble their own distribution \cite{panickssery-selfpref};
+and verifiers can be gamed by optimization pressure \cite{lightman-verify}.
+Our contribution is not the discovery that judges miscalibrate --- it is the
+operational quantification of \emph{same-domain inflation} inside a deployed
+verified-retrieval pipeline and the decomposition of which judge \emph{role}
+(filter, ordering, or threshold) is safe under which pool conditions.
+
 These approaches verify \emph{during generation} with the generator itself.
 QDCVR instead externalizes verification into a dedicated judging model that
 sees only (query, document-text) pairs and is consumed as a tool; any lane,
 agent, or external system can call it, and its verdicts fail closed. This
 makes verification an inspectable, reusable platform service rather than an
 implicit property of one generator's prompting.
+
+\emph{Abstention.} Beyond selective prediction under domain shift
+\cite{kamath}, recent work probes whether LLMs know what they do not know
+\cite{yin-knowwhat} and trains or orchestrates models to abstain on
+knowledge gaps \cite{feng-abstain}. Section~\ref{sec:abstention} locates
+QDCVR's abstention not in any of these calibrated-uncertainty mechanisms
+but in the pipeline's reading-and-answer structure --- a complementary,
+architectural answer to the same problem.
 
 \subsection{Agentic retrieval and tool protocols}
 ReAct established interleaved reasoning and acting over tools
@@ -232,18 +276,22 @@ gate, (ii) multiple interchangeable lanes with enforced tool budgets, and
 with a standard tool protocol. We also report where this design fails
 (Section~\ref{sec:inflation}), which closed systems rarely do.
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \footnotesize
-\setlength{\tabcolsep}{4.5pt}
+\setlength{\tabcolsep}{3pt}
 \caption{Positioning against representative systems. ``Verified'' = retrieved
 content is judged against the query by a dedicated model before it may enter
 an answer (Self-RAG's check is performed internally by the generator
-\cite{selfrag}; CRAG re-queries on low retrieval confidence \cite{crag}).
-``Abstain'' = an explicit not-found is a terminal system state (CRAG
-instead falls back to parametric knowledge or web search). ``Lanes'' =
+\cite{selfrag}; CRAG re-queries on low retrieval confidence \cite{crag};
+LLM judge re-rankers score relevance but their ordering is consumed
+directly \cite{rankgpt}). ``Abstain'' = an explicit not-found is a terminal
+system state (Self-RAG's partial abstention is mediated by its
+critique/reflection tokens; CRAG instead falls back to parametric knowledge
+or web search). ``Lanes'' =
 multiple retrieval strategies behind one interface; ``KB mgmt'' = ingestion,
-organization, and library lifecycle management.}
+organization, and library lifecycle management. Presence in the table marks
+capability, not measured quality.}
 \label{tab:positioning}
 \begin{tabular}{lcccccc}
 \toprule
@@ -252,6 +300,7 @@ System & Dense/lex. & Graph & Verified & Abstain & Lanes & KB mgmt \\
 Vanilla RAG \cite{rag-lewis}          & \checkmark &            &            &     &  &  \\
 GraphRAG \cite{graphrag}              & \checkmark & \checkmark &            &     &  &  \\
 RAPTOR \cite{raptor}                  & \checkmark &            &            &     &  &  \\
+LLM judge re-ranker \cite{rankgpt}    & \checkmark &            & re-ranker &  &  &  \\
 Self-RAG \cite{selfrag}               & \checkmark &            & gen.-internal & partial &  &  \\
 CRAG \cite{crag}                      & \checkmark &            & corrective &     &  &  \\
 DeepRead \cite{deepread}              & \checkmark &            &            &     & agentic &  \\
@@ -438,7 +487,14 @@ protocol layer the platform documents scores as a 0--8 rubric (topic 0--3,
 scenario 0--3, evidence 0--2; $\geq$6 answers directly, 5 escalates to the
 librarian lane, $\leq$4 drops); the $[0,1]$ score is the machine-readable
 projection of that rubric, and the rubric is the human-auditable contract
-published to platform clients. Fail-closed semantics apply to every
+published to platform clients. The judge model itself is a locally
+fine-tuned evidence classifier (checkpoint reference released with the
+platform artifacts); it is deterministic in our replays --- repeat calls
+with identical inputs reproduced identical orderings
+(Section~\ref{sec:retrieval}) --- and it is a \emph{single} checkpoint:
+every verifier finding in this paper inherits that choice, which
+Section~\ref{sec:threats} treats as an explicit scope limit.
+Fail-closed semantics apply to every
 failure mode: fetch errors, engine errors, and timeouts count as
 rejection. Survivors are aggregated into an evidence pack with
 per-passage provenance.
@@ -569,11 +625,15 @@ keywords, best-rank merge), Two-stage (\texttt{kb\_search\_two-stage}:
 BM25+graph candidates then dense refine), Fusion-only (the hybrid lane's
 merge order without judging), QDCVR-Hybrid (the full single-call lane
 with judging and relative cut), and two \emph{derived} configurations
-computed offline from the QDCVR-Hybrid run's own logged pools ---
-\emph{judge-as-filter} (verdicts accept or reject; fusion order
-preserved) and \emph{RRF-fuse} (reciprocal-rank fusion of the fusion and
-judge orderings) --- which isolate whether the retrieval loss comes from
-the verdicts or from the ordering they induce. The seven pipeline methods
+computed from the hybrid lane's logged candidate pools and per-candidate
+judge scores --- \emph{judge-as-filter} (verdicts accept or reject; fusion
+order preserved) and \emph{RRF-fuse} (reciprocal-rank fusion of the fusion
+and judge orderings) --- which isolate whether the retrieval loss comes
+from the verdicts or from the ordering they induce. (The replay re-issues
+one QDCVR-Hybrid call per question with an identical configuration and
+reads the pools and scores from its logged response; the judged orderings
+reproduce the original runs exactly, indicating deterministic judging.)
+The seven pipeline methods
 run over the full
 42-document catalog with no library pinning; all output document-level
 rankings (BM25 scores full texts; dense aggregates chunks by max-pooling),
@@ -615,20 +675,29 @@ sweep of values (Section~\ref{sec:inflation}).
 
 \subsection{Metrics}
 Tool layer: Hit@5 (any gold document in top-5), Recall@5 (fraction of gold
-documents in top-5), MRR, and per-call latency (mean and median; each
-method warmed up once, first call discarded). Agent layer: end-to-end wall
+documents in top-5), MRR@5, and per-call latency (mean and median; each
+method warmed up once, first call discarded; BM25 is timed in-process
+while platform methods additionally pay MCP transport, a sub-millisecond
+cost at the reported scale). Agent layer: end-to-end wall
 time, agent turns returned by the engine, gold-document citation hit ---
 the answer text contains the gold document's unique filename fragment
 (automated substring check; gold fragments were chosen to be unambiguous) ---
 and fact-marker hits (automated substring check against 2--3
-ground-truth values or terms per question). Refusals are detected when a
-hedging marker appears in the answer's opening 200 characters. All checks
+ground-truth values or terms per question). Fact markers are treated as
+\emph{corroborating}, not primary, evidence: several markers overlap the
+question's own wording, so marker hits alone cannot establish grounding
+(the citation check is primary; Section~\ref{sec:agentic} additionally
+decontaminates marker matching by deleting gold-citing lines). Refusals
+are detected when a hedging marker appears in the answer's opening 200
+characters; on the six out-of-corpus agent probes this rule agrees with
+the manual transcript audit on five and misses one explicit not-found
+report, so refusal counts reported here are the manually audited ones. All checks
 are automated string matches against the released transcripts; no human
 rater was involved. For the verifier analysis we log per-candidate judge
 scores from the hybrid response. Hardware: one RTX 5060 (8\,GB) serves
 embeddings and the judge worker; all services run locally on Windows.
 Per-question best ranks for all nine retrieval configurations are
-tabulated in Appendix~\ref{app:perq}.
+tabulated in \ref{app:perq}.
 
 \section{Results}
 \label{sec:results}
@@ -636,17 +705,18 @@ tabulated in Appendix~\ref{app:perq}.
 \subsection{Tool layer: strong baselines and the cost of verification}
 \label{sec:retrieval}
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{Tool-layer retrieval on the 42-document production corpus (mean
+\setlength{\tabcolsep}{3pt}
+\caption{Tool-layer retrieval on the 42-document deployed industrial corpus
+(mean
 over 16 gold-annotated questions; top-5 document lists; latency per call,
 warmed).}
 \label{tab:retrieval}
 \begin{tabular}{lccccc}
 \toprule
-Method & Hit@5 & Recall@5 & MRR & Latency (mean) & Latency (median) \\
+Method & Hit@5 & Recall@5 & MRR@5 & Latency (mean) & Latency (median) \\
 \midrule
 BM25                  & 1.00 & 1.00 & 0.958 & 0.9\,ms    & 1\,ms \\
 Dense (BGE-M3)        & 0.94 & 0.94 & 0.856 & 18\,ms     & 17\,ms \\
@@ -654,7 +724,7 @@ RRF (BM25$\|$Dense)   & 1.00 & 1.00 & 0.927 & 11\,ms     & 9\,ms \\
 Graph (Neo4j)         & 0.56 & 0.53 & 0.562 & 68\,ms     & 68\,ms \\
 Two-stage             & 1.00 & 0.97 & 0.927 & 77\,ms     & 40\,ms \\
 Fusion-only            & 0.94 & 0.94 & 0.856 & 62\,ms     & 66\,ms \\
-QDCVR-Hybrid (judge)  & 0.44 & 0.41 & 0.226 & 542\,ms    & 582\,ms \\
+QDCVR-Hybrid       & 0.44 & 0.41 & 0.226 & 542\,ms    & 582\,ms \\
 \midrule
 \multicolumn{6}{l}{\emph{Derived (offline, same logged hybrid pools):}}\\
 \quad Judge-as-filter$^{\dagger}$ & 0.94 & 0.94 & 0.856 & \multicolumn{2}{l}{$^{\dagger}$542\,ms / 582\,ms} \\
@@ -666,7 +736,7 @@ QDCVR-Hybrid (judge)  & 0.44 & 0.41 & 0.226 & 542\,ms    & 582\,ms \\
 $^{\dagger}$\,Derived rows replay the QDCVR-Hybrid run's own logged
 12-candidate pools and judge scores, so they reuse that call's latency;
 the judge executes once either way. Per-question ranks for all nine
-configurations: Appendix~\ref{app:perq}.
+configurations: \ref{app:perq}.
 \end{table}
 
 \begin{figure}[t]
@@ -680,7 +750,11 @@ adds $\approx$0.5\,s over fusion-only for a 12-candidate verification.}
 \end{figure}
 
 Table~\ref{tab:retrieval} and Fig.~\ref{fig:retrieval} give the tool-layer
-results. Three observations matter for practitioners.
+results. With sixteen questions the Wilson 95\% intervals on the headline
+Hit@5 proportions are wide (judged hybrid $[0.23, 0.67]$; judge-as-filter
+$[0.72, 0.99]$; BM25/RRF $[0.81, 1.00]$) --- the qualitative decomposition,
+not the point estimates, is the claim. Three observations matter for
+practitioners.
 
 \textbf{Curated same-domain corpora favor lexical precision.} With 42
 well-described documents and questions authored in the corpus's vocabulary,
@@ -708,7 +782,15 @@ Table~\ref{tab:retrieval} --- repairs every one of the eight losses and
 regresses none (8 wins, 0 losses, 8 ties on Hit@5; exact binomial
 $p = 0.008$, two-sided), restoring Hit@5 to 0.94 and MRR to 0.856 with
 every returned citation still judge-verified; the only ranking regression
-anywhere is Q7, where the gold slips from third to fifth. Both halves
+anywhere is Q7, where the gold slips from third to fifth. Said plainly:
+judge-as-filter returns \emph{exactly the fusion-only ranking} --- the
+per-question orderings are identical on all sixteen questions --- so at
+the tool layer the gate's measured contribution is the audit metadata
+attached to each citation, bought at the hybrid call's $\approx$480\,ms
+surcharge over fusion-only. We therefore recommend deployments consume
+verdicts as a filter rather than an ordering; the change is a single
+configuration value, and migrating the shipped default is tracked in the
+roadmap (Section~\ref{sec:conclusion}). Both halves
 trace to the same root cause, quantified next.
 
 \textbf{Two-stage fusion recovers its inputs here.} On the healthy corpus
@@ -720,7 +802,7 @@ per-question results are in the released logs.
 \subsection{Agent layer: three lanes, one honesty contract}
 \label{sec:agentic}
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{Agentic end-to-end runs, round 1: four questions $\times$ four
@@ -746,11 +828,21 @@ telemetry root cause (a dead thermocouple loop, ``TC0''). The marker hits
 survive decontamination: after deleting every answer line that names a
 gold document (so markers must come from the answer's own prose or
 tables), all twelve grounded runs still reproduce their full marker sets.
-The bare arm
+Six of the twelve runs answer from pinned libraries of only one or two
+documents (Q2's failure-analysis library holds two; Q6's watch-clause
+library one), where hitting the gold is a low bar; the substantive
+evidence is the six runs over Q4 and Q7's 31-document process library.
+The bare arm's prompt adds one instruction --- ``answer using only your
+own knowledge; if you are uncertain, say so explicitly'' --- mirroring a
+deployment without retrieval; grounded arms receive no honesty
+instruction beyond their lane prompts. Even so, the bare arm
 never cited a source: on the EL question it produced a plausible
 \emph{textbook} diagnosis (interfacial adhesion failure, moisture ingress)
-that misses the corpus's recorded root cause (a thermocouple drifting
-$-8^\circ$C); on the telemetry question it hit none of the fact markers.
+that misses the corpus's recorded root cause --- lamination-machine
+thermocouple drift leaving EVA under-cured, the mechanism Q2's fact
+markers encode --- and on the telemetry question it hit none of the fact
+markers (it did refuse explicitly in two of four runs, honest about its
+ignorance but holding no corpus facts either way).
 This is the honesty contract of Section~\ref{sec:lanes} observed end to
 end: without verification-grounded retrieval, the same engine produces
 fluent, unsourced, and in these cases partly wrong answers.
@@ -765,9 +857,17 @@ tool-layer catalog never enter its candidate pool. Second, agency: a lane
 that can read what it retrieved and issue follow-up calls is not bound by a
 single ranking --- the librarian lane in particular is built to keep
 looking. The tool layer measures the ranking stage in isolation; the agent
-layer measures the lane as deployed. Both results stand, and their
-difference is the paper's central lesson about where verification helps
-(ranked-list quality) and where it cannot (pool composition).
+layer measures the lane as deployed. The reconciliation yields an
+explicit, testable model of what the gate buys. (i)~Verdicts as a binary
+\emph{filter} are safe exactly when judge recall on gold documents is high
+(here 17/17 in-pool), and they add per-citation audit; discrimination is
+irrelevant. (ii)~Verdicts as an \emph{ordering} are safe only when
+pairwise gold-versus-confuser score separation exceeds the base ranker's,
+which same-domain inflation destroys. (iii)~\emph{Threshold abstention}
+requires out-of-corpus calibration the acceptance threshold does not have.
+Verification, in this deployment, buys auditability and honest termination
+--- not ranked-list quality (the filter is order-preserving; the re-ranker
+actively harms it) and not pool composition.
 
 \textbf{Partial honesty counts.} The one refusal-flagged grounded run,
 hybrid-Q4, is a positive case rather than a failure: its answer cites the
@@ -785,12 +885,18 @@ disclosure --- the arm that must not miss a document, not the arm that
 must be fast.
 
 \textbf{Repetition: outcomes reproduce, latency does not.} The full grid
-was run a second time. Citation outcomes agree on all 16 of 16 cells; the
-decontaminated fact-marker check is a clean sweep in round 1 (12/12) and
-near-clean in round 2 (11/12 --- in the one exception the key values appear
-only inside evidence lines that also cite the gold document, an artifact
-of the line-deletion rule rather than a grounding failure; its citation
-hit stands). Wall time and turn counts fluctuate substantially
+was run a second time. Citation outcomes agree on all 16 of 16 cells ---
+trivially for the four bare cells (no citations in either round), so the
+informative agreement is 12/12 grounded cells; the decontaminated
+fact-marker check is a clean sweep in round 1 (12/12) and near-clean in
+round 2 (11/12; the exception is hybrid-Q2, whose 61/85 values appear only
+inside evidence lines that also cite the gold document --- an artifact of
+the line-deletion rule rather than a grounding failure; its citation hit
+stands). Decontamination is applied to the answer's first 600 characters,
+where every matched marker occurs, so the check is conservative. Round-2
+turn means track the load (hybrid 5.0, search 7.25, librarian 7.75) while
+every citation outcome repeats.
+Wall time and turn counts fluctuate substantially
 (e.g.\ search-Q2: 70\,s/6 turns in round 1 versus 165\,s/11 turns in
 round 2; librarian-Q4: 84\,s/6 turns versus 92\,s/11 turns; hybrid-Q2:
 62\,s/4 turns versus 60\,s/3 turns). The dichotomy --- stable grounding
@@ -858,9 +964,12 @@ instances (Q1 and Q5 carry two golds each; Q16's gold was never judged):
 only 5 of 17 rank in the top-3 of the judged ordering, while 9 rank eighth
 or lower. Gold and non-gold score distributions are statistically
 indistinguishable at this sample size (medians 0.876 vs.\ 0.863;
-Mann--Whitney $p = 0.26$, a gold-favoring trend with Cliff's
+two-sided Mann--Whitney with tie correction, $U = 1726$, $p = 0.26$, a
+gold-favoring trend with Cliff's
 $\delta \approx 0.17$; scores are nested within 16 runs, so we treat the
-test as indicative only). On Q6 (the 31.35\,g$\pm$0.05\,g watch
+test as indicative only --- and the sign test of
+Section~\ref{sec:retrieval} is likewise post-hoc and descriptive, one of
+nine configurations evaluated on the same sixteen questions). On Q6 (the 31.35\,g$\pm$0.05\,g watch
 clause), the fusion ranking placed the gold clause document first, but the
 judged re-ranking promoted five unrelated telemetry reports (0.92--0.93)
 while the gold document scored 0.82 --- pushing the gold document out of
@@ -878,9 +987,12 @@ without re-running the pipeline. Sweeping the margin from 0.05 to 0.35
 (with the top-5 floor unchanged): at 0.05 the kept set shrinks to a mean
 6.4 candidates but retains only 8/17 golds; the shipped 0.15 margin keeps
 a mean of 10.4 candidates and 16/17 golds; at 0.20 all 17 golds survive
-with 11.1 candidates retained. The margin is therefore repairable by a
-small configuration change --- an analysis the platform should run per
-library at deployment time --- but no margin separates golds from
+with 11.1 candidates retained. Because the replay selects and evaluates
+the margin on the same sixteen questions that motivated it, 0.20 is an
+in-sample observation, not a validated setting; deployment-time
+calibration must re-derive it per library on fresh questions. The margin
+is therefore repairable by a
+small configuration change, but no margin separates golds from
 confusers, because the scores themselves overlap.
 
 \textbf{Cross-domain claims do not survive measurement either.} The
@@ -1023,7 +1135,12 @@ asymmetry for abstention: a threshold cannot refuse --- it accepted every
 out-of-corpus candidate it was shown --- while the reading-and-answer
 layer refused all six probe prompts with disclosed searches and zero
 fabricated citations. Honesty is a property of the pipeline's shape, not
-of the model's mood.
+of the model's mood. The dichotomy is about reliability, not exclusivity:
+the bare agent did refuse explicitly in two of its four runs --- honest
+about its ignorance, but holding no corpus facts either way --- while in
+the others it produced confident, unsourced, partly wrong answers whose
+wrongness no audit trail exposes. Unassisted honesty is a coin flip;
+enforced honesty is inspectable.
 
 \textbf{L5. Production incidents taught honest observability.} Three
 incidents shaped the implementation: a corrupted HNSW segment that made one
@@ -1033,9 +1150,46 @@ GPU-OOM indexing that returned success envelopes with empty vector payloads
 (success is now judged by chunk counts); and judge/engine failures that
 must reject candidates rather than pass them. The common thread: every
 layer reports what it actually verified, and every consumer treats
-unverifiable as failed.
+unverifiable as failed. Table~\ref{tab:failures} consolidates the incident
+log into the failure-mode catalogue we wish we had on day one.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Failure-mode catalogue from production use: how each failure
+presents, the detection signal, the fix, and the residual risk an adopter
+still carries.}
+\label{tab:failures}
+\begin{tabular}{p{3.1cm}p{3.2cm}p{3.1cm}p{2.9cm}}
+\toprule
+Failure & Presents as & Detection signal & Fix / residual risk \\
+\midrule
+Corrupted HNSW segment (silent index loss) & ``Success, zero results''
+across all lanes for one library & Treat zero-result success as suspect;
+cross-lane census & Re-index the collection; residual: any new silent-loss
+mode needs the same tripwire \\
+GPU-OOM during indexing & Success envelopes with empty vector payloads &
+Judge success by chunk counts, not envelopes & Memory hygiene between
+embedding and judging workloads; residual: other silent truncations \\
+WDDM driver contention (Windows) & Embedding latency 68\,s $\to$
+$\approx$27\,min & Latency SLO on the embedding path & Isolate embedding
+and judging workloads; on Linux, watch VRAM contention instead \\
+Judge worker cold start & First judge batch hangs 10--12\,s & Worker
+residency heartbeat & Keep the resident worker warm; residual: first-call
+timeouts still fail closed \\
+Un-whitelisted harness tools & 14--170\,s detours per run & Turn count and
+tool-call audit log & Server-side per-lane whitelists; residual: new
+harnesses need new whitelists \\
+Judge/engine errors & Wrong or missing verdicts & Fail-closed rejects at
+the gate & Errors reject, never pass; residual: availability, not
+correctness \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Threats to validity}
+\label{sec:threats}
 \textbf{Scale.} The live corpus is 42 documents across five libraries;
 absolute Hit@5 values (e.g.\ BM25's 1.00) will not transfer to corpora
 orders of magnitude larger, where the hybrid lane's candidate cap and the
@@ -1048,7 +1202,20 @@ markers are released for independent scrutiny, but the sample is small and
 favors the corpus's vocabulary.
 \textbf{Judge and engine dependence.} Scores and turn counts come from one
 judging model and one agent engine; lanes, not models, are the object of
-comparison, but absolute numbers will move with engine versions.
+comparison, but absolute numbers will move with engine versions. The
+single-judge scope is the paper's sharpest limit: whether same-domain
+inflation is specific to this checkpoint or general to evidence-criterion
+LLM judges must be settled by replaying the released 191 logged candidates
+through a second signal --- an NLI entailment model, a rubric-prompted
+general LLM, or a symbolic check for numeric questions (Q6's watch clause
+is trivially rule-checkable, and the judge mishandled exactly that case).
+We release the pools precisely to make that replay easy.
+\textbf{Design surface.} Three lanes triple the policy surface an adopter
+must test, and the reported evidence supports two distinct operating
+points (Hybrid for latency, Librarian for exhaustive coverage), with the
+Search lane as the latency-tuned interactive default between them; a
+two-lane deployment is defensible today, and query-shape auto-selection is
+future work.
 \textbf{Nondeterminism.} Agent runs are stochastic; we report two full
 repetitions of the 16-cell grid (citation agreement 16/16; wall time and
 turn counts fluctuate substantially), retry only zero-turn transport
@@ -1064,7 +1231,7 @@ QDCVR turns ``the retriever found it'' into ``the system verified it'':
 a platform where organization, retrieval, and agency all terminate at an
 explicit content-verification gate, where three interchangeable lanes trade
 latency for recall under enforced budgets, and where the system's refusal
-to speculate is a first-class outcome. Our experiments on a production
+to speculate is a first-class outcome. Our experiments on the deployed
 industrial corpus ground the design in measured behavior: lexical and fused
 retrieval remain strong tool-layer baselines; the verification gate costs
 well under a second but inherits its own same-domain blind spot, which we
@@ -1072,8 +1239,13 @@ quantify and partially repair by cut-margin replay; the honesty contract
 refuses every out-of-corpus probe at the answer layer even though the
 threshold refuses nothing; and end-to-end latency belongs to LLM turns, so
 the fastest lane is the one that moved its orchestration server-side. The immediate roadmap
-is verifier calibration against per-library null distributions, larger-corpus
-evaluation with the shipped benchmark suite, and lane auto-selection from
+is verifier calibration against per-library null distributions; a second
+verification signal (NLI entailment or a rubric-prompted general LLM)
+replayed over the released candidate pools; the two-stage-candidates-plus-
+verdict-filter combination that the tool layer suggests; graded abstention
+probes between the covered and the clearly out-of-corpus; larger-corpus
+evaluation with the shipped benchmark suite; consumer-side evidence that
+not-found reports serve their readers; and lane auto-selection from
 query-shape features --- steps toward retrieval systems whose trustworthiness
 is an inspectable property of the pipeline rather than a hope about the
 model.
