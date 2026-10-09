@@ -73,3 +73,19 @@ fixable in days without new experiments."
 - 结论：按 KBS 案例研究类稿件标准，当前 41 页稿在科学内容、数据可复现性、
   声明-证据对齐三个维度均已达到可送审并有望录用的状态；剩余风险集中在
   统计功效（n=16/42）——已通过稳健层与 CI 显式管理。
+
+## 补测数据轮 2 (同日深夜): span级NLI + 第二语料
+
+- **Exp9 span级NLI+集成** (exp9_span_nli.py, 3489次span推理@CUDA):
+  span-max更差 (hit@5 0.19/0.094), 反分离达显著 (gold中位0.47 < 非gold 0.92,
+  p=0.007) — max池化放大假阳性; rank融合集成无收益 (0.31/0.111)
+  → 主编建议的实验已做, 结论="证据验证不是任何粒度的entailment扫描任务";
+- **Exp10 第二语料** (exp10_ingest_papers.py + exp10b_toollayer_papers.py):
+  10篇benchmark-suite gold论文 (英文/10领域) 经MinerU解析入库 (9成功/954
+  chunks/新KB 6a3c45f2), 工具层重测: **judged=fusion=filter=0.90 判卷零损失**
+  (1篇gold解析失败=全体共享miss); graph/twostage 0.20 (批量导入绕过关系标注,
+  0 relations) → 判卷失效=confuser密度现象(与领域/语言/检查点无关)的因果归因
+  闭环; 同时暴露批量导入的tagging部署依赖;
+- 论文: §7.6 增 span-NLI 与 Second corpus 两段; Table 5 扩至六行并压缩至
+  单页(28页, 页码干净); 威胁节/路线图/Data availability 联动;
+  42页 0错误0未解析。

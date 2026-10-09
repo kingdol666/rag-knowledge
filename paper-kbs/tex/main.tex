@@ -1119,7 +1119,7 @@ its audit trail ships with the one response.
 \subsection{Robustness checks}
 \label{sec:robustness}
 
-Five robustness questions, answered by four released experiments (the
+Six robustness questions, answered by five released experiments (the
 symbolic check ships inside the second-signal replay), are summarized in
 Table~\ref{tab:robustness}.
 
@@ -1127,43 +1127,45 @@ Table~\ref{tab:robustness}.
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3.5pt}
-\caption{Robustness checks: the question each was designed to answer and
-the measured result. All numbers are from released logs; the paraphrase
-grid and the second-signal replay are new experiment tiers.}
+\caption{Robustness checks: the question each probe was designed to answer
+and the measured result. All numbers come from released logs
+(Section~\ref{sec:robustness}).}
 \label{tab:robustness}
-\begin{tabular}{p{3.6cm}p{4.6cm}p{4.6cm}}
+\begin{tabular}{p{2.9cm}p{4.0cm}p{6.1cm}}
 \toprule
 Check & Question & Result \\
 \midrule
-Cut-margin generalization (LOO) & Is the 0.20 margin an artifact of
-selecting on all 16 questions? & Partially: the smallest-margin rule
-chosen on 15 questions transfers to 15/16 holdouts (the miss is Q11,
-which the shipped 0.15 also loses); the deployed 0.20 retains every
-holdout gold (16/16). The $+0.02$ pad itself is engineering judgment,
-not an LOO-selected value. \\
-Paraphrased question set ($n=16$) & Does the tool layer depend on the
-questions' corpus vocabulary? & BM25 falls 1.00$\to$0.88 Hit@5 (MRR
-0.958$\to$0.755); dense stays 0.94; the judged hybrid stays broken (0.50)
-and judge-as-filter stays equal to fusion (0.94). Failure and repair are
-wording-robust; pooled over all 32 variants the filter-vs-judged record
-is 15 wins, 0 losses, 17 ties (exact binomial $p < 0.0001$). \\
-Second verification signal (NLI) & Is inflation specific to the Laya
-checkpoint? & An off-the-shelf Chinese NLI model ranks \emph{worse}
-(Hit@5 0.31, MRR 0.138; Spearman $\rho = -0.13$ vs.\ Laya) and
-\emph{anti-separates}: gold scores sit below non-golds (medians 0.011
-vs.\ 0.053, $p = 0.12$) --- a different failure, not the judge's
-inflation --- while out-of-corpus topics still score corpus documents up
-to 0.997. \\
-Symbolic check (Q6) & Can rule checks cover what model judges miss? & The
-watch-clause value ``31.35'' appears in the gold document (1/1) and in no
-confuser (0/11) --- the numeric case the judge mishandled is solved by a
-trivial substring rule. \\
-Graded abstention probes ($n=6$) & Does the threshold behave differently
-between partial and absent coverage? & No: fresh probes keep 10--12 of 12
-candidates at scores up to 0.983 in every tier. At the agent layer the
-partial probes produced grounded transfers with scoped disclosures (one
-reclassified as covered: the corpus contained a verified rework case our
-tier labels missed). \\
+Cut-margin LOO & Is the 0.20 margin an artifact of selecting on all 16
+questions? & The smallest-margin rule chosen on 15 questions transfers to
+15/16 holdouts (miss = Q11, which the shipped 0.15 also loses); the
+deployed 0.20 retains all 16 holdout golds. The $+0.02$ pad is
+engineering judgment, not an LOO value. \\
+Paraphrase grid ($n{=}16$) & Does the tool layer depend on the questions'
+vocabulary? & BM25 1.00$\to$0.88 (MRR 0.958$\to$0.755); dense 0.94;
+judged 0.50; filter = fusion 0.94. Pooled over 32 variants: 15 wins,
+0 losses, 17 ties ($p < 0.0001$). Failure and repair are wording-robust. \\
+Second signal (NLI) & Is inflation specific to the Laya checkpoint? &
+A generic Chinese NLI ranks \emph{worse} (Hit@5 0.31, MRR 0.138;
+$\rho = -0.13$) and \emph{anti-separates} (gold median 0.011 \emph{below}
+non-gold 0.053, $p = 0.12$); out-of-corpus topics still score corpus
+documents up to 0.997. Naive span-max NLI is worse still (0.19;
+anti-separation $p = 0.007$); the rank-fusion ensemble recovers nothing
+(0.31). \\
+Symbolic check (Q6) & Can rule checks cover what model judges miss? &
+The watch value ``31.35'' appears in the gold (1/1) and in no confuser
+(0/11): the numeric case the judge mishandled is solved by a trivial
+substring rule. \\
+Graded probes ($n{=}6$) & Does the threshold behave differently between
+partial and absent coverage? & No: the threshold keeps 10--12 of 12
+candidates (up to 0.983) in every tier. Agent layer: scoped disclosures
+on partial probes (one reclassified as covered --- the corpus held a
+verified rework case); 3/3 absent probes returned explicit not-found. \\
+Second corpus (10 arXiv papers) & Does the judged collapse survive a
+domain and language shift with no confuser clusters? & No collapse:
+judged = fusion = filter = 0.90 (one shared miss --- that gold paper
+failed parsing). The loss tracks confuser density, not domain or
+language; two-stage falls to 0.20 because bulk import skips relation
+tagging (0 relations indexed). \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1211,8 +1213,7 @@ documents that fit the context window entirely still score below 0.01,
 and on the one question whose verdict is verbatim in the visible head
 (Q7), the NLI
 score is 0.011. Document-granularity evidence verification is hard for
-both a fine-tuned judge and a generic NLI model (span-level
-retrieval-then-verify and judge ensembles remain open), and threshold
+both a fine-tuned judge and a generic NLI model, and threshold
 abstention fails for both. The symbolic check tells the complementary
 story: on the numeric watch clause (Q6) the generic NLI is actually the
 stronger signal --- it ranks the gold first of twelve, where the shipped
@@ -1223,6 +1224,24 @@ verification-primitive choice is therefore a genuinely open engineering
 problem, and the answer layer's
 honesty contract --- which depends on reading, not on the signal ---
 becomes more, not less, important.
+
+\textbf{Span-level NLI and ensembles.} The obvious upgrade --- score
+every $\approx$320-character span and pool by max, then rank-fuse with
+the judge --- makes things worse, and informatively so. Span-max NLI
+drops to Hit@5 0.19 (MRR 0.094) and turns the anti-separation
+\emph{statistically significant in the wrong direction}: gold documents
+score a median 0.47 while non-gold documents reach 0.92
+(Mann--Whitney $p = 0.007$), because scanning a long document for
+\emph{any} entailing span rewards exactly the long, topically adjacent
+documents that cause the retrieval failure --- a multiple-comparisons
+amplifier. The rank-fusion ensemble (judge + span-NLI) recovers nothing
+(Hit@5 0.31, MRR 0.111). The lesson sharpens the architecture claim:
+evidence verification is not an entailment-scanning task at any
+granularity we tested --- the failure is not where the model reads but
+what the question is asking it to decide --- which is why the platform's
+rubric criterion, the reading requirement, and the answer layer's
+disclosure duties, rather than a sharper similarity signal, are where
+the design places its trust.
 
 \textbf{Graded probes.} Six fresh probes (three partial-coverage, three
 absent) extend the abstention analysis beyond the single partial-coverage
@@ -1241,6 +1260,27 @@ probe we had labeled partial turned out to be covered: the corpus contains
 a verified secondary-crosslink rework case, which our tier labels ---
 author estimates made before running --- underestimated. We release the
 tier labels and transcripts with that correction noted.
+
+\textbf{Second corpus.} To probe domain and language transfer --- and
+whether the judged lane's collapse requires the confuser density of the
+production corpus --- we ingested ten gold arXiv papers from the platform's
+released benchmark suite (English; ten distinct fields; 954 indexed
+chunks) into a fresh knowledge base and reran the tool layer. One paper
+failed parsing, leaving nine usable questions, and every method except
+graph and two-stage reaches Hit@5 0.90 with the single miss shared by all
+of them (its gold paper is the parse failure). Two results matter.
+First, the judged lane \emph{loses nothing} here --- judged = fusion =
+judge-as-filter = 0.90 --- because the papers corpus has no same-family
+near-duplicate clusters: ten questions target ten topically distinct
+papers. The Hit@5 collapse of Section~\ref{sec:retrieval} therefore
+tracks confuser density (deliberately engineered in the production
+corpus's telemetry cluster), not domain, not language, and not the judge
+checkpoint. Second, graph and two-stage fall to 0.20 for a mechanical
+reason: relations are built by the ingestion-time tagging agent, which
+the bulk import bypassed (the reindex reports 954 chunks, 0 relations),
+so two-stage inherits its graph stage's blindness --- a deployment
+dependency the production corpus never exposes because its ingestion
+always runs with tagging enabled.
 
 \section{Discussion and lessons learned}
 \label{sec:discussion}
@@ -1341,8 +1381,11 @@ correctness \\
 absolute Hit@5 values (e.g.\ BM25's 1.00) will not transfer to corpora
 orders of magnitude larger, where the hybrid lane's candidate cap and the
 librarian's shelf pruning become load-bearing rather than optional. The
-benchmark suite shipped with the platform scales the corpus to hundreds of
-scientific documents for exactly this purpose.
+benchmark suite shipped with the platform is the intended scaling path;
+as a first probe, its ten gold arXiv papers now serve as a domain-shifted
+second corpus (Section~\ref{sec:robustness}), and a
+hundreds-of-documents run with an author-independent question set remains
+the full answer.
 \textbf{Question set.} Sixteen tool-layer and four agent-layer questions
 were authored by the system's developers; all gold documents and fact
 markers are released for independent scrutiny, but the sample is small and
@@ -1366,8 +1409,10 @@ the numeric case (Q6) that the shipped judge mishandles (the generic NLI
 is actually the stronger model signal there, ranking the gold first), so
 the paper's conclusions survive the choice of verification
 signal better than the original submission could claim. What remains
-open is span-level evidence verification (our NLI configuration reads
-document heads) and judge ensembles.
+open is trained evidence-verification models and learned-signal
+ensembles: the naive span-max NLI probe and the rank-fusion ensemble
+(Section~\ref{sec:robustness}) already answer the two easiest upgrades
+negatively.
 \textbf{Design surface.} Three lanes triple the policy surface an adopter
 must test, and the reported evidence supports two distinct operating
 points (Hybrid for latency, Librarian for exhaustive coverage), with the
@@ -1397,9 +1442,11 @@ quantify and partially repair by cut-margin replay; the honesty contract
 refuses every out-of-corpus probe at the answer layer even though the
 threshold refuses nothing; and end-to-end latency belongs to LLM turns, so
 the fastest lane is the one that moved its orchestration server-side. The immediate roadmap
-is verifier calibration against per-library null distributions; span-level
-evidence verification and judge ensembles (the generic-NLI replay already
-shows document-head entailment is not the answer); combining two-stage
+is verifier calibration against per-library null distributions; trained
+evidence-verification models and learned ensembles (the generic-NLI
+replay and its span-level, ensemble, and symbolic probes
+(Section~\ref{sec:robustness}) already answer the naive upgrades
+negatively); combining two-stage
 candidates with the verdict-as-filter role that the tool layer suggests;
 larger-corpus evaluation with the shipped benchmark suite and an
 author-independent question set; consumer-side evidence that
@@ -1411,8 +1458,9 @@ model.
 \section*{Data availability}
 The platform source code, the tool-layer and agentic experiment scripts,
 the gold question set with fact markers, the paraphrase grid, the
-leave-one-out margin replay, the second-signal replay, the graded
-abstention probes, the judging-service checkpoint
+leave-one-out margin replay, the second-signal and span-level NLI
+replays, the graded abstention probes, the second-corpus ingestion and
+tool-layer scripts, the judging-service checkpoint
 reference, and all raw per-run JSON logs (tool-layer retrieval rows and
 agentic transcripts, including the timeout re-runs) are available at
 \url{https://github.com/kingdol666/rag-knowledge} (benchmark suite:

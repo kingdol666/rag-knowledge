@@ -1,0 +1,432 @@
+{
+ "kb_id": "6a3c45f2-a1a1-4ce7-b64d-7a5a2f293bb5",
+ "n_docs": 9,
+ "rows": [
+  {
+   "qid": "BQ01",
+   "paper": "Attention Is All You Need",
+   "latency_s": 1.623,
+   "hybrid_latency_s": 2.814,
+   "n_candidates": 12,
+   "n_kept": 10,
+   "bm25": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": false,
+    "best_rank": null
+   },
+   "twostage": {
+    "hit": false,
+    "best_rank": null
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "BQ02",
+   "paper": "Quantum Computing in the NISQ era and beyond",
+   "latency_s": 0.371,
+   "hybrid_latency_s": 2.934,
+   "n_candidates": 11,
+   "n_kept": 7,
+   "bm25": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": false,
+    "best_rank": null
+   },
+   "twostage": {
+    "hit": false,
+    "best_rank": null
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 2
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "BQ03",
+   "paper": "Large Language Models Encode Clinical Knowledge",
+   "latency_s": 0.194,
+   "hybrid_latency_s": 3.012,
+   "n_candidates": 12,
+   "n_kept": 5,
+   "bm25": {
+    "hit": false,
+    "best_rank": null
+   },
+   "dense": {
+    "hit": false,
+    "best_rank": null
+   },
+   "rrf": {
+    "hit": false,
+    "best_rank": null
+   },
+   "graph": {
+    "hit": false,
+    "best_rank": null
+   },
+   "twostage": {
+    "hit": false,
+    "best_rank": null
+   },
+   "fusion_only": {
+    "hit": false,
+    "best_rank": null
+   },
+   "judged": {
+    "hit": false,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": false,
+    "best_rank": null
+   }
+  },
+  {
+   "qid": "BQ04",
+   "paper": "Primer on the Gene Ontology",
+   "latency_s": 0.186,
+   "hybrid_latency_s": 1.739,
+   "n_candidates": 5,
+   "n_kept": 4,
+   "bm25": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": false,
+    "best_rank": null
+   },
+   "twostage": {
+    "hit": false,
+    "best_rank": null
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 2
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "BQ05",
+   "paper": "Unified Growth Theory Contradicted by the Economic Growth in Europe",
+   "latency_s": 0.122,
+   "hybrid_latency_s": 1.042,
+   "n_candidates": 12,
+   "n_kept": 9,
+   "bm25": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": false,
+    "best_rank": null
+   },
+   "twostage": {
+    "hit": false,
+    "best_rank": null
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "BQ06",
+   "paper": "Precipitation extremes under climate change",
+   "latency_s": 2.178,
+   "hybrid_latency_s": 1.409,
+   "n_candidates": 12,
+   "n_kept": 10,
+   "bm25": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": false,
+    "best_rank": null
+   },
+   "twostage": {
+    "hit": false,
+    "best_rank": null
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "BQ07",
+   "paper": "MameLoshnLM: Yiddish Language Model and Evaluation Benchmark",
+   "latency_s": 0.161,
+   "hybrid_latency_s": 3.447,
+   "n_candidates": 12,
+   "n_kept": 5,
+   "bm25": {
+    "hit": true,
+    "best_rank": 3
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": false,
+    "best_rank": null
+   },
+   "twostage": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "BQ08",
+   "paper": "Oxygen redox in battery cathodes: A brief overview",
+   "latency_s": 0.177,
+   "hybrid_latency_s": 1.261,
+   "n_candidates": 12,
+   "n_kept": 11,
+   "bm25": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "twostage": {
+    "hit": false,
+    "best_rank": null
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "BQ09",
+   "paper": "MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping",
+   "latency_s": 0.162,
+   "hybrid_latency_s": 3.02,
+   "n_candidates": 10,
+   "n_kept": 9,
+   "bm25": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": false,
+    "best_rank": null
+   },
+   "twostage": {
+    "hit": false,
+    "best_rank": null
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 2
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "BQ10",
+   "paper": "Strategies for tumor elimination and control under immune evasion and chemotherapy resistance",
+   "latency_s": 0.228,
+   "hybrid_latency_s": 2.742,
+   "n_candidates": 10,
+   "n_kept": 10,
+   "bm25": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "dense": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "rrf": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "graph": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "twostage": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "fusion_only": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "judged": {
+    "hit": true,
+    "best_rank": 1
+   },
+   "filter_only": {
+    "hit": true,
+    "best_rank": 1
+   }
+  }
+ ],
+ "summary": {
+  "bm25": {
+   "hit@5": 0.9
+  },
+  "dense": {
+   "hit@5": 0.9
+  },
+  "rrf": {
+   "hit@5": 0.9
+  },
+  "graph": {
+   "hit@5": 0.2
+  },
+  "twostage": {
+   "hit@5": 0.2
+  },
+  "fusion_only": {
+   "hit@5": 0.9
+  },
+  "judged": {
+   "hit@5": 0.9
+  },
+  "filter_only": {
+   "hit@5": 0.9
+  }
+ }
+}
