@@ -518,6 +518,143 @@ def fig_ood_kbs():
 
 
 # ===========================================================================
+# Fig 9 — robustness overview (paraphrase / NLI separation / second corpus /
+#         graded probes)
+# ===========================================================================
+def fig_robustness():
+    R = RESULTS
+
+    # ---- (a) paraphrase grid: per-method Hit@5, original vs paraphrase
+    e1s = json.loads((R / "exp1_summary.json").read_text(
+        encoding="utf-8"))["summary"]
+    e6s = json.loads((R / "exp6_paraphrase.json").read_text(
+        encoding="utf-8"))["summary"]
+    methods = [("bm25", "BM25"), ("dense", "Dense"), ("rrf", "RRF"),
+               ("twostage", "2-stage"), ("fusion_only", "Fusion"),
+               ("judged", "Judged"), ("filter_only", "Filter")]
+    fig, axes = plt.subplots(2, 2, figsize=(190 * MM, 132 * MM))
+    ax = axes[0][0]
+    y = list(range(len(methods)))[::-1]
+    for yi, (m, label) in zip(y, methods):
+        o = e1s[m]["hit@5"] if m in e1s else e1s.get(m, {}).get("hit@5", 0)
+        pa = e6s[m]["hit@5"]
+        ax.plot([o, pa], [yi, yi], "-", color="#BBBBBB", lw=1.0, zorder=1)
+        ax.plot(o, yi, "o", color=C["blue"], ms=4.4, zorder=3)
+        ax.plot(pa, yi, "o", color=C["verm"], ms=4.4, zorder=3)
+        if abs(o - pa) > 0.001:
+            off = (6, -9) if pa < 0.98 else (-14, -9)
+            ax.annotate(f"{pa:.2f}", (pa, yi), textcoords="offset points",
+                        xytext=off, fontsize=6.0, color=C["verm"],
+                        ha="center")
+    ax.set_yticks(y)
+    ax.set_yticklabels([l for _, l in methods], fontsize=6.6)
+    ax.set_xlabel("Hit@5", fontsize=7)
+    ax.set_xlim(0.35, 1.06)
+    ax.plot([], [], "o", color=C["blue"], ms=4.4, label="original (16 q)")
+    ax.plot([], [], "o", color=C["verm"], ms=4.4, label="paraphrase (16 q)")
+    ax.legend(frameon=False, fontsize=6.2, loc="lower left")
+    ax.tick_params(length=2, labelsize=6.2)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.set_title("(a) paraphrase grid", fontsize=7, loc="left")
+
+    # ---- (b) NLI separation: gold vs non-gold, doc-head and span-max
+    e7 = json.loads((R / "exp7_second_signal.json").read_text(
+        encoding="utf-8"))
+    e9 = json.loads((R / "exp9_span_nli.json").read_text(encoding="utf-8"))
+    ax = axes[0][1]
+    data = {"head\n(gold)": [p["nli"] for p in e7["pairs"] if p["gold"]],
+            "head\n(non-gold)": [p["nli"] for p in e7["pairs"]
+                                 if not p["gold"]],
+            "span\n(gold)": [p["nli_span"] for p in e9["pairs"] if p["gold"]],
+            "span\n(non-gold)": [p["nli_span"] for p in e9["pairs"]
+                                 if not p["gold"]]}
+    keys = list(data)
+    rng = np.random.default_rng(7)
+    for i, k in enumerate(keys):
+        vals = data[k]
+        x = i + rng.uniform(-0.13, 0.13, size=len(vals))
+        ax.scatter(x, vals, s=3, color=C["blue"] if "gold" in k else C["verm"],
+                   alpha=0.45, edgecolors="none", zorder=2)
+        med = statistics.median(vals)
+        ax.hlines(med, i - 0.28, i + 0.28, color="#222222", lw=1.3, zorder=3)
+        ax.text(i + 0.30, med, f"{med:.2f}", fontsize=5.8, va="center",
+                color="#222222")
+    ax.set_xticks(range(len(keys)))
+    ax.set_xticklabels(keys, fontsize=6.2)
+    ax.set_ylabel("NLI entailment score", fontsize=7)
+    ax.set_ylim(-0.03, 1.03)
+    ax.tick_params(length=2, labelsize=6.2)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.set_title("(b) NLI anti-separation (medians)", fontsize=7, loc="left")
+
+    # ---- (c) second corpus: judged collapse disappears without confusers
+    e10 = json.loads((R / "exp10_papers_toollayer.json").read_text(
+        encoding="utf-8"))["summary"]
+    ax = axes[1][0]
+    arms = [("bm25", "BM25"), ("fusion_only", "Fusion"),
+            ("judged", "Judged"), ("filter_only", "Filter")]
+    orig = [1.00, e1s["fusion_only"]["hit@5"], e1s["qdcvr_hybrid"]["hit@5"],
+            0.9375]
+    papers = [e10[a]["hit@5"] for a, _ in arms]
+    x = np.arange(len(arms))
+    w = 0.36
+    ax.bar(x - w / 2, orig, width=w, color=C["blue"], label="PV corpus (42 docs)",
+           edgecolor="white", linewidth=0.3)
+    ax.bar(x + w / 2, papers, width=w, color=C["orange"],
+           label="arXiv corpus (9 q)", edgecolor="white", linewidth=0.3)
+    for xi, v in zip(x, orig):
+        ax.text(xi - w / 2, v + 0.02, f"{v:.2f}", ha="center", fontsize=5.8)
+    for xi, v in zip(x, papers):
+        ax.text(xi + w / 2, v + 0.02, f"{v:.2f}", ha="center", fontsize=5.8)
+    ax.set_xticks(x)
+    ax.set_xticklabels([l for _, l in arms], fontsize=6.4)
+    ax.set_ylabel("Hit@5", fontsize=7)
+    ax.set_ylim(0, 1.14)
+    ax.legend(frameon=False, fontsize=6.0, loc="lower left")
+    ax.tick_params(length=2, labelsize=6.2)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.set_title("(c) second corpus: judged = fusion = filter",
+                 fontsize=7, loc="left")
+
+    # ---- (d) graded probes: kept counts by tier
+    e8 = json.loads((R / "exp8_graded_probes.json").read_text(
+        encoding="utf-8"))
+    ax = axes[1][1]
+    tiers = e8["tool_layer"]
+    cols = {"partial": C["orange"], "absent": C["grey"]}
+    for i, t in enumerate(tiers):
+        ax.bar(i, t["kept_n"], color=cols[t["tier"]], edgecolor="white",
+               linewidth=0.3)
+        ax.text(i, t["kept_n"] + 0.25, str(t["kept_n"]), ha="center",
+                fontsize=6.2)
+    ax.axhline(12, color=C["dgrey"], lw=0.7, ls="--")
+    ax.text(-0.45, 12.35, "pool size 12", fontsize=5.8,
+            ha="left", color=C["dgrey"])
+    ax.set_xticks(range(len(tiers)))
+    ax.set_xticklabels([t["qid"] for t in tiers], fontsize=6.4)
+    ax.set_ylabel("candidates kept by judge", fontsize=7)
+    ax.set_ylim(0, 14.5)
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(fc=cols["partial"], label="partial coverage"),
+                       Patch(fc=cols["absent"], label="absent")],
+              frameon=False, fontsize=6.0, loc="upper center",
+              bbox_to_anchor=(0.5, 1.02), ncol=2)
+    ax.tick_params(length=2, labelsize=6.2)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.set_title("(d) graded probes: threshold keeps everything",
+                 fontsize=7, loc="left")
+
+    for a in axes.flat:
+        a.tick_params(length=2)
+    fig.tight_layout(w_pad=1.6, h_pad=1.5)
+    save(fig, "fig9_robustness")
+
+
+# ===========================================================================
 # Fig 8 — anatomy of one real query (Q2, logged QDCVR-Hybrid traces)
 # ===========================================================================
 def fig_anatomy():
@@ -598,6 +735,9 @@ def fig_anatomy():
     save(fig, "fig8_anatomy")
 
 
+import numpy as np
+import statistics
+
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     if which in ("all", "1"):
@@ -616,3 +756,5 @@ if __name__ == "__main__":
         fig_ood_kbs()
     if which in ("all", "8"):
         fig_anatomy()
+    if which in ("all", "9"):
+        fig_robustness()

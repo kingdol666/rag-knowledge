@@ -186,6 +186,16 @@ filter/re-ranker role decomposition, and its configuration-level repair;
 and (iii)~the two-tier empirical evaluation on the deployed corpus with all
 per-run logs released.
 
+The rest of the paper is organized as a design-to-evidence arc.
+Sections~\ref{sec:system} and \ref{sec:lanes} present the architecture and
+the three retrieval lanes; Section~\ref{sec:impl} reports the engineering
+that makes the contracts enforceable; Sections~\ref{sec:setup}
+and~\ref{sec:results} carry the two experiment tiers plus the robustness
+tier; Section~\ref{sec:discussion} distills the operational lessons,
+threats, and roadmap; Section~\ref{sec:conclusion} concludes.
+Table~\ref{tab:modules} in Section~\ref{sec:system} maps every module to
+its responsibility.
+
 \section{Related work}
 \label{sec:related}
 
@@ -328,7 +338,9 @@ QDCVR (this work)                     & \checkmark & \checkmark & \checkmark & \
 \subsection{Design principles}
 QDCVR (v2.3) is a self-hosted platform that turns a folder of PDFs, Office
 documents, and scans into knowledge bases that agents can be trusted to
-answer from. Five principles shape the architecture (Fig.~\ref{fig:arch}):
+answer from. Five principles shape the architecture (Fig.~\ref{fig:arch};
+Table~\ref{tab:modules} maps every module to its responsibility and the
+design decision that shapes it):
 
 \begin{description}
 \item[P1 -- Content-routed organization.] Documents are organized by what
@@ -403,6 +415,55 @@ experience service versions operational lessons as first-class documents
 with their own retrieval threshold, and the verification gate is served by
 a resident judge worker whose engineering details appear in
 Section~\ref{sec:impl}.
+
+Table~\ref{tab:modules} consolidates the platform's modules, their
+responsibilities, and the design decision that shapes each one; the
+remainder of this section walks through the layers, and
+Sections~\ref{sec:lanes}--\ref{sec:impl} detail the retrieval lanes and
+operational engineering built on top of them.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Module responsibilities. Every module terminates at an explicit
+contract (a tool schema, a rubric, or a budget) rather than at an
+implicit prompt.}
+\label{tab:modules}
+\begin{tabular}{p{2.9cm}p{4.1cm}p{6.0cm}}
+\toprule
+Module & Responsibility & Key design decision \\
+\midrule
+Ingestion pipeline & parse, split, tag, index, verify retrievability
+(nine steps) & quality-gated: a document that cannot be retrieved is a
+failed ingest, not a warning \\
+Tree filesystem + metadata registry & source of truth for Markdown
+documents, library states, tags & content-routed organization; paths are
+addresses, not categories \\
+Vector service & dense top-$k$ over per-library HNSW (BGE-M3, 1024-d) &
+serialized writes per collection (one production incident traced to
+concurrent segment handles) \\
+Graph service (Neo4j) & Document / KnowledgeBase / Tag graph &
+\textsc{RelatedTo} edges from shared tags, similarity, and judge
+verdicts; candidate expansion only \\
+BM25 index & lexical channel & jieba tokenization, chunked documents,
+incremental updates \\
+Two-stage service & candidate generation & BM25 + graph expansion, then
+dense refine; adds candidates, never answers \\
+Experience service & versioned operational lessons & first-class
+retrievable documents with their own threshold and auto-summary \\
+Laya judge & evidence scoring (0--8 rubric, $[0,1]$ projection) &
+resident worker; batch $\leq 6$; fail-closed on every error \\
+MCP server (kb-mcp) & the machine interface: 97 tools in 8 groups &
+every capability added once is available to every harness \\
+Chat API + lane gating & engines, budgets, per-lane tool whitelists &
+server-side enforcement --- a lane physically cannot call a
+non-whitelisted tool \\
+Ingestion tagging agent & content-derived tags and descriptions &
+descriptions are claims to be verified, not facts \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Multi-lane verified retrieval}
 \label{sec:lanes}
@@ -1121,7 +1182,23 @@ its audit trail ships with the one response.
 
 Six robustness questions, answered by five released experiments (the
 symbolic check ships inside the second-signal replay), are summarized in
-Table~\ref{tab:robustness}.
+Table~\ref{tab:robustness} and Figure~\ref{fig:robustness}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{fig9_robustness}
+\caption{The robustness tier at a glance. (a)~Paraphrase grid: per-method
+Hit@5 on the original questions (blue) and their paraphrases (orange);
+BM25's ceiling is vocabulary-dependent while dense, fusion, and the
+filter repair hold. (b)~NLI separation over the 191 logged candidates
+(span scores from 3{,}489 span inferences): both granularities
+\emph{anti-separate} --- gold medians sit below non-gold medians.
+(c)~Domain and language shift to ten arXiv papers: the judged collapse
+disappears when no same-family confuser clusters exist.
+(d)~Graded abstention probes: the threshold keeps 10--12 of 12
+candidates in every tier.}
+\label{fig:robustness}
+\end{figure}
 
 \begin{table}[!htbp]
 \centering
@@ -1171,6 +1248,7 @@ tagging (0 relations indexed). \\
 \end{table}
 
 \textbf{Margin.} The leave-one-question-out replay
+(Fig.~\ref{fig:robustness}a)
 (\texttt{exp6\_loo\_margin.py}) addresses the in-sample concern directly:
 selection and evaluation are separated, the selected margins are stable
 (0.18 on fifteen of sixteen folds), and the single holdout failure is the
@@ -1180,7 +1258,8 @@ judgment call, and the Q11 fold is the warning that justifies it --- a
 calibration made without a Q11-like question in its training set would
 pick 0.15 and lose that gold.
 
-\textbf{Paraphrase.} The paraphrase grid (\texttt{exp6\_paraphrase.py})
+\textbf{Paraphrase.} The paraphrase grid
+(Fig.~\ref{fig:robustness}a; \texttt{exp6\_paraphrase.py})
 confirms the vocabulary-dependence concern about BM25's ceiling --- its
 1.00 is partly a vocabulary artifact, dropping to 0.88 with MRR 0.755
 under rewording --- and sharpens the practical picture: dense retrieval is
@@ -1196,7 +1275,8 @@ hides a composition swap (it loses reworded Q7 and gains Q16). The
 verification failure is a property of
 the judge and the pool, not of the question phrasing.
 
-\textbf{Second signal.} The NLI replay (\texttt{exp7\_second\_signal.py})
+\textbf{Second signal.} The NLI replay
+(Fig.~\ref{fig:robustness}b; \texttt{exp7\_second\_signal.py})
 runs the same 191 logged (query, candidate) pairs and four out-of-corpus
 topics through a generic Chinese NLI model --- one 330\,M checkpoint, one
 question-as-context template, premises truncated to roughly the first 500
@@ -1244,7 +1324,8 @@ disclosure duties, rather than a sharper similarity signal, are where
 the design places its trust.
 
 \textbf{Graded probes.} Six fresh probes (three partial-coverage, three
-absent) extend the abstention analysis beyond the single partial-coverage
+absent; Fig.~\ref{fig:robustness}d) extend the abstention analysis beyond
+the single partial-coverage
 episode of the original OOD probes. The tool layer behaves identically in
 every tier --- 10--12 of 12
 candidates kept at scores up to 0.983 --- so the threshold's blindness is
@@ -1261,7 +1342,8 @@ a verified secondary-crosslink rework case, which our tier labels ---
 author estimates made before running --- underestimated. We release the
 tier labels and transcripts with that correction noted.
 
-\textbf{Second corpus.} To probe domain and language transfer --- and
+\textbf{Second corpus.} To probe domain and language transfer
+(Fig.~\ref{fig:robustness}c) --- and
 whether the judged lane's collapse requires the confuser density of the
 production corpus --- we ingested ten gold arXiv papers from the platform's
 released benchmark suite (English; ten distinct fields; 954 indexed
