@@ -216,3 +216,24 @@ authors.
   wang-notfair 因作者列表不确定未收录(编辑时已撤引);
 - 鼓励项(未执行, 列入 roadmap): 2倍规模benchmark、改述题集、第二判卷信号重放、
   NLI/符号校验、分级弃答探针、消费者侧证据。
+
+## 补测数据轮 (同日晚间): R16 鼓励项执行
+
+四个新实验全部真实执行, 脚本+原始JSON入库:
+- **Exp6 LOO margin** (exp6_loo_margin.py): 最小margin规则在15训练题选出0.18,
+  迁移留出题15/16存活(唯一失败=Q11, 与shipped 0.15同失), 0.20留出题16/16全存活
+  → margin泛化验证完成, 回应R1#4 in-sample批评;
+- **Exp6b 改述集** (exp6_paraphrase.py): 16题改述全工具层 — BM25 1.00→0.88
+  (MRR 0.958→0.755, Q7/Q13丢失), Dense 0.94稳, judged 0.44→0.50仍坏,
+  filter仍=fusion 0.94 → 证实词汇依赖+失效/修复对改述稳健, 回应C2/R3#10;
+- **Exp7 第二信号** (exp7_second_signal.py, Erlangshen-330M NLI@CUDA):
+  191对重放 hit@5 0.31/MRR 0.138(比Laya差), Spearman ρ=-0.134,
+  gold中位0.011 vs 非gold 0.053 (p=0.12, δ=0.23), OOD全语料max 0.997
+  → 通用NLI既排不好序也弃不了答; Q6符号检查 gold 1/1 vs 非gold 0/11完美
+  → 论文核心结论(弃答在答案层)升级为信号无关, 回应C10/R2#2/R3#5;
+- **Exp8 分级探针** (exp8_graded_probes.py): 3 partial + 3 absent:
+  工具层全部kept 10-12/12(≤0.983) — 阈值盲区普适; agent层PA3教科书级
+  部分披露(铜焊带有据/铝边框标注P1/P2推断), PA2意外发现语料含二次交联
+  返工闭环案例(改判covered并注明), 回应R3 MAJOR3;
+- 论文: 新增§6.6 Robustness checks + Table 6, 摘要/贡献3/威胁节/roadmap
+  联动更新; 40页 0错误0未解析; Table 6视觉验收PASS。

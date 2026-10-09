@@ -1,0 +1,124 @@
+{
+ "folds": [
+  {
+   "holdout": "Q1",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 12
+  },
+  {
+   "holdout": "Q2",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 11
+  },
+  {
+   "holdout": "Q3",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 12
+  },
+  {
+   "holdout": "Q4",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 10
+  },
+  {
+   "holdout": "Q5",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 11
+  },
+  {
+   "holdout": "Q6",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 12
+  },
+  {
+   "holdout": "Q7",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 11
+  },
+  {
+   "holdout": "Q8",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 11
+  },
+  {
+   "holdout": "Q9",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 11
+  },
+  {
+   "holdout": "Q10",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 10
+  },
+  {
+   "holdout": "Q11",
+   "m_star": 0.15,
+   "holdout_gold_kept": false,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 7
+  },
+  {
+   "holdout": "Q12",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 11
+  },
+  {
+   "holdout": "Q13",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 11
+  },
+  {
+   "holdout": "Q14",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 7
+  },
+  {
+   "holdout": "Q15",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 12
+  },
+  {
+   "holdout": "Q16",
+   "m_star": 0.18,
+   "holdout_gold_kept": true,
+   "fixed_020_gold_kept": true,
+   "holdout_kept_n": 11
+  }
+ ],
+ "n_folds": 16,
+ "loo_gold_survival": 0.9375,
+ "fixed_020_gold_survival": 1.0,
+ "m_star_values": [
+  "0.15",
+  "0.18"
+ ],
+ "note": "smallest-margin selection on 15 training questions; grid 0.05-0.40 step 0.01"
+}
