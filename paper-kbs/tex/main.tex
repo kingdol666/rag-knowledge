@@ -1193,7 +1193,8 @@ BM25's ceiling is vocabulary-dependent while dense, fusion, and the
 filter repair hold. (b)~NLI separation over the 191 logged candidates
 (span scores from 3{,}489 span inferences): both granularities
 \emph{anti-separate} --- gold medians sit below non-gold medians.
-(c)~Domain and language shift to ten arXiv papers: the judged collapse
+(c)~Domain, language, and scale shift to 79 ingested arXiv papers: the
+judged collapse
 disappears when no same-family confuser clusters exist.
 (d)~Graded abstention probes: the threshold keeps 10--12 of 12
 candidates in every tier.}
@@ -1237,12 +1238,12 @@ partial and absent coverage? & No: the threshold keeps 10--12 of 12
 candidates (up to 0.983) in every tier. Agent layer: scoped disclosures
 on partial probes (one reclassified as covered --- the corpus held a
 verified rework case); 3/3 absent probes returned explicit not-found. \\
-Second corpus (10 arXiv papers) & Does the judged collapse survive a
-domain and language shift with no confuser clusters? & No collapse:
-judged = fusion = filter = 0.90 (one shared miss --- that gold paper
-failed parsing). The loss tracks confuser density, not domain or
-language; two-stage falls to 0.20 because bulk import skips relation
-tagging (0 relations indexed). \\
+Second corpus (100 arXiv papers) & Does the judged collapse survive a
+domain, language, and scale shift with no confuser clusters? & No
+collapse at 79 indexed papers (8{,}031 chunks): judged = fusion =
+filter = 0.90 (one shared miss --- that gold paper failed parsing).
+The loss tracks confuser density, not domain, language, or size;
+graph 0.20 without relation tagging (bulk import bypasses it). \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1345,24 +1346,24 @@ tier labels and transcripts with that correction noted.
 \textbf{Second corpus.} To probe domain and language transfer
 (Fig.~\ref{fig:robustness}c) --- and
 whether the judged lane's collapse requires the confuser density of the
-production corpus --- we ingested ten gold arXiv papers from the platform's
-released benchmark suite (English; ten distinct fields; 954 indexed
-chunks) into a fresh knowledge base and reran the tool layer. One paper
-failed parsing, leaving nine usable questions, and every method except
-graph and two-stage reaches Hit@5 0.90 with the single miss shared by all
-of them (its gold paper is the parse failure). Two results matter.
-First, the judged lane \emph{loses nothing} here --- judged = fusion =
-judge-as-filter = 0.90 --- because the papers corpus has no same-family
-near-duplicate clusters: ten questions target ten topically distinct
-papers. The Hit@5 collapse of Section~\ref{sec:retrieval} therefore
-tracks confuser density (deliberately engineered in the production
-corpus's telemetry cluster), not domain, not language, and not the judge
-checkpoint. Second, graph and two-stage fall to 0.20 for a mechanical
-reason: relations are built by the ingestion-time tagging agent, which
-the bulk import bypassed (the reindex reports 954 chunks, 0 relations),
-so two-stage inherits its graph stage's blindness --- a deployment
-dependency the production corpus never exposes because its ingestion
-always runs with tagging enabled.
+production corpus --- we downloaded all 100 gold-track arXiv papers of
+the platform's released benchmark suite (English; ten distinct fields)
+and ingested them into a fresh knowledge base: 79 papers parsed and
+indexed cleanly (8{,}031 chunks; 21 failed parsing, mostly
+formula-dense scans), and nine of the suite's ten questions remain
+usable --- their single shared miss is one of the parse failures. On
+this corpus every main configuration reaches Hit@5 0.90, and the judged
+lane \emph{loses nothing}: judged = fusion = judge-as-filter = 0.90 at
+eight times the candidate-confuser scale of the first probe. The Hit@5
+collapse of Section~\ref{sec:retrieval} therefore tracks confuser
+density (deliberately engineered in the production corpus's telemetry
+cluster), not domain, not language, not corpus size, and not the judge
+checkpoint. One deployment dependency surfaces honestly: the bulk
+import bypasses the ingestion-time tagging agent, so the papers graph
+carries almost no relations and graph search falls to 0.20 ---
+two-stage recovers to 0.90 through its BM25 candidates, but a
+production deployment that wants graph expansion must run tagged
+ingestion.
 
 \section{Discussion and lessons learned}
 \label{sec:discussion}

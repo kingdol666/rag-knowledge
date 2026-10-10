@@ -89,3 +89,16 @@ fixable in days without new experiments."
 - 论文: §7.6 增 span-NLI 与 Second corpus 两段; Table 5 扩至六行并压缩至
   单页(28页, 页码干净); 威胁节/路线图/Data availability 联动;
   42页 0错误0未解析。
+
+## 补测数据轮 3 (Round-5): 规模测试完成
+
+- benchmark-suite 全量 100 篇 gold-track 论文下载完成; MinerU 解析入库 79 篇
+  (8,031 chunks; 21 篇解析失败多为公式密集扫描件); 中途 kb-mcp 因批量解析
+  崩溃一次, 重启后续跑 (脚本可断点);
+- **79 篇规模工具层重测**: bm25/dense/rrf/twostage/fusion/judged/filter
+  全部 Hit@5 0.90 (9 可用题, 共享 miss = 解析失败的 gold) —
+  **judged=fusion=filter=0.90, 8×混淆者规模下判卷门依然零损失**
+  → "判卷失效=confuser 密度现象"的归因在领域/语言/规模三维迁移下全部成立;
+- graph 0.20: 批量导入绕过 tagging agent (relations≈0) — 部署依赖如实入文;
+- 论文: §7.6 Second corpus 段重写(79 篇/8031 chunks/两阶段恢复), Table 5
+  行更新, fig9(c) 标签更新; 44 页 0错误0未解析。

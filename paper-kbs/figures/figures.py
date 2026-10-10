@@ -603,7 +603,7 @@ def fig_robustness():
     ax.bar(x - w / 2, orig, width=w, color=C["blue"], label="PV corpus (42 docs)",
            edgecolor="white", linewidth=0.3)
     ax.bar(x + w / 2, papers, width=w, color=C["orange"],
-           label="arXiv corpus (9 q)", edgecolor="white", linewidth=0.3)
+           label="arXiv corpus (79 docs)", edgecolor="white", linewidth=0.3)
     for xi, v in zip(x, orig):
         ax.text(xi - w / 2, v + 0.02, f"{v:.2f}", ha="center", fontsize=5.8)
     for xi, v in zip(x, papers):
