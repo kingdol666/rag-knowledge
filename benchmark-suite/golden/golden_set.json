@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "created": "2026-10-06",
+  "note": "金标准评测集：守门指标 = gold 召回 + 负例误报率。gold_docs 为可接受路径后缀（任一命中即算，含克隆库）。negatives 期望跨库检索不召回（或分数低于阈值）。",
+  "questions": [
+    {"id": "g01", "domain": "film", "type": "paraphrase", "query": "EVA 层压的时候温度压力时间分别控制在什么范围？", "gold_docs": ["EVA封装膜工艺要点.md"], "gold_keywords": ["145-150", "0.8-1.0", "12-15"]},
+    {"id": "g02", "domain": "film", "type": "paraphrase", "query": "双向拉伸薄膜的纵向拉伸比和横向拉伸比是多少？", "gold_docs": ["PET双向拉伸薄膜工艺规程.md"], "gold_keywords": ["3.2-3.6", "3.5-4.0"]},
+    {"id": "g03", "domain": "film", "type": "exact", "query": "PP 流延薄膜冷辊温度控制范围", "gold_docs": ["PP流延薄膜工艺规程.md"], "gold_keywords": ["20-25"]},
+    {"id": "g04", "domain": "film", "type": "paraphrase", "query": "薄膜热收缩率超标是什么原因，热定型温度应该设多少？", "gold_docs": ["PET双向拉伸薄膜工艺规程.md"], "gold_keywords": ["220-235"]},
+    {"id": "g05", "domain": "pv", "type": "paraphrase", "query": "POE 和 EVA 相比水汽阻隔性能怎么样？", "gold_docs": ["POE胶膜工艺要点.md"], "gold_keywords": ["水汽阻隔", "155-165"]},
+    {"id": "g06", "domain": "pv", "type": "paraphrase", "query": "光伏组件封装膜的交联度要求是多少？不足会怎样？", "gold_docs": ["EVA封装膜工艺要点.md", "POE胶膜工艺要点.md"], "gold_keywords": ["85%", "90%"]},
+    {"id": "g07", "domain": "pv-exp", "type": "experience", "query": "EVA 层压温度偏低导致脱层的真实案例，后来怎么解决的？", "gold_docs": ["exp-83a0ca000086.md"], "gold_keywords": ["135", "148", "交联"]},
+    {"id": "g08", "domain": "battery", "type": "paraphrase", "query": "电解液注液量偏差超差怎么处理？", "gold_docs": ["omp_e2e_electrolyte.md"], "gold_keywords": ["计量泵", "DMRea"]},
+    {"id": "g09", "domain": "battery-exp", "type": "experience", "query": "电芯静置后有气泡残留的故障案例", "gold_docs": ["exp-5cb5307e5242.md"], "gold_keywords": ["气泡", "真空"]},
+    {"id": "g10", "domain": "battery", "type": "paraphrase", "query": "化成工序的电压和电流是怎么控制的？", "gold_docs": ["omp_fs_formation.md"], "gold_keywords": ["3.0-4.2", "0.02C"]},
+    {"id": "g11", "domain": "battery-exp", "type": "experience", "query": "高温老化后电压跌落超标怎么解决？", "gold_docs": ["exp-c3b9ef215396.md", "omp_fs_formation.md"], "gold_keywords": ["6h", "30mV"]},
+    {"id": "g12", "domain": "film", "type": "cross-domain-confusable", "query": "涂布面密度波动超差如何校准？", "gold_docs": ["omp_ingest_test.md"], "gold_keywords": ["计量泵", "气刀"]},
+    {"id": "g13", "domain": "pv", "type": "paraphrase", "query": "EVA 封装膜对透光率和体积电阻率有什么要求？", "gold_docs": ["EVA封装膜工艺要点.md"], "gold_keywords": ["90%", "1e14"]},
+    {"id": "g14", "domain": "battery", "type": "paraphrase", "query": "手套箱环境的水氧含量要控制在什么水平？", "gold_docs": ["omp_e2e_electrolyte.md"], "gold_keywords": ["20ppm", "10ppm"]},
+    {"id": "g15", "domain": "film", "type": "exact", "query": "电晕处理表面张力要求", "gold_docs": ["PP流延薄膜工艺规程.md"], "gold_keywords": ["38mN/m"]},
+    {"id": "g16", "domain": "pv", "type": "paraphrase", "query": "POE 胶膜的层压温度窗口和 EVA 有什么不同？", "gold_docs": ["POE胶膜工艺要点.md", "EVA封装膜工艺要点.md"], "gold_keywords": ["155-165", "145-150"]},
+    {"id": "x01", "domain": "none", "type": "negative", "query": "量子计算机的超导量子比特退相干时间怎么测量？"},
+    {"id": "x02", "domain": "none", "type": "negative", "query": "液压机主缸压力上不去的维修步骤"},
+    {"id": "x03", "domain": "none", "type": "negative", "query": "船舶柴油机的曲轴磨损怎么修复？"},
+    {"id": "x04", "domain": "none", "type": "negative", "query": "飞机蒙皮铆接的工艺规范是什么？"}
+  ]
+}

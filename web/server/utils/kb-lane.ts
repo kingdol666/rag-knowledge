@@ -31,6 +31,7 @@ export const KB_MCP_TOOLS = [
   'mcp__kb-mcp__kb_search_vector',
   'mcp__kb-mcp__kb_search_two_stage',
   'mcp__kb-mcp__kb_search_stats',
+  'mcp__kb-mcp__kb_hybrid_search',
   'mcp__kb-mcp__kb_get_documents',
   'mcp__kb-mcp__kb_doc_read',
   'mcp__kb-mcp__kb_doc_get_by_tag',

@@ -20,6 +20,46 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/experience", tags=["Experience"])
 
+@router.post("/reflect", dependencies=[Depends(verify_token)])
+async def reflect_experience(body: dict):
+    """闭环任务后经验回写原语（plan 阶段 5）。
+
+    控制 agent 任务结束时一次调用：结构化经验字段直建 provisional 经验。
+    Provisional 语义（主人拍板：带警示可用）：auto_extracted=True +
+    harness="reflect" + tags 含 "provisional"——检索层可见可引用，人工抽检
+    转正后移除标记。强制溯源：source_task + cited_experiences（本任务引用
+    过的经验 id 列表）写入 metrics，防"引用-回写回音室"（评审可审计）。
+    """
+    kb_id = str(body.get("kb_id") or "").strip()
+    title = str(body.get("title") or "").strip()
+    if not kb_id or not title:
+        from fastapi import HTTPException
+        raise HTTPException(400, "kb_id and title are required")
+    data = ExperienceCreate(
+        title=title,
+        scenario=str(body.get("scenario") or ""),
+        problem=str(body.get("problem") or ""),
+        solution=str(body.get("solution") or ""),
+        key_lessons=list(body.get("key_lessons") or []),
+        tags=list({*(body.get("tags") or []), "provisional"}),
+        related_docs=list(body.get("related_docs") or []),
+        auto_extracted=True,
+        harness="reflect",
+        confidence=float(body.get("confidence") or 0.6),
+        metrics={
+            "source_task": body.get("source_task") or "",
+            "cited_experiences": list(body.get("cited_experiences") or []),
+            "provisional": True,
+        },
+    )
+    result = await experience_service.create_experience(kb_id, data)
+    if isinstance(result, dict) and result.get("success"):
+        result["provisional"] = True
+        result["note"] = ("带警示可用：provisional 经验可被闭环检索引用；"
+                          "人工抽检转正后移除 provisional 标签")
+    return result
+
+
 @router.post("/global-search")
 async def global_search_experiences(body: dict = None):
     """跨 KB 全局经验检索 — QDCVR 流程（向量召回→硬阈值→内容验证→可信度定级→诚实空返回）。

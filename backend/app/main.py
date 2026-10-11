@@ -7,6 +7,7 @@ import logging.handlers
 from pathlib import Path
 from contextlib import asynccontextmanager
 from app.api.routes.meditation import router as meditation_router
+from app.api.routes.automation import router as automation_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import config
@@ -269,6 +270,7 @@ app.include_router(graph_router)
 app.include_router(experience_router)
 app.include_router(config_router)
 app.include_router(meditation_router)
+app.include_router(automation_router)
 app.include_router(soul_router)
 app.include_router(system_router)
 app.include_router(documents_router)

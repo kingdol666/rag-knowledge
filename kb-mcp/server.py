@@ -2140,7 +2140,7 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
     result = await client.vector_search(query, kb_id, top_k, score_threshold, balance_kbs)
     # Normalize doc_path separators and deduplicate (backend may return backslash/forward-slash variants)
     if isinstance(result, dict) and result.get("success"):
-        raw_results = result.get("results", [])
+        raw_results = _filter_active(result.get("results", []))
         seen = {}
         for r in raw_results:
             if isinstance(r, dict) and r.get("doc_path"):
@@ -2201,7 +2201,7 @@ async def kb_search_two_stage(
     if isinstance(result, dict) and result.get("success"):
         stage2 = result.get("stage2", {})
         if isinstance(stage2, dict):
-            raw_results = stage2.get("results", [])
+            raw_results = _filter_active(stage2.get("results", []))
             seen = {}
             for r in raw_results:
                 if isinstance(r, dict) and r.get("doc_path"):
@@ -2245,6 +2245,271 @@ async def kb_search_two_stage(
                     "supplement_count": supplement.get("count", 0),
                     "supplement": supplement.get("results", []),
                 }
+    return _j(result)
+
+
+# ============================================================
+# HYBRID ORCHESTRATION — server-side P1–P5 (plan 阶段 1)
+# One MCP call replaces the executor's 8-turn P0–P6 dance: dual-lane
+# fetch, merge+cap, Laya judge batches, doc-level cut, top reads —
+# all machine-side, zero LLM rounds. The knowledgebase-hybrid SKILL.md
+# keeps the manual P0–P6 spine only as the exploration path.
+# ============================================================
+
+def _hyb_tokens(text: str) -> set:
+    """Bilingual keyword tokens: latin words + CJK bigrams (desc overlap ranking)."""
+    import re
+    t = (text or "").lower()
+    toks = set(re.findall(r"[a-z0-9]{2,}", t))
+    cjk = re.findall(r"[\u4e00-\u9fff]", t)
+    toks |= {cjk[i] + cjk[i + 1] for i in range(len(cjk) - 1)}
+    return toks
+
+
+def _hyb_norm(p: str) -> str:
+    return (p or "").replace("\\", "/")
+
+
+# ── 阶段 4：库三态生命周期（active/archived/quarantined）──
+# 状态落盘 storage/tree-file-system/.kb-states.json；检索 lane 硬过滤
+# 非 active 库（归档=退出检索，数据不动，可随时恢复）。kb_list 保持
+# 全量可见（管理面），只有检索路径被过滤。
+
+_KB_STATES_VALID = {"active", "archived", "quarantined"}
+
+
+def _kb_states() -> dict:
+    try:
+        p = Path(__file__).resolve().parents[1] / "storage" / "tree-file-system" / ".kb-states.json"
+        if p.exists():
+            return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001 — 状态读不到按全 active 处理
+        pass
+    return {}
+
+
+def _kb_inactive_ids() -> set:
+    """黑名单语义：archived/quarantined 的 kb_id 集合（不在表中 = active）。"""
+    states = _kb_states()
+    return {kb for kb, st in states.items() if st != "active"} if states else set()
+
+
+def _filter_active(results: list) -> list:
+    """过滤掉 archived/quarantined 库的检索结果（无状态文件=全放行）。"""
+    inactive = _kb_inactive_ids()
+    if not inactive:
+        return results
+    return [r for r in results if (r.get("kb_id") or "") not in inactive]
+
+
+@mcp.tool()
+async def kb_admin_set_state(kb_id: str, state: str, reason: str = "") -> str:
+    """Set a knowledge base lifecycle state: active | archived | quarantined.
+
+    archived/quarantined KBs exit every retrieval lane (hybrid orchestrator,
+    vector, two-stage) — their data stays on disk and is restorable by setting
+    the state back to active. kb_list keeps showing them for management.
+    """
+    state = state.strip().lower()
+    if state not in _KB_STATES_VALID:
+        return _j({"success": False, "error": f"state must be one of {sorted(_KB_STATES_VALID)}"})
+    p = Path(__file__).resolve().parents[1] / "storage" / "tree-file-system" / ".kb-states.json"
+    states = {}
+    try:
+        if p.exists():
+            states = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        states = {}
+    states[kb_id] = state
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(states, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[kb-admin] {kb_id[:8]}… → {state} {('('+reason+')') if reason else ''}", file=sys.stderr)
+    return _j({"success": True, "kb_id": kb_id, "state": state, "reason": reason})
+
+
+@mcp.tool()
+async def kb_hybrid_search(query: str, kb_scope: str = "", top_k: int = 30,
+                           candidate_cap: int = 12, judge_batch: int = 6,
+                           read_top: int = 5, enable_judge: bool = True,
+                           score_threshold: float = 0.35) -> str:
+    """One-call serial hybrid retrieval: dual-lane candidates → merge+cap →
+    REAL Laya judge (batched ≤6) → doc-level cut → top reads. Returns the
+    full evidence structure; the calling agent only synthesizes the answer.
+
+    Args:
+        query: user question
+        kb_scope: optional kb_id/path/name to restrict both lanes
+        top_k: vector lane wide-net size (default 30)
+        candidate_cap: merged candidates cap before judging (both-lane docs
+            always kept, then vector top8, then catalog top4; pre_filtered
+            count is reported — never a silent drop)
+        judge_batch: refs per kb_laya_judge call (≤6, measured stdio limit)
+        read_top: how many top kept docs get a full kb_doc_read (≤2000 chars)
+        enable_judge: false = lanes+merge only (preview, unjudged)
+        score_threshold: vector lane threshold (default 0.35)
+
+    Returns:
+        {success, lanes:{vector_docs,catalog_docs}, merge:{merged,from_both,
+        from_vector_only,from_catalog_only,pre_filtered}, judge:{batches,scored,
+        survivor_docs,errors}, cut:{kept:[{doc_path,kb_id,score}],dropped},
+        reads:[{doc_path,content}], elapsed_s, report}
+    """
+    t0 = time.time()
+    if not query.strip():
+        return _j({"success": False, "error": "query must not be empty"})
+    client = _client()
+    qtok = _hyb_tokens(query)
+    inactive_ids = _kb_inactive_ids()
+
+    # ── P1a vector lane (refs only) ──
+    vec = await client.vector_search(query, kb_scope, top_k, score_threshold, True)
+    vec_docs: dict = {}
+    if isinstance(vec, dict) and vec.get("success"):
+        for r in vec.get("results", []):
+            if (r.get("kb_id") or "") in inactive_ids:
+                continue
+            dp = _hyb_norm(r.get("doc_path", ""))
+            key = (r.get("kb_id"), dp)
+            sc = float(r.get("score", 0) or 0)
+            if dp and (key not in vec_docs or sc > vec_docs[key]):
+                vec_docs[key] = sc
+
+    # ── P1b/P2 catalog lane: every ACTIVE shelf, keyword-overlap ranked ──
+    cat_docs: list = []
+    kbs = await client.kb_list()
+    for kb in (kbs.get("knowledgeBases") or kbs.get("catalog") or []):
+        kb_id = kb.get("kbId") or kb.get("kb_id")
+        if (kb_id or "") in inactive_ids:
+            continue
+        if kb_scope and kb_scope not in (kb_id, kb.get("path"), kb.get("name")):
+            continue
+        docs = await client.kb_get_documents(kb_id)
+        for d in (docs.get("documents") or []):
+            name = d.get("name") or ""
+            desc = d.get("description") or ""
+            overlap = len(qtok & _hyb_tokens(name + " " + desc))
+            dp = _hyb_norm(d.get("path") or name)
+            if dp:
+                cat_docs.append({"kb_id": kb_id, "kb_path": kb.get("path"),
+                                 "doc_path": dp, "overlap": overlap})
+
+    # ── P3 merge on (kb_id, doc_path) with lane provenance ──
+    merged: dict = {}
+    for (kb_id, dp), sc in vec_docs.items():
+        merged[(kb_id, dp)] = {"kb_id": kb_id, "doc_path": dp,
+                               "lane": "vector", "vector_score": round(sc, 4)}
+    for c in cat_docs:
+        key = (c["kb_id"], c["doc_path"])
+        if key in merged:
+            merged[key]["lane"] = "both"
+            merged[key]["catalog_overlap"] = c["overlap"]
+        else:
+            merged[key] = {**c, "lane": "catalog"}
+
+    vec_rank = {k: i for i, k in enumerate(
+        sorted(vec_docs, key=lambda k: -vec_docs[k]))}
+    for m in merged.values():
+        m["vec_rank"] = vec_rank.get((m["kb_id"], m["doc_path"]))
+        m["agreed"] = bool(m["lane"] == "both" or m.get("catalog_overlap", 0) >= 2
+                           or (m["vec_rank"] is not None and m["vec_rank"] < 3))
+    both = [m for m in merged.values() if m["lane"] == "both"]
+    vec_only = sorted((m for m in merged.values() if m["lane"] == "vector"),
+                      key=lambda m: -m["vector_score"])
+    cat_only = sorted((m for m in merged.values() if m["lane"] == "catalog"),
+                      key=lambda m: -m["overlap"])
+    kept = (both + vec_only[:8] + cat_only[:4])[: max(candidate_cap, 1)]
+    pre_filtered = len(merged) - len(kept)
+    n_both = len(both)
+    n_vec = sum(1 for m in merged.values() if m["lane"] == "vector")
+    n_cat = sum(1 for m in merged.values() if m["lane"] == "catalog")
+
+    result = {
+        "success": True, "query": query,
+        "lanes": {"vector_docs": len(vec_docs), "catalog_docs": len(cat_docs)},
+        "merge": {"merged": len(merged), "from_both": n_both, "from_vector_only": n_vec,
+                  "from_catalog_only": n_cat, "pre_filtered": pre_filtered,
+                  "judged_candidates": [m["doc_path"] for m in kept]},
+    }
+
+    # ── P4 judge: refs mode, batches ≤6, sequential (machine lock inside) ──
+    survivors: list = []
+    judge_errors: list = []
+    batches = 0
+    if enable_judge and kept:
+        refs = [{"kb_id": m["kb_id"], "doc_path": m["doc_path"]} for m in kept]
+        for i in range(0, len(refs), max(judge_batch, 1)):
+            batch = refs[i:i + max(judge_batch, 1)]
+            batches += 1
+            raw = await kb_laya_judge(
+                query=query, documents=json.dumps(batch, ensure_ascii=False),
+                criterion="evidence", threshold=0.5)
+            d = json.loads(raw) if isinstance(raw, str) else raw
+            survivors.extend(d.get("survivors", []))
+            judge_errors.extend(d.get("errors", []))
+        result["judge"] = {"batches": batches, "scored": len(survivors),
+                           "errors": judge_errors,
+                           "real_engine": not judge_errors}
+
+    # ── P4b doc-level cut: best − 0.10, top-5 floor ──
+    # Cross-domain anchor guard (Phase-3): the cut anchor must be set by an
+    # IN-DOMAIN doc — vector-lane members (semantic relevance) or docs whose
+    # path shares query tokens. Measured: lithium docs scored 0.919 on a PV
+    # question; anchoring on them cut the truly-relevant EVA/POE docs whose
+    # paths carry none of the query keywords.
+    best_by_doc: dict = {}
+    for s in survivors:
+        key = (s.get("kb_id"), _hyb_norm(s.get("doc_path", "")))
+        sc = float(s.get("score", 0) or 0)
+        if key not in best_by_doc or sc > best_by_doc[key]:
+            best_by_doc[key] = sc
+    # 阶段 3 定稿：相对切割 margin 0.15（跨域膨胀实测 ~0.9 vs 域内 0.78-0.88，
+    # 0.10 会误切域内中分段）+ kept 硬上限 candidate_cap（排序截断控上下文，
+    # top-5 floor 保关键中分段）。pre_filtered/kept 总数都进结果供审计。
+    kept_docs, low_docs, dropped = {}, {}, []
+    agreed_map = {m["doc_path"]: m for m in kept if m.get("agreed")}
+    if best_by_doc:
+        cut_line = max(best_by_doc.values()) - 0.15
+        for k, v in best_by_doc.items():
+            # agreed（双信号：lane=both/目录重叠≥2/向量rank<3）按绝对阈值存活，
+            # 不受相对切割约束——复用 retain_docs 的 agreed_keys 实测语义
+            # （双独立召回信号 outrank 分布相关切割）。
+            is_agreed = any(k[1].endswith(dp) or dp.endswith(k[1])
+                            for dp in agreed_map)
+            if v >= max(0.5, cut_line if not is_agreed else 0.0):
+                kept_docs[k] = v
+            else:
+                low_docs[k] = v
+        for k, v in sorted(best_by_doc.items(), key=lambda x: -x[1])[:5]:
+            kept_docs[k] = kept_docs.get(k, v)
+        if len(kept_docs) > max(candidate_cap, 1):
+            over = sorted(kept_docs.items(), key=lambda x: -x[1])[max(candidate_cap, 1):]
+            for k, _ in over:
+                low_docs[k] = kept_docs.pop(k)
+        dropped = [{"kb_id": k[0], "doc_path": k[1], "score": round(v, 4)}
+                   for k, v in low_docs.items() if k not in kept_docs]
+    kept_sorted = sorted(kept_docs.items(), key=lambda x: -x[1])
+    result["cut"] = {
+        "kept": [{"kb_id": k[0], "doc_path": k[1], "score": round(v, 4)}
+                 for k, v in kept_sorted],
+        "dropped": dropped,
+    }
+
+    # ── P5 top reads (≤2000 chars each) ──
+    reads = []
+    for (kb_id, dp), sc in kept_sorted[: max(read_top, 0)]:
+        try:
+            r = await client.kb_doc_read(kb_id=kb_id, doc_path=dp, max_chars=2000)
+            reads.append({"kb_id": kb_id, "doc_path": dp, "score": round(sc, 4),
+                          "content": (r.get("content") or "") if isinstance(r, dict) else ""})
+        except Exception as exc:  # noqa: BLE001 — read failure must not kill the result
+            reads.append({"kb_id": kb_id, "doc_path": dp, "score": round(sc, 4),
+                          "error": str(exc)[:160]})
+    result["reads"] = reads
+    result["elapsed_s"] = round(time.time() - t0, 2)
+    result["report"] = (f"lanes vec={len(vec_docs)} cat={len(cat_docs)} → merged {len(merged)} "
+                        f"(both {n_both}/vec {n_vec}/cat {n_cat}) → judged {len(kept)} "
+                        f"({batches} batches) → kept {len(kept_docs)}, dropped {len(dropped)} "
+                        f"→ read top {len(reads)}; pre_filtered {pre_filtered}")
     return _j(result)
 
 
@@ -2664,6 +2929,24 @@ async def kb_graph_delete_kb(kb_id: str) -> str:
 
 # ---------- Laya/Jev engine gate (librarian & hybrid retrieval lanes) ----------
 
+_LAYA_WORKER_URL = os.environ.get("LAYA_WORKER_URL", "http://127.0.0.1:8791")
+
+
+def _worker_judge(manifest: dict, timeout: float = 600.0) -> dict | None:
+    """POST the manifest to the resident laya-worker. Returns the verdict dict,
+    or None when the worker is unreachable (caller falls back to spawn)."""
+    import urllib.request
+    try:
+        req = urllib.request.Request(
+            f"{_LAYA_WORKER_URL}/judge",
+            data=json.dumps(manifest, ensure_ascii=False).encode("utf-8"),
+            headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except Exception:  # noqa: BLE001 — worker down/busy → spawn fallback
+        return None
+
+
 def _laya_judge_impl(query: str, documents: list, criterion: str,
                      threshold: float, max_segment_chars: int,
                      max_evidence_chars: int) -> str:
@@ -2689,6 +2972,13 @@ def _laya_judge_impl(query: str, documents: list, criterion: str,
                 "threshold": threshold, "max_segment_chars": max_segment_chars,
                 "max_evidence_chars": max_evidence_chars,
                 "knowledge_bases": [], "documents": documents}
+    # ── 阶段 2：常驻 laya-worker 优先（模型常驻，单批 1-2s）──
+    # worker 不可达时静默回退 spawn 模式（fail-closed 语义不变）。
+    # 注意 impl 的输出契约 = run_manifest 原始 dict（status 在 jev 子键里），
+    # worker 返回的就是同一 shape，原样回传即可。
+    worker_verdict = _worker_judge(manifest)
+    if isinstance(worker_verdict, dict) and "jev" in worker_verdict:
+        return _j(worker_verdict)
     with tempfile.TemporaryDirectory() as td:
         inp = Path(td) / "manifest.json"
         outp = Path(td) / "verdict.json"
@@ -2804,25 +3094,38 @@ async def kb_laya_judge(query: str, documents: str, criterion: str = "auto",
                        "evidence_pack": "",
                        "errors": [{"error": "all reference fetches failed (fail-closed)"}] + fetch_errors})
 
-    # Machine-wide guard: the in-process lock only serializes THIS instance,
-    # but every harness session runs its own kb-mcp. Two sessions judging
-    # concurrently = two GPU torch processes = the commit exhaustion that
-    # fail-closed the whole machine on 2026-09-28. The file lock (stale after
-    # 900 s = subprocess timeout + slack) makes judges strictly global.
-    jlock = _lock_path(".laya_judge.lock")
-    got_machine_lock = _acquire_file_lock(jlock, stale_s=900, poll_s=2, wait_s=600)
-    if not got_machine_lock:
-        return _j({"status": "unavailable", "real_engine": False, "survivors": [],
-                   "evidence_pack": "",
-                   "errors": [{"error": "laya_judge_busy: another session holds the "
-                                        "machine-wide judge lock (waited 600s); "
-                                        "retry once later or report the blind spot"}]})
-    try:
-        async with _laya_judge_lock:
-            raw = await asyncio.to_thread(
-                _laya_judge_impl, query, docs, criterion, threshold, 3000, max_evidence_chars)
-    finally:
-        _release_file_lock(jlock)
+    # ── 阶段 2+多任务修复：常驻 worker 优先，且**跳过机器文件锁** ──
+    # worker 内部队列天然串行（多实例判卷在同一队列排队），文件锁只为
+    # spawn 兜底路径存在。实测教训（2026-10-07 S6 并发测试）：持锁客户端
+    # 被杀会留下孤儿锁，stale 900s 窗口内全部判卷 busy——多任务场景不可接受。
+    # 锁的防显存耗尽语义由 worker 单进程 + 队列接管（2026-09-28 事故的根因
+    # 是多 GPU 子进程并发，worker 模式下不存在）。
+    manifest = {"query": query, "engine": "laya", "criterion": criterion,
+                "threshold": threshold, "max_segment_chars": 3000,
+                "max_evidence_chars": max_evidence_chars,
+                "knowledge_bases": [], "documents": docs}
+    worker_verdict = await asyncio.to_thread(_worker_judge, manifest)
+    if isinstance(worker_verdict, dict) and "jev" in worker_verdict:
+        raw = _j(worker_verdict)
+    else:
+        # Machine-wide guard（仅 spawn 兜底路径）: the in-process lock only
+        # serializes THIS instance, but every harness session runs its own
+        # kb-mcp. Two sessions judging concurrently = two GPU torch processes
+        # = the commit exhaustion that fail-closed the machine on 2026-09-28.
+        jlock = _lock_path(".laya_judge.lock")
+        got_machine_lock = _acquire_file_lock(jlock, stale_s=900, poll_s=2, wait_s=600)
+        if not got_machine_lock:
+            return _j({"status": "unavailable", "real_engine": False, "survivors": [],
+                       "evidence_pack": "",
+                       "errors": [{"error": "laya_judge_busy: another session holds the "
+                                            "machine-wide judge lock (waited 600s); "
+                                            "retry once later or report the blind spot"}]})
+        try:
+            async with _laya_judge_lock:
+                raw = await asyncio.to_thread(
+                    _laya_judge_impl, query, docs, criterion, threshold, 3000, max_evidence_chars)
+        finally:
+            _release_file_lock(jlock)
     if not include_text:
         try:
             verdict = json.loads(raw)
@@ -2870,8 +3173,53 @@ async def kb_laya_judge(query: str, documents: str, criterion: str = "auto",
 
 
 # ---------- entry ----------
+def _ensure_laya_worker(timeout_s: float = 120.0) -> bool:
+    """阶段 2：常驻判卷 worker 探活 + 分离拉起（plan：单批 10-12s → 1-2s）。
+
+    worker 独立进程跑在 backend/.venv（laya SDK + torch 所在环境），端口绑定
+    即单例锁。模型加载 ~10-40s 在启动预热里完成，第一批判卷即热。
+    """
+    import urllib.request
+    try:
+        with urllib.request.urlopen(f"{_LAYA_WORKER_URL}/health", timeout=2) as resp:
+            if resp.status == 200:
+                print(f"[kb-mcp]   laya-worker: OK ({_LAYA_WORKER_URL})", file=sys.stderr)
+                return True
+    except Exception:  # noqa: BLE001 — not running → launch
+        pass
+
+    py = Path(__file__).resolve().parents[1] / "backend" / ".venv" / "Scripts" / "python.exe"
+    me = Path(__file__).resolve()
+    if not py.exists():
+        print("[kb-mcp]   laya-worker: backend/.venv missing — skip", file=sys.stderr)
+        return False
+    print("[kb-mcp]   laya-worker: not running → launching resident worker…", file=sys.stderr)
+    flags = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW
+    import subprocess
+    subprocess.Popen(
+        [str(py), str(me.parent / "laya_worker.py")],
+        cwd=str(me.parent), creationflags=flags,
+        stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        time.sleep(3)
+        try:
+            with urllib.request.urlopen(f"{_LAYA_WORKER_URL}/health", timeout=2) as resp:
+                if resp.status == 200:
+                    print(f"[kb-mcp]   laya-worker: ready ({time.time()-deadline+timeout_s:.0f}s)", file=sys.stderr)
+                    return True
+        except Exception:  # noqa: BLE001
+            continue
+    print("[kb-mcp]   laya-worker: not ready after timeout — judges fall back to spawn", file=sys.stderr)
+    return False
+
+
 def main():
     _startup_health_check_and_launch()
+    try:
+        _ensure_laya_worker()
+    except Exception as exc:  # noqa: BLE001 — worker is an accelerator, never a blocker
+        print(f"[kb-mcp]   laya-worker: ensure failed ({exc}) — spawn fallback stays", file=sys.stderr)
     if "--http" in sys.argv:
         # SSE mode: port via KB_MCP_HTTP_PORT (the SDK FastMCP does not read
         # FASTMCP_PORT env, and 8000 collides with other dev services).

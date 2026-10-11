@@ -435,6 +435,9 @@ def filter_candidates(payload: Mapping[str, Any], *,
     real_scores = [item for item in scored if item.get("score") is not None]
     all_real = bool(real_scores) and len(real_scores) == len(scored) and not errors
     status = "ok" if all_real else ("unavailable" if not real_scores else "error")
+    # 注：2026-10-07 曾在此实验"批内中位数相对阈值"压制跨域地板段，
+    # 金标准评测显示同质克隆批次被误伤（kept 12→2），已回滚。跨域膨胀
+    # 由编排层（kb_hybrid_search 锚点校正 + pre_filtered 上报）治理。
     survivors = [item for item in scored if item.get("kept") is True and item.get("score") is not None]
     packed = aggregate_survivors(survivors, int(payload.get("max_evidence_chars", DEFAULT_EVIDENCE_CHARS)))
     return {

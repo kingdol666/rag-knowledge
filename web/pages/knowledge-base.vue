@@ -21,6 +21,10 @@
             <SettingOutlined />
             <span>{{ $t('meditation.title') }}</span>
           </a-button>
+          <a-button class="action-btn" @click="showAutomationSettings = true">
+            <ThunderboltOutlined />
+            <span>{{ $t('automation.title') }}</span>
+          </a-button>
           <a-button type="primary" class="action-btn" @click="showCreateDocDialog = true">
             <PlusOutlined />
             <span>{{ $t('kb.createDocTitle') }}</span>
@@ -473,6 +477,18 @@
     >
       <KbMeditationSettings :active-kb-id="activeKb?.kbId || ''" />
     </a-drawer>
+
+    <!-- Auto experience summary (KB automation) drawer -->
+    <a-drawer
+      v-model:open="showAutomationSettings"
+      :title="$t('automation.configTitle')"
+      placement="right"
+      :width="460"
+      class="automation-drawer"
+      destroy-on-close
+    >
+      <KbAutomationSettings :active-kb-id="activeKb?.kbId || ''" />
+    </a-drawer>
   </div>
 </template>
 
@@ -488,6 +504,7 @@ import {
   DeleteOutlined, DownOutlined,
   RightOutlined, FolderOutlined, FolderOpenOutlined,
   ExpandOutlined, ExportOutlined, SettingOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons-vue'
 import { useKbDocuments } from '~/composables/useKbDocuments'
 import type { KbDoc } from '~/composables/useKbDocuments'
@@ -528,6 +545,7 @@ const showTagsDialog = ref(false)
 const showMoveDialog = ref(false)
 const showPreviewDrawer = ref(false)
 const showMeditationSettings = ref(false)
+const showAutomationSettings = ref(false)
 const submitting = ref(false)
 const contentLoading = ref(false)
 

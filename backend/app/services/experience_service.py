@@ -462,11 +462,22 @@ class ExperienceService:
                 self._write_index(kb_path, index)
 
                 # Re-index if title/problem/solution/key_lessons changed
+                # 注意：vector_service 用 kb_id(UUID) 做 collection 命名（kb_{uuid}），
+                # 必须与 create_experience/reindex_experiences 一致地解析为 UUID，
+                # 否则会索引进错误 collection 导致更新后向量检索不到（2026-10-07 修复）
                 try:
                     from app.services.vector_service import vector_service as _vs
+                    tree = self._read_tree_fs()
+                    kb_id_for_vec = None
+                    for folder in tree.get("folders", []):
+                        if folder.get("path") == kb_path:
+                            kb_id_for_vec = folder.get("id", kb_path)
+                            break
+                    if not kb_id_for_vec:
+                        kb_id_for_vec = kb_path
                     md_content_for_index = self._generate_markdown(exp)
                     vi = _vs.index_document(
-                        kb_path, exp["path"], md_content_for_index,
+                        kb_id_for_vec, exp["path"], md_content_for_index,
                         metadata={"doc_type": "experience", "exp_id": exp_id, "scenario": exp.get("scenario", ""), "category": exp.get("category", "")}
                     )
                     if vi:

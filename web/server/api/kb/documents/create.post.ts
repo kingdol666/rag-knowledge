@@ -3,6 +3,7 @@ import { extname, basename } from 'path'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
 import { coerceKbPayload } from '~/server/utils/kb-payload'
 import { getLargeDocConfig, buildPartDescription, requestSplitPlan } from '~/server/utils/large-doc-split'
+import { notifyKbIngest } from '~/server/utils/kb-automation'
 /**
  * POST /api/kb/documents/create
  *
@@ -77,6 +78,12 @@ export default defineEventHandler(async (event) => {
           kb.id, Buffer.from(String(part.content), 'utf-8'), partName, partDesc)
         documents.push(file)
       }
+      // 自动经验总结钩子：拆分落盘 N 篇即计数 +N（fire-and-forget，fail-open）
+      notifyKbIngest(kb.id, {
+        doc_path: documents[0]?.path || '',
+        title: fileName,
+        doc_count: documents.length,
+      })
       return {
         success: true,
         split: true,
@@ -103,6 +110,9 @@ export default defineEventHandler(async (event) => {
   // uploadFile() handles: disk write + .tree-fs.json + .knowledge-base.yml (with file ID)
   const buffer = Buffer.from(content, 'utf-8')
   const file = await treeService.uploadFile(kb.id, buffer, fileName, description)
+
+  // 自动经验总结钩子（fire-and-forget，fail-open：自动化故障不阻断入库）
+  notifyKbIngest(kb.id, { doc_path: file?.path || '', title: fileName, doc_count: 1 })
 
   return { success: true, source_chars: sourceChars, document: file }
 })

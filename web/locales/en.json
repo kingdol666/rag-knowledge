@@ -1472,5 +1472,33 @@
         "notes": "Silent fallback for scheduled jobs when engines are unavailable (manual triggers never fall back)."
       }
     }
+  },
+  "automation": {
+    "title": "Auto Experience Summary",
+    "configTitle": "Auto Experience Summary",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "noKb": "Select a knowledge base on the left first",
+    "enableLabel": "Enable auto summary",
+    "enableHint": "Every {interval} documents ingested, a rolling experience summary is auto-updated (provisional, searchable and citable)",
+    "counter": "Ingest counter",
+    "nextTrigger": "Next trigger",
+    "nextTriggerValue": "at doc #{n}",
+    "triggerCount": "Summary rounds",
+    "totalDocs": "Total docs in KB",
+    "lastTrigger": "Last summary",
+    "never": "Never",
+    "summarizeNow": "Summarize now",
+    "viewSummary": "View summary",
+    "summarizeOk": "Experience summary {action}",
+    "summarizeDetail": "Round {round} · covering {docs} docs",
+    "summarizeFail": "Summary failed",
+    "actionCreated": "created",
+    "actionUpdated": "updated",
+    "historyTitle": "Summary history",
+    "historyItem": "Round {round}: {action} summary ({docs} docs)",
+    "toggleOn": "Auto experience summary enabled",
+    "toggleOff": "Auto experience summary disabled",
+    "loadFail": "Operation failed"
   }
 }
