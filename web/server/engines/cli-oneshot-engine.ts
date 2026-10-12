@@ -374,6 +374,18 @@ export class CliOneShotEngine implements ChatEngine {
   async *query(req: QueryRequest): AsyncIterable<StandardMessage> {
     const queue = new AsyncQueue<StandardMessage>()
     const state = { startTime: Date.now(), finished: false }
+    // Platform-side session id for this turn — declared before `finish`, an
+    // early error path (prompt-too-long / bad launch spec) may run first.
+    const platformSid = `oneshot-${this.name}-${state.startTime}`
+    // Live frame translation state (codex / pi / copilot emit JSONL streams
+    // whose tool events the old code threw away — only the final text survived,
+    // so the web UI never showed tool calls for these harnesses).
+    const live = {
+      engineSid: '',
+      emittedToolUse: new Set<string>(),
+      toolOutputs: new Map<string, string[]>(),
+      text: '',
+    }
     const finish = (err?: string): void => {
       if (state.finished) return
       state.finished = true
@@ -383,7 +395,7 @@ export class CliOneShotEngine implements ChatEngine {
           duration_ms: Date.now() - state.startTime, num_turns: 0,
           usage: { input_tokens: 0, output_tokens: 0 },
           stop_reason: 'error', terminal_reason: err,
-          session_id: '',
+          session_id: platformSid,
         })
       }
       queue.close()
@@ -426,11 +438,130 @@ export class CliOneShotEngine implements ChatEngine {
 
     queue.push({
       type: 'system', subtype: 'init',
-      session_id: `oneshot-${this.name}-${state.startTime}`,
+      session_id: platformSid,
       model: req.model || 'default',
       cwd: req.cwd, permissionMode: req.permissionMode,
       tools: [], mcp_servers: [], slash_commands: [],
     })
+
+    // ── live JSONL frame translation (codex / pi / copilot) ─────────────
+    // These harnesses stream structured events on stdout; tool calls and
+    // tool results are forwarded to the UI AS THEY HAPPEN (same shapes the
+    // MessageProcessor already renders for claude/omp/acp). Probed shapes:
+    //  codex   — thread.started{thread_id}; item.started/completed{item:{id,
+    //            type:command_execution|mcp_tool_call|…, aggregated_output,
+    //            exit_code, status}}; item.completed{item:{type:agent_message,text}}
+    //  pi      — OMP protocol family: message_update.assistantMessageEvent
+    //            (toolcall_end.toolCall / text_delta); message_end with
+    //            role:"toolResult"; session{id}
+    //  copilot — assistant.message_delta{deltaContent}; tool.execution_start
+    //            {toolCallId,toolName,arguments}; tool.execution_complete
+    //            {toolCallId,success,result:{detailedContent}}; result{sessionId}
+    const emitToolUse = (id: string, name: string, input: Record<string, unknown>) => {
+      if (!id || live.emittedToolUse.has(id)) return
+      live.emittedToolUse.add(id)
+      queue.push({
+        type: 'assistant',
+        message: { role: 'assistant', content: [{ type: 'tool_use', id, name: name || 'tool', input }] },
+      })
+    }
+    const emitToolResult = (id: string, content: unknown, isError: boolean) => {
+      if (!id) return
+      let text: string
+      if (typeof content === 'string') text = content
+      else if (content == null) text = ''
+      else text = JSON.stringify(content)
+      if (!text && live.toolOutputs.has(id)) text = live.toolOutputs.get(id)!.join('\n')
+      queue.push({
+        type: 'user',
+        message: { role: 'user', content: [{ type: 'tool_result', tool_use_id: id, content: text, is_error: isError }] },
+      })
+    }
+    const CODEX_TOOL_TYPES = new Set(['command_execution', 'mcp_tool_call', 'file_change', 'web_search', 'todo_list'])
+    const handleLine = (line: string): void => {
+      const t = line.trim()
+      if (!t.startsWith('{')) return
+      let ev: any
+      try { ev = JSON.parse(t) } catch { return }
+      if (!ev || typeof ev !== 'object') return
+      if (this.name === 'codex') {
+        if (ev.type === 'thread.started' && ev.thread_id) {
+          live.engineSid = String(ev.thread_id)
+        } else if (ev.type === 'item.started' && ev.item && CODEX_TOOL_TYPES.has(String(ev.item.type))) {
+          const it = ev.item
+          emitToolUse(String(it.id || ''), String(it.type), {
+            command: it.command, tool: it.tool, arguments: it.arguments,
+            path: it.path, query: it.query, status: it.status,
+          })
+        } else if (ev.type === 'item.completed' && ev.item) {
+          const it = ev.item
+          if (CODEX_TOOL_TYPES.has(String(it.type))) {
+            emitToolUse(String(it.id || ''), String(it.type), {
+              command: it.command, tool: it.tool, arguments: it.arguments,
+              path: it.path, query: it.query,
+            })
+            const failed = it.status === 'failed' || (Number(it.exit_code ?? 0) > 0)
+            emitToolResult(String(it.id || ''), it.aggregated_output ?? it.output ?? it.detailedContent ?? '', failed)
+          } else if (String(it.type) === 'agent_message' && typeof it.text === 'string' && it.text.trim()) {
+            live.text += (live.text ? '\n' : '') + it.text
+          }
+        }
+      } else if (this.name === 'pi') {
+        if (ev.type === 'session' && ev.id) {
+          live.engineSid = String(ev.id)
+        } else if (ev.type === 'message_update') {
+          const evt = ev.assistantMessageEvent || {}
+          if (evt.type === 'text_delta' && typeof evt.delta === 'string' && evt.delta) {
+            live.text += evt.delta
+            queue.push({ type: 'stream_event', event: { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: evt.delta } } })
+          } else if (evt.type === 'thinking_delta' && typeof evt.delta === 'string' && evt.delta) {
+            queue.push({ type: 'stream_event', event: { type: 'content_block_delta', index: 1, delta: { type: 'thinking_delta', thinking: evt.delta } } })
+          } else if (evt.type === 'toolcall_end' && evt.toolCall) {
+            const tc = evt.toolCall
+            emitToolUse(String(tc.id || ''), String(tc.name || 'tool'), (tc.arguments && typeof tc.arguments === 'object') ? tc.arguments : {})
+          }
+        } else if (ev.type === 'message_end' && ev.message?.role === 'toolResult') {
+          const msg = ev.message
+          const rid = String(msg.toolCallId || '')
+          emitToolUse(rid, String(msg.toolName || 'tool'), {})
+          const text = Array.isArray(msg.content)
+            ? msg.content.map((c: any) => (typeof c === 'string' ? c : (c?.type === 'text' ? c.text : ''))).filter(Boolean).join('\n')
+            : (typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content ?? ''))
+          emitToolResult(rid, text, !!msg.isError)
+        }
+      } else if (this.name === 'copilot') {
+        const data = ev.data || {}
+        if (ev.type === 'assistant.message_delta' && typeof data.deltaContent === 'string' && data.deltaContent) {
+          live.text += data.deltaContent
+          queue.push({ type: 'stream_event', event: { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: data.deltaContent } } })
+        } else if (ev.type === 'tool.execution_start') {
+          live.toolOutputs.set(String(data.toolCallId || ''), [])
+          emitToolUse(String(data.toolCallId || ''), String(data.toolName || 'tool'), (data.arguments && typeof data.arguments === 'object') ? data.arguments : {})
+        } else if (ev.type === 'tool.execution_partial_result') {
+          const id = String(data.toolCallId || '')
+          if (typeof data.partialOutput === 'string' && data.partialOutput) {
+            if (!live.toolOutputs.has(id)) live.toolOutputs.set(id, [])
+            live.toolOutputs.get(id)!.push(data.partialOutput)
+          }
+        } else if (ev.type === 'tool.execution_complete') {
+          const id = String(data.toolCallId || '')
+          emitToolResult(id, data.result?.detailedContent ?? data.result?.content ?? '', data.success === false)
+        } else if (ev.type === 'result' && ev.sessionId) {
+          live.engineSid = String(ev.sessionId)
+        }
+      }
+    }
+    let liveBuf = ''
+    const feedLive = (chunk: string): void => {
+      if (this.name !== 'codex' && this.name !== 'pi' && this.name !== 'copilot') return
+      liveBuf += chunk
+      let idx: number
+      while ((idx = liveBuf.indexOf('\n')) >= 0) {
+        const line = liveBuf.slice(0, idx)
+        liveBuf = liveBuf.slice(idx + 1)
+        handleLine(line)
+      }
+    }
 
     // ── literal-program spawn (every first argv element is a literal) ──
     const opts: SpawnOptions = {
@@ -476,7 +607,11 @@ export class CliOneShotEngine implements ChatEngine {
 
     let stdout = ''
     let stderrTail = ''
-    proc.stdout!.on('data', (c: Buffer) => { stdout += c.toString('utf8') })
+    proc.stdout!.on('data', (c: Buffer) => {
+      const s = c.toString('utf8')
+      stdout += s
+      feedLive(s)
+    })
     proc.stderr!.on('data', (c: Buffer) => {
       stderrTail = (stderrTail + c.toString('utf8')).slice(-2000)
     })
@@ -518,6 +653,10 @@ export class CliOneShotEngine implements ChatEngine {
 
     const parser = PARSERS[this.name]
     let text = parser ? parser(stdout) : stdout.trim()
+    // Live-translated streams: the streamed deltas/tool texts are the freshest
+    // view — prefer them when the batch parser came up empty (or disagrees
+    // for engines whose final frame omits the text the deltas carried).
+    if (!text && live.text.trim()) text = live.text.trim()
     // Some engines (gemini on auth/config errors) emit their JSON to stderr
     // with an empty stdout — parse that too before declaring "no output".
     if (!text && stderrTail.trim() && parser) {
@@ -536,7 +675,7 @@ export class CliOneShotEngine implements ChatEngine {
         terminal_reason: looksLikeError
           ? `engine error (exit=${exitCode}): ${text || detail}`
           : `no output (exit=${exitCode}). ${detail}`,
-        session_id: '',
+        session_id: platformSid,
       })
     } else {
       queue.push({
@@ -548,7 +687,7 @@ export class CliOneShotEngine implements ChatEngine {
         duration_ms: Date.now() - state.startTime, num_turns: 1,
         usage: { input_tokens: 0, output_tokens: 0 },
         stop_reason: 'stop', terminal_reason: 'stop',
-        session_id: '',
+        session_id: platformSid,
       })
     }
     // Close LAST — push() after close() is silently dropped by AsyncQueue.

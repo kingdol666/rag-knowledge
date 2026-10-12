@@ -1,0 +1,31 @@
+{
+ "tag": "c_a_vector_pinned",
+ "surface": "claude/chat",
+ "engine": "omp",
+ "kbEnhanced": true,
+ "kbIds": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "permissionMode": "default",
+ "prompt": "在指定知识库中回答:语言模型是如何逐步学会事实知识的?学习动力学分几个阶段,性能平台期的内部机制是什么,数据分布不均衡有何影响,为什么微调注入新知识会失败?给出出处。",
+ "http": 200,
+ "response": {
+  "success": false,
+  "engine": "omp",
+  "sessionId": "",
+  "model": "default",
+  "subtype": null,
+  "answer": "语言模型的事实知识习得不是平滑曲线，而是「三阶段 + 平台期」的学习动力学：先学通用统计 → 平台期（注意力回路成型）→ 才习得个体精确事实；平台期长短由数据分布而非模型规模决定，分布不均衡可缩短平台期但拖慢知识获取；微调注入新知识之所以失败，是早期微调会迅速擦除预训练参数记忆（灾难性遗忘）且新知识本身带幻觉。\n\n**出处**：同一篇论文——`nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md`（1–4 部分），《How do language models learn facts? Dynamics, curricula and hallucinations》（Zucchet et al., ETH Zürich / Google DeepMind），KB：计算机与人工智能。\n\n**1) 学习动力学三阶段（P0）**\n- 第一阶段：模型先学「通用属性值统计」（generic attribute value statistics），此时对个体的预测服从无个体知识的基线分布。\n- 第二阶段：**性能平台期**，性能停在一个\"理想但无个体知识的模型\"可达的水平（no-knowledge baseline），\"exhibiting a performance plateau before acquiring precise factual knowledge\"。\n- 第三阶段：才习得个体专属精确事实，并出现突然的相变式跃升（abrupt transitions / phase transitions）。\n\n**2) 平台期的内部机制（P0）**\n平台期并非算力浪费，而是**注意力回路（attention-based circuits）成型期**：\"this plateau coincides with the formation of attention-based circuits that support recall\"。证据：对 name token 的注意力在整个平台期持续上升（初始阶段显著更低），name-token extraction circuit 在平台期内逐步发展，attention patching 结果一致。论文的 credit-assignment 解释：回路建立前，前馈层收到的输入—误差相关性弱，只能走慢速捷径，因此平台化；回路建成后放大相关性，前馈联想记忆才开始快速写入。该机制不依赖注意力——把注意力换成循环结构仍成立。\n\n**3) 数据分布不均衡的影响：一个权衡（P0）**\n关键定量结论：\"plateau length scales with the frequency of the most prevalent individuals…, whereas knowledge acquisition speed primarily depends on the frequency of the least prevalent ones\"。即平台期长度由**最高频**个体决定，知识获取速度由**最低频**个体决定。\n故存在权衡：不均衡分布（提高 inverse power law 指数 α，α=0 均匀、α=1 为 Zipf）**缩短平台期但拖慢知识获取**；均匀分布反之。实验：能在 16k 步预算下最小化平台期的 α 落在 0.6–0.8（与种群规模无关，过度增大会因过拟合受损）；训练步数越少或个体数越多，最优分布越不均衡。对策——数据调度器（warm-up：先用一部分个体训练、之后全量），可同时缩短平台期并最大化最终知识量；推论是预训练早期用合成数据更划算，因为平台期结束前喂的数据不会被保留。\n\n**4) 为什么微调注入新知识失败（P0）**\n- 幻觉与知识同时出现：模型对未见的个体就\"自信地预测错误属性值\"（overconfident predictions on unseen individuals），因此微调新数据的起点是**未校准**的。\n- 早期微调**快速擦除**预训练知识：微调最初几百步内，预训练个体性能急剧崩塌，而新知识几乎没学到——\"a rapid collapse in performance on pre-training data during the initial stages of fine-tuning… with very little corresponding acquisition of new knowledge\"；微调个体越多越严重。后期虽转向学习新个体，但已损失惨重。\n- 加入预训练数据 replay 只能**部分**缓解（减缓初始崩塌、帮助恢复被破坏知识），不能消除初始下降；而在预训练数据子集上微调则不出现退化。\n- 机制解释：不是注意力模式被破坏（实测非常稳定），而是**前馈层联想记忆**被新增 key-value 对污染——用无注意力层的单隐层 MLP 做玩具联想召回任务即可复现同样现象。这正是灾难性遗忘（McCloskey & Cohen, 1989）的体现，也是实践中很少用微调来注入新参数化知识的原因（引 Jain et al. 2024；Ovadia et al. 2023；并与 Gekhman et al. 2024 一致）。\n\n**可信度**：以上全部来自同一篇论文的摘要 + §2/§3/§3.1/§3.2/§4/§5，判定为 P0 直接证据；检索仅在该库命中该文（含 4 个分片），未见其他库内文献对此问题给出独立佐证。",
+  "duration_ms": 47310,
+  "duration_api_ms": null,
+  "num_turns": 3,
+  "total_cost_usd": 0.06507299999999999,
+  "elapsed_ms": 112047
+ },
+ "answer": "语言模型的事实知识习得不是平滑曲线，而是「三阶段 + 平台期」的学习动力学：先学通用统计 → 平台期（注意力回路成型）→ 才习得个体精确事实；平台期长短由数据分布而非模型规模决定，分布不均衡可缩短平台期但拖慢知识获取；微调注入新知识之所以失败，是早期微调会迅速擦除预训练参数记忆（灾难性遗忘）且新知识本身带幻觉。\n\n**出处**：同一篇论文——`nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md`（1–4 部分），《How do language models learn facts? Dynamics, curricula and hallucinations》（Zucchet et al., ETH Zürich / Google DeepMind），KB：计算机与人工智能。\n\n**1) 学习动力学三阶段（P0）**\n- 第一阶段：模型先学「通用属性值统计」（generic attribute value statistics），此时对个体的预测服从无个体知识的基线分布。\n- 第二阶段：**性能平台期**，性能停在一个\"理想但无个体知识的模型\"可达的水平（no-knowledge baseline），\"exhibiting a performance plateau before acquiring precise factual knowledge\"。\n- 第三阶段：才习得个体专属精确事实，并出现突然的相变式跃升（abrupt transitions / phase transitions）。\n\n**2) 平台期的内部机制（P0）**\n平台期并非算力浪费，而是**注意力回路（attention-based circuits）成型期**：\"this plateau coincides with the formation of attention-based circuits that support recall\"。证据：对 name token 的注意力在整个平台期持续上升（初始阶段显著更低），name-token extraction circuit 在平台期内逐步发展，attention patching 结果一致。论文的 credit-assignment 解释：回路建立前，前馈层收到的输入—误差相关性弱，只能走慢速捷径，因此平台化；回路建成后放大相关性，前馈联想记忆才开始快速写入。该机制不依赖注意力——把注意力换成循环结构仍成立。\n\n**3) 数据分布不均衡的影响：一个权衡（P0）**\n关键定量结论：\"plateau length scales with the frequency of the most prevalent individuals…, whereas knowledge acquisition speed primarily depends on the frequency of the least prevalent ones\"。即平台期长度由**最高频**个体决定，知识获取速度由**最低频**个体决定。\n故存在权衡：不均衡分布（提高 inverse power law 指数 α，α=0 均匀、α=1 为 Zipf）**缩短平台期但拖慢知识获取**；均匀分布反之。实验：能在 16k 步预算下最小化平台期的 α 落在 0.6–0.8（与种群规模无关，过度增大会因过拟合受损）；训练步数越少或个体数越多，最优分布越不均衡。对策——数据调度器（warm-up：先用一部分个体训练、之后全量），可同时缩短平台期并最大化最终知识量；推论是预训练早期用合成数据更划算，因为平台期结束前喂的数据不会被保留。\n\n**4) 为什么微调注入新知识失败（P0）**\n- 幻觉与知识同时出现：模型对未见的个体就\"自信地预测错误属性值\"（overconfident predictions on unseen individuals），因此微调新数据的起点是**未校准**的。\n- 早期微调**快速擦除**预训练知识：微调最初几百步内，预训练个体性能急剧崩塌，而新知识几乎没学到——\"a rapid collapse in performance on pre-training data during the initial stages of fine-tuning… with very little corresponding acquisition of new knowledge\"；微调个体越多越严重。后期虽转向学习新个体，但已损失惨重。\n- 加入预训练数据 replay 只能**部分**缓解（减缓初始崩塌、帮助恢复被破坏知识），不能消除初始下降；而在预训练数据子集上微调则不出现退化。\n- 机制解释：不是注意力模式被破坏（实测非常稳定），而是**前馈层联想记忆**被新增 key-value 对污染——用无注意力层的单隐层 MLP 做玩具联想召回任务即可复现同样现象。这正是灾难性遗忘（McCloskey & Cohen, 1989）的体现，也是实践中很少用微调来注入新参数化知识的原因（引 Jain et al. 2024；Ovadia et al. 2023；并与 Gekhman et al. 2024 一致）。\n\n**可信度**：以上全部来自同一篇论文的摘要 + §2/§3/§3.1/§3.2/§4/§5，判定为 P0 直接证据；检索仅在该库命中该文（含 4 个分片），未见其他库内文献对此问题给出独立佐证。",
+ "num_turns": 3,
+ "duration_ms": 47310,
+ "cost_usd": 0.06507299999999999,
+ "session_id": "",
+ "wall_s": 112.0
+}

@@ -13,6 +13,18 @@ function normalizeDescription(value?: string | null): string | undefined {
   return text ? text : undefined
 }
 
+/**
+ * Auth header for the raw fetch() calls below. Raw fetch bypasses the global
+ * $fetch wrapper (plugins/auth-interceptor.client.ts), so on token-gated
+ * deployments every parse call 401'd ("Failed to start streaming"). Mirrors
+ * the interceptor's storage key + header shape.
+ */
+function authHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {}
+  const token = window.localStorage.getItem('kb_auth_token') || ''
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 function stripMarkdown(markdown: string): string {
   return markdown
     .replace(/```[\s\S]*?```/g, ' ')
@@ -90,7 +102,8 @@ export function usePDFParser() {
     const response = await fetch('/api/parse/save-parsed-files', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...authHeaders()
       },
       // split: true — 解析直存 KB 场景显式启用大文档拆分（>ingestion.large_doc.
       // max_chars 时拆为 part 文档）；中转/批量管线的保存不带此标志即整篇暂存。
@@ -131,6 +144,7 @@ export function usePDFParser() {
 
     const response = await fetch('/api/parse/file-vt', {
       method: 'POST',
+      headers: authHeaders(),
       body: formData
     })
 
@@ -167,6 +181,7 @@ export function usePDFParser() {
 
     const response = await fetch('/api/parse/batch-file-vt', {
       method: 'POST',
+      headers: authHeaders(),
       body: formData
     })
 
@@ -217,6 +232,7 @@ export function usePDFParser() {
       try {
         const response = await fetch('/api/parse/batch-file-vt-stream', {
           method: 'POST',
+          headers: authHeaders(),
           body: formData,
           signal: controller.signal
         })

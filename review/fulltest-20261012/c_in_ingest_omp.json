@@ -1,0 +1,31 @@
+{
+ "tag": "c_in_ingest_omp",
+ "surface": "claude/chat",
+ "engine": "omp",
+ "kbEnhanced": true,
+ "kbIds": [
+  "7e70e4d8-6ae4-4beb-b298-1cfe29675da0"
+ ],
+ "permissionMode": "bypassPermissions",
+ "prompt": "请在知识库「fulltest-e2e-20261012-112507」(kbId=7e70e4d8-6ae4-4beb-b298-1cfe29675da0)新建文档《青鸾-7 复测纪要-C》,内容如下:\n\n# 青鸾-7 复测纪要\n\n第四标定段复测谐振阈值 47.4 MHz,漂移 +0.1 MHz,已启用补偿系数 0.0837。复测人: 沈砚。\n\n完成后确认向量索引就绪。",
+ "http": 200,
+ "response": {
+  "success": false,
+  "engine": "omp",
+  "sessionId": "",
+  "model": "default",
+  "subtype": null,
+  "answer": "已创建并完成索引：文档《青鸾-7 复测纪要-C》已落库于 fulltest-e2e-20261012-112507，向量索引就绪且可检索。\n\n**创建结果**\n- 路径：`fulltest-e2e-20261012-112507\\青鸾-7 复测纪要-C.md`，doc_id `3ba2c016-93ff-42af-b060-1b584df6408d`，140 bytes，内容为单块正文（无标题截断）：\n\n> `# 青鸾-7 复测纪要`\n> `第四标定段复测谐振阈值 47.4 MHz，漂移 +0.1 MHz，已启用补偿系数 0.0837。复测人: 沈砚。`\n\n**索引就绪确认（强制 `kb_index_document` + 检索回读双重验证）**\n- `vector_index`：collection `kb_7e70e4d8-6ae4-4beb-b298-1cfe29675da0`，`total_chunks: 1`，embedding `bge-m3`，`indexed_at 2026-10-12T03:48:04Z`；graph_doc_id `doc::fulltest-e2e-20261012-112507/青鸾-7 复测纪要-C.md`。\n- `kb_get_documents`：库内 count=3，该文档已带 `vector_index` 块列出（同批：蓝鹊-47 试验记录、灰隼-19 校准报告）。\n- `kb_search_two_stage`（query：青鸾-7 复测纪要 谐振阈值 47.4 MHz 补偿系数 0.0837 沈砚，top_k=10）：stage1 keyword 命中该文档 top-1（55.66），stage2 召回排名第 1（score **0.9146**），chunk_index 0，内容与写入一致。\n\n**一项需知悉的库内事实（非本次写入问题）**：同库《蓝鹊-47 试验记录》记「青鸾-7 传感阵列在第四标定段的谐振阈值为 **47.3 MHz**，漂移补偿系数 0.0837，试验负责人: 沈砚」（P0 直接引文）。新纪要 C 的 47.4 MHz（漂移 +0.1 MHz）与该基线值构成 0.1 MHz 差异——两者均为库内原文，未做覆盖或修改；如需统一口径请另行指示是否修订《蓝鹊-47 试验记录》。",
+  "duration_ms": 41890,
+  "duration_api_ms": null,
+  "num_turns": 5,
+  "total_cost_usd": 0.040077,
+  "elapsed_ms": 74551
+ },
+ "answer": "已创建并完成索引：文档《青鸾-7 复测纪要-C》已落库于 fulltest-e2e-20261012-112507，向量索引就绪且可检索。\n\n**创建结果**\n- 路径：`fulltest-e2e-20261012-112507\\青鸾-7 复测纪要-C.md`，doc_id `3ba2c016-93ff-42af-b060-1b584df6408d`，140 bytes，内容为单块正文（无标题截断）：\n\n> `# 青鸾-7 复测纪要`\n> `第四标定段复测谐振阈值 47.4 MHz，漂移 +0.1 MHz，已启用补偿系数 0.0837。复测人: 沈砚。`\n\n**索引就绪确认（强制 `kb_index_document` + 检索回读双重验证）**\n- `vector_index`：collection `kb_7e70e4d8-6ae4-4beb-b298-1cfe29675da0`，`total_chunks: 1`，embedding `bge-m3`，`indexed_at 2026-10-12T03:48:04Z`；graph_doc_id `doc::fulltest-e2e-20261012-112507/青鸾-7 复测纪要-C.md`。\n- `kb_get_documents`：库内 count=3，该文档已带 `vector_index` 块列出（同批：蓝鹊-47 试验记录、灰隼-19 校准报告）。\n- `kb_search_two_stage`（query：青鸾-7 复测纪要 谐振阈值 47.4 MHz 补偿系数 0.0837 沈砚，top_k=10）：stage1 keyword 命中该文档 top-1（55.66），stage2 召回排名第 1（score **0.9146**），chunk_index 0，内容与写入一致。\n\n**一项需知悉的库内事实（非本次写入问题）**：同库《蓝鹊-47 试验记录》记「青鸾-7 传感阵列在第四标定段的谐振阈值为 **47.3 MHz**，漂移补偿系数 0.0837，试验负责人: 沈砚」（P0 直接引文）。新纪要 C 的 47.4 MHz（漂移 +0.1 MHz）与该基线值构成 0.1 MHz 差异——两者均为库内原文，未做覆盖或修改；如需统一口径请另行指示是否修订《蓝鹊-47 试验记录》。",
+ "num_turns": 5,
+ "duration_ms": 41890,
+ "cost_usd": 0.040077,
+ "session_id": "",
+ "wall_s": 74.6
+}

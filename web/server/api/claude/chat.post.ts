@@ -678,7 +678,22 @@ export default defineEventHandler(async (event) => {
 
       for await (const message of q) {
         if (message.type === 'system' && message.subtype === 'init') {
-          sessionId = (message as any).session_id || ''
+          const engineSid = (message as any).session_id || ''
+          // server-replay engines (acp / one-shot CLIs) mint a FRESH per-process
+          // session id every turn — persisting under it would fragment one
+          // conversation into per-turn history rows and buildHistory(resume)
+          // would only ever see the last turn. Pin persistence to the caller's
+          // resume id so one conversation = one history row. Native-session
+          // engines (claude sdk / omp rpc) keep their own id.
+          sessionId = (chatMeta?.historyMode === 'server-replay' && resume)
+            ? resume
+            : engineSid
+          // Keep the frame the frontend sees consistent with the pinned id —
+          // claude-chat.vue seeds currentSessionId (→ next turn's resume) from
+          // this very frame.
+          if (sessionId && sessionId !== engineSid) {
+            ;(message as any).session_id = sessionId
+          }
           upsertSession(sessionId, {
             title: resume ? undefined : prompt.slice(0, 100),
             cwd: workCwd,
