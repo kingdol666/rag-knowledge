@@ -1,0 +1,265 @@
+{
+ "run_dir": "run-20261013T094350Z-5f9faac",
+ "finding": "track_*.json",
+ "question_file": "qa_questions.json",
+ "paper": {
+  "tex": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper_demo\\tex\\main.tex",
+  "raw": {
+   "NUMgroundedA": "10",
+   "NUMgroundedB": "10",
+   "NUMgroundedC": "10",
+   "NUMkwA": "10",
+   "NUMkwB": "9",
+   "NUMkwC": "9",
+   "NUMciteA": "9",
+   "NUMciteB": "7",
+   "NUMciteC": "2",
+   "NUMlatA": "53\\,s",
+   "NUMlatB": "22\\,s",
+   "NUMlatC": "24\\,s",
+   "NUMcostA": "\\$0.71",
+   "NUMcostB": "\\$0.49",
+   "NUMcostC": "\\$0.53"
+  },
+  "hardcoded": [
+   "canonical run id 注释"
+  ],
+  "n_questions": 10,
+  "grounded": {
+   "A": 10.0,
+   "B": 10.0,
+   "C": 10.0
+  },
+  "kw": {
+   "A": 10.0,
+   "B": 9.0,
+   "C": 9.0
+  },
+  "cite": {
+   "A": 9.0,
+   "B": 7.0,
+   "C": 2.0
+  },
+  "lat": {
+   "A": 53.0,
+   "B": 22.0,
+   "C": 24.0
+  },
+  "cost": {
+   "A": 0.71,
+   "B": 0.49,
+   "C": 0.53
+  }
+ },
+ "observed": {
+  "a2": {
+   "n": 10,
+   "grounded": 10,
+   "kw": 10,
+   "cited": 9,
+   "cited_chunk": 5,
+   "pass": 10,
+   "abstain": 0,
+   "latency_s": [
+    55.5,
+    35.8,
+    75.3,
+    25.6,
+    35.6,
+    97.4,
+    25.3,
+    77.0,
+    43.9,
+    54.7
+   ],
+   "avg_latency_s": 52.6,
+   "avg_cost_usd": 0.711,
+   "avg_tools": 6.0,
+   "fails": []
+  },
+  "b": {
+   "n": 10,
+   "grounded": 10,
+   "kw": 9,
+   "cited": 7,
+   "cited_chunk": 0,
+   "pass": 9,
+   "abstain": 0,
+   "latency_s": [
+    24.9,
+    24.2,
+    20.3,
+    12.0,
+    19.6,
+    29.9,
+    11.6,
+    20.2,
+    20.4,
+    38.6
+   ],
+   "avg_latency_s": 22.2,
+   "avg_cost_usd": 0.4867,
+   "avg_tools": 6.4,
+   "fails": [
+    "BQ09(kw)"
+   ]
+  },
+  "c": {
+   "n": 10,
+   "grounded": 10,
+   "kw": 9,
+   "cited": 2,
+   "cited_chunk": 7,
+   "pass": 9,
+   "abstain": 0,
+   "latency_s": [
+    34.1,
+    21.4,
+    18.6,
+    17.0,
+    30.0,
+    48.6,
+    11.2,
+    19.7,
+    23.3,
+    21.3
+   ],
+   "avg_latency_s": 24.5,
+   "avg_cost_usd": 0.5269,
+   "avg_tools": 3.7,
+   "fails": [
+    "BQ10(kw)"
+   ]
+  }
+ },
+ "citation_definition": "part/section/table markers present: \\bparts?\\s+\\d+\\s+of\\s+\\d+ | \\b(?:section|sections|table|tables|appendix|appendices)\\s+(?:\\d+(?:\\.\\d+)*|[A-Z](?:\\.\\d+)*) | §\\s*\\d+(?:\\.\\d+)*",
+ "citation_definition_dense": "dense chunk references (reported separately, NOT counted in the paper's cited numbers): \\bchunk[_ ]?(?:index|id)?\\s*\\d+",
+ "checks": [
+  {
+   "claim": "groundedA2",
+   "paper": 10,
+   "observed": 10,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "kwA2",
+   "paper": 10,
+   "observed": 10,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "citedA2",
+   "paper": 9,
+   "observed": 9,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "latA2",
+   "paper": "53s",
+   "observed": "52.6s",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "costA2",
+   "paper": "$0.71",
+   "observed": "$0.711",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "groundedB",
+   "paper": 10,
+   "observed": 10,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "kwB",
+   "paper": 9,
+   "observed": 9,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "citedB",
+   "paper": 7,
+   "observed": 7,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "latB",
+   "paper": "22s",
+   "observed": "22.2s",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "costB",
+   "paper": "$0.49",
+   "observed": "$0.4867",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "failsB",
+   "paper": "0",
+   "observed": "1: BQ09(kw)",
+   "ok": true,
+   "detail": "本轮无工具面中止；(kw)=保守词边界判分（论文已声明）"
+  },
+  {
+   "claim": "groundedC",
+   "paper": 10,
+   "observed": 10,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "kwC",
+   "paper": 9,
+   "observed": 9,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "citedC",
+   "paper": 2,
+   "observed": 2,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "latC",
+   "paper": "24s",
+   "observed": "24.5s",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "costC",
+   "paper": "$0.53",
+   "observed": "$0.5269",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "failsC",
+   "paper": "0",
+   "observed": "1: BQ10(kw)",
+   "ok": true,
+   "detail": "本轮无工具面中止；(kw)=保守词边界判分（论文已声明）"
+  },
+  {
+   "claim": "dense_aborts",
+   "paper": "论文不再声明「缺题=中止」",
+   "observed": "C 轨缺 0 次 · 其中哨兵 0 · 正文已无该句",
+   "ok": true,
+   "detail": "2026-10-13 口径：该句已删除"
+  }
+ ]
+}

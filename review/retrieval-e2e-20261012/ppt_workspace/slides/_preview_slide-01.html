@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>slide-01</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 960pt; height: 540pt; background: #FAF9F6; }
+  p, h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }
+  .px { font-family: "Microsoft YaHei", "微软雅黑", sans-serif; }
+  .serif { font-family: "SimSun", "宋体", Georgia, serif; }
+  .num { font-family: Georgia, "Times New Roman", serif; }
+</style>
+</head>
+<body>
+
+  <!-- ============ 暖学术签名 ============ -->
+  <div style="position:absolute; left:0; top:0; width:960pt; height:2pt; background:#1B2A4A;"></div>
+  <div style="position:absolute; left:0; top:525pt; width:960pt; height:1pt; background:#E5E0D8;"></div>
+  <div style="position:absolute; left:600pt; top:12pt; width:320pt; text-align:right;">
+    <p class="num" style="font-size:8pt; line-height:1.4; color:#6B6760;">commit 5f9faac · review/retrieval-e2e-20261012</p>
+  </div>
+  <div style="position:absolute; left:880pt; top:522pt; width:52pt; text-align:right;">
+    <p class="num" style="font-weight:bold; font-size:10pt; line-height:1.4; color:#C8963E;">01</p>
+  </div>
+
+  <!-- ============ 左栏 58% ============ -->
+  <div style="position:absolute; left:40pt; top:36pt; width:496pt;">
+    <div style="display:inline-block; background:#1B2A4A; border-radius:2pt; padding:3pt 9pt 4pt 9pt;">
+      <p class="px" style="font-size:8.5pt; line-height:1.35; color:#FFFFFF;">BENCHMARK 实测报告 · 2026-10-12</p>
+    </div>
+  </div>
+
+  <div style="position:absolute; left:40pt; top:66pt; width:496pt;">
+    <h1 class="serif" style="font-weight:bold; font-size:24pt; line-height:1.30; color:#1B2A4A;">三种检索模式端到端实测</h1>
+    <h1 class="serif" style="font-weight:bold; font-size:24pt; line-height:1.30; color:#1B2A4A;">A/C 车道全绿，B 车道暴露 <span style="color:#C8963E;">1 个系统性盲区</span></h1>
+  </div>
+
+  <div style="position:absolute; left:40pt; top:142pt; width:60pt; height:2.5pt; background:#C8963E;"></div>
+
+  <!-- 三条实验设计 -->
+  <div style="position:absolute; left:40pt; top:158pt; width:496pt;">
+
+    <div style="position:relative; padding-left:22pt; margin-bottom:16pt;">
+      <div style="position:absolute; left:0; top:0; width:20pt;">
+        <p class="num" style="font-weight:bold; font-size:11pt; line-height:1.35; color:#C8963E;">01</p>
+      </div>
+      <p class="px" style="font-size:10pt; line-height:1.55; color:#1E1D1A;"><span style="font-weight:bold; color:#1B2A4A;">问题集 =</span> 3 题同题集：cm1 InstructDS 对话摘要数据合成（金标 arXiv:2310.10981，库=计算机与人工智能，131 文档）；cm2 EHR 中风预测（金标 arXiv:1904.11280，库=生命科学与医学，53 文档）；cm3 Herbert-Moulton collider 为域外题——全库无覆盖，应如实拒答。</p>
+    </div>
+
+    <div style="position:relative; padding-left:22pt; margin-bottom:16pt;">
+      <div style="position:absolute; left:0; top:0; width:20pt;">
+        <p class="num" style="font-weight:bold; font-size:11pt; line-height:1.35; color:#C8963E;">02</p>
+      </div>
+      <p class="px" style="font-size:10pt; line-height:1.55; color:#1E1D1A;"><span style="font-weight:bold; color:#1B2A4A;">三通道 =</span> 全部经官方对外 API（POST /api/claude/chat，engine=claude，kbEnhanced=true），与外部调用方完全同构：harness 流式 SSE 逐工具时间线 9 跑；exp --chatmodes 非流式系统臂 9 跑机器门禁；exp --retmodes 纯检索矩阵 12 跑（3 模式 + 3 baseline，无 LLM 回答）。</p>
+    </div>
+
+    <div style="position:relative; padding-left:22pt; margin-bottom:0;">
+      <div style="position:absolute; left:0; top:0; width:20pt;">
+        <p class="num" style="font-weight:bold; font-size:11pt; line-height:1.35; color:#C8963E;">03</p>
+      </div>
+      <p class="px" style="font-size:10pt; line-height:1.55; color:#1E1D1A;"><span style="font-weight:bold; color:#1B2A4A;">门禁口径 =</span> 拒答优先修正版——原 marker 门只查是否含金标词，会被“拒答复述问题关键词”欺骗（拒答文本含 InstructDS 即误判 PASS）；修正后统一取结论窗口前 500 字，通道1 8/9 · 通道2 8/9 · 通道3 金标 12/12。</p>
+    </div>
+
+  </div>
+
+  <!-- 四个关键数字横排 -->
+  <div style="position:absolute; left:40pt; top:402pt; width:496pt; height:1pt; background:#E5E0D8;"></div>
+  <div style="position:absolute; left:40pt; top:414pt; width:496pt; display:flex; align-items:flex-start;">
+
+    <div style="width:120pt;">
+      <p class="num" style="font-weight:bold; font-size:22pt; line-height:1.15; color:#1B2A4A;">30</p>
+      <p class="px" style="font-size:8pt; line-height:1.40; color:#6B6760;">个真实检索臂<br>（通道 9+9+12 跑）</p>
+    </div>
+
+    <div style="width:120pt;">
+      <p class="num" style="font-weight:bold; font-size:13pt; line-height:1.75; padding-top:4pt; color:#1B2A4A;">8/9 · 8/9 · 12/12</p>
+      <p class="px" style="font-size:8pt; line-height:1.40; color:#6B6760;">三通道门禁<br>（拒答优先口径）</p>
+    </div>
+
+    <div style="width:120pt;">
+      <p class="num" style="font-weight:bold; font-size:22pt; line-height:1.15; color:#C8963E;">13–54×</p>
+      <p class="px" style="font-size:8pt; line-height:1.40; color:#6B6760;">历史提速（B/C 车道）<br>09-26 → 10-12</p>
+    </div>
+
+    <div style="width:136pt;">
+      <p class="num" style="font-weight:bold; font-size:18pt; line-height:1.40; padding-top:1pt; color:#1B2A4A;">$0.18–0.30</p>
+      <p class="px" style="font-size:8pt; line-height:1.40; color:#6B6760;">成本/题 · 通道2 均值<br>（0.182 / 0.300 / 0.219）</p>
+    </div>
+
+  </div>
+
+  <!-- ============ 右栏 42% ============ -->
+  <img src="../garden-gpt-image-2/image/p01_cover.png" style="position:absolute; left:560pt; top:40pt; width:360pt; height:202.5pt; background:#F2F0EB; border:1pt dashed #D8D2C6;; object-fit:cover; border:none;">
+
+  <div style="position:absolute; left:560pt; top:250pt; width:360pt;">
+    <p class="px" style="font-size:8pt; line-height:1.50; color:#6B6760;">图 1 ｜ 三条并行检索车道各自携带数据点流，汇入同一座知识库建筑；其中一条车道末端设“裁决”节点 = Laya 判卷引擎。概念示意，非数据图。</p>
+  </div>
+
+  <div style="position:absolute; left:560pt; top:288pt; width:360pt; height:1pt; background:#E5E0D8;"></div>
+
+  <div style="position:absolute; left:560pt; top:296pt; width:360pt;">
+    <p class="px" style="font-size:8.5pt; font-weight:bold; line-height:1.45; color:#1B2A4A;">三车道执行流（通道1 实测 · SSE 逐工具还原）</p>
+  </div>
+
+  <div style="position:absolute; left:560pt; top:318pt; width:360pt;">
+
+    <div style="position:relative; padding-left:16pt; margin-bottom:9pt;">
+      <div style="position:absolute; left:0; top:0; width:14pt;">
+        <p class="num" style="font-weight:bold; font-size:10pt; line-height:1.45; color:#C8963E;">A</p>
+      </div>
+      <p class="px" style="font-size:9pt; line-height:1.45; color:#1E1D1A;">kb_search_two_stage + kb_search_vector 并行宽网（0.8–1.0s）→ kb_laya_judge 判卷 + kb_doc_read 全文（并行 9–10s）→ 作答（55.7 / 48.8 / 36.4s）</p>
+    </div>
+
+    <div style="position:relative; padding-left:16pt; margin-bottom:9pt;">
+      <div style="position:absolute; left:0; top:0; width:14pt;">
+        <p class="num" style="font-weight:bold; font-size:10pt; line-height:1.45; color:#C8963E;">B</p>
+      </div>
+      <p class="px" style="font-size:9pt; line-height:1.45; color:#1E1D1A;">kb_list 全库目录 → kb_get_documents 描述层扫描 → kb_laya_judge 判卷；cm1 兜底 kb_search_vector 挂起 300.0s</p>
+    </div>
+
+    <div style="position:relative; padding-left:16pt; margin-bottom:0;">
+      <div style="position:absolute; left:0; top:0; width:14pt;">
+        <p class="num" style="font-weight:bold; font-size:10pt; line-height:1.45; color:#C8963E;">C</p>
+      </div>
+      <p class="px" style="font-size:9pt; line-height:1.45; color:#1E1D1A;">宽网并行 → kb_laya_judge → kb_doc_read；证据不足补 kb_list 逐级核查（cm3 判 36 段后如实拒答，65.0s）</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

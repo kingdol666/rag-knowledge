@@ -1,0 +1,1665 @@
+{
+ "mode": "B",
+ "ok": true,
+ "seconds": 20.2,
+ "wall_s": 20.2,
+ "real_engine": true,
+ "status": "ok",
+ "n_result_docs": 35,
+ "kept_doc_paths": [
+  "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+  "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+  "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+  "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+  "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+  "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+  "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 3 of 3).md",
+  "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+  "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 12 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+  "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 3 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+  "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+  "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 2 of 2).md",
+  "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+  "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+  "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+  "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 4 of 5).md",
+  "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 5 of 5).md"
+ ],
+ "judge": {
+  "backend": "laya_sdk",
+  "engine": "laya",
+  "criterion": "evidence",
+  "candidates": 233,
+  "scored": 233,
+  "survivors_kept": 199,
+  "errors": []
+ },
+ "trace": {
+  "mcp_calls": 36,
+  "l0_kbs": 20,
+  "l1_kept_shelves": [
+   "工程与能源"
+  ],
+  "l2_docs": 39,
+  "l3_untrusted": 0,
+  "l4_overlap_docs": 39,
+  "l4_docs_read": 35,
+  "l4_trust_heads": 0,
+  "unscanned_count": 4
+ },
+ "evidence_pack": "[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md]\n# materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs（第 1/2 部分）\n章节: Dynamic electrical behavior of halide perovskite based solar cells\n# Dynamic electrical behavior of halide perovskite based solar cells\n\n\nG. A. Nemnesa,b,\\*, Cristina Besleagac, A. G. Tomulescu, Ioana Pintiliec, L. Pintiliec, K. Torfasond, A. Manolescud\n\naUniversity of Bucharest, Faculty of Physics, Materials and Devices for Electronics and Optoelectronics Research Center, 077125 Magurele-Ilfov, Romania\n\nbHoria Hulubei National Institute for Physics and Nuclear Engineering, 077126 Magurele-Ilfov, Romania\n\ncNational Institute of Materials Physics, Magurele 077125, Ilfov, Romania\n\ndSchool of Science and Engineering, Reykjavik University, Menntavegur 1, IS-101 Reykjavik, Iceland\n\n## Abstract\n\n\nA dynamic electrical model is introduced to investigate the hysteretic effects in the J-V characteristics of perovskite based solar cells. By making a simple ansatz for the polarization relaxation, our model is able to reproduce qualitatively and quantitatively detailed features of measured J-V characteristics. Pre-poling effects are discussed, pointing out the differences between initially over- and under-polarized samples. In particular, the presence of the current overshoot observed in the reverse characteristics is correlated with the solar cell pre-conditioning. Furthermore, the dynamic hysteresis is analyzed with respect to changing the bias scan rate, the obtained results being consistent with experimentally reported data: the hysteresis amplitude is maximum at intermediate scan rates, while at very slow and very fast ones it becomes negligible. The effects induced by different relaxation time scales are assessed. The proposed dynamic electrical model offers a comprehensive view of the solar cell operation, being a practical tool for future calibration of tentative microscopic descriptions\n\n## 1. Introduction\n\n\nThe rapid increase of power conversion efficiencies (PCEs) in hybrid organic-inorganic solar cells based on halide perovskites received a lot of attention recently [1, 2, 3, 4, 5]. Hybrid lead halides are regarded as one of the most promising class of materials for photovoltaic applications, due to their high optical absorption coefficient [6], large diffusion lengths for both electrons and holes [7], while the band gap may be tuned by changing the halogen composition towards an optimum range [8, 9]. Moreover, halide perovskites layers may be obtained by low temperature solution processing techniques, which make them suitable for integration in flexible plastic substrates [10].\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md]\nWhile the high PCEs and potentially low production costs are important assets, a number of challenges and open questions still need to be addressed. These concern especially the solar cell stability under ambient conditions [11], a better understanding of the device operation, and the optimization of the perovskite/substrate interface [12, 13]. Furthermore, the J-V characteristics typically display hysteresis when measured under forward (short-circuit to open-circuit bias) and reverse bias scans [14, 15, 16, 17, 18, 19]. This behavior is usually influenced by the solar cell pre-conditioning and the bias sweeping rate (BSR). The hysteretic effects pose a significant challenge for determining the PCE of the solar cell, but they may also provide information regarding transport and polarization mechanisms.\n\nThe hysteresis of the dynamic J-V characteristic is also known for other types of solar cells, but only when the voltage sweep is fast [20], whereas in perovskite cells it is obtained at sweep rates of Volt per minute. The origin of this anomalous hysteresis is still under debate and has been attributed to different phenomena, such as a giant photoinduced dielectric response [21], ferroelectric effects [17, 22, 33], ion migration [18, 23] possibly accompanied by charge trapping and detrapping [14], or unbalanced distributions of electrons and holes [7, 24, 25].\n\nIt is a well known fact that variations between the J-V characteristics under forward and reverse bias scans arise in the presence of a large capacitance, for a high BSR. In forward scan, a fraction of the photo-generated current charges the built-in capacitor, leading to smaller values in the current than in reverse scan, when the capacitor releases the charges, leading to relatively larger PCEs. In perovskite solar cells a slow decay of the photovoltage was observed and initially related to capacitive effects introduced by a giant photoinduced dielectric constant [21]. Ferroelectricity is another potential cause considered for the observed hysteresis. Yet it is a controversial hypothesis, as the time-scales involved are typically below ms [26], which lends the idea of microscopic ferroelectricity [27]. It is important to note, however, that capacitive effects alone cannot reproduce different pre-conditioning effects induced by initial light soaking and pre-poling by different biases [19].\n\nAs was later found, the capacitive effects are quite independent on the thickness of the perovskite layer, which suggests that the induced polarization is related to interfacial properties [28], including ion accumulations near the electrodes. Trapping and de-trapping processes near the interfaces and grain boundaries are also thought to play a role in the hysteretic behavior [14].\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md]\n![](images/6ff3f2b44e611015a2d0d6e7ace1f46b3cd9c232bd0f8331405ea2ff48e798e3.jpg)  \nFigure 1: Dynamic electrical model of the solar cell. The basic elements are: the current source, a diode with ideality factor n, the shunt and series resistances and the capacitance, which is here introduced by a polarization mechanism.\n\nMore recently the ionic migration mechanism is gaining ground. The perovskite being known as a ionic conductor, Tress et al. [18] argued for a non-electronic reason for the hysteresis, based on several observations, such as: relaxation time scales between seconds to minutes, strong dependence on BSR and temperature, or counterbalancing of the polarization for applied voltages of relatively high negative values. A recently proposed drift-diffusion model taking into account ionic migration however shows that the observed hysteretic behavior may be obtained only by including electronic charge traps, serving as recombination centers [29].\n\nThe paper is structured as follows. In Section 2, the dynamic electrical model is introduced in form of an equivalent circuit model specified by a given ansatz for the polarization relaxation, which is calibrated on measured J-V characteristics. A brief description of the experimental device structures and methods is also indicated. Section 3 presents simulated J-V characteristics compared to experimental data, describing the hysteretic effects, which are influenced by solar cell preconditioning and bias scan rate. The analysis is focused on the variation of the polarization in time, assuming a certain relaxation time scale. Furthermore the influence of different relaxation time scales is investigated. Conclusions are collected in Section 4.\n\n## 2. Model and Methods\n\n## 2.1. The standard dynamic electrical model\n\n\nIn the standard dynamic electrical model the solar cell is described by the equivalent electric circuit depicted in Fig. 1. The common elements also found in the static model are: the current source, i. e. the photocurrent $I _ { p h } .$ , defined by the number of electron-hole pairs generated per time unit; the diode, with the ideality factor $n ;$ the shunt resistance $R _ { s h } .$ which accounts for the recombination processes; the series resistance $R _ { s } ,$ representing the resistance of the active layers and the contacts. In addition to the static model, a parallel capacitance C is present, which is generally responsible for dynamically non-equivalent forward and reverse bias scans.\n\nThe current-voltage characteristics of the solar cell under illumination, written for the first quadrant $( I > 0 )$ , is found from :\n\n$$\nI _ { p h } = I _ { d } + I _ { s h } + I _ { c } + I ,\\tag{1}\n$$\n\nwhere I is the current in the external circuit at applied bias V and\n\n$$\n\\begin{array} { r l r } { I _ { d } } & { { } = } & { I _ { s } \\left( e ^ { \\frac { q ( V + I R _ { s } ) } { n k _ { B } T } } - 1 \\right) , } \\end{array}\\tag{2}\n$$\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md]\n$$\nI _ { s h } = { \\frac { V + I R _ { s } } { R _ { s h } } } ,\\tag{3}\n$$\n\n$$\nI _ { c } = C \\frac { \\partial ( V + I R _ { s } ) } { \\partial t } + ( V + I R _ { s } ) \\frac { \\partial C } { \\partial t } ,\\tag{4}\n$$\n\nwhere $I _ { s }$ is the reverse saturation current of the diode with ideality factor n $( n = 1$ for an ideal diode), and $k _ { B }$ is Boltzmann's constant. In general we assume the quantities $I = I ( t ) , V = V ( t )$ and $C = C ( t )$ are time-dependent.\n\nOne obtains the following first order differential equation for the I(t):\n\n$$\n\\begin{array} { r c l } { \\displaystyle - R _ { s } C \\frac { \\partial I } { \\partial t } } & { = } & { \\displaystyle I _ { s } \\left( e ^ { \\frac { q ( V + I R _ { s } ) } { n _ { B } T } } - 1 \\right) } \\\\ { \\displaystyle } & { + } & { \\displaystyle \\left( \\frac { R _ { s } } { R _ { s h } } + R _ { s } \\frac { \\partial C } { \\partial t } + 1 \\right) I } \\\\ { \\displaystyle } & { + } & { \\displaystyle \\frac { V } { R _ { s h } } + C \\frac { \\partial V } { \\partial t } + V \\frac { \\partial C } { \\partial t } - I _ { p h } ~ . } \\end{array}\\tag{5}\n$$\n\nAssuming a certain initial condition $I ( t = 0 )$ one can find the time-dependent behavior of the current under forward and reverse bias sweeps introduced by $V ( t )$\n\nIn the case of a negligible capacitance $( C = 0 )$ one recovers the characteristic equation of the static model:\n\n$$\n\\left( \\frac { R _ { s } } { R _ { s h } } + 1 \\right) I + I _ { s } \\left( e ^ { \\frac { q \\left( V + I R _ { s } \\right) } { n k _ { B } T } } - 1 \\right) + \\frac { V } { R _ { s h } } - I _ { p h } = 0 .\\tag{6}\n$$\n\n## 2.2. Modeling the capacitor current\n\n\nMore generally we may express the displacement current $I _ { c }$ in equation (4) as:\n\n$$\nI _ { c } = \\mathcal { A } \\frac { \\partial D ( t ) } { \\partial t } = \\mathcal { A } \\epsilon _ { 0 } \\frac { \\partial E ( t ) } { \\partial t } + \\mathcal { A } \\frac { \\partial P ( t ) } { \\partial t } ,\\tag{7}\n$$\n\nwhere $D ( t ) = \\epsilon _ { 0 } E ( t ) + P ( t )$ , €0 being the vacuum permittivity, and A is the device area. Similarly to the interface polarization model proposed in Ref. [30] we may further split $P ( t )$ into a linear term with respect to the electric field, $\\begin{array} { r } { P _ { l } ( t ) = \\epsilon _ { 0 } \\chi _ { l } E ( t ) . } \\end{array}$ and a non-linear contribution arising from various complex polarization mechanisms in the active medium, $P _ { n l } ( t )$ . Indeed, the nonlinear polarization is a result of a nonlinear response of the charge to the combined effect of light and electric field inside the device or at the interfaces with the electrodes. The microscopic origin of it is however beyond the scope of our paper.\n\nAssuming the planar capacitor has a typical distance d between the plates, we reformulate Eq. (4) as\n\n$$\nI _ { c } = C _ { 0 } \\frac { \\partial U _ { c } ( t ) } { \\partial t } + \\mathcal { A } \\frac { \\partial P _ { n l } ( t ) } { \\partial t } ,\\tag{8}\n$$\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md]\nwhere $C _ { 0 } = \\epsilon \\mathcal { R } / d$ is a constant geometrical capacitance, which captures the linear polarization via the dielectric constant of the material $\\epsilon = ( 1 + \\chi _ { l } ) \\epsilon _ { 0 }$ , and $U _ { c } = V + I R _ { s }$ is the bias on the capacitor. For the two terms in Eq. (8) we introduce the notations $\\dot { I } _ { c } ^ { ( l ) } = C _ { 0 } \\partial U _ { c } ( t ) / \\partial t$ and $I _ { c } ^ { ( n l ) } = \\dot { \\mathcal { A } } \\times \\partial P _ { n l } ( t ) / \\partial t$\n\nEq. (5) then becomes:\n\n$$\n\\begin{array} { l l l } { \\displaystyle - { R _ { s } C _ { 0 } \\frac { \\partial I } { \\partial t } } } & { = } & { \\displaystyle { I _ { s } \\left( e ^ { \\frac { q ( V + { R _ { s } } ) } { n _ { B } T } } - 1 \\right) } } \\\\ { \\displaystyle } & { \\displaystyle { + } } & { \\left( \\frac { R _ { s } } { R _ { s h } } + 1 \\right) I } \\\\ { \\displaystyle } & { \\displaystyle { + } } & { \\displaystyle { \\frac { V } { R _ { s h } } + C _ { 0 } \\frac { \\partial V } { \\partial t } + \\mathcal { R } \\frac { \\partial P _ { n l } } { \\partial t } - I _ { p h } } . } \\end{array}\\tag{9}\n$$\n\nThe current-voltage characteristics of the solar cell under illumination may be found from Eq. (9) provided the variation of the polarization in time is known. Depending on the relaxation processes involved different models for $\\partial P _ { n l } / \\partial t$ may be introduced.\n\nAs a first ansatz, in the single relaxation time approximation, we assume the following behavior for the polarization $P _ { n l } ( t )$\n\n$$\n\\frac { \\partial P _ { n l } } { \\partial t } = \\frac { P _ { n l , \\infty } ( U _ { c } ( t ) ) - P _ { n l } ( t ) } { \\tau } ,\\tag{10}\n$$\n\nwhere $P _ { n l , \\infty }$ is not constant, but rather a function of applied bias on the capacitor $U _ { c }$ We take $P _ { n l , \\infty } = ( U _ { c } / V _ { o c } ) P _ { \\infty , }$ where $P _ { \\infty }$ is a system dependent quantity, as well as the relaxation time τ, and $V _ { o c }$ is the open circuit bias. Several polarization mechanisms are compatible with our approach, which may have the origins in the displacement of the electronic and ionic components inducing Maxwell-Wagner-Sillars type polarization in an inhomogeneous medium, alignment of microscopic ferroelectric domains, charged defect migration or a combination of these. Since rather slow relaxation times have been observed, this suggest a glassy type behavior and possibly multiple relaxation time scales need to be considered [18, 35, 36]. However the microscopic origins of the polarization are beyond the scope of this paper and will be considered elsewhere.\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md]\nThe equations (9) and (10) form a system of coupled differential equations, which give the time dependent current, $I ( t )$ and the non-linear polarization, $P _ { n l } ( t )$ , in the device, starting from the initial conditions, $I ( t = 0 ) = I _ { 0 }$ and $P _ { n l } ( t = 0 ) = P _ { 0 }$ Being set by the solar cell preconditioning, $I _ { 0 }$ and $P _ { 0 }$ are important parameters in establishing the dynamic current-voltage characteristics.\n\n## 2.3. Experimental device structures and methods\n\n\nThe $\\mathrm { C H } _ { 3 } \\mathrm { N H } _ { 3 } \\mathrm { P b I } _ { 3 - x } \\mathrm { C l } _ { x }$ based solar cells were fabricated using two-step deposition method [38, 39, 40]: the PbI2 $+ \\mathrm { P b } \\mathrm { C l } _ { 2 }$ films were spin-coated on the $\\mathrm { F T O / T i O _ { 2 } / m p \\mathrm { - } T i O _ { 2 } }$ structures and then dried for 15 minutes at $1 1 0 ^ { \\circ } \\mathrm { C }$ . In order to obtain the $\\mathrm { C H } _ { 3 } \\mathrm { N H } _ { 3 } \\mathrm { P b I } _ { 3 - x } \\mathrm { C l } _ { 3 }$ hybrid compound, the $\\mathrm { F T O / T i O _ { 2 } / m p  – T i O _ { 2 } / P b I _ { 2 } + P b C l _ { 2 } }$ structure was dipped in a solution of $\\mathrm { C H } _ { 3 } \\mathrm { N H } _ { 3 } \\mathrm { I }$ and anhydrous 2-propanol $( 1 0 \\mathrm { m g ^ { - 1 } m l ^ { - 1 } } )$ and then rinsed in 2-propanol. The hole transporter material $- 2 , 2 ^ { \\circ } , 7 , 7 ^ { \\circ }$ -Tetrakis-(N,N-di-4-methoxyphenylamino)-9,9'- spirobifluorene (spiro-OMeTAD) dissolved in chlorobenzene and tert-butylpyridine, litiumbis (trifluoromethylsulphonyl) imide in acetonitrile – was deposited by spin-coating in $\\Nu _ { 2 }$ enriched atmosphere, at room temperature (\\~24°C) and humidity less than 10%. Gold electrodes with area $0 . 2 1 5 ~ \\mathrm { c m } ^ { 2 }$ were deposited as top contacts, while the illuminated area is 0.125 cm².\n\n![](images/84e02508eb9982027bdde491aafd89e08fa09b6b5589906a358662bf724a9c66.jpg)\n\n![](images/8dfb815695630c5168f1b271795b213c69253177f626d6e959148fd8e8601dc1.jpg)\n\n![](images/3446a313891f7aff7d6073b331ae3544a80c7b010bf9d1093e4a670f1990a918.jpg)  \nFigure 2: (a) Reverse-forward bias scan of a typical pre-poled sample: calculated J-V characteristics (red lines) in comparison with experimental data (black points). The forward and reverse data corresponds to increasing and decreasing voltage, respectively. The initial pre-set voltage is $V _ { 0 } ~ = ~ \\bar { 1 . 6 } ~ \\mathrm { V } .$ (b) and (c) show the polarization as a function of applied bias, for both linear an non-linear terms, $P _ { l }$ and $P _ { n l } ,$ respectively. The dotted horizontal line marks $P _ { \\infty } = 6 . 9 7 ~ \\mathrm { m C / c m ^ { 2 } }$\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md]\nThe photo-electrical measurements were performed at room temperature, in air, under AM 1.5 conditions with a computer controlled setup consisting of a Solar Simulator (Newport-Oriel 170 VeraSol LED Controller) and a Keithley 2601B Source Meter. The VeraSol LED solar simulator ensures stable power during the operating time. The electrical measurement were performed using Sample & Hold method.\n\n## 3. Results and discussion\n\n\nWe discuss in the following dynamic J-V characteristics with hysteresis effects which arise due to pre-polation and BSR, and we detail the changes introduced by different relaxation time scales.\n\n## 3.1. Pre-poling effects\n\n\nThe test case parameters of the investigated solar cells are calibrated based on the experimental data and device structure. We start our analysis with a typical J-V characteristics of a reverse-forward bias scan, indicated in Fig. 2, which is reproduced considering the following model elements: $R _ { s } = 2 5 0 \\Omega .$ $R _ { s h } = 2 0 \\mathrm { k } \\Omega , n = 1 . 4 7 , I _ { s } = 0 . 1 \\mathrm { p A } , I _ { p h } = 0 . 5 3 \\mathrm { m A } ; C _ { 0 } = 0 . 1 9$ $\\mu \\mathrm { F }$ is the geometrical capacitance of a planar capacitor, with the active region area $\\mathcal { A } = \\ : 0 . 2 1 5 \\ : \\mathrm { c m } ^ { 2 }$ , the distance between the plates $d = 1 0 0$ nm and the relative dielectric permittivity $\\epsilon _ { r } = 1 0 0 ;$ the steady state polarization at open circuit voltage is $P _ { \\infty } ( V _ { o c } ) = 6 . 9 7 ~ \\mathrm { m C / c m ^ { 2 } }$ , which is within the range reported in Ref. [18] and the initial polarization is $P _ { 0 } = 1 8 P _ { \\infty } ;$ the open circuit voltage is $V _ { o c } = 0 . 9 \\mathrm { ~ V } ;$ a characteristic relaxation time $\\tau = 1 1 . 5 :$ s is assumed, consistent with reported data of transient current-voltage measurements [37]; a constant bias scan rate $\\alpha = \\partial V / \\partial t = 2 0 \\mathrm { m V / s }$ is considered, as in the experimental measurements. In the following we shall refer to current densities $J = I / \\mathscr { A } _ { i } ,$ where $\\mathcal { A } _ { i } = 0 . 1 2 5 \\mathrm { c m } ^ { 2 }$ is the illuminated area.\n\n![](images/5654a608cf3c4e39ef36050d1cf20c59ecb8ad3dc25223a294927d1b166b6a17.jpg)\n\n![](images/7dc3db249d424a6d86dbbb6ea1e465743eeaad8997e311e17e4903744b32c1c3.jpg)\n\n![](images/30caef61a4e2cf73558a223a63324db1c922ac84c15ea63aa6e09a0c79ab1ea2.jpg)  \nFigure 3: Decomposition of the total current in the solar cell under illumination according to Eq. (1). The most significant currents, $J _ { p h } , J _ { d }$ and $J _ { c } ^ { ( n l ) }$ , as well as the current in the external circuit J are presented in (a), while the smaller currents $J _ { s h }$ and $J _ { c } ^ { ( l ) }$ are shown in (b) and (c), respectively.\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md]\n# materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs（第 2/2 部分）\n章节: Dynamic electrical behavior of halide perovskite based solar cells > 3.2. Bias scan rate effects\n## 3.2. Bias scan rate effects\n\n\nIn order to further analyze the dynamic hysteresis effects and test the validity of our model, we explore the J-V characteristics at different bias scan rates. Several reverse-forward scans with different BSRs are presented in Fig. 5(a). The widest hysteresis occurs at moderate scan rates, while at very slow and very fast rates it is diminished. This picture is explained as follows. At lower scan rates, the capacitive effects are less important, while at very high rates the relaxation cannot follow the rapidly changing fields.\n\nThis is consistent with our model and, in particular, with the polarization behavior depicted in Fig. 5(b). At small rates, $\\alpha = 1 0 - 2 0 \\mathrm { m V / s }$ , there is a rather sharp decrease in polarization referred to the applied bias, as the scan is performed in rather long time interval. In forward scan, a slight increase of the polarization may be observed, below $P _ { \\infty }$ Increasing the scan rate to $1 0 0 \\mathrm { m V } / \\mathrm { s } ,$ taking into account that $\\tau = 1 1 . 5$ s there is no sufficient time for polarization to drop below $P _ { \\infty }$ . At even higher rates the decrease of the polarization, $\\partial P _ { n l } / \\partial V$ , becomes smaller and, in the limiting case of α = 10000 mV/s, the polarization remains almost constant. However, the variation in time of the polarization, $\\partial P _ { n l } / \\partial t$ , becomes large (see Supplemental material), yielding a large current $I _ { c } ^ { ( n l ) }$ , as depicted in Fig. 5(c). This explains the vanishing hysteresis, noting that the geometric constant capacitance $C _ { 0 }$ is very small. Otherwise, if the constant capacitance is larger, one may expect a significant hysteresis, knowing that increasingly higher rates would produce larger and larger hysteretic effects. This particular aspect is shown in the inset of Fig. ${ 5 ( \\mathrm { a ) } } ,$ , where a very large dielectric constant of the perovskite layer, $\\epsilon _ { r } = 1 0 ^ { 5 }$ , was considered for comparison. Here one should take into account $\\mathrm { C H } _ { 3 } \\mathrm { N H } _ { 3 } \\mathrm { P b I } _ { 3 }$ has demonstrated a large static dielectric constant $\\mathbf { o f } \\sim 7 0 [ 3 1 ]$ or higher, due to electronic, ionic, and molecular dipole contributions from the organic cation [32] and, in other studies, a giant dielectric constant has been reported [21]. In this case, while the geometrical capacitance increases from μF to mF range, the hysteresis becomes more pronounced at higher BSRs, in particular at 1000 mV/s. By contrast, at low scan rates, for $\\alpha = 2 0$ $\\mathrm { m V } / \\mathrm { s }$ , there is practically no difference in the hysteresis compared to the reference curve, obtained for $\\epsilon = 1 0 0$\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md]\nThe experimental data upon which the sequence of simulated J-V curves were calibrated is presented in Fig. 5 (d). It is the same sample analyzed in Section 3.1, and the simulation parameters are also the same, except for a slightly smaller current due to aging, $I _ { p h } = 0 . 4 3 \\mathrm { m A }$ , and $P _ { 0 } = 5 P _ { \\infty }$ reflecting the smaller initial preconditioning voltage $V _ { 0 } ~ = ~ 1 \\mathrm { V } .$ Under these conditions the experimental J-V curve for $\\alpha = 2 0 \\mathrm { m V / s }$ is well reproduced by the DEM results. Then, comparing ${ \\mathrm { F i g s . } } 5 ( { \\mathrm { a } } )$ and (d), the behavior obtained by changing the BSR is very similar, albeit at higher rates, e.g. 1000 mV/s, the simulated hysteresis is smaller. However, increasing the dielectric constant, the hysteresis becomes larger, qualitatively and quantitatively similar with experimental data. At even higher rates, it is expected that $\\epsilon _ { r }$ decreases, as reported also in Ref. [21], diminishing the geometrical capacitance and the associated hysteresis.\n\nAnother similarity between our results and the reported experimental data [18] is the trend exhibited by the short circuit current: it increases with the bias scan rate. This again may be connected with the non-linear polarization relaxation $\\partial P _ { n l } / \\partial t$ , which is faster for higher BSRs, leading to larger currents, while $\\partial P _ { n l } / \\partial V$ becomes small and $P _ { n l }$ is similar for both reverse and forward scans, which is consistent with a reduced hysteretic effect.\n\n## 3.3. Different relaxation time scales\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md]\nTaking as reference the parameters used in section 3.1, we present in Fig. 6 the J-V characteristics for different relaxation times in $\\mathrm { E q . } ~ ( 1 0 ) , \\tau = 4 , 8 , 1 2 , 1 6 , 2 4 ~ \\mathrm { s } .$ Lowering τ the overshoot observed in the reverse scan is displaced towards higher biases, which is consistent with the fact the relaxation occurs faster and, in addition, at $V _ { o c }$ there is a higher jump in the current. For the smallest characteristic time $\\tau = 4 \\ : \\mathrm { s } .$ the largest difference between the forward and reverse scans is found at large bias, $V > 0 . 5 \\mathrm { V } ,$ while at smaller biases the hysteresis is smaller. For larger relaxation times, $\\tau = 2 4 \\mathrm { s } .$ the overshoot in reverse is flattened and the hysteresis begins to decrease. The polarization depicted in the inset of Fig. 6 presents a more rapid decrease for smaller relaxation times. This phenomenology may be consistently linked to the previous discussion about the changing the bias scan rate, and implicitly the time during which the J-V scans are performed. On the other hand, as briefly noted in section 3.1, the current overshoot is displaced towards smaller biases, which may be correlated with an enhanced relaxation timescale when larger pre-poling is applied. Multi-exponential signal decays have also been reported [18, 35, 36], ranging from microseconds to seconds, being attributed to different phenomena of electronic and non-electronic nature. This provides motivation for further exploration of multiple time scales in the DEM, correlated with microscopic models.\n\n## 4. Conclusions\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md]\nA dynamic electrical model was introduced to describe hysteresis effects observed in halide perovskite based solar cells. Using a particularly simple ansatz for the polarization relaxation one may reproduce detailed features of experimental J-V characteristics, both qualitatively and quantitatively. For one, the maximum typically observed in the reverse bias scan is attributed to an initial over-polarization effect. On the other hand, initial under-polarization introduces a crossing of the reverse and forward scans, which almost overlap at large biases, with no maximum in reverse characteristics. By changing the bias scan rate, our model is able to reproduce details of the experimental data such as the short circuit current and the reverse current overshoot. Furthermore, in this context, geometrical capacitance effects are also discussed. Additional analysis is performed to quantify the effects related to the magnitude of the characteristic relaxation time scales, which are further correlated with pre-poling experiments. By analyzing the perovskite based solar cells under non-stationary bias conditions one may extract further knowledge regarding the device operation and transport mechanisms. The proposed dynamic electrical model accurately describes the measured dynamic J-V characteristics and therefore it may constitute a valuable tool in the calibration of microscopic models relevant for solar cell operation.\n\n![](images/3daa7e695510b46d839ad987ed608359274f271deb06c6244716cdbf59363a7a.jpg)  \nFigure 6: Dynamic J-V characteristics and polarization under reverse-forward bias scan, for different τ values. The inset indicates the slower decay of the $P _ { n l }$ polarization term for larger relaxation time scales.\n\n## Acknowledgements\n\n\nThe research leading to these results has received funding from EEA Financial Mechanism 2009-2014 under the project contract no 8SEE/30.06.2014.\n\n## References\n\n## References\n\n\n[1] S. D. Stranks and H. J. Snaith, Metal-halide perovskites for photovoltaic and light-emitting devices Nature Nanotechnology 10 (2015) 391-402.\n\n[2] N.-G. Park, Perovskite solar cells: an emerging photovoltaic technology, Materials Today 18 (2015) 65-72.\n\n[3] Q. Chen, N. De Marco, Y. M. Yang, T.-B. Song, C.-C. Chen, H. Zhao, Z. Hong, H. Zhou, Y. Yang, Under the spotlight: The organicinorganic hybrid halide perovskite for optoelectronic applications, Nanotoday 10 (2015) 355396.\n\n[4] X. Y. Zhao, K. Zhu, Organicinorganic hybrid lead halide perovskites for optoelectronic and electronic applications Chem. Soc. Rev. 45 (2016) 655-689.\n\n[5] Z. Song, S. C. Watthage, A. B. Phillips, M. J. Heben, Pathways toward high-performance perovskite solar cells: review of recent advances in organo-metal halide perovskites for photovoltaic applications, J. Photon. Energy. 6 (2016) 022001.\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md]\n[6] H.-S. Kim, C.-R. Lee, J.-H. Im, K.-B. Lee, T. Moehl, A. Marchioro, S.- J. Moon, R. Humphry-Baker, J.-H. Yum, J. E. Moser, M. Grätzel, N.-G. Park, Lead Iodide Perovskite Sensitized All-Solid-State Submicron Thin Film Mesoscopic Solar Cell with Efficiency Exceeding 9%, Sci Rep. 2 (2012) 591.\n\n[7] G. Xing, N. Mathews, S. Sun, S. S. Lim, Y. M. Lam, M. Grätzel, S. Mhaisalkar, T. C. Sum, Long-Range Balanced Electron- and Hole-Transport Lengths in Organic-Inorganic CH3NH3PbI3, Science 342 (2013) 344-347.\n\n[8] G. E. Eperon, S. D. Stranks, C. Menelaou, M. B. Johnston, L. M. Herz and H. J. Snaith, Formamidinium lead trihalide: a broadly tunable perovskite for efficient planar heterojunction solar cells, Energy Environ. Sci 7 (2014) 982-988.\n\n[9] A. Walsh, Principles of Chemical Bonding and Band Gap Engineering in Hybrid OrganicInorganic Halide Perovskites, J. Phys. Chem. C 119 (2015) 57555760.\n\n[10] L.-L. Gao, L.-S. Liang, X.-X. Song, B. Ding, G.-J. Yang, B. Fan, C.-X. Lia, C.-J. Li, Preparation of flexible perovskite solar cells by a gas pump drying method on a plastic substrate, J. Mater. Chem. A 4 3704 (2016) 3704-3710.\n\n[11] G. Niu, X. Guo and L. Wang, Review of recent progress in chemical stability of perovskite solar cells, J. Mater. Chem. A 3 (2015) 8970-8980.\n\n[12] G. A. Nemnes, C. Goehry, T. L. Mitran, Adela Nicolaev, L. Ion, S. Antohe, N. Plugaru, A. Manolescu, Band alignment and charge transfer in rutile-TiO2/CH3NH3 $\\mathrm { P b } _ { 3 x } \\mathrm { C l } _ { x }$ interfaces, Phys. Chem. Chem. Phys. 17 (2015) 30417-30423.\n\n[13] A. Nicolaev, T. L. Mitran, S. Iftimie, G. A. Nemnes, Optimization of halide perovskite solar cells based on nanocolumnar ZnO, Sol. Energ. Mater. Sol. C, doi:10.1016/j.solmat.2015.10.023 (2015).\n\n[14] H. J. Snaith, A. Abate, J. M. Ball, G. E. Eperon, T. Leijtens, N. K. Noel, S. D. Stranks, J. Tse-Wei Wang, K. Wojciechowski, W. Zhang, Anomalous Hysteresis in Perovskite Solar Cells, J. Phys. Chem. Lett. 5 (2014) 15111515.\n\n[15] A. Dualeh, T. Moehl, N. Tetreault, J. Teuscher, P. Gao, M. K. Nazeeruddin, M. Grätzel, Impedance spectroscopic analysis of lead iodide perovskite-sensitized solid-state solar cells, ACS Nano. 8 (2014) 362-373.\n\n[16] R. S. Sanchez, V. Gonzalez-Pedro, J.-W. Lee, N.-G. Park, Y. S. Kang, I.Mora-Sero, J. Bisquert, Slow Dynamic Processes in Lead Halide Perovskite Solar Cells. Characteristic Times and Hysteresis, J. Phys. Chem. Lett. 5 (2014) 2357-2363.\n\n[17] J. Wei, Y. Zhao, H. Li, G. Li, J. Pan, D. Xu, Q. Zhao, D. Yu, Hysteresis Analysis Based on the Ferroelectric Effect in Hybrid Perovskite Solar Cells, J. Phys. Chem. Lett. 5 (2014) 3937-3945.\n\n[18] W. Tress, N. Marinova, T. Moehl, S. M. Zakeeruddin, M. K. Nazeeruddin, M. Grätzel, Understanding the rate-dependent JV hysteresis, slow time component, and aging in CH3NH3PbI3 perovskite solar cells: the role of a compensated electric field Energy Environ. Sci. 8 (2015) 995-1004.\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md]\n[19] B. Chen, M. Yang, S. Priya, K. Zhu, Impact of Capacitive Effect and Ion Migration on the Hysteretic Behavior of Perovskite Solar Cells, J. Phys. Chem. Lett. 7 (2016) 4693-4700.\n\n[20] N. Koide, Y. Chiba, L. Han, Methods of Measuring Energy Conversion Efficiency in Dye-sensitized Solar Cells, Jpn. J. Appl. Phys. 44 (2005) 4176-4181.\n\n[21] E. J. Juarez-Perez, R. S. Sanchez, L. Badia, G. Garcia-Belmonte, Y. S. Kang, I. Mora-Sero, J. Bisquert, Role of the Selective Contacts in the Performance of Lead Halide Perovskite Solar Cells, J. Phys. Chem. Lett. 5 (2014) 680-685.\n\n[22] H.-W. Chen, N. Sakai, M. Ikegami, T. Miyasaka, Emergence of Hysteresis and Transient Ferroelectric Response in Organo-Lead Halide Perovskite Solar Cells, J. Phys. Chem. Lett. 6 (2014) 164169.\n\n[23] S. Meloni, T. Moehl, W. Tress, M. Franckevicius, M. Saliba, Y. H. Lee, P. Gao, M. K. Nazeeruddin, S. M. Zakeeruddin, U. Rothlisberger, M. Grätzel, Ionic polarization-induced currentvoltage hysteresis in CH3NH3PbI3 perovskite solar cells Nat. Commun. 7 (2016) 10334.\n\n[24] V. W. Bergmann, S. A. L. Weber, F. J. Ramos, M. K. Nazeeruddin, M. Grätzel, D. Li, A. L. Domanski, I. Lieberwirth, S. Ahmad, R. Berger, Real-space observation of unbalanced charge distribution inside a perovskite-sensitized solar cell, Nat. Commun. 5 (2014) 5001.\n\n[25] J. H. Heo, H. J. Han, D. Kim, T. Kyu Ahn, S. H. Im, Hysteresis-less inverted CH3NH3PbI3 planar perovskite hybrid solar cells with 18.1% power conversion efficiency, Energy Environ. Sci., 8 (2015) 1602-1608.\n\n[26] A. M. A. Leguy, J. M. Frost, A. P. McMahon, V. G. Sakai, W. Kochelmann, C. Law, X. Li, F. Foglia, A. Walsh, B. C. ORegan, The dynamics of methylammonium ions in hybrid organicinorganic perovskite solar cells, Nat. Commun. 6 (2015) 7124.\n\n[27] C. Goehry, G. A. Nemnes and A. Manolescu, Collective Behavior of Molecular Dipoles in H3NH3PbI3, J. Phys. Chem. C 119 (2015) 19674- 19680.\n\n[28] O. Almora, I. Zarazua, E. Mas-Marza, I. Mora-Sero, J. Bisquert, G. Garcia-Belmonte, Capacitive Dark Currents, Hysteresis, and Electrode\n\nPolarization in Lead Halide Perovskite Solar Cells, J. Phys. Chem. Lett. 6 (2015) 1645-1652.\n\n[29] S. van Reenen, M. Kemerink and H. J. Snaith, Modeling Anomalous Hysteresis in Perovskite Solar Cells, J. Phys. Chem. Lett. 6 (2015) 3808-3814.\n\n[30] L. Pintilie, K. Boldyreva, M. Alexe and D. Hesse, Capacitance tuning in antiferroelectricferroelectric PbZrO3Pb(Zr0.8Ti0.2)O3 epitaxial multilayers, New Journal of Physics 10 (2008) 013003.\n\n[31] Q. Lin, A. Armin, R.C.R. Nagiri, P.L. Burn, P. Meredith, Electro-optics of perovskite solar cells, Nat. Photonics. 9 (2015) 106-112.\n\n[32] F. Brivio, A.B. Walker, A. Walsh, Structural and electronic properties of hybrid perovskites for high-efficiency thin-film photovoltaics from firstprinciples, APL Mater. 1 (2013) 042111.\n\n[33] J. M. Frost, K. T. Butler, A. Walsh, Molecular ferroelectric contributions to anomalous hysteresis in hybrid perovskite solar cells, APL Mater. 2 (2014) 081506.\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md]\n[34] B. Chen, X. J. Zheng, M. J. Yang, Y. Zhou, S. Kundu, J. Shi, K. Zhu, S. Priya, Interface Band Structure Engineering by Ferroelectric Polarization in Perovskite Solar Cells, Nano Energy 13 (2015) 582-591.\n\n[35] V. Roiati, S. Colella, G. Lerario, L. De Marco, A. Rizzo, A. Listorti, G. Gigli, Investigating charge dynamics in halide perovskite-sensitized mesostructured solar cells, Energy Environ. Sci. 7 (2014) 1889-1894.\n\n[36] J.-W. Lee, T.-Y. Lee, P. J. Yoo, M. Grätzel, S. Mhaisalkar, N.-G. Park, Rutile TiO2-based perovskite solar cells, J. Mater. Chem. A 2 (2014) 9251- 9259.\n\n[37] E. L. Unger, E. T. Hoke, C. D. Bailie, W. H. Nguyen, A. R. Bowring, T. Heumüller, M. G. Christoforod, M. D. McGehee, Hysteresis and transient behavior in currentvoltage measurements of hybrid-perovskite absorber solar cells, Energy Environ. Sci. 7 (2014) 3690-3698.\n\n[38] J. Burschka, N. Pellet, Soo-Jin Moon, R. Humphry-Baker, Peng Gao, M. K. Nazeeruddin, M. Gratzel, Sequential deposition as a route to highperformance perovskite-sensitized solar cells, Nature 499 (2013) 316- 320.\n\n[39] Zhengguo Xiao, Qingfeng Dong, Cheng Bi, Yuchuan Shao, Yongbo Yuan, Jinsong Huang, Solvent annealing of perovskite-induced crystal growth for photovoltaic-device efficiency enhancement, Adv. Mater. 26 (2014) 6503-6509.\n\n[40] Changyun Jiang, Siew Lay Lim, Wei Peng Goh, Feng Xia Wei, and Jie Zhang, Improvement of CH3NH3PbI3 Formation for Efficient and Better Reproducible Mesoscopic Perovskite Solar Cells, ACS Appl. Mater. Interfaces 7 (2015) 24726-24732.\n\n## Supplemental material\n\n\nA. The aging of solar cells was observed and monitored during time. The samples were kept in the dark and inert atmosphere conditions. Several J-V characteristics measured over a period of 45 days are shown in Fig. 7(a). They all present hysteresis irrespective of age. Reverse-forward bias scans were performed, starting from the pre-poling bias of 1V. The calculated maximum PCE is evidently different for the reverse and forward bias scans. The highest PCE values are obtained for the fresh cell, 7.95% (forward) and 11.87% (reverse). Subsequent measurements indicate lower values for each type of bias scan. It is however important to note that a significant degradation occurs in the first \\~ 588 hours, while further on the PCE is practically stabilized at \\~ 4.2%. The maximum PCEs obtained are indicated in Table 1. In Fig. 7(b) the scaled J-V characteristics show the hysteresis of the normalized currents increases over time. The currents are scaled with the value obtained for the fresh cell measured at -0.1V. Furthermore one should note the rather precise scaling of the aged cells over the entire bias range.\n\n![](images/6d57e9dd41b6b67c9ed95d578bd61a3e7d40277ac8b60e4fa545e08a28aa0aca.jpg)\n\n[工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md]\n![](images/153bfd2aaf98d5c639094111927deeb5c20a0342489b5c5868fc9158b2d39d0c.jpg)  \nFigure 7: (a) Aging of the J-V characteristics during time: measurements on the fresh cells and after 66, 306 588, 1090 hours. The scan rate was 20 mV/s. (b) Scaled J-V characteristics with the current of the fresh cell measured at -0.1 V.\n\nTable 1: Maximum PCEs obtained in the forward (F) and reverse (R) bias scans:\n<table><tr><td rowspan=1 colspan=1>Time</td><td rowspan=1 colspan=1>fresh</td><td rowspan=1 colspan=1>66 h</td><td rowspan=1 colspan=1>306 h</td><td rowspan=1 colspan=1>588 h</td><td rowspan=1 colspan=1>1090 h</td></tr><tr><td rowspan=1 colspan=1>F-scan</td><td rowspan=1 colspan=1>7.95</td><td rowspan=1 colspan=1>6.69</td><td rowspan=1 colspan=1>4.43</td><td rowspan=1 colspan=1>2.44</td><td rowspan=1 colspan=1>2.39</td></tr><tr><td rowspan=1 colspan=1>R-scan</td><td rowspan=1 colspan=1>11.87</td><td rowspan=1 colspan=1>11.08</td><td rowspan=1 colspan=1>7.66</td><td rowspan=1 colspan=1>4.21</td><td rowspan=1 colspan=1>4.15</td></tr></table>\n\nB. Concerning the damage of the device, our experiments consistently showed that after bias stressing of the cell the overall shape of the I-V curves always is preserved, while the current suffers a significant decrease which als…",
+ "evidence_chars": 40001,
+ "gold_hit": true,
+ "survivors": [
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 9,
+   "score": 0.7415
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 10,
+   "end_line": 15,
+   "score": 0.833
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 17,
+   "end_line": 20,
+   "score": 0.8105
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 22,
+   "end_line": 46,
+   "score": 0.7891
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 47,
+   "end_line": 72,
+   "score": 0.5325
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 73,
+   "end_line": 104,
+   "score": 0.6554
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 105,
+   "end_line": 125,
+   "score": 0.5918
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 126,
+   "end_line": 137,
+   "score": 0.684
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 25,
+   "score": 0.7794
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 26,
+   "end_line": 33,
+   "score": 0.8229
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 34,
+   "end_line": 59,
+   "score": 0.7508
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 60,
+   "end_line": 100,
+   "score": 0.5334
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 101,
+   "end_line": 118,
+   "score": 0.8019
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 119,
+   "end_line": 132,
+   "score": 0.735
+  },
+  {
+   "doc_path": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 133,
+   "end_line": 151,
+   "score": 0.6583
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 18,
+   "score": 0.8357
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 28,
+   "end_line": 39,
+   "score": 0.8965
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 40,
+   "end_line": 47,
+   "score": 0.7358
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 48,
+   "end_line": 51,
+   "score": 0.7907
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 52,
+   "end_line": 56,
+   "score": 0.8582
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 57,
+   "end_line": 80,
+   "score": 0.5661
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 81,
+   "end_line": 99,
+   "score": 0.8075
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 22,
+   "score": 0.8416
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 23,
+   "end_line": 41,
+   "score": 0.8939
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 42,
+   "end_line": 53,
+   "score": 0.8405
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 54,
+   "end_line": 71,
+   "score": 0.8463
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 72,
+   "end_line": 87,
+   "score": 0.8421
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 88,
+   "end_line": 101,
+   "score": 0.6323
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 102,
+   "end_line": 114,
+   "score": 0.7519
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 115,
+   "end_line": 124,
+   "score": 0.7559
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 30,
+   "score": 0.8834
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 31,
+   "end_line": 58,
+   "score": 0.9194
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 59,
+   "end_line": 89,
+   "score": 0.8557
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 90,
+   "end_line": 111,
+   "score": 0.8767
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 112,
+   "end_line": 129,
+   "score": 0.5948
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 130,
+   "end_line": 144,
+   "score": 0.8473
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 145,
+   "end_line": 169,
+   "score": 0.8395
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 39,
+   "score": 0.793
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 41,
+   "end_line": 78,
+   "score": 0.8105
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 80,
+   "end_line": 122,
+   "score": 0.9245
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 123,
+   "end_line": 143,
+   "score": 0.8518
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 144,
+   "end_line": 188,
+   "score": 0.8421
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 189,
+   "end_line": 200,
+   "score": 0.7624
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 56,
+   "score": 0.8518
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 57,
+   "end_line": 103,
+   "score": 0.7898
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 104,
+   "end_line": 142,
+   "score": 0.8771
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 143,
+   "end_line": 192,
+   "score": 0.7894
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 193,
+   "end_line": 200,
+   "score": 0.5554
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 27,
+   "score": 0.6844
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 28,
+   "end_line": 44,
+   "score": 0.806
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 62,
+   "end_line": 77,
+   "score": 0.8229
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 78,
+   "end_line": 89,
+   "score": 0.8652
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 103,
+   "end_line": 134,
+   "score": 0.8297
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 135,
+   "end_line": 137,
+   "score": 0.6676
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 22,
+   "score": 0.7486
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 23,
+   "end_line": 42,
+   "score": 0.8924
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 43,
+   "end_line": 60,
+   "score": 0.8643
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 74,
+   "end_line": 97,
+   "score": 0.5608
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 99,
+   "end_line": 117,
+   "score": 0.8093
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 118,
+   "end_line": 142,
+   "score": 0.7645
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 12,
+   "score": 0.6386
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 13,
+   "end_line": 28,
+   "score": 0.8105
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 29,
+   "end_line": 38,
+   "score": 0.7937
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 45,
+   "end_line": 59,
+   "score": 0.761
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 60,
+   "end_line": 111,
+   "score": 0.5034
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 19,
+   "score": 0.8308
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 20,
+   "end_line": 42,
+   "score": 0.8577
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 43,
+   "end_line": 61,
+   "score": 0.9228
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 62,
+   "end_line": 74,
+   "score": 0.8805
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 75,
+   "end_line": 99,
+   "score": 0.8675
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 100,
+   "end_line": 115,
+   "score": 0.715
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 117,
+   "end_line": 129,
+   "score": 0.9376
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 130,
+   "end_line": 183,
+   "score": 0.7878
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 39,
+   "score": 0.5138
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 40,
+   "end_line": 47,
+   "score": 0.7327
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 49,
+   "end_line": 57,
+   "score": 0.7736
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 58,
+   "end_line": 67,
+   "score": 0.7677
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 68,
+   "end_line": 83,
+   "score": 0.7218
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 85,
+   "end_line": 103,
+   "score": 0.661
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 105,
+   "end_line": 110,
+   "score": 0.7422
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 112,
+   "end_line": 120,
+   "score": 0.6614
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 27,
+   "score": 0.6916
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 27,
+   "score": 0.7475
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 29,
+   "end_line": 32,
+   "score": 0.7736
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 33,
+   "end_line": 36,
+   "score": 0.7134
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 37,
+   "end_line": 40,
+   "score": 0.8286
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 42,
+   "end_line": 56,
+   "score": 0.7962
+  },
+  {
+   "doc_path": "工程与能源\\materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 57,
+   "end_line": 62,
+   "score": 0.5325
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 27,
+   "score": 0.8776
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 28,
+   "end_line": 37,
+   "score": 0.9272
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 38,
+   "end_line": 59,
+   "score": 0.9376
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 60,
+   "end_line": 79,
+   "score": 0.5502
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 80,
+   "end_line": 92,
+   "score": 0.7925
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 93,
+   "end_line": 110,
+   "score": 0.8567
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 111,
+   "end_line": 138,
+   "score": 0.9121
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 139,
+   "end_line": 140,
+   "score": 0.7698
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 18,
+   "score": 0.8889
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 19,
+   "end_line": 38,
+   "score": 0.9226
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 39,
+   "end_line": 56,
+   "score": 0.7415
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 57,
+   "end_line": 80,
+   "score": 0.8733
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 81,
+   "end_line": 102,
+   "score": 0.8858
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 103,
+   "end_line": 120,
+   "score": 0.8275
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 121,
+   "end_line": 148,
+   "score": 0.7508
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 149,
+   "end_line": 158,
+   "score": 0.892
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 3 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 26,
+   "score": 0.8939
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 3 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 27,
+   "end_line": 50,
+   "score": 0.8733
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 3 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 51,
+   "end_line": 51,
+   "score": 0.8666
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 6,
+   "score": 0.6909
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 7,
+   "end_line": 14,
+   "score": 0.8503
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 15,
+   "end_line": 16,
+   "score": 0.743
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 63,
+   "score": 0.8518
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 65,
+   "end_line": 102,
+   "score": 0.9127
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 103,
+   "end_line": 122,
+   "score": 0.9272
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 123,
+   "end_line": 166,
+   "score": 0.8889
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 167,
+   "end_line": 200,
+   "score": 0.8508
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 11,
+   "score": 0.861
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 12,
+   "end_line": 15,
+   "score": 0.8159
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 18,
+   "end_line": 69,
+   "score": 0.8352
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 70,
+   "end_line": 101,
+   "score": 0.8389
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 102,
+   "end_line": 140,
+   "score": 0.8817
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 141,
+   "end_line": 164,
+   "score": 0.8171
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 35,
+   "score": 0.8825
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 36,
+   "end_line": 58,
+   "score": 0.8206
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 59,
+   "end_line": 84,
+   "score": 0.7032
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 85,
+   "end_line": 110,
+   "score": 0.8675
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 111,
+   "end_line": 152,
+   "score": 0.5394
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 154,
+   "end_line": 197,
+   "score": 0.7415
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 198,
+   "end_line": 200,
+   "score": 0.6294
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 44,
+   "score": 0.8957
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 45,
+   "end_line": 61,
+   "score": 0.5598
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 62,
+   "end_line": 103,
+   "score": 0.5231
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 104,
+   "end_line": 153,
+   "score": 0.5027
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 154,
+   "end_line": 192,
+   "score": 0.7249
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 193,
+   "end_line": 200,
+   "score": 0.7638
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 15,
+   "score": 0.8997
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 17,
+   "end_line": 51,
+   "score": 0.892
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 53,
+   "end_line": 85,
+   "score": 0.8553
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 86,
+   "end_line": 122,
+   "score": 0.5123
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 123,
+   "end_line": 167,
+   "score": 0.7667
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 168,
+   "end_line": 200,
+   "score": 0.7574
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 30,
+   "score": 0.8212
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 31,
+   "end_line": 62,
+   "score": 0.8508
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 63,
+   "end_line": 84,
+   "score": 0.7845
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 86,
+   "end_line": 125,
+   "score": 0.8302
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 126,
+   "end_line": 155,
+   "score": 0.8229
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 156,
+   "end_line": 185,
+   "score": 0.6608
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 186,
+   "end_line": 200,
+   "score": 0.793
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 44,
+   "score": 0.8889
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 46,
+   "end_line": 75,
+   "score": 0.8596
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 112,
+   "end_line": 147,
+   "score": 0.8679
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 148,
+   "end_line": 180,
+   "score": 0.8038
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 181,
+   "end_line": 200,
+   "score": 0.657
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 19,
+   "score": 0.924
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 20,
+   "end_line": 49,
+   "score": 0.6878
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 50,
+   "end_line": 88,
+   "score": 0.9197
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 89,
+   "end_line": 98,
+   "score": 0.9343
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 99,
+   "end_line": 140,
+   "score": 0.8838
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 141,
+   "end_line": 176,
+   "score": 0.8363
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 177,
+   "end_line": 200,
+   "score": 0.8572
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 23,
+   "score": 0.8965
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 24,
+   "end_line": 37,
+   "score": 0.7534
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 39,
+   "end_line": 64,
+   "score": 0.8447
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 65,
+   "end_line": 86,
+   "score": 0.9408
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 87,
+   "end_line": 108,
+   "score": 0.8007
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 109,
+   "end_line": 144,
+   "score": 0.8336
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 145,
+   "end_line": 165,
+   "score": 0.6593
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 166,
+   "end_line": 170,
+   "score": 0.8325
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 12 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 45,
+   "score": 0.8634
+  },
+  {
+   "doc_path": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 12 of 12).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 122,
+   "end_line": 167,
+   "score": 0.6541
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 26,
+   "score": 0.7198
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 45,
+   "end_line": 53,
+   "score": 0.6044
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 54,
+   "end_line": 61,
+   "score": 0.8105
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 80,
+   "end_line": 103,
+   "score": 0.7933
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 104,
+   "end_line": 111,
+   "score": 0.8533
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 4 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 28,
+   "score": 0.6831
+  },
+  {
+   "doc_path": "工程与能源\\power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 5 of 5).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 22,
+   "score": 0.6565
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 34,
+   "end_line": 37,
+   "score": 0.8056
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 38,
+   "end_line": 53,
+   "score": 0.8297
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 54,
+   "end_line": 57,
+   "score": 0.6581
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 58,
+   "end_line": 67,
+   "score": 0.8384
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 68,
+   "end_line": 75,
+   "score": 0.6719
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 77,
+   "end_line": 91,
+   "score": 0.7249
+  },
+  {
+   "doc_path": "工程与能源\\materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 92,
+   "end_line": 92,
+   "score": 0.5815
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 21,
+   "score": 0.7365
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 22,
+   "end_line": 25,
+   "score": 0.833
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 26,
+   "end_line": 42,
+   "score": 0.7757
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 43,
+   "end_line": 64,
+   "score": 0.6641
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 65,
+   "end_line": 78,
+   "score": 0.8314
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 79,
+   "end_line": 86,
+   "score": 0.7994
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 88,
+   "end_line": 89,
+   "score": 0.6663
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 90,
+   "end_line": 94,
+   "score": 0.7253
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 43,
+   "score": 0.651
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 44,
+   "end_line": 47,
+   "score": 0.7845
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 48,
+   "end_line": 67,
+   "score": 0.8452
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 81,
+   "end_line": 110,
+   "score": 0.6099
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 112,
+   "end_line": 122,
+   "score": 0.8153
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 123,
+   "end_line": 134,
+   "score": 0.8533
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 135,
+   "end_line": 138,
+   "score": 0.7825
+  },
+  {
+   "doc_path": "工程与能源\\materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 39,
+   "score": 0.6818
+  }
+ ]
+}

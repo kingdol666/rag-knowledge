@@ -1,0 +1,105 @@
+{
+ "answer": "**Answer.** NISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined by John Preskill for the impending era of quantum technology; \"intermediate scale\" refers to the size of quantum computers available in the next few years, with 50 to a few hundred qubits — notably beyond what can be simulated by brute force on existing classical supercomputers — while \"noisy\" emphasizes imperfect control over those qubits. Its central limitation is noise: because quantum gates are imperfect (two-qubit gate error rates above ~0.1%), \"noise in quantum gates will limit the size of quantum circuits that can be executed reliably,\" roughly not many more than ~1000 gates, and \"that limitation on circuit size imposes a ceiling on the computational power of NISQ technology.\" Noise thus \"put[s] serious limitations on what quantum devices can achieve in the near term,\" and since full quantum error correction carries heavy overhead, NISQ-era devices are imagined as noisy computers unprotected by it. A corroborating corpus paper likewise characterizes the NISQ era by obstacles — restrictive qubit topologies, short coherence times, and imperfect gates — that compound to limit what near-term devices can achieve.\n\n**Sources (retrieved and content-verified this session):**\n- `自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md` — abstract, §§4.1–4.2, §6.2 (kb_id `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`; vector hit chunk_index 1/35; Laya-judge survivors, scores 0.59–0.85)\n- `自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md` — §6.4 (two-stage hit chunk_index 52/1; Laya-judge survivors, scores 0.57–0.68)\n- `自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md` — Introduction (vector hit chunk_index 6, score 0.71; corroborating \"characterized by... obstacles\" passage)",
+ "is_error": false,
+ "latency_s": 35.2,
+ "sdk_duration_ms": 32077,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noisy intermediate-scale quantum technology definition central limitation"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "NISQ 含噪声中等规模量子技术 定义 局限"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+    "doc_path": "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "What defines NISQ technology and what is its central limitation?"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 81786,
+  "output": 3990,
+  "cache_read": 138752,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.579208,
+ "timeline": [
+  {
+   "t": 3.12,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 9.12,
+   "event": "text",
+   "detail": "201"
+  },
+  {
+   "t": 9.36,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 9.53,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 16.06,
+   "event": "text",
+   "detail": "158"
+  },
+  {
+   "t": 16.43,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 17.05,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 35.15,
+   "event": "text",
+   "detail": "1924"
+  },
+  {
+   "t": 35.16,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "检索计划：先用 `kb_search_vector` 和 `kb_search_two_stage` 以 \"NISQ / noisy intermediate-scale quantum / 含噪声中等规模量子\" 为查询词做语义+两阶段检索，定位可能包含该术语的文档与 chunk，再用 `kb_doc_read`（必要时 `kb_laya_judge`）核验原文，确认 NISQ 的定义与其核心局限。",
+  "检索已命中关键来源：John Preskill 的《Quantum Computing in the NISQ era and beyond》(arXiv 1801.00862) 及 QEM 基准论文 (2303.00445)。现在读取原文获取完整定义句，并用 `kb_laya_judge` 对候选文档做内容核验。",
+  "**Answer.** NISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined by John Preskill for the impending era of quantum technology; \"intermediate scale\" refers to the size of quantum computers available in the next few years, with 50 to a few hundred qubits — notably beyond what can be simulated by brute force on existing classical supercomputers — while \"noisy\" emphasizes imperfect control over those qubits. Its central limitation is noise: because quantum gates are imperfect (two-qubit gate error rates above ~0.1%), \"noise in quantum gates will limit the size of quantum circuits that can be executed reliably,\" roughly not many more than ~1000 gates, and \"that limitation on circuit size imposes a ceiling on the computational power of NISQ technology.\" Noise thus \"put[s] serious limitations on what quantum devices can achieve in the near term,\" and since full quantum error correction carries heavy overhead, NISQ-era devices are imagined as noisy computers unprotected by it. A corroborating corpus paper likewise characterizes the NISQ era by obstacles — restrictive qubit topologies, short coherence times, and imperfect gates — that compound to limit what near-term devices can achieve.\n\n**Sources (retrieved and content-verified this session):**\n- `自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md` — abstract, §§4.1–4.2, §6.2 (kb_id `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`; vector hit chunk_index 1/35; Laya-judge survivors, scores 0.59–0.85)\n- `自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md` — §6.4 (two-stage hit chunk_index 52/1; Laya-judge survivors, scores 0.57–0.68)\n- `自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md` — Introduction (vector hit chunk_index 6, score 0.71; corroborating \"characterized by... obstacles\" passage)"
+ ],
+ "track": "a2",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ02",
+ "via": "chat",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

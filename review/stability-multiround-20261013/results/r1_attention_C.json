@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "attention",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 47.4,
+ "success": true,
+ "session_id": "046d06d5-5a9d-4117-a261-ddc129d688c2",
+ "turns": 6,
+ "cost": 0.48663500000000004,
+ "duration_ms": 45963,
+ "answer": "**Transformer 自注意力的核心计算公式是缩放点积注意力（Scaled Dot-Product Attention）——原文公式 (1)：**\n\n$$\\mathrm{Attention}(Q, K, V) = \\mathrm{softmax}\\!\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V$$\n\n**计算含义（原文精引）**：*\"We compute the dot products of the query with all keys, divide each by √d_k, and apply a softmax function to obtain the weights on the values.\"* —— 即用 query 与所有 key 做点积、除以 √d_k、经 softmax 得到对 values 的权重，输出是 values 的加权和（§3.2 引言：\"The output is computed as a weighted sum of the values\"）。\n\n**变量说明**：输入由维度 d_k 的 queries、keys 和维度 d_v 的 values 组成；实践中把一组 query 打包成矩阵 Q，keys/values 打包成矩阵 K 和 V（§3.2.1）。\n\n**为什么要除以 √d_k（原文精引）**：*\"for large values of d_k, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients... To counteract this effect, we scale the dot products by 1/√d_k\"* —— 防点积过大导致 softmax 梯度消失（§3.2.1）。\n\n**多头扩展**：Transformer 实际使用多头注意力，多个 head 并行计算后 *\"concatenated and once again projected, resulting in the final values\"*（§3.2.2，一个 head 即上式作用于不同线性投影的 Q/K/V）。在自注意力层中 Q、K、V 同源于同一序列——原文称 Transformer 是 *\"the first transduction model relying entirely on self-attention\"*。\n\n**出处**：Vaswani et al., *Attention Is All You Need* (arXiv:1706.03762), §3.2.1，库内文档《artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2)》（KB: 计算机与人工智能，b1199132…）。\n\n**可信度**：P0 直接证据 —— 公式与全部引文均逐字取自库内原文，经 kb_laya_judge 判定（5 篇 42 个幸存段落，该文段落得分最高 0.79–0.89）；其余命中文献（BERT、facts-dynamics 等）仅转述未给出公式。"
+}

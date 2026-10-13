@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1920px; height:1080px; background:#FFFFFF; font-family:'Microsoft YaHei','PingFang SC',sans-serif; color:#1E2A38; }
+  .num { font-family:Georgia,'Times New Roman',serif; }
+  .stage { position:relative; width:1920px; height:1080px; overflow:hidden; }
+
+  .kicker { position:absolute; left:70px; top:40px; font-size:19px; letter-spacing:3px; color:#5E6B7A; font-weight:600; }
+  .kicker b { color:#0E7C7B; }
+  h1 { position:absolute; left:70px; top:70px; font-size:45px; color:#16324F; font-weight:800; letter-spacing:1px; }
+  h1 .thin { font-weight:400; color:#3E5570; }
+  .rule { position:absolute; left:70px; top:144px; width:1780px; height:3px; background:#16324F; }
+  .rule::after { content:''; position:absolute; left:0; top:0; width:280px; height:3px; background:#0E7C7B; }
+
+  .card { position:absolute; background:#FFFFFF; border:1px solid #D7DFE6; padding:16px 20px; }
+  .ctitle { font-size:23px; font-weight:800; }
+  .csub { font-size:15px; color:#7A8A99; margin-top:2px; }
+
+  /* root cause chain */
+  .chain { margin-top:12px; }
+  .step { display:flex; align-items:center; background:#FAEDEB; border:1px solid #E6C3BE; border-left:5px solid #B3382C; padding:9px 14px; }
+  .step.neutral { background:#F5F8F8; border-color:#DCE6E6; border-left-color:#0E7C7B; }
+  .sno { width:30px; height:30px; border-radius:50%; background:#B3382C; color:#FFF; font-family:Georgia,serif; font-size:17px; font-weight:700; display:flex; align-items:center; justify-content:center; flex:none; margin-right:12px; }
+  .step.neutral .sno { background:#0E7C7B; }
+  .stext { font-size:16.5px; color:#4A3A38; line-height:1.35; flex:1; }
+  .step.neutral .stext { color:#2C3E50; }
+  .stext b { color:#8E2A20; }
+  .step.neutral .stext b { color:#0E5E5D; }
+  .smet { font-family:Georgia,serif; font-weight:700; font-size:19px; color:#B3382C; margin-left:12px; white-space:nowrap; }
+  .step.neutral .smet { color:#0E7C7B; }
+  .dn { height:16px; display:flex; justify-content:center; align-items:center; }
+  .essence { margin-top:12px; background:#16324F; color:#EAF2F2; padding:12px 18px; font-size:18px; line-height:1.5; }
+  .essence b { color:#7FD1CF; }
+
+  /* fix panel */
+  .fix { margin-top:12px; }
+  .fx { display:flex; margin-bottom:10px; }
+  .fx-badge { flex:none; width:118px; background:#0E7C7B; color:#FFF; text-align:center; font-size:15.5px; font-weight:700; padding:8px 4px; border-radius:4px; margin-right:12px; }
+  .fx-body { flex:1; font-size:16px; color:#2C3E50; line-height:1.4; }
+  .fx-body b { color:#0E5E5D; }
+  .verify { display:flex; gap:12px; margin-top:14px; }
+  .vm { flex:1; background:#F5F8F8; border:1px solid #DCE6E6; text-align:center; padding:10px 4px 8px; }
+  .vm .v { font-family:Georgia,serif; font-weight:700; font-size:27px; color:#0E7C7B; line-height:1; }
+  .vm .k { font-size:13.5px; color:#5E6B7A; margin-top:5px; line-height:1.25; }
+  .passline { margin-top:12px; background:#EAF4F4; border:1px solid #BFD8D8; border-left:5px solid #0E7C7B; padding:9px 14px; font-size:16.5px; color:#0E5E5D; }
+  .passline b { font-family:Georgia,serif; font-size:18px; }
+
+  /* insight cards */
+  .irow { display:flex; align-items:center; margin-top:10px; }
+  .iname { width:120px; font-size:16.5px; font-weight:700; color:#3E5570; }
+  .ibar { width:330px; height:22px; background:#E8EDF1; position:relative; flex:none; }
+  .ans { position:absolute; left:0; top:0; height:22px; background:#0E7C7B; }
+  .abst { position:absolute; top:0; height:22px; background:#C4695F; }
+  .ival { font-size:15.5px; color:#5E6B7A; margin-left:12px; }
+  .ival b { color:#B3382C; }
+  .itext { margin-top:14px; font-size:17px; color:#2C3E50; line-height:1.55; }
+  .itext b { color:#16324F; }
+  .quote { margin-top:10px; font-size:17px; color:#0E6B6A; font-weight:700; font-style:italic; font-family:Georgia,'Microsoft YaHei',serif; }
+
+  .tri { display:flex; gap:12px; margin-top:12px; }
+  .tcell { flex:1; background:#F5F8F8; border:1px solid #DCE6E6; padding:10px 12px; }
+  .tcell .tv { font-family:Georgia,serif; font-weight:700; font-size:24px; color:#16324F; line-height:1.1; }
+  .tcell .tv small { font-size:15px; color:#5E6B7A; font-weight:400; }
+  .tcell .tk { font-size:14.5px; color:#5E6B7A; margin-top:4px; line-height:1.3; }
+  .tcell.warn .tv { color:#B3382C; }
+  .tcell.good .tv { color:#0E7C7B; }
+
+  .footer { position:absolute; left:70px; bottom:14px; width:1780px; display:flex; justify-content:space-between; font-size:14.5px; color:#93A1AE; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="kicker">ANALYSIS · <b>假拒答根因 → 三层修复 → 检索 ≠ 回答</b> · 2026-10-12 / 10-13</div>
+  <h1>结果分析 <span class="thin">｜ 工具返回大小是一层隐藏的检索依赖</span></h1>
+  <div class="rule"></div>
+
+  <!-- left: root cause -->
+  <div class="card" style="left:70px; top:172px; width:968px; height:428px; border-top:4px solid #B3382C;">
+    <div class="ctitle" style="color:#8E2A20;">缺陷解剖：B×cm1 系统性假拒答（三通道独立复现）</div>
+    <div class="csub">模式 B 对 131 文档最大书架执行逐级检索时，目录层输出静默超限 —— 事件链还原自 SSE 转录，非推断</div>
+    <div class="chain">
+      <div class="step neutral"><div class="sno">1</div><div class="stext"><b>最大书架</b>：计算机与人工智能，131 篇文档，逐级检索从书架清单出发</div><div class="smet">131 docs</div></div>
+      <div class="dn"><svg width="20" height="14" viewBox="0 0 20 14"><path d="M10 0 V9 M3 6 L10 13 L17 6" stroke="#B3382C" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="step"><div class="sno">2</div><div class="stext"><b>kb_get_documents 返回全量 catalog</b> —— 对照组 cm2（53 文档书架）33.1 KB 正常透传</div><div class="smet">74.9 KB</div></div>
+      <div class="dn"><svg width="20" height="14" viewBox="0 0 20 14"><path d="M10 0 V9 M3 6 L10 13 L17 6" stroke="#B3382C" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="step"><div class="sno">3</div><div class="stext"><b>超出引擎工具输出预算</b> → 完整输出被落盘，仅向模型透传 2 KB 预览</div><div class="smet">&gt; 预算门</div></div>
+      <div class="dn"><svg width="20" height="14" viewBox="0 0 20 14"><path d="M10 0 V9 M3 6 L10 13 L17 6" stroke="#B3382C" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="step"><div class="sno">4</div><div class="stext"><b>模型实际只看到 2–3 篇文档</b> → 误判「库中无 InstructDS 内容」；金标本在完整清单内，描述明写 InstructDS</div><div class="smet">2 KB 预览</div></div>
+      <div class="dn"><svg width="20" height="14" viewBox="0 0 20 14"><path d="M10 0 V9 M3 6 L10 13 L17 6" stroke="#B3382C" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="step"><div class="sno">5</div><div class="stext"><b>假拒答</b>：353.5 s 端到端（含 300 s 向量兜底挂起）；通道1/通道2 双双复现 + 600 s 确认试验</div><div class="smet">FAIL ×3</div></div>
+    </div>
+  </div>
+
+  <!-- right: fix -->
+  <div class="card" style="left:1068px; top:172px; width:782px; height:428px; border-top:4px solid #0E7C7B;">
+    <div class="ctitle" style="color:#0E5E5D;">修复与验证：kb-mcp 服务端三层改造（10-13 当日闭环）</div>
+    <div class="csub">机械层负责召回与分页，agent 只读「最想看的目录」—— librarian / hybrid / batch / list 四 skill 契约同步修订</div>
+    <div class="fix">
+      <div class="fx"><div class="fx-badge">① 预算门</div><div class="fx-body">每页硬上限 <b>~28K chars</b>，超限自动切页 + <b>truncated="budget_guard"</b> + has_more —— 超预算返回永远无法到达引擎</div></div>
+      <div class="fx"><div class="fx-badge">② 分组视图</div><div class="fx-body"><b>view="groups"</b> 书架分组图：131 docs 压缩至 <b>571 chars</b>，group= 参数定向过滤</div></div>
+      <div class="fx"><div class="fx-badge">③ 逐级下钻</div><div class="fx-body"><b>kb_list(parent_id)</b> 根库→子库逐级看描述 + <b>enumerate_scan</b> 机侧跟随分页，131 篇全覆盖不缩水</div></div>
+    </div>
+    <div class="verify">
+      <div class="vm"><div class="v">−91%</div><div class="k">cm1 描述层字节<br>73,742 → 6,689 chars</div></div>
+      <div class="vm"><div class="v">11/11</div><div class="k">行为断言全过<br>4 页各 ≤23.1K chars</div></div>
+      <div class="vm"><div class="v">131</div><div class="k">篇无重无漏<br>page_size=200 请求被钳 43</div></div>
+      <div class="vm"><div class="v num">53.5s</div><div class="k">B×cm1 复跑 PASS<br>9 turns · 金标命中</div></div>
+    </div>
+    <div class="passline">✓ 端到端闭环：原失败臂 B×cm1 复跑 <b>PASS</b> —— refusal=false · 答案给出 InstructDS 三步合成管线（chatmodes-fixverify-20261013）</div>
+  </div>
+
+  <!-- insight 1 -->
+  <div class="card" style="left:70px; top:622px; width:875px; height:390px; border-top:4px solid #16324F;">
+    <div class="ctitle" style="color:#16324F;">解读一：「检索 ≠ 回答」—— 高命中、高弃答悖论</div>
+    <div class="csub">Quick10 · 8 道可答题：金标被检到 ≠ 答案被给出（chunk 常在答案出现前截断）</div>
+    <div class="irow"><div class="iname">a2 平台轨</div><div class="ibar"><div class="ans" style="width:330px"></div></div><div class="ival">回答 <b class="num" style="color:#0E6B6A">8/8</b> · 误拒 0/8 · 应拒 2/2</div></div>
+    <div class="irow"><div class="iname">bm25</div><div class="ibar"><div class="ans" style="width:82px"></div><div class="abst" style="left:82px; width:248px"></div></div><div class="ival">回答 2/8 · <b>弃答 6/8</b>（尽管检索命中 100%）</div></div>
+    <div class="irow"><div class="iname">rrf</div><div class="ibar"><div class="ans" style="width:82px"></div><div class="abst" style="left:82px; width:248px"></div></div><div class="ival">回答 2/8 · <b>弃答 6/8</b>（尽管检索命中 100%）</div></div>
+    <div class="irow"><div class="iname">vector</div><div class="ibar"><div class="ans" style="width:165px"></div><div class="abst" style="left:165px; width:165px"></div></div><div class="ival">回答 4/8 · <b>弃答 4/8</b>（尽管检索命中 100%）</div></div>
+    <!-- per-question citation strip -->
+    <div style="margin-top:12px;font-size:13.5px;color:#5E6B7A;font-weight:700;">逐题引用命中（a2 平台轨 · QK01–QK08 可答题）</div>
+    <svg width="835" height="46" viewBox="0 0 835 46">
+      <g font-family="Georgia" font-size="11.5" fill="#93A1AE" text-anchor="middle">
+        <text x="22" y="10">01</text><text x="120" y="10">02</text><text x="218" y="10">03</text><text x="316" y="10">04</text>
+        <text x="414" y="10">05</text><text x="512" y="10">06</text><text x="610" y="10">07</text><text x="708" y="10">08</text>
+      </g>
+      <g>
+        <rect x="4"   y="16" width="36" height="16" rx="2" fill="#B3382C" opacity="0.85"/>
+        <rect x="102" y="16" width="36" height="16" rx="2" fill="#0E7C7B"/>
+        <rect x="200" y="16" width="36" height="16" rx="2" fill="#0E7C7B"/>
+        <rect x="298" y="16" width="36" height="16" rx="2" fill="#0E7C7B"/>
+        <rect x="396" y="16" width="36" height="16" rx="2" fill="#0E7C7B"/>
+        <rect x="494" y="16" width="36" height="16" rx="2" fill="#0E7C7B"/>
+        <rect x="592" y="16" width="36" height="16" rx="2" fill="#B3382C" opacity="0.85"/>
+        <rect x="690" y="16" width="36" height="16" rx="2" fill="#0E7C7B"/>
+      </g>
+      <g font-size="12">
+        <text x="4"   y="44" fill="#B3382C">✕ 中止</text>
+        <text x="102" y="44" fill="#5E6B7A">✓</text>
+        <text x="200" y="44" fill="#5E6B7A">✓</text>
+        <text x="298" y="44" fill="#5E6B7A">✓</text>
+        <text x="396" y="44" fill="#5E6B7A">✓</text>
+        <text x="494" y="44" fill="#5E6B7A">✓</text>
+        <text x="592" y="44" fill="#B3382C">✕ 中止</text>
+        <text x="690" y="44" fill="#5E6B7A">✓</text>
+      </g>
+    </svg>
+    <div class="itext">三大 baseline 把正确的文档排进榜首，却因证据 chunk 截断而如实说「证据不足」；平台轨靠<b>判卷引擎逐段投票 + 全文阅读核验</b>，把「检到但截断」的候选转化为可验证的回答 —— 且对域外题保持 <b>0 幻觉、如实奉告</b>（cm3 三模式拒答延迟 36.4 / 29.9 / 65.0 s）。</div>
+    <div class="quote">“Ranking proposes, reading disposes.” —— 排序提名，阅读裁决（论文 §7 命题的本轮实测注脚）</div>
+  </div>
+
+  <!-- insight 2 -->
+  <div class="card" style="left:975px; top:622px; width:875px; height:390px; border-top:4px solid #C8963E;">
+    <div class="ctitle" style="color:#8A6420;">解读二：修复后速度—可信—成本的再平衡</div>
+    <div class="csub">预算门修复让 B 车道回到可用区间；可信性仍有开价，但买到的是契约级保证</div>
+    <div class="tri">
+      <div class="tcell good"><div class="tv">353.5 → 53.5 s</div><div class="tk">B×cm1 修复前后端到端（6.6×，且由 FAIL 转 PASS）</div></div>
+      <div class="tcell"><div class="tv">$0.79 <small>vs</small> $0.046</div><div class="tk">a2 / bm25 每题成本（17×）—— 判卷阅读的开价</div></div>
+      <div class="tcell good"><div class="tv">0</div><div class="tk">幻觉单元 · 误拒 0/8 · 40/40 一致性自检通过</div></div>
+    </div>
+    <div class="itext">① <b>工具返回预算应作为一等检索参数</b>对待：它是隐藏的检索依赖，静默超限 = 静默降级检索质量；② B 车道的价值在「不依赖向量信号」的全库覆盖，修复后 53.5 s 达到可服务水平；③ 成本差换来的是<b>结构化引用（9/10）+ 判卷存证 + 双向诚实</b>（可答 0 误拒 / 不可答 0 编造），四轨对照中 a2 是唯一零误拒的轨。</div>
+    <div class="quote" style="color:#8A6420;">遗留披露：a2 引用命中 0.75 中 2 题为 KB_TOOLS_NOT_READY 基础设施中止，非检索能力退化。</div>
+  </div>
+
+  <div class="footer">
+    <div>证据链：SSE 转录取证（74.9KB→2KB 预览原文）· 11/11 行为断言 · 复跑工件 chatmodes-fixverify-20261013/arm_B-cm1.json · 判定口径修正见 chat_mode_arms.py</div>
+    <div class="num">3 / 3</div>
+  </div>
+</div>
+</body>
+</html>

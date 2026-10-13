@@ -1,0 +1,93 @@
+{
+ "answer": "**Answer:** MameLoshnLM (Mame-Loshn, literally \"mother tongue\") is the first open-source large language model built specifically for Yiddish — an 8B-parameter model produced by continued pretraining of Llama-3.1-8B on a purpose-built Yiddish corpus (Oytser), accompanied by a Yiddish evaluation benchmark (Kashes). It outperforms open models of similar scale on Yiddish tasks such as translation, linguistic analysis, and named entity recognition, and was shown to match native Yiddish lexical/morphological patterns better than general multilingual models. So its parameter scale is **8B parameters** (initialized from Llama 3.1 8B).\n\n**Sources (retrieved and verified this session):**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` (kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`) — Laya-verified survivors: segment-0001 (score 0.90) and segment-0009 (score 0.51); also vector chunk_index 2 and 53–54.\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k00.md`, `__k02.md`, `__k13.md` (kb_id `ce642f28-e157-48af-b669-49862cd73b23`) — vector/two-stage hits confirming the same abstract and training details.",
+ "is_error": false,
+ "latency_s": 25.3,
+ "sdk_duration_ms": 21778,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM Yiddish language model parameter scale"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "MameLoshnLM"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "What is MameLoshnLM and what parameter scale does it have?"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 72735,
+  "output": 2157,
+  "cache_read": 137344,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.48744600000000005,
+ "timeline": [
+  {
+   "t": 3.48,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 7.74,
+   "event": "text",
+   "detail": "290"
+  },
+  {
+   "t": 7.94,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.11,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 11.72,
+   "event": "text",
+   "detail": "170"
+  },
+  {
+   "t": 12.33,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 25.23,
+   "event": "text",
+   "detail": "1186"
+  },
+  {
+   "t": 25.26,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "Retrieval plan: I'll search the knowledge base for \"MameLoshnLM\" — first a cross-KB vector search plus a two-stage keyword/vector search to locate candidate documents, then read the top hits (and verify with kb_laya_judge/kb_doc_read) to confirm what MameLoshnLM is and its parameter scale.",
+  "Vector search already surfaced a clear match. Now I'll verify the content through the Laya evidence gate (reference mode) on the two candidate documents before answering.",
+  "**Answer:** MameLoshnLM (Mame-Loshn, literally \"mother tongue\") is the first open-source large language model built specifically for Yiddish — an 8B-parameter model produced by continued pretraining of Llama-3.1-8B on a purpose-built Yiddish corpus (Oytser), accompanied by a Yiddish evaluation benchmark (Kashes). It outperforms open models of similar scale on Yiddish tasks such as translation, linguistic analysis, and named entity recognition, and was shown to match native Yiddish lexical/morphological patterns better than general multilingual models. So its parameter scale is **8B parameters** (initialized from Llama 3.1 8B).\n\n**Sources (retrieved and verified this session):**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` (kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`) — Laya-verified survivors: segment-0001 (score 0.90) and segment-0009 (score 0.51); also vector chunk_index 2 and 53–54.\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k00.md`, `__k02.md`, `__k13.md` (kb_id `ce642f28-e157-48af-b669-49862cd73b23`) — vector/two-stage hits confirming the same abstract and training details."
+ ],
+ "track": "a2",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ07",
+ "via": "chat",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

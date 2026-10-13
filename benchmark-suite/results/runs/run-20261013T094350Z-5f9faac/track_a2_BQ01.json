@@ -1,0 +1,120 @@
+{
+ "answer": "核验完成：Laya 门对主文档逐段评分，8/8 段全部通过（0.81–0.89），证据充分回答两个子问题（两个 Corpus-Chunks800 分块文件的 reference 抓取因 web 代理失败，但同一论文的检索片段已在校验前返回，仅作旁证）。\n\n**Answer**\n\nThe Transformer computes attention as a mapping of a query and a set of key-value vector pairs to an output that is a weighted sum of the values, where each weight is a compatibility score between the query and the corresponding key. Specifically, scaled dot-product attention takes dot products of the query with all keys, divides each by √d_k, and applies softmax to obtain the weights on the values, packed in matrix form as Attention(Q,K,V) = softmax(QKᵀ/√d_k)V. Multi-head attention linearly projects Q/K/V h times (h=8, d_k=d_v=64), runs the attention function in parallel on each projection, then concatenates and projects the results, letting the model jointly attend to different representation subspaces. The replacement of recurrence and convolution is motivated by three desiderata: computational complexity per layer, parallelizable computation (minimum sequential operations), and maximum path length between long-range dependencies. A self-attention layer connects all positions with O(1) sequential operations and O(1) path length, whereas a recurrent layer requires O(n) sequential operations and O(n) path length — recurrence's inherently sequential h_t = f(h_{t-1}) dependency precludes parallelization within training examples — and a single convolutional layer with kernel k<n cannot connect all pairs, requiring O(n/k) stacked or O(log_k n) dilated layers and costing k× more than recurrent layers. Self-attention is faster than recurrent layers when sequence length n < representation dimension d, and even a separable convolution with k=n only matches a self-attention layer plus a point-wise feed-forward layer. The paper also notes self-attention may yield more interpretable models, and states the Transformer is the first transduction model relying entirely on self-attention without sequence-aligned RNNs or convolution. Because it contains no recurrence or convolution, sinusoidal positional encodings are added to the input embeddings to inject sequence order.\n\n**Sources (all retrieved in this session)**\n- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md` — KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (primary evidence: Abstract, §2 Background, §3.2–3.2.3, §3.5, §4 Why Self-Attention, Table 1; Laya-verified, 8/8 segments survived, scores 0.81–0.89)\n- `Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md`, `__k05.md`, `__k19.md` — KB `ce642f28-e157-48af-b669-49862cd73b23` (same paper's chunks returned by vector search, scores ~0.58–0.64, corroborating; judge reference-fetch for these two files failed via the web proxy)",
+ "is_error": false,
+ "latency_s": 55.5,
+ "sdk_duration_ms": 51972,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__backend_status",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "Transformer self-attention scaled dot-product query key value replaces recurrence and convolution"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "How does the Transformer compute attention (scaled dot-product attention, query/key/value, multi-head), and why does it "
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 94611,
+  "output": 7367,
+  "cache_read": 227584,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.7721819999999999,
+ "timeline": [
+  {
+   "t": 3.53,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 10.93,
+   "event": "text",
+   "detail": "189"
+  },
+  {
+   "t": 10.97,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__backend_status"
+  },
+  {
+   "t": 11.22,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 18.6,
+   "event": "text",
+   "detail": "128"
+  },
+  {
+   "t": 18.92,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 19.13,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_get_documents"
+  },
+  {
+   "t": 29.57,
+   "event": "text",
+   "detail": "166"
+  },
+  {
+   "t": 30.44,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 55.47,
+   "event": "text",
+   "detail": "2776"
+  },
+  {
+   "t": 55.48,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "检索计划：先做一次跨库向量广搜（`kb_search_vector`，query 围绕 Transformer 的 scaled dot-product attention / self-attention / 为何取代 RNN/CNN），命中候选文档后读取并核验原文内容（`kb_doc_read` / `kb_laya_judge`），只依据核验过的内容作答。现在开始执行。",
+  "向量广搜已命中《Attention Is All You Need》(arXiv 1706.03762) 原文，分布于两个 KB。现在读取主文档全文并查看该库完整文档清单（确认拆分的 part 2 是否含 \"Why Self-Attention\" 章节）。",
+  "核心证据已到手（《Attention Is All You Need》part 1 完整含 §3.2 Attention、§4 Why Self-Attention 与 Table 1）。现在用平台的 Laya 内容核验门（`kb_laya_judge`，reference 模式）对候选文档做逐段核验，确认这些文档确实回答本问题。",
+  "核验完成：Laya 门对主文档逐段评分，8/8 段全部通过（0.81–0.89），证据充分回答两个子问题（两个 Corpus-Chunks800 分块文件的 reference 抓取因 web 代理失败，但同一论文的检索片段已在校验前返回，仅作旁证）。\n\n**Answer**\n\nThe Transformer computes attention as a mapping of a query and a set of key-value vector pairs to an output that is a weighted sum of the values, where each weight is a compatibility score between the query and the corresponding key. Specifically, scaled dot-product attention takes dot products of the query with all keys, divides each by √d_k, and applies softmax to obtain the weights on the values, packed in matrix form as Attention(Q,K,V) = softmax(QKᵀ/√d_k)V. Multi-head attention linearly projects Q/K/V h times (h=8, d_k=d_v=64), runs the attention function in parallel on each projection, then concatenates and projects the results, letting the model jointly attend to different representation subspaces. The replacement of recurrence and convolution is motivated by three desiderata: computational complexity per layer, parallelizable computation (minimum sequential operations), and maximum path length between long-range dependencies. A self-attention layer connects all positions with O(1) sequential operations and O(1) path length, whereas a recurrent layer requires O(n) sequential operations and O(n) path length — recurrence's inherently sequential h_t = f(h_{t-1}) dependency precludes parallelization within training examples — and a single convolutional layer with kernel k<n cannot connect all pairs, requiring O(n/k) stacked or O(log_k n) dilated layers and costing k× more than recurrent layers. Self-attention is faster than recurrent layers when sequence length n < representation dimension d, and even a separable convolution with k=n only matches a self-attention layer plus a point-wise feed-forward layer. The paper also notes self-attention may yield more interpretable models, and states the Transformer is the first transduction model relying entirely on self-attention without sequence-aligned RNNs or convolution. Because it contains no recurrence or convolution, sinusoidal positional encodings are added to the input embeddings to inject sequence order.\n\n**Sources (all retrieved in this session)**\n- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md` — KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (primary evidence: Abstract, §2 Background, §3.2–3.2.3, §3.5, §4 Why Self-Attention, Table 1; Laya-verified, 8/8 segments survived, scores 0.81–0.89)\n- `Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md`, `__k05.md`, `__k19.md` — KB `ce642f28-e157-48af-b669-49862cd73b23` (same paper's chunks returned by vector search, scores ~0.58–0.64, corroborating; judge reference-fetch for these two files failed via the web proxy)"
+ ],
+ "track": "a2",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ01",
+ "via": "chat",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

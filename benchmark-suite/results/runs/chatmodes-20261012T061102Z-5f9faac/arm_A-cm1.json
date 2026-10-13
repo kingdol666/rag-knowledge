@@ -1,0 +1,33 @@
+{
+ "mode": "A",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 53.0,
+ "duration_ms": 51581,
+ "turns": 6,
+ "cost_usd": 0.2088286,
+ "session_id": "44c01626-344c-444d-88eb-3ca6c9b21c17",
+ "answer_chars": 1795,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "I have complete, verbatim methodology. Synthesizing the answer.\n\n---\n\n**InstructDS 通过一个「三步数据合成流水线」从现成的 dialogue-summary 对自动造出高质量 query-dialogue-summary（QDS）三元组；关键增量来自两道过滤（剔不可答 + 语义去重），使专家评测的「既唯一又正确」比例从 45% 提升到 75%。**（出处：`nlp__2310.10981` ​*Instructive Dialogue Summarization with Query Aggregations*，Bin Wang et al., I2R A*STAR，KB `b1199132…`，P0 直接证据）\n\n**背景**：query-based 对话摘要的监督数据稀缺（现有 QMSum 仅 232 个会议样本）。受 Self-Instruct 启发，作者用 LLM 的条件问答能力合成数据，减少人工、提升多样性。\n\n## 三步合成流程（§3.2）\n\n**① Summary-anchored query generation（以摘要为锚生成查询）**\n用 **Flan-T5-XL**（记为 model X，已在 Quoref / MC-TACO / CosmosQA 等问答生成数据集上训练）基于*",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

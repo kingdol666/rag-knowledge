@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "attention",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 58.9,
+ "success": true,
+ "session_id": "e46a795e-0cb8-4653-895d-8ef2422d3631",
+ "turns": 5,
+ "cost": 0.504995,
+ "duration_ms": 57608,
+ "answer": "**Transformer 自注意力（Scaled Dot-Product Attention）的计算公式为：**\n\n$$\\mathrm{Attention}(Q,K,V) = \\mathrm{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V \\tag{1}$$\n\n**要点（均取自原文）**\n\n1. **输入**：查询与键维度为 $d_k$，值维度为 $d_v$；多个查询同时计算时打包为矩阵 $Q$，键、值同理打包为 $K$、$V$。原文引用：\"*We call our particular attention \"Scaled Dot-Product Attention\"… The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$.*\"\n2. **计算步骤**：query 与所有 key 做点积 → 每个除以 $\\sqrt{d_k}$ → 经 softmax 得到权重 → 对 values 加权求和。原文：\"*We compute the dot products of the query with all keys, divide each by $\\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.*\"\n3. **缩放的原因**：$d_k$ 较大时点积幅度增大，\"推入 softmax 梯度极小的区域\"；除以 $1/\\sqrt{d_k}$ 正是为了抵消这一效应。原文：\"*…the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients… To counteract this effect, we scale the dot products by $\\frac{1}{\\sqrt{d_k}}$*\"\n4. **补充**：多头注意力（Multi-Head Attention）即将 Q/K/V 线性投影到多个子空间并行执行上式（原文 Figure 2 图注：\"*Multi-Head Attention consists of several attention layers running in parallel*\"）。\n\n**出处与可信度**\n- 来源：KB「计算机与人工智能」→ `artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2)`，即原论文《Attention Is All You Need》(arXiv:1706.03762) §3.2.1。\n- 经 `kb_laya_judge` 证据门判定：3 篇文档含佐证、22 个段落幸存，本文档最高段分 0.9676 → **P0（原文直接证据）**；公式与引文均逐字核对自库内原文。"
+}

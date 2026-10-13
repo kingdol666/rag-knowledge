@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "pickles",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 14.9,
+ "success": true,
+ "session_id": "1d5b2a90-22d5-4294-9acb-74492fb1ac6b",
+ "turns": 5,
+ "cost": 0.322748,
+ "duration_ms": 13608,
+ "answer": "**结论：该知识库中未找到任何四川泡菜腌制相关内容——答案无法从知识库给出（纯事实陈述，不代为发明）。**\n\n**检索事实：**\n\n| 项目 | 结果 |\n|---|---|\n| 检索库 | `计算机与人工智能`（kb_id: b1199132-…b0ba，131 篇文档） |\n| 检索 1 | `kb_search_two_stage(\"四川泡菜 腌制方法 配方\")`：20 个候选、5 个 chunk 命中，全部为 AI/机器人论文片段（如“The Chop - A player should discard their oldest non-hinted card”等牌类策略论文），相关度 ≤0.39 |\n| 检索 2 | `kb_search_vector(\"泡菜制作 发酵 盐度 香料\")`：10 个结果，最高分 0.48，全部为 NLP/机器人/语音论文片段，与提问无任何语义关联 |\n| 逐级核查 | `kb_get_documents(view=\"groups\")` 显示该库仅含 9 个主题组：large-language-models(32)、nlp(19)、artificial-intelligence(17)、databases(17)、statistics(14)、neuroscience(10)、robotics(9)、speech(8)、social-networks(5) |\n\n**判定：** 该库为「计算机与人工智能」文献库（算法、NLP/LLM、视觉、机器人、数据系统、语音、社会计算），**不存在食品/烹饪/发酵类文档**。两次宽网检索的低分命中均为无关噪声（最高 0.48，属跨域误召回），无需进入 Laya 内容判定——没有一份候选文档在主题上可能回答泡菜腌制问题。\n\n**该库范围外，如实声明\"未找到\"：** 关于四川泡菜的配料（盐度、香料、乳酸发酵工艺等）不在本库可回答范围内。如需该问题的答案，需先将相关烹饪资料（如泡菜食谱、食品发酵文献）入库后再检索。"
+}

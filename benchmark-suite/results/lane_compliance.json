@@ -1,0 +1,783 @@
+{
+ "summary": {
+  "results_dir": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\review\\stability-multiround-20261013\\results",
+  "db": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\storage\\claude-chat.db",
+  "cells": 27,
+  "compliant": 27,
+  "violations": [],
+  "zero_tool_cells": [],
+  "cells_without_session": [],
+  "by_mode": {
+   "A": {
+    "cells": 9,
+    "compliant": 9,
+    "zero_tool": 0,
+    "vector_calls_total": 18,
+    "median_wall_s": 29.0
+   },
+   "B": {
+    "cells": 9,
+    "compliant": 9,
+    "zero_tool": 0,
+    "vector_calls_total": 0,
+    "median_wall_s": 76.6
+   },
+   "C": {
+    "cells": 9,
+    "compliant": 9,
+    "zero_tool": 0,
+    "vector_calls_total": 18,
+    "median_wall_s": 52.5
+   }
+  },
+  "verdict": "pass"
+ },
+ "cells": [
+  {
+   "cell": "r1_attention_A",
+   "round": 1,
+   "task": "attention",
+   "mode": "A",
+   "session_id": "4e7ae855-0f48-4c89-8405-79657c83c683",
+   "http": 200,
+   "success": true,
+   "turns": 4,
+   "wall_s": 26.3,
+   "cost_usd": 0.398269,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [],
+   "tools": [
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 3
+  },
+  {
+   "cell": "r1_attention_B",
+   "round": 1,
+   "task": "attention",
+   "mode": "B",
+   "session_id": "7ef45d47-9160-48f7-8064-78fc5c258fbc",
+   "http": 200,
+   "success": true,
+   "turns": 9,
+   "wall_s": 42.0,
+   "cost_usd": 0.599,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list"
+   ],
+   "n_calls": 8
+  },
+  {
+   "cell": "r1_attention_C",
+   "round": 1,
+   "task": "attention",
+   "mode": "C",
+   "session_id": "046d06d5-5a9d-4117-a261-ddc129d688c2",
+   "http": 200,
+   "success": true,
+   "turns": 6,
+   "wall_s": 47.4,
+   "cost_usd": 0.48663500000000004,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_doc_read"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 5
+  },
+  {
+   "cell": "r1_pickles_A",
+   "round": 1,
+   "task": "pickles",
+   "mode": "A",
+   "session_id": "a81d03b9-da96-4ec7-8860-f8f2b6c6eac4",
+   "http": 200,
+   "success": true,
+   "turns": 5,
+   "wall_s": 18.4,
+   "cost_usd": 0.35259399999999996,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_list"
+   ],
+   "tools": [
+    "kb_list",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 4
+  },
+  {
+   "cell": "r1_pickles_B",
+   "round": 1,
+   "task": "pickles",
+   "mode": "B",
+   "session_id": "eea25594-2b29-4490-8d29-e42bb273b7c8",
+   "http": 200,
+   "success": true,
+   "turns": 12,
+   "wall_s": 108.4,
+   "cost_usd": 0.74194,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "n_calls": 11
+  },
+  {
+   "cell": "r1_pickles_C",
+   "round": 1,
+   "task": "pickles",
+   "mode": "C",
+   "session_id": "1d5b2a90-22d5-4294-9acb-74492fb1ac6b",
+   "http": 200,
+   "success": true,
+   "turns": 5,
+   "wall_s": 14.9,
+   "cost_usd": 0.322748,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_get_documents",
+    "kb_list",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 4
+  },
+  {
+   "cell": "r1_seismology_A",
+   "round": 1,
+   "task": "seismology",
+   "mode": "A",
+   "session_id": "70f34558-06fa-407f-ae4f-e43f58d775e6",
+   "http": 200,
+   "success": true,
+   "turns": 7,
+   "wall_s": 29.0,
+   "cost_usd": 0.40928499999999995,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_get_documents"
+   ],
+   "tools": [
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 6
+  },
+  {
+   "cell": "r1_seismology_B",
+   "round": 1,
+   "task": "seismology",
+   "mode": "B",
+   "session_id": "f97296da-7106-462c-a34d-dde9490ec428",
+   "http": 200,
+   "success": true,
+   "turns": 20,
+   "wall_s": 146.1,
+   "cost_usd": 1.291292,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "backend_status",
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list"
+   ],
+   "n_calls": 19
+  },
+  {
+   "cell": "r1_seismology_C",
+   "round": 1,
+   "task": "seismology",
+   "mode": "C",
+   "session_id": "574a449b-36b4-4698-8c9a-dc81a74235e1",
+   "http": 200,
+   "success": true,
+   "turns": 11,
+   "wall_s": 182.0,
+   "cost_usd": 1.125345,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 10
+  },
+  {
+   "cell": "r2_attention_A",
+   "round": 2,
+   "task": "attention",
+   "mode": "A",
+   "session_id": "e28db815-efbe-4525-9e87-266786a65307",
+   "http": 200,
+   "success": true,
+   "turns": 6,
+   "wall_s": 33.7,
+   "cost_usd": 0.44117900000000004,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_doc_read"
+   ],
+   "tools": [
+    "ExitWorktree",
+    "kb_doc_read",
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 5
+  },
+  {
+   "cell": "r2_attention_B",
+   "round": 2,
+   "task": "attention",
+   "mode": "B",
+   "session_id": "310fad04-2c47-4ea1-832e-e4c839423d1a",
+   "http": 200,
+   "success": true,
+   "turns": 14,
+   "wall_s": 94.4,
+   "cost_usd": 0.946003,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list"
+   ],
+   "n_calls": 13
+  },
+  {
+   "cell": "r2_attention_C",
+   "round": 2,
+   "task": "attention",
+   "mode": "C",
+   "session_id": "c15cdcfc-1dbf-4e16-a01e-01e38b931eb9",
+   "http": 200,
+   "success": true,
+   "turns": 4,
+   "wall_s": 23.4,
+   "cost_usd": 0.396403,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [],
+   "tools": [
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 3
+  },
+  {
+   "cell": "r2_pickles_A",
+   "round": 2,
+   "task": "pickles",
+   "mode": "A",
+   "session_id": "c0b9a294-f89a-4868-8153-2c576e0258ab",
+   "http": 200,
+   "success": true,
+   "turns": 4,
+   "wall_s": 19.9,
+   "cost_usd": 0.34131500000000004,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_get_documents"
+   ],
+   "tools": [
+    "kb_get_documents",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 3
+  },
+  {
+   "cell": "r2_pickles_B",
+   "round": 2,
+   "task": "pickles",
+   "mode": "B",
+   "session_id": "6647a2d8-fb09-43b7-8ac5-bc6f79fab1cd",
+   "http": 200,
+   "success": true,
+   "turns": 10,
+   "wall_s": 39.2,
+   "cost_usd": 0.403486,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "n_calls": 9
+  },
+  {
+   "cell": "r2_pickles_C",
+   "round": 2,
+   "task": "pickles",
+   "mode": "C",
+   "session_id": "95bbb04a-62a6-447d-ab6b-9f5305113e80",
+   "http": 200,
+   "success": true,
+   "turns": 8,
+   "wall_s": 52.5,
+   "cost_usd": 0.506031,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 7
+  },
+  {
+   "cell": "r2_seismology_A",
+   "round": 2,
+   "task": "seismology",
+   "mode": "A",
+   "session_id": "19a3ca64-37bd-495e-a8e8-60b417693cf6",
+   "http": 200,
+   "success": true,
+   "turns": 9,
+   "wall_s": 112.4,
+   "cost_usd": 0.844739,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_get_documents"
+   ],
+   "tools": [
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 8
+  },
+  {
+   "cell": "r2_seismology_B",
+   "round": 2,
+   "task": "seismology",
+   "mode": "B",
+   "session_id": "7ddaa168-f86d-4e31-9bec-5b331f93f351",
+   "http": 200,
+   "success": true,
+   "turns": 18,
+   "wall_s": 125.6,
+   "cost_usd": 1.057585,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list"
+   ],
+   "n_calls": 17
+  },
+  {
+   "cell": "r2_seismology_C",
+   "round": 2,
+   "task": "seismology",
+   "mode": "C",
+   "session_id": "9a859e27-c0fe-484b-bac6-f5745a6dc3ad",
+   "http": 200,
+   "success": true,
+   "turns": 13,
+   "wall_s": 89.1,
+   "cost_usd": 0.839752,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_search",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 12
+  },
+  {
+   "cell": "r3_attention_A",
+   "round": 3,
+   "task": "attention",
+   "mode": "A",
+   "session_id": "a5f00634-d1a7-468c-acf8-b473f306f106",
+   "http": 200,
+   "success": true,
+   "turns": 4,
+   "wall_s": 24.1,
+   "cost_usd": 0.39510799999999996,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [],
+   "tools": [
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 3
+  },
+  {
+   "cell": "r3_attention_B",
+   "round": 3,
+   "task": "attention",
+   "mode": "B",
+   "session_id": "e4c61b93-81b3-4743-a631-7f60fed69005",
+   "http": 200,
+   "success": true,
+   "turns": 11,
+   "wall_s": 54.6,
+   "cost_usd": 0.614263,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list"
+   ],
+   "n_calls": 10
+  },
+  {
+   "cell": "r3_attention_C",
+   "round": 3,
+   "task": "attention",
+   "mode": "C",
+   "session_id": "e46a795e-0cb8-4653-895d-8ef2422d3631",
+   "http": 200,
+   "success": true,
+   "turns": 5,
+   "wall_s": 58.9,
+   "cost_usd": 0.504995,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [],
+   "tools": [
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 4
+  },
+  {
+   "cell": "r3_pickles_A",
+   "round": 3,
+   "task": "pickles",
+   "mode": "A",
+   "session_id": "078a79a3-a4eb-4cb4-99aa-5efd16752245",
+   "http": 200,
+   "success": true,
+   "turns": 6,
+   "wall_s": 81.9,
+   "cost_usd": 0.6305850000000001,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_laya_judge",
+    "kb_list",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 5
+  },
+  {
+   "cell": "r3_pickles_B",
+   "round": 3,
+   "task": "pickles",
+   "mode": "B",
+   "session_id": "a72c6b45-17a8-4a47-b62e-0578980b0b1f",
+   "http": 200,
+   "success": true,
+   "turns": 11,
+   "wall_s": 32.0,
+   "cost_usd": 0.394259,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "n_calls": 10
+  },
+  {
+   "cell": "r3_pickles_C",
+   "round": 3,
+   "task": "pickles",
+   "mode": "C",
+   "session_id": "b85f2221-36d0-4f2f-80f6-f29dab371044",
+   "http": 200,
+   "success": true,
+   "turns": 6,
+   "wall_s": 42.3,
+   "cost_usd": 0.436809,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 5
+  },
+  {
+   "cell": "r3_seismology_A",
+   "round": 3,
+   "task": "seismology",
+   "mode": "A",
+   "session_id": "3fcc2899-11bd-4369-8899-e39a70799348",
+   "http": 200,
+   "success": true,
+   "turns": 9,
+   "wall_s": 66.8,
+   "cost_usd": 0.769029,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 8
+  },
+  {
+   "cell": "r3_seismology_B",
+   "round": 3,
+   "task": "seismology",
+   "mode": "B",
+   "session_id": "b482bece-c538-4bca-ac52-80de3cf4b2a8",
+   "http": 200,
+   "success": true,
+   "turns": 9,
+   "wall_s": 76.6,
+   "cost_usd": 0.658317,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_list"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_list"
+   ],
+   "n_calls": 8
+  },
+  {
+   "cell": "r3_seismology_C",
+   "round": 3,
+   "task": "seismology",
+   "mode": "C",
+   "session_id": "cb7b6f6d-62ab-4b5d-bda6-66057f24eace",
+   "http": 200,
+   "success": true,
+   "turns": 10,
+   "wall_s": 105.1,
+   "cost_usd": 0.822394,
+   "ok": true,
+   "zero_tool": false,
+   "vector_used": [
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "catalog_used": [
+    "kb_doc_read",
+    "kb_get_documents"
+   ],
+   "tools": [
+    "kb_doc_read",
+    "kb_get_documents",
+    "kb_laya_judge",
+    "kb_search_two_stage",
+    "kb_search_vector"
+   ],
+   "n_calls": 9
+  }
+ ]
+}

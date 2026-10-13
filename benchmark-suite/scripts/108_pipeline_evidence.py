@@ -15,10 +15,14 @@ results/r2_pipeline_100.json. Exits 1 on any mismatch.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _paper_numbers as PN  # noqa: E402  (paper-number kernel: graders + macros)
 
 SUITE = Path(__file__).resolve().parent.parent
 R = SUITE / "results"
@@ -30,7 +34,41 @@ def jload(p: Path):
     return json.loads(p.read_text(encoding="utf-8"))
 
 
+def provenance(p: Path) -> dict:
+    """出处三元组：相对路径 + mtime，供审稿人核对「这行数字来自哪个产物」。"""
+    try:
+        return {"path": str(p.relative_to(SUITE.parent)),
+                "mtime": __import__("datetime").datetime.fromtimestamp(
+                    p.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")}
+    except Exception:  # noqa: BLE001
+        return {"path": str(p), "mtime": None}
+
+
+def pick_run(name: str = "") -> Path:
+    """--run 接受目录名/相对路径/绝对路径；缺省取「完整三轨（a2/b/c）」的最新 run。
+
+    2026-10-13 修复：原实现硬编码 `experiment_chat_20260922-211000`，该目录早已
+    被清理，脚本读到 retrieval 块时 FileNotFoundError——Table 1 因此无法再生。
+    踩坑记录：`results/experiment_chat_*` 里还有更老的四臂 run（轨道名是 a/b/c，
+    没有 a2），仅按 mtime 排序会选中它并炸在 KeyError('a2')。所以这里先按是否有
+    `track_a2_*.json` 过滤，再按 mtime 取最新。
+    """
+    if name:
+        for cand in (R / name, R / "runs" / name, Path(name)):
+            if cand.is_dir():
+                return cand
+        raise SystemExit(f"[fatal] run dir not found: {name}")
+    cands = list((R / "runs").glob("run-*")) + list(R.glob("experiment_chat_*"))
+    full = [p for p in cands if list(p.glob("track_a2_*.json"))]
+    if not full:
+        raise SystemExit(
+            "[fatal] 没有找到含 a2/b/c 三轨的 run（需要 track_a2_*.json）；"
+            f"候选 {len(cands)} 个：{sorted(p.name for p in cands)[-5:]}")
+    return max(full, key=lambda p: p.stat().st_mtime)
+
+
 def citations(run: Path) -> dict:
+    """旧口径（宽松 PAT）——保留以便与历史 JSON 对照，不再是论文宏的口径。"""
     out = {}
     for t in "abc":
         n = 0
@@ -89,32 +127,63 @@ def main() -> int:
     assert org["o5c_probes"]["pass"] == org["o5c_probes"]["total"] == 15
     assert org["o5b"]["ok"] == org["o5b"]["checked"] == 33
 
-    # retrieval: three-mode run on the 100-paper corpus (2026-09-23 re-source:
-    # run experiment_chat_20260922-211000, BQ question set; the earlier
-    # 181449 block is retained in git history)
-    run = R / "experiment_chat_20260922-211000"
-    aud = jload(run / "audit_paper_numbers.json")
-    cites = citations(run)
+    # retrieval: three-track run on the 100-paper corpus.
+    # 2026-10-13 改源：论文宏已刷到本轮的 run-* 目录（三轨 a2/b/c、BQ 题集），
+    # 因此 Table 1 的 retrieval 行也必须来自同一个 run，否则论文里两处数字互斥。
+    # ground/kw/cited 全部用 _paper_numbers 的判分内核复算（与 107_exp_grade.py、
+    # 150_final_pipeline.py 同一套语义），paper_values() 同时做一次宏对账。
+    run = pick_run(args.run)
+    qfile = PN.pick_qfile(run)
+    grade = PN.grade_run(run, qfile)
+    paper = PN.paper_values()
+    cites_pat = citations(run)
     corpus_exp = jload(R / "r2_exp_corpus.json")
-    grade = jload(R / "exp_r2_grade.json")
-    kw = {t: grade["grades"][t]["kw_ok"] for t in "abc"} if grade.get("grades") else {}
+    gra = grade["grades"]
+    print(f"[retrieval] run={run.name} qfile={qfile.name} "
+          f"rows={len(grade['rows'])} tracks={sorted(gra)}", flush=True)
+    missing = [t for t in ("a2", "b", "c") if t not in gra]
+    if missing:
+        raise SystemExit(
+            f"[fatal] {run.name} 缺少轨道 {missing}（实际 {sorted(gra)}，"
+            f"行数 {len(grade['rows'])}）——该 run 不是完整的论文三轨运行，"
+            "不能作为 Table 1 的 retrieval 行；用 --run 指定完整 run。")
     ev["retrieval"] = {
-        "run": run.name, "questions": 10, "traces": 30,
-        "grounded": {t: aud["per_track"][t]["answered_with_gold_citation"]
-                     for t in "abc"},
-        "keyword_verified": kw,
-        "citations": cites,
-        "avg_latency_s": {t: aud["per_track"][t]["avg_latency_s"] for t in "abc"},
-        "avg_tool_calls": {t: aud["per_track"][t]["avg_tool_calls"] for t in "abc"},
-        "cost_usd_total": {t: aud["per_track"][t]["cost_usd_total"] for t in "abc"},
+        "run": run.name, "qfile": qfile.name,
+        "questions": len({x["qid"] for x in grade["rows"]}),
+        "traces": len(grade["rows"]),
+        "grounded": {t: gra[t]["grounded"] for t in ("a2", "b", "c")},
+        "keyword_verified": {t: gra[t]["kw"] for t in ("a2", "b", "c")},
+        "cited": {t: gra[t]["cited"] for t in ("a2", "b", "c")},
+        "citations_pat_legacy": cites_pat,
+        "avg_latency_s": {t: gra[t]["avg_latency_s"] for t in ("a2", "b", "c")},
+        "avg_tool_calls": {t: gra[t]["avg_tools"] for t in ("a2", "b", "c")},
+        "avg_cost_usd": {t: gra[t]["avg_cost_usd"] for t in ("a2", "b", "c")},
+        "abstain": {t: gra[t]["abstain"] for t in ("a2", "b", "c")},
+        "sentinel_cells": sum(1 for x in grade["rows"] if x["sentinel"]),
         "corpus_md_files": corpus_exp["corpus_files"],
         "chunks800": corpus_exp["chunks"],
-        "denied_recovered": aud["per_track"]["a"]["runs_with_denied_tools"],
+        "provenance": {"run_dir": provenance(run),
+                       "corpus_export": provenance(R / "r2_exp_corpus.json"),
+                       "paper_tex": paper["tex"]},
     }
-    assert ev["retrieval"]["grounded"] == {"a": 9, "b": 10, "c": 9}
-    assert ev["retrieval"]["keyword_verified"] == {"a": 9, "b": 6, "c": 6}
-    assert cites == {"a": 7, "b": 4, "c": 1}
-    assert corpus_exp["corpus_files"] == 100 and corpus_exp["chunks"] == 4528
+    assert ev["retrieval"]["traces"] == 30, ev["retrieval"]["traces"]
+    assert ev["retrieval"]["sentinel_cells"] == 0, "本轮存在零工具哨兵单元，先重跑该单元"
+    assert corpus_exp["corpus_files"] == 100 and corpus_exp["chunks"] == 4528, corpus_exp
+    # 论文宏 ↔ 本轮判分：三轨 grounded/kw/cited 必须逐一相等（论文的数字就是这一轮的）
+    pairs = [("A", "a2"), ("B", "b"), ("C", "c")]
+    raw, mapped = paper["raw"], {}
+    for prefix, key in (("grounded", "grounded"), ("kw", "kw"), ("cite", "cited")):
+        for letter, t in pairs:
+            mname = f"NUM{prefix}{letter}"
+            if mname not in raw:
+                raise SystemExit(f"[fatal] main.tex 缺少宏 \\{mname}")
+            mapped[(prefix, letter)] = int(raw[mname])
+    for letter, t in pairs:
+        for prefix, key in (("grounded", "grounded"), ("kw", "kw"), ("cite", "cited")):
+            want, got = mapped[(prefix, letter)], gra[t][key]
+            assert want == got, \
+                (f"macro {prefix}{letter}={want} != run {t} {key} {got}"
+                 f"（run={run.name}）")
 
     # failure: honest not-found probes
     nf = jload(R / "honest_failure_probe.json")
@@ -124,6 +193,7 @@ def main() -> int:
         "verdicts": [p["verdict"] for p in nf["probes"]],
         "gate_scores": gates,
         "corpus_scope": nf["corpus_scope"],
+        "provenance": provenance(R / "honest_failure_probe.json"),
     }
     assert ev["failure"]["verdicts"] == ["NOT_FOUND"] * 3
     assert gates == ["1/8", "1/8", "0/8"]
@@ -139,4 +209,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--run", default="",
+                    help="run 目录名/路径；缺省 = results/runs 下最新 run-*")
+    args = ap.parse_args()
     sys.exit(main())

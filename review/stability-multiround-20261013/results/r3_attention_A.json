@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "attention",
+ "mode": "A",
+ "http": 200,
+ "wall_s": 24.1,
+ "success": true,
+ "session_id": "a5f00634-d1a7-468c-acf8-b473f306f106",
+ "turns": 4,
+ "cost": 0.39510799999999996,
+ "duration_ms": 22856,
+ "answer": "**结论：Transformer 自注意力（论文中称 Scaled Dot-Product Attention）的计算公式为 Attention(Q,K,V) = softmax(QKᵀ/√d_k)V**（论文式 1）。\n\n**公式要素**\n- 输入：查询与键维度为 d_k，值为 d_v；实际计算时把一组查询打包成矩阵 Q，键、值打包成 K、V。\n- 三步：Q 与所有 K 点积 → 每个除以 √d_k → 过 softmax 得到对 V 的权重，加权求和。\n\n原文表述：\"The input consists of queries and keys of dimension d_k, and values of dimension d_v. We compute the dot products of the query with all keys, divide each by √d_k, and apply a softmax function to obtain the weights on the values.\"\n\n**为什么要除以 √d_k（缩放因子）**\n原文明示：\"for large values of d_k, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients. To counteract this effect, we scale the dot products by 1/√d_k.\" — 即防止大 d_k 下点积幅值过大导致 softmax 进入梯度极小区域。\n\n**多头扩展（式 2）**\nMultiHead(Q,K,V) = Concat(head₁,…,head_h)W^O，其中 head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)。本工作中 h=8，d_k=d_v=d_model/h=64；基础模型 d_model=512，编码器/解码器各 N=6 层。\n\n**补充（self-attention 的实例化）**：编码器自注意力中 Q、K、V 均来自上一层输出，每个位置可关注上一层全部位置；解码器自注意力用掩码（softmax 输入置 −∞）屏蔽未来位置以保持自回归性质。\n\n**出处**：Vaswani et al., *Attention Is All You Need*（arXiv:1706.03762），§3.2.1 Scaled Dot-Product Attention / §3.2.2 Multi-Head Attention — 库文档 `artificial-intelligence__1706.03762__attention-is-all-you-need.md`（part 1 of 2），计算机与人工智能库。\n\n**可信度**：P0 直接证据 — Laya 判定器对原文 14 个片段全部判为存活（score 0.76–0.93），公式与解释均逐字引自原文。"
+}

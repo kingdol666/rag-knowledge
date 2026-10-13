@@ -1,0 +1,31 @@
+{
+ "mode": "A",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 25.7,
+ "duration_ms": 24293,
+ "turns": 4,
+ "cost_usd": 0.10341020000000001,
+ "session_id": "ad186a66-0f09-4a72-a0b8-8012fc16261c",
+ "answer_chars": 1400,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：在指定的知识库（b1199132-e4d4-4305-8c2e-82dc1753b0ba，\"计算机与人工智能\"库）中未找到 \"Herbert-Moulton collider benchmark\" 这一术语，也未找到任何粒子物理（particle physics）探测器漂移（detector drift）标定/量化的相关内容。**\n\n检索事实（只读，未修复任何内容）：\n\n| 检索项 | 参数 | 命中情况 |\n|---|---|---|\n| `kb_search_two_stage` | query=`Herbert-Moulton collider benchmark detector drift particle physics`；stage1_top_k=20, stage2_top_k=5, slim=true | 20 个候选，5 条 stage2 结果；**无一与粒子物理/对撞机有关** |\n| `kb_search_vector` | query=`Herbert-Moulton collider benchmark quantify detector drift`；top_k=15, slim=true | 15 条结果，最高分仅 **0.500**（弱相关阈值边缘），全部为 AI/机器人/语音/统计学领域 |\n\n命中的全部是\"漂移\"一词在该库多余语义下的",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

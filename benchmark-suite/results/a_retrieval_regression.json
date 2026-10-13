@@ -1,0 +1,258 @@
+{
+ "task": "A — retrieval regression (dense recall reachability)",
+ "generated": "2026-10-13 20:09:27",
+ "top_k": 10,
+ "probes_pass": 15,
+ "probes_total": 15,
+ "failures": [],
+ "libraries": [
+  "工程与能源",
+  "生命科学与医学",
+  "经济与社会",
+  "自然科学与地球科学",
+  "计算机与人工智能"
+ ],
+ "probes": [
+  {
+   "library": "计算机与人工智能",
+   "query": "scaled dot-product attention multi-head parallel computation",
+   "gold": "1706.03762",
+   "slug": "artificial-intelligence__1706.03762",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.6964,
+   "gold_score": 0.6964,
+   "top_paths": [
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md"
+   ]
+  },
+  {
+   "library": "计算机与人工智能",
+   "query": "masked language model bidirectional pre-training fine-tuning",
+   "gold": "1810.04805",
+   "slug": "nlp__1810.04805",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.6733,
+   "gold_score": 0.6733,
+   "top_paths": [
+    "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+    "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+    "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md"
+   ]
+  },
+  {
+   "library": "计算机与人工智能",
+   "query": "few-shot learners in-context learning scaling language models",
+   "gold": "2005.14165",
+   "slug": "large-language-models__2005.14165",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.72,
+   "gold_score": 0.72,
+   "top_paths": [
+    "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 1 of 13).md",
+    "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md",
+    "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md"
+   ]
+  },
+  {
+   "library": "自然科学与地球科学",
+   "query": "daily precipitation extremes under climate change",
+   "gold": "1503.07557",
+   "slug": "climate-science__1503.07557",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.7177,
+   "gold_score": 0.7177,
+   "top_paths": [
+    "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md",
+    "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+    "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md"
+   ]
+  },
+  {
+   "library": "自然科学与地球科学",
+   "query": "supershear rupture indicator in near-fault particle motion",
+   "gold": "2606.10843",
+   "slug": "seismology__2606.10843",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.7888,
+   "gold_score": 0.7888,
+   "top_paths": [
+    "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 1 of 3).md",
+    "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 3 of 3).md",
+    "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 2 of 3).md"
+   ]
+  },
+  {
+   "library": "自然科学与地球科学",
+   "query": "quantum error mitigation benchmarking noisy intermediate-scale devices",
+   "gold": "2303.00445",
+   "slug": "quantum-physics__2303.00445",
+   "hit": true,
+   "rank": 2,
+   "returned": 10,
+   "top_score": 0.761,
+   "gold_score": 0.7377,
+   "top_paths": [
+    "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md",
+    "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md",
+    "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md"
+   ]
+  },
+  {
+   "library": "生命科学与医学",
+   "query": "tumor elimination immune evasion control strategies",
+   "gold": "2604.01385",
+   "slug": "immunology__2604.01385",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.749,
+   "gold_score": 0.749,
+   "top_paths": [
+    "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md",
+    "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 2 of 3).md",
+    "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 3 of 3).md"
+   ]
+  },
+  {
+   "library": "生命科学与医学",
+   "query": "influenza vaccine design epitope analysis",
+   "gold": "0408016",
+   "slug": "immunology__q-bio-0408016",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.7601,
+   "gold_score": 0.7601,
+   "top_paths": [
+    "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+    "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+    "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md"
+   ]
+  },
+  {
+   "library": "生命科学与医学",
+   "query": "large language models encode clinical knowledge",
+   "gold": "2212.13138",
+   "slug": "clinical-medicine__2212.13138",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.7629,
+   "gold_score": 0.7629,
+   "top_paths": [
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 6 of 8).md"
+   ]
+  },
+  {
+   "library": "工程与能源",
+   "query": "disruption sources in the power grid resilience",
+   "gold": "2207.08146",
+   "slug": "power-systems__2207.08146",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.744,
+   "gold_score": 0.744,
+   "top_paths": [
+    "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+    "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+    "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md"
+   ]
+  },
+  {
+   "library": "工程与能源",
+   "query": "oxygen redox in battery cathodes anionic redox",
+   "gold": "2408.09942",
+   "slug": "materials__2408.09942",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.7769,
+   "gold_score": 0.7769,
+   "top_paths": [
+    "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+    "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+    "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md"
+   ]
+  },
+  {
+   "library": "计算机与人工智能",
+   "query": "multilayer perceptron simultaneous localization and mapping MLP SLAM",
+   "gold": "2410.10669",
+   "slug": "robotics__2410.10669",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.8223,
+   "gold_score": 0.8223,
+   "top_paths": [
+    "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+    "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md",
+    "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md"
+   ]
+  },
+  {
+   "library": "经济与社会",
+   "query": "unified growth theory economic growth in Europe",
+   "gold": "1512.08067",
+   "slug": "economics__1512.08067",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.7451,
+   "gold_score": 0.7451,
+   "top_paths": [
+    "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+    "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+    "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md"
+   ]
+  },
+  {
+   "library": "经济与社会",
+   "query": "backtest of trading systems on candle charts",
+   "gold": "1412.5558",
+   "slug": "finance__1412.5558",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.776,
+   "gold_score": 0.776,
+   "top_paths": [
+    "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+    "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+    "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md"
+   ]
+  },
+  {
+   "library": "计算机与人工智能",
+   "query": "information consumption boundary spanning decentralized social media",
+   "gold": "2203.15752",
+   "slug": "social-networks__2203.15752",
+   "hit": true,
+   "rank": 1,
+   "returned": 10,
+   "top_score": 0.7354,
+   "gold_score": 0.7354,
+   "top_paths": [
+    "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 1 of 3).md",
+    "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 3 of 3).md",
+    "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 2 of 3).md"
+   ]
+  }
+ ],
+ "verdict": "pass"
+}

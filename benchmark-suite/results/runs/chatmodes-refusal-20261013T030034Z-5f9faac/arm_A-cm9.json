@@ -1,0 +1,32 @@
+{
+ "mode": "A",
+ "qid": "cm9",
+ "expect": "refusal",
+ "kb_ids": [
+  "455137b4-a0be-46ed-acf5-d8b475dc5d70"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 56.6,
+ "duration_ms": 55239,
+ "turns": 7,
+ "cost_usd": 0.1691496,
+ "session_id": "4e09d646-4ad0-4c38-a0c3-c1d0b2cb0640",
+ "answer_chars": 534,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：指定库中不存在关于「Zephyr-7 无线充电协议帧结构」的任何内容，未找到。**\n\n检索事实如下：\n\n- **检索库**：`455137b4-a0be-46ed-acf5-d8b475dc5d70`（demo-qa-20260927，共 5 篇文档）\n- **已执行检索**：\n  1. `kb_search_two_stage`（查询「Zephyr-7 无线充电协议 帧结构」，stage1 20 候选）→ 命中 0\n  2. `kb_search_vector`（查询「Zephyr-7 协议 帧结构 帧格式」）→ 命中 0\n  3. `kb_search_vector`（放宽为「无线充电 协议 帧」）→ 命中 0\n  4. 文档目录核查（`kb_get_documents`）→ 全库 5 篇文档逐一确认，均与无线充电无关\n\n该库实际内容仅涉及：万里长城、Voyager 1 探测器、光合作用、Transformer 论文（Attention Is All You Need）、检索模式实测速查卡。没有任何文档包含无线充电协议、帧结构或 Zephyr 相关信息，因此无法给出任何引文。\n\n如该协议文档存于其他知识库，请指明库名或放开检索范围后重试。",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ },
+ "rerun_of_tool_failure": true
+}

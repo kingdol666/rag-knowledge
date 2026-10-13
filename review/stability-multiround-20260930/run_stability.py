@@ -45,10 +45,50 @@ HYBRID_SUFFIX = ('【混合检索模式】先用 kb_search_two_stage / kb_search
 
 
 def token() -> str:
-    for line in (REPO / '.env').read_text(encoding='utf-8').splitlines():
-        if line.startswith('MCP_AUTH_TOKEN='):
-            return line.split('=', 1)[1].strip()
-    raise SystemExit('MCP_AUTH_TOKEN not in .env')
+    """MCP_AUTH_TOKEN from .env; fall back to storage/loop-auth.json."""
+    env = REPO / '.env'
+    if env.exists():
+        for line in env.read_text(encoding='utf-8').splitlines():
+            if line.startswith('MCP_AUTH_TOKEN='):
+                tok = line.split('=', 1)[1].strip()
+                if tok:
+                    return tok
+    for key in ('MCP_AUTH_TOKEN', 'token', 'access_token'):
+        f = REPO / 'storage' / 'loop-auth.json'
+        if f.exists():
+            data = json.loads(f.read_text(encoding='utf-8'))
+            if isinstance(data, dict) and data.get(key):
+                return str(data[key])
+    raise SystemExit('no MCP_AUTH_TOKEN in .env and no token in storage/loop-auth.json')
+
+
+# ── 车道契约（论文 sec4 的 27/27 lane-contract compliance 的复算依据） ────────
+VECTOR_TOOLS = {'kb_search_vector', 'kb_search_two_stage', 'kb_search_stats'}
+CATALOG_TOOLS = {'kb_list', 'kb_get_documents', 'kb_doc_read'}
+
+
+def _short(names: list[str]) -> set[str]:
+    return {str(n).split('__')[-1] for n in names or []}
+
+
+def lane_check(mode: str, calls: list[str]) -> dict:
+    """A=向量快车道（必须真的走向量族）；B=逐级通道（零向量调用，走目录族）；
+    C=混合（只要有真实检索调用即可，允许两族并存）。
+    `ok=False` 且 `zero_tool=True` 表示这一格根本没检索——该格无效，不是车道结果。
+    """
+    s = _short(calls)
+    zero = len(s) == 0
+    if mode == 'A':
+        ok = bool(s & VECTOR_TOOLS)
+    elif mode == 'B':
+        ok = (not (s & VECTOR_TOOLS)) and bool(s & CATALOG_TOOLS)
+    else:
+        ok = not zero
+    return {'mode': mode, 'zero_tool': zero, 'ok': ok,
+            'vector_used': sorted(s & VECTOR_TOOLS),
+            'catalog_used': sorted(s & CATALOG_TOOLS),
+            'tools': sorted(s)}
+
 
 
 def run_once(round_no: int, task: str, mode: str) -> dict:
@@ -64,6 +104,10 @@ def run_once(round_no: int, task: str, mode: str) -> dict:
         'engine': 'claude',
         'permissionMode': 'default',
         'timeout_ms': 480000,
+        # 2026-10-13: without this the kb-mcp mount races the SDK init and the
+        # cell silently answers with zero kb tools (KB_TOOLS_NOT_READY), which
+        # is an environment artifact, not a lane result.
+        'mcpMount': 'stdio',
     }
     conn = http.client.HTTPConnection('127.0.0.1', 6789, timeout=540)
     t0 = time.time()
@@ -89,15 +133,27 @@ def run_once(round_no: int, task: str, mode: str) -> dict:
         'cost': payload.get('total_cost_usd'),
         'duration_ms': payload.get('duration_ms'),
         'answer': payload.get('answer') or payload.get('error', ''),
+        # 2026-10-13: chat.post.ts 现在回传本轮的 kb 工具调用序（toolCalls）。
+        # 车道合规（fast=向量族 / librarian=目录族且零向量调用）必须能从落盘
+        # 文件复算，否则 27/27 只能靠人工读 session trace。
+        'tool_calls': payload.get('toolCalls') or [],
+        'tool_call_count': payload.get('toolCallCount'),
     }
-    OUT.mkdir(exist_ok=True)
+    # 落盘前算一次车道契约，让「合规」成为每个单元自带的字段而非事后断言
+    rec['lane'] = lane_check(mode, rec['tool_calls'])
+    OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f'r{round_no}_{task}_{mode}.json').write_text(
         json.dumps(rec, ensure_ascii=False, indent=1), encoding='utf-8')
     return rec
 
 
 if __name__ == '__main__':
-    rounds = sys.argv[1:] or ['r1']
+    argv = [a for a in sys.argv[1:]]
+    if '--out' in argv:
+        i = argv.index('--out')
+        OUT = Path(argv[i + 1]).resolve()
+        del argv[i:i + 2]
+    rounds = argv or ['r1']
     total = len(rounds) * len(TASKS) * 3
     done = 0
     for rnd in rounds:
@@ -110,11 +166,16 @@ if __name__ == '__main__':
                 try:
                     rec = run_once(n, task, mode)
                     head = (rec['answer'] or '').replace('\n', ' ')[:120]
+                    ln = rec.get('lane') or {}
                     print(f'  → HTTP {rec["http"]} · {rec["wall_s"]}s · ok={rec["success"]} '
                           f'· turns={rec["turns"]} · ${rec["cost"]} · sess={str(rec["session_id"])[:12]}\n'
+                          f'    lane={"OK" if ln.get("ok") else "VIOLATION"}'
+                          f'{"(zero-tool)" if ln.get("zero_tool") else ""}'
+                          f' vec={ln.get("vector_used")} cat={ln.get("catalog_used")}\n'
                           f'    {head}', flush=True)
                 except Exception as exc:  # noqa: BLE001 — 记录后继续下一跑
                     print(f'  → EXCEPTION {type(exc).__name__}: {exc}', flush=True)
+                    OUT.mkdir(parents=True, exist_ok=True)
                     (OUT / f'{tag}_EXCEPTION.txt').write_text(
                         f'{type(exc).__name__}: {exc}', encoding='utf-8')
     print('STABILITY-RUNS-DONE', flush=True)

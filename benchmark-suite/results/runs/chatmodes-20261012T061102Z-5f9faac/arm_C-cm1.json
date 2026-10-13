@@ -1,0 +1,33 @@
+{
+ "mode": "C",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 58.3,
+ "duration_ms": 56871,
+ "turns": 6,
+ "cost_usd": 0.2097256,
+ "session_id": "3bc70319-7e4b-4077-9f3d-16e9ed0ded04",
+ "answer_chars": 2006,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：InstructDS 用一条「三步合成法」从已有的 dialogue-summary 对自动生成高质量 QDS（query-dialogue-summary）三元组——① summary-anchored query generation（基于参考摘要生成候选查询）→ ② query filtering（文本+语义双重过滤保有效性/多样性）→ ③ query-based summary generation（以查询+完整摘要为输入、触发 LLM 问答能力生成查询条件摘要），再配合 mixed training 与 length augmentation 训练统一模型。**\n\n## 三步合成流程（论文 §3.2）\n\n1. **Query Generation（查询生成）**：以 **Flan-T5-XL（模型 X）** 的 question-generation 能力，基于**参考摘要**为每个实例生成 **5 个候选查询**（模板见 Table 7）。\n2. **Filtering & Postprocessing（过滤，保有效性与多样性）**：\n   - **文本过滤**：用模型 X 作二元分类器判断查询是否 *answerable*，剔除约 **45%** 可能不可答（易幻觉）的查询，如 \"What will…\" / \"How would…\"。\n   - **语义过滤",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

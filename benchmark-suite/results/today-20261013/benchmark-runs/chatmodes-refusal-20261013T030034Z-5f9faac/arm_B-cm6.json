@@ -1,0 +1,29 @@
+{
+ "mode": "B",
+ "qid": "cm6",
+ "expect": "refusal",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 83.1,
+ "duration_ms": 81705,
+ "turns": 9,
+ "cost_usd": 0.200685,
+ "session_id": "ea2b5c92-6838-4ba4-ae15-6f4bb9cebc3d",
+ "answer_chars": 969,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：全库 20 个知识库中没有任何文档覆盖「番茄炒蛋/烹饪」领域，无法从知识库给出做法。**\n\n按全库逐级检索通道已完成的扫描（向量/经验检索工具本轮不可用，未调用）：\n\n**目录层**：`kb_list(lightweight=true)` 扫描全部 20 个库。除下述泛化库外，其余库描述已明确不覆盖烹饪领域（计算机与人工智能 131 篇、自然科学与地球科学 75 篇、生命科学与医学 53 篇、工程与能源 39 篇、经济与社会 24 篇、aw-industrial 工业诊断 37 篇、Novel-PridePrejudice 小说 28 篇、AI 基础设施 3 篇、玄鸟飞控试验报告 3 篇等）。\n\n**描述层抽查**（针对 random/杂项/测试类泛化库，`kb_get_documents(lightweight=true)`，共 6 库 15 篇文档逐一核对描述）：\n- **demo-qa-20260927**（random real-world content）：great-wall.md（长城）、voyager-1.md（旅行者 1 号）、photosynthesis.md（光合作用）、attention-is-all-you-need（Transformer 论文）、retmodes-knowledge-card（检索实测卡）——无菜谱类内容\n- **soul-d",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

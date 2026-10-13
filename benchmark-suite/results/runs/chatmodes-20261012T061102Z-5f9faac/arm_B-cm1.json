@@ -1,0 +1,31 @@
+{
+ "mode": "B",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 41.4,
+ "duration_ms": 39868,
+ "turns": 6,
+ "cost_usd": 0.1669226,
+ "session_id": "9631420d-2e14-4760-8dc8-ff0262359711",
+ "answer_chars": 1100,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "## 结论\n\n**知识库中无对应内容** —— 全库（20 个 KB）没有任何文档覆盖 \"InstructDS / 基于 query 的对话摘要指令微调数据合成\" 这一主题。\n\n**已执行的精确检索**\n\n1. `kb_list(lightweight=true)` → 20 个库：计算机与人工智能(131)、自然科学与地球科学(75)、生命科学与医学(53)、工程与能源(39)、经济与社会(24)、aw-industrial(29)、AI 基础设施(3)、Novel-PridePrejudice(28)，以及 e2e-demo / demo-qa / soul-* / ZZ 复现 / 玄鸟演示等小库。目录描述中**唯一可能承载 NLP 论文的架子是「计算机与人工智能」**（含 artificial-intelligence__* / nlp__* 系 arXiv 论文）。\n2. `kb_get_documents(lightweight=true)` 描述层扫描「计算机与人工智能」(131 doc) 与泛化的 `demo-qa-20260927`(5 doc)：命中主题均为 MARL/Hanabi、Transformer、长城/光合作用/Voyager 1 等，**无一篇涉及对话摘要或指令微调数据合成**。\n3. `kb_laya_judge`（真实 Laya 引擎，thresh",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

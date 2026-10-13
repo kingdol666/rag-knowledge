@@ -1,5 +1,105 @@
 # KBQA PIPELINE — 文献入库·复刻入库·出题·三轨对照·分析（可复用全流程）
 
+> **⭐⭐ 唯一入口：`python scripts/160_run_paper_pipeline.py`（2026-10-13 起）**
+>
+> 它把「平台/语料体检 → 密索引复核 → 三轨真实执行 → 采集自检 → 可视化报告 → 稳定性套件」
+> 串成一条 fail-closed 命令，一次跑完就能拿到**可写入论文的结果**（原始单元 + 论文数字工单 + 附带 HTML 报告）。
+>
+> ```bash
+> cd benchmark-suite
+> python scripts/160_run_paper_pipeline.py --check           # 只体检（不花钱，1 分钟内；先跑这个）
+> python scripts/160_run_paper_pipeline.py                   # 用现有最新 run 出报告（快，默认不跑实验）
+> python scripts/160_run_paper_pipeline.py --live            # 真跑一轮 30 单元 + 出报告（约 30 分钟 / ~$17）
+> python scripts/160_run_paper_pipeline.py --live --stability # 连 27 单元稳定性套件一起跑
+> python scripts/160_run_paper_pipeline.py --stages S3,S4    # 只跑指定阶段
+> ```
+>
+> 六阶段（每阶段都能单独跑，任一失败会记进 `results/final-pipeline.json` 但后面阶段照跑，报告仍会生成）：
+>
+> | 阶段 | 脚本 | 干什么 | 产物 / 判据 |
+> |---|---|---|---|
+> | S0 | `150_final_pipeline.py --check` | Gate0 平台+令牌 · Gate1 kb-mcp 工具面 · Gate2 语料/五门类库/密索引 live probe · Gate3 题集 | 四项全 ✓ 才继续 |
+> | S1 | `106_exp_corpus_r2.py --dry-run` (+ `151_smoke_probe.py`) | 100 篇导出完整性 + 4528 chunk 密索引召回实测 | `--rebuild-corpus` 才真重建（约 13 分钟） |
+> | S2 | `150_final_pipeline.py`（`--live` 才跑） | a2/b/c × BQ01–BQ10 真实执行，写 30 个单元 | `results/runs/run-<ts>-<commit>/` |
+> | S3 | `161_final_evidence.py` | 判分复算 + 论文级闸门 + 论文宏工单 | `results/paper_report.json`（报告唯一数据源） |
+> | S4 | `162_paper_report_html.py` | 单文件离线 dashboard | `results/PAPER-REPORT.html` |
+> | S5 | `review/stability-multiround-20260930/run_stability.py` | 3 任务 × 3 车道 × 3 轮 = 27 单元 | `--stability` 才跑 |
+>
+> **S3 的 fail-closed 闸门（`results/paper_report.json` 的 `verification.checks`，任一非
+> 「informational」条目 fail → 退出码 1）。截至 2026-10-13 共 19 条**：
+> ① 计分单元 = 题数 × 轨道（30）；② 题集 = `qa_questions.json`（论文 BQ 口径）；
+> ③ 无工具面中断单元（哨兵 = 0）；④ 无执行错误单元；⑤ A 轨 grounded = 满分；
+> ⑥ A 轨 kw ≥ 9/10；⑦ A 轨 cited ≥ 8/10；⑧ manifest 论文数 = 100；⑨ 导出语料 = 100；
+> ⑩ 五门类库文档 ≥ 322；⑪ 密索引 live 探针命中 ≥ 1；
+> ⑫ **检索回归探针 = 15/15**（来自 `results/a_retrieval_regression.json`，见下）；
+> ⑬ **回归探针命中覆盖五门类库**（逐库至少一条命中，防止"只在某个库自测"的局部满分）；
+> ⑭/⑮ 稳定性 27 单元行为正确 + 车道契约 27/27 合规；⑯ A 轨满分支撑主张（grounded 满分 ∧ kw ≥ 9 ∧ cited ≥ 9）；
+> ⑰ 无「零工具面」单元（一次检索都没发生 = 该行无效）；⑱ 三轨无哨兵；⑲ 论文宏工单生成。
+>
+> 论文的 15 个 `\NUM*` 宏若与本轮实测不一致，**不判 fail**，而是作为 informational
+> 工单逐条列出（「论文现值 → 本轮实测」），因为宏是上一轮快照，改论文是人的决定；
+> 真正卡门的是上面那些研究主张。成本/时延类宏同样走工单，**没有**「平台必须比
+> B 轨便宜」这种闸门——2026-10-13 实测 A 轨在 10 题里有 9 题比 B 轨贵，论文已据此
+> 改口径，闸门若强行保留就会与事实冲突。
+> A 轨失败单元会逐题给出补救建议（哨兵→`--retry-sentinel`；工具面→重启 kb-mcp；
+> 慢引擎→换车道重跑该单元），命令直接照抄即可。
+>
+> ---
+>
+> **⭐ 论文终测一键入口（2026-10-13 新增 · 单阶段版）**：
+> `python scripts/150_final_pipeline.py`
+> 把「平台预检 → kb-mcp 工具面 → 语料（100 篇/五门类库/密索引）→ 题集 → 三轨 a2,b,c
+> 真实执行 → 哨兵扫描 → 107 确定性判分 → 论文数字对账」串成**一条 fail-closed 命令**，
+> 产出 `results/final_run.json` + `results/paper_numbers.json`。
+>
+> ```bash
+> cd benchmark-suite
+> python scripts/150_final_pipeline.py --check      # 只跑 Gate 0-3（不花钱，约 1 分钟，先跑这个）
+> python scripts/150_final_pipeline.py             # 全流程（真实执行，约 1-2 h，花钱）
+> python scripts/150_final_pipeline.py --skip-run --run <run_id>   # 只判分 + 对账
+> python scripts/150_final_pipeline.py --assert-only --run <run_id> # 只对账论文数字
+> ```
+>
+> **它解决的三件事**（都是 2026-10-13 实测发现的真实坑）：
+> 1. **`\NUMciteA/B/C = 9/6/1` 此前没有任何脚本能复算**（论文注释里只有一段一次性临时正则）。
+>    现在固化为 107 的第三项判分 `cited`（A 族 = part/section/table 标记，B 族 = chunk 文件标记），
+>    实测校准 `run-20260930T150453Z-3ec2174` → 9/6/1 ✅。
+> 2. **107 的老 run 解析对当前运行器失效**（只 glob `results/experiment_chat_*`，拿不到
+>    `results/runs/run-*`），新版可解析「名 / 相对 / 绝对路径」，默认取最新。
+> 3. **平台轨最常见的失败是"工具面没挂上"**，历史表现为整题返回 `KB_TOOLS_NOT_READY`。
+>    Gate 1 先真实初始化 stdio 工具面（`uv run --directory kb-mcp python server.py`）并列出
+>    KB 目录，挂不上直接 fail——**花 1 分钟挡住 1-2 小时的报废运行**。
+>
+> **跑之前先看 Gate 2 的历史教训（2026-10-13 实测）**：密索引 `Corpus-Chunks800`
+> 当时被清空（`kb_search_vector` 恒返回空），而它的 `doc_count` 一直是 0
+> （`index_kb.build_kb` 走 `kb_index_document` 直传 content，不落 tree-fs）——
+> **doc_count 不能当健康指标**。唯一可信判据是 live probe 有没有命中。
+> 修复：`python scripts/106_exp_corpus_r2.py --dry-run` 先盘点（会列出要删的 Corpus-* 壳、
+> 要建的 4,528 chunks、导出是否残缺），确认后再 `python scripts/106_exp_corpus_r2.py` 重建。
+>
+> **论文数字对账的判据**（`results/paper_numbers.json`）：15 个 `\NUM*` 宏逐条对实测，
+> 外加正文定性声明的复核项，例如 B/C 轨失败单元只允许「工具面失败」或「关键词未达
+> 60%（词边界保守判分，论文已声明）」。历史版本还含一条「C 轨的两次 grounding miss
+> 必须都是工具不可用中止」（论文 2026-09-30 版 sec4 原文：both dense grounding misses
+> were tool-availability aborts）——**该句已随 2026-10-13 数据删除**（本轮 0 哨兵），
+> 对账脚本 `_paper_numbers.py` 现在改为「正文若无该句则只报 informational」，
+> 不会因为论文改对了反而判 fail。
+>
+> **Table 1「Retrieval regression probes 15/15」的证据链（2026-10-13 补齐）**：
+> 该行此前只有 2026-09 的 `r2_organize/report` 汇总数字，没有可复算产物。
+> 现在由 `scripts/158_a_retrieval_regression.py` 每次真实检索生成
+> `results/a_retrieval_regression.json`（15 条判别性查询 → 五门类库，逐条记
+> `rank/gold_score/top_paths`），并由 161 的两条闸门 ⑫⑬ 把住。
+> ⚠️ **金标库归属必须以 `results/_corpus_routing.json`（实况分类）为准，不能按 manifest
+> 的 field 猜**：平台按内容路由，`robotics/*` 与 `social-networks/*` 的论文落在
+> 「计算机与人工智能」库；按 field 猜会得到假 MISS（首版 15 条里 4 条假失败全因此而来）。
+>
+> **题集口径**：论文终测用 `data/papers/qa_questions.json`（BQ01–BQ10，金标 arXiv id）；
+> `qa_quick10.json`（QK01–QK10）与 `qa_questions_r2.json`（R2Q01–R2Q10）是**另一批题**，
+> 数字**不能**与论文宏混用（历史多次混淆的根源）。判分时必须显式
+> `python scripts/107_exp_grade.py --qfile data/papers/qa_questions.json`：
+> 107 的默认题集是 R2Q，裸跑对 BQ 轮次会得到 A2 0/10 | B 0/10 | C 0/10 的假象。
+
 > **Chat-API 三模式系统臂（2026-09-30 新增，测"当前系统本体"）**：`python exp.py --chatmodes`
 > 把系统对外执行流作为一等公民臂——A 钉库向量快车道（`kbIds=[pin]`）/ B 全库逐级
 > （`kbIds=[]`，无向量工具）/ C 混合（钉库 + 混合后缀），全部经 `POST /api/claude/chat`

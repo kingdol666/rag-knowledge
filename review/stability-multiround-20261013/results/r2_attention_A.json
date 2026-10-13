@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "attention",
+ "mode": "A",
+ "http": 200,
+ "wall_s": 33.7,
+ "success": true,
+ "session_id": "e28db815-efbe-4525-9e87-266786a65307",
+ "turns": 6,
+ "cost": 0.44117900000000004,
+ "duration_ms": 32451,
+ "answer": "**Transformer 自注意力（Scaled Dot-Product Attention）的矩阵计算公式为：Attention(Q, K, V) = softmax(QKᵀ/√d_k)·V**（论文式(1)）。\n\n出处原文（《Attention Is All You Need》§3.2.1，经 kb_doc_read 逐字核验）：\n\n> \"We compute the dot products of the query with all keys, divide each by √d_k, and apply a softmax function to obtain the weights on the values. ... We compute the matrix of outputs as:\n> $$\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V \\tag{1}$$\"\n\n**要素说明**（均引自原文）：\n- **Q/K/V**：n 个查询同时打包为矩阵 Q，键、值打包为 K、V；查询/键维度 d_k，值维度 d_v。\n- **缩放因子 1/√d_k**：d_k 较大时点积幅度增大，\"pushing the softmax function into regions where it has extremely small gradients（梯度极小区域）\"，故用 1/√d_k 抵消；这也是该机制区别于普通点积注意力之处。\n- **自注意力**（§2 定义）：\"relating different positions of a single sequence\"——Q/K/V 三者同源（均来自上一层输出），每个位置可关注全序列（编码器）；解码器则通过将非法连接置为 −∞ 掩码保持自回归性质。\n\n**扩展：多头注意力**（§3.2.2，实验配置 h=8，d_k=d_v=d_model/h=64）：\n\n> MultiHead(Q,K,V) = Concat(head₁,…,head_h)·Wᴼ，其中 head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)\n\n**出处**：《Attention Is All You Need》(Vaswani et al., 2017, arXiv:1706.03762)，文档 `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md`，知识库 \"计算机与人工智能\"（kb b1199132）。**可信度：P0**（一手原始论文，公式逐字命中并全文复核）。"
+}

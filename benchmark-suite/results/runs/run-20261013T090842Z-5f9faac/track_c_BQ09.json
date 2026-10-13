@@ -1,0 +1,84 @@
+{
+ "answer": "**Answer (from retrieved chunks only):**\n\nMLP-SLAM addresses the degradation of visual SLAM performance in dynamic environments: V-SLAM reaches high precision in scenes with few dynamic objects, but its performance declines in settings with numerous movable objects such as pedestrians, cars, and buses common in outdoor scenes (k00, k23). It also targets the lack of a direct benchmark for dynamic/static feature classification, since prior assessments used indirect metrics distorted by RANSAC randomness (k23, k03). Its remedy is an open-source MLP-based real-time **stereo** SLAM system (k03, k04). The core mechanism is a multilayer perceptron used as a discriminator classifying feature points as dynamic or static — stated as the first instance of applying an MLP as a dynamic/static feature-point discriminator in the SLAM domain, leveraging geometry information without manual parameter configuration (k06, k05, k04). The authors collected and publicly released a dataset of over 50,000 feature points specifically to train the MLP and to evaluate such classifiers directly (k00, k11). Feature points classified static by the MLP — together with points outside potential dynamic-object bounding boxes and points passed by a Depth Filter — form the static set used in fine pose estimation by minimizing reprojection error of static points (k10, k12/k13). Reported results: highest average precision on KITTI Odometry and the fastest speed among dynamic SLAM systems, outperforming ORB-SLAM2, DynaSLAM, and modified VDO-SLAM, and extensible beyond stereo to monocular or RGB-D (k23, k18, k20).\n\n**Sources used (all chunks of one paper):**\n- Corpus-Chunks800/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md\n- ...__k03.md, ...__k04.md, ...__k05.md, ...__k06.md, ...__k10.md, ...__k11.md, ...__k12.md (and k13 duplicate), ...__k18.md, ...__k20.md, ...__k23.md",
+ "is_error": false,
+ "latency_s": 20.9,
+ "sdk_duration_ms": 17977,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM visual SLAM dynamic environments problem and method",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP discriminator dynamic static feature points network architecture input training",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 69891,
+  "output": 2823,
+  "cache_read": 134784,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.48852400000000007,
+ "timeline": [
+  {
+   "t": 2.9,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 6.58,
+   "event": "text",
+   "detail": "282"
+  },
+  {
+   "t": 6.84,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 12.6,
+   "event": "text",
+   "detail": "195"
+  },
+  {
+   "t": 12.87,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 20.85,
+   "event": "text",
+   "detail": "1894"
+  },
+  {
+   "t": 20.86,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "Plan: I'll run a dense vector search over kb_id \"Corpus-Chunks800\" for the query \"MLP-SLAM visual SLAM dynamic environments\" (top_k=10, threshold 0) to find chunks describing what problem MLP-SLAM addresses and its method; if the hit quality is poor, I'll rephrase and search again.",
+  "The first search returned strong hits from a single document (MLP-SLAM, arXiv 2410.10669). Let me run one more rephrased query to capture the mechanism details of how the MLP discriminator works.",
+  "**Answer (from retrieved chunks only):**\n\nMLP-SLAM addresses the degradation of visual SLAM performance in dynamic environments: V-SLAM reaches high precision in scenes with few dynamic objects, but its performance declines in settings with numerous movable objects such as pedestrians, cars, and buses common in outdoor scenes (k00, k23). It also targets the lack of a direct benchmark for dynamic/static feature classification, since prior assessments used indirect metrics distorted by RANSAC randomness (k23, k03). Its remedy is an open-source MLP-based real-time **stereo** SLAM system (k03, k04). The core mechanism is a multilayer perceptron used as a discriminator classifying feature points as dynamic or static — stated as the first instance of applying an MLP as a dynamic/static feature-point discriminator in the SLAM domain, leveraging geometry information without manual parameter configuration (k06, k05, k04). The authors collected and publicly released a dataset of over 50,000 feature points specifically to train the MLP and to evaluate such classifiers directly (k00, k11). Feature points classified static by the MLP — together with points outside potential dynamic-object bounding boxes and points passed by a Depth Filter — form the static set used in fine pose estimation by minimizing reprojection error of static points (k10, k12/k13). Reported results: highest average precision on KITTI Odometry and the fastest speed among dynamic SLAM systems, outperforming ORB-SLAM2, DynaSLAM, and modified VDO-SLAM, and extensible beyond stereo to monocular or RGB-D (k23, k18, k20).\n\n**Sources used (all chunks of one paper):**\n- Corpus-Chunks800/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md\n- ...__k03.md, ...__k04.md, ...__k05.md, ...__k06.md, ...__k10.md, ...__k11.md, ...__k12.md (and k13 duplicate), ...__k18.md, ...__k20.md, ...__k23.md"
+ ],
+ "track": "c",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ09",
+ "via": "chat",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

@@ -1,0 +1,33 @@
+{
+ "mode": "C",
+ "qid": "cm5",
+ "expect": "refusal",
+ "kb_ids": [
+  "455137b4-a0be-46ed-acf5-d8b475dc5d70"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 50.4,
+ "duration_ms": 48904,
+ "turns": 5,
+ "cost_usd": 0.272489,
+ "session_id": "d7e4cc26-8f13-4c16-853a-5ce21166ca51",
+ "answer_chars": 620,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**库内没有红烧肉的做法——该库不含任何烹饪相关内容，无法从知识库作答。**\n\n检索事实（指定库 `455137b4-a0be-46ed-acf5-d8b475dc5d70`）：\n\n- `kb_search_two_stage(\"红烧肉怎么做 做法 步骤\")` → 0 命中\n- `kb_search_vector(\"红烧肉 猪肉 烹饪 配方\")` → 0 命中\n- 补齐通道 `kb_get_documents` 全量清点（has_more=false，全库共 5 篇文档）逐一核对描述，无一与红烧肉/烹饪相关：\n\n| 文档 | 内容 |\n|---|---|\n| great-wall.md | 万里长城（长度、糯米砂浆、世界遗产） |\n| voyager-1.md | 旅行者1号探测器、星际空间、黄金唱片 |\n| photosynthesis.md | 光合作用（叶绿素、Calvin 循环） |\n| artificial-intelligence__1706.03762…md | Transformer 论文（self-attention） |\n| retmodes-knowledge-card.md | 三模式检索实测速查卡 |\n\n由于全量目录已枚举完毕且确无候选文档，无需再走 `kb_laya_judge` 判定。按规则不编造：红烧肉做法不在本库知识范围内。若需要，可换一个含菜谱内",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ },
+ "rerun_of_tool_failure": true,
+ "attempt": 3
+}

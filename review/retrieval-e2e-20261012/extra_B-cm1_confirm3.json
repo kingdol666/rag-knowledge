@@ -1,0 +1,716 @@
+{
+ "channel": "harness-api-stream",
+ "mode": "B",
+ "qid": "cm1",
+ "expect": "found",
+ "kbIds": [],
+ "prompt_head": "How does InstructDS generate high-quality query-based dialogue summaries? (InstructDS dialogue summarization query-based instruction tuning data synthesis)",
+ "engine": "claude",
+ "permissionMode": "default",
+ "http": 200,
+ "wall_s": 602.0,
+ "n_events": 118,
+ "timeline": [
+  {
+   "t": 0.0,
+   "event": "meta",
+   "mtype": null,
+   "engine": "claude",
+   "model": "default"
+  },
+  {
+   "t": 1.8,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 1.8,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 22.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 22.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 24.6,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 86
+  },
+  {
+   "t": 24.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 24.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 24.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 24.8,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_1042417ea50b4727a83176ad",
+     "name": "ExitWorktree",
+     "input": "{\"action\": \"keep\"}"
+    }
+   ]
+  },
+  {
+   "t": 24.8,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_1042417ea50b4727a83176ad",
+     "chars": 282
+    }
+   ]
+  },
+  {
+   "t": 24.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 24.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 24.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 24.8,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 25.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 25.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 25.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 25.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 25.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 25.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 25.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 26.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 27.0,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 44
+  },
+  {
+   "t": 27.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 27.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 27.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 27.0,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_9b5c9c35b4d44378afc19dbf",
+     "name": "mcp__kb-mcp__kb_list",
+     "input": "{\"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 27.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 27.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 27.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 27.6,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_9b5c9c35b4d44378afc19dbf",
+     "chars": 5631
+    }
+   ]
+  },
+  {
+   "t": 27.6,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 103
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_1f361d7c9b0d4eaea2e5ff1f",
+     "name": "mcp__kb-mcp__kb_get_documents",
+     "input": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.3,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_1f361d7c9b0d4eaea2e5ff1f",
+     "chars": 2460
+    }
+   ]
+  },
+  {
+   "t": 44.3,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 44.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.9,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 110
+  },
+  {
+   "t": 48.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.9,
+   "event": "permission_request",
+   "mtype": null
+  },
+  {
+   "t": 48.9,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_5145db8690a84fbfa6e2a0d3",
+     "name": "mcp__kb-mcp__kb_search_two_stage",
+     "input": "{\"query\": \"InstructDS query-based dialogue summarization instruction tuning data synthesis\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"stage1_top_k\": 15, \"stage2_top_k\": 5}"
+    }
+   ]
+  },
+  {
+   "t": 48.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.9,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_5145db8690a84fbfa6e2a0d3",
+     "chars": 15
+    }
+   ]
+  },
+  {
+   "t": 348.9,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 367.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 367.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 367.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 367.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 367.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 367.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 368.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 368.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 368.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 368.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 368.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 371.8,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 69
+  },
+  {
+   "t": 371.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 371.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 371.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 371.8,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_c3673000ff07452ebacde38a",
+     "name": "mcp__kb-mcp__kb_search_vector",
+     "input": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"query\": \"InstructDS query-based dialogue summarization instruction tuning synthesis\", \"top_k\": 6, \"slim\": true}"
+    }
+   ]
+  },
+  {
+   "t": 371.8,
+   "event": "permission_request",
+   "mtype": null
+  },
+  {
+   "t": 371.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 371.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 371.8,
+   "event": "message",
+   "mtype": "stream_event"
+  }
+ ],
+ "answer": "",
+ "tool_spans": [
+  {
+   "tool": "ExitWorktree",
+   "input": "{\"action\": \"keep\"}",
+   "t_start": 24.8,
+   "t_end": 24.8,
+   "dur_s": 0.0,
+   "result_chars": 282
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": "{\"lightweight\": true}",
+   "t_start": 27.0,
+   "t_end": 27.6,
+   "dur_s": 0.6,
+   "result_chars": 5631
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true}",
+   "t_start": 43.6,
+   "t_end": 44.3,
+   "dur_s": 0.7,
+   "result_chars": 2460
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": "{\"query\": \"InstructDS query-based dialogue summarization instruction tuning data synthesis\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"stage1_top_k\": 15, \"stage2_top_k\": 5}",
+   "t_start": 48.9,
+   "t_end": 348.9,
+   "dur_s": 300.0,
+   "result_chars": 15
+  }
+ ],
+ "tool_sequence": [
+  "ExitWorktree",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_search_two_stage"
+ ],
+ "retrieval_tools_s": 301.3,
+ "answer_chars": 0,
+ "answer_markers_hit": [],
+ "gate_passed": false
+}

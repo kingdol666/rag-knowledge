@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "pickles",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 108.4,
+ "success": true,
+ "session_id": "eea25594-2b29-4490-8d29-e42bb273b7c8",
+ "turns": 12,
+ "cost": 0.74194,
+ "duration_ms": 107116,
+ "answer": "**结论：本知识库全库（21 个库、目录显示共 417 篇文档）中没有任何关于「四川泡菜腌制」的内容——未命中，无法基于知识库回答该问题；不以外界记忆代替知识库作答（诚实声明：无 P0/P1/P2 文档或经验可引）。**\n\n**已执行的检索（确切记录）**\n\n1. `kb_list(lightweight=true)`：扫描全部 21 个库的目录描述。领域覆盖：计算机与人工智能、自然科学与地球科学、生命科学与医学、工程与能源、经济与社会、aw-industrial（工业诊断）、AI 基础设施、英文小说（Pride and Prejudice）、及若干测试/演示/复现库——均无烹饪/食品/腌制类领域。\n\n2. `kb_get_documents(lightweight=true)` 文档描述层抽查 10 个泛化/空白描述的库（共 27 篇，未在目录层早退）：\n   - `demo-qa-20260927`（5 篇：great-wall、voyager-1、photosynthesis、Attention 论文、检索速查卡）\n   - `soul-demo-qa`／`soul-cs-library`／`soul-e2e-tester-024115`（人格四文档，各 4 篇）\n   - `e2e-demo-0923-022632`（平台架构总览／RAG benchmark／AgentWorkShop 指南）\n   - `e2e-flow-20260926-022340`、`aw-industrial-e2e-20260926-022518`、`ZZ跨库复现库`、`ZZ跨库复现库2`、`玄鸟演示库-125906`\n   \n   ——无一篇涉及泡菜/腌制/食品。\n\n3. 因无候选文档，未触发 `kb_laya_judge` 与 `kb_doc_read`；另有 3 个零文档库（引线键合-扎线工艺、Corpus-Chunks800、soul-e2e-20260926-022340）无内容可查。\n\n**盲区声明**：本轮按通道协议仅覆盖目录层+文档描述层（本通道向量/经验检索不可用）；大型专业库（计算机 131 篇、自然科学 75 篇、生命科学 53 篇等）未逐篇读正文，但其库级与文档级描述均无食品/腌制迹象。综合判断：该问题超出本知识库覆盖范围。如需泡菜腌制方法，建议补充相关文档入库后再检索。"
+}

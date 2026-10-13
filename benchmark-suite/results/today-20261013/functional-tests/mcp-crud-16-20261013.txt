@@ -1,0 +1,3 @@
+MCP direct lifecycle smoke test: 16/16 passed.
+Coverage: health_check, kb_list, kb_create, kb_update, kb_doc_create, dedup, read, content/meta update, get_documents, search, batch delete, filesystem tree, backend status, document delete, KB delete.
+Runner caveat: script has module-level asyncio.run()/sys.exit(0); pytest reports 16/16 assertions then INTERNALERROR/no tests ran during collection. Direct invocation above is the valid execution.

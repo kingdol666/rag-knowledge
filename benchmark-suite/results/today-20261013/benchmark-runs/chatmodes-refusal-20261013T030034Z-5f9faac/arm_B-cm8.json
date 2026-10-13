@@ -1,0 +1,29 @@
+{
+ "mode": "B",
+ "qid": "cm8",
+ "expect": "refusal",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 178.0,
+ "duration_ms": 176566,
+ "turns": 12,
+ "cost_usd": 0.531889,
+ "session_id": "52c93ba1-7b5f-46e2-808b-6865bdc48998",
+ "answer_chars": 1131,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：知识库中没有关于 LoRA 微调大语言模型的专题文献，无法基于库内资料回答「如何用 LoRA 微调」，仅存在微调范式的相邻外围文献。**\n\n检索范围(全库 20 库逐级扫描)：\n- 「计算机与人工智能」库(131 篇)全部 3 个相关分组已扫描述层：large-language-models(32 篇)、nlp(19 篇)、artificial-intelligence(17 篇)——无任何 LoRA / PEFT / 低秩适配主题文档；\n- 泛化描述库 demo-qa-20260927(random real-world)已抽查：5 篇为长城、Voyager 1、光合作用、Attention 论文、检索模式速查卡，无关；\n- 两个空描述 SOUL 库已抽查：仅人格定义类 4 文档，无关；\n- Laya 引擎对 6 篇最接近「微调」主题的候选做了全文判决(61 段全部幸存，但证据均为一般微调/预训练内容，非 LoRA)。\n\n最近的相邻文献(均不覆盖 LoRA 本身)：\n1. **BERT 论文**(`nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md`,计算机与人工智能库)——引文原文：\"The fine-tuning approach…introduces minimal task-s",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

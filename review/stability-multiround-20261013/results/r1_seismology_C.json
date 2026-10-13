@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "seismology",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 182.0,
+ "success": true,
+ "session_id": "574a449b-36b4-4698-8c9a-dc81a74235e1",
+ "turns": 11,
+ "cost": 1.125345,
+ "duration_ms": 180368,
+ "answer": "**结论：指定的「自然科学与地球科学」库中没有找到能回答\"地震波分为哪几类、有何区别\"的分类性内容——库内没有系统讲解地震波类型划分与对比的材料，仅有研究论文中的零散术语提及，不足以支撑分类性回答。**\n\n检索事实（均为实际所见，不作推测）：\n\n- **检索库**：自然科学与地球科学（kb_id `1e6199ea-…`），共 75 篇文档、8 个分组；其中 seismology 组仅 7 篇——超剪切破裂指标（arXiv 2606.10843，3 个分片）+ 震后损失估计 APE-ELEV（arXiv 1308.1846，4 个分片），无教材/综述类条目。\n- **kb_search_two_stage**（\"地震波/纵波/横波/面波 区别\"）：候选 7 条、命中 5 条，全部是上述两篇论文的分片。\n- **kb_search_vector 三组查询**（含\"瑞利波/勒夫波/体波/面波\"及英文 seismic wave types / body wave / surface wave / Rayleigh / Love）：分别命中 15、15、12 条，最高相似度仅 0.56–0.61，无一条涉及地震波分类。\n- **kb_laya_judge**（evidence 判定）：33 个片段送判，30 个幸存片段、涉 4 篇文档；其合并证据（evidence_pack）实际内容为\"震后损失估计模型（概率/确定性/实时分类）\"与\"超剪切破裂近断层粒子运动\"，均不回答地震波分类。\n- **kb_doc_read 核验**超剪切论文全文：S 波、剪切波速（Vs）、Rayleigh 波仅作背景术语出现（如 \"coherent S waves produce high-amplitude Mach cones\"，弱相关，非分类性内容）。\n- **全库目录（kb_list，21 个库）**：除本库外，无其他按描述以地球科学/地震学为主题的库。\n\n**未找到（明确缺失）**：体波/面波的两大类划分；P 波与 S 波的定义及区别；勒夫波（Love 波）；各类地震波在速度、质点振动方向、传播方式上的系统对比。\n\n出处：两篇库内文档——《Supershear Rupture Indicator in Near-fault Particle Motion》(2606.10843，part 1–3)、《Developing and Testing the APE-ELEV Technique》(1308.1846，part 1–4)，均不含该问题的答案。如需此类内容，须另行入库地震学教材或综述材料。"
+}

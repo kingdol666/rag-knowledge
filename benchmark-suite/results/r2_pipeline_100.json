@@ -31,42 +31,64 @@
   "true_duplicates": 0
  },
  "retrieval": {
-  "run": "experiment_chat_20260922-211000",
+  "run": "run-20261013T094350Z-5f9faac",
+  "qfile": "qa_questions.json",
   "questions": 10,
   "traces": 30,
   "grounded": {
-   "a": 9,
+   "a2": 10,
    "b": 10,
-   "c": 9
+   "c": 10
   },
   "keyword_verified": {
-   "a": 9,
-   "b": 6,
-   "c": 6
+   "a2": 10,
+   "b": 9,
+   "c": 9
   },
-  "citations": {
-   "a": 7,
-   "b": 4,
-   "c": 1
+  "cited": {
+   "a2": 9,
+   "b": 7,
+   "c": 2
+  },
+  "citations_pat_legacy": {
+   "a": 0,
+   "b": 6,
+   "c": 2
   },
   "avg_latency_s": {
-   "a": 113.0,
-   "b": 42.7,
-   "c": 48.0
+   "a2": 52.6,
+   "b": 22.2,
+   "c": 24.5
   },
   "avg_tool_calls": {
-   "a": 7.6,
-   "b": 4.4,
-   "c": 2.4
+   "a2": 6.0,
+   "b": 6.4,
+   "c": 3.7
   },
-  "cost_usd_total": {
-   "a": 4.91,
-   "b": 1.63,
-   "c": 1.8
+  "avg_cost_usd": {
+   "a2": 0.711,
+   "b": 0.4867,
+   "c": 0.5269
   },
+  "abstain": {
+   "a2": 0,
+   "b": 0,
+   "c": 0
+  },
+  "sentinel_cells": 0,
   "corpus_md_files": 100,
   "chunks800": 4528,
-  "denied_recovered": 0
+  "provenance": {
+   "run_dir": {
+    "path": "benchmark-suite\\results\\runs\\run-20261013T094350Z-5f9faac",
+    "mtime": "2026-10-13 18:00:24"
+   },
+   "corpus_export": {
+    "path": "benchmark-suite\\results\\r2_exp_corpus.json",
+    "mtime": "2026-10-13 16:44:54"
+   },
+   "paper_tex": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper_demo\\tex\\main.tex"
+  }
  },
  "failure": {
   "probes": 3,
@@ -84,6 +106,10 @@
    "category_bases": 5,
    "papers": 100,
    "indexed_documents": 322
+  },
+  "provenance": {
+   "path": "benchmark-suite\\results\\honest_failure_probe.json",
+   "mtime": "2026-09-22 02:46:15"
   }
  }
 }

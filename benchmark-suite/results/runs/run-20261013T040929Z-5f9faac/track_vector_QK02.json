@@ -1,0 +1,49 @@
+{
+ "qid": "QK02",
+ "method": "vector",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "ranked": [
+  "1602.01876",
+  "2301.08436",
+  "2110.07787",
+  "2508.18304",
+  "2009.10669",
+  "2401.06823"
+ ],
+ "ranked_paths": [
+  "genomics__1602.01876__primer-on-the-gene-ontology.md",
+  "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md",
+  "genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md",
+  "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne",
+  "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o"
+ ],
+ "evidence_sources": [
+  "1602.01876",
+  "2301.08436",
+  "2110.07787",
+  "2508.18304",
+  "2009.10669",
+  "2401.06823"
+ ],
+ "evidence_chars": 2299,
+ "retrieval_s": 0.0,
+ "latency_s": 15.1,
+ "answer": "The Gene Ontology (GO) is a controlled vocabulary of terms representing biology in a structured way, subdivided into three distinct independent ontologies: Molecular Function (MF), Biological Process (BP), and Cellular Component (CC). These ontologies are non-redundant and share a common space of identifiers and a well-specified syntax, with terms linked by relations to form a hierarchical vocabulary.\n\nSource used: [1602.01876], \"## 2. What is the Gene Ontology?\"",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 613,
+  "output": 101,
+  "cache_read": 48256,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0304904,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

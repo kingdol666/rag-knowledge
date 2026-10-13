@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>slide-02</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 960pt; height: 540pt; background: #FFFFFF; }
+  p, h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }
+  .px { font-family: "Microsoft YaHei", "微软雅黑", sans-serif; }
+  .tn { font-family: "Times New Roman", Georgia, serif; }
+  .num { font-family: Georgia, "Times New Roman", serif; }
+</style>
+</head>
+<body>
+
+  <!-- ============ 锐学术签名：顶部绯红标题栏 ============ -->
+  <div style="position:absolute; left:0; top:0; width:960pt; height:36pt; background:#A50021;"></div>
+  <div style="position:absolute; left:0; top:0; width:680pt; height:36pt; display:flex; align-items:center; padding-left:16pt;">
+    <p class="px" style="font-weight:bold; font-size:17pt; line-height:1.45; color:#FFFFFF;">同题对照：三模式全部真实命中金标；baseline 只会“返回”，不会判卷与拒答</p>
+  </div>
+  <div style="position:absolute; left:794pt; top:8pt; width:150pt; height:20pt; background:#000066; border-radius:3pt; display:flex; align-items:center; justify-content:center;">
+    <p class="px" style="font-size:9pt; line-height:1.35; color:#FFFFFF;">同题同金标 · 12 跑矩阵</p>
+  </div>
+
+  <!-- ============ 底部信息栏 ============ -->
+  <div style="position:absolute; left:0; top:516pt; width:960pt; height:24pt; background:#000066;"></div>
+  <div style="position:absolute; left:0; top:516pt; width:800pt; height:24pt; display:flex; align-items:center; padding-left:16pt;">
+    <p class="px" style="font-size:8.5pt; line-height:1.4; color:#FFFFFF;">RAG Knowledge 平台 · 检索端到端三通道实测 · 2026-10-12 · commit 5f9faac · 门禁口径：拒答优先修正版</p>
+  </div>
+  <div style="position:absolute; left:864pt; top:516pt; width:80pt; height:24pt; display:flex; align-items:center; justify-content:flex-end; padding-right:16pt;">
+    <p class="num" style="font-weight:bold; font-size:10pt; line-height:1.4; color:#FFFFFF;">02</p>
+  </div>
+
+  <!-- ============ 上层左：对比表（62%） ============ -->
+  <div style="position:absolute; left:16pt; top:46pt; width:575pt;">
+    <p class="px" style="font-weight:bold; font-size:9.5pt; line-height:1.45; color:#000066;">表 1 ｜ 通道3 纯检索矩阵（--retmodes · 12 跑，无 LLM 回答）— 金标 12/12（脚本臂 6/6 + baseline 6/6）</p>
+  </div>
+
+  <div style="position:absolute; left:16pt; top:62pt; width:575pt; height:20pt; background:#000066; display:flex; align-items:center;">
+    <div style="width:86pt; padding-left:5pt;"><p class="px" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#FFFFFF;">方法</p></div>
+    <div style="width:52pt;"><p class="px" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#FFFFFF;">金标</p></div>
+    <div style="width:108pt;"><p class="px" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#FFFFFF;">q1 / q2 耗时 s</p></div>
+    <div style="width:104pt;"><p class="px" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#FFFFFF;">docs / 排名</p></div>
+    <div style="width:225pt;"><p class="px" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#FFFFFF;">性质与能力差异</p></div>
+  </div>
+
+  <!-- mode_A -->
+  <div style="position:absolute; left:16pt; top:82pt; width:575pt; height:32pt; background:#FFF0F0; border-left:4pt solid #A50021; border-top:0.75pt solid #C9D3DD; display:flex; align-items:center;">
+    <div style="width:82pt; padding-left:5pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#A50021;">mode_A</p></div>
+    <div style="width:52pt;"><p class="px" style="font-size:10pt; line-height:1.4; color:#333333;"><span style="font-weight:bold; color:#000066;">✓</span><span style="font-weight:bold; color:#000066;">✓</span></p></div>
+    <div style="width:108pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#000066;">25.0 / 22.7</p></div>
+    <div style="width:104pt;"><p class="tn" style="font-size:10pt; line-height:1.4; color:#333333;">18 / 18</p></div>
+    <div style="width:225pt;"><p class="px" style="font-size:9.5pt; line-height:1.4; color:#333333;">活库 + Laya 判卷 · 跨书架取证</p></div>
+  </div>
+
+  <!-- mode_B -->
+  <div style="position:absolute; left:16pt; top:114pt; width:575pt; height:32pt; background:#FFF0F0; border-left:4pt solid #A50021; border-top:0.75pt solid #C9D3DD; display:flex; align-items:center;">
+    <div style="width:82pt; padding-left:5pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#A50021;">mode_B</p></div>
+    <div style="width:52pt;"><p class="px" style="font-size:10pt; line-height:1.4; color:#333333;"><span style="font-weight:bold; color:#000066;">✓</span><span style="font-weight:bold; color:#000066;">✓</span></p></div>
+    <div style="width:108pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#000066;">25.0 / 10.2</p></div>
+    <div style="width:104pt;"><p class="tn" style="font-size:10pt; line-height:1.4; color:#333333;">23 / 11</p></div>
+    <div style="width:225pt;"><p class="px" style="font-size:9.5pt; line-height:1.4; color:#333333;">脚本化图书管理员 · 词法扫描</p></div>
+  </div>
+
+  <!-- mode_C -->
+  <div style="position:absolute; left:16pt; top:146pt; width:575pt; height:32pt; background:#FFF0F0; border-left:4pt solid #A50021; border-top:0.75pt solid #C9D3DD; display:flex; align-items:center;">
+    <div style="width:82pt; padding-left:5pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#A50021;">mode_C</p></div>
+    <div style="width:52pt;"><p class="px" style="font-size:10pt; line-height:1.4; color:#333333;"><span style="font-weight:bold; color:#000066;">✓</span><span style="font-weight:bold; color:#000066;">✓</span></p></div>
+    <div style="width:108pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#000066;">37.3 / 33.7</p></div>
+    <div style="width:104pt;"><p class="tn" style="font-size:10pt; line-height:1.4; color:#333333;">12 / 12</p></div>
+    <div style="width:225pt;"><p class="px" style="font-size:9.5pt; line-height:1.4; color:#333333;">A ∥ B 并行合并 + 兜底核查</p></div>
+  </div>
+
+  <div style="position:absolute; left:16pt; top:178pt; width:575pt; height:1.5pt; background:#000066;"></div>
+
+  <!-- bm25 -->
+  <div style="position:absolute; left:16pt; top:180pt; width:575pt; height:32pt; background:#FFFFFF; border-top:0.75pt solid #C9D3DD; display:flex; align-items:center;">
+    <div style="width:86pt; padding-left:5pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#000066;">bm25</p></div>
+    <div style="width:52pt;"><p class="px" style="font-size:10pt; line-height:1.4; color:#333333;"><span style="font-weight:bold; color:#000066;">✓</span><span style="font-weight:bold; color:#000066;">✓</span></p></div>
+    <div style="width:108pt;"><p class="tn" style="font-size:10pt; line-height:1.4; color:#333333;">≈0 / ≈0</p></div>
+    <div style="width:104pt;"><p class="tn" style="font-size:9.5pt; line-height:1.4; color:#333333;">10 / 10 · rank-1</p></div>
+    <div style="width:225pt;"><p class="px" style="font-size:9.5pt; line-height:1.4; color:#333333;">本地静态 100 篇语料 · doc 级 · 无判卷</p></div>
+  </div>
+
+  <!-- vector -->
+  <div style="position:absolute; left:16pt; top:212pt; width:575pt; height:32pt; background:#F0F4F8; border-top:0.75pt solid #C9D3DD; display:flex; align-items:center;">
+    <div style="width:86pt; padding-left:5pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#000066;">vector</p></div>
+    <div style="width:52pt;"><p class="px" style="font-size:10pt; line-height:1.4; color:#333333;"><span style="font-weight:bold; color:#000066;">✓</span><span style="font-weight:bold; color:#000066;">✓</span></p></div>
+    <div style="width:108pt;"><p class="tn" style="font-size:10pt; line-height:1.4; color:#333333;">0.1 / 0.1</p></div>
+    <div style="width:104pt;"><p class="tn" style="font-size:9.5pt; line-height:1.4; color:#333333;">1 / 3 · rank-1</p></div>
+    <div style="width:225pt;"><p class="px" style="font-size:9.5pt; line-height:1.4; color:#333333;">平台向量 chunk 级 · 跨库口径 · 无判卷</p></div>
+  </div>
+
+  <!-- rrf -->
+  <div style="position:absolute; left:16pt; top:244pt; width:575pt; height:32pt; background:#FFFFFF; border-top:0.75pt solid #C9D3DD; display:flex; align-items:center;">
+    <div style="width:86pt; padding-left:5pt;"><p class="tn" style="font-weight:bold; font-size:10.5pt; line-height:1.4; color:#000066;">rrf</p></div>
+    <div style="width:52pt;"><p class="px" style="font-size:10pt; line-height:1.4; color:#333333;"><span style="font-weight:bold; color:#000066;">✓</span><span style="font-weight:bold; color:#000066;">✓</span></p></div>
+    <div style="width:108pt;"><p class="tn" style="font-size:10pt; line-height:1.4; color:#333333;">≈0 / ≈0</p></div>
+    <div style="width:104pt;"><p class="tn" style="font-size:9.5pt; line-height:1.4; color:#333333;">10 / 10 · rank-1</p></div>
+    <div style="width:225pt;"><p class="px" style="font-size:9.5pt; line-height:1.4; color:#333333;">bm25 + vector 融合 · 无判卷</p></div>
+  </div>
+
+  <div style="position:absolute; left:16pt; top:282pt; width:575pt;">
+    <p class="px" style="font-size:7.5pt; line-height:1.5; color:#6B6760;">注：三行 baseline 只返回静态语料排名（doc / chunk 级）——不读全文、不判卷、无弃答能力。vector 余弦 0.756 / 0.842 见 09-26 retmodes 工件（本轮未记录 cosine）。q1 = cm1，q2 = cm2。</p>
+  </div>
+
+  <!-- ============ 上层右：历史提速 paired bars（38%） ============ -->
+  <div style="position:absolute; left:599pt; top:46pt; width:345pt;">
+    <p class="px" style="font-weight:bold; font-size:9.5pt; line-height:1.45; color:#000066;">图 1 ｜ 历史提速（同题同模式，秒）</p>
+  </div>
+
+  <div style="position:absolute; left:599pt; top:62pt; width:345pt; height:12pt; display:flex; align-items:center;">
+    <div style="width:7pt; height:7pt; background:#8FA3B5;"></div>
+    <p class="px" style="font-size:7.5pt; line-height:1.4; color:#333333; padding-left:4pt;">09-26 基线（原文带 ~）</p>
+    <div style="width:7pt; height:7pt; background:#A50021; margin-left:12pt;"></div>
+    <p class="px" style="font-size:7.5pt; line-height:1.4; color:#333333; padding-left:4pt;">10-12 当前（实测）</p>
+  </div>
+
+  <!-- 组 1：B · q1 -->
+  <div style="position:absolute; left:599pt; top:78pt; width:345pt; height:40pt; display:flex; align-items:center;">
+    <div style="width:42pt;"><p class="tn" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#000066;">B · q1</p></div>
+    <div style="width:170pt;">
+      <div style="width:71pt; height:12pt; background:#8FA3B5; margin-bottom:7pt;"></div>
+      <div style="width:19pt; height:12pt; background:#A50021;"></div>
+    </div>
+    <div style="width:60pt;">
+      <div style="margin-bottom:7pt;"><p class="tn" style="font-size:8.5pt; line-height:12pt; padding-left:6pt; color:#6B6760;">~342.0s</p></div>
+      <p class="tn" style="font-weight:bold; font-size:8.5pt; line-height:12pt; padding-left:6pt; color:#A50021;">25.0s</p>
+    </div>
+    <div style="width:73pt; display:flex; justify-content:flex-end;">
+      <p class="num" style="font-weight:bold; font-size:14pt; line-height:1.4; color:#A50021;">13.7×</p>
+    </div>
+  </div>
+
+  <!-- 组 2：B · q2 -->
+  <div style="position:absolute; left:599pt; top:124pt; width:345pt; height:40pt; display:flex; align-items:center;">
+    <div style="width:42pt;"><p class="tn" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#000066;">B · q2</p></div>
+    <div style="width:170pt;">
+      <div style="width:59pt; height:12pt; background:#8FA3B5; margin-bottom:7pt;"></div>
+      <div style="width:12pt; height:12pt; background:#A50021;"></div>
+    </div>
+    <div style="width:60pt;">
+      <div style="margin-bottom:7pt;"><p class="tn" style="font-size:8.5pt; line-height:12pt; padding-left:6pt; color:#6B6760;">~234.0s</p></div>
+      <p class="tn" style="font-weight:bold; font-size:8.5pt; line-height:12pt; padding-left:6pt; color:#A50021;">10.2s</p>
+    </div>
+    <div style="width:73pt; display:flex; justify-content:flex-end;">
+      <p class="num" style="font-weight:bold; font-size:14pt; line-height:1.4; color:#A50021;">22.9×</p>
+    </div>
+  </div>
+
+  <!-- 组 3：C · q1 -->
+  <div style="position:absolute; left:599pt; top:170pt; width:345pt; height:40pt; display:flex; align-items:center;">
+    <div style="width:42pt;"><p class="tn" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#000066;">C · q1</p></div>
+    <div style="width:170pt;">
+      <div style="width:130pt; height:12pt; background:#8FA3B5; margin-bottom:7pt;"></div>
+      <div style="width:24pt; height:12pt; background:#A50021;"></div>
+    </div>
+    <div style="width:60pt;">
+      <div style="margin-bottom:7pt;"><p class="tn" style="font-size:8.5pt; line-height:12pt; padding-left:6pt; color:#6B6760;">~1152.0s</p></div>
+      <p class="tn" style="font-weight:bold; font-size:8.5pt; line-height:12pt; padding-left:6pt; color:#A50021;">37.3s</p>
+    </div>
+    <div style="width:73pt; display:flex; justify-content:flex-end;">
+      <p class="num" style="font-weight:bold; font-size:14pt; line-height:1.4; color:#A50021;">30.9×</p>
+    </div>
+  </div>
+
+  <!-- 组 4：C · q2 -->
+  <div style="position:absolute; left:599pt; top:216pt; width:345pt; height:40pt; display:flex; align-items:center;">
+    <div style="width:42pt;"><p class="tn" style="font-weight:bold; font-size:9pt; line-height:1.4; color:#000066;">C · q2</p></div>
+    <div style="width:170pt;">
+      <div style="width:164pt; height:12pt; background:#8FA3B5; margin-bottom:7pt;"></div>
+      <div style="width:23pt; height:12pt; background:#A50021;"></div>
+    </div>
+    <div style="width:60pt;">
+      <div style="margin-bottom:7pt;"><p class="tn" style="font-size:8.5pt; line-height:12pt; padding-left:6pt; color:#6B6760;">~1818.0s</p></div>
+      <p class="tn" style="font-weight:bold; font-size:8.5pt; line-height:12pt; padding-left:6pt; color:#A50021;">33.7s</p>
+    </div>
+    <div style="width:73pt; display:flex; justify-content:flex-end;">
+      <p class="num" style="font-weight:bold; font-size:14pt; line-height:1.4; color:#A50021;">54.0×</p>
+    </div>
+  </div>
+
+  <div style="position:absolute; left:599pt; top:262pt; width:345pt;">
+    <p class="px" style="font-size:7.5pt; line-height:1.5; color:#6B6760;">条形长度按 √ 比例缩放（同组内可比），数值为实际秒数。基线列原文为约值（~）。A 臂口径已变更（13.3 / 7.4 → 25.0 / 22.7s，含 real-engine 硬门禁），与基线不可直接比。</p>
+  </div>
+
+  <!-- ============ 下层：三通道端到端开销 + 能力差异 ============ -->
+  <div style="position:absolute; left:16pt; top:318pt; width:928pt;">
+    <p class="px" style="font-weight:bold; font-size:9.5pt; line-height:1.45; color:#000066;">表 2 ｜ 通道2 端到端开销（非流式系统臂 · 9 跑均值）＋ 能力差异：baseline 只会“返回”</p>
+  </div>
+
+  <!-- 数据条 A -->
+  <div style="position:absolute; left:16pt; top:338pt; width:575pt; height:45pt; background:#F0F4F8; border-left:4pt solid #000066; display:flex; align-items:center;">
+    <div style="width:30pt; height:30pt; background:#000066; border-radius:2pt; margin-left:10pt; display:flex; align-items:center; justify-content:center;">
+      <p class="tn" style="font-weight:bold; font-size:14pt; line-height:1.35; color:#FFFFFF;">A</p>
+    </div>
+    <div style="padding-left:12pt;">
+      <p class="px" style="font-weight:bold; font-size:10.5pt; line-height:1.40; color:#000066;">钉库向量快车道</p>
+      <p class="px" style="font-size:9.5pt; line-height:1.40; color:#333333;">端到端 <span style="font-weight:bold;">48.0s</span>（9 跑均值）· $0.182/题 · 门禁 3/3 · turns 5.3</p>
+      <p class="px" style="font-size:8pt; line-height:1.40; color:#6B6760;">cm1 / cm2 / cm3 = 53.0 / 65.3 / 25.7s（cm3 如实拒答）</p>
+    </div>
+  </div>
+
+  <!-- 数据条 B -->
+  <div style="position:absolute; left:16pt; top:389pt; width:575pt; height:45pt; background:#F0F4F8; border-left:4pt solid #A50021; display:flex; align-items:center;">
+    <div style="width:30pt; height:30pt; background:#A50021; border-radius:2pt; margin-left:10pt; display:flex; align-items:center; justify-content:center;">
+      <p class="tn" style="font-weight:bold; font-size:14pt; line-height:1.35; color:#FFFFFF;">B</p>
+    </div>
+    <div style="padding-left:12pt;">
+      <p class="px" style="font-weight:bold; font-size:10.5pt; line-height:1.40; color:#000066;">全库逐级检索（图书管理员 spine）</p>
+      <p class="px" style="font-size:9.5pt; line-height:1.40; color:#333333;">端到端 66.4s（9 跑均值）· $0.300/题 · 门禁 <span style="font-weight:bold; color:#A50021;">2/3</span> · turns 8.3</p>
+      <p class="px" style="font-size:8pt; line-height:1.40; color:#6B6760;">cm1 / cm2 / cm3 = <span style="color:#A50021;">41.4</span> / 91.9 / 66.0s（cm1 假拒答 <span style="font-weight:bold; color:#A50021;">✗</span>）</p>
+    </div>
+  </div>
+
+  <!-- 数据条 C -->
+  <div style="position:absolute; left:16pt; top:440pt; width:575pt; height:45pt; background:#F0F4F8; border-left:4pt solid #000066; display:flex; align-items:center;">
+    <div style="width:30pt; height:30pt; background:#000066; border-radius:2pt; margin-left:10pt; display:flex; align-items:center; justify-content:center;">
+      <p class="tn" style="font-weight:bold; font-size:14pt; line-height:1.35; color:#FFFFFF;">C</p>
+    </div>
+    <div style="padding-left:12pt;">
+      <p class="px" style="font-weight:bold; font-size:10.5pt; line-height:1.40; color:#000066;">混合检索（宽网 + 判卷 + 逐级兜底）</p>
+      <p class="px" style="font-size:9.5pt; line-height:1.40; color:#333333;">端到端 <span style="font-weight:bold;">68.9s</span>（9 跑均值）· $0.219/题 · 门禁 3/3 · turns 7.0</p>
+      <p class="px" style="font-size:8pt; line-height:1.40; color:#6B6760;">cm1 / cm2 / cm3 = 58.3 / 100.0 / 48.3s（cm3 如实拒答）</p>
+    </div>
+  </div>
+
+  <!-- 能力差异三条 -->
+  <div style="position:absolute; left:599pt; top:338pt; width:345pt; padding-left:14pt;">
+    <div style="position:absolute; left:0; top:4pt; width:5pt; height:5pt; background:#A50021;"></div>
+    <p class="px" style="font-size:9pt; line-height:1.50; color:#333333;">活库取证：跨 18 个知识库 / 131·53 文档；保底 docs 18/18 · 23/11 · 12/12（baseline 仅本地静态 100 篇、chunk 级）。</p>
+  </div>
+
+  <div style="position:absolute; left:599pt; top:378pt; width:345pt; padding-left:14pt;">
+    <div style="position:absolute; left:0; top:4pt; width:5pt; height:5pt; background:#A50021;"></div>
+    <p class="px" style="font-size:9pt; line-height:1.50; color:#333333;">判卷 + 读全文：答案带引文与数字（Laya 判卷 8/8 段存活、最高分 0.94；MLP 最高 75.02%）。</p>
+  </div>
+
+  <div style="position:absolute; left:599pt; top:418pt; width:345pt; padding-left:14pt;">
+    <div style="position:absolute; left:0; top:4pt; width:5pt; height:5pt; background:#A50021;"></div>
+    <p class="px" style="font-size:9pt; line-height:1.50; color:#333333;">弃答纪律（通道1）：域外题 cm3 三模式如实拒答 A 36.4 / B 29.9 / C 65.0s；baseline 无弃答能力 → 必然假阳性。</p>
+  </div>
+
+  <div style="position:absolute; left:599pt; top:468pt; width:345pt;">
+    <p class="px" style="font-size:8pt; line-height:1.50; color:#6B6760;">来源：通道2 run chatmodes-20261012T061102Z-5f9faac ｜ 通道3 run-20261012T062847Z-5f9faac ｜ 通道1 c1_*.json</p>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,2622 @@
+{
+ "channel": "harness-api-stream",
+ "mode": "B",
+ "qid": "cm1",
+ "expect": "found",
+ "kbIds": [],
+ "prompt_head": "How does InstructDS generate high-quality query-based dialogue summaries? (InstructDS dialogue summarization query-based instruction tuning data synthesis)",
+ "engine": "claude",
+ "permissionMode": "default",
+ "http": 200,
+ "wall_s": 353.5,
+ "n_events": 486,
+ "timeline": [
+  {
+   "t": 0.0,
+   "event": "meta",
+   "mtype": null,
+   "engine": "claude",
+   "model": "default"
+  },
+  {
+   "t": 0.9,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 0.9,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 93
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_ab8da4b92c724ef791043818",
+     "name": "EndConversation",
+     "input": "{\"message\": \"placeholder\"}"
+    }
+   ]
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_ab8da4b92c724ef791043818",
+     "chars": 155
+    }
+   ]
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 4.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.0,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 6.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 7.9,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 36
+  },
+  {
+   "t": 7.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 7.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 7.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 7.9,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_cffbc8b9270e43ffa83e1ef0",
+     "name": "mcp__kb-mcp__kb_list",
+     "input": "{\"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 7.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 7.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 7.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 8.5,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_cffbc8b9270e43ffa83e1ef0",
+     "chars": 5631
+    }
+   ]
+  },
+  {
+   "t": 8.5,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 10.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 10.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 10.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 10.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 10.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 10.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 10.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 11.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 214
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_43105e237a3d499683b962ce",
+     "name": "mcp__kb-mcp__kb_get_documents",
+     "input": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_78d9d093e9b645338cc9b071",
+     "name": "mcp__kb-mcp__kb_get_documents",
+     "input": "{\"kb_id\": \"455137b4-a0be-46ed-acf5-d8b475dc5d70\", \"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_de223e9a79b44d198cc580b8",
+     "name": "mcp__kb-mcp__kb_get_documents",
+     "input": "{\"kb_id\": \"09b2102e-7dd2-4f4e-afe0-13b40c9b1463\", \"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 15.6,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_43105e237a3d499683b962ce",
+     "chars": 2460
+    }
+   ]
+  },
+  {
+   "t": 16.2,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_78d9d093e9b645338cc9b071",
+     "chars": 2029
+    }
+   ]
+  },
+  {
+   "t": 16.8,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_de223e9a79b44d198cc580b8",
+     "chars": 1193
+    }
+   ]
+  },
+  {
+   "t": 16.8,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 18.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 19.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 21.5,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 142
+  },
+  {
+   "t": 21.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 21.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 21.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 21.5,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_a85ac313c8f944e3b895b878",
+     "name": "mcp__kb-mcp__kb_search_vector",
+     "input": "{\"query\": \"InstructDS query-based dialogue summarization instruction tuning\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"top_k\": 5}"
+    }
+   ]
+  },
+  {
+   "t": 21.5,
+   "event": "permission_request",
+   "mtype": null
+  },
+  {
+   "t": 21.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 21.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 21.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 321.5,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_a85ac313c8f944e3b895b878",
+     "chars": 15
+    }
+   ]
+  },
+  {
+   "t": 321.5,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 322.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 322.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 322.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 325.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 325.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 325.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 325.6,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_ce806364c1c24d30871a25e4",
+     "name": "mcp__kb-mcp__kb_laya_judge",
+     "input": "{\"query\": \"How does InstructDS generate high-quality query-based dialogue summaries (dialogue summarization instruction tuning data synthesis)?\", \"documents\": \"[{\\\"kb_id\\\":\\\"b1199132-e4d4-4305-8c2e-82dc1753b0ba\\\",\\\"doc_p"
+    }
+   ]
+  },
+  {
+   "t": 325.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 325.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 325.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 341.8,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_ce806364c1c24d30871a25e4",
+     "chars": 2568
+    }
+   ]
+  },
+  {
+   "t": 341.9,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 342.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 342.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 343.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 344.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 345.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 346.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 347.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 348.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 349.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 350.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 351.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 352.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.5,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 1410
+  },
+  {
+   "t": 353.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 353.5,
+   "event": "done",
+   "mtype": "result",
+   "subtype": "success"
+  }
+ ],
+ "answer": "The engine's \"evidence\" criterion is passing near-every segment regardless of topical relevance (Hanabi MARL doc scored 0.63–0.89 on a dialogue-summarization question) — a known weak-signal pathology, not a real match. I'll rely on the description layer, which is unambiguous here, rather than body reads.\n\nI have enough to answer honestly.\n\n**结论：知识库中没有覆盖 InstructDS / query-based 对话摘要指令数据合成的内容——未能找到任何相关文档。**\n\n检索过程（全库目录层 + 候选库描述层，已一次性完成）：\n\n- **`kb_list(lightweight=true)`** 扫描全部 **20 个知识库**。与本问题领域（NLP/LLM 指令微调、对话摘要、数据合成）唯一可能相关的是 **「计算机与人工智能」**（131 文档，描述含 \"NLP/LLM\"）。\n- **「计算机与人工智能」描述层抽查**（`kb_get_documents` 131 条）：文档均为 arXiv 论文拆段，主题集中在多智能体强化学习（Hanabi/MARL 约定学习）、Transformer/注意力等，**没有任何文档名称或描述出现 InstructDS、dialogue summarization、query-based summary、instruction tuning data synthesis**。\n- **泛化描述库强制抽查**（依规则不得早退）：\n  - **`demo-qa-20260927`**（\"random real-world content\"）：长城 / Voyager 1 / 光合作用 / Attention Is All You Need / 检索速查卡 —— 无相关。\n  - **`e2e-demo-0923-022632`**：平台架构 / RAG benchmark / AgentWorkShop 集成 —— 无相关。\n- 其余 17 个库描述均为自然科学、生命医学、工程能源、经济、工业、小说、SOUL 人格、测试/演示库，与本问题领域无关。\n\n**盲区声明（重要）**：本次为**描述层判定**，未逐篇读取正文。我尝试用 `kb_search_vector` 做语义确认，但该工具在本通道不可用（审批超时被拒）；`kb_laya_judge` 的 evidence 判据在本次调用中退化（把 MARL 论文段落判为 0.63–0.89 高分），无法作为有效相关性信号。因此无法 100% 排除「某篇摘要主题不匹配但正文段落恰好提到 InstructDS」的极端情况——但在目录 + 三个候选/泛化库的描述层上，**没有任何线索指向该主题**。\n\n如需，我可以对「计算机与人工智能」库做一次 `kb_doc_read` 抽样或图谱检索以进一步确认，但基于当前证据，诚实的回答是：**知识库中无对应内容**。",
+ "num_turns": 8,
+ "duration_ms": 352708,
+ "cost_usd": 0.1783712,
+ "session_id": "5a2d0a74-effc-4179-bb70-ec555de09a0c",
+ "tool_spans": [
+  {
+   "tool": "EndConversation",
+   "input": "{\"message\": \"placeholder\"}",
+   "t_start": 4.9,
+   "t_end": 4.9,
+   "dur_s": 0.0,
+   "result_chars": 155
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": "{\"lightweight\": true}",
+   "t_start": 7.9,
+   "t_end": 8.5,
+   "dur_s": 0.6,
+   "result_chars": 5631
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true}",
+   "t_start": 15.3,
+   "t_end": 15.6,
+   "dur_s": 0.3,
+   "result_chars": 2460
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": "{\"kb_id\": \"455137b4-a0be-46ed-acf5-d8b475dc5d70\", \"lightweight\": true}",
+   "t_start": 15.3,
+   "t_end": 16.2,
+   "dur_s": 0.9,
+   "result_chars": 2029
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": "{\"kb_id\": \"09b2102e-7dd2-4f4e-afe0-13b40c9b1463\", \"lightweight\": true}",
+   "t_start": 15.3,
+   "t_end": 16.8,
+   "dur_s": 1.5,
+   "result_chars": 1193
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": "{\"query\": \"InstructDS query-based dialogue summarization instruction tuning\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"top_k\": 5}",
+   "t_start": 21.5,
+   "t_end": 321.5,
+   "dur_s": 300.0,
+   "result_chars": 15
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": "{\"query\": \"How does InstructDS generate high-quality query-based dialogue summaries (dialogue summarization instruction tuning data synthesis)?\", \"documents\": \"[{\\\"kb_id\\\":\\\"b1199132-e4d4-4305-8c2e-82dc1753b0ba\\\",\\\"doc_p",
+   "t_start": 325.6,
+   "t_end": 341.8,
+   "dur_s": 16.2,
+   "result_chars": 2568
+  }
+ ],
+ "tool_sequence": [
+  "EndConversation",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_laya_judge"
+ ],
+ "retrieval_tools_s": 319.5,
+ "answer_chars": 1410,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "gate_passed": true
+}

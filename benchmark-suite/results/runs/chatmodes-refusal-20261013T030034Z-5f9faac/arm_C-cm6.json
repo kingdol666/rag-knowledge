@@ -1,0 +1,31 @@
+{
+ "mode": "C",
+ "qid": "cm6",
+ "expect": "refusal",
+ "kb_ids": [
+  "455137b4-a0be-46ed-acf5-d8b475dc5d70"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 59.6,
+ "duration_ms": 58236,
+ "turns": 6,
+ "cost_usd": 0.21276499999999998,
+ "session_id": "c9dbdb61-5ba8-411f-bca8-90113c1d5a44",
+ "answer_chars": 685,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**知识库中未找到番茄炒蛋做法的相关内容，无法基于库内证据作答。**\n\n已执行的检索与事实如下（指定库 `455137b4` demo-qa-20260927）：\n\n| 步骤 | 工具与参数 | 结果 |\n|---|---|---|\n| 宽网语义 | `kb_search_two_stage`（query=「番茄炒蛋 做法 步骤 食谱」，slim，top_k 15/5） | stage1 候选 0，stage2 命中 0 |\n| 纯向量 | `kb_search_vector`（query=「西红柿 鸡蛋 烹饪方法」，slim，top_k 15） | 命中 0 |\n| 逐级补齐 | `kb_get_documents(lightweight)` | 全库共 5 篇（page 1/1，has_more=false），已完整盘点 |\n\n该库 5 篇文档目录：`great-wall.md`（万里长城）、`voyager-1.md`（旅行者1号）、`photosynthesis.md`（光合作用）、`artificial-intelligence__1706.03762__attention-is-all-you-need.md`（Transformer 论文）、`retmodes-knowledge-card.md`（检索实测速查卡）——均与烹饪/番茄/鸡蛋无关，因此无需再进入 `kb_",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

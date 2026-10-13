@@ -1,0 +1,35 @@
+{
+ "mode": "C",
+ "qid": "cm4",
+ "expect": "found",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 69.5,
+ "duration_ms": 68004,
+ "turns": 6,
+ "cost_usd": 0.250837,
+ "session_id": "030b5aad-c746-41e9-b97e-c34d84c0f14e",
+ "answer_chars": 1518,
+ "answer_markers_hit": [
+  "attention",
+  "vaswani"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**Transformer 是一种完全基于注意力机制（self-attention）、摒弃循环与卷积结构的深度学习序列模型架构，由 Vaswani 等人于 2017 年在论文《Attention Is All You Need》中提出**（库：计算机与人工智能知识库）。\n\n**定义与核心引文（P0 直接证据）**\n\n- 论文结论原文：\"we presented the Transformer, **the first sequence transduction model based entirely on attention**, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention\"——它是首个完全基于注意力的序列转换模型，用多头自注意力取代了编码器-解码器架构中的循环层。\n- 论文引言原文：\"the Transformer is **the first transduction model relying entirely on self-attention** to compute representations of its input and output\"——完全依靠自注意力计算输入与输出的表",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": true
+  }
+ }
+}

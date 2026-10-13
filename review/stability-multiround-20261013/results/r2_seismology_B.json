@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "seismology",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 125.6,
+ "success": true,
+ "session_id": "7ddaa168-f86d-4e31-9bec-5b331f93f351",
+ "turns": 18,
+ "cost": 1.057585,
+ "duration_ms": 124300,
+ "answer": "**结论：知识库中没有系统回答「地震波分类」的文档——P 波/S 波/面波的完整分类及其区别在库内无据可答；仅在《自然科学与地球科学》库的两篇地震学论文中找到部分相关片段（S 波=剪切波、P/S 波速度数值、Rayleigh 波），不足以构成完整答案。**\n\n库内相关片段（均出自 KB「自然科学与地球科学」，经 kb_laya_judge 判证后实读正文）：\n\n1. **S 波（剪切波）与超剪切破裂** ——《seismology__2606.10843 · Supershear Rupture Indicator in Near-fault Particle Motion》(part 1/3)：当破裂速度超过剪切波速时，“coherent S waves produce high-amplitude Mach cones that propagate with weak spatial attenuation”（相干 S 波产生高幅马赫锥、空间衰减弱）；亚剪切时“the S waves radiated from preceding rupture travel faster than the advancing rupture front”，质点运动呈 FN-FP-FN，超剪切则相反。文中亦出现面波片段：破裂转换时“an initial supershear FP-dominant motion followed by a trailing **Rayleigh** FN-dominant motion”。【P1 参考·部分相关】\n2. **P/S 波速度量化片段** —— 同论文 part 2/3（方法与材料）：均匀半空间速度结构“**Vp = 6.1 km/s, Vs = 3.5 km/s**”（模型参数，非波型讲解）。【P1 参考】\n3. **与波型无关** ——《seismology__1308.1846 · APE-ELEV 震后损失评估系统》(part 1/4)：内容为损失模型分类（概率/确定性/实时），未涉及地震波类型。\n\n**盲区声明（本次逐级检索范围）**：21 个库目录全扫 → 10 个库描述层抽查（含 demo-qa、ZZ 复现库×2、e2e-demo、soul 系列、玄鸟演示库等泛化/演示库）→ 对 6 篇地震学候选文档判证（22 段、19 段过阈、3 篇 yes）→ 实读 3 篇正文。**库中不存在** P 波（纵波）/S 波（横波）/面波（Rayleigh、Love）的系统定义、传播方式（质点振动方向、介质形变方式）、速度对比等教学型内容——「分为哪几类、区别是什么」这一分类学问题在本库内无法完整回答；上述片段仅是震源破裂研究中的顺带提及（P2 级覆盖——按该问题维度评估）。如需完整分类知识，建议入藏地震学基础教材或百科条目。"
+}

@@ -1,0 +1,29 @@
+{
+ "mode": "B",
+ "qid": "cm7",
+ "expect": "refusal",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 80.4,
+ "duration_ms": 78970,
+ "turns": 7,
+ "cost_usd": 0.42657500000000004,
+ "session_id": "fd57c00a-8a9f-4d52-9c5a-e35038596ea2",
+ "answer_chars": 876,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：知识库中无「电力变压器选型」对应内容，本次为如实未命中（NOT_FOUND）。**\n\n检索过程与范围（全库 20 个知识库）：\n- `kb_list(lightweight=true)` 扫描全部 20 库目录层，仅「工程与能源」（39 文档，描述含 \"power grids\"）、「aw-industrial」（38 文档，工业产线诊断/经验）、「demo-qa-20260927」（5 文档，泛化「random real-world content」字样，已按规则抽查）等库可能相关，逐一完成 `kb_get_documents(lightweight=true)` 描述层清点。\n- 「工程与能源」库逐条核对：实际内容为钙钛矿太阳能电池 J-V 迟滞建模（materials__1606.00335）、PEES 电力电子储能并网稳定性（power-systems__2607.03098）、电网扰动源映射与韧性（power-systems__2207.08146）、电池正极氧氧化还原/缺陷设计、凸优化与混合整数控制等——**没有任何文档覆盖变压器选型**（容量选择、电压等级、短路阻抗、冷却方式、负载率等均无提及）。\n- 「demo-qa」库抽查命中 \"Transformer\" 的是 AI 架构论文《artificial-intelligence__1706.03762__att",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

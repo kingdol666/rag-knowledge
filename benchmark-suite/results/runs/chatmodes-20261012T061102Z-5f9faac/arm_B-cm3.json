@@ -1,0 +1,29 @@
+{
+ "mode": "B",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 66.0,
+ "duration_ms": 64571,
+ "turns": 11,
+ "cost_usd": 0.4305146,
+ "session_id": "7495ea7f-1651-431a-b05d-1a875c47e19c",
+ "answer_chars": 1239,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：知识库中不存在关于「Herbert-Moulton 对撞机基准（Herbert-Moulton collider benchmark）」的任何内容——该问题所涉的粒子物理对撞机基准/探测器漂移量化主题，在全部 20 个知识库中均无对应文档。**\n\n本轮为全库逐级检索，实际扫描如下（未命中，故无引文可给）：\n\n1. **目录层** `kb_list(lightweight=true)`：20 个 KB，主题覆盖计算机与 AI（131 篇）、自然科学与地球科学（75 篇）、生命科学与医学（53 篇）、工程与能源（39 篇）、经济与社会（24 篇）、工业生产（aw-industrial 30 篇）、数学/统计、测试与演示库（e2e-demo、demo-qa、Novel-PridePrejudice、ZZ 复现库、玄鸟飞控演示库）等。无任何库的描述提及粒子物理实验、对撞机（collider）、探测器（detector）基准或 Herbert/Moulton。\n\n2. **描述层抽查**（`kb_get_documents(lightweight=true)`，含泛化字样的库按规则一并抽查）：\n   - **自然科学与地球科学**（75 篇，物理最可能的落点）：仅含量子物理（NISQ/量子纠错/QEM）、气候科学、海洋学、地震学、天文学（CoRoT 系外行星、暗能量巡天 DES、甲",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

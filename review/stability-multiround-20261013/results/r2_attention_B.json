@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "attention",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 94.4,
+ "success": true,
+ "session_id": "310fad04-2c47-4ea1-832e-e4c839423d1a",
+ "turns": 14,
+ "cost": 0.946003,
+ "duration_ms": 93019,
+ "answer": "**Transformer 自注意力（缩放点积注意力，Scaled Dot-Product Attention）的计算公式为：Attention(Q, K, V) = softmax(QKᵀ/√dₖ)·V**（原论文 Eq. 1）。\n\n**公式逐字引文**（§3.2.1）：\n> Attention(Q, K, V) = softmax( (QKᵀ)/√dₖ ) V\n\n**符号与计算**：输入由维度 dₖ 的 queries/keys 与维度 d_v 的 values 组成；先算 query 与所有 key 的点积，各自除以 √dₖ，再经 softmax 得到对 values 的权重，输出为 values 的加权和。Q、K、V 打包为矩阵，可并行计算整组 query 的输出。\n\n**为何缩放**：原文指出 \"for large values of dₖ, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients\"，故除以 1/√dₖ 抵消该效应。\n\n**自注意力语境**：Q、K、V 同源——\"all of the keys, values and queries come from the same place… the output of the previous layer in the encoder. Each position in the encoder can attend to all positions\"；解码器自注意力通过 Masking out（softmax 输入置 −∞）阻断未来位置，保持自回归性。\n\n**多头扩展**（§3.2.2）：MultiHead(Q,K,V) = Concat(head₁,…,head_h)W^O，其中 head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)；论文取 h=8、dₖ=d_v=d_model/h=64。\n\n**出处与可信度**：\n- 主库「计算机与人工智能」：《Attention Is All You Need》(Vaswani et al., 2017)，文档 `artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2)`，§3.2.1 公式已逐字核验（P0 强——原始论文一手来源）；\n- demo-qa-20260927 库：存有同文完整单文件版，两副本均通过 Laya 证据门控（36/36 段 ≥0.5 阈值，最高 0.968），公式、缩放理由与多头定义完全一致（P0 强，交叉佐证）。\n\n（本轮为全库逐级检索：目录层扫描 21 库 → 4 个候选库描述层 → Laya 判决 → 幸存者定点核读；无盲区。）"
+}

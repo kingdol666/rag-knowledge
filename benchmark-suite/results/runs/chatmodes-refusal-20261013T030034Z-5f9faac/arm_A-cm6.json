@@ -1,0 +1,31 @@
+{
+ "mode": "A",
+ "qid": "cm6",
+ "expect": "refusal",
+ "kb_ids": [
+  "455137b4-a0be-46ed-acf5-d8b475dc5d70"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 35.8,
+ "duration_ms": 34474,
+ "turns": 6,
+ "cost_usd": 0.111351,
+ "session_id": "cb6b1647-7c9a-4c83-b369-7828df767d97",
+ "answer_chars": 1057,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：知识库中不存在「番茄炒蛋」相关内容，无法基于库内证据回答该菜谱。**\n\n**检索事实（指定库 `demo-qa-20260927`，kb_id `455137b4-a0be-46ed-acf5-d8b475dc5d70`）：**\n\n| 检索 | 参数 | 命中 |\n|---|---|---|\n| `kb_search_two_stage` | query=「番茄炒蛋 做法 步骤 食材」，slim=true，stage1_top_k=20，stage2_top_k=5 | stage1 候选 0，stage2 结果 0，total_results=0 |\n| `kb_search_vector` | query=「番茄炒蛋 烹饪方法 菜谱」，slim=true，top_k=10 | results 0，count 0 |\n\n**该库实际内容（`kb_get_documents`，共 5 篇）** —— 全部为百科/论文类随机演示内容，无任何烹饪/菜谱文档：\n\n- `great-wall.md` — 万里长城（长度、糯米砂浆、太空可见性误区）\n- `voyager-1.md` — 旅行者 1 号（1977 发射、穿越日球层）\n- `photosynthesis.md` — 光合作用（叶绿素、Calvin 循环）\n- `artificial-intelligence__1706",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

@@ -1,6 +1,6 @@
 {
-  "version": "2026-09-17",
-  "description": "10 content-grounded questions over the 50-paper multi-field corpus. Each question is answerable ONLY from its target paper; gold keywords appear verbatim in the parsed text.",
+  "version": "2026-09-17 (description corrected 2026-10-13: corpus is the 100-paper five-base instance, not the retired 50-paper set; question text, target ids and gold keywords are unchanged from 2026-09-17)",
+  "description": "10 content-grounded questions over the 100-paper, five-base corpus. Each question is answerable ONLY from its target paper; gold keywords appear verbatim in the parsed text.",
   "questions": [
     {
       "qid": "BQ01",

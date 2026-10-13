@@ -1,5 +1,5 @@
 {
- "run_dir": "run-20260930T150453Z-3ec2174",
+ "run_dir": "run-20261013T094350Z-5f9faac",
  "grades": {
   "a2": {
    "n": 10,
@@ -7,32 +7,38 @@
    "kw_ok": 10,
    "pass": 10,
    "pass_rate": 1.0,
-   "avg_latency_s": 116.2,
-   "avg_tools": 6.8,
-   "avg_cost_usd": 0.5457,
-   "tokens_out_total": 20357
+   "cited": 9,
+   "cited_chunk": 5,
+   "avg_latency_s": 52.6,
+   "avg_tools": 6.0,
+   "avg_cost_usd": 0.711,
+   "tokens_out_total": 62957
   },
   "b": {
    "n": 10,
    "gold_hit": 10,
-   "kw_ok": 8,
-   "pass": 8,
-   "pass_rate": 0.8,
-   "avg_latency_s": 47.6,
-   "avg_tools": 4.9,
-   "avg_cost_usd": 0.6346,
-   "tokens_out_total": 11458
+   "kw_ok": 9,
+   "pass": 9,
+   "pass_rate": 0.9,
+   "cited": 7,
+   "cited_chunk": 0,
+   "avg_latency_s": 22.2,
+   "avg_tools": 6.4,
+   "avg_cost_usd": 0.4867,
+   "tokens_out_total": 30016
   },
   "c": {
    "n": 10,
-   "gold_hit": 8,
-   "kw_ok": 6,
-   "pass": 6,
-   "pass_rate": 0.6,
-   "avg_latency_s": 41.1,
+   "gold_hit": 10,
+   "kw_ok": 9,
+   "pass": 9,
+   "pass_rate": 0.9,
+   "cited": 2,
+   "cited_chunk": 7,
+   "avg_latency_s": 24.5,
    "avg_tools": 3.7,
-   "avg_cost_usd": 0.2784,
-   "tokens_out_total": 8371
+   "avg_cost_usd": 0.5269,
+   "tokens_out_total": 32656
   }
  },
  "rows": [
@@ -48,11 +54,21 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Table 1",
+    "part 1 of 2",
+    "§2",
+    "§3.2",
+    "§3.5",
+    "§4"
+   ],
    "is_error": false,
-   "latency_s": 169.8,
-   "tools": 6,
-   "cost_usd": 0.19700800000000002,
-   "tokens_out": 2262,
+   "latency_s": 55.5,
+   "tools": 5,
+   "cost_usd": 0.7721819999999999,
+   "tokens_out": 7367,
    "insufficient_evidence": false
   },
   {
@@ -66,11 +82,19 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 1 of 4",
+    "§4.1",
+    "§4.2"
+   ],
    "is_error": false,
-   "latency_s": 115.1,
-   "tools": 4,
-   "cost_usd": 0.44994499999999993,
-   "tokens_out": 2980,
+   "latency_s": 35.8,
+   "tools": 5,
+   "cost_usd": 0.594809,
+   "tokens_out": 3426,
    "insufficient_evidence": false
   },
   {
@@ -84,11 +108,19 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Section 3.1.1",
+    "Table 4",
+    "part 1 of 8",
+    "part 2 of 8"
+   ],
    "is_error": false,
-   "latency_s": 99.3,
-   "tools": 9,
-   "cost_usd": 0.43878400000000006,
-   "tokens_out": 3445,
+   "latency_s": 75.3,
+   "tools": 10,
+   "cost_usd": 0.7819860000000001,
+   "tokens_out": 8775,
    "insufficient_evidence": false
   },
   {
@@ -103,11 +135,17 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 2",
+    "section c"
+   ],
    "is_error": false,
-   "latency_s": 23.7,
-   "tools": 5,
-   "cost_usd": 0.255841,
-   "tokens_out": 855,
+   "latency_s": 25.6,
+   "tools": 4,
+   "cost_usd": 0.510633,
+   "tokens_out": 2250,
    "insufficient_evidence": false
   },
   {
@@ -120,11 +158,14 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": false,
+   "cited_chunk": true,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 108.1,
-   "tools": 10,
-   "cost_usd": 1.2959048,
-   "tokens_out": 1002,
+   "latency_s": 35.6,
+   "tools": 5,
+   "cost_usd": 0.6379659999999999,
+   "tokens_out": 3789,
    "insufficient_evidence": false
   },
   {
@@ -137,11 +178,21 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 2 of 3",
+    "§3",
+    "§4.1",
+    "§7",
+    "§8"
+   ],
    "is_error": false,
-   "latency_s": 136.8,
-   "tools": 7,
-   "cost_usd": 0.458738,
-   "tokens_out": 3079,
+   "latency_s": 97.4,
+   "tools": 10,
+   "cost_usd": 1.031539,
+   "tokens_out": 12970,
    "insufficient_evidence": false
   },
   {
@@ -155,11 +206,16 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 4"
+   ],
    "is_error": false,
-   "latency_s": 31.5,
+   "latency_s": 25.3,
    "tools": 3,
-   "cost_usd": 0.31690100000000004,
-   "tokens_out": 722,
+   "cost_usd": 0.48744600000000005,
+   "tokens_out": 2157,
    "insufficient_evidence": false
   },
   {
@@ -173,11 +229,17 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
    "is_error": false,
-   "latency_s": 372.6,
-   "tools": 12,
-   "cost_usd": 1.0021811999999999,
-   "tokens_out": 2383,
+   "latency_s": 77.0,
+   "tools": 6,
+   "cost_usd": 0.83592,
+   "tokens_out": 10366,
    "insufficient_evidence": false
   },
   {
@@ -191,11 +253,17 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
    "is_error": false,
-   "latency_s": 55.9,
-   "tools": 6,
-   "cost_usd": 0.6992882,
-   "tokens_out": 1956,
+   "latency_s": 43.9,
+   "tools": 5,
+   "cost_usd": 0.7291110000000001,
+   "tokens_out": 5278,
    "insufficient_evidence": false
   },
   {
@@ -209,12 +277,19 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 2 of 3",
+    "part 3 of 3"
+   ],
    "is_error": false,
-   "latency_s": 49.3,
-   "tools": 6,
-   "cost_usd": 0.342406,
-   "tokens_out": 1673,
-   "insufficient_evidence": false
+   "latency_s": 54.7,
+   "tools": 7,
+   "cost_usd": 0.7280380000000001,
+   "tokens_out": 6579,
+   "insufficient_evidence": true
   },
   {
    "qid": "BQ01",
@@ -228,11 +303,14 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 64.7,
-   "tools": 7,
-   "cost_usd": 0.835687,
-   "tokens_out": 2113,
+   "latency_s": 24.9,
+   "tools": 6,
+   "cost_usd": 0.41990000000000005,
+   "tokens_out": 4017,
    "insufficient_evidence": false
   },
   {
@@ -246,11 +324,18 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "§4.1",
+    "§4.2",
+    "§6.4"
+   ],
    "is_error": false,
-   "latency_s": 77.8,
+   "latency_s": 24.2,
    "tools": 7,
-   "cost_usd": 0.8129409999999998,
-   "tokens_out": 1661,
+   "cost_usd": 0.49201999999999996,
+   "tokens_out": 3372,
    "insufficient_evidence": false
   },
   {
@@ -264,11 +349,16 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Table 4"
+   ],
    "is_error": false,
-   "latency_s": 55.6,
-   "tools": 7,
-   "cost_usd": 0.850448,
-   "tokens_out": 1461,
+   "latency_s": 20.3,
+   "tools": 8,
+   "cost_usd": 0.48716000000000004,
+   "tokens_out": 3023,
    "insufficient_evidence": false
   },
   {
@@ -283,11 +373,16 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Section 2"
+   ],
    "is_error": false,
-   "latency_s": 27.1,
-   "tools": 4,
-   "cost_usd": 0.137577,
-   "tokens_out": 589,
+   "latency_s": 12.0,
+   "tools": 5,
+   "cost_usd": 0.374579,
+   "tokens_out": 1397,
    "insufficient_evidence": false
   },
   {
@@ -300,11 +395,16 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "sections f"
+   ],
    "is_error": false,
-   "latency_s": 63.6,
-   "tools": 5,
-   "cost_usd": 0.6510499999999999,
-   "tokens_out": 1417,
+   "latency_s": 19.6,
+   "tools": 4,
+   "cost_usd": 0.439278,
+   "tokens_out": 2359,
    "insufficient_evidence": false
   },
   {
@@ -317,11 +417,19 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "§2",
+    "§3",
+    "§4.1",
+    "§7"
+   ],
    "is_error": false,
-   "latency_s": 88.0,
-   "tools": 3,
-   "cost_usd": 0.8758819999999999,
-   "tokens_out": 1198,
+   "latency_s": 29.9,
+   "tools": 10,
+   "cost_usd": 0.640654,
+   "tokens_out": 4293,
    "insufficient_evidence": false
   },
   {
@@ -335,11 +443,17 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Section 1",
+    "Section 4"
+   ],
    "is_error": false,
-   "latency_s": 25.9,
-   "tools": 5,
-   "cost_usd": 0.9472972,
-   "tokens_out": 640,
+   "latency_s": 11.6,
+   "tools": 4,
+   "cost_usd": 0.377243,
+   "tokens_out": 1389,
    "insufficient_evidence": false
   },
   {
@@ -348,15 +462,19 @@
    "gold": "2408.09942",
    "gold_hit": true,
    "kw": [
-    "oxygen redox"
+    "oxygen redox",
+    "cathode"
    ],
-   "kw_ok": false,
-   "pass": false,
+   "kw_ok": true,
+   "pass": true,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 24.6,
+   "latency_s": 20.2,
    "tools": 4,
-   "cost_usd": 0.27688140000000006,
-   "tokens_out": 664,
+   "cost_usd": 0.444288,
+   "tokens_out": 2523,
    "insufficient_evidence": false
   },
   {
@@ -365,16 +483,18 @@
    "gold": "2410.10669",
    "gold_hit": true,
    "kw": [
-    "dynamic",
-    "multilayer perceptron"
+    "dynamic"
    ],
-   "kw_ok": true,
-   "pass": true,
+   "kw_ok": false,
+   "pass": false,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 31.0,
+   "latency_s": 20.4,
    "tools": 4,
-   "cost_usd": 0.4198143999999999,
-   "tokens_out": 1043,
+   "cost_usd": 0.418209,
+   "tokens_out": 2696,
    "insufficient_evidence": false
   },
   {
@@ -383,15 +503,26 @@
    "gold": "2604.01385",
    "gold_hit": true,
    "kw": [
+    "immune evasion",
     "chemotherapy"
    ],
-   "kw_ok": false,
-   "pass": false,
+   "kw_ok": true,
+   "pass": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Table 2",
+    "§1",
+    "§3.1",
+    "§3.2",
+    "§3.3",
+    "§4"
+   ],
    "is_error": false,
-   "latency_s": 17.3,
-   "tools": 3,
-   "cost_usd": 0.5385873999999999,
-   "tokens_out": 672,
+   "latency_s": 38.6,
+   "tools": 12,
+   "cost_usd": 0.773444,
+   "tokens_out": 4947,
    "insufficient_evidence": true
   },
   {
@@ -406,11 +537,20 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Table 1",
+    "§3.2",
+    "§3.2.1",
+    "§3.2.3",
+    "§4"
+   ],
    "is_error": false,
-   "latency_s": 115.6,
-   "tools": 8,
-   "cost_usd": 0.8358876000000001,
-   "tokens_out": 2234,
+   "latency_s": 34.1,
+   "tools": 5,
+   "cost_usd": 0.609773,
+   "tokens_out": 4714,
    "insufficient_evidence": false
   },
   {
@@ -419,30 +559,42 @@
    "gold": "1801.00862",
    "gold_hit": true,
    "kw": [
-    "noisy intermediate-scale"
+    "noisy intermediate-scale",
+    "error correction"
    ],
-   "kw_ok": false,
-   "pass": false,
+   "kw_ok": true,
+   "pass": true,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 40.3,
+   "latency_s": 21.4,
    "tools": 2,
-   "cost_usd": 0.25595,
-   "tokens_out": 1011,
+   "cost_usd": 0.48285999999999996,
+   "tokens_out": 2525,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ03",
    "track": "c",
    "gold": "2212.13138",
-   "gold_hit": false,
-   "kw": [],
-   "kw_ok": false,
-   "pass": false,
+   "gold_hit": true,
+   "kw": [
+    "multimedqa",
+    "67.6"
+   ],
+   "kw_ok": true,
+   "pass": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Table 4"
+   ],
    "is_error": false,
-   "latency_s": 50.2,
-   "tools": 8,
-   "cost_usd": 0.27990879999999996,
-   "tokens_out": 208,
+   "latency_s": 18.6,
+   "tools": 2,
+   "cost_usd": 0.453727,
+   "tokens_out": 2658,
    "insufficient_evidence": false
   },
   {
@@ -457,11 +609,14 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": false,
+   "cited_chunk": true,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 41.6,
+   "latency_s": 17.0,
    "tools": 2,
-   "cost_usd": 0.32091500000000006,
-   "tokens_out": 921,
+   "cost_usd": 0.44241499999999995,
+   "tokens_out": 2205,
    "insufficient_evidence": false
   },
   {
@@ -474,11 +629,14 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 15.1,
-   "tools": 2,
-   "cost_usd": 0.1373298,
-   "tokens_out": 672,
+   "latency_s": 30.0,
+   "tools": 4,
+   "cost_usd": 0.580717,
+   "tokens_out": 3928,
    "insufficient_evidence": false
   },
   {
@@ -491,11 +649,14 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": false,
+   "cited_chunk": true,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 92.0,
-   "tools": 6,
-   "cost_usd": 0.3937282,
-   "tokens_out": 999,
+   "latency_s": 48.6,
+   "tools": 11,
+   "cost_usd": 0.801175,
+   "tokens_out": 7626,
    "insufficient_evidence": false
   },
   {
@@ -509,11 +670,14 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": false,
+   "cited_chunk": true,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 18.3,
+   "latency_s": 11.2,
    "tools": 2,
-   "cost_usd": 0.141655,
-   "tokens_out": 394,
+   "cost_usd": 0.41177400000000003,
+   "tokens_out": 1166,
    "insufficient_evidence": false
   },
   {
@@ -527,11 +691,14 @@
    ],
    "kw_ok": true,
    "pass": true,
+   "cited": false,
+   "cited_chunk": true,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 14.0,
-   "tools": 3,
-   "cost_usd": 0.1503154,
-   "tokens_out": 792,
+   "latency_s": 19.7,
+   "tools": 2,
+   "cost_usd": 0.46758600000000006,
+   "tokens_out": 1995,
    "insufficient_evidence": false
   },
   {
@@ -540,31 +707,42 @@
    "gold": "2410.10669",
    "gold_hit": true,
    "kw": [
-    "dynamic"
+    "dynamic",
+    "multilayer perceptron"
    ],
-   "kw_ok": false,
-   "pass": false,
+   "kw_ok": true,
+   "pass": true,
+   "cited": false,
+   "cited_chunk": true,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 20.5,
+   "latency_s": 23.3,
    "tools": 3,
-   "cost_usd": 0.1952218,
-   "tokens_out": 982,
+   "cost_usd": 0.5157189999999999,
+   "tokens_out": 3273,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ10",
    "track": "c",
    "gold": "2604.01385",
-   "gold_hit": false,
-   "kw": [],
+   "gold_hit": true,
+   "kw": [
+    "chemotherapy"
+   ],
    "kw_ok": false,
    "pass": false,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
    "is_error": false,
-   "latency_s": 3.7,
-   "tools": 1,
-   "cost_usd": 0.07337199999999999,
-   "tokens_out": 158,
+   "latency_s": 21.3,
+   "tools": 4,
+   "cost_usd": 0.503214,
+   "tokens_out": 2566,
    "insufficient_evidence": false
   }
- ]
+ ],
+ "citation_definition": "part/section/table markers present: \\bparts?\\s+\\d+\\s+of\\s+\\d+ | \\b(?:section|sections|table|tables|appendix|appendices)\\s+(?:\\d+(?:\\.\\d+)*|[A-Z](?:\\.\\d+)*) | §\\s*\\d+(?:\\.\\d+)*",
+ "citation_definition_dense": "dense chunk references (reported separately, NOT counted in the paper's cited numbers): \\bchunk[_ ]?(?:index|id)?\\s*\\d+"
 }

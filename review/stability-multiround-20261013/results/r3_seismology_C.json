@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "seismology",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 105.1,
+ "success": true,
+ "session_id": "cb7b6f6d-62ab-4b5d-bda6-66057f24eace",
+ "turns": 10,
+ "cost": 0.822394,
+ "duration_ms": 103768,
+ "answer": "**结论：本库（「自然科学与地球科学」库，kb_id `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`）未收录系统讲解「地震波分类及区别」（体波/面波、P/S/Love/Rayleigh 波）的文档——检索命中的地震学内容全部是研究论文，不覆盖该基础分类问题，无法在本库中作答。**\n\n**检索事实**\n1. 宽网检索：`kb_search_two_stage`（“地震波分类 体波 面波 P波 S波 区别”）+ `kb_search_vector`×4（中英文变体：纵波/横波/瑞利波/拉夫波、P/S/surface/Love/Rayleigh 等）。相关命中集中于两篇地震学论文（其余为引力波/气候等无关噪声）。\n2. 逐级盘点（`kb_get_documents`）：全库 75 篇、8 组（quantum-physics 20、chemistry 14、climate-science 12、astronomy 7、mathematics 7、seismology 7、oceanography 5、gravitational-physics 3）；seismology 组 7 篇即下列论文的分卷，无教材/综述类文档。\n3. `kb_laya_judge` 对 5 篇候选共 37 段判定：37 段全部幸存（阈值 0.5，偏宽），再经逐篇内容核查确认无一覆盖波类型分类。\n\n**最接近的库内表述（均属附带提及，非分类讲解）**\n- 《Supershear Rupture Indicator in Near-fault Particle Motion》（seismology__2606.10843，1–3 分卷）：以剪切波速为参照定义超剪切破裂——原句 “When the rupture speed exceeds the shear wave speed (supershear), coherent S waves produce high-amplitude Mach cones...”；另一处提及 “a trailing Rayleigh FN-dominant motion”（尾随瑞利运动）——仅把 S 波/瑞利波作为破裂物理的描述对象，没有定义和比较波类型。\n- 《Developing and Testing the APE-ELEV Technique》（seismology__1308.1846，1–4 分卷）：震后损失估计与可视化系统，与波类型无关。\n\n**未找到**：P 波/S 波/Love 波/Rayleigh 波的类别划分及其差别（传播介质、速度、振动方式）在本库任何文档中的系统表述。以上仅为库里已执行检索的事实陈述与原文引文，不含库外推写；如需该基础问题，建议向本库补充地震学教材类文档。"
+}

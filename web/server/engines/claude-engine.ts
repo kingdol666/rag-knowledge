@@ -8,6 +8,7 @@
  * permission callback + abort signal.
  */
 import { query as claudeQuery, type PermissionMode } from '@anthropic-ai/claude-agent-sdk'
+import { resolveClaudeCliExecutable } from '../utils/claude-cli-exec'
 import type {
   ChatEngine,
   QueryRequest,
@@ -49,10 +50,21 @@ export class ClaudeEngine implements ChatEngine {
       promptArg = msgStream()
     }
 
+    // Resolve once per query (memoized): the CLI that can actually mount MCP.
+    const cliExec = resolveClaudeCliExecutable()
+
     const q = claudeQuery({
       prompt: promptArg,
       options: {
         cwd: req.cwd,
+        // ⭐ Pin the CLI executable the SDK spawns. Without this the SDK uses
+        // its own bundled native CLI (2.1.207), which on this machine never
+        // registers MCP servers: `init` shows kb-mcp `status: pending` and a
+        // 30-tool face with zero mcp__kb-mcp__* tools, so KB turns answer from
+        // parametric memory (benchmark track a2 → literal KB_TOOLS_NOT_READY).
+        // The PATH CLI (2.1.296) connects from the identical argv — measured
+        // 2026-10-13, both stdio and SSE mounts → 95 kb tools at turn 1.
+        ...(cliExec ? { pathToClaudeCodeExecutable: cliExec } : {}),
         // QueryRequest.permissionMode is a plain string (engines expose their
         // own mode sets); the SDK only accepts its canonical mode union.
         permissionMode: req.permissionMode as PermissionMode,

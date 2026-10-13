@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "seismology",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 89.1,
+ "success": true,
+ "session_id": "9a859e27-c0fe-484b-bac6-f5745a6dc3ad",
+ "turns": 13,
+ "cost": 0.839752,
+ "duration_ms": 87875,
+ "answer": "**结论：本库《自然科学与地球科学》（75篇/8组）未收录系统讲解\"地震波分为哪几类\"的文献——「体波/面波、P波/S波/Love波/Rayleigh波」的分类框架与对比在库内不存在；仅在一篇超剪切破裂研究论文中找到 S波、Rayleigh波与 P/S 波速度的零散事实。**\n\n**检索事实**（库 ID：1e6199ea-…，全部检索限定于该库）：\n- `kb_search_two_stage`（\"地震波主要分为哪几类 纵波 横波 面波 区别\"）：候选 7 篇，全部来自 2 篇论文\n- `kb_search_vector` ×4 组变体（体波/面波/Rayleigh/Love/P波/S波/传播介质…）：无新增相关文档\n- `kb_laya_judge` 判定（Laya 引擎）：40 段幸存，全部来自 supershear 论文\n- `kb_get_documents` 逐级确认：seismology 组共 7 篇 = 超剪切破裂论文（3部分）+ APE-ELEV 震后损失评估论文（4部分），无教材性文档\n\n**库内实际找到的相关内容**（P0 直引，出处均为《Supershear Rupture Indicator in Near-fault Particle Motion》，seismology__2606.10843，库：自然科学与地球科学）：\n\n1. **S波（剪切波）**（part 1/3）：\n   - \"When the rupture speed exceeds the shear wave speed (supershear), coherent **S waves** produce high-amplitude Mach cones…\"\n   - \"In a subshear rupture, the **S waves** radiated from preceding rupture travel faster than the advancing rupture front…, leading to a pattern in particle motion of FN-FP-FN.\"\n2. **Rayleigh波（面波）**（part 1/3，超剪切转换处）：质点运动呈现 \"initial supershear FP-dominant motion followed by a **trailing Rayleigh** FN-dominant motion\"。\n3. **P波与S波的速度差异**（part 3/3，Table S3 一维速度模型）：Vp = 3.88→8.30 km/s，Vs = 2.04→4.61 km/s（深度 0–60 km），Vp ≈ 1.8×Vs——这是库内唯一直接体现两类波速度区别的数据。\n4. **破裂速度比 Vr/Vs = 0.6–1.7**（subshear/supershear 划分依据）——属破裂速度分类，非地震波类型分类。\n\n**未找到**：体波/面波的二分框架、纵波（压缩）/横波（剪切）的质点振动方向与传播方向关系、Love 波、介质（固/液）对波传播的影响等。另一篇 seismology__1308.1846 为震后损失自动评估系统（APE-ELEV），不涉及地震波分类。\n\n**可信度标注**：上述引文与速度数据为 P0 直接证据；对\"分类与区别\"这一问题体本身，库内证据不足以给出完整答案（属库覆盖盲区），如需完整答案建议向该库补充地震学教材类文献。"
+}

@@ -1,0 +1,2594 @@
+{
+ "channel": "harness-api-stream",
+ "mode": "A",
+ "qid": "cm1",
+ "expect": "found",
+ "kbIds": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "prompt_head": "How does InstructDS generate high-quality query-based dialogue summaries? (InstructDS dialogue summarization query-based instruction tuning data synthesis)",
+ "engine": "claude",
+ "permissionMode": "default",
+ "http": 200,
+ "wall_s": 55.7,
+ "n_events": 489,
+ "timeline": [
+  {
+   "t": 0.0,
+   "event": "meta",
+   "mtype": null,
+   "engine": "claude",
+   "model": "default"
+  },
+  {
+   "t": 1.8,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 1.8,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 2.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.8,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 55
+  },
+  {
+   "t": 3.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.9,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_cf25ef0de2664307bb8f6346",
+     "name": "EndConversation",
+     "input": "{\"message\": \"placeholder\"}"
+    }
+   ]
+  },
+  {
+   "t": 3.9,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_cf25ef0de2664307bb8f6346",
+     "chars": 155
+    }
+   ]
+  },
+  {
+   "t": 3.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.9,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 5.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 5.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.8,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 79
+  },
+  {
+   "t": 13.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.9,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_a4877e1e1529435aa7676542",
+     "name": "mcp__kb-mcp__kb_search_two_stage",
+     "input": "{\"query\": \"InstructDS query-based dialogue summarization instruction tuning data synthesis\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"slim\": true, \"top_k\": 30, \"stage2_top_k\": 5}"
+    }
+   ]
+  },
+  {
+   "t": 13.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.9,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_0e18b9355a5a4d55a2c4247f",
+     "name": "mcp__kb-mcp__kb_search_vector",
+     "input": "{\"query\": \"InstructDS: query-based dialogue summarization instruction tuning dataset generation\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"slim\": true, \"top_k\": 30}"
+    }
+   ]
+  },
+  {
+   "t": 13.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.9,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_4ad1d1c1a7be4049a88aa6f6",
+     "name": "mcp__kb-mcp__kb_search_vector",
+     "input": "{\"query\": \"high-quality dialogue summary generation query-based LLM synthetic data pipeline\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"slim\": true, \"top_k\": 30}"
+    }
+   ]
+  },
+  {
+   "t": 13.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 13.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.8,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_a4877e1e1529435aa7676542",
+     "chars": 9443
+    }
+   ]
+  },
+  {
+   "t": 14.9,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_0e18b9355a5a4d55a2c4247f",
+     "chars": 16856
+    }
+   ]
+  },
+  {
+   "t": 14.9,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_4ad1d1c1a7be4049a88aa6f6",
+     "chars": 17365
+    }
+   ]
+  },
+  {
+   "t": 14.9,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 16.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 16.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 20.6,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 204
+  },
+  {
+   "t": 20.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 20.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 20.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 20.6,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_974e89bfb6794f48b0242eac",
+     "name": "mcp__kb-mcp__kb_laya_judge",
+     "input": "{\"query\": \"How does InstructDS synthesize high-quality query-based dialogue summarization (QDS) triples? Three-step pipeline: summary-anchored query generation, query filtering, query-based summary generation; quality sc"
+    }
+   ]
+  },
+  {
+   "t": 20.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 20.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 20.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.6,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_974e89bfb6794f48b0242eac",
+     "chars": 32329
+    }
+   ]
+  },
+  {
+   "t": 35.6,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 36.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 44.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 45.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 46.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 47.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 48.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 49.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 50.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 51.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 52.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 53.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 54.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.6,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 1632
+  },
+  {
+   "t": 55.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 55.7,
+   "event": "done",
+   "mtype": "result",
+   "subtype": "success"
+  }
+ ],
+ "answer": "The evidence pack gives a complete, direct answer. **结论：InstructDS 通过一个\"三步式\"综合管线从已有的\"对话–摘要\"对中自动合成高质量的查询对话摘要（QDS）三元组**——核心是借用通用大语言模型的\"条件式问题生成 + 问答\"能力（受 Self-Instruct 启发），从而绕开昂贵的人工标注。\n\n## 三步综合管线（论文 §3.2）\n\n论文第一作者表述为：*\"we propose a three-step approach to synthesize high-quality query-based summarization triples. This process involves summary-anchored query generation, query filtering and query-based summary generation.\"*\n\n**① 摘要锚定的查询生成（Query Generation）**\n以**参考摘要**（而非对话）为锚点，用 **Flan-T5-XL**（在其问题生成训练集 Quoref/MC-TACO/CosmosQA 上训练过）为每个实例生成 **5 个候选查询**。锚定摘要是关键：摘要比对话更简洁、结构化，生成质量更有保障。\n\n**② 查询过滤（Filtering and Postprocessing）**\n- **基于文本的过滤**：用 Flan-T5-XL 作二分类器判断查询是否\"可回答\"，剔除易产生幻觉的 `What will`/`How would` 类查询——**约剔除 45%**。\n- **基于语义的过滤**：用归一化 **BERTScore** 检测冗余，相似度 **>0.65** 的重复查询只保留第一个——**再剔除约 50%**。\n\n**③ 查询制导的摘要生成（Query-based Summary Generation）**\n以\"查询 + 完整摘要\"为输入，触发 LLM 的问答能力生成查询条件下的摘要。\n\n## 质量与效果\n- 经专家对 100 条三元组标注：**\"既独特又正确\"的比例从 45% 提升到 75%**（过滤前→后）；可回答率 94%(76%)、差异性 90%(63%)、正确性 83%(71%)（Table 2）。\n- 规模：平均每对\"对话–摘要\"生成 **1.3 条** QDS 三元组；在 SAMSum/DialogSum/TODSum 上分别合成 18,245 / 18,600 / 8,705 条（Table 1），训练时每集随机采样 5k。\n\n## 训练侧配合\n以 **Flan-T5-XL（3B）** 为初始 checkpoint 做指令微调，指令分三类：通用对话摘要、查询式对话摘要、以及**长度感知增强**（追加 \"The generated summary should be around {summary length} words long.\"）。QDS 三元组与长度增强共同带来性能提升（SAMSum 上 InstructDS ROUGE-L 46.7，优于 Flan-UL2 20B 的 44.1）。\n\n**出处**：`计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1–2 of 4).md`（arXiv 2310.10981，Wang, Liu, Chen, A*STAR I2R）｜KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`。\n**证据等级**：P0 直接证据——三步流程、过滤比例与 45%→75% 质量数字均逐字见原文；Laya 判定 22/22 段全部幸存（score 0.57–0.94）。",
+ "num_turns": 6,
+ "duration_ms": 53923,
+ "cost_usd": 0.23762,
+ "session_id": "4ff8bf63-861c-4be0-9821-b5ff354a569c",
+ "tool_spans": [
+  {
+   "tool": "EndConversation",
+   "input": "{\"message\": \"placeholder\"}",
+   "t_start": 3.9,
+   "t_end": 3.9,
+   "dur_s": 0.0,
+   "result_chars": 155
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": "{\"query\": \"InstructDS query-based dialogue summarization instruction tuning data synthesis\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"slim\": true, \"top_k\": 30, \"stage2_top_k\": 5}",
+   "t_start": 13.9,
+   "t_end": 14.8,
+   "dur_s": 0.9,
+   "result_chars": 9443
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": "{\"query\": \"InstructDS: query-based dialogue summarization instruction tuning dataset generation\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"slim\": true, \"top_k\": 30}",
+   "t_start": 13.9,
+   "t_end": 14.9,
+   "dur_s": 1.0,
+   "result_chars": 16856
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": "{\"query\": \"high-quality dialogue summary generation query-based LLM synthetic data pipeline\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"slim\": true, \"top_k\": 30}",
+   "t_start": 13.9,
+   "t_end": 14.9,
+   "dur_s": 1.0,
+   "result_chars": 17365
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": "{\"query\": \"How does InstructDS synthesize high-quality query-based dialogue summarization (QDS) triples? Three-step pipeline: summary-anchored query generation, query filtering, query-based summary generation; quality sc",
+   "t_start": 20.6,
+   "t_end": 35.6,
+   "dur_s": 15.0,
+   "result_chars": 32329
+  }
+ ],
+ "tool_sequence": [
+  "EndConversation",
+  "mcp__kb-mcp__kb_search_two_stage",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_laya_judge"
+ ],
+ "retrieval_tools_s": 17.9,
+ "answer_chars": 1632,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "gate_passed": true
+}

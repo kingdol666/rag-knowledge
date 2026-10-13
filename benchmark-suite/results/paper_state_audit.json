@@ -1,0 +1,57 @@
+{
+ "categories": {
+  "计算机与人工智能": {
+   "docs": 131,
+   "desc_ok": 131,
+   "desc_missing": 0,
+   "part_named": 125
+  },
+  "自然科学与地球科学": {
+   "docs": 75,
+   "desc_ok": 75,
+   "desc_missing": 0,
+   "part_named": 68
+  },
+  "生命科学与医学": {
+   "docs": 53,
+   "desc_ok": 53,
+   "desc_missing": 0,
+   "part_named": 49
+  },
+  "工程与能源": {
+   "docs": 39,
+   "desc_ok": 39,
+   "desc_missing": 0,
+   "part_named": 39
+  },
+  "经济与社会": {
+   "docs": 24,
+   "desc_ok": 24,
+   "desc_missing": 0,
+   "part_named": 21
+  }
+ },
+ "total_docs": 322,
+ "manifest_found": 100,
+ "manifest_ids": 100,
+ "missing": [],
+ "chunks800_probe_hits": 2,
+ "checks": [
+  {
+   "claim": "五门类库齐全",
+   "ok": true
+  },
+  {
+   "claim": "门类库文档总数=322",
+   "ok": true
+  },
+  {
+   "claim": "密索引可检索（2/2 探针命中）",
+   "ok": true
+  },
+  {
+   "claim": "manifest 100 篇全在库里",
+   "ok": true
+  }
+ ]
+}

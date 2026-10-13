@@ -1,0 +1,1514 @@
+{
+ "meta": {
+  "run_id": "run-20261013T094350Z-5f9faac",
+  "git_commit": "5f9faac",
+  "config_hash": "9fb259c0cf2b6dea",
+  "prompt_version": "v4-neutral",
+  "started_utc": "2026-10-13T09:43:50.941632+00:00",
+  "generated_utc": "2026-10-13 12:16 UTC",
+  "tracks": [
+   "a2",
+   "b",
+   "c"
+  ],
+  "questions": 10,
+  "seed": 0,
+  "max_turns": 12,
+  "shuffled": true,
+  "selfheal": true,
+  "total_cost_usd": 17.2454,
+  "tokens_out_total": 125629,
+  "qfile": "qa_questions.json",
+  "n_rows": 30,
+  "repro": "# 1) 语料与索引（只读体检 + 必要时重建）\npython scripts/151_smoke_probe.py\npython scripts/106_exp_corpus_r2.py --dry-run\n# 1b) Table 1 的检索回归探针（真实检索，15 条铺满五门类库）\npython scripts/158_a_retrieval_regression.py\n# 2) 三轨真实执行（写 results/runs/run-<ts>-<commit>/）\npython -m experiments.runner --questions data/papers/qa_questions.json --tracks a2,b,c\n# 3) 采集 + 自检 + 渲染报告\npython scripts/161_final_evidence.py --run run-20261013T094350Z-5f9faac\npython scripts/162_paper_report_html.py\n# 4) 稳定性套件（可选，约 30 分钟）\npython review/stability-multiround-20260930/run_stability.py r1 r2 r3"
+ },
+ "corpus": {
+  "probed": true,
+  "detail": {
+   "清单论文数 (manifest)": 100,
+   "导出语料 md 文件": 100,
+   "五门类库文档合计": 322,
+   "门类分布": "计算机与人工智能 131 · 自然科学与地球科学 75 · 生命科学与医学 53 · 工程与能源 39 · 经济与社会 24",
+   "全库 collection 数": 25,
+   "全库 chunk 总量": 57771,
+   "Corpus-Chunks800 collection chunk": 37567,
+   "Corpus-Chunks800 召回探针": "3/3",
+   "本次 run": "run-20261013T094350Z-5f9faac",
+   "题集": "qa_questions.json",
+   "计分单元": 30,
+   "检索回归探针": "15/15 · 命中覆盖 5/5 库"
+  },
+  "category_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "dense_probe_hits": 3,
+  "dense_probes": [
+   {
+    "arxiv": "1706.03762v7",
+    "hit": true,
+    "top": "Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k00.md"
+   },
+   {
+    "arxiv": "1810.04805v2",
+    "hit": true,
+    "top": "Corpus-Chunks800/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k00.md"
+   },
+   {
+    "arxiv": "2005.14165v4",
+    "hit": true,
+    "top": "Corpus-Chunks800/large-language-models__2005.14165__language-models-are-few-shot-learners__k131.md"
+   }
+  ]
+ },
+ "regression": {
+  "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\a_retrieval_regression.json",
+  "present": true,
+  "generated": "2026-10-13 20:09:27",
+  "top_k": 10,
+  "probes_pass": 15,
+  "probes_total": 15,
+  "verdict": "pass",
+  "libraries_covered": [
+   "工程与能源",
+   "生命科学与医学",
+   "经济与社会",
+   "自然科学与地球科学",
+   "计算机与人工智能"
+  ],
+  "libraries_total": 5,
+  "rank1": 14,
+  "probes": [
+   {
+    "library": "计算机与人工智能",
+    "gold": "1706.03762",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.6964
+   },
+   {
+    "library": "计算机与人工智能",
+    "gold": "1810.04805",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.6733
+   },
+   {
+    "library": "计算机与人工智能",
+    "gold": "2005.14165",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.72
+   },
+   {
+    "library": "自然科学与地球科学",
+    "gold": "1503.07557",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.7177
+   },
+   {
+    "library": "自然科学与地球科学",
+    "gold": "2606.10843",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.7888
+   },
+   {
+    "library": "自然科学与地球科学",
+    "gold": "2303.00445",
+    "hit": true,
+    "rank": 2,
+    "gold_score": 0.7377
+   },
+   {
+    "library": "生命科学与医学",
+    "gold": "2604.01385",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.749
+   },
+   {
+    "library": "生命科学与医学",
+    "gold": "0408016",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.7601
+   },
+   {
+    "library": "生命科学与医学",
+    "gold": "2212.13138",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.7629
+   },
+   {
+    "library": "工程与能源",
+    "gold": "2207.08146",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.744
+   },
+   {
+    "library": "工程与能源",
+    "gold": "2408.09942",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.7769
+   },
+   {
+    "library": "计算机与人工智能",
+    "gold": "2410.10669",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.8223
+   },
+   {
+    "library": "经济与社会",
+    "gold": "1512.08067",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.7451
+   },
+   {
+    "library": "经济与社会",
+    "gold": "1412.5558",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.776
+   },
+   {
+    "library": "计算机与人工智能",
+    "gold": "2203.15752",
+    "hit": true,
+    "rank": 1,
+    "gold_score": 0.7354
+   }
+  ]
+ },
+ "tracks": [
+  "a2",
+  "b",
+  "c"
+ ],
+ "grades": {
+  "a2": {
+   "n": 10,
+   "grounded": 10,
+   "kw_ok": 10,
+   "cited": 9,
+   "cited_chunk": 5,
+   "pass": 10,
+   "abstain": 0,
+   "sentinel": 0,
+   "errors": 0,
+   "latency_avg_s": 52.6,
+   "latency_median_s": 49.3,
+   "cost_usd_total": 7.1096,
+   "tools_avg": 6.0,
+   "fails": []
+  },
+  "b": {
+   "n": 10,
+   "grounded": 10,
+   "kw_ok": 9,
+   "cited": 7,
+   "cited_chunk": 0,
+   "pass": 9,
+   "abstain": 0,
+   "sentinel": 0,
+   "errors": 0,
+   "latency_avg_s": 22.2,
+   "latency_median_s": 20.4,
+   "cost_usd_total": 4.8668,
+   "tools_avg": 6.4,
+   "fails": [
+    "BQ09(kw)"
+   ]
+  },
+  "c": {
+   "n": 10,
+   "grounded": 10,
+   "kw_ok": 9,
+   "cited": 2,
+   "cited_chunk": 7,
+   "pass": 9,
+   "abstain": 0,
+   "sentinel": 0,
+   "errors": 0,
+   "latency_avg_s": 24.5,
+   "latency_median_s": 21.4,
+   "cost_usd_total": 5.269,
+   "tools_avg": 3.7,
+   "fails": [
+    "BQ10(kw)"
+   ]
+  }
+ },
+ "per_question": {
+  "BQ01": {
+   "qid": "BQ01",
+   "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+   "gold": "1706.03762",
+   "kw_total": 3,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 3,
+     "kw_total": 3,
+     "kw_list": [
+      "scaled dot-product",
+      "multi-head",
+      "recurrence"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "Table 1",
+      "part 1 of 2",
+      "§2",
+      "§3.2",
+      "§3.5",
+      "§4"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 55.5,
+     "tools": 5,
+     "cost_usd": 0.7721819999999999,
+     "answer": "核验完成：Laya 门对主文档逐段评分，8/8 段全部通过（0.81–0.89），证据充分回答两个子问题（两个 Corpus-Chunks800 分块文件的 reference 抓取因 web 代理失败，但同一论文的检索片段已在校验前返回，仅作旁证）。\n\n**Answer**\n\nThe Transformer computes attention as a mapping of a query and a set of key-value vector pairs to an output that is a weighted sum of the values, where each weight is a compatibility score between the query and the corresponding key. Specifically, scaled dot-product attention takes dot products of the query with all keys, divides each by √d_k, and applies softmax to obtain the weights on the values, packed in matrix form as Attention(Q,K,V) = softmax(QKᵀ/√d_k)V. Multi-head attention linearly projects Q/K/V h times (h=8, d_k=d_v=64), runs the attention function in parallel on each projection, then concatenates and projects the results, letting the model jointly attend to different representation subspaces. The replacement of recurrence and convolution is motivated by three desiderata: computational complexity per layer, parallelizable computation (minimum sequential operations), and maximum path length between long-range dependencies. A self-attention layer connects all positions with O(1) sequential operations and O(1) path length, whereas a recurrent layer requires O(n) sequential operations and O(n) path length — recurrence's inherently sequential h_t = f(h_{t-1}) dependency precludes parallelization within training examples — and a single convolutional layer with kernel k<n cannot connect all pairs, requiring O(n/k) stacked or O(log_k n) dilated layers and costing k× more than recurrent layers. Self-attention is faster than recurrent layers when sequence length n < representation dimension d, and even a separable convolution with k=n only matches a self-attention layer plus a point-wise feed-forward layer. The paper also notes self-attention may yield more interpretable models, and states the Transformer is the first transduction model relying entirely on self-attention without sequence-aligned RNNs or convolution. Because it contains no recurrence or convolution, sinusoidal positional encodings are added to the input embeddings to inject sequence order.\n\n**Sources (all retrieved in this session)**\n- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md` — KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (primary evidence: Abstract, §2 Background, §3.2–3.2.3, §3.5, §4 Why Self-Attention, Table 1; Laya-verified, 8/8 segments survived, scores 0.81–0.89)\n- `Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md`, `__k05.md`, `__k19.md` — KB `ce642f28-e157-48af-b669-49862cd73b23` (same paper's chunks returned by vector search, scores ~0.58–0.64, corroborating; judge reference-fetch for these two files failed via the web proxy)",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 3,
+     "kw_total": 3,
+     "kw_list": [
+      "scaled dot-product",
+      "multi-head",
+      "recurrence"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 24.9,
+     "tools": 6,
+     "cost_usd": 0.41990000000000005,
+     "answer": "**Answer (from evidence retrieved this session):**\n\nThe Transformer computes attention as a query–key–value mapping: it takes the dot products of the query with all keys, divides each by √d_k, applies a softmax to obtain the weights, and returns a weighted sum of the values — Attention(Q,K,V) = softmax(QK^T/√d_k)V — where the 1/√d_k scaling exists because for large d_k the dot products grow large in magnitude and push the softmax into regions of extremely small gradients. Rather than one attention function it uses multi-head attention: Q, K, V are linearly projected h = 8 times to d_k = d_v = d_model/h = 64 dimensions, attention runs in parallel on all projections, and the outputs are concatenated and re-projected, letting the model jointly attend to information from different representation subspaces at different positions. It replaces recurrence because a self-attention layer connects all positions with a constant number of sequentially executed operations whereas a recurrent layer requires O(n) sequential operations, which allows significantly more parallelization (new state of the art after training for as little as twelve hours on eight P100 GPUs) and gives shorter forward/backward path lengths, making long-range dependencies easier to learn. It replaces convolution because a single convolutional layer with kernel width k < n does not connect all pairs of input and output positions — doing so requires a stack of O(n/k) contiguous or O(log_k(n)) dilated layers, increasing the longest path length — and convolutional layers are generally k times more expensive than recurrent layers. The paper compares layer types on three desiderata (total computational complexity per layer, minimum number of sequential operations, and maximum path length between positions), under which self-attention is faster than recurrent layers when n < d, and even a separable convolution with k = n only matches the complexity of a self-attention layer plus a pointwise feed-forward layer — the paper's own design. The paper frames the Transformer as the first transduction model relying entirely on self-attention to compute representations of input and output without sequence-aligned RNNs or convolution.\n\n**Sources used:**\n- `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (Vaswani et al., \"Attention Is All You Need\") — lines 72–87 (scaled dot-product attention), 97–107 (multi-head attention), 157–165 (Why Self-Attention), 39 & 50 (intro claims), 253–255 (conclusion).",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 3,
+     "kw_total": 3,
+     "kw_list": [
+      "scaled dot-product",
+      "multi-head",
+      "recurrence"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "Table 1",
+      "§3.2",
+      "§3.2.1",
+      "§3.2.3",
+      "§4"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 34.1,
+     "tools": 5,
+     "cost_usd": 0.609773,
+     "answer": "**Answer (from retrieved chunks only — all from \"Attention Is All You Need\", arXiv 1706.03762):**\n\nAn attention function maps a query and a set of key–value pairs, all vectors, to an output computed as a weighted sum of the values, where each weight is a compatibility function of the query with the corresponding key. In Scaled Dot-Product Attention, the dot products of the query with all keys are divided by √d_k and passed through a softmax to obtain weights on the values, computed simultaneously for matrices as Attention(Q,K,V) = softmax(QKᵀ/√d_k)V. Multi-head attention runs several attention layers in parallel, concatenating and re-projecting their outputs, which lets the model jointly attend to information from different representation subspaces at different positions — with a single head, averaging inhibits this. Self-attention relates different positions of a single sequence, and the Transformer uses multi-head attention three ways (encoder–decoder attention, encoder self-attention, decoder self-attention). Recurrence is replaced because recurrent models factor computation along symbol positions, generating each hidden state from the previous one, and this inherently sequential nature precludes parallelization within training examples — critical at longer sequence lengths; the Transformer instead relies entirely on attention and allows significantly more parallelization. Convolution is replaced because a single convolutional layer with kernel k < n cannot connect all input/output pairs, requiring a stack of O(n/k) layers (or O(log_k(n)) path length for dilated convolutions), whereas a self-attention layer connects all positions with O(1) sequentially executed operations and O(1) maximum path length. These gains are motivated by three desiderata: total per-layer computational complexity, the amount of parallelizable computation (minimum sequential operations), and path length between long-range dependencies (self-attention beats recurrent layers on complexity when n < d). Multi-head attention also offsets the reduced effective resolution that averaging attention-weighted positions would otherwise cause, and the conclusion reports the Transformer trains significantly faster with superior quality.\n\n**Sources used:**\n- `Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md` (chunks 5, 7, 8 — §3.2 attention definition; §3.2.1 softmax(QKᵀ/√d_k)V)\n- `...__k05.md` (chunks 0, 2, 3, 7 — §3.2.1, Eq. 1, multi-head parallel/subinspaces)\n- `...__k00.md` (chunks 2, 5–7 — Abstract; sequential constraint)\n- `...__k01.md` (chunks 1–4, 7 — Introduction; §4 constant path length; self-attention definition)\n- `...__k02.md` (chunk 0 — eschewing recurrence, more parallelization)\n- `...__k03.md` (chunk 1 — first model without sequence-aligned RNNs or convolution)\n- `...__k06.md` / `...__k07.md` (chunk 7 / 3 — §3.2.3 three attention applications)\n- `...__k09.md` / `...__k10.md` / `...__k11.md` (Table 1 and §4 \"Why Self-Attention\": complexity, sequential ops, path length)\n- `...__k20.md` (chunk 3 — Conclusion: faster training, multi-headed self-attention)",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ02": {
+   "qid": "BQ02",
+   "question": "What defines NISQ technology and what is its central limitation?",
+   "gold": "1801.00862",
+   "kw_total": 2,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "noisy intermediate-scale",
+      "error correction"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "part 1 of 3",
+      "part 1 of 4",
+      "§4.1",
+      "§4.2"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 35.8,
+     "tools": 5,
+     "cost_usd": 0.594809,
+     "answer": "**Answer (verified against retrieved content — Laya gate: 13 survivor segments across both candidate docs, all confirmed):**\n\nNISQ stands for \"Noisy Intermediate-Scale Quantum,\" an era defined by quantum computers of intermediate scale — 50 to a few hundred qubits, beyond what brute-force classical supercomputers can simulate, but not yet fault-tolerant — whose \"noisy\" label emphasizes imperfect control over qubits, with gates unprotected by quantum error correction. Its central limitation is noise: with gate error rates above ~0.1% per two-qubit gate, one cannot expect to execute circuits containing many more than about 1000 fundamental two-qubit operations, \"because the noise will overwhelm the signal,\" and that limitation on circuit size \"imposes a ceiling on the computational power of NISQ technology.\" Consequently NISQ devices are seen as useful near-term tools for exploring many-body quantum physics and as a step toward more powerful quantum technologies, not as world-changing machines, and per Preskill the era explicitly means \"quantum computers with noisy gates unprotected by quantum error correction.\" Corroborating literature in the same KB confirms this framing, describing NISQ devices as containing hundreds of qubits with error rates on the order of 10⁻³, which makes quantum error mitigation (QEM) — accepted as only partly successful due to fundamental limits — a necessary pursuit.\n\n**Sources used:**\n- `自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md` (KB 1e6199ea-…; abstract, §4.1 \"The 50-qubit barrier\", §4.2 \"Qubit quality\"), plus same paper in KB ce642f28-…: `Corpus-Chunks800/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k08.md` (chunk_index 2, 8)\n- `自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md` (Laya survivor segments)\n- `Corpus-Chunks800/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product__k00.md` (hundreds of qubits, error rates ~10⁻³)",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "noisy intermediate-scale",
+      "error correction"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "§4.1",
+      "§4.2",
+      "§6.4"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 24.2,
+     "tools": 7,
+     "cost_usd": 0.49201999999999996,
+     "answer": "**Answer**\n\nNISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined by John Preskill for the era of quantum computers with roughly 50 to a few hundred qubits — \"intermediate scale\" meaning beyond what the most powerful classical supercomputers can simulate by brute force at ~50 qubits, and \"noisy\" meaning we have only imperfect control over the qubits, with gates unprotected by quantum error correction (`quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md`, abstract and §4.1). Its central limitation is noise in quantum gates: Preskill estimates that with these noisy devices one cannot reliably execute circuits with many more than ~1000 two-qubit gates, because noise overwhelms the signal, and this circuit-size limit \"imposes a ceiling on the computational power of NISQ technology\" (§4.2). Because quantum error correction carries too high an overhead cost, NISQ devices will not use it in the near term (§6.4), and the imperfect performance also makes it hard to validate that the machine is giving the right answer (line 102). A corroborating corpus paper similarly characterizes the NISQ era by \"restrictive qubit topologies, short coherence times and imperfect quantum gates; these factors compound to limit what is achievable using existing or near-term quantum devices\" (`quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu.md`, line 29).\n\n**Sources used**\n- `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md` (Preskill, \"Quantum Computing in the NISQ era and beyond\") — definition (§4.1), gate-noise circuit limit (§4.2), error-correction overhead (§6.4), validation difficulty (line 102)\n- `quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu.md` — corroborating characterization of NISQ-era obstacles (line 29)",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "noisy intermediate-scale",
+      "error correction"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 21.4,
+     "tools": 2,
+     "cost_usd": 0.48285999999999996,
+     "answer": "**Answer.** The retrieved sources define NISQ technology as \"Noisy Intermediate-Scale Quantum\" — a term coined by John Preskill for the era of quantum computers with roughly 50 to a few hundred qubits, where \"intermediate scale\" marks the size beyond brute-force classical simulation, and \"noisy\" emphasizes imperfect control over those qubits (quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k00.md, __k07.md, __k08.md). Its central limitation is noise in the gates: the retrieved text states that NISQ devices cannot execute circuits with more than about 1000 fundamental two-qubit operations \"because the noise will overwhelm the signal in a circuit much larger than that,\" and that this limitation on circuit size \"imposes a ceiling on the computational power of NISQ technology\" (__k08.md, __k09.md). Quantum error correction could extend circuit size, but its high overhead in qubits and gates means NISQ devices will not use it in the near term, so the era is defined by \"quantum computers with noisy gates unprotected by quantum error correction\" (__k18.md, __k19.md, __k10.md). A second paper corroborates this, describing NISQ computation as characterized by restrictive qubit topologies, short coherence times, and imperfect gates that compound to limit what existing or near-term devices can achieve (quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu__k01.md). Sources used (all under Corpus-Chunks800/): quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k00.md, __k07.md, __k08.md, __k09.md, __k10.md, __k18.md, __k19.md; quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu__k01.md.",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ03": {
+   "qid": "BQ03",
+   "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+   "gold": "2212.13138",
+   "kw_total": 2,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "multimedqa",
+      "67.6"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "Section 3.1.1",
+      "Table 4",
+      "part 1 of 8",
+      "part 2 of 8"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 75.3,
+     "tools": 10,
+     "cost_usd": 0.7819860000000001,
+     "answer": "## Answer\n\nPer the retrieved paper (Singhal et al., \"Large Language Models Encode Clinical Knowledge,\" arXiv 2212.13138), **MultiMedQA** is a benchmark the authors curated for medical question answering that combines six existing open datasets — MedQA, MedMCQA, PubMedQA, LiveQA, MedicationQA, and MMLU clinical topics — spanning professional medical exams, medical research, and consumer queries, augmented with a new seventh free-response dataset, HealthSearchQA (3,375 commonly searched consumer medical questions). On the **MedQA (USMLE) 4-option questions, Flan-PaLM (540B) achieved 67.6% accuracy** using a combination of few-shot, chain-of-thought, and self-consistency prompting — state-of-the-art on every MultiMedQA multiple-choice dataset and more than 17% above the previous SOTA, which Table 4 shows as PubMedGPT 50.3%, DRAGON 47.5%, BioLinkBERT 45.1%, and Galactica 44.4%. The paper notes human evaluation still revealed key gaps in Flan-PaLM's responses, motivating instruction prompt tuning to produce Med-PaLM. Content verification passed (Laya gate: 23 segments scored, 14 survivors, `docs_with_yes=2`), and I read the abstract back from storage to confirm the quotes verbatim.\n\n**Sources used (same paper mirrored in two KBs):**\n- `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md` — KB `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (abstract + Section 3.1.1, chunks 4/10/15/22/41; read-back verified)\n- `.../clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md` — same KB (chunk 53, Table 4 MedQA accuracies)\n- `Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k00.md`, `__k01.md`, `__k02.md`, `__k04.md`, `__k05.md`, `__k31.md` — KB `ce642f28-e157-48af-b669-49862cd73b23` (duplicate copy; chunks k00:4, k01:0/6, k02:6, k04:1/5/7, k05:3, k31:2)",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "multimedqa",
+      "67.6"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "Table 4"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 20.3,
+     "tools": 8,
+     "cost_usd": 0.48716000000000004,
+     "answer": "**Answer.** MultiMedQA is a benchmark curated in the paper \"Large Language Models Encode Clinical Knowledge\": it comprises seven medical question-answering datasets — six existing ones (MedQA, MedMCQA, PubMedQA, LiveQA, MedicationQA, MMLU clinical topics) plus the newly introduced HealthSearchQA (3,375 commonly searched consumer health questions) — spanning multiple-choice exam questions, professional long-form answers, and consumer questions, all in English (lines 34, 87, 92). On the MedQA (USMLE-style, 4 options) benchmark, Flan-PaLM 540B achieved **67.6% accuracy**, exceeding the previous state of the art (PubMedGPT, 50.3%) by 17.3% and DRAGON by 20.1%; on the harder 5-option set it scored 62.0% (lines 285, 299–300). Ablations show few-shot prompting alone gave 60.3%, self-consistency raised it to 67.6%, and chain-of-thought gave no improvement over few-shot (60.3%) (lines 326–330; Table 4 at line 300).\n\n**Source:** `clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (corpus filename; the only file in the working directory matching MultiMedQA/Flan-PaLM/MedQA).",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "multimedqa",
+      "67.6"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "Table 4"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 18.6,
+     "tools": 2,
+     "cost_usd": 0.453727,
+     "answer": "**Answer:** MultiMedQA is a benchmark for medical question answering, curated in the Med-PaLM paper, that spans medical exam questions, medical research questions, and consumer medical questions; the paper evaluated PaLM and its instruction-tuned variant Flan-PaLM on it. Using a combination of prompting strategies, Flan-PaLM achieved state-of-the-art results on every MultiMedQA multiple-choice dataset (MedQA, MedMCQA, PubMedQA, and MMLU clinical topics), with 67.6% accuracy on MedQA (USMLE questions), more than 17% above the prior state of the art of 50.3% (specifically, Flan-PaLM 540B exceeded it by 17.3%). On the more difficult MedQA questions with 5 options, Flan-PaLM scored 62.0%. The paper's Table 4 lists Flan-PaLM (540B) at 67.6 on MedQA (USMLE), versus PubMedGPT (2.7B) 50.3, DRAGON (360M) 47.5, BioLinkBERT (340M) 45.1, and Galactica (120B) 44.4. In the same comparisons, Flan-PaLM reached 57.6% on MedMCQA and 79.0% on PubMedQA.\n\n**Sources (all from document `Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__*.md`):**\n- `__k01.md` (chunk 6) and `__k02.md` (chunk 2) — MultiMedQA definition and curation; SOTA on MedQA/MedMCQA/PubMedQA/MMLU clinical topics; >17% improvement on MedQA.\n- `__k00.md` (chunk 4) — abstract: 67.6% on MedQA, SOTA on every MultiMedQA multiple-choice dataset.\n- `__k04.md` (chunk 7) and `__k05.md` (chunk 3) — 67.6% MedQA accuracy (>17% above prior SOTA), 57.6% MedMCQA, 79.0% PubMedQA.\n- `__k30.md` (chunk 3) — prior SOTA 50.3%, exceeded by 17.3%; 5-option MedQA score 62.0%.\n- `__k31.md` (chunk 2) — Table 4 model comparison (Flan-PaLM 540B = 67.6).",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ04": {
+   "qid": "BQ04",
+   "question": "Which three independent ontologies subdivide the Gene Ontology?",
+   "gold": "1602.01876",
+   "kw_total": 3,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 3,
+     "kw_total": 3,
+     "kw_list": [
+      "molecular function",
+      "biological process",
+      "cellular component"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "part 1 of 2",
+      "section c"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 25.6,
+     "tools": 4,
+     "cost_usd": 0.510633,
+     "answer": "Retrieved and verified. The Laya gate read the survivor document and its evidence pack contains the answer verbatim.\n\n**Answer:** The Gene Ontology is subdivided into three distinct, non-redundant ontologies that represent different biological aspects: **Molecular Function (MF)**, **Biological Process (BP)**, and **Cellular Component (CC)**. The source states the terms \"are subdivided in three distinct ontologies that represent different biological aspects\" and that these \"ontologies are non-redundant and share a common space of identifiers and a well-specified syntax\"; a later section confirms each annotation's field 9 \"denotes the sub-ontology of GO, either Molecular Function, Biological Process, or Cellular Component.\"\n\n**Sources used:**\n- `生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md` — content-verified via kb_laya_judge (surviving segments incl. segment-0001, score 0.85), which read the full document body\n- `Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k00.md` (chunk_index 9) and `...__k01.md` (chunk_index 3) — top hits from `kb_search_two_stage` and `kb_search_vector` carrying the same verbatim sentence\n\n(Source document: \"Primer on the Gene Ontology,\" Gaudet et al., arXiv:1602.01876.)",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 3,
+     "kw_total": 3,
+     "kw_list": [
+      "molecular function",
+      "biological process",
+      "cellular component"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "Section 2"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 12.0,
+     "tools": 5,
+     "cost_usd": 0.374579,
+     "answer": "The three ontologies that subdivide the Gene Ontology are **Molecular Function (MF)**, **Biological Process (BP)**, and **Cellular Component (CC)**.\n\nThe retrieved source states the GO \"terms are subdivided in three distinct ontologies that represent different biological aspects: Molecular Function (MF), Biological Process (BP), and Cellular Component (CC),\" noting they are non-redundant and share a common identifier space and syntax. A later passage independently confirms the same three as the \"sub-ontology of GO\" values used in annotation fields.\n\nSources used:\n- `genomics__1602.01876__primer-on-the-gene-ontology.md` — Section 2 \"What is the Gene Ontology?\" (line 47); annotation discussion (line 104).",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 3,
+     "kw_total": 3,
+     "kw_list": [
+      "molecular function",
+      "biological process",
+      "cellular component"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 17.0,
+     "tools": 2,
+     "cost_usd": 0.44241499999999995,
+     "answer": "The three distinct ontologies that subdivide the Gene Ontology are **Molecular Function (MF), Biological Process (BP), and Cellular Component (CC)**, which represent different biological aspects of terms in the controlled vocabulary. The retrieved source also notes these ontologies are non-redundant and share a common space of identifiers and a well-specified syntax.\n\nSources used (retrieved via `kb_search_vector` on `Corpus-Chunks800`):\n- `Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k00.md`, chunk_index 9 (score 0.856) — \"The terms are subdivided in three distinct ontologies... Molecular Function (MF), Biological Process (BP), and Cellular Component (CC).\"\n- `Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k01.md`, chunk_index 3 (score 0.856) — same statement plus the non-redundancy/identifier-space detail.",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ05": {
+   "qid": "BQ05",
+   "question": "Why does historical European economic growth contradict Unified Growth Theory?",
+   "gold": "1512.08067",
+   "kw_total": 1,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 1,
+     "kw_total": 1,
+     "kw_list": [
+      "unified growth theory"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 35.6,
+     "tools": 5,
+     "cost_usd": 0.6379659999999999,
+     "answer": "**Answer (from retrieved evidence):** According to Nielsen (2015), historical European growth contradicts Unified Growth Theory (UGT) because a rigorous analysis of Maddison's (2010) GDP data for Western Europe (the 12 leading countries and the 30-country total, AD 1–2008) and Eastern Europe shows that growth was *hyperbolic*, with reciprocal 1/GDP values following a decreasing straight line well fitted from AD 1500 to 1900 — so there was no epoch of Malthusian stagnation (no Malthusian oscillations), no \"transition from stagnation to growth,\" and no takeoff. Because there was no trap, there could be no \"remarkable\" or \"stunning\" escape from the Malthusian trap that UGT claims as its central event. The Industrial Revolution — \"the prime engine of economic growth\" in Galor (2005a) — had \"absolutely no impact\" on the growth trajectories, precisely in the regions where its effects should have been most pronounced; instead of accelerating at the alleged transition (~1750–1870), European growth was diverted to a slower (but still fast-increasing) trajectory around 1880–1900 in Western Europe and around 1890 in Eastern Europe, bypassing the hyperbolic singularity by about 23–29 years. The theory is thus contradicted by the very Maddison data used during its development, which Nielsen argues were never properly analyzed (e.g., displaying four selected points joined by straight lines); his conclusion is that UGT's three regimes (Malthusian stagnation → post-Malthusian → sustained growth) are \"mythical features\" contradicted by data, and the theory must be revised or most likely replaced.\n\n**Sources used:**\n- `经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md` (R. W. Nielsen, \"Unified Growth Theory Contradicted by the Economic Growth in Europe,\" Dec 2015, arXiv 1512.08067) — read in full; content-verified via `kb_laya_judge`, 9/10 segments surviving at scores 0.73–0.89 (segments 0000–0008).\n- `Corpus-Chunks800/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom__k00.md` (chunk_index 2, 4–5), `__k02.md`, `__k10.md`, `__k13.md` — top-ranked vector/BM25 hits from `kb_search_two_stage` that surfaced the same text.",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 1,
+     "kw_total": 1,
+     "kw_list": [
+      "unified growth theory"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "sections f"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 19.6,
+     "tools": 4,
+     "cost_usd": 0.439278,
+     "answer": "Evidence retrieved and verified (only one corpus file discusses this topic). Answer:\n\n**Why historical European economic growth contradicts Unified Growth Theory, per the source:** Nielsen (2015) analyzes Maddison's (2010) GDP data for Western Europe (the 12 leading countries and the 30-country total, AD 1–2008) and Eastern Europe, and finds that reciprocal GDP values (1/GDP) follow a decreasing straight line — i.e., growth was hyperbolic, steadily increasing from at least AD 1500 to 1900 — so there was no Malthusian stagnation and therefore no \"transition from stagnation to growth\"; the theory's three regimes have no counterpart in the data. Europe should be the theory's best test case because it was the center of the Industrial Revolution, the alleged \"prime engine of economic growth,\" yet the data show the Industrial Revolution produced no boost to growth trajectories — indeed growth was diverted to a slower trajectory around 1880 (Western Europe) and 1890 (Eastern Europe), the opposite of the predicted takeoff. The \"remarkable\" or \"stunning\" escape from the Malthusian trap \"did not happen because there was no trap\" (Figures 1–6, Conclusions). Nielsen concludes the theory is contradicted even by the same Maddison data used during its development — a paradox he attributes to the data never being properly analyzed (e.g., displaying only four selected points joined by straight lines) — and that it needs thorough revision or, most likely, replacement.\n\nSource used:\n- `economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md` (Nielsen, R. W., *Unified Growth Theory Contradicted by the Economic Growth in Europe*, 2015 — abstract, Analysis sections for Western/Eastern Europe, Figures 1–6, Conclusions)",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 1,
+     "kw_total": 1,
+     "kw_list": [
+      "unified growth theory"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 30.0,
+     "tools": 4,
+     "cost_usd": 0.580717,
+     "answer": "**Answer (all evidence from a single retrieved paper, Nielsen 2015, arXiv:1512.08067, retrieved via `kb_search_vector` on Corpus-Chunks800):**\n\nHistorical European economic growth contradicts Unified Growth Theory (Galor 2005, 2011) because Maddison's (2010) GDP data show growth that was hyperbolic throughout, not the theory's three regimes (Malthusian stagnation → post-Malthusian → sustained growth). When displayed as reciprocal values, 1/GDP follows a decreasing straight line for the 12 leading Western European countries, for the 30-country Western European total, and for Eastern Europe — the signature of hyperbolic growth, so \"there is no sign of the existence of Malthusian stagnation\" and \"there was no transition from stagnation to growth at any time.\" Consequently the \"remarkable\"/\"stunning\" escape from the Malthusian trap never happened \"because there was no trap,\" the Industrial Revolution did not boost European growth, and around the alleged onset of the sustained-growth regime growth was instead \"diverted to a slower trajectory.\" The takeoff signature the theory requires — a prominent downward change in the trajectory of the reciprocal values — is missing, and no takeoff time can be identified because GDP per capita increases monotonically, making any takeoff claim \"scientifically unjustified.\" Since Western Europe, the Industrial Revolution's center, should have been the theory's best confirmation, Nielsen concludes Unified Growth Theory \"presents stories, which are contradicted by the data\" and \"needs to be thoroughly revised.\"\n\n**Sources used** (all chunks of one document: `Corpus-Chunks800/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom__*`):\n- k00 (title/abstract: Europe as best test case), k01 (chunks 1, 4: contradicted by same data; monotonic growth, no identifiable takeoff)\n- k03, k04, k05 (Maddison 2010; hyperbolic formula 1/S = a − kt; missing trajectory signature)\n- k06, k07, k09 (reciprocal-value figures; no stagnation/trap; diversion to slower trajectory)\n- k10, k11, k12 (30-country totals; Eastern Europe: no trap, no IR boost, no transition boost)\n- k13 (\"needs to be thoroughly revised\")",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ06": {
+   "qid": "BQ06",
+   "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+   "gold": "1503.07557",
+   "kw_total": 1,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 1,
+     "kw_total": 1,
+     "kw_list": [
+      "precipitation efficiency"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "part 1 of 3",
+      "part 2 of 3",
+      "§3",
+      "§4.1",
+      "§7",
+      "§8"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 97.4,
+     "tools": 10,
+     "cost_usd": 1.031539,
+     "answer": "**检索结论（已由本会话检索验证）**：主要控制因子是**热力学项——升温导致的大气水汽增加（饱和水汽压/近地面比湿上升，即 Clausius–Clapeyron 标度，约 6–7% K⁻¹）**，动力学（垂直速度）与微物理（降水效率）贡献是次要的、依赖具体区域的调节项。\n\n**答案（依据检索证据）**：检索命中 O'Gorman《Precipitation extremes under climate change》综述（arXiv:1503.07557）。该文将极端降水率分解为 P ≈ −ε{ωS}，指出其变化包含 ω 的动力学贡献、S（饱和比湿导数）的热力学贡献和 ε 的微物理贡献；热力学贡献按近地面比湿标度，即 Clausius–Clapeyron 标度（6–7% K⁻¹）。摘要明确写道热力学贡献“robust and well understood”，而动力学和微物理贡献的理论理解仍在发展中。温带模拟中降水极端强度的增加在“所有纬度都接近热力学贡献”，垂直速度变化的动力学贡献很小；在辐射-对流平衡（RCE）中，当前热带温度下极端降水以接近热力学速率增强，垂直速度和降水效率贡献相对较小。结论部分总结：热力学贡献“always gives an intensification with warming”，而动力学与微物理贡献只在特定情形（如低于 295 K 的降水效率变化、热带对流组织）中显著。因此，对该问题的检索证据答案是：**水汽增加（热力学/Clausius–Clapeyron 因子）是首要控制因子**。\n\n**Sources used（本会话实际使用）**：\n- 自然科学与地球科学/kb `1e6199ea-…`：`climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md`（摘要、§3 Theory Eq.1、§4.1）\n- 同 KB：`…(part 2 of 3).md`（§7、§8 Conclusions）\n- Corpus-Chunks800/kb `ce642f28-…`：`…__k00.md`、`…__k01.md`、`…__k08.md`（同一论文分块版，k08 含“close to Clausius–Clapeyron scaling … small contributions from changes in vertical velocities and precipitation efficiency”）\n- 验证门：`kb_laya_judge`（threshold 0.5，criterion=evidence）——2/2 文档通过（docs_with_yes=2，19 段中 17 段存活，最高分段分 0.8728/0.8432）",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 1,
+     "kw_total": 1,
+     "kw_list": [
+      "precipitation efficiency"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "§2",
+      "§3",
+      "§4.1",
+      "§7"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 29.9,
+     "tools": 10,
+     "cost_usd": 0.640654,
+     "answer": "**Answer.** According to the retrieved review, the response of precipitation extremes to climate change is primarily controlled by the **thermodynamic factor: the warming-driven increase in atmospheric moisture — the saturation vapor pressure of water, i.e., Clausius–Clapeyron scaling (~6–7% per K)**. The paper's abstract states that thermodynamics, dynamics, and microphysics all contribute, but \"the thermodynamic contribution is robust and well understood,\" while understanding of the dynamical/microphysical contributions is still developing. It notes that if changes in dynamics and precipitation efficiency are negligible, precipitation extremes increase with warming \"because of increases in the saturation vapor pressure of water,\" and that in extratropical simulations the rate of increase is close to the thermodynamic contribution at all latitudes with little dynamical contribution from vertical-velocity changes. Consistent with this, observed global sensitivity of annual-maximum daily precipitation is about 8% K⁻¹, and radiative-convective-equilibrium simulations follow Clausius–Clapeyron scaling above ~295 K, with microphysics (precipitation efficiency) and convective dynamics mattering mainly in cold/convective regimes where sensitivity remains uncertain.\n\n**Sources used:**\n- `benchmark-suite/data/corpus_md/climate-science__1503.07557__precipitation-extremes-under-climate-change.md` (O'Gorman, \"Precipitation extremes under climate change\") — abstract (line 10); Introduction (line 19); Theory §3 (lines 49, 51); §4.1 (line 72); §7 (line 129); Conclusions (line 136); observations §2 (line 34).",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 1,
+     "kw_total": 1,
+     "kw_list": [
+      "precipitation efficiency"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 48.6,
+     "tools": 11,
+     "cost_usd": 0.801175,
+     "answer": "**Answer:** The retrieved evidence identifies the **thermodynamic factor — the warming-driven increase in the atmosphere's saturation vapor pressure (moisture content), i.e., Clausius–Clapeyron scaling** — as the primary, robust control on the response of precipitation extremes to climate change. O'Gorman's review states that \"several physical contributions govern the response of precipitation extremes,\" but \"the thermodynamic contribution is robust and well understood,\" while \"theoretical understanding of the microphysical and dynamical contributions is still being developed.\" It adds that \"if changes in dynamics and precipitation efficiency are negligible, precipitation extremes increase with warming because of increases in the saturation vapor pressure of water.\" Near present-day tropical temperatures, extremes \"increase at close to the thermodynamic rate… close to Clausius–Clapeyron scaling with the surface specific humidity,\" with \"relatively small contributions from changes in vertical velocities and precipitation efficiency.\" Extremes scale at roughly 6–7% K⁻¹ for temperatures above 295 K. Model studies nonetheless find dynamical and precipitation-efficiency contributions can matter in some situations, so dynamics act as a secondary, regional modifier rather than the primary control.\n\nSources used:\n- `Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k00.md` (chunks 1, 2, 5–6)\n- `Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k01.md` (chunks 1, 4)\n- `Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k08.md` (chunk 3)\n- `Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k23.md` (chunk 4)\n- `Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k21.md` (chunk 6)",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ07": {
+   "qid": "BQ07",
+   "question": "What is MameLoshnLM and what parameter scale does it have?",
+   "gold": "2608.05850",
+   "kw_total": 2,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "yiddish",
+      "8b"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "part 1 of 4"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 25.3,
+     "tools": 3,
+     "cost_usd": 0.48744600000000005,
+     "answer": "**Answer:** MameLoshnLM (Mame-Loshn, literally \"mother tongue\") is the first open-source large language model built specifically for Yiddish — an 8B-parameter model produced by continued pretraining of Llama-3.1-8B on a purpose-built Yiddish corpus (Oytser), accompanied by a Yiddish evaluation benchmark (Kashes). It outperforms open models of similar scale on Yiddish tasks such as translation, linguistic analysis, and named entity recognition, and was shown to match native Yiddish lexical/morphological patterns better than general multilingual models. So its parameter scale is **8B parameters** (initialized from Llama 3.1 8B).\n\n**Sources (retrieved and verified this session):**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` (kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`) — Laya-verified survivors: segment-0001 (score 0.90) and segment-0009 (score 0.51); also vector chunk_index 2 and 53–54.\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k00.md`, `__k02.md`, `__k13.md` (kb_id `ce642f28-e157-48af-b669-49862cd73b23`) — vector/two-stage hits confirming the same abstract and training details.",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "yiddish",
+      "8b"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "Section 1",
+      "Section 4"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 11.6,
+     "tools": 4,
+     "cost_usd": 0.377243,
+     "answer": "**MameLoshnLM is the first open-source large language model built specifically for Yiddish**, created by continued pretraining of Llama 3.1 8B on *Oytser*, a purpose-built high-quality Yiddish pretraining corpus, and evaluated on the *Kashes* multi-task Yiddish benchmark. Its parameter scale is **8B parameters** — the paper calls it \"the first open-source 8B-parameter language model built specifically for Yiddish,\" and reports it outperforming open baselines of similar scale (e.g., Gemma-2 9B, Llama 3.1 8B, Qwen3 8B) on Yiddish-centered tasks such as POS tagging, dependency parsing, transliteration, and NER.\n\nSource used:\n- `benchmark-suite/data/corpus_md/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md` (Abstract; Section 1 Introduction; Section 4 \"We present MAMELOSHNLM…\")",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "yiddish",
+      "8b"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 11.2,
+     "tools": 2,
+     "cost_usd": 0.41177400000000003,
+     "answer": "MAMELOSHNLM is the first open-source large language model built specifically for Yiddish, named after \"Mame-Loshn\" (\"mother tongue\"), and it is an 8B-parameter model produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus (with supporting resources Oytser, a pretraining corpus, and Kashes, an evaluation benchmark). It was trained with a causal language modeling objective in bfloat16 precision (8-bit AdamW, lr 2×10⁻⁵), and reportedly outperforms strong baselines of similar scale on Yiddish benchmarks.\n\nSources used: `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k00.md` (chunks 2, 4), `__k01.md` (chunk 5), `__k02.md` (chunk 1), `__k12.md` (chunks 6–7), `__k13.md` (chunk 2).",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ08": {
+   "qid": "BQ08",
+   "question": "How does oxygen redox contribute to the capacity of battery cathodes?",
+   "gold": "2408.09942",
+   "kw_total": 2,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "oxygen redox",
+      "cathode"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "part 1 of 2",
+      "part 2 of 2"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 77.0,
+     "tools": 6,
+     "cost_usd": 0.83592,
+     "answer": "Retrieval complete: the wide vector scan surfaced an on-point overview paper (arXiv 2408.09942, \"Oxygen redox in battery cathodes: A brief overview\"), I read both parts of its canonical copy in full via `kb_doc_read`, and invoked `kb_laya_judge` for content verification (its per-segment output exceeded the inspectable result size, so the evidence basis is the two full direct reads below).\n\n**Answer.** According to the retrieved overview paper, oxygen redox contributes cathode capacity because oxide O²⁻ anions donate electrons during charging — acting as reducing agents that compensate for the absence of further oxidizable transition metals and thereby allow greater energy storage than transition-metal redox alone would theoretically predict. It becomes electrochemically accessible when oxygen is under-coordinated: in Li/Na-excess layered oxides and disordered spinels, oxygen with fewer than three transition-metal neighbors forms \"orphaned,\" unhybridized O 2p states that sit near the Fermi level and are labile for reversible O²⁻ ↔ (O₂)ⁿ⁻ peroxo-type redox (or electron-hole formation); the same effect arises in ilmenite-type NaTMO₃ where O is under-coordinated by both alkali and TM ions. Documented contributions include Li₂MnO₃ (capacity attributed to O redox, since Mn stays +4), Li₄Mn₂O₅ (during charging: Mn³⁺→Mn⁴⁺ first, then O²⁻→O¹⁻ accommodating the additional de-lithiation capacity, then Mn⁴⁺→Mn⁵⁺), and Na₂RuO₃, which delivers ~180 mAh g⁻¹ with ~0.4 e⁻ per formula unit of extra capacity from reversible oxygen redox and a voltage rise from 2.2 V to 3.4 V. The paper quantifies labile oxygen capacity computationally by integrating O 2p states within ~2 eV below the Fermi level (requiring HF-hybrid or GGA+U methods; plain GGA is inaccurate for these correlated oxides), and finds the effect more dominant with 4d transition metals. The same mechanism carries a risk: reduced oxygen tends to bond to itself and escape as O₂ gas — a fire hazard causing rapid, permanent capacity fade — so mitigation such as surface fluorination is required to exploit the extra capacity.\n\n**Sources used**\n- `工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md` and `(part 2 of 2).md` — KB 工程与能源 (kb_id `8fa4db59-adde-4d6d-9fdb-2c375400e631`); read in full via `kb_doc_read` (also matched via `kb_search_vector`, chunks 2/16/17 and 2/20).\n- Duplicate copy in Corpus-Chunks800 (kb_id `ce642f28-e157-48af-b669-49862cd73b23`): `materials__2408.09942__...__k00/k03/k08/k22/k23.md` (same text, corroborating vector hits scores 0.67–0.71).",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "oxygen redox",
+      "cathode"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 20.2,
+     "tools": 4,
+     "cost_usd": 0.444288,
+     "answer": "**Answer:** Oxygen (anionic) redox contributes to cathode capacity because oxide anions donate electrons during charging — acting as reducing agents — compensating for the absence of oxidizable transition metals and allowing greater energy storage than transition-metal redox alone would theoretically provide. It becomes accessible when Li-/Na-excess environments (or, in ilmenite-type NaTMO₃, under-coordination of the transition metal) create \"orphaned,\" non-bonding O 2p states lifted near the Fermi level, making them electrochemically labile; the reversible process is written as O²⁻ ↔ (O₂)ⁿ⁻ (peroxo-type species) or as electron holes on oxygen. Li₂MnO₃ is the archetype, where Mn stays +4 and capacity is attributed to oxygen redox, and in Na₂₋ₓRuO₃ an extra ~0.4 electrons per formula unit (~180 mAh g⁻¹ total) was attributed to reversible oxygen redox, raising the voltage from ~2.2 V to ~3.4 V. The review finds the effect is widespread but structure- and TM-dependent — high O redox in Li-excess disordered spinel-type cathodes, and stronger O-redox dominance for 4d (fifth-row) transition-metal oxides — and its extent can be quantified computationally by integrating the labile O 2p population in a ~2.0–2.5 eV window below the Fermi level. The cost is that reduced O ions tend to bond and leave the lattice as O₂ gas, causing a fire hazard plus rapid, permanent capacity fade and voltage fade, so mitigation such as surface fluorination is required to exploit the extra capacity.\n\nSources used:\n- `materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md` (Assadi & Hanaor, \"Oxygen redox in battery cathodes: A brief overview\") — primary source for all points above.\n- `materials__2211.04977__design-of-battery-materials-via-defects-and.md` — supporting mention: Li₂MnO₃ voltage-profile figure caption noting voltage points in a shaded region \"associated with the redox activity on oxygen\" (line 248).",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "oxygen redox",
+      "cathode"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 19.7,
+     "tools": 2,
+     "cost_usd": 0.46758600000000006,
+     "answer": "Answer: Oxygen redox contributes to cathode capacity by having oxide anions (O²⁻) donate electrons during charging — effectively acting as reducing agents that compensate for the absence of oxidizable transition metals — thereby allowing greater energy storage capacity than would otherwise be theoretically predicted. Retrieved chunks state that oxide-ion redox should increase measurable capacity beyond what is possible through transition-metal redox alone, and that actual cathode materials have delivered an \"overcapacity exceeding the transition metal oxidation limit.\" The review notes oxygen redox was first found to significantly contribute to overall capacity in Li-excess disordered spinel-type cathodes, with its extent varying by crystal structure and transition-metal type, and that anionic redox is ubiquitous across Li-excess/Na-excess layered oxides, where the useful capacity is governed by oxygen/anionic participation. The evidence covers mechanism and significance but gives limited quantitative breakdown of oxygen's share of capacity (chunk k09 notes proportioning capacity between cationic and anionic redox \"remains the subject of much discussion\").\n\nSources (all from `Corpus-Chunks800/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie`):\n- `__k03.md` (chunks 4–5) — O²⁻ donation mechanism, compensation for transition metals, capacity beyond prediction\n- `__k09.md` (chunks 4–5) — capacity beyond transition-metal redox; first conclusive reversible anionic redox demonstrations\n- `__k00.md` (chunk 2, abstract) — anionic redox governs useful capacity\n- `__k01.md` (chunk 5) — overcapacity exceeding the transition-metal oxidation limit\n- `__k22.md` / `__k23.md` (summary) — contribution in Li-excess spinel cathodes; variation by structure/metal",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ09": {
+   "qid": "BQ09",
+   "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+   "gold": "2410.10669",
+   "kw_total": 2,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "dynamic",
+      "multilayer perceptron"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "part 1 of 2",
+      "part 2 of 2"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 43.9,
+     "tools": 5,
+     "cost_usd": 0.7291110000000001,
+     "answer": "**Answer.** The retrieved paper \"MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\" (Taozhe Li & Wei Sun, arXiv 2410.10669) addresses the degradation of V-SLAM precision in dynamic environments with many movable objects (pedestrians, cars, buses common in outdoor scenes), where static-world-assumption systems such as ORB-SLAM2 lose accuracy. Prior fixes fail in two ways: semantic/mask methods like DynaSLAM discard all features inside dynamic-class bounding boxes, causing information loss (static parked cars and highway guardrails wrongly removed), while handcrafted geometric methods use only partial geometric information (e.g., solely re-projection or epipolar error), require laborious manual parameter tuning, and lack generality. MLP-SLAM's solution is an MLP-based real-time stereo SLAM system built on ORB-SLAM2 whose discriminator uses \"complete geometric information\" — a per-feature input vector of image intensity error e_I, epipolar error e_D, and re-projection error e_Re — to classify feature points inside potentially dynamic object bounding boxes as static or dynamic, with only static points used for pose estimation via a coarse-to-fine scheme (Depth Filter Module for background points in imprecise detection boxes, then fine estimation over all static points). It is claimed as the first machine-learning-based dynamic/static feature discriminator in SLAM, eliminating manual parameter configuration and avoiding information loss, and the authors released a public dataset of 50,000+ labeled feature points (KITTI sequences 00/01) enabling direct evaluation, on which the MLP scored best (87.71% accuracy / 87.64 F1 vs SVM 84.19, PointSLOT-like 81.36, CFP-SLAM-like 73.61). On KITTI Odometry and KITTI360 the system recorded the lowest average ATE and fastest speed among compared dynamic SLAM systems (DynaSLAM, DynaSLAM II, VDO-SLAM, PointSLOT).\n\n**Sources used (retrieved and read this session).**\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` — KB \"计算机与人工智能\" (b1199132-e4d4-4305-8c2e-82dc1753b0ba): abstract, introduction, method, classification results.\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md` — same KB: experiments (ATE tables), latency, ablation, conclusion.\n- Vector-recall chunks `Corpus-Chunks800/robotics__2410.10669__...__k00.md`, `__k22.md`, `__k23.md` — KB ce642f28-e157-48af-b669-49862cd73b23.\n- Verified via `kb_laya_judge` (reference mode): 15/17 segments survived at threshold 0.5 (scores 0.70–0.94), both document parts confirmed.",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": false,
+     "kw_hits": 1,
+     "kw_total": 2,
+     "kw_list": [
+      "dynamic"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 20.4,
+     "tools": 4,
+     "cost_usd": 0.418209,
+     "answer": "**Answer (evidence retrieved this session):**\n\nMLP-SLAM addresses the degradation of visual SLAM in dynamic environments: standard systems (e.g., ORB-SLAM2/3, LSD-SLAM, DSO) rely on a static-world assumption and lose precision in outdoor scenes with numerous movable objects such as pedestrians, cars, and buses, while prior remedies either use hand-tuned geometric rules that exploit only partial geometric information (limited generality, laborious tuning) or semantic pipelines like DynaSLAM that discard every feature inside dynamic-class regions, wrongly removing static features (e.g., on parked cars and highway guardrails) and losing useful information, often with high latency. Its solution is the first machine-learning discriminator for dynamic vs. static feature points, an MLP fed with complete geometric information per point — a 3-D input vector of image intensity error, epipolar error, and re-projection error — eliminating manual parameter configuration. The system, built on ORB-SLAM2 stereo, uses YOLOv7 + Deep Sort for object detection/tracking and a Depth Filter Module (depth mean ± η·std) to reclassify in-box background features as static for coarse pose estimation; the MLP then classifies (0 = static, 1 = dynamic via argmax) each remaining in-box feature, and all static points are used for fine pose estimation by minimizing re-projection error. The paper additionally publishes a dataset of 50,000+ KITTI Odometry feature points for direct evaluation of dynamic/static classifiers, and reports the highest average precision and fastest speed on KITTI Odometry and KITTI360 against other dynamic SLAM systems.\n\n**Source used:**\n- `benchmark-suite/data/corpus_md/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md` — Abstract; §I Introduction; §III-C (MLP notations, Eqs. 3–5); §III-D System Structure; §IV-A Depth Filter Module; §IV-B Coarse Estimation; §IV-C MLP Module.",
+     "state": "kw"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "dynamic",
+      "multilayer perceptron"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 23.3,
+     "tools": 3,
+     "cost_usd": 0.5157189999999999,
+     "answer": "**Answer (from retrieved chunks only):**\n\nThe retrieved paper \"MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\" addresses the degradation of visual SLAM performance in dynamic environments: V-SLAM achieves high precision in scenes with few dynamic objects, but its performance declines in settings with numerous movable objects — pedestrians, cars and buses — common in outdoor scenes. Its solution is a real-time stereo SLAM system built on ORB-SLAM2 with an extra dynamic/static object discriminator module that filters dynamic feature points. After ORB feature extraction and object detection/tracking on the left image, coarse pose estimation uses features outside the bounding boxes of potential dynamic objects plus in-box background points that the Depth Filter Module (DFM) reclassifies as static via depth statistics (points outside [μd − ηδd, μd + ηδd] are eliminated from the potential dynamic set and treated as static). The MLP model then classifies the remaining in-box feature points as dynamic or static, and the combined static set is used in fine estimation by minimizing the reprojection error of all static feature points. The design uses lightweight object detection/tracking rather than computationally heavy semantic segmentation (e.g., MaskRCNN) to reduce latency. The paper reports its MLP discriminator outperforms other methods on a newly created public dataset of over 50,000 feature points, and the system achieves the highest average precision on KITTI Odometry and the fastest speed among compared dynamic SLAM systems.\n\n**Sources used** (all `Corpus-Chunks800/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__*.md`):\n- `__k00.md` (chunk_index 1, 3) — abstract: degradation with numerous movable objects; dataset of 50,000+ points\n- `__k03.md` (chunk_index 3, 7, 8) — contributions; DynaSLAM/MaskRCNN latency comparison\n- `__k08.md` (chunk_index 5, 6) and `__k09.md` (chunk_index 2, 5, 6) — system structure; DFM definition\n- `__k10.md` (chunk_index 1, 2, 5) — DFM process; coarse-stage static point set\n- `__k13.md` (chunk_index 3) — fine estimation using MLP-classified static points\n- `__k23.md` (chunk_index 4, 5) — conclusion: addressing SLAM degradation in dynamic environments; accuracy/speed results",
+     "state": "pass"
+    }
+   ]
+  },
+  "BQ10": {
+   "qid": "BQ10",
+   "question": "What strategies for tumor control emerge under immune evasion and chemotherapy resistance?",
+   "gold": "2604.01385",
+   "kw_total": 2,
+   "top_sim": null,
+   "cells": [
+    {
+     "track": "a2",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "immune evasion",
+      "chemotherapy"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "part 1 of 3",
+      "part 2 of 3",
+      "part 3 of 3"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 54.7,
+     "tools": 7,
+     "cost_usd": 0.7280380000000001,
+     "answer": "I have the full-evidence picture from all three parts of the matching document (direct content reads served as verification; the `kb_laya_judge` batch ran but its oversized output could not be read back in this read-only experiment environment). Answer follows.\n\nThe only matching document in the library — Mokari & Morsky, *\"Strategies for tumor elimination and control under immune evasion and chemotherapy resistance\"* (immunology__2604.01385) — is a mathematical model of effector cells versus immune-resistant (T1) and chemo-resistant (T2) tumor subpopulations, and it identifies these control strategies: **(1) Combination immuno-chemotherapy** — chemotherapy reduces burden and kills chemo-sensitive cells while immunotherapy restores immune-mediated killing; together they enlarge the parameter region of tumor-free or low-population (controlled) equilibria, since immune dynamics alone are generally insufficient to eliminate the tumor. **(2) Phenotype-guided therapy** — under immune-checkpoint evasion, checkpoint inhibitors plus moderate chemotherapy, decreasing immune exhaustion (μ) or increasing activation (ρ, σ) is most effective; under reduced antigen presentation, checkpoint inhibitors, CAR-T, or cancer vaccines that enhance immune recognition are supported; when the immune-sensitive phenotype dominates, boosting effector recruitment/persistence (higher σ, lower δ) via adoptive T-cell transfer is preferred. **(3) Sequential, composition-guided protocols** — T1-dominant tumors: chemotherapy first to debulk, then immunotherapy to maintain control (or immunotherapy first, then chemotherapy to clear residual resistant cells); T2-dominant tumors: chemotherapy followed by immunotherapy to stabilize against resistant escape; coexisting types: chemotherapy first to eliminate T1, then immunotherapy against the remaining T2-only low equilibrium, with the caveat that new T1 mutants can cause resurgence if control is incomplete. **(4) Threshold/adaptive framing** — tumor-free stability requires effective immune strength to exceed tumor growth (σ/(δ+ωχ) > max{α₂−θ₂χ, (α₁−χ)/θ₁}), and the paper contrasts \"fight to win\" with \"fight to not lose\" (long-term containment), noting reduced antigen presentation is more robust against weak chemotherapy. Overall, efficacy depends on dominant phenotype and evasion mechanism, which is why non-personalized uniform treatment often fails.\n\nSources used:\n- `生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md` (KB b28f0a25-1e1d-40ad-96b8-61bd2b093a28)\n- `.../part 2 of 3).md` (Results 3.1–3.2)\n- `.../part 3 of 3).md` (Results 3.3 + Discussion — the strategy statements)\n- Locator hits (identical mirror chunks, not read in full): `Corpus-Chunks800/immunology__2604.01385__...__k00/k13/k28.md`",
+     "state": "pass"
+    },
+    {
+     "track": "b",
+     "grounded": true,
+     "kw_ok": true,
+     "kw_hits": 2,
+     "kw_total": 2,
+     "kw_list": [
+      "immune evasion",
+      "chemotherapy"
+     ],
+     "cited": true,
+     "cite_markers": [
+      "Table 2",
+      "§1",
+      "§3.1",
+      "§3.2",
+      "§3.3",
+      "§4"
+     ],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 38.6,
+     "tools": 12,
+     "cost_usd": 0.773444,
+     "answer": "**Answer**\n\nThe only corpus evidence on this question is the paper \"Strategies for tumor elimination and control under immune evasion and chemotherapy resistance\" (Mokari & Morsky), which is a mathematical model of effector cells, immune-resistant (T₁) and immune-sensitive (T₂) tumor subpopulations; it yields four strategy families. (1) **Combination immuno-chemotherapy**: chemotherapy reduces tumor burden and directly targets resistant subpopulations while immunotherapy enhances immune-mediated suppression, together significantly enlarging the parameter region of tumor control or tumor-free equilibria compared with single therapy, whereas immune dynamics alone are generally insufficient for elimination. (2) **Phenotype-guided therapy** (Table 2): when immune-checkpoint evasion dominates, control requires lowering the immune-exhaustion rate μ — checkpoint inhibitors combined with moderate chemotherapy being most effective; when reduced antigen presentation dominates (more robust against weak chemotherapy), the levers are increasing effector activation ρ, decreasing μ, and increasing recruitment σ — favoring CAR-T therapy, cancer vaccines, or checkpoint inhibitors combined with chemotherapy. (3) When the immune-sensitive phenotype dominates, boosting effector recruitment σ and reducing effector death δ (adoptive T-cell transfer, cytotoxic therapy) becomes critical, unlike the checkpoint case where modulating these alone does not eliminate T₁-only tumors. (4) **Sequential, composition-guided treatment**: for T₁-dominant tumors, chemotherapy first (then immunotherapy to maintain control) or immunotherapy first (then chemotherapy for residual resistant cells); for T₂-dominant tumors, chemotherapy then immunotherapy to stabilize against resistant escape; for predicted coexistence, chemotherapy first to eliminate T₁ cells, then immunotherapy to potentially eliminate the remaining low T₂-only population — though partial control risks T₁-mutant resurgence. The threshold for control/elimination is that effective immune strength σ/(δ+ωχ) exceed max{α₂−θ₂χ, (α₁−χ)/θ₁}, which underpins a precision-medicine approach guided by measurable biomarkers (PD-L1 expression, T-cell infiltration, exhaustion markers, antigen presentation), since small parameter changes induce qualitative immune-control/tumor-escape transitions that make non-personalized uniform treatment fail. Future work proposed by the paper includes optimal-control treatment scheduling and machine-learning-informed personalized adaptive therapy.\n\n**Sources used (retrieved in this session):**\n- `immunology__2604.01385__strategies-for-tumor-elimination-and-control.md` — Abstract; §1 (adaptive/combination therapy motivation); §3.1 (Proposition 1 threshold); §3.2 (Table 2 phenotype-guided strategies, reduced-antigen-presentation findings); §3.3 (bifurcation findings for chemo- and immuno-resistance); §4 Discussion (sequential treatment strategies, precision-medicine caveats). Corpus chunks: parts 1/3, 2/3, 3/3.\n- Checked but not used as evidence: `clinical-medicine__1909.03801` and `clinical-medicine__2212.13138` (chemotherapy mentioned only as clinical-prediction context, not tumor-control strategies).",
+     "state": "pass"
+    },
+    {
+     "track": "c",
+     "grounded": true,
+     "kw_ok": false,
+     "kw_hits": 1,
+     "kw_total": 2,
+     "kw_list": [
+      "chemotherapy"
+     ],
+     "cited": false,
+     "cite_markers": [],
+     "gold_where": "答案正文",
+     "sentinel": false,
+     "abstain": false,
+     "latency_s": 21.3,
+     "tools": 4,
+     "cost_usd": 0.503214,
+     "answer": "**Answer (from retrieved chunks only):** The retrieved evidence—all from one paper, `immunology__2604.01385__strategies-for-tumor-elimination-and-control`—identifies several tumor-control strategies. Adaptive therapy seeks to control rather than eliminate the tumor by maintaining a balance between drug-sensitive and drug-resistant cells, while combination therapy (e.g., chemotherapy plus immunotherapy targeting different vulnerabilities) reduces the likelihood any single clone survives, though success depends heavily on timing, dosing, and sequence. Combination therapy consistently expands the parameter region corresponding to tumor control and delays resistance emergence. Therapy should be phenotype-guided: when the immune-resistant subpopulation using immune checkpoint regulation dominates, control is highly sensitive to immune exhaustion, so checkpoint inhibitors combined with moderate chemotherapy are most effective (via decreasing immune exhaustion μ or increasing activation ρ, σ); when reduced antigen presentation drives resistance, checkpoint inhibitors, CAR-T therapy, or cancer vaccines (increasing effector recruitment ρ, lowering μ) are supported; when the immune-sensitive phenotype dominates, boosting effector recruitment and persistence via adoptive T-cell transfer or cytotoxic therapy is preferred. The model also proposes sequential treatment strategies guided by measurable biological markers, since small parameter changes can shift outcomes between elimination, coexistence, and dominance regimes.\n\n**Sources used (chunk files under Corpus-Chunks800/):** `immunology__2604.01385__strategies-for-tumor-elimination-and-control__k00.md`, `__k02.md`, `__k03.md`, `__k16.md`, `__k24.md`, `__k27.md`, `__k28.md`, `__k29.md`, `__k31.md`, `__k32.md`, `__k36.md`, `__k37.md`, `__k46.md`.",
+     "state": "kw"
+    }
+   ]
+  }
+ },
+ "baselines": {},
+ "stability": {
+  "dir": "review\\stability-multiround-20261013\\results",
+  "cells": 27,
+  "ok_cells": 27,
+  "lane_ok_cells": 27,
+  "rounds": 3,
+  "lanes": 3,
+  "tasks": 3,
+  "latency_min_s": 14.9,
+  "latency_max_s": 182.0,
+  "latency_median_s": 52.5,
+  "cost_usd_total": 16.7294,
+  "description": "三任务（可回答／语料未覆盖／语料外）× 三车道 × 多轮，验证检索一致性、诚实拒答与车道契约。",
+  "rows": [
+   {
+    "round": 1,
+    "task": "attention",
+    "lane": "A",
+    "wall_s": 26.3,
+    "http": 200,
+    "turns": 4,
+    "cost": 0.398269,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r1_attention_A.json"
+   },
+   {
+    "round": 1,
+    "task": "attention",
+    "lane": "B",
+    "wall_s": 42.0,
+    "http": 200,
+    "turns": 9,
+    "cost": 0.599,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r1_attention_B.json"
+   },
+   {
+    "round": 1,
+    "task": "attention",
+    "lane": "C",
+    "wall_s": 47.4,
+    "http": 200,
+    "turns": 6,
+    "cost": 0.48663500000000004,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r1_attention_C.json"
+   },
+   {
+    "round": 1,
+    "task": "pickles",
+    "lane": "A",
+    "wall_s": 18.4,
+    "http": 200,
+    "turns": 5,
+    "cost": 0.35259399999999996,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r1_pickles_A.json"
+   },
+   {
+    "round": 1,
+    "task": "pickles",
+    "lane": "B",
+    "wall_s": 108.4,
+    "http": 200,
+    "turns": 12,
+    "cost": 0.74194,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r1_pickles_B.json"
+   },
+   {
+    "round": 1,
+    "task": "pickles",
+    "lane": "C",
+    "wall_s": 14.9,
+    "http": 200,
+    "turns": 5,
+    "cost": 0.322748,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r1_pickles_C.json"
+   },
+   {
+    "round": 1,
+    "task": "seismology",
+    "lane": "A",
+    "wall_s": 29.0,
+    "http": 200,
+    "turns": 7,
+    "cost": 0.40928499999999995,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r1_seismology_A.json"
+   },
+   {
+    "round": 1,
+    "task": "seismology",
+    "lane": "B",
+    "wall_s": 146.1,
+    "http": 200,
+    "turns": 20,
+    "cost": 1.291292,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r1_seismology_B.json"
+   },
+   {
+    "round": 1,
+    "task": "seismology",
+    "lane": "C",
+    "wall_s": 182.0,
+    "http": 200,
+    "turns": 11,
+    "cost": 1.125345,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r1_seismology_C.json"
+   },
+   {
+    "round": 2,
+    "task": "attention",
+    "lane": "A",
+    "wall_s": 33.7,
+    "http": 200,
+    "turns": 6,
+    "cost": 0.44117900000000004,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r2_attention_A.json"
+   },
+   {
+    "round": 2,
+    "task": "attention",
+    "lane": "B",
+    "wall_s": 94.4,
+    "http": 200,
+    "turns": 14,
+    "cost": 0.946003,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r2_attention_B.json"
+   },
+   {
+    "round": 2,
+    "task": "attention",
+    "lane": "C",
+    "wall_s": 23.4,
+    "http": 200,
+    "turns": 4,
+    "cost": 0.396403,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r2_attention_C.json"
+   },
+   {
+    "round": 2,
+    "task": "pickles",
+    "lane": "A",
+    "wall_s": 19.9,
+    "http": 200,
+    "turns": 4,
+    "cost": 0.34131500000000004,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r2_pickles_A.json"
+   },
+   {
+    "round": 2,
+    "task": "pickles",
+    "lane": "B",
+    "wall_s": 39.2,
+    "http": 200,
+    "turns": 10,
+    "cost": 0.403486,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r2_pickles_B.json"
+   },
+   {
+    "round": 2,
+    "task": "pickles",
+    "lane": "C",
+    "wall_s": 52.5,
+    "http": 200,
+    "turns": 8,
+    "cost": 0.506031,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r2_pickles_C.json"
+   },
+   {
+    "round": 2,
+    "task": "seismology",
+    "lane": "A",
+    "wall_s": 112.4,
+    "http": 200,
+    "turns": 9,
+    "cost": 0.844739,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r2_seismology_A.json"
+   },
+   {
+    "round": 2,
+    "task": "seismology",
+    "lane": "B",
+    "wall_s": 125.6,
+    "http": 200,
+    "turns": 18,
+    "cost": 1.057585,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r2_seismology_B.json"
+   },
+   {
+    "round": 2,
+    "task": "seismology",
+    "lane": "C",
+    "wall_s": 89.1,
+    "http": 200,
+    "turns": 13,
+    "cost": 0.839752,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r2_seismology_C.json"
+   },
+   {
+    "round": 3,
+    "task": "attention",
+    "lane": "A",
+    "wall_s": 24.1,
+    "http": 200,
+    "turns": 4,
+    "cost": 0.39510799999999996,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r3_attention_A.json"
+   },
+   {
+    "round": 3,
+    "task": "attention",
+    "lane": "B",
+    "wall_s": 54.6,
+    "http": 200,
+    "turns": 11,
+    "cost": 0.614263,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r3_attention_B.json"
+   },
+   {
+    "round": 3,
+    "task": "attention",
+    "lane": "C",
+    "wall_s": 58.9,
+    "http": 200,
+    "turns": 5,
+    "cost": 0.504995,
+    "ok": true,
+    "verdict": "公式命中",
+    "lane_contract": true,
+    "file": "r3_attention_C.json"
+   },
+   {
+    "round": 3,
+    "task": "pickles",
+    "lane": "A",
+    "wall_s": 81.9,
+    "http": 200,
+    "turns": 6,
+    "cost": 0.6305850000000001,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r3_pickles_A.json"
+   },
+   {
+    "round": 3,
+    "task": "pickles",
+    "lane": "B",
+    "wall_s": 32.0,
+    "http": 200,
+    "turns": 11,
+    "cost": 0.394259,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r3_pickles_B.json"
+   },
+   {
+    "round": 3,
+    "task": "pickles",
+    "lane": "C",
+    "wall_s": 42.3,
+    "http": 200,
+    "turns": 6,
+    "cost": 0.436809,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r3_pickles_C.json"
+   },
+   {
+    "round": 3,
+    "task": "seismology",
+    "lane": "A",
+    "wall_s": 66.8,
+    "http": 200,
+    "turns": 9,
+    "cost": 0.769029,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r3_seismology_A.json"
+   },
+   {
+    "round": 3,
+    "task": "seismology",
+    "lane": "B",
+    "wall_s": 76.6,
+    "http": 200,
+    "turns": 9,
+    "cost": 0.658317,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r3_seismology_B.json"
+   },
+   {
+    "round": 3,
+    "task": "seismology",
+    "lane": "C",
+    "wall_s": 105.1,
+    "http": 200,
+    "turns": 10,
+    "cost": 0.822394,
+    "ok": true,
+    "verdict": "诚实拒答",
+    "lane_contract": true,
+    "file": "r3_seismology_C.json"
+   }
+  ]
+ },
+ "verification": {
+  "checks": [
+   {
+    "name": "run 计分单元 = 题数 × 轨道",
+    "ok": true,
+    "detail": "30 单元（10 题 × 3 轨）"
+   },
+   {
+    "name": "题集 = 论文 BQ 集",
+    "ok": true,
+    "detail": "使用 qa_questions.json（论文口径为 BQ01–BQ10）"
+   },
+   {
+    "name": "无工具面中断单元",
+    "ok": true,
+    "detail": "0 个哨兵单元"
+   },
+   {
+    "name": "无执行错误单元",
+    "ok": true,
+    "detail": "0 个 error 单元"
+   },
+   {
+    "name": "平台轨金标命中 = 满分",
+    "ok": true,
+    "detail": "10/10"
+   },
+   {
+    "name": "平台轨关键词达标 ≥ 9/10",
+    "ok": true,
+    "detail": "10/10"
+   },
+   {
+    "name": "平台轨引用可复核 ≥ 8/10",
+    "ok": true,
+    "detail": "9/10"
+   },
+   {
+    "name": "清单论文数 = 100",
+    "ok": true,
+    "detail": "100"
+   },
+   {
+    "name": "导出语料文件 = 100",
+    "ok": true,
+    "detail": "100"
+   },
+   {
+    "name": "五门类库文档 ≥ 322",
+    "ok": true,
+    "detail": "322（计算机与人工智能 131 · 自然科学与地球科学 75 · 生命科学与医学 53 · 工程与能源 39 · 经济与社会 24）"
+   },
+   {
+    "name": "密索引可召回（live 探针）",
+    "ok": true,
+    "detail": "3/3 命中 Corpus-Chunks800"
+   },
+   {
+    "name": "检索回归探针 15/15（论文 Table 1）",
+    "ok": true,
+    "detail": "15/15 · 产物 a_retrieval_regression.json · 生成 2026-10-13 20:09:27"
+   },
+   {
+    "name": "回归探针命中覆盖五门类库",
+    "ok": true,
+    "detail": "5/5 库命中：工程与能源、生命科学与医学、经济与社会、自然科学与地球科学、计算机与人工智能 · rank1 14/15"
+   },
+   {
+    "name": "稳定性套件全部单元行为正确",
+    "ok": true,
+    "detail": "27/27 单元（3 轮 × 3 车道 × 3 任务）"
+   },
+   {
+    "name": "稳定性车道契约全部合规",
+    "ok": true,
+    "detail": "27/27 单元工具路径符合车道定义"
+   },
+   {
+    "name": "论文级闸门：平台轨必须满分支撑主张",
+    "ok": true,
+    "detail": "grounded 10/10 · kw 10/10 · cited 9/10"
+   },
+   {
+    "name": "论文级闸门：无「零工具面」单元（从未检索 = 该行无效）",
+    "ok": true,
+    "detail": "无零工具单元"
+   },
+   {
+    "name": "论文级闸门：三轨无工具面中断",
+    "ok": true,
+    "detail": "0 个哨兵单元"
+   },
+   {
+    "name": "论文宏刷新工单已生成",
+    "ok": true,
+    "detail": "本轮与论文宏一致，无需改动"
+   }
+  ],
+  "passed": 19,
+  "total": 19,
+  "informational": 0,
+  "verdict": "pass"
+ }
+}

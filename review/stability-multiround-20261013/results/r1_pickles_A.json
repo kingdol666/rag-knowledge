@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "pickles",
+ "mode": "A",
+ "http": 200,
+ "wall_s": 18.4,
+ "success": true,
+ "session_id": "a81d03b9-da96-4ec7-8860-f8f2b6c6eac4",
+ "turns": 5,
+ "cost": 0.35259399999999996,
+ "duration_ms": 16956,
+ "answer": "**结论：该库（`计算机与人工智能`，131 篇计算机/AI 领域文献）中没有任何四川泡菜腌制相关内容，本次检索未能找到答案。**\n\n**检索事实：**\n- 对指定库执行了 3 次检索：\n 1. `kb_search_two_stage`：查询「四川泡菜 腌制方法 步骤」——20 个候选全部为 AI/机器人/语音论文（如 aoad-mat、MLP-SLAM、speech 预处理等），与泡菜无关；\n 2. `kb_search_vector`：查询「泡菜 腌制 配方 盐水 比例」——返回 15 条，最高分仅 0.499，且命中内容为机器人论文中的百分比表格、RoBERTa 参数表等噪声；\n 3. `kb_search_vector` 追加查询「四川泡菜 发酵 蔬菜 乳酸菌 食品 菜谱 烹饪」——返回 10 条，最高分 0.462，命中的仍是论文图片链接、对话摘要数据集样本等无关片段（含明显的 `short_content_warning` 短文本）。\n- 证据判定：所有命中均为领域外噪声（分数均在 ~0.46-0.50 的弱相关区间，且正文无一涉及食品、发酵或烹饪），无可验证的相关证据，故如实报告未找到。\n\n**说明：** 该知识库的描述为「Computer science and AI: algorithms, NLP/LLM, vision, robotics perception, data systems, speech, social computing」，收录的是人工智能研究论文，本身不覆盖食品腌制/烹饪类内容。若需四川泡菜腌制方法，请确认是否应检索其他知识库，或是否有专门的美食/生活类资料需要入库——本库没有可引用的来源，我不能凭库外知识编造回答。"
+}

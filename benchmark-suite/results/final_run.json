@@ -1,0 +1,143 @@
+{
+ "gates": [],
+ "stages": [
+  {
+   "name": "论文数字对账",
+   "status": "ok",
+   "detail": "18/18 条一致"
+  }
+ ],
+ "checks": [
+  {
+   "claim": "groundedA2",
+   "paper": 10,
+   "observed": 10,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "kwA2",
+   "paper": 10,
+   "observed": 10,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "citedA2",
+   "paper": 9,
+   "observed": 9,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "latA2",
+   "paper": "53s",
+   "observed": "52.6s",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "costA2",
+   "paper": "$0.71",
+   "observed": "$0.711",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "groundedB",
+   "paper": 10,
+   "observed": 10,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "kwB",
+   "paper": 9,
+   "observed": 9,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "citedB",
+   "paper": 7,
+   "observed": 7,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "latB",
+   "paper": "22s",
+   "observed": "22.2s",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "costB",
+   "paper": "$0.49",
+   "observed": "$0.4867",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "failsB",
+   "paper": "0",
+   "observed": "1: BQ09(kw)",
+   "ok": true,
+   "detail": "本轮无工具面中止；(kw)=保守词边界判分（论文已声明）"
+  },
+  {
+   "claim": "groundedC",
+   "paper": 10,
+   "observed": 10,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "kwC",
+   "paper": 9,
+   "observed": 9,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "citedC",
+   "paper": 2,
+   "observed": 2,
+   "ok": true,
+   "detail": "/10"
+  },
+  {
+   "claim": "latC",
+   "paper": "24s",
+   "observed": "24.5s",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "costC",
+   "paper": "$0.53",
+   "observed": "$0.5269",
+   "ok": true,
+   "detail": "avg/question"
+  },
+  {
+   "claim": "failsC",
+   "paper": "0",
+   "observed": "1: BQ10(kw)",
+   "ok": true,
+   "detail": "本轮无工具面中止；(kw)=保守词边界判分（论文已声明）"
+  },
+  {
+   "claim": "dense_aborts",
+   "paper": "论文不再声明「缺题=中止」",
+   "observed": "C 轨缺 0 次 · 其中哨兵 0 · 正文已无该句",
+   "ok": true,
+   "detail": "2026-10-13 口径：该句已删除"
+  }
+ ],
+ "run_dir": "run-20261013T094350Z-5f9faac",
+ "question_file": "data/papers/qa_questions.json",
+ "started_utc": "2026-10-13 12:13 UTC",
+ "verdict": "pass",
+ "seconds": 0.0
+}

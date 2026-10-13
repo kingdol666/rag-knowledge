@@ -44,10 +44,12 @@ from chat_tracks import answer_closed_book, chat_stream  # noqa: E402
 from lib import doc_basename, http_post                  # noqa: E402
 
 CORPUS_DIR = SUITE / "data" / "corpus_md"
-# The dense baseline searches this KB by default. Override per run with
-# RAG_BENCH_VECTOR_KB or run_method(kb=...) — hardwiring it meant the baselines
-# silently searched the wrong KB (and abstained) on any other corpus.
-VECTOR_KB = os.environ.get("RAG_BENCH_VECTOR_KB", "Corpus-Chunks800")
+# The dense baseline searches this KB by default. Empty string = cross-library
+# (query every KB) — the previous default "Corpus-Chunks800" is an EMPTY KB since
+# the 2026-09 reset, which silently zeroed every vector/rrf row twice
+# (2026-10-12 and 2026-10-13 batteries) before being caught in quality review.
+# Override per run with RAG_BENCH_VECTOR_KB or run_method(kb=...).
+VECTOR_KB = os.environ.get("RAG_BENCH_VECTOR_KB", "")
 BACKEND = os.environ.get("RAG_BENCH_URL", "http://localhost:8771").rstrip("/")
 
 EVIDENCE_BUDGET = int(os.environ.get("RAG_BENCH_EVIDENCE_BUDGET", "4000"))

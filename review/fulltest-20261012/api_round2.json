@@ -1,0 +1,48 @@
+{
+ "A1_parse": {
+  "status": 200,
+  "success": true,
+  "md_chars": 632,
+  "gold_in_markdown": true
+ },
+ "A2_ingest": {
+  "status": 200,
+  "success": true,
+  "doc_path": "玄鸟演示库-125906\\朱雀-3惯导单元第二轮标定报告.md"
+ },
+ "A3_index": {
+  "status": 200,
+  "success": true,
+  "chunks": 4
+ },
+ "A4_retrieval": {
+  "vector_hits": 5,
+  "vector_hit_doc": true,
+  "two_stage_hits": 5,
+  "two_stage_hit_doc": true,
+  "metadata_hits": 1,
+  "metadata_hit_doc": true
+ },
+ "A5_agent_chat": {
+  "wall_s": 95.7,
+  "turns": 5,
+  "dur_ms": 92903,
+  "tools": [
+   "Skill",
+   "Agent",
+   "mcp__kb-mcp__kb_project_status",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_laya_judge",
+   "PowerShell"
+  ],
+  "gold": {
+   "0.0031": true,
+   "18.9": true,
+   "林晚棠": true,
+   "ZQ3": true
+  },
+  "answer_head": "Doc read confirms all three facts verbatim. Report follows.\n\n## 检索过程\n\n按 QDCVR 流水线执行(重写 → 向量宽网 → Laya 验证门 → 内容复核):\n- **重写查询**:`朱雀-3 惯导单元 第二轮标定报告 第五标定段 陀螺零偏稳定性 温补点 标定负责人`(含\"朱雀三号=朱雀-3\"别名变体)\n- **扫描**:3 个查询变体 → 28 个候选 → 50 个判"
+ }
+}

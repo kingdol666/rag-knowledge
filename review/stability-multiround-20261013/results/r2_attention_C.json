@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "attention",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 23.4,
+ "success": true,
+ "session_id": "c15cdcfc-1dbf-4e16-a01e-01e38b931eb9",
+ "turns": 4,
+ "cost": 0.396403,
+ "duration_ms": 22141,
+ "answer": "**最终结论：Transformer 的自注意力（self-attention）公式为 Attention(Q, K, V) = softmax(QKᵀ/√d_k)·V（原论文公式(1)），即\"缩放点积注意力\"——查询与键做点积、除以 √d_k 缩放、经 softmax 归一化后对值加权求和。**\n\n## 公式与含义（P0 直接证据）\n\n出自知识库《Attention Is All You Need》（Vaswani et al., 2017, arXiv:1706.03762）原文 §3.2.1：\n\n> $$ \\mathrm{Attention}(Q, K, V) = \\mathrm{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V $$\n\n原文描述：“The input consists of queries and keys of dimension d_k, and values of dimension d_v. We compute the dot products of the query with all keys, divide each by √d_k, and apply a softmax function to obtain the weights on the values.”\n\n- **Q、K、V**：查询/键/值矩阵；自注意力中三者**同源**——\"in a self-attention layer all of the keys, values and queries come from the same place, in this case, the output of the previous layer\"（§3.2.3），即序列内部各位置相互关联（§2 称 self-attention 即 “intra-attention”）。\n- **QKᵀ**：兼容性打分；**√d_k 缩放**的原因原文说明：d_k 大时点积幅值过大，\"pushing the softmax function into regions where it has extremely small gradients. To counteract this effect, we scale the dot products by 1/√d_k\"。\n- **softmax(...)·V**：归一化权重对 V 加权求和，输出与 V 同维。\n\n## 相关扩展（同源文档）\n\n- **多头注意力**（§3.2.2）：MultiHead(Q,K,V) = Concat(head₁,…,head_h)Wᴼ，其中 head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)；原模型取 h=8、d_k=d_v=d_model/h=64。\n- **解码器自注意力掩码**（§3.2.3）：通过 \"masking out (setting to −∞) all values in the input of the softmax which correspond to illegal connections\" 保持自回归性质。\n\n## 出处与可信度\n\n- 来源：知识库 `b1199132-…` →「计算机与人工智能」→ *Attention Is All You Need*（part 1 of 2）\n- 检索路径：kb_search_two_stage + kb_search_vector（向量分 0.73）→ kb_laya_judge 判定 12 段证据幸存（最高分 0.9631，公式段命中）\n- 等级：**P0 直接证据**——公式原文逐字引用，无推断成分。"
+}

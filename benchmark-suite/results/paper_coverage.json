@@ -1,0 +1,249 @@
+{
+ "tex_dir": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper_demo\\tex",
+ "claims": [
+  {
+   "id": "C01",
+   "tex": "sec2_system.tex 42 kb_* / 95-tool inventory",
+   "source": "kb-mcp stdio tool face (`where`/`tools/list`)",
+   "how": "161 采集时列出工具面（输出「21 KB」），工具条数只在探针里人工看过 → 无断言",
+   "status": "asserted",
+   "measured": {
+    "status": "asserted",
+    "detail": "文档里有工具条数记录：docs\\ARCHITECTURE.md: 94 tools | docs\\ARCHITECTURE.md: 94 tools | benchmark-suite\\PIPELINE.md: 1 工具 | benchmark-suite\\PIPELINE.md: 94 MCP 工具",
+    "hits": [
+     "docs\\ARCHITECTURE.md: 94 tools",
+     "docs\\ARCHITECTURE.md: 94 tools",
+     "benchmark-suite\\PIPELINE.md: 1 工具",
+     "benchmark-suite\\PIPELINE.md: 94 MCP 工具"
+    ]
+   }
+  },
+  {
+   "id": "C02",
+   "tex": "sec2 Table 1: 100/100 parsed+routed, 5 bases",
+   "source": "results/r2_pipeline_100.json ingest block + live kb_list 五门类库 322",
+   "how": "161 断言「清单论文数=100 / 五门类库文档≥322 / 导出语料=100」",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C03",
+   "tex": "sec2 Table 1: 322 stored parts after 30k ceiling",
+   "source": "results/r2_pipeline_100.json ingest.documents_total",
+   "how": "161 断言五门类库合计≥322；322 的精确值由 155_paper_state_audit 实测",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C04",
+   "tex": "sec2 Table 1: nine per-paper checks, 100/100 pass",
+   "source": "results/r2_ingest_report.json (papers_ok=50) + ingest_report.json (50/50)",
+   "how": "108 断言 round2 papers_ok==50 / round1 verified==total==50；「九项检查」这一说法本身没有 9 项清单产物",
+   "status": "asserted",
+   "measured": null
+  },
+  {
+   "id": "C05",
+   "tex": "sec2 Table 1: true duplicates 0, 35 near-pairs",
+   "source": "results/r2_organize/o2_duplicates.json",
+   "how": "108 统计近重复组数并断言 true_duplicates==0 → 35 这个数字需人工比对",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C06",
+   "tex": "sec2 Table 1: descriptions upgraded 165/165",
+   "source": "results/r2_organize_report.json l1.updated / missing_judgment",
+   "how": "108 断言 updated==165 且 missing_judgment==[]；155 另测「≥40 字描述 322/322」",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C07",
+   "tex": "sec2 Table 1: content+storage audits 322/322 • 33/33",
+   "source": "results/r2_organize/audit_manifest.json + r2_organize_report.json o5b",
+   "how": "108 断言 audited==total==322 与 o5b ok==checked==33",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C08",
+   "tex": "sec2 Table 1: retrieval regression probes 15/15",
+   "source": "results/r2_organize_report.json → o5c_probes",
+   "how": "108 断言 pass==total==15，但该字段所在产物缺失/脚本已跑不动 → 见 gap",
+   "status": "gap",
+   "measured": {
+    "pipeline_evidence": "benchmark-suite\\results\\r2_pipeline_100.json",
+    "generated": "2026-09-23 06:12",
+    "mtime": "2026-09-23 06:12",
+    "missing_inputs": [],
+    "grade_track_keys": [
+     "a2",
+     "b",
+     "c"
+    ],
+    "script": "benchmark-suite\\scripts\\108_pipeline_evidence.py",
+    "status": "gap",
+    "detail": "exp_r2_grade.json 的轨道键是 ['a2', 'b', 'c']（107 现在写 a2），而 108 第 100 行硬编码 grade['grades']['a'] → 今日实跑 KeyError: 'a'"
+   }
+  },
+  {
+   "id": "C09",
+   "tex": "sec2 Table 1: dense replica 4,528 chunks (800-char)",
+   "source": "results/r2_exp_corpus.json chunks + live kb_search_vector 探针",
+   "how": "106 产出 4528；161 断言 Corpus-Chunks800 召回探针 ≥1/3 命中",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C10",
+   "tex": "sec2: judgment engine ~50–80 ms/verdict warm",
+   "source": "无产物（本地引擎计时）",
+   "how": "无任何脚本测量 → 纯断言",
+   "status": "asserted",
+   "measured": null
+  },
+  {
+   "id": "C11",
+   "tex": "sec2: 0.95 hit all-fail discarded / 0.40 one-positive survives",
+   "source": "无产物（阶梯语义举例）",
+   "how": "无对照实验 → 纯断言",
+   "status": "asserted",
+   "measured": null
+  },
+  {
+   "id": "C12",
+   "tex": "sec3: answer 20 s – 2 min, six-minute tail",
+   "source": "本次运行逐题延迟 + 稳定性 27 单元墙钟",
+   "how": "无断言；实测值在 paper_report.json / stability rows 里可复算",
+   "status": "asserted",
+   "measured": {
+    "status": "asserted",
+    "detail": "30 单元：min 11.2s · median 25.3s · max 97.4s · >120s 0 · >300s 0",
+    "min_s": 11.2,
+    "median_s": 25.3,
+    "max_s": 97.4,
+    "cells_over_120s": 0,
+    "cells_over_300s": 0
+   }
+  },
+  {
+   "id": "C13",
+   "tex": "sec3 failure report: 10 generic two-stage hits, top sim 0.52, 12 title-token matches",
+   "source": "results/honest_failure_probe.json（2026-09-22 探针，3 例 NOT_FOUND）",
+   "how": "产物只留 verdict/NOT_FOUND，命中条数与 0.52 未落盘 → 需人工回读原始 trace",
+   "status": "asserted",
+   "measured": null
+  },
+  {
+   "id": "C14",
+   "tex": "sec4: grounded / keyword-verified / cited 三项指标定义",
+   "source": "scripts/107_exp_grade.py + experiments/_paper_numbers.py",
+   "how": "107 判分即定义；cited 正则与论文 9/6/1 的标定写在 107 第 29 行注释",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C15",
+   "tex": "sec4: 10 题固定题集 BQ01–BQ10",
+   "source": "data/papers/qa_questions.json",
+   "how": "161 断言 qfile.name == qa_questions.json",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C16",
+   "tex": "sec4 Findings: A 10/10 kw、B 10/10 kw9、C 10/10 kw9、cited 9/7/2",
+   "source": "results/exp_r2_grade.json @ run-20261013T094350Z",
+   "how": "150/_paper_numbers 逐项对账（本次 17/17 pass）+ 161 论文级闸门",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C17",
+   "tex": "sec4: 引擎在 8/10 平台单元返回逐段判决，另 2 个回退直读",
+   "source": "本次运行 track_a2_*.json 的 tool_calls 内 kb_laya_judge 调用",
+   "how": "无断言；可复算（本次实测 8/10）",
+   "status": "verified",
+   "measured": {
+    "status": "verified",
+    "run": "run-20261013T090842Z-5f9faac",
+    "detail": "平台轨 10 题中 8 题调用 kb_laya_judge",
+    "judge_cells": 8,
+    "cells": 10
+   }
+  },
+  {
+   "id": "C18",
+   "tex": "sec4: 27-run 稳定性 9/9 + 9/9 + 9/9",
+   "source": "review/stability-multiround-20261013/results/r*_*.json",
+   "how": "161 断言 ok_cells==cells==27",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C19",
+   "tex": "sec4: 27/27 lane-contract compliance（librarian 停在 catalog 层）",
+   "source": "同一批稳定性单元的工具路径",
+   "how": "161 断言 lane_ok_cells==27，但单元里没有 tool_calls 字段 → 见 gap",
+   "status": "gap",
+   "measured": {
+    "status": "gap",
+    "detail": "27 个单元全都没有 tool_calls 字段 → 161 的 lane_ok 判定走 `or not tools` 分支，恒真",
+    "dir": "review\\stability-multiround-20261013\\results",
+    "cells": 27,
+    "cells_with_tools": 0
+   }
+  },
+  {
+   "id": "C20",
+   "tex": "sec4: 每格墙钟 15–182 s（中位 52 s）",
+   "source": "同一批稳定性单元的 wall_s",
+   "how": "161 记录 min/max/median（latency_*_s）→ 可复算，无数值断言",
+   "status": "verified",
+   "measured": null
+  },
+  {
+   "id": "C21",
+   "tex": "sec4 Costs: 53/22/24 s、$0.71/$0.49/$0.53、中位 $0.72、逐题贵 9/10",
+   "source": "results/exp_r2_grade.json + 本次运行逐单元 cost",
+   "how": "150/_paper_numbers 断言均值三档；中位数与 9/10 为本次人工复算 → 建议补断言",
+   "status": "verified",
+   "measured": {
+    "status": "verified",
+    "run": "run-20261013T090842Z-5f9faac",
+    "detail": "平台轨均值 $0.7202 · 中位 $0.6608 · 逐题贵于裸 Agent 10/10",
+    "mean_usd": 0.7202,
+    "median_usd": 0.6608,
+    "costlier_than_bare": 10,
+    "questions": 10
+   }
+  },
+  {
+   "id": "C22",
+   "tex": "sec5: 每个数字都能从保存的产物重新推导",
+   "source": "本审计 + 161/150 的对账链",
+   "how": "这正是本审计要回答的元主张 → 见报告末段",
+   "status": "asserted",
+   "measured": null
+  }
+ ],
+ "counts": {
+  "verified": 13,
+  "asserted": 7,
+  "gap": 2
+ },
+ "gaps": [
+  {
+   "id": "C08",
+   "tex": "sec2 Table 1: retrieval regression probes 15/15",
+   "detail": "exp_r2_grade.json 的轨道键是 ['a2', 'b', 'c']（107 现在写 a2），而 108 第 100 行硬编码 grade['grades']['a'] → 今日实跑 KeyError: 'a'"
+  },
+  {
+   "id": "C19",
+   "tex": "sec4: 27/27 lane-contract compliance（librarian 停在 catalog 层）",
+   "detail": "27 个单元全都没有 tool_calls 字段 → 161 的 lane_ok 判定走 `or not tools` 分支，恒真"
+  }
+ ],
+ "grade_run": "run-20261013T094350Z-5f9faac"
+}

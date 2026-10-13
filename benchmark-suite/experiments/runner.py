@@ -122,6 +122,31 @@ def new_run_dir() -> Path:
         return d
 
 
+def retry_sentinel_cells(run_dir: Path) -> int:
+    """重跑前清掉「假完成」单元，避免 --out-dir 续跑把失败当缓存。
+
+    2026-10-13：allowedTools-only 平台轨在 MCP 挂载竞态下会立即返回字面量
+    `KB_TOOLS_NOT_READY`（2026-10-13 的 run-20261013T040929Z 第一格即是），
+    这种单元带非空 answer 且 error=False，`resume` 会把它当有效结果跳过，
+    于是失败被固化进下一轮。判定复用 scripts/150_final_pipeline.py 的同一
+    口径（哨兵 / 空答 / error / a2 零工具）。返回被删除的单元数。
+    """
+    try:
+        sys.path.insert(0, str(SUITE / "scripts"))
+        from importlib import import_module
+        scan = import_module("150_final_pipeline").scan_cells
+    except Exception:  # noqa: BLE001 — 护栏缺失不应阻塞实验
+        return 0
+    s = scan(run_dir)
+    bad = set(s["sentinel"]) | set(s["empty"]) | set(s["error"]) | set(s["zero_tools"])
+    for name in bad:
+        try:
+            (run_dir / name).unlink()
+        except OSError:
+            pass
+    return len(bad)
+
+
 def execute(questions: list[dict], tracks: list[str], out_dir: Path, *,
             max_turns: int = 12, seed: int = 0, shuffle: bool = True,
             selfheal: bool = True, monitor_system: bool = False,
@@ -187,6 +212,11 @@ def execute(questions: list[dict], tracks: list[str], out_dir: Path, *,
                 try:
                     prev = json.loads(cell_path.read_text(encoding="utf-8"))
                 except Exception:  # noqa: BLE001 — corrupt cell → re-run
+                    prev = None
+                # 哨兵答案不是结果，是不可重试的失败标记（见
+                # retry_sentinel_cells）→ 不可当作缓存命中
+                if prev and any(s in str(prev.get("answer") or "")
+                                for s in ("KB_TOOLS_NOT_READY", "KB_NO_RETRIEVAL")):
                     prev = None
                 if (prev and not prev.get("error")
                         and not prev.get("dry_run")

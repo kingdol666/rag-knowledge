@@ -1,0 +1,95 @@
+{
+ "answer": "**MameLoshnLM is the first open-source large language model built specifically for Yiddish**, created by continued pretraining of Llama 3.1 8B on *Oytser*, a purpose-built high-quality Yiddish pretraining corpus, and evaluated on the *Kashes* multi-task Yiddish benchmark. Its parameter scale is **8B parameters** — the paper calls it \"the first open-source 8B-parameter language model built specifically for Yiddish,\" and reports it outperforming open baselines of similar scale (e.g., Gemma-2 9B, Llama 3.1 8B, Qwen3 8B) on Yiddish-centered tasks such as POS tagging, dependency parsing, transliteration, and NER.\n\nSource used:\n- `benchmark-suite/data/corpus_md/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md` (Abstract; Section 1 Introduction; Section 4 \"We present MAMELOSHNLM…\")",
+ "is_error": false,
+ "latency_s": 11.6,
+ "sdk_duration_ms": 9008,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MameLoshn",
+    "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "*",
+    "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "parameter|billion|[0-9]+B\\b|scale|size",
+    "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\nlp__2608.05850__mameloshnlm-yiddish-languag"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\nlp__2608.05850__mameloshnlm-yiddish-languag"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 58874,
+  "output": 1389,
+  "cache_read": 94336,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.377243,
+ "timeline": [
+  {
+   "t": 2.61,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 5.25,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 5.33,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 7.3,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 7.54,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 11.57,
+   "event": "text",
+   "detail": "801"
+  },
+  {
+   "t": 11.59,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "**MameLoshnLM is the first open-source large language model built specifically for Yiddish**, created by continued pretraining of Llama 3.1 8B on *Oytser*, a purpose-built high-quality Yiddish pretraining corpus, and evaluated on the *Kashes* multi-task Yiddish benchmark. Its parameter scale is **8B parameters** — the paper calls it \"the first open-source 8B-parameter language model built specifically for Yiddish,\" and reports it outperforming open baselines of similar scale (e.g., Gemma-2 9B, Llama 3.1 8B, Qwen3 8B) on Yiddish-centered tasks such as POS tagging, dependency parsing, transliteration, and NER.\n\nSource used:\n- `benchmark-suite/data/corpus_md/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md` (Abstract; Section 1 Introduction; Section 4 \"We present MAMELOSHNLM…\")"
+ ],
+ "track": "b",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md",
+ "max_turns": 12,
+ "qid": "BQ07",
+ "via": "chat",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

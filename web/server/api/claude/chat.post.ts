@@ -76,6 +76,22 @@ interface ChatBody {
    * are auto-denied in this mode (no interactive approval surface).
    */
   stream?: boolean
+  /**
+   * How to mount kb-mcp for allowedTools-only callers (benchmark tracks /
+   * external harnesses). 'sse' (default) keeps the historical behaviour: the
+   * web process probes/spawns `server.py --http` on :8000 and the session
+   * connects asynchronously AFTER init. 'stdio' spawns a per-session `uv run
+   * --directory kb-mcp python server.py` child that handshakes BEFORE init, so
+   * `mcp__kb-mcp__*` tools are present at turn 1 — no async-registration race.
+   *
+   * Measured 2026-10-13 (paper-final run run-20261013T084549Z): the SSE path
+   * lost that race for the pinned arm, which returned the literal
+   * `KB_TOOLS_NOT_READY` with 0 tool calls and no retry (the retry loop is
+   * `!streamMode`-gated), so a full three-track run scored 0 retrieval rather
+   * than failing loudly. Callers that need a guaranteed tool surface must ask
+   * for 'stdio'.
+   */
+  mcpMount?: 'sse' | 'stdio'
 }
 
 /** Safe read-only tools (pre-approved in all modes) */
@@ -339,6 +355,8 @@ export default defineEventHandler(async (event) => {
    * `"stream": true` switches to SSE (the web UI passes it explicitly).
    */
   const streamMode: boolean = body?.stream === true
+  /** stdio mount demanded by the caller → race-free MCP tool surface (see ChatBody). */
+  const wantStdioMcp: boolean = body?.mcpMount === 'stdio'
   const t0 = Date.now()
 
   if (!prompt || typeof prompt !== 'string') {
@@ -606,6 +624,12 @@ export default defineEventHandler(async (event) => {
     // 会话凭参数记忆/网页绕路作答）。
     let finalResult: any = null
     let sawKbTool = false
+    // 工具面留痕（2026-10-13）：只回 bool 的 sawKbTool 无法回答「这一轮到底走了哪条
+    // 检索车道」。论文的车道合规断言（fast = 向量族 / librarian = 目录族且零向量调用）
+    // 必须能从保存的 run 文件复算，否则只能靠人工读 trace。这里把每个 tool_use 的
+    // 名字按调用序记下来，随非流式 JSON 一起返回；benchmark harness 落盘成
+    // track_*.json 的 tool_calls，判分脚本据此复算车道契约。
+    const toolCalls: string[] = []
     // 异步 MCP 注册与模型首个工具轮存在竞态（SDK init 时 kb-mcp 恒报 pending，
     // 工具列表晚于首轮就位时模型会零工具作答，实测 ~50% 概率）。kbEnhanced 车道
     // 凭超长系统指令天然延后首个工具轮而几乎不输竞态；allowedTools-only 调用方
@@ -641,10 +665,13 @@ export default defineEventHandler(async (event) => {
               disallowedTools: KB_DISALLOWED_TOOLS,
             }
           : {}),
-        ...(requestMcpMount && isClaude && !(kbEnhanced || soulEnhanced)
+        ...(requestMcpMount && isClaude && (!(kbEnhanced || soulEnhanced) || wantStdioMcp)
           ? {
               // STDIO mount for allowedTools-only callers (benchmark tracks /
-              // external harnesses). SSE connects asynchronously AFTER init —
+              // external harnesses), or for any caller that explicitly asks
+              // with `mcpMount: 'stdio'` (2026-10-13: the SSE lane lost the
+              // async-registration race under a full three-track run).
+              // SSE connects asynchronously AFTER init —
               // the tool list lands mid-session and short-prompt sessions lose
               // that race ~50% (2026-09-30, three Quick10 rounds of evidence).
               // A stdio child is spawned and handshakes BEFORE init completes,
@@ -711,11 +738,15 @@ export default defineEventHandler(async (event) => {
             /* DB write failure does not block the chat stream */
           }
         }
-        if ((kbEnhanced || requestMcpMount) && message.type === 'assistant') {
+        if (message.type === 'assistant') {
           const content = (message as any).message?.content
-          if (Array.isArray(content) && content.some((b: any) =>
-            b?.type === 'tool_use' && String(b?.name || '').startsWith('mcp__kb-mcp__'))) {
-            sawKbTool = true
+          if (Array.isArray(content)) {
+            for (const b of content) {
+              if (b?.type === 'tool_use' && b?.name) {
+                toolCalls.push(String(b.name))
+                if (String(b.name).startsWith('mcp__kb-mcp__')) sawKbTool = true
+              }
+            }
           }
         }
         if (message.type === 'result') {
@@ -793,6 +824,9 @@ export default defineEventHandler(async (event) => {
           duration_api_ms: fr.duration_api_ms ?? null,
           num_turns: fr.num_turns ?? null,
           total_cost_usd: fr.total_cost_usd ?? null,
+          // 车道合规复算依据：本轮的 kb 工具调用序（含 0 次的情形，用于证明「未检索」）
+          toolCalls: toolCalls.filter(n => n.startsWith('mcp__kb-mcp__')),
+          toolCallCount: toolCalls.filter(n => n.startsWith('mcp__kb-mcp__')).length,
           elapsed_ms: Date.now() - t0,
         }
       }

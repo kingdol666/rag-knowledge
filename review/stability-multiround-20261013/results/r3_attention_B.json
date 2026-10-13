@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "attention",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 54.6,
+ "success": true,
+ "session_id": "e4c61b93-81b3-4743-a631-7f60fed69005",
+ "turns": 11,
+ "cost": 0.614263,
+ "duration_ms": 53244,
+ "answer": "**最终结论**：Transformer 的自注意力（=缩放点积注意力，Scaled Dot-Product Attention）公式为 **Attention(Q, K, V) = softmax(QKᵀ/√dₖ)·V**（论文式 (1)），即\"查询-键做点积、除以 √dₖ 缩放、softmax 得权重、对值加权求和\"。\n\n**出处与原文引证**（P0 强证据）\n\n来源：《Attention Is All You Need》(Vaswani et al., 2017, arXiv:1706.03762)，KB「计算机与人工智能」文档 `artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2)`，§3.2.1；同文另有副本存于 KB「demo-qa-20260927」（Laya 证据引擎双库命中，前两部分段得分 0.94–0.95，远超 0.5 阈值）。\n\n原文逐字引文：\n\n> \"We compute the matrix of outputs as:\n> **Attention(Q, K, V) = softmax(QKᵀ/√dₖ)V**  (1)\"\n\n> \"The input consists of queries and keys of dimension dₖ, and values of dimension dᵥ. We compute the dot products of the query with all keys, divide each by √dₖ, and apply a softmax function to obtain the weights on the values.\"\n\n**要点展开**\n\n1. **自注意力的含义**（§2 原文）：\"Self-attention… is an attention mechanism relating different positions of a single sequence in order to compute a representation of the sequence\"；当 Q、K、V 均来自同一序列（如编码器上一层输出）时即自注意力（§3.2.3）。\n2. **缩放因子 √dₖ 的作用**（原文）：dₖ 较大时点积幅值变大、softmax 进入梯度极小区域；缩放后 \"additive attention outperforms dot product attention without scaling\" 的问题被抵消，且点积注意力可用高度优化的矩阵乘法实现，更快更省内存。\n3. **多头扩展**（§3.2.2）：MultiHead(Q,K,V) = Concat(head₁,…,head_h)W^O，其中 headᵢ = Attention(QWᵢ^Q, KWᵢ^K, VWᵢ^V)；论文设定 h = 8，dₖ = dᵥ = d_model/h = 64，总的计算开销与全维度单头注意力相当。\n4. **解码器掩码**（§3.2.3）：自回归自注意力中将非法连接的 softmax 输入置 −∞，防止左侧信息泄露。\n\n**可信度**：P0 强——一手论文原式直接命中，公式以 LaTeX 原文存储于 KB（非仅图 2 截图），且双库各有独立副本交叉印证。**盲点**：未逐字校对 Figure 2 的图片版公式（文中 `images/c396b8…jpg` 为图示），但正文式 (1) 文本完整，结论无歧义。"
+}

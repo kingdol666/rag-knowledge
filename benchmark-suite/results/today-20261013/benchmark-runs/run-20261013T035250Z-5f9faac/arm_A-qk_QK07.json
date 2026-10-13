@@ -1,0 +1,221 @@
+{
+  "status": "ok",
+  "query": "What is MameLoshnLM and what parameter scale does it have?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 16,
+    "vector_dedup_docs": 14,
+    "recall_seconds": 2.8,
+    "docs_read": 14,
+    "read_errors": [],
+    "reread_seconds": 6.1
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9015,
+    "scored_segments": 82,
+    "total_segments": 82,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+      "vector_score": 0.5682450532913208,
+      "judge_score": 0.9015,
+      "kept": true
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+      "vector_score": 0.39635908603668213,
+      "judge_score": 0.8493,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "vector_score": 0.47175800800323486,
+      "judge_score": 0.7858,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.41512978076934814,
+      "judge_score": 0.7788,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.3915775418281555,
+      "judge_score": 0.7709,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "vector_score": 0.4177454710006714,
+      "judge_score": 0.7497,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+      "vector_score": 0.39130908250808716,
+      "judge_score": 0.5872,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md",
+      "vector_score": 0.470430850982666,
+      "judge_score": 0.4373,
+      "kept": false
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+      "vector_score": 0.4019513726234436,
+      "judge_score": 0.408,
+      "kept": false
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+      "vector_score": 0.42154067754745483,
+      "judge_score": 0.4061,
+      "kept": false
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/流延膜验收 ln-7228f0b1 实测标定 dieGap 与膜厚实测斜率 0.535微米每1个百分点 与 M1 达标可行设定窗 补知识缺口.md",
+      "vector_score": 0.4353035092353821,
+      "judge_score": 0.3276,
+      "kept": false
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_path": "AI 基础设施/tracelens-deployment-notes.md",
+      "vector_score": 0.3864095211029053,
+      "judge_score": 0.2821,
+      "kept": false
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 4 of 4).md",
+      "vector_score": 0.3837239742279053,
+      "judge_score": 0.1495,
+      "kept": false
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/勘误 v3-ln-045c0b51 阶段1 统计门檻作废(i.i.d. 前提被周期复现破坏)+ 步幅-窗长二选一",
+      "vector_score": 0.4308949112892151,
+      "judge_score": 0.0763,
+      "kept": false
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+      "name": "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+      "vector_score": 0.5682450532913208,
+      "judge_score": 0.9015,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_id": null,
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+      "name": "vector-index-tuning-guide (part 1 of 2).md",
+      "vector_score": 0.39635908603668213,
+      "judge_score": 0.8493,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "name": "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "vector_score": 0.47175800800323486,
+      "judge_score": 0.7858,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.41512978076934814,
+      "judge_score": 0.7788,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.3915775418281555,
+      "judge_score": 0.7709,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "name": "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+      "vector_score": 0.4177454710006714,
+      "judge_score": 0.7497,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+      "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+      "vector_score": 0.39130908250808716,
+      "judge_score": 0.5872,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+    "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+    "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+    "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md"
+  ],
+  "evidence_pack": "[计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md · vec=0.5682450532913208]\n# nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md（第 1/4 部分）\n章节: MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\n# MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\n\n\nUri Katz1 Omer Goldman² Tomasz Limisiewicz³\n\nReut Tsarfaty1,Noah A. Smith3,4,\n\n1Bar-Ilan University 2University of Cambridge\n\n3University of Washington 4Allen Institute for AI\n\n## Abstract\n\n\nWe present MAMELOSHNLM,1 the first open-source 8B-parameter language model built specifically for Yiddish. Despite Yiddish's rich textual tradition, its limited digital presence and the scarcity of reliable evaluation resources have constrained progress in Yiddish language modeling. Existing multilingual corpora and benchmarks are often poor proxies for the language, containing substantial amounts of noisy, machinetranslated, and misclassified text. We address these gaps by introducing Oytser, a high-quality Yiddish pretraining corpus that combines contemporary web-native sources with literary materials, and Kashes, a multi-task benchmark spanning translation, linguistic analysis, information extraction, and language understanding. Using these resources, we continue pretraining Llama 3.1 8B to obtain MAMELOSHNLM. Across the tasks in the benchmark, MAMELOSHNLM outperforms open baselines of similar scale. Our analyses show that these gains are not only quantitative: relative to general-purpose multilingual models, MAMELOSHNLM better captures language-defining lexical and morphological patterns, pointing to a broader failure mode of noisy web-scale multilingual data for lowresource languages. Our results provide both a foundation for Yiddish NLP and a practical template for language model development in historically rich but digitally underrepresented languages.\n\n## 1 Introduction\n\n\nDespite swift advancements in multilingual language modeling, large language models' (LLMs) benefits remain highly uneven across languages (Wu et al., 2025). Performance is typically strongest for languages with extensive digital presence, large quantities of highquality text, and mature evaluation resources, while low-resource languages remain substantially underserved. Yiddish is a particularly interesting case. Historically a Germanic language written primarily in Hebrew script, it also includes a substantial Hebrew and Aramaic lexical layer and reflects long-standing contact with Slavic languages. Although it has a long and rich literary history, its contemporary online presence is l\n\n[AI 基础设施/vector-index-tuning-guide (part 1 of 2).md · vec=0.39635908603668213]\n# vector-index-tuning-guide（第 1/2 部分）\n章节: 向量索引调优指南：HNSW 从基准到生产 – 向量索引调优指南：HNSW 从基准到生产 > 6. 内存与磁盘的权衡 > 6.4 内存预算的隐藏项\n# 向量索引调优指南：HNSW 从基准到生产\n\n> 适用版本：HNSW 实现于主流向量数据库（2026-09 基准）\n\n## 1. HNSW 索引参数总览\n\nHNSW（分层可导航小世界图）是当前向量检索的主力索引。三个核心参数决定索引质量与成本：\n`M`（每节点出边数）、`ef_construction`（建图时候选队列长度）、`ef_search`（查询时候选队列长度）。\n\n| 参数 | 本指南推荐值 | 典型范围 | 影响 |\n|---|---|---|---|\n| M | **32** | 8-64 | 越大召回越高、内存越大 |\n| ef_construction | **200** | 100-500 | 越大建图越慢、图质量越高 |\n| ef_search | 见第 7 节 | 16-512 | 越大召回越高、查询越慢 |\n\n在 100 万条 768 维向量的基准集上，M=32、ef_construction=200 的组合实测：\n**索引构建耗时 47 分钟**，**百万级向量内存占用 3.2GB**，**top-10 召回率 96.4%**。\n这组数字是本指南后续所有权衡分析的基准点（下称\"基准配置\"）。\n\n### 1.1 参数为什么相互耦合\n\n把 M、ef_construction、ef_search 当成三个独立旋钮是最常见的误区。M 决定图的连通度\n上限，ef_construction 决定建图时能否逼近这个上限，ef_search 决定查询时能否利用它。\n实测中 M=16 配 ef_search=256 的召回率（94.1%）仍低于 M=32 配 ef_search=64（93.6%\n构建召回 + 查询加深后 95.9%），说明图结构（M）是天花板，查询参数只能逼近天花板。\n\n### 1.2 与 IVF 系索引的边界\n\nIVF-PQ 在 1 亿级向量上内存效率更高，但在 100 万到 1000 万区间、且要求 top-10 召回\n≥95% 时，HNSW 几乎总是赢家：基准配置 96.4% 的召回率，IVF-PQ（nlist=4096、nprobe=64）\n在同数据集上只有 91.8%，且对增量插入更敏感。**本指南聚焦 HNSW**。\n\n### 1.4 深读：结论的证据链\n把基准配置放进真实流量里检验：线上查询的 top-10 召回率与离线基准的偏差应在 1 个百分点以内，偏差过大说明线上查询分布与基准查询分布不一致，需要用线上真实查询重抽 1000 条做校准基准。校准动作每月执行一次，防止基准漂移让后续所有调优结论失真。\n\n### 1.5 深读：变更管理\n参数调整必须有对照组。任何一次 M、ef_construction、ef_search 的变更都要保留旧参数的抽样验收结果，新参数在同查询集上对比，落差超过 0.5 个百分点即记录原因。没有对照组的调优等于盲调，出了召回问题无法归因。\n\n### 1.6 深读：排查视角\n配置变更要写进索引元数据：M、ef_construction、构建时间、构建机器、基准召回率五项随索引一起落盘。排查召回问题时，先看索引元数据就知道这个索引用什么参数建的，避免凭记忆猜参数。\n\n### 1.3 术语速查\n层级图：HNSW 把节点组织成多层，顶层稀疏用于长程跳转，底层稠密用于精确定位。出边数 M 在每层相同；入口点固定为顶层唯一节点。冷启动查询从顶层贪心下降到底层后进入区域搜索。理解这一点就能理解为什么 M 是天花板：底层图的度数上限就是 M。\n\n### 1.4 参数速查卡\n建图快：M=16、ef_construction=100（21 分钟级）；召回优先：M=32、ef_construction=200、ef_search=128；内存极限：M=16 + int8 量化 + 重排序。三张卡片覆盖 90% 的场景。\n\n### 1.5 基准集说明\n全部实测基于同一基准集：100 万条 768 维向量（真实 embedding 采样 + 5% 扰动），查询集 1000 条，top-10 召回率以暴力检索结果为真值。硬件：32 核 CPU、256GB 内存、NVMe SSD，单机无分片。\n\n## 2. 召回率与 M 的关系\n\nM 是内存与召回之间最昂贵的旋钮。实测数据（100 万向量，ef_construction=200）：\n\n| M | 召回率(top-10) | 内存 | 构建时间 |\n|---|---|---|---|\n| 8 | 88.1% | 1.1GB | 21 分钟 |\n| 16 | 93.7% | 2.0GB | 33 分钟 |\n| **32** | **96.4%** | **3.2GB** | **47 分钟** |\n| 64 | 97.5% | 5.6GB | 92 分钟 |\n\n结论：M 从 16 到 32 带来 2.7 个百分点的召回提升，性价比最高；从 32 到 64 只换来\n1.1 个百分点却让内存与构建时间几乎翻倍。**除非召回率要求 ≥97%，M 不要超过 32**。\n\n### 2.1 为什么 32 是甜点\n\nHNSW 论文作者建议 M 取 2 的幂次并从 16 起测。我们的实测曲线在 32 处出现明显拐点：\n16→32 的边际召回收益（每 GB 内存）是 32→64 的 3.8 倍。背后的几何解释是：768 维\nembedding 的本征维度约在 30-40 之间，M=32 恰好让底层图的平均度数接近本征维度，\n长程边与短程边的比例达到平衡。\n\n### 2.2 高维场景的修正\n\n768 维以上（如 1536 维的新 embedding）时，本征维度上移，M=32 的拐点效应减弱。\n1536 维实测\n\n[生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md · vec=0.47175800800323486]\n# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 1/8 部分）\n章节: Large Language Models Encode Clinical Knowledge\n# Large Language Models Encode Clinical Knowledge\n\n\nKaran Singhal\\*,1, Shekoofeh Azizi\\*,1, Tao Tu\\*,1,\n\nS. Sara Mahdavi1, Jason Wei¹, Hyung Won Chung1, Nathan Scales1, Ajay Tanwani1, Heather Cole-Lewis1, Stephen Pfohl1, Perry Payne1, Martin Seneviratne1, Paul Gamble1, Chris Kelly¹, Nathaneal Schärli¹, Aakanksha Chowdhery1, Philip Mansfield¹, Blaise Agüera y Arcas1, Dale Webster¹, Greg S. Corrado¹, Yossi Matias¹, Katherine Chou¹, Juraj Gottweis¹, Nenad Tomasev2, Yun Liu¹, Alvin Rajkomar1, Joelle Barral¹, Christopher Semturs1, Alan Karthikesalingam†,1 and Vivek Natarajan†,1\n\n1Google Research, 2DeepMind\n\nLarge language models (LLMs) have demonstrated impressive capabilities in natural language understanding and generation, but the quality bar for medical and clinical applications is high. Today, attempts to assess models' clinical knowledge typically rely on automated evaluations on limited benchmarks. There is no standard to evaluate model predictions and reasoning across a breadth of tasks. To address this, we present MultiMedQA, a benchmark combining six existing open question answering datasets spanning professional medical exams, research, and consumer queries; and HealthSearchQA, a new free-response dataset of medical questions searched online. We propose a framework for human evaluation of model answers along multiple axes including factuality, precision, possible harm, and bias.\n\nIn addition, we evaluate PaLM (a 540-billion parameter LLM) and its instruction-tuned variant, Flan-PaLM, on MultiMedQA. Using a combination of prompting strategies, Flan-PaLM achieves state-of-the-art accuracy on every MultiMedQA multiple-choice dataset (MedQA, MedMCQA, PubMedQA, MMLU clinical topics), including 67.6% accuracy on MedQA (US Medical License Exam questions), surpassing prior state-of-the-art by over 17%. However, human evaluation reveals key gaps in Flan-PaLM responses. To resolve this we introduce instruction prompt tuning, a parameter-efficient approach for aligning LLMs to new domains using a few exemplars. The resulting model, Med-PaLM, performs encouragingly, but remains inferior to clinicians.\n\nWe show that comprehension, recall of knowledge, and medical reasoning improve with model scale and instruction prompt tuning, suggesting the potential utility of LLMs in medicine. Our human evaluations reveal importa\n\n[经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md · vec=0.41512978076934814]\n# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 1/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n# On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n\n\nNiko HAUZENBERGER, Michael PFARRHOFER and Anna STELZER\\*\n\nUniversity of Salzburg\n\nIn this paper, we investigate the effectiveness of conventional and unconventional monetary policy measures by the European Central Bank (ECB) conditional on the prevailing level of uncertainty. To obtain exogenous variation in central bank policy, we rely on high-frequency surprises in financial market data for the euro area (EA) around policy announcement dates. We trace the dynamic effects of shocks to the short-term policy rate, forward guidance and quantitative easing on several key macroeconomic and financial quantities alongside survey-based measures of expectations. For this purpose, we propose a Bayesian smooth-transition vector autoregression (ST-VAR). Our results suggest that transmission channels are impaired when uncertainty is elevated. While conventional monetary policy is less effective during such periods, and sometimes also forward guidance, quantitative easing measures seem to work comparatively well in uncertain times.\n\nJEL: C32, E32, E52, E58\n\nKEYWORDS: Euro area, monetary policy, Bayesian smooth-transition vector autoregression, hierarchical global-local shrinkage\n\n## 1. Introduction\n\n\nConventional and unconventional monetary policies are widely used tools adopted in central banks to stimulate slacking economies and counteract disinflationary pressures stemming from recessionary episodes and economic uncertainty.¹ Research measuring the effects and transmission channels of monetary policy to the real and financial sectors has produced a voluminous body of literature (see, among many others, Kashyap and Stein, 2000; Kuttner, 2001; Bernanke et al., 2005; Gürkaynak et al., 2005; Sims and Zha, 2006; Tenreyro and Thwaites, 2016; Altavilla et al., 2019; Jarociński and Karadi, 2020). In this paper, we contribute to this line of work by assessing non-linear features in monetary transmission for the euro area (EA). We consider economic uncertainty as a key determinant of the effectiveness of policy measures enacted by the European Central Bank (ECB), and discuss factors that may render policy interventions in uncertain times less effective.\n\nA change in the m\n\n[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.3915775418281555]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md · vec=0.4177454710006714]\n# quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu（第 3/4 部分）\n章节: Benchmarking Noisy Intermediate Scale Quantum Error Mitigation Strategies for Ground State Preparation of the HCl Molecule > V. GROUND STATE PREPARATION\n## V. GROUND STATE PREPARATION\n\n\nBefore proceeding onto the quantum error mitigation benchmark, there are a few additional considerations to resolve. Firstly, one must identify a suitable ansatz circuit that is sufficiently expressible to realize the desired ground state. Secondly, we discuss the mapping of our circuits onto physical qubits, in particular for dual-state purification since one should be mindful of the added qubit connectivity constraints arising from parity computation stored on the ancilla qubit. Thirdly, despite not implementing any shot reduction methods in this work, we still wish to distribute the shot budget in an informed manner, preferably tailored to each device; this is the final point of discussion before moving onto the results of our benchmark.\n\n## A. Ansatz Construction\n\n\nInitially, we tested the noncontextual projection ansatz [54] derived from the 316-term CCSD operator. The projection into the 3-qubit contextual subspace yields a 6- term excitation pool from which we identify 4 operators via qubit-ADAPT-VQE that permit chemical precision. Despite this dramatic reduction in circuit depth from the full UCCSD ansatz, the resulting noncontextual projection ansatz consists of 12 CNOT gates which we found to be prohibitive in achieving chemical precision.\n\nTo remedy this, we abandon chemical intuition in the name of hardware efficiency. It is already known that an arbitrary 3-qubit quantum state may be prepared on quantum hardware using at most 4 CNOT gates [64]. In fact, we found that only 2 CNOT gates are sufficient in constructing a 3-qubit ansatz circuit that is sufficiently expressible for our electronic structure problem, presented in Figure 9. In Figure 10 we present the outcome of a noiseless VQE simulation over this ansatz to illustrate its expressibility.\n\nq0, q2, q1, q3\n\n![](images/55aae72c59b699306ede951f10623c917b5196b134b4a3ad8f6cdfc9e2decfee.jpg)\n\n![](images/c50ae14d63526cc959f1152197ca63119a57b4256defe999c4378592dbdb5cd3.jpg)  \n(e) ZIZ  \n(a) IIZ\n\n![](images/3f672f301d4e398d15a2d91ecc638ada0e475bd88a5644ec5ef831158243a240.jpg)  \nFIG. 9: Hardware efficient HCl 3-qubit contextual subspace ansatz; the Y-rotation gates are decomposed into native gates as $R _ { y } = \\sqrt { X } R\n\n[工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md · vec=0.39130908250808716]\n# power-systems__2607.03098__integrating-power-electronics-based-energy-s（第 3/5 部分）\n章节: Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges > 4.2. Issues and Solutions of Dynamic Analysis for Large-scale DC-PEESs\n## 4.2. Issues and Solutions of Dynamic Analysis for Large-scale DC-PEESs\n\n\n(c) Distributed connections  \n![](images/2fb074c9cf82c926b898ad24be3e6095d51b55a60daf6eb816ef184a9d797f4d.jpg)\n\n(a) Series connections  \n(b) Parallel connections  \n![](images/afb24cc14ab29ffee73b2f819bad060b85ebed9449f39b44d05eb4f16d174a8b.jpg)  \nFig 12. DC power systems integrated with large-scale PEESs.\n\nAs shown in Fig. 12, there are three types of connections for PEESs integrating to DC power systems: series, parallel, and distributed. The series connections were illustrated and analyzed in [133,134], clarifying the dynamic relations between the DC voltage and current, and thus verifying the reliability of series connections. The parallel connections were analyzed in [135]. where the model is established, and thus the instability risks of this connection are clarified. For these scenarios, the dynamic analysis process is similar to that of a single PEES because the transfer function of PEESs can be linearly obtained with that of a single PEES [112]. Considering that PEESs in series and parallel connections are very similar, the transfer function of N series-connected PEESs can be written as NGpEEs(s), and that of N parallel-connected PEESs can be written as $G _ { P E E S } ( s ) / N ,$ with the transfer function of each PEES being GPEEs(s).\n\n![](images/eed743ee1e42f7b46157ad81fb4e05a154f74fdbc6c4689b45f1134be75f2a24.jpg)  \nFig 13. Illustration of process of dynamic reconfiguration.\n\nHowever, if the PEESs are connected to the DC power system in a distributed way and each PEES is different from another, the equivalent method introduced is invalid. In this case, the interaction variables between PEESs and the DC power system are multiple. Traditional dynamic analysis methods for stability mechanism analysis, e.g., impedance-based and damping-based analysis methods, are inapplicable, as these methods require the interaction variables between the PEESs and the DC power system to be single or equivalent to be single. Although instability risks can still be obtained by modal calculation and timedomain simulation, the reason why this instability occurs is difficult to clarify using the numerical c",
+  "unscanned": [],
+  "seconds": 17.3
+}

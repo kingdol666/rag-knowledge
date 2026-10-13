@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "seismology",
+ "mode": "A",
+ "http": 200,
+ "wall_s": 112.4,
+ "success": true,
+ "session_id": "19a3ca64-37bd-495e-a8e8-60b417693cf6",
+ "turns": 9,
+ "cost": 0.844739,
+ "duration_ms": 111192,
+ "answer": "**结论：本库（自然科学与地球科学）未找到能回答「地震波分为哪几类、各有什么区别」的系统性内容——该库 seismology 分组仅 2 篇研究论文（超剪切破裂判定、震后损失评估），地震波分类基础知识属本库知识盲区，无法给出库内证据支撑的答案。**\n\n**检索事实**（指定库 `1e6199ea-…`，共 75 篇文档、8 个分组；seismology 组仅 7 个文档）：\n\n| 检索 | 命中 | 结果 |\n|---|---|---|\n| `kb_search_two_stage`「地震波主要分为哪几类/P波/S波/面波」 | 7 | 全为 2 篇论文分片 |\n| `kb_search_vector`「纵波/横波/面波/瑞利波/勒夫波/体波 分类 区别」 | 20 | 仅超剪切破裂论文及无关跨域命中 |\n| `kb_search_vector`「Rayleigh/Love/surface/body wave/velocity difference」 | 20 | 同上 |\n| `kb_laya_judge` 内容判定（4 篇候选→33 片段存活；复核 1 篇→9 片段） | — | 逐段质核后均为论文摘要/引言（讲破裂速度、质点运动），**无任何片段对地震波作分类或对比** |\n\n**库内最接近的提及**（P2 弱相关，仅为字面提及，不构成分类说明）：\n- 《seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p》(part 1 of 3)（超剪切破裂研究，自然科学与地球科学库）引言原文：*\"When the rupture speed exceeds the shear wave speed (supershear), coherent S waves produce high-amplitude Mach cones…\"*——即\"当破裂速度超过剪切波速时，相干 S 波产生高振幅马赫锥\"；正文另提到 *\"trailing Rayleigh\"*（尾随瑞利波）。但语境均为破裂动力学分析，**未定义、未列举、未对比各类地震波**。\n- 《seismology__1308.1846…》（震后损失估计与可视化系统，同库）及库内其余 6 个分组（量子、化学、气候、天文、数学、海洋、引力物理）均不涉及该主题。\n\n**盲区声明**：本库为研究论文型藏书，无地震学教科书/基础综述类文档，故「体波（P/S 波）与面波（瑞利/勒夫波）的分类与区别」无法从本库作答（已穷尽上述 4 轮检索，未继续扩大搜索）；如需该问题答案，需先入库地震学基础教材章节。"
+}

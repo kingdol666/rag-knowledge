@@ -1,0 +1,123 @@
+{
+ "answer": "**Answer.** The retrieved paper \"MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\" (Taozhe Li & Wei Sun, arXiv 2410.10669) addresses the degradation of V-SLAM precision in dynamic environments with many movable objects (pedestrians, cars, buses common in outdoor scenes), where static-world-assumption systems such as ORB-SLAM2 lose accuracy. Prior fixes fail in two ways: semantic/mask methods like DynaSLAM discard all features inside dynamic-class bounding boxes, causing information loss (static parked cars and highway guardrails wrongly removed), while handcrafted geometric methods use only partial geometric information (e.g., solely re-projection or epipolar error), require laborious manual parameter tuning, and lack generality. MLP-SLAM's solution is an MLP-based real-time stereo SLAM system built on ORB-SLAM2 whose discriminator uses \"complete geometric information\" — a per-feature input vector of image intensity error e_I, epipolar error e_D, and re-projection error e_Re — to classify feature points inside potentially dynamic object bounding boxes as static or dynamic, with only static points used for pose estimation via a coarse-to-fine scheme (Depth Filter Module for background points in imprecise detection boxes, then fine estimation over all static points). It is claimed as the first machine-learning-based dynamic/static feature discriminator in SLAM, eliminating manual parameter configuration and avoiding information loss, and the authors released a public dataset of 50,000+ labeled feature points (KITTI sequences 00/01) enabling direct evaluation, on which the MLP scored best (87.71% accuracy / 87.64 F1 vs SVM 84.19, PointSLOT-like 81.36, CFP-SLAM-like 73.61). On KITTI Odometry and KITTI360 the system recorded the lowest average ATE and fastest speed among compared dynamic SLAM systems (DynaSLAM, DynaSLAM II, VDO-SLAM, PointSLOT).\n\n**Sources used (retrieved and read this session).**\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` — KB \"计算机与人工智能\" (b1199132-e4d4-4305-8c2e-82dc1753b0ba): abstract, introduction, method, classification results.\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md` — same KB: experiments (ATE tables), latency, ablation, conclusion.\n- Vector-recall chunks `Corpus-Chunks800/robotics__2410.10669__...__k00.md`, `__k22.md`, `__k23.md` — KB ce642f28-e157-48af-b669-49862cd73b23.\n- Verified via `kb_laya_judge` (reference mode): 15/17 segments survived at threshold 0.5 (scores 0.70–0.94), both document parts confirmed.",
+ "is_error": false,
+ "latency_s": 43.9,
+ "sdk_duration_ms": 40722,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__kb_search",
+   "input": {
+    "query": "MLP-SLAM"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM dynamic environments visual SLAM"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能\\robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能\\robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how does it solve it?"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 97088,
+  "output": 5278,
+  "cache_read": 221056,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.7291110000000001,
+ "timeline": [
+  {
+   "t": 3.25,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 8.39,
+   "event": "text",
+   "detail": "321"
+  },
+  {
+   "t": 8.46,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search"
+  },
+  {
+   "t": 8.68,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 14.06,
+   "event": "text",
+   "detail": "326"
+  },
+  {
+   "t": 14.44,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 14.8,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 20.83,
+   "event": "text",
+   "detail": "197"
+  },
+  {
+   "t": 21.77,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 43.94,
+   "event": "text",
+   "detail": "2624"
+  },
+  {
+   "t": 43.94,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "Retrieval plan: I will first run a metadata keyword search for \"MLP-SLAM\" to locate which KB/document covers it, in parallel with a cross-KB vector search for \"MLP-SLAM dynamic environment visual SLAM\"; then I will read the matching document(s) in full to confirm the problem it addresses and its method before answering.",
+  "The keyword and vector searches both locate the paper \"MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\" (arXiv 2410.10669) in the \"计算机与人工智能\" KB, split into two parts. I will now read both parts in full to confirm the exact problem statement and the proposed method, then verify with the Laya judge.",
+  "Both document parts are read in full. Now I will run the content verification gate (kb_laya_judge, reference mode) against the two document parts to confirm the surviving evidence before answering.",
+  "**Answer.** The retrieved paper \"MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\" (Taozhe Li & Wei Sun, arXiv 2410.10669) addresses the degradation of V-SLAM precision in dynamic environments with many movable objects (pedestrians, cars, buses common in outdoor scenes), where static-world-assumption systems such as ORB-SLAM2 lose accuracy. Prior fixes fail in two ways: semantic/mask methods like DynaSLAM discard all features inside dynamic-class bounding boxes, causing information loss (static parked cars and highway guardrails wrongly removed), while handcrafted geometric methods use only partial geometric information (e.g., solely re-projection or epipolar error), require laborious manual parameter tuning, and lack generality. MLP-SLAM's solution is an MLP-based real-time stereo SLAM system built on ORB-SLAM2 whose discriminator uses \"complete geometric information\" — a per-feature input vector of image intensity error e_I, epipolar error e_D, and re-projection error e_Re — to classify feature points inside potentially dynamic object bounding boxes as static or dynamic, with only static points used for pose estimation via a coarse-to-fine scheme (Depth Filter Module for background points in imprecise detection boxes, then fine estimation over all static points). It is claimed as the first machine-learning-based dynamic/static feature discriminator in SLAM, eliminating manual parameter configuration and avoiding information loss, and the authors released a public dataset of 50,000+ labeled feature points (KITTI sequences 00/01) enabling direct evaluation, on which the MLP scored best (87.71% accuracy / 87.64 F1 vs SVM 84.19, PointSLOT-like 81.36, CFP-SLAM-like 73.61). On KITTI Odometry and KITTI360 the system recorded the lowest average ATE and fastest speed among compared dynamic SLAM systems (DynaSLAM, DynaSLAM II, VDO-SLAM, PointSLOT).\n\n**Sources used (retrieved and read this session).**\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` — KB \"计算机与人工智能\" (b1199132-e4d4-4305-8c2e-82dc1753b0ba): abstract, introduction, method, classification results.\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md` — same KB: experiments (ATE tables), latency, ablation, conclusion.\n- Vector-recall chunks `Corpus-Chunks800/robotics__2410.10669__...__k00.md`, `__k22.md`, `__k23.md` — KB ce642f28-e157-48af-b669-49862cd73b23.\n- Verified via `kb_laya_judge` (reference mode): 15/17 segments survived at threshold 0.5 (scores 0.70–0.94), both document parts confirmed."
+ ],
+ "track": "a2",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ09",
+ "via": "chat",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

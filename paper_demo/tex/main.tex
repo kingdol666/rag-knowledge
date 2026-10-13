@@ -18,18 +18,19 @@
 \usepackage{booktabs}
 \usepackage{xurl}
 \newcommand{\sys}{\textsc{Qdcvr}}
-% ── Measured-run number macros (2026-09-30 rewrite) ─────────────────────────
+% ── Measured-run number macros (2026-10-13 rerun) ───────────────────────────
 % Every \NUM* macro is filled from the monitored rerun
-% benchmark-suite/results/runs/run-20260930T150453Z-3ec2174 via
-% scripts/107_exp_grade.py (grounded/keyword-verified/latency/cost) +
-% audit_paper_numbers.py + the citation regex over saved answers
-% (9/6/1). Values are script-asserted, not hand-typed; audit with
-% grep 'NUM' and re-run the graders after any rerun.
-\newcommand{\NUMgroundedA}{10}\newcommand{\NUMgroundedB}{10}\newcommand{\NUMgroundedC}{8}
-\newcommand{\NUMkwA}{10}\newcommand{\NUMkwB}{8}\newcommand{\NUMkwC}{6}
-\newcommand{\NUMciteA}{9}\newcommand{\NUMciteB}{6}\newcommand{\NUMciteC}{1}
-\newcommand{\NUMlatA}{116\,s}\newcommand{\NUMlatB}{48\,s}\newcommand{\NUMlatC}{41\,s}
-\newcommand{\NUMcostA}{\$0.55}\newcommand{\NUMcostB}{\$0.63}\newcommand{\NUMcostC}{\$0.28}
+% benchmark-suite/results/runs/run-20261013T094350Z-5f9faac, graded by
+% scripts/107_exp_grade.py (grounded / keyword-verified / cited / latency /
+% cost) and reconciled against these macros by experiments/_paper_numbers.py.
+% The `cited` triple is now a script metric (part/section/table markers), not a
+% hand-run regex. Values are script-asserted, not hand-typed; re-derive with
+% `python scripts/160_run_paper_pipeline.py --stages S3` after any rerun.
+\newcommand{\NUMgroundedA}{10}\newcommand{\NUMgroundedB}{10}\newcommand{\NUMgroundedC}{10}
+\newcommand{\NUMkwA}{10}\newcommand{\NUMkwB}{9}\newcommand{\NUMkwC}{9}
+\newcommand{\NUMciteA}{9}\newcommand{\NUMciteB}{7}\newcommand{\NUMciteC}{2}
+\newcommand{\NUMlatA}{53\,s}\newcommand{\NUMlatB}{22\,s}\newcommand{\NUMlatC}{24\,s}
+\newcommand{\NUMcostA}{\$0.71}\newcommand{\NUMcostB}{\$0.49}\newcommand{\NUMcostC}{\$0.53}
 % One full-width figure per page; Figs. 1/2/3 are double-column floats placed
 % by the dbltop queue. Target placement pp. 2/3/4 so the body (through the
 % Conclusion) ends on page 4 and only the disclosure + references follow.
@@ -134,21 +135,21 @@ candidate segments and returns a keyword-verified answer quoting the
 source; C reaches the same factor from chunk recall alone, with no
 grading step and no addresses.}
 \Description{Two stacked panels. Panel one, the Gene Ontology question,
-has three columns. Column A's timeline lists one subagent probe, one
-vector search, one cross-check search, and two document reads; its
+has three columns. Column A's timeline lists a two-stage search, a
+vector search, one judgment-engine call, and one document read; its
 excerpt names Molecular Function, Biological Process, and Cellular
 Component and quotes the primer; its sources name the life-sciences base,
 the primer paper, part 1 of 2, section 2, and a verbatim quote. Column
-B's timeline lists a glob, two greps, and a read; its excerpt states the
-same three ontologies; its source names the paper file. Column C's
-timeline lists a harness call and one vector search; its excerpt states
+B's timeline lists four greps and a read; its excerpt states the
+same three ontologies; its source names the paper file by section. Column
+C's timeline lists two vector searches; its excerpt states
 the three ontologies; its source names the chunk copy in the
 800-character chunk index. Panel two, the precipitation-extremes
-question, has two columns. Column A's timeline lists four vector-search
-recalls, a shelf check, one judgment-engine call, and a harness call; its
-excerpt quotes the saturation-vapor-pressure passage; its sources
+question, has two columns. Column A's timeline lists a shelf check, four
+vector-style recalls, four document reads, and two judgment-engine calls;
+its excerpt quotes the saturation-vapor-pressure passage; its sources
 name the climate base, the paper, engine-graded reading, and keyword
-verification. Column C's timeline lists a subagent probe and five vector
+verification. Column C's timeline lists eleven vector
 searches; its excerpt names the thermodynamic contribution with a
 precision caveat; its source shows the chunk index with no grading step.}
 \label{fig:threeway}

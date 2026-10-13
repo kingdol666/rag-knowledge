@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1920px; height:1080px; background:#FFFFFF; font-family:'Microsoft YaHei','PingFang SC',sans-serif; color:#1E2A38; }
+  .num { font-family:Georgia,'Times New Roman',serif; }
+  .stage { position:relative; width:1920px; height:1080px; overflow:hidden; }
+
+  .kicker { position:absolute; left:70px; top:38px; font-size:19px; letter-spacing:3px; color:#5E6B7A; font-weight:600; }
+  .kicker b { color:#0E7C7B; }
+  h1 { position:absolute; left:70px; top:66px; font-size:43px; color:#16324F; font-weight:800; letter-spacing:1px; }
+  h1 .thin { font-weight:400; color:#3E5570; }
+  .rule { position:absolute; left:70px; top:136px; width:1780px; height:3px; background:#16324F; }
+  .rule::after { content:''; position:absolute; left:0; top:0; width:280px; height:3px; background:#0E7C7B; }
+
+  .panel { position:absolute; top:162px; height:452px; background:#FFFFFF; border:1px solid #D7DFE6; border-top:4px solid #0E7C7B; padding:14px 20px 10px; }
+  .ptitle { font-size:22px; font-weight:800; color:#16324F; }
+  .psub { font-size:14.5px; color:#7A8A99; margin-top:3px; margin-bottom:6px; }
+  .pnote { position:absolute; left:20px; right:20px; bottom:9px; font-size:14px; color:#5E6B7A; line-height:1.4; border-top:1px dashed #D7DFE6; padding-top:7px; }
+  .pnote b { color:#B3382C; }
+  .pnote .ok { color:#0E7C7B; font-weight:700; }
+
+  .badge { display:inline-block; background:#0E7C7B; color:#FFF; font-family:Georgia,serif; font-weight:700; border-radius:3px; padding:2px 10px; }
+
+  /* paper strip */
+  .strip { position:absolute; left:70px; top:630px; width:1780px; height:388px; background:#F5F8F8; border:1px solid #D7DFE6; padding:18px 26px; }
+  .stitle { font-size:24px; font-weight:800; color:#16324F; }
+  .stitle span { font-size:16px; color:#7A8A99; font-weight:400; margin-left:14px; }
+  .half { position:absolute; top:70px; }
+  .hlabel { font-size:19px; font-weight:800; color:#0E6B6A; letter-spacing:1px; margin-bottom:10px; }
+  .vsep { position:absolute; left:878px; top:78px; width:1px; height:270px; background:#C9D4DC; }
+
+  /* tool-layer bars */
+  .trow { display:flex; align-items:center; height:31px; font-size:16.5px; }
+  .tname { width:252px; color:#2C3E50; }
+  .tbar-w { width:190px; height:15px; background:#E8EDF1; position:relative; flex:none; }
+  .tbar { height:15px; }
+  .tval { font-family:Georgia,serif; font-weight:700; font-size:16.5px; margin-left:10px; color:#16324F; }
+  .tnote { font-size:14px; color:#7A8A99; margin-left:8px; }
+
+  table.e4 { border-collapse:collapse; width:800px; }
+  table.e4 th { background:#16324F; color:#FFF; font-size:15.5px; font-weight:600; padding:7px 6px; }
+  table.e4 td { border:1px solid #D7DFE6; font-size:16px; padding:7px 6px; text-align:center; color:#2C3E50; background:#FFF; }
+  table.e4 td:first-child { text-align:left; font-weight:700; color:#16324F; }
+  table.e4 tr.hl td { background:#EAF4F4; color:#0E5E5D; font-weight:700; }
+  .foot { position:absolute; left:70px; bottom:12px; width:1780px; display:flex; justify-content:space-between; font-size:14.5px; color:#93A1AE; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="kicker">RESULTS · <b>三通道门禁 + 检索层提速 + Quick10 检索矩阵</b> · 2026-10-12 / 10-13</div>
+  <h1>实验结果 <span class="thin">｜ 门禁 8/9 · 8/9 · 6/6，检索层提速 13–55×</span></h1>
+  <div class="rule"></div>
+
+  <!-- P1 latency -->
+  <div class="panel" style="left:70px; width:550px;">
+    <div class="ptitle">① 端到端时延 · 三模式 × 两通道</div>
+    <div class="psub">同题 3 道 / 模式，均值（秒）· 通道1 流式 SSE vs 通道2 非流式</div>
+    <svg width="510" height="268" viewBox="0 0 510 268">
+      <g stroke="#E8EDF1" stroke-width="1">
+        <line x1="40" y1="20" x2="500" y2="20"/><line x1="40" y1="83" x2="500" y2="83"/><line x1="40" y1="147" x2="500" y2="147"/>
+      </g>
+      <line x1="40" y1="210" x2="500" y2="210" stroke="#9AA8B5" stroke-width="1.5"/>
+      <g font-family="Georgia" font-size="13" fill="#8494A5" text-anchor="end">
+        <text x="34" y="215">0</text><text x="34" y="152">50</text><text x="34" y="88">100</text><text x="34" y="25">150 s</text>
+      </g>
+      <!-- A: 47.0 / 48.0 -->
+      <rect x="44" y="150.5" width="56" height="59.5" fill="#0E7C7B"/>
+      <rect x="110" y="149.2" width="56" height="60.8" fill="#0E7C7B" opacity="0.42"/>
+      <!-- B: 142.2 / 66.4 -->
+      <rect x="184" y="29.9" width="56" height="180.1" fill="#0E7C7B"/>
+      <rect x="250" y="125.9" width="56" height="84.1" fill="#0E7C7B" opacity="0.42"/>
+      <!-- C: 51.2 / 68.9 -->
+      <rect x="324" y="145.1" width="56" height="64.9" fill="#0E7C7B"/>
+      <rect x="390" y="122.7" width="56" height="87.3" fill="#0E7C7B" opacity="0.42"/>
+      <g font-family="Georgia" font-size="16.5" font-weight="700" fill="#16324F" text-anchor="middle">
+        <text x="72" y="142">47.0</text><text x="138" y="141">48.0</text>
+        <text x="212" y="22">142.2</text><text x="278" y="118">66.4</text>
+        <text x="352" y="137">51.2</text><text x="418" y="115">68.9</text>
+      </g>
+      <g font-size="19" font-weight="700" fill="#3E5570" text-anchor="middle">
+        <text x="105" y="238">模式 A</text><text x="245" y="238">模式 B</text><text x="385" y="238">模式 C</text>
+      </g>
+      <g font-size="14">
+        <rect x="150" y="252" width="14" height="14" fill="#0E7C7B"/><text x="170" y="264" fill="#44566B">流式 SSE（通道1）</text>
+        <rect x="330" y="252" width="14" height="14" fill="#0E7C7B" opacity="0.42"/><text x="350" y="264" fill="#44566B">非流式（通道2）</text>
+      </g>
+    </svg>
+    <div class="pnote">门禁记分：通道1 <span class="ok">8/9</span> · 通道2 <span class="ok">8/9</span> · 通道3 <span class="ok">6/6</span> —— 两通道均唯一败于 B×cm1 假拒答（独立复现，10-13 修复后复跑 <span class="ok">PASS 53.5s</span>）。检索工具耗时均值：A 14.2 · B 111.6 · C 17.8 s。</div>
+  </div>
+
+  <!-- P2 retrieval matrix -->
+  <div class="panel" style="left:646px; width:612px;">
+    <div class="ptitle">② 检索层 · 6 方法 × 10 题 金标命中矩阵</div>
+    <div class="psub">纯检索无 LLM 作答 · 真库/跨库口径 · run-20261013T035250Z &nbsp;<span class="badge">A 10/10 · B 7/10 · C 9/10</span></div>
+    <svg width="572" height="322" viewBox="0 0 572 322">
+      <!-- column headers -->
+      <g font-family="Georgia" font-size="11" fill="#8494A5" text-anchor="middle">
+        <text x="196" y="14">q1</text><text x="222" y="14">q2</text>
+        <text x="248" y="14">01</text><text x="274" y="14">02</text><text x="300" y="14">03</text>
+        <text x="326" y="14">04</text><text x="352" y="14">05</text><text x="378" y="14">06</text><text x="404" y="14">07</text><text x="430" y="14">08</text>
+      </g>
+      <text x="158" y="14" font-size="11.5" fill="#8494A5" font-weight="700">方法</text>
+      <text x="466" y="14" font-size="11" fill="#8494A5" font-weight="700">金标率</text>
+      <text x="536" y="14" font-size="11" fill="#8494A5" font-weight="700" text-anchor="middle">延迟</text>
+      <line x1="8" y1="20" x2="564" y2="20" stroke="#D7DFE6"/>
+
+      <!-- row helper: y centers 46,78,110,142,174,206 ; cell size 22 -->
+      <g font-size="12.5" font-weight="700" fill="#2C3E50">
+        <text x="8" y="50">mode_A</text><text x="8" y="82">mode_B</text><text x="8" y="114">mode_C</text>
+        <text x="8" y="146">bm25</text><text x="8" y="178">vector</text><text x="8" y="210">rrf</text>
+      </g>
+
+      <!-- mode_A : all hit -->
+      <g fill="#0E7C7B">
+        <rect x="186" y="34" width="20" height="20" rx="2"/><rect x="212" y="34" width="20" height="20" rx="2"/>
+        <rect x="238" y="34" width="20" height="20" rx="2"/><rect x="264" y="34" width="20" height="20" rx="2"/>
+        <rect x="290" y="34" width="20" height="20" rx="2"/><rect x="316" y="34" width="20" height="20" rx="2"/>
+        <rect x="342" y="34" width="20" height="20" rx="2"/><rect x="368" y="34" width="20" height="20" rx="2"/>
+        <rect x="394" y="34" width="20" height="20" rx="2"/><rect x="420" y="34" width="20" height="20" rx="2"/>
+      </g>
+      <!-- mode_B : fail 01(238) 06(368) 07(394) -->
+      <g fill="#0E7C7B">
+        <rect x="186" y="66" width="20" height="20" rx="2"/><rect x="212" y="66" width="20" height="20" rx="2"/>
+        <rect x="264" y="66" width="20" height="20" rx="2"/><rect x="290" y="66" width="20" height="20" rx="2"/>
+        <rect x="316" y="66" width="20" height="20" rx="2"/><rect x="342" y="66" width="20" height="20" rx="2"/>
+        <rect x="420" y="66" width="20" height="20" rx="2"/>
+      </g>
+      <g fill="#B3382C">
+        <rect x="238" y="66" width="20" height="20" rx="2"/><rect x="368" y="66" width="20" height="20" rx="2"/>
+        <rect x="394" y="66" width="20" height="20" rx="2"/>
+      </g>
+      <!-- mode_C : fail 01(238) -->
+      <g fill="#0E7C7B">
+        <rect x="186" y="98" width="20" height="20" rx="2"/><rect x="212" y="98" width="20" height="20" rx="2"/>
+        <rect x="264" y="98" width="20" height="20" rx="2"/><rect x="290" y="98" width="20" height="20" rx="2"/>
+        <rect x="316" y="98" width="20" height="20" rx="2"/><rect x="342" y="98" width="20" height="20" rx="2"/>
+        <rect x="368" y="98" width="20" height="20" rx="2"/><rect x="394" y="98" width="20" height="20" rx="2"/>
+        <rect x="420" y="98" width="20" height="20" rx="2"/>
+      </g>
+      <rect x="238" y="98" width="20" height="20" rx="2" fill="#B3382C"/>
+      <!-- baselines: all hit, gray -->
+      <g fill="#8494A5">
+        <rect x="186" y="130" width="20" height="20" rx="2"/><rect x="212" y="130" width="20" height="20" rx="2"/>
+        <rect x="238" y="130" width="20" height="20" rx="2"/><rect x="264" y="130" width="20" height="20" rx="2"/>
+        <rect x="290" y="130" width="20" height="20" rx="2"/><rect x="316" y="130" width="20" height="20" rx="2"/>
+        <rect x="342" y="130" width="20" height="20" rx="2"/><rect x="368" y="130" width="20" height="20" rx="2"/>
+        <rect x="394" y="130" width="20" height="20" rx="2"/><rect x="420" y="130" width="20" height="20" rx="2"/>
+
+        <rect x="186" y="162" width="20" height="20" rx="2"/><rect x="212" y="162" width="20" height="20" rx="2"/>
+        <rect x="238" y="162" width="20" height="20" rx="2"/><rect x="264" y="162" width="20" height="20" rx="2"/>
+        <rect x="290" y="162" width="20" height="20" rx="2"/><rect x="316" y="162" width="20" height="20" rx="2"/>
+        <rect x="342" y="162" width="20" height="20" rx="2"/><rect x="368" y="162" width="20" height="20" rx="2"/>
+        <rect x="394" y="162" width="20" height="20" rx="2"/><rect x="420" y="162" width="20" height="20" rx="2"/>
+
+        <rect x="186" y="194" width="20" height="20" rx="2"/><rect x="212" y="194" width="20" height="20" rx="2"/>
+        <rect x="238" y="194" width="20" height="20" rx="2"/><rect x="264" y="194" width="20" height="20" rx="2"/>
+        <rect x="290" y="194" width="20" height="20" rx="2"/><rect x="316" y="194" width="20" height="20" rx="2"/>
+        <rect x="342" y="194" width="20" height="20" rx="2"/><rect x="368" y="194" width="20" height="20" rx="2"/>
+        <rect x="394" y="194" width="20" height="20" rx="2"/><rect x="420" y="194" width="20" height="20" rx="2"/>
+      </g>
+
+      <!-- gold-rate column -->
+      <g font-family="Georgia" font-size="14" font-weight="700" text-anchor="middle">
+        <text x="466" y="50" fill="#0E6B6A">10/10</text>
+        <text x="466" y="82" fill="#B3382C">7/10</text>
+        <text x="466" y="114" fill="#0E6B6A">9/10</text>
+        <text x="466" y="146" fill="#44566B">10/10</text>
+        <text x="466" y="178" fill="#44566B">10/10</text>
+        <text x="466" y="210" fill="#44566B">10/10</text>
+      </g>
+      <g font-size="13" fill="#7A8A99" text-anchor="middle">
+        <text x="536" y="50">19.8s</text><text x="536" y="82">14.0s</text><text x="536" y="114">33.1s</text>
+        <text x="536" y="146">≈0.0s</text><text x="536" y="178">0.1s</text><text x="536" y="210">≈0.0s</text>
+      </g>
+      <line x1="8" y1="226" x2="564" y2="226" stroke="#D7DFE6"/>
+
+      <!-- reading: retrieval is not the bottleneck -->
+      <text x="8" y="250" font-size="14.5" font-weight="700" fill="#0E6B6A">检索层 6 方法几乎全 10/10 —— 金标命中在检索层不是难点</text>
+      <text x="8" y="272" font-size="13" fill="#5E6B7A">mode_B 失 QK01/06/07（stepwise 仅取 2–6 篇同域文档，被 confuser 挤掉）</text>
+      <text x="8" y="291" font-size="13" fill="#5E6B7A">mode_C 失 QK01；vector 首跑命中空默认库，已跨库口径复跑修正</text>
+    </svg>
+    <div class="pnote">对照 <b>mode_A 10/10 · 19.8s</b>：固定 KB 向量快车道最稳；mode_B 最省时（14.0s）但覆盖最弱；mode_C 混合检索最耗时（33.1s）覆盖近满分。三 baseline 完美命中却与「回答」无关 —— 见右栏。</div>
+  </div>
+
+  <!-- P3 Quick10 agent tracks -->
+  <div class="panel" style="left:1284px; width:566px;">
+    <div class="ptitle">③ Quick10 回答层 · 四轨对照 <span class="num" style="font-size:16px;color:#7A8A99">(n=10)</span></div>
+    <div class="psub">引用金标命中率 × 单题成本 · 误拒率 · 逐题时延 · run-20261013T040929Z</div>
+
+    <!-- BLOCK A: cost-vs-citation scatter -->
+    <div style="font-size:13.5px;font-weight:700;color:#16324F;margin:2px 0 0 2px;">引用命中率 × 单题成本（$）</div>
+    <svg width="524" height="196" viewBox="0 0 524 196">
+      <!-- axes -->
+      <line x1="62" y1="8" x2="62" y2="156" stroke="#9AA8B5" stroke-width="1.5"/>
+      <line x1="62" y1="156" x2="512" y2="156" stroke="#9AA8B5" stroke-width="1.5"/>
+      <g stroke="#E8EDF1" stroke-width="1">
+        <line x1="62" y1="118" x2="512" y2="118"/><line x1="62" y1="80" x2="512" y2="80"/><line x1="62" y1="42" x2="512" y2="42"/>
+      </g>
+      <g font-family="Georgia" font-size="12" fill="#8494A5" text-anchor="end">
+        <text x="56" y="160">0</text><text x="56" y="122">0.25</text><text x="56" y="84">0.50</text><text x="56" y="46">0.75</text>
+      </g>
+      <text x="8" y="12" font-size="11" fill="#5E6B7A" font-weight="700">引用</text>
+      <text x="8" y="25" font-size="11" fill="#5E6B7A" font-weight="700">命中 ↑</text>
+      <!-- cost gridlines: 0->62, 0.85->500 ; 0.2=165, 0.4=268, 0.6=371 -->
+      <g font-family="Georgia" font-size="11" fill="#93A1AE" text-anchor="middle">
+        <text x="165" y="170">0.2</text><text x="268" y="170">0.4</text><text x="371" y="170">0.6</text><text x="474" y="170">0.8</text>
+      </g>
+      <text x="300" y="188" font-size="11" fill="#5E6B7A" font-weight="700" text-anchor="middle">单题成本 $ →</text>
+      <g stroke="#E8EDF1" stroke-width="1" stroke-dasharray="3 3">
+        <line x1="165" y1="8" x2="165" y2="156"/><line x1="268" y1="8" x2="268" y2="156"/><line x1="371" y1="8" x2="371" y2="156"/>
+      </g>
+      <!-- points: y = 156 - rate*144 ; a2 0.75 -> 48 ; baseline 1.0 -> 12 -->
+      <circle cx="474" cy="48" r="13" fill="#0E7C7B"/>
+      <text x="474" y="53" font-size="12" fill="#FFF" text-anchor="middle" font-weight="700">a2</text>
+      <text x="458" y="32" font-family="Georgia" font-size="12.5" font-weight="700" fill="#0E6B6A" text-anchor="end">0.75 · $0.79 · 78s</text>
+      <circle cx="84" cy="24" r="10" fill="#8494A5"/>
+      <text x="98" y="20" font-family="Georgia" font-size="12.5" font-weight="700" fill="#44566B">bm25 1.00 · $0.046 · 12s</text>
+      <circle cx="102" cy="58" r="10" fill="#8494A5"/>
+      <text x="116" y="56" font-family="Georgia" font-size="12.5" font-weight="700" fill="#44566B">rrf 1.00 · $0.078 · 11s</text>
+      <circle cx="100" cy="92" r="10" fill="#8494A5"/>
+      <text x="114" y="96" font-family="Georgia" font-size="12.5" font-weight="700" fill="#44566B">vector 1.00 · $0.075 · 9s</text>
+      <line x1="120" y1="36" x2="452" y2="46" stroke="#C8963E" stroke-width="1.2" stroke-dasharray="5 3"/>
+      <text x="300" y="112" font-size="12" fill="#C8963E" font-weight="700" text-anchor="middle">a2 成本 ≈ baseline 的 17×</text>
+      <text x="300" y="128" font-size="12" fill="#C8963E" font-weight="700" text-anchor="middle">换到「真作答 + 拒答可控」</text>
+    </svg>
+
+    <!-- BLOCK B: over-refusal -->
+    <div style="font-size:13.5px;font-weight:700;color:#16324F;margin:2px 0 2px 2px;border-top:1px dashed #D7DFE6;padding-top:6px;">误拒率（8 可答题）· 逐题时延对照</div>
+    <svg width="524" height="76" viewBox="0 0 524 76">
+      <rect x="8" y="6" width="0" height="13" fill="#B3382C"/>
+      <text x="8" y="17" font-family="Georgia" font-size="12.5" font-weight="700" fill="#0E6B6A">a2 0/8</text>
+      <text x="96" y="17" font-size="12.5" fill="#7A8A99">bm25</text>
+      <rect x="152" y="6" width="52" height="13" fill="#B3382C" opacity="0.78"/>
+      <text x="212" y="17" font-family="Georgia" font-size="12.5" font-weight="700" fill="#B3382C">6/8</text>
+      <text x="256" y="17" font-size="12.5" fill="#7A8A99">rrf</text>
+      <rect x="296" y="6" width="52" height="13" fill="#B3382C" opacity="0.78"/>
+      <text x="356" y="17" font-family="Georgia" font-size="12.5" font-weight="700" fill="#B3382C">6/8</text>
+      <text x="400" y="17" font-size="12.5" fill="#7A8A99">vector</text>
+      <rect x="456" y="6" width="34" height="13" fill="#B3382C" opacity="0.78"/>
+      <text x="496" y="17" font-family="Georgia" font-size="12.5" font-weight="700" fill="#B3382C">4/8</text>
+      <!-- a2 latency strip -->
+      <line x1="6" y1="66" x2="518" y2="66" stroke="#C9D4DC"/>
+      <g fill="#0E7C7B">
+        <rect x="10"  y="64.7" width="34" height="1.3"  rx="1"/>
+        <rect x="62"  y="62.1" width="34" height="3.9"  rx="1"/>
+        <rect x="114" y="58.0" width="34" height="8.0"  rx="1"/>
+        <rect x="166" y="51.6" width="34" height="14.4" rx="1"/>
+        <rect x="218" y="31.5" width="34" height="34.5" rx="1"/>
+        <rect x="270" y="60.7" width="34" height="5.3"  rx="1"/>
+        <rect x="322" y="64.3" width="34" height="1.7"  rx="1"/>
+        <rect x="374" y="58.3" width="34" height="7.7"  rx="1"/>
+        <rect x="426" y="55.1" width="34" height="10.9" rx="1"/>
+        <rect x="478" y="59.5" width="34" height="6.5"  rx="1"/>
+      </g>
+      <g font-size="11" font-weight="700" fill="#B3382C" text-anchor="middle">
+        <text x="27" y="61">★</text><text x="339" y="61">★</text>
+      </g>
+      <g font-family="Georgia" font-size="9.5" fill="#16324F" text-anchor="middle">
+        <text x="27"  y="76">10.9</text><text x="79"  y="76">32.4</text><text x="131" y="76">66.3</text>
+        <text x="183" y="76">119.5</text><text x="235" y="76">283.9</text><text x="287" y="76">44.5</text>
+        <text x="339" y="76">13.9</text><text x="391" y="76">63.3</text><text x="443" y="76">90.9</text>
+        <text x="495" y="76">57.6</text>
+      </g>
+    </svg>
+    <div class="pnote" style="bottom:7px;">a2 引用金标 0.75（含 2 题基础设施中止，实答 6/8 全中）· 误拒 <span class="ok">0/8</span> · 正确拒答四轨全部 <span class="ok">2/2</span> · error 0。baseline 检索 100% 命中却弃答 6/8 · 6/8 · 4/8。</div>
+  </div>
+
+  <!-- paper strip -->
+  <div class="strip">
+    <div class="stitle">论文中的 benchmark 数字 <span>Knowledge-Based Systems 手稿 §7 · 本轮测试已与其口径核对（B 25.0/10.2s、C 37.3/33.7s 已写入论文）</span></div>
+    <div class="vsep"></div>
+    <!-- left: tool layer -->
+    <div class="half" style="left:26px; width:820px;">
+      <div class="hlabel">工具层 · Hit@5（42 文档工业库 · 16 金标题 · mean）</div>
+      <div class="trow"><div class="tname">BM25</div><div class="tbar-w"><div class="tbar" style="width:190px;background:#8494A5"></div></div><div class="tval">1.00</div><div class="tnote">MRR 0.958 · 每调用 ≈1ms</div></div>
+      <div class="trow"><div class="tname">Two-stage（BM25+图→稠密）</div><div class="tbar-w"><div class="tbar" style="width:190px;background:#8494A5"></div></div><div class="tval">1.00</div><div class="tnote">Recall 0.97 · 77ms</div></div>
+      <div class="trow"><div class="tname">Dense（BGE-M3）</div><div class="tbar-w"><div class="tbar" style="width:178.6px;background:#8494A5"></div></div><div class="tval">0.94</div><div class="tnote">仅失 Q16 · 18ms</div></div>
+      <div class="trow"><div class="tname">Fusion-only（判卷不使用）</div><div class="tbar-w"><div class="tbar" style="width:178.6px;background:#8494A5"></div></div><div class="tval">0.94</div><div class="tnote">62ms</div></div>
+      <div class="trow"><div class="tname"><b>Judge-as-filter（判卷过滤）</b></div><div class="tbar-w"><div class="tbar" style="width:178.6px;background:#0E7C7B"></div></div><div class="tval" style="color:#0E6B6A">0.94</div><div class="tnote"><b style="color:#0E6B6A">顺序恢复 · 每条引用仍经判卷</b></div></div>
+      <div class="trow"><div class="tname">Graph（单独）</div><div class="tbar-w"><div class="tbar" style="width:106.4px;background:#8494A5"></div></div><div class="tval">0.56</div><div class="tnote">最弱单信号</div></div>
+      <div class="trow"><div class="tname">QDCVR-Hybrid（判卷重排）</div><div class="tbar-w"><div class="tbar" style="width:83.6px;background:#B3382C"></div></div><div class="tval" style="color:#B3382C">0.44</div><div class="tnote"><b style="color:#B3382C">同域分数膨胀 → 排序崩塌</b> · 542ms</div></div>
+      <div style="font-size:15px;color:#5E6B7A;margin-top:9px;">第二语料迁移：79 篇可检索 arXiv 论文（100 篇提交）· 10 题 → Hit@5 <b class="num" style="color:#16324F">0.90</b>（8/8 方法一致）；判卷塌陷只随 confuser 密度变化。</div>
+    </div>
+    <!-- right: agent layer -->
+    <div class="half" style="left:920px; width:830px;">
+      <div class="hlabel">Agent 层 · E4 三模式端到端（100 篇 arXiv 库 · 10 固定题）</div>
+      <table class="e4">
+        <tr><th style="text-align:left">方法</th><th>Grounded<br>(金标引用)</th><th>Key-fact<br>(≥60% 词边界)</th><th>Cited<br>(部分/章节)</th><th>Wall clock<br>/题</th><th>Cost<br>/题</th></tr>
+        <tr class="hl"><td>Platform（平台读取面）</td><td>10/10</td><td>10/10</td><td>9/10</td><td>116 s</td><td>$0.55</td></tr>
+        <tr><td>Bare agent（裸文件工具）</td><td>10/10</td><td>8/10</td><td>6/10</td><td>48 s</td><td>$0.63</td></tr>
+        <tr><td>Dense retrieval（复刻）</td><td>8/10</td><td>6/10</td><td>1/10</td><td>41 s</td><td>$0.28</td></tr>
+      </table>
+      <div style="font-size:15px;color:#5E6B7A;margin-top:12px;line-height:1.5;">读数：<b style="color:#16324F">验证门作为过滤器（而非排序器）是「引用」与「主张」的分界</b> —— 平台面 Grounded/Key-fact 满分且 9/10 带结构化引用；纯稠密检索便宜 2× 却只 1/10 带引用。检索召回不是贡献点（BM25 已 1.00），<b style="color:#0E6B6A">判卷在管线中的位置</b>才是。</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div>数据源：run-20261013T040929Z-5f9faac（COMPARE.md，40/40 单元一致性自检通过）· run-20261013T035250Z（RETRIEVAL-COMPARE-10Q）· review/retrieval-e2e-20261012/REPORT.md · paper-kbs/tex/n8b_eval.tex</div>
+    <div class="num">2 / 3</div>
+  </div>
+</div>
+</body>
+</html>

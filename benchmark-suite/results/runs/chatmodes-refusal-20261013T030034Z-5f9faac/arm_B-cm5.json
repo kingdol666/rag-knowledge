@@ -1,0 +1,29 @@
+{
+ "mode": "B",
+ "qid": "cm5",
+ "expect": "refusal",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 52.9,
+ "duration_ms": 51471,
+ "turns": 5,
+ "cost_usd": 0.12727700000000003,
+ "session_id": "f265d5e4-fb86-4c6d-b43b-991538c3e8ee",
+ "answer_chars": 500,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**知识库中无「红烧肉」做法的对应内容，如实报告 NOT_FOUND。**\n\n已执行的检索（全库逐级，通道内固定顺序）：\n\n1. **目录层**：`kb_list(lightweight=true)` 扫描全部 **20 个知识库**（共 385 篇文档）。无任何库名/描述涉及烹饪、菜谱、饮食领域——现有库覆盖计算机/AI（131 篇）、自然科学（75）、生命科学与医学（53）、工程与能源（39）、经济社会（24）、工业诊断、小说《傲慢与偏见》、飞控试验、SOUL 人格及若干 E2E 测试库。\n2. **泛化描述库抽查**（random/杂项类不算无关，按规则必须下钻）：\n   - `demo-qa-20260927`（5 篇）：仅含 万里长城、Voyager 1、光合作用、Transformer 论文、检索速查卡——无烹饪内容。\n   - `soul-demo-qa`（4 篇）：仅 SOUL 人格定义文档——无关。\n\n结论：本次通道（目录层 + 描述层抽验）未发现任何覆盖「红烧肉怎么做」的文档，未读任何文档正文即判定盲区。若您需要，可提供一份红烧肉菜谱文档，走入库流程后即可检索回答。",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

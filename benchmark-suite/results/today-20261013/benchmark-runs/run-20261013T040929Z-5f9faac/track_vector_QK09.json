@@ -1,0 +1,59 @@
+{
+ "qid": "QK09",
+ "method": "vector",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "ranked": [
+  "2212.13138",
+  "2301.08436",
+  "2310.10981",
+  "2201.03675",
+  "1911.06206",
+  "2203.15752",
+  "2412.15058",
+  "2110.08918",
+  "2402.12317",
+  "1512.08067"
+ ],
+ "ranked_paths": [
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md",
+  "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer",
+  "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon",
+  "economics__1911.06206__bayesian-state-space-modeling-for-analyzing",
+  "social-networks__2203.15752__information-consumption-and-boundary-spannin.md",
+  "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation",
+  "economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md"
+ ],
+ "evidence_sources": [
+  "2212.13138",
+  "2301.08436",
+  "2310.10981",
+  "2201.03675",
+  "1911.06206",
+  "2203.15752",
+  "2412.15058",
+  "2110.08918"
+ ],
+ "evidence_chars": 3975,
+ "retrieval_s": 0.2,
+ "latency_s": 6.8,
+ "answer": "The evidence is insufficient.\n\nNone of the retrieved chunks address the recommended daily dosage of metformin for diabetic cats. The only diabetes-related evidence ([2201.03675] §3.2 Diabetes) discusses hemoglobin A1C thresholds and 250.XX diagnosis codes for a human cohort — it does not mention metformin, cats, or any dosage. The other chunks are unrelated (biomedical QA leaderboards, drug/NDC tables, medical imaging datasets, sequencing data). I cannot answer this from the provided evidence.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 1946,
+  "output": 107,
+  "cache_read": 48192,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0385144,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

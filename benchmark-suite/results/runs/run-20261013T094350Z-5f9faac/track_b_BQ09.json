@@ -1,0 +1,99 @@
+{
+ "answer": "**Answer (evidence retrieved this session):**\n\nMLP-SLAM addresses the degradation of visual SLAM in dynamic environments: standard systems (e.g., ORB-SLAM2/3, LSD-SLAM, DSO) rely on a static-world assumption and lose precision in outdoor scenes with numerous movable objects such as pedestrians, cars, and buses, while prior remedies either use hand-tuned geometric rules that exploit only partial geometric information (limited generality, laborious tuning) or semantic pipelines like DynaSLAM that discard every feature inside dynamic-class regions, wrongly removing static features (e.g., on parked cars and highway guardrails) and losing useful information, often with high latency. Its solution is the first machine-learning discriminator for dynamic vs. static feature points, an MLP fed with complete geometric information per point — a 3-D input vector of image intensity error, epipolar error, and re-projection error — eliminating manual parameter configuration. The system, built on ORB-SLAM2 stereo, uses YOLOv7 + Deep Sort for object detection/tracking and a Depth Filter Module (depth mean ± η·std) to reclassify in-box background features as static for coarse pose estimation; the MLP then classifies (0 = static, 1 = dynamic via argmax) each remaining in-box feature, and all static points are used for fine pose estimation by minimizing re-projection error. The paper additionally publishes a dataset of 50,000+ KITTI Odometry feature points for direct evaluation of dynamic/static classifiers, and reports the highest average precision and fastest speed on KITTI Odometry and KITTI360 against other dynamic SLAM systems.\n\n**Source used:**\n- `benchmark-suite/data/corpus_md/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md` — Abstract; §I Introduction; §III-C (MLP notations, Eqs. 3–5); §III-D System Structure; §IV-A Depth Filter Module; §IV-B Coarse Estimation; §IV-C MLP Module.",
+ "is_error": false,
+ "latency_s": 20.4,
+ "sdk_duration_ms": 17863,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MLP-SLAM|MLP_SLAM|MLP SLAM"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "dynamic|Dynamic",
+    "path": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\robotics__2410.10669__mlp-slam-multilayer-pe"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 60554,
+  "output": 2696,
+  "cache_read": 94080,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.418209,
+ "timeline": [
+  {
+   "t": 2.63,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.67,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 4.8,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 7.33,
+   "event": "text",
+   "detail": "94"
+  },
+  {
+   "t": 7.69,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 7.96,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 20.45,
+   "event": "text",
+   "detail": "1923"
+  },
+  {
+   "t": 20.45,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "Found the target file. Let me grep for relevant passages first, then read surrounding context.",
+  "**Answer (evidence retrieved this session):**\n\nMLP-SLAM addresses the degradation of visual SLAM in dynamic environments: standard systems (e.g., ORB-SLAM2/3, LSD-SLAM, DSO) rely on a static-world assumption and lose precision in outdoor scenes with numerous movable objects such as pedestrians, cars, and buses, while prior remedies either use hand-tuned geometric rules that exploit only partial geometric information (limited generality, laborious tuning) or semantic pipelines like DynaSLAM that discard every feature inside dynamic-class regions, wrongly removing static features (e.g., on parked cars and highway guardrails) and losing useful information, often with high latency. Its solution is the first machine-learning discriminator for dynamic vs. static feature points, an MLP fed with complete geometric information per point — a 3-D input vector of image intensity error, epipolar error, and re-projection error — eliminating manual parameter configuration. The system, built on ORB-SLAM2 stereo, uses YOLOv7 + Deep Sort for object detection/tracking and a Depth Filter Module (depth mean ± η·std) to reclassify in-box background features as static for coarse pose estimation; the MLP then classifies (0 = static, 1 = dynamic via argmax) each remaining in-box feature, and all static points are used for fine pose estimation by minimizing re-projection error. The paper additionally publishes a dataset of 50,000+ KITTI Odometry feature points for direct evaluation of dynamic/static classifiers, and reports the highest average precision and fastest speed on KITTI Odometry and KITTI360 against other dynamic SLAM systems.\n\n**Source used:**\n- `benchmark-suite/data/corpus_md/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md` — Abstract; §I Introduction; §III-C (MLP notations, Eqs. 3–5); §III-D System Structure; §IV-A Depth Filter Module; §IV-B Coarse Estimation; §IV-C MLP Module."
+ ],
+ "track": "b",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md",
+ "max_turns": 12,
+ "qid": "BQ09",
+ "via": "chat",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "attention",
+ "mode": "A",
+ "http": 200,
+ "wall_s": 26.3,
+ "success": true,
+ "session_id": "4e7ae855-0f48-4c89-8405-79657c83c683",
+ "turns": 4,
+ "cost": 0.398269,
+ "duration_ms": 25074,
+ "answer": "**Transformer 自注意力（Scaled Dot-Product Attention）的计算公式为：Attention(Q, K, V) = softmax(QKᵀ / √d_k) · V**（论文式(1)，逐字命中原文）。\n\n**公式构成**（原文 3.2.1 节）：输入由维度 d_k 的 queries/keys、维度 d_v 的 values 组成；原文描述为 \"compute the dot products of the query with all keys, divide each by √d_k, and apply a softmax function to obtain the weights on the values\"。实操中所有 query 打包为矩阵 Q，keys/values 打包为 K、V，矩阵化并行计算：QKᵀ 得相似度打分 → 除以 √d_k 缩放 → softmax 归一化成权重 → 对 V 加权求和。\n\n**自注意力的特化**（3.2.3 节原文）：\"In a self-attention layer all of the keys, values and queries come from the same place\"——Q、K、V 均来自同一序列（上一层输出），这正是 self-attention 与 encoder-decoder attention 的区别。解码器侧还会把非法连接位置在 softmax 输入处置为 −∞（masking）以保持自回归性质。\n\n**缩放因子 1/√d_k 的原因**（原文）：\"for large values of d_k, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients\"——防止点积过大导致 softmax 梯度消失。\n\n**多头扩展**（3.2.2 节）：MultiHead(Q,K,V) = Concat(head₁,…,head_h)W^O，其中 head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)；原文实验取 h=8，d_k = d_v = d_model/h = 64。\n\n**出处**：`计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2)`（Attention Is All You Need 原文，3.2.1 节式(1)）——KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`（计算机与人工智能库）。Laya 证据门控评分 0.84–0.93，**P0 直接证据**（公式与解释均为原文逐字命中，非二手转述）。"
+}

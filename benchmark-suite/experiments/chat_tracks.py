@@ -242,6 +242,14 @@ def chat_stream(prompt: str, cwd: str, allowed_tools: list | None = None,
     # the SSE parser below (and the tool timeline it records) requires events.
     payload = {"prompt": prompt, "cwd": cwd, "engine": "claude",
                "maxTurns": int(max_turns), "stream": True}
+    # MCP mount for the platform arm (a2) — see web/server/api/claude/chat.post.ts.
+    # 'stdio' spawns kb-mcp into the session before init, so mcp__kb-mcp__* tools
+    # exist at turn 1. The default 'sse' lane mounts :8000 asynchronously AFTER
+    # init and can lose the race with the first tool turn; that failure mode is a
+    # silent `KB_TOOLS_NOT_READY` sentinel with 0 tool calls, which is NOT a
+    # measurable quality signal (2026-10-13 paper-final run scored 0 retrieval
+    # this way). Set RAG_BENCH_MCP_MOUNT=sse to reproduce the legacy lane.
+    payload["mcpMount"] = os.environ.get("RAG_BENCH_MCP_MOUNT", "stdio").strip() or "stdio"
     if allowed_tools is not None:
         payload["allowedTools"] = allowed_tools
 

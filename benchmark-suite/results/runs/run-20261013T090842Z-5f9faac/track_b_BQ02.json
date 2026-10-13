@@ -1,0 +1,107 @@
+{
+ "answer": "**Answer (from retrieved corpus evidence):**\n\n\"NISQ\" stands for *Noisy Intermediate-Scale Quantum* — Preskill's name for the approaching era of quantum computers with 50 to a few hundred qubits: \"intermediate scale\" because 50 qubits exceeds brute-force simulation by the most powerful classical supercomputers, and \"noisy\" because we will have imperfect control over the qubits, with the noise placing \"serious limitations on what quantum devices can achieve in the near term\" (quantum-physics__1801.00862, §4.1). Its central limitation is that, since NISQ devices run noisy gates unprotected by quantum error correction, noise accumulates and \"will overwhelm the signal\" once circuits contain many more than ~1000 two-qubit gates — \"that limitation on circuit size imposes a ceiling on the computational power of NISQ technology\" (same paper, §4.2; echoed in §6.2: \"imperfect gates in NISQ systems will severely limit their computational power\"). The abstract states it concisely: \"noise in quantum gates will limit the size of quantum circuits that can be executed reliably.\" A corroborating corpus source independently characterizes the NISQ era as marked by \"restrictive qubit topologies, short coherence times and imperfect quantum gates\" that \"compound to limit what is achievable using existing or near-term quantum devices\" (quantum-physics__2303.00445, §I).\n\n**Sources used:**\n- `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md` (Preskill, \"Quantum Computing in the NISQ era and beyond\") — abstract; §4.1 \"The 50-qubit barrier\"; §4.2 \"Qubit quality\"; §6.2\n- `quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu.md` — §I Introduction",
+ "is_error": false,
+ "latency_s": 22.6,
+ "sdk_duration_ms": 19945,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ",
+    "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "*",
+    "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "noisy intermediate-scale|NISQ",
+    "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\quantum-physics__1801.00862__quantum-computi"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\quantum-physics__1801.00862__quantum-computi"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "noisy intermediate-scale|NISQ devices|noise",
+    "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\quantum-physics__2303.00445__benchmarking-no"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 61702,
+  "output": 3108,
+  "cache_read": 207616,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.491011,
+ "timeline": [
+  {
+   "t": 2.7,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 5.15,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 5.28,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 8.04,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 11.5,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 16.64,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 22.59,
+   "event": "text",
+   "detail": "1693"
+  },
+  {
+   "t": 22.6,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "**Answer (from retrieved corpus evidence):**\n\n\"NISQ\" stands for *Noisy Intermediate-Scale Quantum* — Preskill's name for the approaching era of quantum computers with 50 to a few hundred qubits: \"intermediate scale\" because 50 qubits exceeds brute-force simulation by the most powerful classical supercomputers, and \"noisy\" because we will have imperfect control over the qubits, with the noise placing \"serious limitations on what quantum devices can achieve in the near term\" (quantum-physics__1801.00862, §4.1). Its central limitation is that, since NISQ devices run noisy gates unprotected by quantum error correction, noise accumulates and \"will overwhelm the signal\" once circuits contain many more than ~1000 two-qubit gates — \"that limitation on circuit size imposes a ceiling on the computational power of NISQ technology\" (same paper, §4.2; echoed in §6.2: \"imperfect gates in NISQ systems will severely limit their computational power\"). The abstract states it concisely: \"noise in quantum gates will limit the size of quantum circuits that can be executed reliably.\" A corroborating corpus source independently characterizes the NISQ era as marked by \"restrictive qubit topologies, short coherence times and imperfect quantum gates\" that \"compound to limit what is achievable using existing or near-term quantum devices\" (quantum-physics__2303.00445, §I).\n\n**Sources used:**\n- `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md` (Preskill, \"Quantum Computing in the NISQ era and beyond\") — abstract; §4.1 \"The 50-qubit barrier\"; §4.2 \"Qubit quality\"; §6.2\n- `quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu.md` — §I Introduction"
+ ],
+ "track": "b",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md",
+ "max_turns": 12,
+ "qid": "BQ02",
+ "via": "chat",
+ "git_commit": "5f9faac",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

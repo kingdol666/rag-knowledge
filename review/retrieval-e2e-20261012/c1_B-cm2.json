@@ -1,0 +1,2668 @@
+{
+ "channel": "harness-api-stream",
+ "mode": "B",
+ "qid": "cm2",
+ "expect": "found",
+ "kbIds": [],
+ "prompt_head": "基于电子健康记录（EHR）数据用机器学习算法预测中风/卒中风险：关键风险因素及其影响分析 (stroke prediction electronic health records machine learning risk factors)",
+ "engine": "claude",
+ "permissionMode": "default",
+ "http": 200,
+ "wall_s": 43.2,
+ "n_events": 500,
+ "timeline": [
+  {
+   "t": 0.0,
+   "event": "meta",
+   "mtype": null,
+   "engine": "claude",
+   "model": "default"
+  },
+  {
+   "t": 1.0,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 1.0,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 2.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 2.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 105
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_640a1bfcaae347179037fe42",
+     "name": "EndConversation",
+     "input": "{\"message\": \"test\"}"
+    }
+   ]
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_640a1bfcaae347179037fe42",
+     "chars": 155
+    }
+   ]
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 3.4,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 6.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.9,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_078dcb52571c4151a9ecc3c3",
+     "name": "mcp__kb-mcp__kb_list",
+     "input": "{\"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 6.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 6.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 7.5,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_078dcb52571c4151a9ecc3c3",
+     "chars": 5631
+    }
+   ]
+  },
+  {
+   "t": 7.5,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 8.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 8.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 8.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.3,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_e7adbb77b69341129a53b915",
+     "name": "mcp__kb-mcp__kb_get_documents",
+     "input": "{\"kb_id\": \"b28f0a25-1e1d-40ad-96b8-61bd2b093a28\", \"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 14.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.3,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_af968cbfbed64799ba99f117",
+     "name": "mcp__kb-mcp__kb_get_documents",
+     "input": "{\"kb_id\": \"455137b4-a0be-46ed-acf5-d8b475dc5d70\", \"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 14.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.3,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_a7ade62a1a1b48719afa127f",
+     "name": "mcp__kb-mcp__kb_get_documents",
+     "input": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true}"
+    }
+   ]
+  },
+  {
+   "t": 14.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 14.9,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_e7adbb77b69341129a53b915",
+     "chars": 33089
+    }
+   ]
+  },
+  {
+   "t": 15.4,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_af968cbfbed64799ba99f117",
+     "chars": 2029
+    }
+   ]
+  },
+  {
+   "t": 16.1,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_a7ade62a1a1b48719afa127f",
+     "chars": 2460
+    }
+   ]
+  },
+  {
+   "t": 16.1,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 17.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 17.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 17.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 17.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 17.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 18.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.3,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 107
+  },
+  {
+   "t": 23.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.3,
+   "event": "message",
+   "mtype": "assistant",
+   "tool_uses": [
+    {
+     "id": "call_2f4d7a0006844f0d8dac682d",
+     "name": "mcp__kb-mcp__kb_laya_judge",
+     "input": "{\"query\": \"基于电子健康记录(EHR)数据用机器学习算法预测中风/卒中风险：关键风险因素及其影响分析\", \"documents\": \"[{\\\"kb_id\\\":\\\"b28f0a25-1e1d-40ad-96b8-61bd2b093a28\\\",\\\"doc_path\\\":\\\"生命科学与医学\\\\\\\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-heal"
+    }
+   ]
+  },
+  {
+   "t": 23.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 23.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 32.4,
+   "event": "message",
+   "mtype": "user",
+   "tool_results": [
+    {
+     "id": "call_2f4d7a0006844f0d8dac682d",
+     "chars": 27180
+    }
+   ]
+  },
+  {
+   "t": 32.4,
+   "event": "message",
+   "mtype": "system"
+  },
+  {
+   "t": 33.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 33.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 34.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 35.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 36.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 37.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 38.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 39.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 40.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 41.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.3,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.4,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.5,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.6,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.7,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.8,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 42.9,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.0,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.1,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.2,
+   "event": "message",
+   "mtype": "assistant",
+   "text_chars": 1473
+  },
+  {
+   "t": 43.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.2,
+   "event": "message",
+   "mtype": "stream_event"
+  },
+  {
+   "t": 43.2,
+   "event": "done",
+   "mtype": "result",
+   "subtype": "success"
+  }
+ ],
+ "answer": "**结论：知识库中确有一篇完全对口的一手文献——《Predicting Stroke from Electronic Health Records》(arXiv:1904.11280)，其核心发现是：单一风险因素中高血压、心脏病、糖尿病最为关键，但 PCA 显示\"年龄 + 婚姻状态\"对主成分贡献最大、\"居住类型几乎无贡献\"，且 10 个患者属性整体不高度相关、不应做特征约简；三种机器学习算法精度接近，多层感知机(MLP)最高 75.02%。**\n\n**证据基础(P0 强，Laya 引擎 8/8 段全部存活，最高分 0.94)**\n- 来源库：《生命科学与医学》KB (`b28f0a25-1e1d-40ad-96b8-61bd2b093a28`)\n- 文献：`clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md`（Nwosu, Dev, Bhardwaj, Veeravalli, John）\n\n**1. 数据与属性**\nMcKinsey 医疗黑客松发布、经 Kaggle 获取的 EHR 数据集：**29,072 条患者记录、12 个属性**（11 个输入 + 1 个二值中风标签）。10 个建模输入为：性别、年龄、是否高血压、是否心脏病、婚姻状态、职业类型、居住类型（城市/农村）、平均血糖水平、BMI、吸烟状态。\n\n**2. 关键风险因素及其影响**\n- **高血压、糖尿病(血糖)、心脏病**被既有研究[6]-[8]认定为中风主要风险因素（引言综述）。\n- **PCA 量化贡献**：前两个主成分仅捕获 **31.4%** 方差；其中**年龄与婚姻状态贡献最大**，**居住类型对前两主成分\"no contribution\"（无贡献）**。\n- 主成分一：把**吸烟状态**与其余属性对比 → 提示\"年长、已婚、高血糖、高血压、心脏病者不吸烟\"。\n- 主成分二：把**血糖、BMI、性别、高血压、心脏病**与**年龄、婚姻状态、工作类型**相对比 → 提示\"高血糖、高血压、心脏病者年龄较小且未婚\"。\n- 前 9 个主成分可解释 **96.06%** 方差，但作者明确**不建议特征约简**——因属性间相关性低，前两主成分仅 31.4%，约简会带来显著信息损失。结论：**全部 10 个属性都应作为预测特征**。\n\n**3. 机器学习算法基准(1000 次随机下采样实验平均精度)**\n\n| 算法 | 平均分类精度 |\n|---|---|\n| Decision Tree | 74.31% |\n| Random Forest | 74.53% |\n| Neural Network (MLP) | **75.02%** |\n\n数据极度失衡：29,072 条中仅 **548 条**中风(少数类)，28,524 条无中风(多数类)，故采用随机下采样构造 548+548=**1096** 条均衡集，70% 训练 / 30% 测试。\n\n**可信度标注**：P0 强（原始论文全文，权威一手来源，Laya 全段通过）。\n\n**盲点声明**：本次仅对目录层命中的相关库做了描述层扫描——《生命科学与医学》命中该文献；《计算机与人工智能》《demo-qa-20260927》(泛化库，已抽查)未见遗漏。本回答的量化数字全部来自上述**单篇文献**，非跨文献元分析；若需其他 EHR/卒中预测研究（如 SVM、深度学习队列）则本库未覆盖。",
+ "num_turns": 7,
+ "duration_ms": 42278,
+ "cost_usd": 0.2500992,
+ "session_id": "87370d19-1550-4b22-ba1c-9b874968306b",
+ "tool_spans": [
+  {
+   "tool": "EndConversation",
+   "input": "{\"message\": \"test\"}",
+   "t_start": 3.4,
+   "t_end": 3.4,
+   "dur_s": 0.0,
+   "result_chars": 155
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": "{\"lightweight\": true}",
+   "t_start": 6.9,
+   "t_end": 7.5,
+   "dur_s": 0.6,
+   "result_chars": 5631
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": "{\"kb_id\": \"b28f0a25-1e1d-40ad-96b8-61bd2b093a28\", \"lightweight\": true}",
+   "t_start": 14.3,
+   "t_end": 14.9,
+   "dur_s": 0.6,
+   "result_chars": 33089
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": "{\"kb_id\": \"455137b4-a0be-46ed-acf5-d8b475dc5d70\", \"lightweight\": true}",
+   "t_start": 14.3,
+   "t_end": 15.4,
+   "dur_s": 1.1,
+   "result_chars": 2029
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true}",
+   "t_start": 14.3,
+   "t_end": 16.1,
+   "dur_s": 1.8,
+   "result_chars": 2460
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": "{\"query\": \"基于电子健康记录(EHR)数据用机器学习算法预测中风/卒中风险：关键风险因素及其影响分析\", \"documents\": \"[{\\\"kb_id\\\":\\\"b28f0a25-1e1d-40ad-96b8-61bd2b093a28\\\",\\\"doc_path\\\":\\\"生命科学与医学\\\\\\\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-heal",
+   "t_start": 23.3,
+   "t_end": 32.4,
+   "dur_s": 9.1,
+   "result_chars": 27180
+  }
+ ],
+ "tool_sequence": [
+  "EndConversation",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_laya_judge"
+ ],
+ "retrieval_tools_s": 13.2,
+ "answer_chars": 1473,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "gate_passed": true
+}

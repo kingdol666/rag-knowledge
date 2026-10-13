@@ -1,0 +1,31 @@
+{
+ "mode": "A",
+ "qid": "cm7",
+ "expect": "refusal",
+ "kb_ids": [
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 63.8,
+ "duration_ms": 62490,
+ "turns": 8,
+ "cost_usd": 0.2270132,
+ "session_id": "62e0e145-1100-4fd9-8ca9-6c0c3eb4e679",
+ "answer_chars": 1456,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**未找到——该知识库中没有关于变压器（transformer）选型的内容。**\n\n## 检索事实\n\n**目标库：** `8fa4db59-adde-4d6d-9fdb-2c375400e631`（工程与能源主题库，39 篇文档，分为 mathematics 23 / materials 9 / power-systems 7 三组）\n\n**已执行的检索：**\n\n| # | 检索工具 | 查询 | 命中 |\n|---|---|---|---|\n| 1 | `kb_search_two_stage`（slim，stage1=20/stage2=5） | 变压器选型 容量 电压等级 电力系统 | 20 候选，5 chunk，全部来自 `power-systems__2607.03098`（电力电子储能 PEES 综述）|\n| 2 | `kb_search_vector`（slim，top_k=15） | transformer selection sizing power system 变压器选择原则 | 15 chunk，最高分 0.56，均为储能/变流器内容 |\n| 3 | `kb_search_vector`（slim，top_k=10） | 变压器 绕组 铁芯 变比 额定容量 温升 冷却方式 | 10 chunk，最高分 0.61，仍全部为储能/DC-AC 变流器内容 |\n| ",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

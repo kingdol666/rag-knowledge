@@ -41,11 +41,15 @@ HYBRID_SUFFIX = ("【混合检索模式】先用 kb_search_two_stage / kb_search
                  "kb_get_documents 逐级检索补齐后才作答。")
 
 REFUSAL_MARKERS = (
-    "无法", "没有找到", "未找到", "未检索到", "没有检索到", "不存在",
+    "无法", "没有找到", "未找到", "未能找到", "未检索到", "没有检索到", "不存在",
     "无法回答", "无法作答", "无法据此",
     "not found", "no document", "no content", "cannot answer",
     "unable to answer", "does not exist", "no evidence", "cannot find",
     "not covered", "outside the corpus", "not in the library",
+    "无对应内容", "没有覆盖",
+    # 2026-10-13 弃答盲测补充: 真实弃答措辞的其余常见形态（均无歧义的否定结论短语）
+    "未发现", "没有任何关于", "没有任何一个", "没有相关", "未收录", "没有收录",
+    "无从查证", "查无", "not_found", "no relevant",
 )
 
 # Same gold documents as the --retmodes q1/q2 (cross-comparable), plus one
@@ -86,13 +90,82 @@ QUESTIONS: dict[str, dict] = {
         "gold_doc_substr": "",
         "gold_id": "",
     },
+    # ---- cm4-cm9 (2026-10-13 honest-refusal battery; ground truth machine-verified
+    # via kb_search metadata scan: 番茄炒蛋/红烧肉/电力变压器/LoRA/铁观音/Zephyr-7 have
+    # NO dedicated doc in the library; LoRA metadata hits are chemistry false positives;
+    # power-systems papers cover grid-integration & disturbance, NOT transformer selection) ----
+    "cm4": {
+        "qid": "cm4",
+        "expect": "found",
+        "pin": KB_CS,
+        "pin_name": "计算机与人工智能",
+        "text": "transformer是什么？",
+        "answer_markers": ["attention", "vaswani"],
+        "gold_doc_substr": "attention",
+        "gold_id": "1706.03762",
+    },
+    "cm5": {
+        "qid": "cm5",
+        "expect": "refusal",
+        "pin": "455137b4-a0be-46ed-acf5-d8b475dc5d70",  # demo-qa (random real-world content)
+        "pin_name": "demo-qa-20260927",
+        "text": "红烧肉怎么做？",
+        "answer_markers": [],
+        "gold_doc_substr": "",
+        "gold_id": "",
+    },
+    "cm6": {
+        "qid": "cm6",
+        "expect": "refusal",
+        "pin": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+        "pin_name": "demo-qa-20260927",
+        "text": "番茄炒蛋怎么做？",
+        "answer_markers": [],
+        "gold_doc_substr": "",
+        "gold_id": "",
+    },
+    "cm7": {
+        "qid": "cm7",
+        "expect": "refusal",
+        "pin": "8fa4db59-adde-4d6d-9fdb-2c375400e631",  # 工程与能源 (power-systems papers exist)
+        "pin_name": "工程与能源",
+        "text": "transformer 变压器在电力系统中如何选型？",
+        "answer_markers": [],
+        "gold_doc_substr": "",
+        "gold_id": "",
+    },
+    "cm8": {
+        "qid": "cm8",
+        "expect": "refusal",
+        "pin": KB_CS,
+        "pin_name": "计算机与人工智能",
+        "text": "如何用 LoRA 微调大语言模型？",
+        "answer_markers": [],
+        "gold_doc_substr": "",
+        "gold_id": "",
+    },
+    "cm9": {
+        "qid": "cm9",
+        "expect": "refusal",
+        "pin": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+        "pin_name": "demo-qa-20260927",
+        "text": "Zephyr-7 无线充电协议的帧结构是什么？",
+        "answer_markers": [],
+        "gold_doc_substr": "",
+        "gold_id": "",
+    },
 }
 
 TIMEOUT_S = 480
 
 
+# 结论先行窗口 (2026-10-12): 拒答结论必在答案开头; 全文扫描会把正当 found
+# 答案中段的讨论性字眼("无法从单一特征推断"等)误判成拒答。
+REFUSAL_WINDOW = 500
+
+
 def _is_refusal(answer: str) -> bool:
-    low = answer.lower()
+    low = (answer or "")[:REFUSAL_WINDOW].lower()
     return any(m in low for m in REFUSAL_MARKERS)
 
 
@@ -133,10 +206,14 @@ def run_chat_mode(mode: str, question: dict, max_turns: int = 18) -> dict:
     answer = str(payload.get("answer") or "")
     ok_call = http == 200 and payload.get("success") is True and bool(answer.strip())
     markers = [m for m in question["answer_markers"] if m in answer.lower()]
+    # 拒答优先判定 (2026-10-12): found 题的答案若构成如实拒答(拒答文本会复述
+    # 问题关键词导致 marker 命中, 例: "未找到任何 InstructDS 相关内容"),
+    # 必须判 FAIL 而非借问题回显假阳性通过。
+    refused = _is_refusal(answer) if answer else False
     if question["expect"] == "found":
-        passed = ok_call and bool(markers)
+        passed = ok_call and bool(markers) and not refused
     else:
-        passed = ok_call and _is_refusal(answer)
+        passed = ok_call and refused
     return {
         "mode": mode, "qid": question["qid"], "expect": question["expect"],
         "kb_ids": kb_ids,
@@ -161,6 +238,7 @@ def verify_gate(arm: dict, question: dict) -> dict:
     }
     if question["expect"] == "found":
         checks["answer_marker_hit"] = bool(arm.get("answer_markers_hit"))
+        checks["not_refusal"] = arm.get("refusal") is not True
     else:
         checks["honest_refusal"] = arm.get("refusal") is True
     return {"passed": all(checks.values()), "checks": checks}
