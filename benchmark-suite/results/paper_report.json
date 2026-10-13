@@ -5,7 +5,7 @@
   "config_hash": "9fb259c0cf2b6dea",
   "prompt_version": "v4-neutral",
   "started_utc": "2026-10-13T09:43:50.941632+00:00",
-  "generated_utc": "2026-10-13 12:16 UTC",
+  "generated_utc": "2026-10-13 12:42 UTC",
   "tracks": [
    "a2",
    "b",
@@ -20,7 +20,7 @@
   "tokens_out_total": 125629,
   "qfile": "qa_questions.json",
   "n_rows": 30,
-  "repro": "# 1) 语料与索引（只读体检 + 必要时重建）\npython scripts/151_smoke_probe.py\npython scripts/106_exp_corpus_r2.py --dry-run\n# 1b) Table 1 的检索回归探针（真实检索，15 条铺满五门类库）\npython scripts/158_a_retrieval_regression.py\n# 2) 三轨真实执行（写 results/runs/run-<ts>-<commit>/）\npython -m experiments.runner --questions data/papers/qa_questions.json --tracks a2,b,c\n# 3) 采集 + 自检 + 渲染报告\npython scripts/161_final_evidence.py --run run-20261013T094350Z-5f9faac\npython scripts/162_paper_report_html.py\n# 4) 稳定性套件（可选，约 30 分钟）\npython review/stability-multiround-20260930/run_stability.py r1 r2 r3"
+  "repro": "# 1) 语料与索引（只读体检 + 必要时重建）\npython scripts/151_smoke_probe.py\npython scripts/106_exp_corpus_r2.py --dry-run\n# 1b) Table 1 的检索回归探针（真实检索，15 条铺满五门类库）\npython scripts/158_a_retrieval_regression.py\n# 2) 三轨真实执行（写 results/runs/run-<ts>-<commit>/）\npython -m experiments.runner --questions data/papers/qa_questions.json --tracks a2,b,c\n# 3) 采集 + 自检 + 渲染报告\npython scripts/161_final_evidence.py --run run-20261013T094350Z-5f9faac\npython scripts/162_paper_report_html.py\n# 4) 稳定性套件（可选，约 30 分钟）\npython review/stability-multiround-20261013/run_stability.py r1 r2 r3"
  },
  "corpus": {
   "probed": true,
@@ -67,7 +67,7 @@
  "regression": {
   "path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\a_retrieval_regression.json",
   "present": true,
-  "generated": "2026-10-13 20:09:27",
+  "generated": "2026-10-13 20:42:20",
   "top_k": 10,
   "probes_pass": 15,
   "probes_total": 15,
@@ -1468,7 +1468,7 @@
    {
     "name": "检索回归探针 15/15（论文 Table 1）",
     "ok": true,
-    "detail": "15/15 · 产物 a_retrieval_regression.json · 生成 2026-10-13 20:09:27"
+    "detail": "15/15 · 产物 a_retrieval_regression.json · 生成 2026-10-13 20:42:20"
    },
    {
     "name": "回归探针命中覆盖五门类库",

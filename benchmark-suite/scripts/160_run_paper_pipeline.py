@@ -9,7 +9,7 @@ r"""QDCVR 论文终测总流水线 —— 一条命令跑完全部阶段并产�
                         ⚠ 默认不跑（约 30 分钟、约 $17），必须显式加 --live
     S3 采集 + 自检      scripts/161_final_evidence.py（判分复算 + 论文级闸门 + 论文宏工单）
     S4 可视化 HTML      scripts/162_paper_report_html.py（单文件离线 dashboard）
-    S5 稳定性套件       review/stability-multiround-20260930/run_stability.py（三任务 × 三车道 × 多轮）
+    S5 稳定性套件       review/stability-multiround-20261013/run_stability.py（三任务 × 三车道 × 多轮）
 
 用法
     python scripts/160_run_paper_pipeline.py --check          # 只体检（1 分钟内）
@@ -160,7 +160,7 @@ def main() -> int:
                    if html_path.exists() else "未生成")
 
         elif s == "S5":
-            rc, _ = run([PY, str(REPO / "review" / "stability-multiround-20260930"
+            rc, _ = run([PY, str(REPO / "review" / "stability-multiround-20261013"
                                  / "run_stability.py"), "r1", "r2", "r3",
                          "--out", "review/stability-multiround-20261013/results"],
                         REPO, "S5 稳定性套件（27 单元）", tail=12)

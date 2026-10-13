@@ -28,7 +28,7 @@ REPO = SUITE.parent
 RESULTS = SUITE / "results"
 STAB_DIRS = [
     REPO / "review" / "stability-multiround-20261013" / "results",
-    REPO / "review" / "stability-multiround-20260930" / "results",
+    REPO / "review" / "archive-superseded" / "stability-multiround-20260930" / "results",
 ]
 DENSE_KB = "Corpus-Chunks800"
 

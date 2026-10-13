@@ -54,9 +54,10 @@ This is the system demonstrated in our CIKM '26 demo paper, *QDCVR: A Deployable
 | [**Architecture**](#architecture) | Services, ports, storage engines |
 | [**Quick start**](#quick-start) | Clone → setup → up |
 | [**Use it four ways**](#use-it-four-ways) | Web UI · HTTP · CLI · MCP |
-| [**MCP tools**](#mcp-tools) | 41 `kb_*` domain tools out of 94, by category |
+| [**MCP tools**](#mcp-tools) | 42 `kb_*` domain tools out of 95, by category |
 | [**External HTTP API**](#external-http-api) | Call it from anything, no agent required |
 | [**Benchmark**](#benchmark) | The reproducible pipeline and its numbers |
+| [**Latest test results**](./TEST-RESULTS/README.md) | The current run, what it means, and how to re-derive it yourself |
 | [**Scope and non-goals**](#scope-and-non-goals) | What this does *not* do |
 
 ---
@@ -473,25 +474,26 @@ web/storage/tree-file-system/
 
 ## Benchmark
 
-Everything runs from **one reproducible pipeline**: [`benchmark-suite/PIPELINE.md`](./benchmark-suite/PIPELINE.md) — download 50 real arXiv papers across 26 fields → parse through the production MinerU chain → route into 5 category bases by content (an agent judgment step, grounded in per-paper excerpts) → tag every part → build three replication chunk-bases (fixed-800 / structural / paragraph) → restart → run a scripted 10-question regression → answer the same 10 questions on three tracks (the QDCVR v2 skill flow vs a bare agent vs a dense baseline) → generate the reports. **One red line: nothing is fabricated — judgment artifacts must trace to exported evidence.**
+Everything runs from **one reproducible pipeline**: [`benchmark-suite/PIPELINE.md`](./benchmark-suite/PIPELINE.md) — download 100 real arXiv papers across 26 fields → parse through the production MinerU chain → route into 5 category bases by content (an agent judgment step, grounded in per-paper excerpts) → tag every part → build the fixed-800 dense replica → run 15 retrieval-regression probes → answer 10 fixed questions on three tracks (the QDCVR platform flow vs a bare agent vs a dense baseline) → grade, audit and render the report. **One red line: nothing is fabricated — every number must re-derive from saved artifacts.**
 
-**This run's committed numbers** (traceable to `benchmark-suite/results/`):
+**Latest run: `run-20261013T094350Z-5f9faac`** (2026-10-13, commit `5f9faac`, 30 cells, 0 aborts, $17.03). Read it without running anything: **[`TEST-RESULTS/README.md`](./TEST-RESULTS/README.md)** — it explains what was measured, what it means, and ships `TEST-RESULTS/verify.py`, a stdlib-only checker that re-derives every headline number straight from the raw cells (`10/10/10 grounded · 10/9/9 keyword · 9/7/2 cited`).
 
 | Stage | Result |
 |---|---|
-| Parse (MinerU, production chain) | 50/50 papers · 3.8 M characters |
-| Content routing + verification | 50/50 verified into 5 category bases (165 indexed documents) |
-| Content tags | 165/165 parts tagged, 0 failures |
-| Replication bases | 2 366 / 1 385 / 10 219 chunks |
-| Scripted 10-question regression (vector-first) | **9/10 = 90 %** — the one miss is a long-paper chunk-window miss (`doc_hit=true`), identical across runs |
-| **Live three-track answering**, same 10 questions | **A · QDCVR v2: 10/10 on-target** (gates 6–8/8, librarian rescue on the one gate-fail, top-1 gold recall 10/10, ≈1.6 s mean vector recall + 0.8 s reads) · **B · bare agent: 10/10 gold**, provenance stops at file names, 78.8 s average · **C · dense baseline: content matches**, 2/10 abstained, no source paths, 12.2 s average |
-| Honest-failure probes | 3 out-of-corpus questions → explicit not-found reports, zero fabrication |
+| Parse (MinerU, production chain) | 100/100 papers routed into 5 category bases |
+| Ingest + organization audited on the live instance | 322 documents (131/75/53/39/24) · 165/165 descriptions upgraded · true duplicates 0 (35 near-pairs) |
+| Dense replica (`Corpus-Chunks800`, 800-char chunks) | 4 528 chunks, live-probe recall verified |
+| Retrieval-regression probes | 15/15 (every probe hits its own field's base) |
+| **Three-track answering**, 10 fixed questions, one harness/model/prompt | **A · platform 10/10 grounded · 9/10 cited** (52.6 s, $0.7110) · **B · bare agent 10/10 grounded · 7/10 cited** (22.2 s, $0.4867) · **C · dense 10/10 grounded · 2/10 cited** (24.5 s, $0.5269) |
+| Stability suite | 27/27 cells behaviourally correct and lane-compliant · 15–182 s, median 52 s |
 
-The CIKM demo paper's figures (`paper_demo/figures/`) are generated from these artifacts.
+The headline is *not* accuracy — all three arms ground 10/10. It is **evidence inspectability**: the platform names part · section · table for 9 of 10 answers; the bare agent manages 7, dense retrieval 2. The platform is also the slowest **and** the costliest arm (dearer than the bare agent on 9 of 10 questions, paired t = +4.84) — the honest price of that inspectability.
 
-> **On withheld results.** Earlier revisions of this README quoted IR-style numbers (`Hit@k`, `nDCG@10`, etc.) from standard corpora, and before that a larger benchmark from `benchmark-web/backend/results/` which contains **no producing script** in this repository. The IR corpora were retired in the 2026-09 benchmark redesign (standard corpora measure ranking, not knowledge-base management); the superseded scripts and corpora are archived under `.bench_backup_20260917/`. Figures that cannot be regenerated from a committed script are treated as unavailable.
+The CIKM demo paper's figures (`paper_demo/figures/`) are generated from these artifacts; the paper's `\NUM*` macros are script-reconciled against this run (`18/18`).
 
-<sub>Counts last verified against a live instance on **2026-09-19**: 8 knowledge bases · 165 indexed documents in the category bases · 94 MCP tools (41 `kb_*`) · 286 backend tests passing.</sub>
+> **On withheld results.** Earlier revisions of this README quoted IR-style numbers (`Hit@k`, `nDCG@10`, etc.) from standard corpora, and before that a larger benchmark from `benchmark-web/backend/results/` which contains **no producing script** in this repository. The IR corpora were retired in the 2026-09 benchmark redesign (standard corpora measure ranking, not knowledge-base management); the superseded scripts and corpora are archived under `.bench_backup_20260917/`. Figures that cannot be regenerated from a committed script are treated as unavailable. Superseded benchmark runs (2026-09-20 → 2026-10-13) are archived under `benchmark-suite/results/archive-superseded/` and `review/archive-superseded/`, each with a manifest listing every archived path.
+
+<sub>Counts last verified against a live instance on **2026-10-13**: 21 knowledge bases · 322 documents in the five category bases · 95 MCP tools (42 `kb_*`) · 4 528-chunk dense replica · 27/27 stability cells. Superseded values (2026-09-19): 8 KBs · 165 docs · 94 MCP tools (41 `kb_*`).</sub>
 
 ---
 

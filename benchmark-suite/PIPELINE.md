@@ -1,5 +1,18 @@
 # KBQA PIPELINE — 文献入库·复刻入库·出题·三轨对照·分析（可复用全流程）
 
+> **📌 结果目录现状（2026-10-13 清理后）**
+> `results/` 现在只保留**当前这一轮**论文级结果：
+> `runs/run-20261013T094350Z-5f9faac/`（原始 30 单元 + SUMMARY）＋ 判分/证据/报告产物
+> （`exp_r2_grade.json` · `paper_numbers.json` · `paper_report.json` · `PAPER-REPORT.html` ·
+> `a_retrieval_regression.json` · `lane_compliance.json` · `paper_state_audit.json` ·
+> `paper_coverage.json` · `r2_pipeline_100.json` 及其 6 个入库/整理输入）。
+> 其余 692 个历史文件（含 `today-20261013/`、旧 run 目录、旧三轨目录）已归档到
+> `results/archive-superseded/superseded-20261013-batch2.tar.gz`（附 MANIFEST + DELETED 记录，可完整恢复）；
+> `review/` 下 36 个历史目录（1,560 文件 / 263 MB）同样归档到
+> `review/archive-superseded/review-superseded-20261013.tar.gz`。
+> **人读入口：仓库根的 [`TEST-RESULTS/README.md`](../TEST-RESULTS/README.md)**（含独立复算脚本 `TEST-RESULTS/verify.py`）。
+> 若闸门报「语料/稳定性目录缺失」，说明你正在用归档前的旧路径 —— 恢复归档或改跑当前入口。
+
 > **⭐⭐ 唯一入口：`python scripts/160_run_paper_pipeline.py`（2026-10-13 起）**
 >
 > 它把「平台/语料体检 → 密索引复核 → 三轨真实执行 → 采集自检 → 可视化报告 → 稳定性套件」
@@ -23,7 +36,7 @@
 > | S2 | `150_final_pipeline.py`（`--live` 才跑） | a2/b/c × BQ01–BQ10 真实执行，写 30 个单元 | `results/runs/run-<ts>-<commit>/` |
 > | S3 | `161_final_evidence.py` | 判分复算 + 论文级闸门 + 论文宏工单 | `results/paper_report.json`（报告唯一数据源） |
 > | S4 | `162_paper_report_html.py` | 单文件离线 dashboard | `results/PAPER-REPORT.html` |
-> | S5 | `review/stability-multiround-20260930/run_stability.py` | 3 任务 × 3 车道 × 3 轮 = 27 单元 | `--stability` 才跑 |
+> | S5 | `review/stability-multiround-20261013/run_stability.py` | 3 任务 × 3 车道 × 3 轮 = 27 单元 | `--stability` 才跑 |
 >
 > **S3 的 fail-closed 闸门（`results/paper_report.json` 的 `verification.checks`，任一非
 > 「informational」条目 fail → 退出码 1）。截至 2026-10-13 共 19 条**：
@@ -63,7 +76,7 @@
 > **它解决的三件事**（都是 2026-10-13 实测发现的真实坑）：
 > 1. **`\NUMciteA/B/C = 9/6/1` 此前没有任何脚本能复算**（论文注释里只有一段一次性临时正则）。
 >    现在固化为 107 的第三项判分 `cited`（A 族 = part/section/table 标记，B 族 = chunk 文件标记），
->    实测校准 `run-20260930T150453Z-3ec2174` → 9/6/1 ✅。
+>    实测校准 `run-20260930T150453Z-3ec2174` → 9/6/1 ✅（该 run 已归档，见文末「结果目录现状」）。
 > 2. **107 的老 run 解析对当前运行器失效**（只 glob `results/experiment_chat_*`，拿不到
 >    `results/runs/run-*`），新版可解析「名 / 相对 / 绝对路径」，默认取最新。
 > 3. **平台轨最常见的失败是"工具面没挂上"**，历史表现为整题返回 `KB_TOOLS_NOT_READY`。

@@ -1,4 +1,0 @@
-{
- "pass": true,
- "reply_head": "经验已成功沉淀。\n\n## Result\n\n**任务**：在知识库 `fulltest-e2e-20261012-112507` 沉淀一条结构化经验（场景：第四标定段谐振漂移；问题：阈值漂移 0.4 MHz 导致锁定失稳；处置：启用 0.0837 漂移补偿系数并 24 小时内复测；教训：温漂必须在标定后 24 小时内复核）。\n\n**执行**：\n- Pre-Flight `backend_status` → healthy / vector ready，MCP 连通正常\n- `kb_list(lightweight=true)` 定位目标库 → kb_id `7e70e4d8-6ae4-4beb-"
-}

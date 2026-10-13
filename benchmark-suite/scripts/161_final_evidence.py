@@ -45,7 +45,7 @@ DENSE_KB = "Corpus-Chunks800"
 TRACKS = ("a2", "b", "c")
 CITE_ALT = {"A": "a2"}
 STAB_DIRS = ("review/stability-multiround-20261013/results",
-             "review/stability-multiround-20260930/results")
+             "review/archive-superseded/stability-multiround-20260930/results")
 STAB_MIN_CELLS = 9  # 少于这个数说明套件还在跑，宁可用上一轮完整的，也不要半份
 EXPECTED_LIBRARIES = 5  # 五门类库；探针必须每库至少命中一条，否则 15/15 是"局部满分"
 
@@ -566,7 +566,7 @@ def collect(run: Path, probe: bool, baselines: list[str], paper_tex: Path | None
         (f" --run {run.name}" if run.name else ""),
         "python scripts/162_paper_report_html.py",
         "# 4) 稳定性套件（可选，约 30 分钟）",
-        "python review/stability-multiround-20260930/run_stability.py r1 r2 r3",
+        "python review/stability-multiround-20261013/run_stability.py r1 r2 r3",
     ])
 
     return {"meta": {**meta, "repro": repro}, "corpus": corpus,
