@@ -1,0 +1,167 @@
+{
+ "qid": "QK09",
+ "query": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "fused": [
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+   "lane": "both",
+   "vector_score": 0.4823375940322876,
+   "vector_rank": 1,
+   "catalog_rank": 158,
+   "fused_rank": 1
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.48140037059783936,
+   "vector_rank": 2,
+   "catalog_rank": 42,
+   "fused_rank": 2
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+   "lane": "both",
+   "vector_score": 0.4644164443016052,
+   "vector_rank": 3,
+   "catalog_rank": 162,
+   "fused_rank": 3
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.4583083391189575,
+   "vector_rank": 4,
+   "catalog_rank": 116,
+   "fused_rank": 4
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "lane": "both",
+   "vector_score": 0.4511474370956421,
+   "vector_rank": 5,
+   "catalog_rank": 154,
+   "fused_rank": 5
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+   "lane": "both",
+   "vector_score": 0.4489661455154419,
+   "vector_rank": 6,
+   "catalog_rank": 272,
+   "fused_rank": 6
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 6 of 8).md",
+   "lane": "both",
+   "vector_score": 0.4467064142227173,
+   "vector_rank": 7,
+   "catalog_rank": 161,
+   "fused_rank": 7
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md",
+   "lane": "both",
+   "vector_score": 0.44182419776916504,
+   "vector_rank": 8,
+   "catalog_rank": 159,
+   "fused_rank": 8
+  },
+  {
+   "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+   "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md",
+   "lane": "both",
+   "vector_score": 0.44102156162261963,
+   "vector_rank": 9,
+   "catalog_rank": 190,
+   "fused_rank": 9
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 3 of 3).md",
+   "lane": "both",
+   "vector_score": 0.43958795070648193,
+   "vector_rank": 10,
+   "catalog_rank": 126,
+   "fused_rank": 10
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+   "lane": "both",
+   "vector_score": 0.43640780448913574,
+   "vector_rank": 11,
+   "catalog_rank": 182,
+   "fused_rank": 11
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.43403422832489014,
+   "vector_rank": 12,
+   "catalog_rank": 153,
+   "fused_rank": 12
+  }
+ ],
+ "fusion_trace": {
+  "agreed": 53,
+  "vector_only_pool": 4,
+  "catalog_only_pool": 249,
+  "vector_only_taken": 4,
+  "catalog_only_taken": 4,
+  "fused_before_cap": 61,
+  "fused_after_cap": 12,
+  "candidate_cap": 12
+ },
+ "vector_trace": {
+  "per_lib_hits": {
+   "计算机与人工智能": 30,
+   "自然科学与地球科学": 30,
+   "生命科学与医学": 30,
+   "工程与能源": 30,
+   "经济与社会": 30
+  },
+  "raw_hits": 150,
+  "doc_level": 57,
+  "seconds": 0.4
+ },
+ "catalog_trace": {
+  "per_lib_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "catalog_size": 322,
+  "catalog_overlap_gt0": 302,
+  "seconds": 1.4
+ },
+ "fetch_trace": {
+  "seconds": 3.3,
+  "errors": []
+ },
+ "heads": {
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md": "# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 2/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > 3.2.1 Clinician evaluation\n## 3.2.1 Clinician evaluation\n\n\nWhile objective accuracy metrics on multiple-choice questions are a robust measure of model performance, they omit several important details. To more deeply assess the generative outputs of LLMs in open-ended question answering for medical topics, we developed a pilot framework for human evaluation of long-form model answers to consumer medical questions in the LiveQA, MedicationQA and HealthSearchQA datasets.\n\nTable 2 | Summary of the different axes along which clinicians evaluate the",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md": "# genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md.md（第 1/2 部分）\n章节: Title: SpaceTx: A Roadmap for Benchmarking Spatial Transcriptomics Exploration of the Brain\n# Title: SpaceTx: A Roadmap for Benchmarking Spatial Transcriptomics Exploration of the Brain\n\n\nAuthors and affiliations: Brian Long1, Jeremy Miller1, The SpaceTx Consortium²\n\n1. Allen Institute for Brain Science, Seattle, WA, USA\n\n2. Consortium authors:\n\n<table><tr><td rowspan=1 colspan=1>Name</td><td rowspan=1 colspan=1>Affiliation</td><td rowspan=1 colspan=1>ORCID</td></tr><tr><td rowspan=1 colspan=1>Boudewijn Lelieveldt</td><td rowspan=1 colspan=1>Leiden University Medical Center; Delft University of Technolog",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md": "# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 7/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > Answer:(A)\n## Answer:(A)\n\nQuestion: Background: Aldosterone blockade reduces mortality and morbidity among patients with severe heart failure. We conducted a double-blind, placebo-controlled study evaluating the effect of eplerenone, a selective aldosterone blocker, on morbidity and mortality among patients with acute myocardial infarction complicated by left ventricular dysfunction and heart failure. Methods: Patients were randomly assigned to eplerenone (25 mg per day initially, titrated to a maximum of 50 mg per day; 3,319 patients) or plac",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md": "# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 1/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations\n# Instructive Dialogue Summarization with Query Aggregations\n\n\nBin Wang, Zhengyuan Liu, Nancy F. Chen Institute for Infocomm Research (I2R), A\\*STAR, Singapore CNRS@CREATE, Singapore wang\\_bin@i2r.a-star.edu.sg\n\n## Abstract\n\n\nConventional dialogue summarization methods directly generate summaries and do not consider user's specific interests. This poses challenges in cases where the users are more focused on particular topics or aspects. With the advancement of instruction-finetuned language models, we introduce instruction-tuning to dialogues to expand the",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md": "# clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon（第 1/3 部分）\n章节: Continuous-Time Probabilistic Models for Longitudinal Electronic Health Records\n# Continuous-Time Probabilistic Models for Longitudinal Electronic Health Records\n\n\nAlan D. Kaplana,\\*, Uttara Tipnisa, Jean C. Beckhamb,c,d, Nathan A. Kimbrelb,c,d,e, David W. Oslinf,g, the MVP Suicide Exemplar Workgroup, Benjamin H. McMahonh\n\naComputational Engineering Division, Lawrence Livermore National Laboratory, 7000 East Ave., Livermore, CA 94550\n\nbDurham Veterans Affairs (VA) Health Care System, Durham, NC, USA\n\ncVA Mid-Atlantic Mental Illness Research, Education and Clinical Center, Durham, NC, USA\n\ndDepartment ",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md": "# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 4/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations > B Templates and Examples\n## B Templates and Examples\n\n\nWe provide more detailed illustrations of the human evaluation interface, instruction templates, synthesized QDS triples and case studies on model outputs.\n\n• Figure 6: the interface used for subjective evaluation for annotators. The annotator is asked to label the quality of summaries in four dimensions.\n\n• Table 7: the templates used for several tasks including query generation, text-based filtering, ChatGPT evaluation and the preprocessing on DialogSum dataset.\n\n• Table 10, 11 and 12: shows the syn",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 6 of 8).md": "# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 6/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > A.7 Detailed human evaluation results\n## A.7 Detailed human evaluation results\n\n\nDetailed human evaluation results with confidence intervals are summarized in Table A.3 - Table A.12.\n\nTable A.2 | Model card for Med-PaLM.\n<table><tr><td>Model initialization</td><td>Model characteristics The model is initialized from Flan-PaLM [15]. Additional soft prompt</td></tr><tr><td>Model stats</td><td>parameters are initialized as described in Section A.1. The model has 540 billion parameters following Flan-PaLM. There are 1.84M additional domain-specific",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md": "# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 3/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > 4.5 Human evaluation results\n## 4.5 Human evaluation results\n\n\nWe randomly selected 100 questions from HealthSearchQA, 20 questions from LiveQA, and 20 questions from MedicationQA as a smaller long-form answer benchmark for detailed human evaluation. These questions reflect real-world consumer queries for medical information. These selected questions were disjoint from those\n\n<table><tr><td>Question: A 65-year old man presents with gradually worsening rigidity of his arms and legs and slowness in performing tasks. He says he has also noticed h",
+  "f5770687-6b05-4a8d-8645-af31686ca87e||经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md": "# economics__1911.06206__bayesian-state-space-modeling-for-analyzing（第 4/5 部分）\n章节: Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy > C.1. Different weights matrices and aggregation schemes\n## C.1. Different weights matrices and aggregation schemes\n\nTable C.1: Estimated impacts of monetary policy on stock returns across industries, 1992 IO-tables.\n<table><tr><td></td><td colspan=\"4\">Parameters</td><td colspan=\"4\">Impacts</td></tr><tr><td></td><td>α</td><td>β</td><td> $\\sigma ^ { 2 }$ </td><td>ρ</td><td>Indirect</td><td>Direct</td><td>Total</td><td>Netw. (%)</td></tr><tr><td>B1</td><td>-0.11</td><td>-2.99</td><td>0.15</td><td></td><td></td><td>-2",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 3 of 3).md": "# social-networks__2203.15752__information-consumption-and-boundary-spannin.md.md（第 3/3 部分）\n章节: Information Consumption and Boundary Spanning in Decentralized Online Social Networks: the case of Mastodon Users\\* > 4.3 Dual role users\n## 4.3 Dual role users\n\n\nOur fifth question (Q5) concerns unveiling the existence of Mastodon users that take a twofold role as lurkers and bridges. To this purpose, for each of the top-5 instances and the merged network, we analyzed the overlap between a set of lurkers and a set of bridge users, selected from their respective ranking solutions according to the percentile thresholds used in the previous analysis, such that each set pair refers to the same percen",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md": "# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 5/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n# MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n\n\nSupplementary Material\n\n## Contents\n\n\nA Code 16   \nB. MultiverSeg Method 16   \nB.1. Architecture 16   \nC Data 16   \nC.1. Datasets . . 16   \nC.2. Synthetic Task Generation . . . . 17   \nC.3. Data Augmentation 17   \nD. Experimental Setup 17   \nD.1. Baselines 17   \nD.2 Inference 17   \nD.3. Metrics 18   \nE Experiment 1: Evaluation 18   \nE.1. Setup . . . 18   \nE.2. Interactions per Image as a Function ",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md": "# clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md.md（第 1/2 部分）\n章节: Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions\n# Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions\n\n\nBatuhan Bardak and Mehmet Tan\n\nDepartment of Computer Engineering\n\nTOBB University of Economics and Technology\n\nAnkara, Turkey\n\nEmail:{b.bardak, mtan } @etu.edu.tr\n\nAbstract—Drug representations have played an important role in cheminformatics. However, in the healthcare domain, drug representations have been underused relative to the rest of Electronic Health Record (EHR) data, due to the complexity of high dime"
+ },
+ "built": "2026-10-12T05:17:55.430198+00:00"
+}

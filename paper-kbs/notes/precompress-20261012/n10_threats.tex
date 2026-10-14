@@ -1,0 +1,96 @@
+\section{Threats to validity}
+\label{sec:threats}
+
+\noindent\textbf{Scale.} The retrieval corpus at the centre of the evaluation
+is 42 documents across five libraries; the acquisition and organization
+campaigns scale that to 322 documents, and the second corpus adds 79. Absolute
+Hit@5 values (BM25 at 1.00 on the industrial corpus) will not transfer to
+collections orders of magnitude larger, where the hybrid lane's candidate cap
+and the librarian's shelf pruning become load-bearing rather than optional.
+The benchmark suite shipped with the platform is the intended scaling path,
+and a hundreds-of-documents run with an author-independent question set
+remains the full answer.
+
+\noindent\textbf{Question set.} Sixteen tool-layer and four agent-layer
+questions on the industrial corpus, ten on the second corpus and forty cloze
+questions per language in the acquisition campaign were authored by the
+system's developers. Gold documents and fact markers are released for
+independent scrutiny, but the samples are small and favour the corpora's
+vocabulary. The paraphrase grid quantifies part of that exposure, since
+lexical ceilings drop under rewording while the verifier findings hold. One
+circularity is named rather than silently enjoyed: Q16's question embeds its
+gold document's filename token, which guarantees lexical success on that
+question; the fix is scheduled, and because Q16 is the one question on which
+the fusion stage loses a gold, the correction can only tighten the reported
+decomposition. The second corpus carries a related exposure that we disclose
+instead of exploiting: the acquired arXiv documents are named
+\texttt{\{domain\}\_\_\{identifier\}\_\_\{slug\}}, so content-routing accuracy
+against the topical prefix is not an independent measurement of routing
+quality, and we report routing coverage rather than routing accuracy
+(Section~\ref{sec:e2}).
+
+\noindent\textbf{Experimental controls.} The tool layer isolates the gate's
+contribution cleanly: its nine configurations include retrieval without
+verification and the same retrieval with the gate in either role, so the
+ranking-layer claim rests on a matched control. The agent layer originally did
+not carry the corresponding control, because its four arms are three grounded
+lanes (retrieval \emph{and} verification) plus a bare agent (neither), which
+cannot separate the contribution of retrieval from that of verification. The
+missing arm, a grounded lane with the gate disabled and the fusion order
+returned, was added at the end of this revision with its protocol fixed before
+the run (Section~\ref{sec:eval-agent}), together with a second ablation that
+varies the search partition rather than the gate
+(Section~\ref{sec:e2}). Both inherit the same questions, libraries,
+engine and turn budget; neither was tuned after its results were seen.
+
+\noindent\textbf{Evidence provenance is uneven.} The evidence groups differ in
+how they were produced, and the paper reports the difference rather than
+smoothing it. The acquisition, organization and functional campaigns are
+audited runs whose per-check outcomes are released. The experience subsystem,
+by contrast, is supported by case evidence: one distillation campaign with
+thirteen candidate drafts, a single sedimented experience, and an approval
+path that was never exercised. The full 100-document ingestion exists as a
+derived state file rather than as a timed, per-document log, and its
+accounting is not fully closed: 100 documents were submitted, 91 names appear
+in the derived state, and 79 documents are present in the library. Part of the
+gap is the 21 reported parse failures, but the remainder is unattributed, so
+the parse-failure rate should be read as a bounded estimate rather than as an
+exact measurement. We state this because a system paper's most useful
+contribution may be the honesty of its ledger.
+
+\noindent\textbf{Judge and engine dependence.} Scores and turn counts come
+from one judging checkpoint and one agent engine per campaign; lanes, not
+models, are the object of comparison, but absolute numbers will move with
+engine versions. The deployed gate remains a single checkpoint, although the
+two strongest verifier findings are no longer single-signal: a generic
+entailment model fails too, but differently (it anti-separates golds and still
+rejects no out-of-corpus topic), and a symbolic rule decides the numeric case
+the shipped judge mishandles. Trained evidence-verification models and learned
+signal ensembles remain open; the naive span-max probe and the rank-fusion
+ensemble answer the two easiest upgrades negatively.
+
+\noindent\textbf{Design surface.} Three lanes triple the policy surface an
+adopter must test, and the reported evidence supports two distinct operating
+points, with the catalog-first lane as the exhaustive option and the
+orchestrated lane as the latency-tuned interactive default. A two-lane
+deployment is defensible today, and query-shape auto-selection is future work.
+
+\noindent\textbf{Consumer-side evidence.} The honesty contract is evaluated
+from the system's side, that is, that not-found reports are well formed and
+non-fabricated, not from the reader's side. Whether an operator acts on a
+not-found report, escalates to a human, or ingests the recommended source is
+not measured, and this is the paper's main missing external-validity leg. The
+natural study is a small operator trial over a fixed probe set with two
+conditions, platform reports versus the same model's unaided answer, scored on
+the downstream action taken; the probe set and transcripts are released so it
+can be run independently.
+
+\noindent\textbf{Nondeterminism.} Agent runs are stochastic. We report two
+full repetitions of the sixteen-cell grid (citation agreement 16/16, with wall
+time and turn counts fluctuating substantially), retry only zero-turn
+transport flakes, and release all per-run logs including timeout re-runs.
+Fact-marker checks are automated substring matches; we additionally report
+decontaminated checks computed after removing answer lines that name a gold
+document, and the out-of-corpus answers were audited manually. Deterministic
+layers were verified to be bit-identical across two rounds except for latency
+fields.

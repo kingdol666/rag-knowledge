@@ -1,0 +1,50 @@
+\section{Knowledge organization and lifecycle management}
+\label{sec:organization}
+
+Organization determines which candidates retrieval can see and whether the
+stored state remains trustworthy. QDCVR places documents by content rather
+than filename; split parts inherit the source assignment, and the catalog
+exposes library and document descriptions before full bodies are read.
+
+\subsection{Metadata, tags and duplicate review}
+\label{sec:org-placement}
+\label{sec:org-registries}
+\label{sec:org-tags}
+\label{sec:org-dedup}
+
+Integrity checks compare the document files, the \texttt{.tree-fs.json} tree
+and each library's \texttt{.knowledge-base.yml} for document existence, path
+and index metadata. Tags derive from content and are checked against it.
+Duplicate detection reports candidate pairs for review; deletion is not
+automatic because adjacent parts may be similar while containing distinct
+source sections.
+
+Sub-libraries are first-class tree nodes with their own descriptions and
+indices. Index writes resolve the document's owning library; searching a parent
+library traverses its descendants' collections. This supports hierarchical
+organization without implying that child vectors are stored in the parent's
+collection.
+
+\subsection{Lifecycle operations, graph and operational knowledge}
+\label{sec:org-lifecycle}
+\label{sec:org-graph}
+\label{sec:org-experience}
+
+Re-indexing is explicit: a rename can leave stale vector chunks until a forced
+re-index, so operation completion requires checking the resulting index, not
+only the metadata record. The document graph supports navigation and candidate
+expansion, not evidence. Operational lessons are stored as retrievable
+documents with credibility tiers, but the available measurements are case
+examples rather than a scale evaluation of distillation, approval or
+credibility decay.
+
+\subsection{Organization contract}
+\label{sec:org-integrity}
+\label{sec:org-summary}
+
+The evaluation checks three-source consistency, content-derived descriptions,
+regression probes and lifecycle outcomes (Section~\ref{sec:e2}). The contract
+makes stale or inconsistent state detectable; it does not prevent every
+failure by construction. Merge and split remain outside the controlled test
+scope, so performance claims must be read within the corpus sizes reported in
+the Evaluation section.

@@ -1,0 +1,56 @@
+\section*{Data availability}
+The platform source code, the tool-layer and agentic experiment scripts,
+the gold question set with fact markers, the paraphrase grid, the
+leave-one-out margin replay, the second-signal and span-level NLI
+replays, the graded abstention probes, the second-corpus ingestion and
+tool-layer scripts, the judging-service checkpoint
+reference, and all raw per-run JSON logs (tool-layer retrieval rows and
+agentic transcripts, including the timeout re-runs) are available at
+\url{https://github.com/kingdol666/rag-knowledge} (benchmark suite:
+\texttt{benchmark-suite/}; paper artifacts: \texttt{paper-kbs/}).
+
+\section*{Declaration of generative AI in the writing process}
+During the preparation of this work the authors used LLM-based coding
+agents to assist with experiment execution, data tabulation, figure
+preparation, and manuscript drafting. All experimental numbers originate
+from logged runs of the deployed system on the authors' machine; the
+authors reviewed and take full responsibility for the content of the
+published article.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests
+or personal relationships that could have appeared to influence the work
+reported in this paper.
+
+\section*{Author contributions (CRediT)}
+\textbf{Author 1:} Conceptualization, Methodology, Software, Investigation,
+Data curation, Writing -- original draft. \textbf{Author 2:} Validation,
+Writing -- review \& editing, Supervision. %% AUTHOR ACTION: adjust.
+
+\section*{Acknowledgments}
+This research did not receive any specific grant from funding agencies in
+the public, commercial, or not-for-profit sectors. %% AUTHOR ACTION
+
+\appendix
+\setcounter{table}{0}
+\section{Per-question tool-layer results}
+\label{app:perq}
+Table~\ref{tab:appendixranks} breaks Table~\ref{tab:retrieval} down to
+individual questions: the best gold rank each configuration reached in
+its top-5 window, for every gold-annotated question. Reading the columns
+side by side localizes every aggregate number in the paper: BM25 and RRF
+miss at most one question (Q16's confuser family and Q7's telemetry
+cluster account for the remaining sub-1.0 MRRs); the judged hybrid's nine
+misses are exactly the questions where same-domain confusers outranked
+the gold (Q2, Q4, Q5, Q6, Q8, Q9, Q11, Q12) or crowded it out upstream
+(Q16); and judge-as-filter restores the gold on every one of the eight
+judging losses while inheriting Q16's upstream failure --- the
+decomposition that Fig.~\ref{fig:marginvariants}(b) aggregates and
+Fig.~\ref{fig:anatomy} dissects one query at a time.
+
+\input{tab_appendix_ranks}
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+
+\end{document}

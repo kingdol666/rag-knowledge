@@ -1,0 +1,119 @@
+\section{Agent interface, implementation, and non-functional properties}
+\label{sec:implementation}
+\label{sec:impl}
+
+\subsection{The tool surface}
+\label{sec:impl-tools}
+
+The platform is exposed to agents as a single Model Context Protocol
+server~\cite{mcp} carrying 95 tools in eight groups: knowledge-base CRUD and
+catalog; document read/write; file system; parsing and task status; tags;
+search and vector index; knowledge graph; and experience and persona
+management. The count is the number of registered tool decorators in
+\texttt{kb-mcp/server.py}, checked one-to-one against the function
+definitions they register; the project's own documentation had drifted to a
+lower number, so we report the measured one. The interface is not a reduced
+agent-only view: it owns no private data path. Writes go through the same
+HTTP services the user interface calls, reads read the same
+\texttt{.tree-fs.json} and \texttt{.knowledge-base.yml} registries the web
+server reads, and the MCP process itself contains no HTTP code, only a
+client module.
+
+Three governance rules make a surface this wide safe to hand to a model.
+First, read-path tools and write-path tools are disjoint families, and
+retrieval lanes are granted the read family only. Second, a stored parsed
+document cannot enter a knowledge base through the generic document writer:
+it must pass the parsed-document writer (\texttt{kb\_doc\_save\_parsed}),
+the single entry point that carries parse provenance and forces the
+ingestion quality gates to run. Third, long-running operations---a parse
+batch, a re-index, a graph build, a meditation pass---return a task id
+immediately instead of blocking the session, and are polled through the
+task-status tools backed by an in-process task registry.
+
+\subsection{Harness integration and lane policy}
+\label{sec:impl-harness}
+
+One chat endpoint adapts fourteen agent harnesses to a uniform message
+stream, so a vendor CLI, an ACP-compatible agent, and the platform's own
+engine all reach the same retrieval lanes. The lane policy of
+Section~\ref{sec:lanes} is enforced here rather than by prompt discipline:
+each lane is attached to a tool allow-list, of which 21 entries are
+read-only MCP retrieval tools, and to a deny-list of more than 40
+harness-internal tools (file editors, web search, sub-agent spawning). The
+gate was observed working in the harness campaign: on its first turn a model
+attempted to end the session early, the attempt was blocked by the
+deny-list, and the retrieval that followed was unaffected. Sessions are
+budgeted as well, with per-lane turn and call caps
+(Table~\ref{tab:lanes}); the campaign ran 18 end-to-end scenarios, all of
+which passed with no fabricated answer.
+
+Three operational findings from that campaign matter to callers. A trivial
+ping prompt triggered a six-skill pre-flight before any retrieval, and the
+probe was killed by a 30\,s timeout; the platform's default caller timeout
+is therefore 420\,s, not the few seconds a request such as ``list my
+libraries'' suggests. The streaming endpoint emits bare \texttt{data:}
+frames with no event names, so a client must parse data-only frames instead
+of waiting for a named event. Finally, engine choice dominates cost by one
+to two orders of magnitude at the same quality tier: \$0.90--1.80 per
+question for the agent harness, \$0.11--0.36 for the second engine, and
+\$0.03--0.07 for the third. Wall clock was 50--176\,s, 23--52\,s, and
+34--171\,s respectively, but the third engine's engine-side time was only
+15--83\,s: its extra wall clock is harness cold start of 50--90\,s per call,
+not retrieval. One residual gap appeared in the same campaign: a document
+ingested through the third harness had no graph node, while the same
+operation through the agent surface created one.
+
+\subsection{Implementation and runtime engineering}
+\label{sec:impl-runtime}
+
+The backend is Python 3.12 with FastAPI. ChromaDB~\cite{chroma} stores one
+HNSW~\cite{hnsw} collection per knowledge base in cosine space; embeddings
+are BGE-M3~\cite{bge-m3}, 1024-dimensional and normalized, encoded in
+batches of 32 by a lazy-loaded singleton with an LRU encode cache. Neo4j
+5.20~\cite{neo4j} holds the document graph, jieba~\cite{jieba} tokenizes the
+keyword lane, MinerU~\cite{mineru} performs parsing and OCR, and MCP is
+spoken over stdio and SSE.
+
+The enforcement described in Section~\ref{sec:lanes} depends on engineering
+invisible in the interfaces. The judging model runs as a resident worker
+behind a machine-level file lock, with an LRU verdict cache and explicit
+CUDA-cache release between workloads. A cold judge load costs 10--12\,s per
+batch; the resident worker answers in 1--2\,s. The worker also removes a
+failure mode met in production: when judge and bulk-embedding workloads ran
+interleaved without cache cleanup, one end-to-end run degraded from 68\,s to
+27 minutes under the Windows display driver model's paging behaviour. Judge
+calls are serialized by one lock, because two concurrent judgments on a
+single GPU raise a native allocator failure; a call is held to a 900\,s
+ceiling and fails closed beyond it. MinerU
+is launched as a hidden subprocess with platform-specific parent-death
+cleanup---a Windows Job Object with kill-on-close, Linux
+\texttt{prctl(PR\_SET\_PDEATHSIG)}, and a process group plus
+\texttt{atexit} on macOS---and its stdout is redirected to a log file rather
+than a pipe, because the pipe variant failed with a spurious
+\texttt{Errno 22} once the reader closed. Before start, the backend probes
+its own port with a bare socket bind and refuses to start if the port is
+occupied, so a surviving process cannot be shadowed by a second one. Vector
+writes are serialized per collection, after one production incident traced
+to concurrent segment handles; the keyword index updates incrementally.
+Every HTTP client is constructed with \texttt{trust\_env=False}, so a
+corporate proxy cannot intercept calls to localhost.
+
+\subsection{Configuration, deployment, and reproducibility}
+\label{sec:impl-deploy}
+
+A single \texttt{config.yml} is the source of truth for ports and
+thresholds; environment variables override it. The mechanism is used in
+practice, not only documented: in the harness campaign the services ran on
+web 6789, backend 8771, and kb-mcp 8000, the backend port being an override
+of the shipped development default. Rate limiting (a general bucket and a
+smaller bucket for expensive routes), authentication tokens for the MCP,
+user, and legacy clients, and the retrieval thresholds all live in the same
+file. The \texttt{ragctl} command-line tool covers setup, start, status,
+dependency, configuration, and update operations. The system runs
+self-hosted on a single workstation: ChromaDB runs in-process, Neo4j runs
+locally on bolt port 7687, and MinerU runs as a local subprocess, so no
+external service is required for a deployment. The same file carries the
+higher retrieval threshold (0.55) used by the experience subsystem, whose
+rolling summary of operational lessons is regenerated by a rules-based pass
+every fifth ingestion. Source code and all experiment scripts are public at
+\url{https://github.com/kingdol666/rag-knowledge}.

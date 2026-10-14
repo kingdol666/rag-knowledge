@@ -1,0 +1,27 @@
+{
+ "repaired": [
+  {
+   "qid": "QK09",
+   "arm": "C-judge",
+   "original": {
+    "answer_error": null,
+    "grade": null,
+    "verdict": "error",
+    "rationale": "HTTPError: HTTP Error 401: Unauthorized"
+   },
+   "new_grade": 5
+  },
+  {
+   "qid": "QK09",
+   "arm": "C-judge-seg",
+   "original": {
+    "answer_error": "HTTPError: HTTP Error 401: Unauthorized",
+    "grade": null,
+    "verdict": "error",
+    "rationale": "HTTPError: HTTP Error 401: Unauthorized"
+   },
+   "new_grade": 5
+  }
+ ],
+ "generated": "2026-10-12T05:28:55.366909+00:00"
+}

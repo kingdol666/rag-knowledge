@@ -1,0 +1,138 @@
+\section{Supplementary tables}
+\label{app:tables}
+The tables below collect reference material that supports the design and
+evidence chapters but is not required to follow the argument: the storage
+data model, the cross-lingual acquisition result, the gold question set and
+the lifecycle-operation evidence.
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Stores and their principal contents. Field names are the ones used
+by the implementation and by the audit tools.}
+\label{tab:datamodel}
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.4cm}>{\raggedright\arraybackslash}p{9.7cm}}
+\toprule
+Store & Contents \\
+\midrule
+Tree registry (\path{.tree-fs.json}) & version, root identifier and name,
+timestamps, node counter and aggregate statistics; per node:
+identifier, name, type, parent, path, children, metadata map, timestamps.
+Authoritative structure of the collection. \\
+Library metadata (\path{.knowledge-base.yml}) & library identifier, name,
+description, creation and update timestamps, per-library configuration
+(including distillation settings); per document: path, name, description,
+tags, content hash, file size, vector-index metadata, free-form metadata.
+The retrieval index read by catalog search. \\
+Document files & Markdown body per document or per split part, plus an image
+directory for figures extracted during parsing. \\
+Vector store & one collection per library (cosine space, 1024-dimensional
+embeddings, HNSW index), holding segment embeddings of 500 characters with
+50-character overlap. \\
+Graph store & nodes for documents, libraries, tags, folders and entities;
+edges for membership, tagging, relatedness, identity and containment. \\
+Task and session databases & pollable task records for parsing, indexing,
+graph builds and distillation; chat sessions; service credentials;
+distillation signals. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Cross-lingual ingestion, 400 Wikipedia pages per language,
+first round. The second round reproduced these values bit-for-bit, so
+one column is shown. Self-retrieval Hit@1 uses 40 queries per
+language.}
+\label{tab:acq-crosslang}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Language} & \textbf{Ingestion} & \textbf{KB membership} & \textbf{Storage} & \textbf{Self-retrieval} \\
+ & \textbf{success} & \textbf{accuracy} & \textbf{completeness} & \textbf{Hit@1} \\
+\midrule
+English (en) & 1.0 & 0.875  & 0.975   & 0.975 \\
+Chinese (zh) & 1.0 & 1.0    & 0.9559  & 1.0 \\
+Japanese (ja) & 1.0 & 1.0    & 0.9402  & 1.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Gold-annotated question set over the five production knowledge
+bases. ``Gold'' lists unique filename fragments of the ground-truth
+documents. All sixteen questions serve the tool-layer experiment of
+Section~\ref{sec:e4}; Q2, Q4, Q6, Q7 also
+serve the agentic experiment of Section~\ref{sec:e5}.}
+\label{tab:questions}
+\begin{tabular}{lp{5.3cm}p{4.0cm}p{2.8cm}}
+\toprule
+\# & Question (abridged, translated) & Gold document(s) & Design intent \\
+\midrule
+Q1 & EVA encapsulation film lamination: how to set the temperature, pressure
+and time window; how to control cure degree & EVA process essentials; EVA
+hydro-thermal aging mechanism & multi-gold \\
+Q2 & EL inspection shows edge delamination: root cause and corrective
+actions & EL-2025-0317 delamination RCA report & incident $\to$ RCA \\
+Q3 & Why does humid aging of EVA generate acetic acid and corrode ribbons;
+moisture transport mechanism & EVA hydro-thermal aging mechanism & mechanism \\
+Q4 & Moisture-barrier behavior of POE encapsulant; lamination differences
+vs.\ EVA & POE process essentials & cross-material \\
+Q5 & Summer power drop at a PV plant: systematic troubleshooting order &
+Power-drop troubleshooting manual; O\&M lessons & synonym gap
+(``drop'' vs.\ ``plunge'') \\
+Q6 & Trigger condition, nominal value and tolerance of the line-1027 part
+weight alarm & Watch-clause document (31.35\,g $\pm$0.05\,g, 5\,min) &
+numeric exactness \\
+Q7 & Melt temperature fell 206$\to$180$^\circ$C on extruder line 1: final
+root-cause verdict & TC0 dead-loop RCA revision (among 20 telemetry dups) &
+confuser density \\
+Q8 & PET biaxial stretching process flow and critical temperature ranges &
+PET process regulation & plain factual \\
+Q9 & Frequent inverter alarm trips: handling steps & Inverter alarm handling
+manual & PV O\&M family \\
+Q10 & Hot-spot acceptance criteria and disposal & Hot-spot detection and
+disposal procedure & PV O\&M family \\
+Q11 & String mismatch causes; IV-curve diagnosis & String mismatch analysis
+method & PV O\&M family \\
+Q12 & PP cast-film extrusion parameters; chill-roll temperature & PP cast
+film process regulation & plain factual \\
+Q13 & Weight closed-loop run1: staircase excitation design & Weight
+optimization staircase record & telemetry cluster \\
+Q14 & FT full-function regression after P0 optimization & FT regression test
+record & telemetry cluster \\
+Q15 & Multimodal diagnosis: fusing scalar, vector and image signals &
+Three-modality closed-loop record & telemetry cluster \\
+Q16 & Post-compensation recovery verification of the heatdecay092 event &
+heatdecay092 compensation verification (among 3 near-dup incident docs) &
+confuser density \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Lifecycle operations exercised on disposable test libraries.
+Merge and split were analysed but never executed.}
+\label{tab:org-ops}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{11.2cm}@{}}
+\toprule
+Operation & Observed outcome \\
+\midrule
+Create & Pass, document indexed and retrievable \\
+Rename & Pass, stale chunks remained until forced re-index (18 recorded, 9 expected) \\
+Move & Pass, source 1$\rightarrow$0$\rightarrow$1, target 0$\rightarrow$1$\rightarrow$0 \\
+Delete & Pass, batch delete 1/1; both test libraries removed \\
+Re-index & Automatic and batch paths did not purge; pass with \texttt{force=true} (18$\rightarrow$9) \\
+Merge, split & Not evaluated \\
+Task status & Fail, reports \texttt{running} after \texttt{finished\_at} is set \\
+Update check & Fail, \texttt{ragctl version} timed out after 30\,s \\
+\bottomrule
+\end{tabular}
+\end{table}

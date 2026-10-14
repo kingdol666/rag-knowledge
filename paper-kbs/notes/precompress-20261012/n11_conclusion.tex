@@ -1,0 +1,36 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+QDCVR turns ``the retriever found it'' into ``the system verified it''. Its
+design position is that the governed object of a knowledge-base management
+system is content: content decides where a document belongs, content decides
+whether a candidate may be cited, and the absence of content that answers the
+question is itself an outcome the system must report. That position is
+implemented as contracts rather than conventions (RQ1): parse gates that
+reject visibly, placement rules that read the document, a three-source
+consistency audit over the disk, the tree registry and the library metadata,
+lane policies enforced by a server-side tool whitelist, and verdicts that fail
+closed.
+
+The five research questions are answered by measurement rather than
+assertion. Acquisition and content routing hold at the scale we tested, while
+21\% of submitted papers failed to parse and were rejected rather than stored
+(RQ2). Staged, multi-channel retrieval with content adjudication reaches
+documents that one-shot vector top-$k$ misses, and the benefit comes from
+staged recall plus content verification, not from the fusion of the two
+retrieval stages (RQ3). Verification costs well under a second and buys
+per-citation provenance, but as an ordering it inherits a same-domain blind
+spot that we quantify and partially repair; the failure tracks confuser
+density rather than the checkpoint, domain, language or scale (RQ4). Honest
+abstention lives in the reading and answering layer, never in the threshold,
+end-to-end latency belongs to model turns, and engine choice moves cost by two
+orders of magnitude at the same quality tier (RQ5).
+
+The roadmap follows from the same ledger. Verifier calibration against
+per-library null distributions, trained evidence-verification models, and the
+verdict-as-filter role that the tool layer already supports are the immediate
+next steps; larger-corpus evaluation with an author-independent question set,
+consumer-side evidence that not-found reports serve their readers, and lane
+auto-selection from query shape are the open empirical ones. The direction is
+towards retrieval systems whose trustworthiness is an inspectable property of
+the pipeline rather than a hope about the model.

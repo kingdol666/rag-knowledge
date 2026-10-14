@@ -1,0 +1,173 @@
+\section{Discussion and lessons learned}
+\label{sec:discussion}
+
+\textbf{L1. Vectors are fast; content is accurate --- and verification has
+two costs.} The tool-layer table is the cleanest statement of the retrieval
+subproblem the platform must address: on a curated corpus a millisecond
+BM25 beats an 18\,ms dense retriever, and neither knows whether a document
+\emph{answers} the question. The verification gate converts ranked
+candidates into accountable, per-citation-provenance evidence; its costs
+are both temporal ($\approx$0.5\,s per dozen candidates end-to-end in
+Table~\ref{tab:retrieval}; 1--2\,s per six-document batch for the
+resident worker in production load) and, on this corpus, an accuracy one
+(0.94$\to$0.44 Hit@5 under same-domain inflation,
+Section~\ref{sec:inflation}). Auditability is what the gate buys today;
+ranking quality is what calibration must earn back.
+
+\textbf{L2. Latency engineering is turn engineering.} With retrieval
+sub-second, the only lever that matters for interactive latency is the
+number of agent turns. Tool whitelists that remove detour tools, one-call
+server-side pipelines, and small judge batches that avoid transport
+timeouts together took our hybrid runs from $\approx$29 turns in the
+earliest serial-skill configuration (historical runs, logs released) to
+3--5 turns in the present measurements.
+
+
+\textbf{L3. The verifier is a model too --- calibrate it.}
+Section~\ref{sec:inflation} is the paper's cautionary result: a verifier
+inherits domain-internal blind spots, and a threshold calibrated on
+cross-domain negatives (0.5) does not separate same-domain near-misses.
+Fail-closed semantics and reading requirements contain the damage; they do
+not replace calibration.
+
+\textbf{L4. Honesty needs an enforcement layer, not a prompt.} Lane
+separation works because the server physically withholds tools: a
+librarian-lane agent cannot call the vector tool even if instructed to.
+The out-of-corpus probes (Section~\ref{sec:abstention}) show the same
+asymmetry for abstention: a threshold cannot refuse --- it accepted every
+out-of-corpus candidate it was shown --- while the reading-and-answer
+layer refused all six probe prompts with disclosed searches and zero
+fabricated citations. Honesty is a property of the pipeline's shape, not
+of the model's mood. The dichotomy is about reliability, not exclusivity:
+the bare agent did refuse explicitly in two of its four runs --- honest
+about its ignorance, but holding no corpus facts either way --- while in
+the others it produced confident, unsourced, partly wrong answers whose
+wrongness no audit trail exposes. Unassisted honesty is a coin flip;
+enforced honesty is inspectable.
+
+\textbf{L5. Production incidents taught honest observability.} Three
+incidents shaped the implementation: a corrupted HNSW segment that made one
+library silently un-retrievable across lanes (fixed by re-index; detected
+because ``success with zero results'' is itself treated as suspect);
+GPU-OOM indexing that returned success envelopes with empty vector payloads
+(success is now judged by chunk counts); and judge/engine failures that
+must reject candidates rather than pass them. The common thread: every
+layer reports what it actually verified, and every consumer treats
+unverifiable as failed. Table~\ref{tab:failures} consolidates the incident
+log into the failure-mode catalogue we wish we had on day one.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Failure-mode catalogue from production use: how each failure
+presents, the detection signal, the fix, and the residual risk an adopter
+still carries.}
+\label{tab:failures}
+\begin{tabular}{p{3.1cm}p{3.2cm}p{3.1cm}p{2.9cm}}
+\toprule
+Failure & Presents as & Detection signal & Fix / residual risk \\
+\midrule
+Corrupted HNSW segment (silent index loss) & ``Success, zero results''
+across all lanes for one library & Treat zero-result success as suspect;
+cross-lane census & Re-index the collection; residual: any new silent-loss
+mode needs the same tripwire \\
+GPU-OOM during indexing & Success envelopes with empty vector payloads &
+Judge success by chunk counts, not envelopes & Memory hygiene between
+embedding and judging workloads; residual: other silent truncations \\
+WDDM driver contention (Windows) & Embedding latency 68\,s $\to$
+$\approx$27\,min & Latency SLO on the embedding path & Isolate embedding
+and judging workloads; on Linux, watch VRAM contention instead \\
+Judge worker cold start & First judge batch hangs 10--12\,s & Worker
+residency heartbeat & Keep the resident worker warm; residual: first-call
+timeouts still fail closed \\
+Un-whitelisted harness tools & 14--170\,s detours per run & Turn count and
+tool-call audit log & Server-side per-lane whitelists; residual: new
+harnesses need new whitelists \\
+Judge/engine errors & Wrong or missing verdicts & Fail-closed rejects at
+the gate & Errors reject, never pass; residual: availability, not
+correctness \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Threats to validity}
+\label{sec:threats}
+\textbf{Scale.} The live corpus is 42 documents across five libraries;
+absolute Hit@5 values (e.g.\ BM25's 1.00) will not transfer to corpora
+orders of magnitude larger, where the hybrid lane's candidate cap and the
+librarian's shelf pruning become load-bearing rather than optional. The
+benchmark suite shipped with the platform is the intended scaling path;
+as a first probe, its ten gold arXiv papers now serve as a domain-shifted
+second corpus (Section~\ref{sec:robustness}), and a
+hundreds-of-documents run with an author-independent question set remains
+the full answer.
+\textbf{Question set.} Sixteen tool-layer and four agent-layer questions
+were authored by the system's developers; all gold documents and fact
+markers are released for independent scrutiny, but the sample is small and
+favors the corpus's vocabulary. The paraphrase grid quantifies exactly
+that exposure --- BM25's ceiling drops to 0.88 under rewording while the
+dense backbone and the verifier findings hold --- and a larger
+author-independent question set remains the main scaling need. One
+circularity is worth naming rather than silently benefiting from: Q16's
+question embeds its gold document's filename token (heatdecay092), which
+guarantees lexical success on that question; the paraphrase grid keeps
+the token, so the robustness tier does not break this specific shortcut. The
+fix is mechanical and scheduled for the next revision: reword Q16 to describe
+the event without the filename token (or replace it with a held-out question)
+and re-run the tool layer; because Q16 is the one question on which the fusion
+stage loses a gold, the correction can only tighten, never loosen, the
+reported decomposition.
+\textbf{Experimental controls.} The tool layer isolates the gate's
+contribution cleanly --- its nine configurations include retrieval without
+verification (fusion-only, Hit@5 0.94) and the same retrieval with the gate in
+either role --- so the ranking-layer claim of RQ2 rests on a matched control.
+The agent layer does not yet carry the corresponding control: its four arms
+are three grounded lanes (retrieval \emph{and} verification) plus a bare agent
+(neither), so they cannot separate the contribution of \emph{retrieval} from
+that of \emph{verification} end to end. The missing arm --- a grounded lane
+with the gate disabled (verdicts ignored, fusion order returned) --- is the
+single most important next experiment, and its protocol is fixed here so it
+cannot be tuned post hoc: same four questions, same pinned libraries, same
+engine and turn budget, the gate's \texttt{enable\_judge} flag set false, and
+the same citation and fact-marker checks. The released tool-layer logs already
+contain the ranking-layer half of that comparison.
+\textbf{Judge and engine dependence.} Scores and turn counts come from one
+judging model and one agent engine; lanes, not models, are the object of
+comparison, but absolute numbers will move with engine versions. The
+deployed gate remains a single checkpoint, but the two strongest
+verifier findings are no longer single-signal: the NLI replay
+(Section~\ref{sec:robustness}) shows that a generic entailment model
+fails too --- though \emph{differently}: it anti-separates the golds and
+still rejects no out-of-corpus topic --- while a symbolic rule decides
+the numeric case (Q6) that the shipped judge mishandles (the generic NLI
+is actually the stronger model signal there, ranking the gold first), so
+the paper's conclusions survive the choice of verification
+signal better than the original submission could claim. What remains
+open is trained evidence-verification models and learned-signal
+ensembles: the naive span-max NLI probe and the rank-fusion ensemble
+(Section~\ref{sec:robustness}) already answer the two easiest upgrades
+negatively.
+\textbf{Design surface.} Three lanes triple the policy surface an adopter
+must test, and the reported evidence supports two distinct operating
+points (Hybrid for latency, Librarian for exhaustive coverage), with the
+Search lane as the latency-tuned interactive default between them; a
+two-lane deployment is defensible today, and query-shape auto-selection is
+future work.
+\textbf{Consumer-side evidence.} The honesty contract is evaluated from the
+system's side --- that the not-found reports are well formed and
+non-fabricated --- not from the reader's side. Whether an operator acts on a
+not-found report, escalates to a human, or ingests the recommended source is
+not measured here, and this is the paper's main missing external-validity leg.
+The natural study is a small operator trial over a fixed probe set with two
+conditions (QDCVR not-found reports versus the same model's unaided answer),
+scored on the downstream action the operator takes; we release the probe set
+and transcripts so it can be run independently.
+\textbf{Nondeterminism.} Agent runs are stochastic; we report two full
+repetitions of the 16-cell grid (citation agreement 16/16; wall time and
+turn counts fluctuate substantially), retry only zero-turn transport
+flakes, and release all per-run JSON logs, including the timeout re-runs.
+Fact-marker checks are automated substring matches; we additionally report
+decontaminated checks computed after removing answer lines that name a
+gold document, and the OOD probe answers were audited manually.
+

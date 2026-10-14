@@ -1,0 +1,78 @@
+%% QDCVR — Knowledge-Based Systems submission (elsarticle)
+%% Compile: pdflatex main && bibtex main && pdflatex main && pdflatex main
+%% AUTHOR ACTION: replace author placeholders, ORCID, and funding fields.
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\yes}{\checkmark}
+\newcommand{\no}{--}
+
+\graphicspath{{figs/}}
+\setlength{\emergencystretch}{1.5em}
+
+\journal{Knowledge-Based Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Design of a content-verified knowledge-base management system for
+trustworthy enterprise document intelligence}
+
+\author[inst1]{Author Name\corref{cor1}}
+\ead{author@example.com}
+\author[inst1]{Co-author Name}
+\cortext[cor1]{Corresponding author.}
+\affiliation[inst1]{organization={Affiliation Department, University,
+City, Country}, city={City}, country={Country}}
+
+\begin{abstract}
+Enterprises accumulate process regulations, failure analyses, and operational
+lessons as unstructured documents spread across shared drives. We present
+QDCVR, a self-hosted knowledge-base management system that turns a folder of
+PDFs, Office documents, and scans into knowledge bases that agents can be
+trusted to answer from. The system spans six functional subsystems: a
+quality-gated parsing and ingestion pipeline; knowledge-base management over a
+five-layer data model; content-routed knowledge organization with tags and a
+document graph; an operational-knowledge (experience) store with credibility
+tiers and automated distillation; a multi-lane retrieval layer in which every
+candidate citation must pass a content-verification gate; and an agent-facing
+tool interface that exposes the whole platform as Model Context Protocol
+tools. Its design principle is that organization, retrieval, and agency all
+terminate at explicit contracts rather than implicit prompts, and that no
+similarity score may promote a document into an answer. We evaluate the system
+on a deployed industrial corpus (five knowledge bases, 42 documents, sixteen
+gold-annotated questions) and through functional and non-functional test
+campaigns. The verification gate exposes a same-domain score-inflation failure
+consistent with known LLM-judge miscalibration: non-gold scores are
+indistinguishable from gold (Mann--Whitney $p = 0.26$), and judged re-ranking
+lowers Hit@5 from 0.94 to 0.44, while reusing the same verdicts as a filter
+restores 0.94 (sign test $p = 0.008$). Functional campaigns confirm ingestion,
+deduplication, organization, graph construction, experience distillation, and
+abstention end to end; concurrency and stability campaigns show no data loss
+under twenty-way concurrent writes. Verifier calibration is the open problem;
+honesty needs an enforcement layer.
+\end{abstract}
+
+\begin{keyword}
+Knowledge-base management system \sep Document ingestion \sep Knowledge
+organization \sep Content-verified retrieval \sep Trustworthy question
+answering \sep Model Context Protocol
+\end{keyword}
+
+\end{frontmatter}
+
+%% ---------------------------------------------------------------- highlights
+%% Submitted separately as highlights.tex; kept here for reference.
+

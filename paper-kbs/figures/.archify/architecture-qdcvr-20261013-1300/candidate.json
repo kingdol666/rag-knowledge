@@ -1,0 +1,492 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "QDCVR platform architecture",
+    "quality_profile": "showcase",
+    "output": "qdcvr-architecture.html"
+  },
+  "components": [
+    {
+      "id": "raw",
+      "type": "external",
+      "label": "Raw documents",
+      "sublabel": "PDF, Office, scans",
+      "pos": [
+        36,
+        48
+      ],
+      "size": [
+        200,
+        56
+      ]
+    },
+    {
+      "id": "parse",
+      "type": "backend",
+      "label": "Parse",
+      "sublabel": "MinerU OCR",
+      "pos": [
+        36,
+        140
+      ],
+      "size": [
+        200,
+        56
+      ]
+    },
+    {
+      "id": "qgate",
+      "type": "security",
+      "label": "Parse-quality gate",
+      "sublabel": "five refusal signatures",
+      "pos": [
+        36,
+        232
+      ],
+      "size": [
+        200,
+        56
+      ]
+    },
+    {
+      "id": "reject",
+      "type": "security",
+      "label": "Reject visibly",
+      "sublabel": "never stored empty",
+      "pos": [
+        272,
+        232
+      ],
+      "size": [
+        168,
+        56
+      ]
+    },
+    {
+      "id": "split",
+      "type": "backend",
+      "label": "Structure-aware split",
+      "sublabel": "30 K-char ceiling",
+      "pos": [
+        36,
+        324
+      ],
+      "size": [
+        200,
+        56
+      ]
+    },
+    {
+      "id": "desc",
+      "type": "backend",
+      "label": "Describe and tag",
+      "sublabel": "content-derived, read back",
+      "pos": [
+        36,
+        416
+      ],
+      "size": [
+        200,
+        56
+      ]
+    },
+    {
+      "id": "index",
+      "type": "backend",
+      "label": "Index",
+      "sublabel": "vector + BM25 + graph",
+      "pos": [
+        36,
+        508
+      ],
+      "size": [
+        200,
+        56
+      ]
+    },
+    {
+      "id": "post",
+      "type": "security",
+      "label": "Ingest post-condition",
+      "sublabel": "retrieval probe must pass",
+      "pos": [
+        36,
+        600
+      ],
+      "size": [
+        200,
+        56
+      ]
+    },
+    {
+      "id": "clients",
+      "type": "external",
+      "label": "Clients + harnesses",
+      "sublabel": "web UI; 14 adapters",
+      "pos": [
+        560,
+        48
+      ],
+      "size": [
+        190,
+        60
+      ]
+    },
+    {
+      "id": "chat",
+      "type": "frontend",
+      "label": "Chat endpoint",
+      "sublabel": "one uniform stream",
+      "pos": [
+        790,
+        48
+      ],
+      "size": [
+        190,
+        60
+      ]
+    },
+    {
+      "id": "tools",
+      "type": "backend",
+      "label": "MCP tool layer",
+      "sublabel": "95 tools in twelve groups",
+      "tag": "lane whitelists",
+      "pos": [
+        680,
+        168
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
+      "id": "vecsvc",
+      "type": "backend",
+      "label": "Vector service",
+      "sublabel": "wide-net dense",
+      "pos": [
+        500,
+        292
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "twostage",
+      "type": "backend",
+      "label": "Two-stage service",
+      "sublabel": "BM25 + graph, dense",
+      "pos": [
+        680,
+        292
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "judge",
+      "type": "backend",
+      "label": "Judging worker",
+      "sublabel": "resident, verdict cache",
+      "pos": [
+        860,
+        292
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "gate",
+      "type": "security",
+      "label": "Content-verification gate",
+      "sublabel": "reads content; fail-closed",
+      "pos": [
+        680,
+        420
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "docfiles",
+      "type": "database",
+      "label": "Document files",
+      "sublabel": "markdown, images",
+      "pos": [
+        36,
+        712
+      ],
+      "size": [
+        150,
+        58
+      ]
+    },
+    {
+      "id": "tree",
+      "type": "database",
+      "label": "Tree registry",
+      "sublabel": ".tree-fs.json",
+      "pos": [
+        212,
+        712
+      ],
+      "size": [
+        150,
+        58
+      ]
+    },
+    {
+      "id": "libmeta",
+      "type": "database",
+      "label": "Library metadata",
+      "sublabel": ".knowledge-base.yml",
+      "pos": [
+        388,
+        712
+      ],
+      "size": [
+        150,
+        58
+      ]
+    },
+    {
+      "id": "vstore",
+      "type": "database",
+      "label": "Vector store",
+      "sublabel": "HNSW, BGE-M3",
+      "pos": [
+        548,
+        712
+      ],
+      "size": [
+        150,
+        58
+      ]
+    },
+    {
+      "id": "graphdb",
+      "type": "database",
+      "label": "Graph database",
+      "sublabel": "Neo4j graph",
+      "pos": [
+        714,
+        712
+      ],
+      "size": [
+        150,
+        58
+      ]
+    },
+    {
+      "id": "workdb",
+      "type": "database",
+      "label": "Task state",
+      "sublabel": "parse, index, chat",
+      "pos": [
+        880,
+        712
+      ],
+      "size": [
+        150,
+        58
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Acquisition pipeline (write path)",
+      "wraps": [
+        "raw",
+        "parse",
+        "qgate",
+        "reject",
+        "split",
+        "desc",
+        "index",
+        "post"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Client and agent layer",
+      "wraps": [
+        "clients",
+        "chat"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "MCP tool layer",
+      "wraps": [
+        "tools"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Domain service layer",
+      "wraps": [
+        "vecsvc",
+        "twostage",
+        "judge",
+        "gate"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Organization and life cycle",
+      "wraps": [
+        "docfiles",
+        "tree",
+        "libmeta"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Storage engines",
+      "wraps": [
+        "vstore",
+        "graphdb",
+        "workdb"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "raw-parse",
+      "from": "raw",
+      "to": "parse"
+    },
+    {
+      "id": "parse-qgate",
+      "from": "parse",
+      "to": "qgate"
+    },
+    {
+      "id": "qgate-reject",
+      "from": "qgate",
+      "to": "reject",
+      "label": "fails",
+      "variant": "dashed"
+    },
+    {
+      "id": "qgate-split",
+      "from": "qgate",
+      "to": "split"
+    },
+    {
+      "id": "split-desc",
+      "from": "split",
+      "to": "desc"
+    },
+    {
+      "id": "desc-index",
+      "from": "desc",
+      "to": "index"
+    },
+    {
+      "id": "index-post",
+      "from": "index",
+      "to": "post"
+    },
+    {
+      "id": "post-tree",
+      "from": "post",
+      "to": "tree",
+      "variant": "dashed"
+    },
+    {
+      "id": "clients-chat",
+      "from": "clients",
+      "to": "chat"
+    },
+    {
+      "id": "chat-tools",
+      "from": "chat",
+      "to": "tools"
+    },
+    {
+      "id": "tools-vecsvc",
+      "from": "tools",
+      "to": "vecsvc"
+    },
+    {
+      "id": "tools-twostage",
+      "from": "tools",
+      "to": "twostage"
+    },
+    {
+      "id": "tools-judge",
+      "from": "tools",
+      "to": "judge"
+    },
+    {
+      "id": "vecsvc-gate",
+      "from": "vecsvc",
+      "to": "gate",
+      "label": "dense",
+      "labelDy": 14,
+      "labelDx": -14
+    },
+    {
+      "id": "twostage-gate",
+      "from": "twostage",
+      "to": "gate",
+      "label": "ranked"
+    },
+    {
+      "id": "judge-gate",
+      "from": "judge",
+      "to": "gate",
+      "label": "verdicts",
+      "labelDy": 14,
+      "labelDx": 14
+    },
+    {
+      "id": "gate-clients",
+      "from": "gate",
+      "to": "clients",
+      "label": "evidence pack / not-found",
+      "variant": "emphasis",
+      "fromSide": "left",
+      "toSide": "left",
+      "via": [
+        [
+          472,
+          450
+        ],
+        [
+          472,
+          78
+        ]
+      ],
+      "labelAt": [
+        560,
+        442
+      ]
+    },
+    {
+      "id": "agree-1",
+      "from": "docfiles",
+      "to": "tree",
+      "variant": "dashed"
+    },
+    {
+      "id": "agree-2",
+      "from": "tree",
+      "to": "libmeta",
+      "variant": "dashed"
+    }
+  ]
+}

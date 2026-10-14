@@ -1,0 +1,40 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+QDCVR turns ``the retriever found it'' into ``the system verified it''. Its
+design position is that the governed object of a knowledge-base management
+system is content: content decides where a document belongs and whether a
+candidate may be cited, and the absence of content that answers a question is
+itself an outcome the system must report. That position is implemented as
+contracts rather than conventions (RQ1): parse gates that reject visibly,
+placement rules that read the document, a three-source consistency audit over
+disk, tree registry and library metadata, tool whitelists enforced server-side,
+and verdicts that fail closed.
+
+The five research questions are answered by measurement rather than
+assertion. Acquisition and content routing hold at the scale we tested, while
+21 of the 100 submitted papers never became retrievable and the gap between the
+submitted, recorded and retrievable counts is reported as an observability gap
+rather than explained away (RQ2). Staged, multi-channel retrieval with content
+adjudication reaches documents that one-shot vector top-$k$ misses, and the
+benefit comes from staged recall plus content verification, not from the fusion
+of the two retrieval stages (RQ3). Verification costs well under a second and
+buys per-citation provenance, but as an ordering it inherits a same-domain
+blind spot that we quantify and partially repair; the failure tracks confuser
+density rather than the checkpoint, domain, language or scale (RQ4). Honest
+abstention lives in the reading and answering layer, never in the threshold;
+an adversarial eighteen-arm battery over the three lanes --- with absence
+machine-verified before the run --- produced zero fabricated citations, and
+refusal latency scaled with question ambiguity rather than with blind
+re-querying;
+end-to-end latency belongs to model turns; and engine choice moves cost by two
+orders of magnitude at the same quality tier (RQ5).
+
+The roadmap follows from the same ledger. Verifier calibration against
+per-library null distributions, trained evidence-verification models, and the
+verdict-as-filter role that the tool layer already supports are the immediate
+next steps; larger-corpus evaluation with an author-independent question set,
+consumer-side evidence that not-found reports serve their readers, and lane
+auto-selection from query shape are the open empirical ones. The direction is
+towards retrieval systems whose trustworthiness is an inspectable property of
+the pipeline rather than a hope about the model.

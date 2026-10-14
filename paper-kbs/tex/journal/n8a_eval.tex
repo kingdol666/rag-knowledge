@@ -1,0 +1,103 @@
+\section{Evaluation}
+\label{sec:eval}
+
+We evaluate the deployed system on three corpora that differ in origin, language and scale, using three metric families, and we organise the evidence into eight groups. E1 and E2, reported here, cover the stages that precede a question: acquisition and parsing, and organisation, consistency and management operations. E3--E8, reported in Sections~\ref{sec:e3}--\ref{sec:e8}, cover retrieval quality and the role of the verdict, the operational-knowledge store, end-to-end agent behaviour, verifier failure, non-functional behaviour, and the component ablations. Numbers are reported against the corpus that produced them, and results from different corpora are never merged. The complete campaign inventory---corpus, sample size, metric and artifact path for every system-level and retrieval test summarised here---is provided as supplementary material, and per-question tool-layer results are given in Appendix~\ref{app:perq}.
+
+\subsection{Experimental setup}
+\label{sec:eval-setup}
+
+\textbf{Corpora.} (i)~\emph{Deployed industrial corpus}: five knowledge bases in a live deployment hold 42 documents, one of them containing twenty near-duplicate equipment-telemetry reports that share prefixes, vocabulary and structure, a deliberate stressor for near-duplicate detection and confuser density~\cite{manku-near-dup-2007}. Sixteen gold questions and four out-of-corpus probes were run against it. (ii)~\emph{arXiv corpus}: 100 submitted papers spanning about 25 domains; at evaluation time the state file records 91 paper names and 79 papers are retrievable. Content routing placed them in five domain libraries holding 322 stored parts, and ten gold questions (BQ01--BQ10) target books referenced by these papers, keyed by arXiv identifier. The live environment held 19 libraries. (iii)~\emph{Cross-lingual ingestion corpus}: 400 Wikipedia pages per language for English, Chinese and Japanese, with 40 extractive cloze queries per language whose answers occur verbatim in the source page. It is used for ingestion only; we report no retrieval-quality numbers for it.
+
+\textbf{Questions and gold annotations.} The sixteen industrial questions (Table~\ref{tab:questions}) were written by the authors rather than sampled from logs, a circularity we state rather than hide; each identifies one or two gold documents by a unique filename fragment and one to three fact markers. Q16 names the event \texttt{heatdecay092}, a token that also occurs in its gold document's filename, so a retriever ranking on filenames alone could match it without reading content; we keep the question and report the weakness. On the arXiv corpus a question passes only if the gold identifier is traceable in the answer or the tool trajectory and at least 60\% of the gold keywords occur at word boundaries, evaluated deterministically with no language model in the loop.
+
+
+
+\textbf{Metric families.} Retrieval results use Hit@5, Recall@5 and MRR@5, following passage-ranking evaluation conventions~\cite{craswell-msmarco-2021}. A graded measure, nDCG@5~\cite{jarvelin-cumulated-gain-2002}, was computed only inside one exploratory arm of the cross-lingual benchmark that we do not report; no nDCG@5 value appears here. Grounding and key-fact verification use deterministic string tests: whether the answer cites the gold document, whether at least 60\% of gold key facts appear at word boundaries, and whether part, section and table citation markers are present. These checks are mechanical, not model-based faithfulness estimates such as RAGAS~\cite{es-ragas-2024} or ARES~\cite{saad-falcon-ares-2024}. The third family covers wall-clock time, agent turns, tool calls, monetary cost, and the correctness of refused answers.
+
+\textbf{Controls.} Deterministic lanes were re-run and compared field by field with latency excluded, so a re-run could disagree only on content and ordering; model-driven lanes were repeated with the same model version and are reported as mean with the observed spread. A fixed retry policy applied: an empty zero-turn response or a transient gateway timeout was retried once, which fired on two runs and succeeded both times. Before measurement we repaired two corpus-integrity faults through the platform's own operations: one document missing from its vector collection was re-indexed, and one library whose collection had been silently lost was rebuilt. All measurements ran on one workstation whose RTX~5060 (8\,GB) serves the embedding model and the judge worker, with every service local under Windows.
+
+\textbf{What is deterministic.} The tool-layer retrieval lanes, the grading rule, the audits, duplicate adjudication and the cross-lingual ingestion pipeline are deterministic: repeating them reproduces the same values, and cross-lingual round~2 was bit-identical to round~1. The agent lanes, and anything derived from generated text, are not, and are reported with their repetition spread.
+
+\subsection{E1: Acquisition and parsing}
+\label{sec:e1}
+
+One hundred submitted papers were parsed and routed by content into five domain libraries, producing 322 stored parts after the 30{,}000-character split. The funnel is reported with the audit rather than beside it: 91 papers reached the ingest state file and 79 were retrievable at evaluation time. Table~\ref{tab:acq-pipeline} lists the acquisition audit: nine per-paper ingest checks passed 100/100, no true duplicate was found against 35 near-duplicate pairs, 165 document descriptions were upgraded, the content and storage audits passed 322/322 and 33/33, all 15 retrieval regression probes passed, and the dense replica index holds 4{,}528 chunks. Values are asserted by the run scripts from saved artifacts rather than hand-counted; the content audit samples the first 1{,}000 characters of each part and the storage audit covers 33 storage units.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Acquisition and parsing audit over the 100 submitted arXiv papers.
+The first four rows are the submission funnel: every paper was parsed and
+routed by content, but only 91 reached the ingest state file and 79 were
+retrievable at evaluation time, a gap we cannot attribute from the artifacts.
+The per-paper check row counts parse tasks; the funnel rows count papers the
+state file records, and the two ledgers differ by the nine names it omits.
+Values are asserted by the run scripts from saved artifacts, not hand-counted.
+The content audit samples the first 1{,}000 characters of each part. Duplicates
+are compared by fingerprint at a 0.90 threshold~\cite{manku-near-dup-2007}.}
+\label{tab:acq-pipeline}
+\begin{tabular}{@{}lr@{}}
+\toprule
+Check & Result \\
+\midrule
+Papers submitted to the pipeline & 100 \\
+Papers parsed and routed by content & 100 \\
+Papers recorded in the ingest state file & 91 \\
+Papers retrievable at evaluation time & 79 \\
+Content-routed libraries & 5 \\
+Stored parts after 30{,}000-character split & 322 \\
+Per-paper ingest checks (nine checks, per parse task) & 100/100 pass \\
+True duplicates (35 near-duplicate pairs) & 0 \\
+Descriptions upgraded & 165/165 \\
+Content audit & 322/322 \\
+Storage audit & 33/33 \\
+Retrieval regression probes & 15/15 \\
+Dense replica index (800-character chunks) & 4{,}528 chunks \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\textbf{Accounting gap.} This campaign does not support the claim that all 100 papers became usable, and we do not make it: 100 papers were submitted, the state file \texttt{exp10\allowbreak\_ingest\allowbreak\_state.json} records 91 names, and 79 were retrievable at evaluation time, so 21 papers were never retrievable. The reported failure modes are formula-dense scanned papers, which the parser handled poorly, and one crash of the tool layer during batch parsing that was restarted from a checkpoint. No artifact records a count of attempted against failed papers, and the state file has no per-paper parse status, so we cannot say whether the nine papers missing between submission and the recorded list failed or were never recorded. The absent counter is an observability gap: reconciliation is possible only against the artifacts that survive~\cite{missier-prov-2013}.
+
+\textbf{Cross-lingual ingestion.} The benchmark ran twice over 400 pages per language, with both rounds retained under \path{benchmark-web/benchmark/results/benchmark/}. The ingest success rate was 1.0 in both rounds for all three languages. Membership accuracy, whether a stored page landed in the intended library, was 0.875 for English, 1.0 for Chinese and 1.0 for Japanese (400 pages per language). Storage completeness, computed on a sample of 40 pages per language with the shards of large documents summed, was 0.975, 0.9559 and 0.9402 respectively. Self-retrieval Hit@1, again at 40 pages per language, was 0.975, 1.0 and 1.0. Round~2 was bit-identical to round~1. The English figure of 0.875 is the weakest cross-lingual number we report, and it is an organisation defect rather than a parsing defect: the page was stored, but in the wrong library roughly one time in eight.
+
+\textbf{Smaller campaigns.} A 50-paper, 26-domain campaign parsed and verified 50/50 papers, took 1{,}115.5\,s at 16.3--40.4\,s per paper, produced 202 tags, batch-indexed 50 documents and reported \texttt{all\_probes\_ok}; in its routing run 43 of the 50 documents carried \texttt{tag\_ok:false} while \texttt{verify\_ok} passed for all 50, so the tag-quality check failed often without blocking ingestion. Its 30{,}000-character tier turned 50 papers into 165 documents (nine whole documents and 156 parts), passed the storage check 50/50 and the description-and-tag check 165/165 with zero failures, stored 3{,}798{,}446 characters and took 2{,}672\,s to parse. Two caveats attach: one stage re-ran because of inbox ordering, and more than 800 extracted images were not uploaded. Descriptions and tags are checked against document content before storage~\cite{park-metadata-quality-2009}.
+
+\subsection{E2: Organization, consistency, and management operations}
+\label{sec:e2}
+
+We define organisational correctness as three-source consistency: the files on disk, the tree index and the per-library metadata must agree about which documents exist, where they live and how much indexed content each has. Under that definition we found a real defect in a disposable test library. After a document was renamed, the vector index retained the chunks of the old name: the recorded chunk count was 18 where 9 were expected, a duplicate search matched the document against its own former path at 0.9738 similarity, and a vector probe returned every chunk twice with identical scores. Neither the automatic re-indexing that follows a rename nor a forced batch index removed the stale chunks; only an explicit force re-index repaired the document, after which the recorded count was 9. The failure is invisible from the metadata alone.
+
+\textbf{Reorganisation campaign.} The full reorganisation workflow then ran over the 322-document arXiv corpus: 322/322 metadata checks and 165/165 description checks passed, the tag registry was de-duplicated, all 322 documents were batch-indexed, 15/15 retrieval regression probes passed with zero degradation, and 35 near-duplicate candidate groups (similarities 0.90--0.975) were adjudicated as zero true duplicates, every group being a set of adjacent parts of the same paper; no document was deleted (Table~\ref{tab:org-campaign}). Two honesty notes apply: the three-source spot check sampled 33 of the 322 documents, so it is a sample rather than a full pass, and sub-library splitting and hierarchy creation were analysed but deliberately not executed, pending user confirmation, so the campaign is not evidence for hierarchical restructuring.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2pt}
+\caption{Reorganisation campaign over the 322-document arXiv corpus.
+The three-source spot check samples 33 documents; the description, tag and
+duplicate checks cover the full corpus.}
+\label{tab:org-campaign}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Check & Scale & Result \\
+\midrule
+Metadata consistency (three sources) & 322 documents & 322/322 pass \\
+Description check & 165 documents & 165/165 pass \\
+Tag de-duplication & 4 groups & 4/4 pass \\
+Batch index & 322 documents & 322 indexed \\
+Duplicate adjudication & 35 groups & 0 true duplicates \\
+Three-source spot check & 33 of 322 documents & 33/33 pass \\
+Retrieval regression probes & 15 probes & 15/15, no degradation \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\textbf{Scale.} Growing the corpus from 50 to 100 papers (163 to 322 documents) did not cost retrieval quality: dense top-1 hits went from 48/50 to 49/50 and MRR from 0.98 to 1.00, and reorganisation itself produced a 2 percentage point improvement. The judgement field recorded with that comparison reads ``held (within $\pm$5\,pp)''; we report the field rather than restating the gain as a retrieval improvement.
+
+\textbf{Lifecycle operations.} Table~\ref{tab:org-ops} lists the operations exercised. Create, move, delete and forced re-index behaved as specified: the move left the source library at zero documents and the target at one, and batch deletion removed both disposable test libraries. Two failure modes are worth reporting. The task-status tool reports a task as \texttt{running} after it has finished: the record carries a \texttt{finished\_at} timestamp while the status field still reads \texttt{running}, and the same symptom appeared in the reorganisation graph build, where node reconciliation replaced task polling. The update check timed out after 30\,s (\texttt{ragctl version -{}-json timed out after 30s}, success false) while every other probe in the batch passed; the project-status tool also silently ignores its version flag. Merge and split were never exercised under controlled conditions and we claim nothing about them. These 16 skill scenarios ran against two disposable test libraries in a standalone skill environment; the ingest tools were exercised in E1, not here.
+
+
+
+\textbf{Tags and graph.} The live tag registry held 316 tags, and the tag-quality check passed 165 documents with zero failures in 47.6\,s. Orphan tags do accumulate, among them test tags and section titles extracted from headings; the registry offers a dry-run detector and a cleanup operation, and in one case tags from a test library leaked into the production registry, the failure mode that vocabulary-based organisation is prone to~\cite{golder-tagging-2006}. The document graph is used for navigation and candidate expansion, never as evidence. Writing one document's four tag edges moved the edge count from 4{,}675 to 4{,}679, against 658 nodes, 333 documents and 316 tags; graph statistics for the 165-document corpus were 335 nodes and 1{,}671 edges.

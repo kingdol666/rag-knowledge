@@ -1,0 +1,134 @@
+%% QDCVR platform — Knowledge-Based Systems submission (elsarticle)
+%% v2 restructure 2026-10-12: content-retrieval-based KB *management system* framing.
+%% 20-page pass 2026-10-13: back matter (n_back) included; figures restored.
+%% Compile: pdflatex main_20p && bibtex main_20p && pdflatex main_20p && pdflatex main_20p
+%% AUTHOR ACTION: replace author placeholders, ORCID, and funding fields.
+% journal-style camera-ready preview (generated from the submission sources)
+\documentclass[final,5p,times,twocolumn]{elsarticle}
+\usepackage{stfloats}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{xurl}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\yes}{\checkmark}
+\newcommand{\no}{--}
+
+\graphicspath{{figs/}}
+\setlength{\emergencystretch}{1.5em}
+
+%% Float placement: the paper carries nine figures and twelve table
+%% environments (seven in the body, five in the appendix: one per-question rank
+%% table and four supplementary tables), so the
+%% default fractions defer most of them past the references. Allow denser
+%% float pages to keep each float near the text that discusses it.
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dbltopfraction}{0.90}
+\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{3}
+
+%% Tighten the vertical glue around floats. With nine figures and twelve
+%% tables the elsarticle defaults spend roughly three inches of column
+%% height on separation alone, which the 20-page budget cannot afford.
+%% Values are about half the class defaults and remain within normal
+%% typographic practice for a two-column layout.
+\setlength{\floatsep}{7pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
+\setlength{\intextsep}{7pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{7pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{9pt plus 2pt minus 2pt}
+
+\journal{Knowledge-Based Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{QDCVR: Content-Governed Acquisition, Verified Retrieval and Reported
+Absence in a Deployed Knowledge-Base System}
+
+\author[inst1]{Author Name\corref{cor1}}
+\ead{author@example.com}
+\author[inst1]{Co-author Name}
+\cortext[cor1]{Corresponding author.}
+\affiliation[inst1]{organization={Affiliation Department, University,
+City, Country}, city={City}, country={Country}}
+
+\begin{abstract}
+Enterprise document systems must locate source material, establish whether it
+supports a claim, report its absence. Retrieval-augmented
+generation improves discovery but does not solve the problem: similarity
+measures relatedness, not evidentiary support, and the stages that
+supply it are usually built and evaluated in isolation. We present QDCVR, a
+self-hosted knowledge-base system whose approach makes content the governing
+object through three enforced contracts: content governs placement, content
+governs admission, and absence is reported rather than replaced by plausible
+text.
+
+We evaluate the deployed system on three corpora differing in origin, language
+and scale. At the tool layer every lane and lexical or dense baselines
+reach similar recall; the informative differences sit elsewhere:
+on identical candidate pools the same content verdicts hold 0.94 top-5 hit
+rate when they admit evidence as a filter and collapse to 0.44 when they
+re-rank it, so the verdict's placement, not its strength, decides whether a
+citation survives. End to end, in a 30-cell comparison every arm
+grounds all ten answers on the gold document, and the platform arm keeps
+citation discipline (9 citations against 7 for file tools and 2 for dense
+retrieval, whose markers point at chunks, not documents), at 52.6\,s and
+\$0.71 per question against 22.2\,s and \$0.49. Across eighteen
+adversarial arms no fabricated citation was observed; a reproduced
+catalog truncation was repaired and passed a rerun.
+These results support an operational claim, not universal retrieval
+superiority: they show that trust depends on the whole path from indexed
+content to evidence-aware answering.
+\end{abstract}
+
+\begin{keyword}
+Knowledge base management \sep Document ingestion \sep Content verification \sep
+Knowledge organization \sep Retrieval-augmented generation \sep
+Model Context Protocol
+\end{keyword}
+
+\end{frontmatter}
+
+%% ============================================================ body (v2 order)
+\input{n1_intro}
+\input{n2_related}
+\input{n3_overview}
+\input{n4_acquisition}
+\input{n5_organization}
+\input{n6_retrieval}
+\input{n7_implementation}
+\input{n8a_eval}
+\input{n8b_eval}
+\input{n8c_eval}
+\input{n9_discussion}
+\input{n10_threats}
+\input{n11_conclusion}
+\input{n_back}
+
+{\footnotesize
+%% References follow elsarticle-num. A 2pt item separation (the class default
+%% is larger) keeps the 55-entry list inside the page budget without changing
+%% the type size.
+\setlength{\bibsep}{0.5pt plus 0.2ex}
+\bibliographystyle{elsarticle-num}
+\bibliography{refs,refs_new_verified}
+}
+
+\end{document}

@@ -1,0 +1,167 @@
+{
+ "qid": "QK03",
+ "query": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+ "fused": [
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.781387209892273,
+   "vector_rank": 1,
+   "catalog_rank": 2,
+   "fused_rank": 1
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+   "lane": "both",
+   "vector_score": 0.7284431457519531,
+   "vector_rank": 2,
+   "catalog_rank": 1,
+   "fused_rank": 2
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+   "lane": "both",
+   "vector_score": 0.6276568174362183,
+   "vector_rank": 3,
+   "catalog_rank": 3,
+   "fused_rank": 3
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.5576910972595215,
+   "vector_rank": 4,
+   "catalog_rank": 125,
+   "fused_rank": 4
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+   "lane": "both",
+   "vector_score": 0.4722225069999695,
+   "vector_rank": 6,
+   "catalog_rank": 191,
+   "fused_rank": 5
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 2 of 3).md",
+   "lane": "both",
+   "vector_score": 0.47217345237731934,
+   "vector_rank": 7,
+   "catalog_rank": 79,
+   "fused_rank": 6
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 3 of 4).md",
+   "lane": "both",
+   "vector_score": 0.4682554602622986,
+   "vector_rank": 8,
+   "catalog_rank": 18,
+   "fused_rank": 7
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 5 of 8).md",
+   "lane": "both",
+   "vector_score": 0.4632413983345032,
+   "vector_rank": 9,
+   "catalog_rank": 194,
+   "fused_rank": 8
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.4597421884536743,
+   "vector_rank": 10,
+   "catalog_rank": 87,
+   "fused_rank": 9
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.4579252004623413,
+   "vector_rank": 11,
+   "catalog_rank": 109,
+   "fused_rank": 10
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+   "lane": "both",
+   "vector_score": 0.4576897621154785,
+   "vector_rank": 12,
+   "catalog_rank": 69,
+   "fused_rank": 11
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 3 of 3).md",
+   "lane": "both",
+   "vector_score": 0.44518327713012695,
+   "vector_rank": 13,
+   "catalog_rank": 222,
+   "fused_rank": 12
+  }
+ ],
+ "fusion_trace": {
+  "agreed": 60,
+  "vector_only_pool": 4,
+  "catalog_only_pool": 242,
+  "vector_only_taken": 4,
+  "catalog_only_taken": 4,
+  "fused_before_cap": 68,
+  "fused_after_cap": 12,
+  "candidate_cap": 12
+ },
+ "vector_trace": {
+  "per_lib_hits": {
+   "计算机与人工智能": 30,
+   "自然科学与地球科学": 30,
+   "生命科学与医学": 30,
+   "工程与能源": 30,
+   "经济与社会": 30
+  },
+  "raw_hits": 150,
+  "doc_level": 64,
+  "seconds": 1.9
+ },
+ "catalog_trace": {
+  "per_lib_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "catalog_size": 322,
+  "catalog_overlap_gt0": 302,
+  "seconds": 1.4
+ },
+ "fetch_trace": {
+  "seconds": 3.3,
+  "errors": []
+ },
+ "heads": {
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md": "# materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs（第 1/2 部分）\n章节: Dynamic electrical behavior of halide perovskite based solar cells\n# Dynamic electrical behavior of halide perovskite based solar cells\n\n\nG. A. Nemnesa,b,\\*, Cristina Besleagac, A. G. Tomulescu, Ioana Pintiliec, L. Pintiliec, K. Torfasond, A. Manolescud\n\naUniversity of Bucharest, Faculty of Physics, Materials and Devices for Electronics and Optoelectronics Research Center, 077125 Magurele-Ilfov, Romania\n\nbHoria Hulubei National Institute for Physics and Nuclear Engineering, 077126 Magurele-Ilfov, Romania\n\ncNational Institute of Materials Physics, Magurele 077125, Ilfov, Romania\n\ndSchool of Science and Enginee",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md": "# materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs（第 2/2 部分）\n章节: Dynamic electrical behavior of halide perovskite based solar cells > 3.2. Bias scan rate effects\n## 3.2. Bias scan rate effects\n\n\nIn order to further analyze the dynamic hysteresis effects and test the validity of our model, we explore the J-V characteristics at different bias scan rates. Several reverse-forward scans with different BSRs are presented in Fig. 5(a). The widest hysteresis occurs at moderate scan rates, while at very slow and very fast rates it is diminished. This picture is explained as follows. At lower scan rates, the capacitive effects are less important, while at very high rates the relaxat",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md": "# materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar（第 2/2 部分）\n章节: $\\mathrm { { C H _ { 3 } N H _ { 3 } P b I _ { 3 } } / }$ GeSe bilayer heterojunction solar cell with high performance > III. ELECTRICAL PROPERTIES AND EFFICIENCY OF THE BILAYER SOLAR CELL\n## III. ELECTRICAL PROPERTIES AND EFFICIENCY OF THE BILAYER SOLAR CELL\n\n\nThe solar cell must satisfy electron transfer condition, so the work functions of every layer need to be suitable.\n\n![](images/d74a8328f492a2e0f8a47abe2c69649778f5b7db84d7048d314d7898913aaa6d.jpg)  \nFIG. 5. Profiles of generation rate (G) and recombination rate (U) of carriers in the bilayer solar cell with 450 nm GeSe layer and 350 nm perovskite layer",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md": "# materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar（第 1/2 部分）\n章节: $\\mathrm { { C H _ { 3 } N H _ { 3 } P b I _ { 3 } } / }$ GeSe bilayer heterojunction solar cell with high performance\n# $\\mathrm { { C H _ { 3 } N H _ { 3 } P b I _ { 3 } } / }$ GeSe bilayer heterojunction solar cell with high performance\n\n\nGuo-Jiao Hou1, Dong-Lin Wang2, Roshan Ali1, Yu-Rong Zhou3, Zhen-Gang Zhu1,2,\\* and Gang Su2,4†\n\n1 School of Electronic, Electrical and Communication Engineering,\n\nUniversity of Chinese Academy of Sciences, Beijing 100049, China.\n\n2 Theoretical Condensed Matter Physics and Computational Materials Physics Laboratory,\n\nCollege of Physical Sciences, University of Chinese Acad",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md": "# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 4/4 部分）\n章节: Machine learning for molecular simulation > References\n## References\n\n\n[1] P. A. M. Dirac. Quantum mechanics of many-electron systems. Proc. Royal Soc. A, 123(792):714–733, 1929. 1\n\n[2] K.-R. Müller, S. Mika, G. Rätsch, K. Tsuda, and B. Schölkopf. An introduction to kernel-based learning algorithms. IEEE Trans. Neural Netw., 12:181–201, 2001. 1, 4.2\n\n[3] V. N. Vapnik. An overview of statistical learning theory. IEEE Trans. Neur. Net., 10, 1999. 1\n\n[4] Christopher M. Bishop. Pattern Recognition and Machine Learning. Springer, 2006. 1\n\n[5] Y. LeCun, Y. Bengio, and G. Hinton. Deep learning. Nature, 521:436–444, 201",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 2 of 3).md": "# oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md.md（第 2/3 部分）\n章节: Approximate deconvolution large eddy simulation of a barotropic ocean circulation model > 5.1. Method of manufactured solutions: Code validation\n## 5.1. Method of manufactured solutions: Code validation\n\n\nTo validate the code, we consider the following exact solution, which corresponds to a steady state Taylor-Green vortex flow:\n\n$$\nq ( x , y , t ) = \\left( \\frac { \\delta _ { I } } { L } \\right) ^ { 2 } 2 \\pi ^ { 2 } \\sin ( \\pi x ) \\sin ( \\pi y ) + y ,\\tag{36}\n$$\n\n$$\n\\begin{array} { r c l } { \\omega ( x , y , t ) } & { = } & { 2 \\pi ^ { 2 } \\sin ( \\pi x ) \\sin ( \\pi y ) , } \\end{array}\\tag{37}\n$$\n\n$$\n",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 3 of 4).md": "# seismology__1308.1846__developing-and-testing-the-automated-post-ev.md.md（第 3/4 部分）\n章节: Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique > 6.3 Validation Study of Loss Model\n## 6.3 Validation Study of Loss Model\n\n\nA study that compares the predicted losses of ten global earthquakes against historic loss data was pursued in order to validate the APE-ELEV model. Table 1 shows the list of earthquakes selected for this study, their date of occurrence (dd-mm-yyyy), magnitude, latitude and longitude, historic losses in millions of USD in the year of occurrence of the earthquake, adjustment multipliers to normalise the historic loss",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 5 of 8).md": "# chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md.md（第 5/8 部分）\n章节: Autonomous Reaction Network Exploration in Homogeneous and Heterogeneous Catalysis > 4.5 Workflows for efficient computation protocols\n## 4.5 Workflows for efficient computation protocols\n\n\nAs shown in sections 4.1 and 4.3, even if a single calculation may be efficient, the amount of data generated in an exhaustive exploration is immense and on the scale of $1 0 ^ { 9 }$ single-point calculations in brute-force approaches. Therefore, smart automated protocols must be established to steer the exploration and reduce the number of calculations in order to maintain efficiency through all stages of the explo",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md": "# seismology__1308.1846__developing-and-testing-the-automated-post-ev.md.md（第 1/4 部分）\n章节: Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique\n# Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique\n\n\nAnthony Astoul, Christopher Filliter, Eric Mason, Andrew Rau-Chaplin, Kunal Shridhar, Blesson Varghese and Naman Varshney\n\nReceived: 5 September 2012 / Accepted: 22 June 2013\n\nAbstract An automated, real-time, multiple sensor dat: source relying and globally applicable earthquake loss model and visualiser is desirable for post-event earthquake analysis. To achieve this there ",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md": "# neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md.md（第 1/2 部分）\n章节: Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n# Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n\n\nMingyuan Meng   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nmengmy3@mail.sysu.edu.cn   \nXingyu Yang   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nyangxy266@mail2.sysu.edu.cn   \nShanlin Xiao   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nxiao",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md": "# climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md（第 1/3 部分）\n章节: Precipitation extremes under climate change\n# Precipitation extremes under climate change\n\n\nPaul A. O'Gorman\n\nReceived: date / Accepted: date\n\nAbstract The response of precipitation extremes to climate change is considered using results from theory, modeling, and observations, with a focus on the physical factors that control the response. Observations and simulations with climate models show that precipitation extremes intensify in response to a warming climate. However, the sensitivity of precipitation extremes to warming remains uncertain when convection is important, and it may be higher in the",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 3 of 3).md": "# seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p（第 3/3 部分）\n章节: Supershear Rupture Indicator in Near-fault Particle Motion > 4, Particle motion shape metrics\n## 4, Particle motion shape metrics\n\n\nWe test two shape metrics in this study to characterize the particle motion under different rupture speeds. The first is the normalized particle motion area. To calculate it, we first normalized the particle motion with the peak FP displacement. Then the area is defined as the area enclosed by the normalized trajectory of motion and the line FN = 0. This metric is sensitive to the shape of the particle motion and the relative amplitude of FN motion to the FP motion, which are se"
+ },
+ "built": "2026-10-12T05:12:31.238062+00:00"
+}

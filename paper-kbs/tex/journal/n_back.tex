@@ -1,0 +1,64 @@
+\section*{Data availability}
+The platform source code, the acquisition and organization campaign logs, the
+tool-layer and agentic experiment scripts, the gold question set with fact
+markers, the paraphrase grid, the leave-one-out margin replay, the
+second-signal and span-level NLI replays, the graded abstention probes, the
+cross-lingual acquisition results, the gate and partition ablation runs, and
+all raw per-run JSON logs (tool-layer retrieval rows and agentic transcripts,
+including the timeout re-runs) are available at
+\url{https://github.com/kingdol666/rag-knowledge} (benchmark suite:
+\texttt{benchmark-suite/}; paper artifacts and evidence inventories:
+\texttt{paper-kbs/}).
+
+\section*{Ethics statement}
+This article does not report studies involving human participants, human
+data, or animals.
+
+\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
+During the preparation of this work the authors used LLM-based coding
+agents to assist with experiment execution, data tabulation, figure
+preparation, and manuscript drafting. After using this tool/service, the
+authors reviewed and edited the content as needed and take full
+responsibility for the content of the published article. All experimental
+numbers originate from logged runs of the deployed system on the authors'
+machine.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests
+or personal relationships that could have appeared to influence the work
+reported in this paper.
+
+\section*{CRediT authorship contribution statement}
+\textbf{Author 1:} Conceptualization, Methodology, Software, Investigation,
+Data curation, Writing -- original draft. \textbf{Author 2:} Validation,
+Writing -- review \& editing, Supervision. %% AUTHOR ACTION: adjust.
+
+\section*{Funding}
+This research did not receive any specific grant from funding agencies in
+the public, commercial, or not-for-profit sectors. %% AUTHOR ACTION
+
+\section*{Acknowledgments}
+The authors thank the maintainers of the open-source components the platform
+builds on. %% AUTHOR ACTION: adjust or remove.
+
+\appendix
+\setcounter{table}{0}
+\section{Per-question tool-layer results}
+\label{app:perq}
+Table~\ref{tab:appendixranks} breaks the tool-layer comparison down to
+individual questions: the best gold rank each configuration reached in
+its top-5 window, for every gold-annotated question. Reading the columns
+side by side localizes every aggregate number in the paper: BM25 and RRF
+miss at most one question (Q16's confuser family and Q7's telemetry
+cluster account for the remaining sub-1.0 MRRs); the judged hybrid's nine
+misses are eight questions where same-domain confusers outranked
+the gold (Q2, Q4, Q5, Q6, Q8, Q9, Q11, Q12) plus Q16, where the confuser
+family crowded the gold out upstream;
+and judge-as-filter restores the gold on every one of the eight
+judging losses while inheriting Q16's upstream failure --- the
+decomposition that Fig.~\ref{fig:marginvariants}(b) aggregates and
+Fig.~\ref{fig:anatomy} dissects one query at a time.
+
+\input{tab_appendix_ranks}
+
+\input{n_appendix_tables}

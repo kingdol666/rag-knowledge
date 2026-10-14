@@ -1,0 +1,304 @@
+\begin{thebibliography}{39}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Lewis et~al.(2020)Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal,
+  K{\"u}ttler, Lewis, Yih, Rockt{\"a}schel, Riedel, and Kiela]{rag-lewis}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, {Wen-tau} Yih, Tim
+  Rockt{\"a}schel, Sebastian Riedel, and Douwe Kiela.
+\newblock Retrieval-augmented generation for knowledge-intensive {NLP} tasks.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~33, pages 9459--9474. Curran Associates, Inc., 2020.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html}.
+
+\bibitem[Karpukhin et~al.(2020)Karpukhin, O{\u{g}}uz, Min, Lewis, Wu, Edunov,
+  Chen, and Yih]{dpr}
+Vladimir Karpukhin, Barlas O{\u{g}}uz, Sewon Min, Patrick Lewis, Ledell Wu,
+  Sergey Edunov, Danqi Chen, and {Wen-tau} Yih.
+\newblock Dense passage retrieval for open-domain question answering.
+\newblock In \emph{Proceedings of the 2020 Conference on Empirical Methods in
+  Natural Language Processing ({EMNLP})}, pages 6769--6781, 2020.
+\newblock \doi{10.18653/v1/2020.emnlp-main.550}.
+\newblock URL \url{https://aclanthology.org/2020.emnlp-main.550/}.
+
+\bibitem[{Model Context Protocol Contributors}(2025)]{mcp}
+{Model Context Protocol Contributors}.
+\newblock Model context protocol specification (2025-11-25).
+\newblock \url{https://modelcontextprotocol.io/specification/2025-11-25}, 2025.
+\newblock Accessed September 19, 2026; specification revision 2025-11-25.
+
+\bibitem[Singh et~al.(2025)Singh, Ehtesham, Kumar, Khoei, and
+  Vasilakos]{singh-agentic-rag}
+Aditi Singh, Abul Ehtesham, Saket Kumar, Tala~Talaei Khoei, and Athanasios~V.
+  Vasilakos.
+\newblock Agentic retrieval-augmented generation: A survey on agentic {RAG}.
+\newblock \emph{arXiv preprint arXiv:2501.09136}, 2025.
+\newblock \doi{10.48550/arXiv.2501.09136}.
+
+\bibitem[Zhang et~al.(2023)Zhang, Li, Cui, Cai, Liu, Fu, Huang, Zhao, Zhang,
+  Xu, Chen, Wang, Luu, Bi, Shi, and Shi]{siren}
+Yue Zhang, Yafu Li, Leyang Cui, Deng Cai, Lemao Liu, Tingchen Fu, Xinting
+  Huang, Enbo Zhao, Yu~Zhang, Chen Xu, Yulong Chen, Longyue Wang, Anh~Tuan Luu,
+  Wei Bi, Freda Shi, and Shuming Shi.
+\newblock Siren's song in the {AI} ocean: A survey on hallucination in large
+  language models.
+\newblock \emph{arXiv preprint arXiv:2309.01219}, 2023.
+\newblock URL \url{https://arxiv.org/abs/2309.01219}.
+
+\bibitem[Zheng et~al.(2023)Zheng, Chiang, Sheng, et~al.]{zheng-llmjudge}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, et~al.
+\newblock Judging {LLM}-as-a-judge with {MT-Bench} and {Chatbot Arena}.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, volume~36, 2023.
+
+\bibitem[Panickssery et~al.(2024)Panickssery, Bowman, and
+  Feng]{panickssery-selfpref}
+Arjun Panickssery, Samuel~R. Bowman, and Shi Feng.
+\newblock {LLM} evaluators recognize and favor their own generations.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, volume~37, 2024.
+
+\bibitem[Name(2026)]{qdcvr-demo}
+Author Name.
+\newblock {QDCVR}: Content-routed organization and layered agent retrieval with
+  inspectable evidence.
+\newblock In \emph{Proc. of the 35th {ACM} International Conference on
+  Information and Knowledge Management ({CIKM} '26), Demo Track}, 2026.
+\newblock To appear.
+
+\bibitem[Chen et~al.(2024)Chen, Xiao, Zhang, Luo, Lian, and Liu]{bge-m3}
+Jianlyu Chen, Shitao Xiao, Peitian Zhang, Kun Luo, Defu Lian, and Zheng Liu.
+\newblock {M3-Embedding}: Multi-linguality, multi-functionality,
+  multi-granularity text embeddings through self-knowledge distillation.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  ACL 2024}, pages 2318--2335. Association for Computational Linguistics, 2024.
+\newblock \doi{10.18653/v1/2024.findings-acl.137}.
+\newblock URL \url{https://aclanthology.org/2024.findings-acl.137/}.
+
+\bibitem[Robertson and Zaragoza(2009)]{bm25}
+Stephen Robertson and Hugo Zaragoza.
+\newblock The probabilistic relevance framework: {BM25} and beyond.
+\newblock \emph{Foundations and Trends in Information Retrieval}, 3\penalty0
+  (4):\penalty0 333--389, 2009.
+
+\bibitem[Cormack et~al.(2009)Cormack, Clarke, and Buettcher]{rrf-cormack}
+Gordon~V. Cormack, Charles L.~A. Clarke, and Stefan Buettcher.
+\newblock Reciprocal rank fusion outperforms {Condorcet} and individual rank
+  learning methods.
+\newblock In \emph{Proceedings of the 32nd International {ACM} {SIGIR}
+  Conference on Research and Development in Information Retrieval}, pages
+  759--760, 2009.
+\newblock \doi{10.1145/1571941.1572114}.
+
+\bibitem[Gao et~al.(2023{\natexlab{a}})Gao, Xiong, Gao, et~al.]{gao-ragsurvey}
+Yunfan Gao, Yun Xiong, Xinyu Gao, et~al.
+\newblock Retrieval-augmented generation for large language models: A survey.
+\newblock \emph{arXiv preprint arXiv:2312.10997}, 2023{\natexlab{a}}.
+
+\bibitem[Gao et~al.(2024)Gao, Xiong, Wang, et~al.]{modular-rag}
+Yunfan Gao, Yun Xiong, Kang Wang, et~al.
+\newblock Modular {RAG}: Transforming {RAG} systems into {LEGO}-like
+  reconfigurable frameworks.
+\newblock \emph{arXiv preprint arXiv:2402.19473}, 2024.
+
+\bibitem[Edge et~al.(2024)Edge, Trinh, Cheng, Bradley, Chao, Mody, Truitt,
+  Metropolitansky, Ness, and Larson]{graphrag}
+Darren Edge, Ha~Trinh, Newman Cheng, Joshua Bradley, Alex Chao, Apurva Mody,
+  Steven Truitt, Dasha Metropolitansky, Robert~Osazuwa Ness, and Jonathan
+  Larson.
+\newblock From local to global: A {GraphRAG} approach to query-focused
+  summarization.
+\newblock \emph{arXiv preprint arXiv:2404.16130}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2404.16130}.
+
+\bibitem[Guo et~al.(2024)Guo, Xia, Yu, Ao, and Huang]{lightrag}
+Zirui Guo, Lianghao Xia, Yanhua Yu, Tu~Ao, and Chao Huang.
+\newblock {LightRAG}: Simple and fast retrieval-augmented generation.
+\newblock \emph{arXiv preprint arXiv:2410.05779}, 2024.
+
+\bibitem[Sarthi et~al.(2024)Sarthi, Abdullah, Tuli, Khanna, Goldie, and
+  Manning]{raptor}
+Parth Sarthi, Salman Abdullah, Aditi Tuli, Shubh Khanna, Anna Goldie, and
+  Christopher~D. Manning.
+\newblock {RAPTOR}: Recursive abstractive processing for tree-organized
+  retrieval.
+\newblock In \emph{The Twelfth International Conference on Learning
+  Representations ({ICLR})}, 2024.
+
+\bibitem[Gaiardelli et~al.(2024)Gaiardelli, Lora, Spellini, and Fummi]{rrpdg}
+Simone Gaiardelli, Michele Lora, Sara Spellini, and Franco Fummi.
+\newblock {RRPDG}: A graph model to enable {AI}-based production
+  reconfiguration and optimization.
+\newblock \emph{IEEE Transactions on Industrial Informatics}, 20\penalty0
+  (4):\penalty0 6844--6854, 2024.
+\newblock \doi{10.1109/TII.2024.3352645}.
+
+\bibitem[Zhang et~al.(2026)Zhang, Wang, Jia, Dong, and Ren]{comaikg}
+Jing Zhang, Haiteng Wang, Zidi Jia, Jiabao Dong, and Lei Ren.
+\newblock {CoMA-IKG}: {LLM}-driven multiagent framework for automated
+  construction of industrial knowledge graph.
+\newblock \emph{IEEE Transactions on Industrial Informatics}, 22\penalty0
+  (6):\penalty0 5553--5564, 2026.
+
+\bibitem[Asai et~al.(2024)Asai, Wu, Wang, Sil, and Hajishirzi]{selfrag}
+Akari Asai, Zeqiu Wu, Yizhong Wang, Avirup Sil, and Hannaneh Hajishirzi.
+\newblock {Self-RAG}: Learning to retrieve, generate, and critique through
+  self-reflection.
+\newblock In \emph{The Twelfth International Conference on Learning
+  Representations ({ICLR})}, 2024.
+\newblock URL \url{https://openreview.net/forum?id=hSyW5go0v8}.
+
+\bibitem[Yan et~al.(2024)Yan, Gu, Zhu, and Ling]{crag}
+Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, and Zhen-Hua Ling.
+\newblock Corrective retrieval augmented generation.
+\newblock \emph{arXiv preprint arXiv:2401.15884}, 2024.
+\newblock \doi{10.48550/arXiv.2401.15884}.
+\newblock URL \url{https://arxiv.org/abs/2401.15884v3}.
+
+\bibitem[Jiang et~al.(2023)Jiang, Xu, Gao, Sun, Liu, Dwivedi-Yu, Yang, Callan,
+  and Neubig]{flare}
+Zhengbao Jiang, Frank Xu, Luyu Gao, Zhiqing Sun, Qian Liu, Jane Dwivedi-Yu,
+  Yiming Yang, Jamie Callan, and Graham Neubig.
+\newblock Active retrieval augmented generation.
+\newblock In \emph{Proceedings of the 2023 Conference on Empirical Methods in
+  Natural Language Processing ({EMNLP})}, pages 7969--7992, 2023.
+\newblock \doi{10.18653/v1/2023.emnlp-main.495}.
+\newblock URL \url{https://aclanthology.org/2023.emnlp-main.495/}.
+
+\bibitem[Kamath et~al.(2020)Kamath, Jia, and Liang]{kamath}
+Amita Kamath, Robin Jia, and Percy Liang.
+\newblock Selective question answering under domain shift.
+\newblock In \emph{Proceedings of the 58th Annual Meeting of the Association
+  for Computational Linguistics ({ACL})}, pages 5684--5696, 2020.
+\newblock \doi{10.18653/v1/2020.acl-main.503}.
+\newblock URL \url{https://aclanthology.org/2020.acl-main.503/}.
+
+\bibitem[Zhao et~al.(2025)Zhao, {De Maria}, Kumarage, Chaudhary, Agrawal, Li,
+  Park, Chen, Deng, and Liu]{cyberbot}
+Chengshuai Zhao, Riccardo {De Maria}, Tharindu Kumarage, Kumar~Satvik
+  Chaudhary, Garima Agrawal, Yiwen Li, Jongchan Park, Ying-Chih Chen, Yuli
+  Deng, and Huan Liu.
+\newblock {CyberBOT}: Ontology-grounded retrieval augmented generation for
+  reliable cybersecurity education.
+\newblock In \emph{Proceedings of the 34th ACM International Conference on
+  Information and Knowledge Management}, pages 6752--6756. Association for
+  Computing Machinery, 2025.
+\newblock \doi{10.1145/3746252.3761478}.
+\newblock URL \url{https://doi.org/10.1145/3746252.3761478}.
+
+\bibitem[Liu et~al.(2023)Liu, Zhang, and Liang]{liu-verifiability}
+Nelson~F. Liu, Tianyi Zhang, and Percy Liang.
+\newblock Evaluating verifiability in generative search engines.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  EMNLP 2023}, 2023.
+
+\bibitem[Gao et~al.(2023{\natexlab{b}})Gao, Yen, Yu, and Chen]{gao-citations}
+Tianyu Gao, Howard Yen, Jiatong Yu, and Danqi Chen.
+\newblock Enabling large language models to generate text with citations.
+\newblock In \emph{Proceedings of the 2023 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, 2023{\natexlab{b}}.
+
+\bibitem[Sun et~al.(2023)Sun, Yan, Wang, et~al.]{sun-urara}
+Wei Sun, Lingyao Yan, Xinyu Wang, et~al.
+\newblock Is {ChatGPT} good at search? investigating relevance reasoning with
+  {LLM}-as-a-judge.
+\newblock In \emph{Proceedings of the 2023 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, 2023.
+
+\bibitem[Sun et~al.(2024)Sun, Chen, Zhang, et~al.]{rankgpt}
+Wei Sun, Liang Chen, Xianyu Zhang, et~al.
+\newblock Are large language models good at listwise rerankers?
+\newblock In \emph{Proceedings of the 47th International ACM SIGIR Conference
+  on Research and Development in Information Retrieval}, 2024.
+
+\bibitem[Lightman et~al.(2024)Lightman, Kosaraju, Burda,
+  et~al.]{lightman-verify}
+Hunter Lightman, Vineet Kosaraju, Yura Burda, et~al.
+\newblock Let's verify step by step.
+\newblock In \emph{The Twelfth International Conference on Learning
+  Representations (ICLR)}, 2024.
+
+\bibitem[Yin et~al.(2023)Yin, Sun, Guo, et~al.]{yin-knowwhat}
+Zhangyue Yin, Qiushi Sun, Qipeng Guo, et~al.
+\newblock Do large language models know what they don't know?
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  ACL 2023}, 2023.
+
+\bibitem[Feng et~al.(2024)Feng, Shi, Wang, et~al.]{feng-abstain}
+Shangbin Feng, Weijia Shi, Yike Wang, et~al.
+\newblock Don't hallucinate, abstain: Identifying {LLM} knowledge gaps via
+  multi-{LLM} collaboration.
+\newblock In \emph{Proceedings of the 62nd Annual Meeting of the Association
+  for Computational Linguistics (ACL)}, 2024.
+
+\bibitem[Yao et~al.(2023)Yao, Zhao, Yu, Du, Shafran, Narasimhan, and
+  Cao]{react-yao}
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan,
+  and Yuan Cao.
+\newblock {ReAct}: Synergizing reasoning and acting in language models.
+\newblock In \emph{The Eleventh International Conference on Learning
+  Representations ({ICLR})}, 2023.
+
+\bibitem[Schick et~al.(2023)Schick, Dwivedi-Yu, Dess{\`i}, Raileanu, Lomeli,
+  Hambro, Zettlemoyer, Cancedda, and Scialom]{toolformer}
+Timo Schick, Jane Dwivedi-Yu, Roberto Dess{\`i}, Roberta Raileanu, Maria
+  Lomeli, Eric Hambro, Luke Zettlemoyer, Nicola Cancedda, and Thomas Scialom.
+\newblock Toolformer: Language models can teach themselves to use tools.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+
+\bibitem[Li et~al.(2026)Li, Tian, Luo, Cao, and Luo]{deepread}
+Zhanli Li, Huiwen Tian, Lvzhou Luo, Yixuan Cao, and Ping Luo.
+\newblock {DeepRead}: Document structure-aware reasoning to enhance agentic
+  search.
+\newblock \emph{arXiv preprint arXiv:2602.05014v3}, 2026.
+\newblock \doi{10.48550/arXiv.2602.05014}.
+\newblock URL \url{https://arxiv.org/abs/2602.05014v3}.
+
+\bibitem[Wang et~al.(2024)Wang, Xu, Zhao, Ouyang, Wu, Zhao, Xu, Liu, Qu, Shang,
+  Zhang, Wei, Sui, Li, Shi, Qiao, Lin, and He]{mineru}
+Bin Wang, Chao Xu, Xiaomeng Zhao, Linke Ouyang, Fan Wu, Zhiyuan Zhao, Rui Xu,
+  Kaiwen Liu, Yuan Qu, Fukai Shang, Bo~Zhang, Liqun Wei, Zhihao Sui, Wei Li,
+  Botian Shi, Yu~Qiao, Dahua Lin, and Conghui He.
+\newblock {MinerU}: An open-source solution for precise document content
+  extraction.
+\newblock \emph{arXiv preprint arXiv:2409.18839}, 2024.
+\newblock \doi{10.48550/arXiv.2409.18839}.
+\newblock URL \url{https://arxiv.org/abs/2409.18839}.
+
+\bibitem[{Chroma}(2026)]{chroma}
+{Chroma}.
+\newblock Chroma: The {AI}-native open-source embedding database.
+\newblock \url{https://www.trychroma.com} (accessed 2026-09-18), 2026.
+
+\bibitem[{Neo4j, Inc.}(2026)]{neo4j}
+{Neo4j, Inc.}
+\newblock Neo4j graph database.
+\newblock \url{https://neo4j.com} (accessed 2026-09-18), 2026.
+
+\bibitem[lay(2025)]{laya}
+Laya.
+\newblock Model card, \url{https://huggingface.co/convaiinnovations/laya},
+  2025.
+\newblock Locally hosted decision model, used in this work as the
+  content-verification judge. Accessed 2026-10-08.
+
+\bibitem[Malkov and Yashunin(2020)]{hnsw}
+Yu~A. Malkov and Dmitry~A. Yashunin.
+\newblock Efficient and robust approximate nearest neighbor search using
+  hierarchical navigable small world graphs.
+\newblock \emph{IEEE Transactions on Pattern Analysis and Machine
+  Intelligence}, 42\penalty0 (4):\penalty0 824--836, 2020.
+\newblock \doi{10.1109/TPAMI.2018.2889473}.
+
+\bibitem[jie(2020)]{jieba}
+jieba: Chinese text segmentation.
+\newblock \url{https://github.com/fxsjy/jieba}, 2020.
+\newblock Accessed 2026-10-08.
+
+\end{thebibliography}

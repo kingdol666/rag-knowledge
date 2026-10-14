@@ -1,0 +1,100 @@
+\section{Threats to validity}
+\label{sec:threats}
+
+\noindent\textbf{Scale.} The retrieval corpus is 42 documents across five
+libraries; the campaigns scale it to 322, and a second corpus adds 79. Absolute
+Hit@5 values (BM25 at 1.00 on the industrial corpus) do not transfer to much
+larger collections, where the hybrid candidate cap and the librarian's shelf
+pruning become load-bearing. The shipped benchmark suite is the scaling path; a
+hundreds-of-documents run with an author-independent question set remains the
+full answer.
+
+\noindent\textbf{Question set.} Sixteen tool-layer and four agent-layer
+questions on the industrial corpus, ten on the second corpus and forty cloze per
+language in the campaign were developer-authored. Gold documents and fact
+markers are released, but the samples are small and favour the corpora's
+vocabulary. Q16's question embeds its gold document's filename token,
+guaranteeing lexical success; the fix is scheduled, and because Q16 is the one
+question on which the fusion stage loses a gold, the correction can only tighten
+the reported decomposition. The arXiv documents are named
+\texttt{\{domain\}\_\_\{identifier\}\_\_\{slug\}}, so routing accuracy against
+that prefix is not an independent measurement, and we report coverage rather
+than routing accuracy (Section~\ref{sec:e2}).
+
+\noindent\textbf{Experimental controls.} The tool layer isolates the gate:
+among its nine configurations are retrieval without verification and the same
+retrieval with the gate in either role, so the ranking-layer claim rests on a
+matched control. The agent layer lacked one: its four arms are three grounded
+lanes (retrieval \emph{and} verification) plus a bare agent (neither), which
+cannot separate them. The missing arm, a grounded lane with the gate disabled
+and the fusion order returned, was added late in revision, its protocol fixed
+before the run (Section~\ref{sec:e8}), plus a second ablation varying
+the search partition rather than the gate (\S\ref{sec:e8}). Both inherit
+the same questions, libraries, engine and turn budget; neither was tuned after
+seeing its results.
+
+\noindent\textbf{Evidence provenance is uneven.} The acquisition, organization
+and functional campaigns are audited runs with released per-check outcomes. The
+experience subsystem rests on case evidence: a distillation campaign with
+thirteen drafts, one sedimented experience, and an approval path never
+exercised. The 100-document ingestion is a derived state file, not a timed
+per-document log, and its accounting is not closed: 100 documents were
+submitted, 91 names appear in the derived state, and 79 are present in the
+library. The whole gap is unattributed: no artifact records a parse status
+per paper, so the 21 missing papers may have failed parsing, may have failed
+a later gate, or may never have been recorded. A 21\% retrievability gap is
+therefore a bounded estimate of the parse-failure rate, not a measurement of
+it, and no claim in this paper depends on the distinction. A system paper's
+most useful contribution may be the honesty
+of its ledger.
+
+\noindent\textbf{Judge and engine dependence.} Scores and turn counts use one
+judging checkpoint and one agent engine per campaign; lanes rather than models
+are compared, but absolute numbers move with engine versions. The deployed gate
+is still a single checkpoint, although the two strongest verifier findings are
+no longer single-signal: a generic entailment model also fails (it
+anti-separates golds and rejects no out-of-corpus topic), and a symbolic rule
+decides the numeric case the shipped judge mishandles. Trained
+evidence-verification models and learned signal ensembles remain open; the naive
+span-max probe and the rank-fusion ensemble answer the two easiest upgrades
+negatively.
+
+\noindent\textbf{Design surface.} Three lanes triple the policy surface an
+adopter must test. The evidence supports two operating points: the catalog-first
+lane as the exhaustive option, the orchestrated lane as the latency-tuned
+default. A two-lane deployment is defensible today; query-shape auto-selection
+is future work.
+
+\noindent\textbf{Consumer-side evidence.} The honesty contract is evaluated on
+the system only, that not-found reports are well formed and non-fabricated.
+Whether an operator acts on a not-found report, escalates to a human, or ingests
+a recommended source is not measured: the paper's main missing external-validity
+leg. A study is a small operator trial over a fixed probe set with two
+conditions, platform reports versus the same model's unaided answer, scored on
+the downstream action taken; probe set and transcripts are released so it can be
+run independently.
+
+\noindent\textbf{Nondeterminism.} Agent runs are stochastic; we report two
+repetitions of the sixteen-cell grid (citation agreement 16/16, with wall time
+and turn counts fluctuating substantially and not a distribution), retry only
+zero-turn transport flakes, and release all per-run logs including timeout
+re-runs. Fact-marker checks are automated substring matches; we additionally
+report decontaminated checks computed after removing answer lines that name a
+gold document, and the out-of-corpus answers were audited manually.
+Deterministic layers are bit-identical across two rounds except for latency
+fields.
+
+\noindent\textbf{Untested surfaces.} Three designed surfaces carry no
+controlled evidence and no claim is made about them. Library merge and split
+are described as life-cycle transitions but were never executed under
+controlled conditions, and neither is a single tool call: both are operator
+procedures over the document, catalog and index tools
+(Section~\ref{sec:e2}, Table~\ref{tab:org-ops}). The experience store's decay
+and scheduled-distillation paths were not exercised end to end
+(Section~\ref{sec:e3}). Durability under a crash mid-write was not tested: the
+write ordering and the visible index post-condition are as designed, and the
+concurrency campaign covers interleaved writes, not process death
+(Section~\ref{sec:e7}). Authentication and token management exist in the
+deployment and are outside this evaluation; the corpora used here are
+author-owned and were processed on a single workstation, so no privacy or
+adversarial-access claim is made either.

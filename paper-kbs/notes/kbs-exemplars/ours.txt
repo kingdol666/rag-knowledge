@@ -1,0 +1,3363 @@
+  Design of a content-retrieval-based knowledge-base
+     management system for trustworthy enterprise
+                    document intelligence
+
+                          Author Namea,, Co-author Namea
+
+               aAffiliation Department, University, City, Country, City, Country
+
+Abstract
+
+Enterprises accumulate process regulations, failure analyses, and operational
+lessons as unstructured documents spread across shared drives, and an-
+swering one engineering question requires locating, reading and citing the
+right document. Retrieval-augmented generation addresses the locating step,
+but its dominant ranking signal measures topic relatedness rather than evi-
+dence presence. We present QDCVR, a self-hosted knowledge-base manage-
+ment system that governs content across all three actions. Six functional
+subsystems--a quality-gated parsing and ingestion pipeline, content-routed
+organization, life-cycle management with three-source consistency audits, a
+document graph, an operational-knowledge store with credibility tiers, and
+multi-lane content-verified retrieval--expose 95 Model Context Protocol tools
+over one storage layer, and every subsystem terminates at an explicit contract
+rather than an implicit prompt. We evaluate the system on a deployed indus-
+trial corpus, a 322-document organization campaign, a 100-paper acquisition
+campaign, a cross-lingual corpus, and functional and non-functional cam-
+paigns. Twenty-one of 100 submitted papers were never retrievable from the
+arXiv corpus, and the accounting gap between submission, storage and in-
+dex coverage is reported rather than hidden. The verification gate exposes a
+same-domain score-inflation failure consistent with known LLM-judge mis-
+calibration: non-gold scores are indistinguishable from gold (Mann­Whitney
+p = 0.26), judged re-ranking lowers Hit@5 from 0.94 to 0.44, while reusing
+the same verdicts as a filter restores 0.94 (sign test p = 0.008). Functional
+
+    Corresponding author.
+     Email address: author@example.com (Author Name)
+campaigns confirm ingestion, deduplication, organization, graph construc-
+tion, distillation and abstention end to end; engine choice moves monetary
+cost by one to two orders of magnitude at the same quality tier. Verifier
+calibration is the open problem, and honesty needs an enforcement layer.
+
+Keywords: Knowledge-base management system, Document ingestion and
+parsing, Knowledge organization and lifecycle, Content-verified retrieval,
+Trustworthy question answering, Model Context Protocol
+
+1. Introduction
+
+    Enterprises accumulate process regulations, failure analyses, and opera-
+tional lessons as unstructured documents spread across shared drives. An-
+swering a concrete engineering question -- why did edge delamination appear
+in an electroluminescence inspection of a laminated photovoltaic module? --
+requires locating the one report among thousands that records the decision,
+reading it, and citing it. Retrieval-augmented generation (RAG) addresses
+the location step by embedding documents and the query into a shared vec-
+tor space [1, 2], and agentic stacks let a large language model orchestrate
+retrieval tools iteratively [3, 4]. Yet the dominant ranking signal, dense co-
+sine similarity, measures topic relatedness rather than evidence presence. A
+document that merely discusses similar materials can outrank the one doc-
+ument that contains the answer, and a fluent generator can synthesize an
+answer from the wrong source [5, 6].
+
+    Three research communities attack the three actions this task requires,
+and each leaves the others' problems intact. Retrieval research optimizes find-
+ing: sparse, dense and hybrid rankers, and more recently graph-based and
+hierarchical indexes, are evaluated by whether a relevant passage appears
+in a top-k list. Knowledge management addresses organizing: classification
+schemes, controlled vocabularies and lessons-learned systems govern how an
+organization's documents are arranged and reused, but they do not close the
+loop to an answer that a machine must justify. Document AI addresses read-
+ing: layout-aware parsing recovers text, tables and formulas from scanned
+pages [7], but a parsed document still has to be placed, indexed, governed
+and trusted. In a deployment these three concerns are not independent: a
+parse failure that is not treated as a failure becomes a silently missing doc-
+ument; a catalog that is not governed makes candidate generation arbitrary;
+and a ranking score that is treated as evidence produces confident citations
+
+                                                2
+to documents that were never read.
+    This paper takes the position that the object all three actions should
+
+govern is content, and that a knowledge-base management system should
+express that position as enforceable contracts rather than as good practice.
+Three commitments follow, and each one is implemented and measured here.
+First, content decides placement: library membership, tags, descriptions and
+graph edges are derived from what a document says, not from the folder it
+arrived in, and the resulting catalog is the system's first retrieval instrument.
+Second, content decides admissibility: no similarity score, however high, pro-
+motes a candidate into an answer, because the candidate's fetched content
+must be judged to contain direct evidence first, and the platform fetches
+that content itself. Third, absence of evidence is an answer : when verifi-
+cation eliminates every candidate, the system returns an explicit not-found
+report rather than the closest text. The consequence of the three commit-
+ments is that the system's claims are auditable: every placement, verdict, cut
+and lifecycle operation leaves a record, and the collection can be re-verified
+afterwards.
+
+    We built QDCVR (v2.3), a self-hosted knowledge-base management sys-
+tem that implements this position end to end, and we evaluate it on a de-
+ployed industrial corpus and on acquisition and functional campaigns. The
+system spans six functional subsystems -- a quality-gated parsing and in-
+gestion pipeline, knowledge organization with content routing, tags and a
+document graph, life-cycle management with three-source consistency audits,
+an operational-knowledge store with credibility tiers, a multi-lane content-
+verified retrieval layer, and a tool interface that exposes the whole platform
+as 95 Model Context Protocol tools [3] -- and it runs on a single workstation.
+Two results frame the paper. On the acquisition side, the pipeline is where
+trust is won or lost: of 100 papers submitted to a 100-document campaign,
+21 failed to parse, and the design decision that matters is that a failed parse
+is reported rather than stored as an empty document (Section 8.2). On the
+retrieval side, the content-verification gate that the system is built around
+turns out to be a better filter than a ranker: reusing the same verdicts as
+a re-ranking signal lowers Hit@5 from 0.94 to 0.44, while using them as a
+binary filter restores 0.94 (sign test p = 0.008), and the underlying cause is
+a same-domain score inflation in which non-gold candidates are statistically
+indistinguishable from gold ones (Mann­Whitney p = 0.26) (Section 8.7).
+We report both outcomes, including the one that is negative for our own
+design.
+
+                                                3
+The contributions are:
+
+   1. A content-governed knowledge-base management architecture
+       (Sections 3­7): requirements derived from deployment, six design prin-
+       ciples enforced in code, a four-layer architecture, and an explicit data
+       model whose contracts -- parse gates, placement rules, three-source
+       consistency, promotion conditions, task semantics -- are stated as obli-
+       gations rather than conventions.
+
+   2. A quality-gated acquisition pipeline with a measured failure
+       budget (Section 4, E1): multi-format parsing with OCR, exact and
+       near-duplicate detection, structure-aware splitting of oversized docu-
+       ments with part addressing, content-derived descriptions and tags, and
+       an index post-condition; evaluated on a 100-document campaign (21%
+       parse failure) and on a cross-lingual corpus.
+
+   3. Content-routed organization and life-cycle management (Sec-
+       tion 5, E2): placement by content, catalog and metadata registries with
+       progressive disclosure, tag governance, duplicate hygiene, a document
+       graph with an explicitly restricted role, an experience store with credi-
+       bility tiers, and lifecycle operations certified by a read-only audit (322
+       documents in five libraries).
+
+   4. Multi-channel content-verified retrieval (Section 6, E4­E5): three
+       lanes over one tool surface under enforced budgets, a verification gate
+       served by a resident judging worker, and an honest abstention path --
+       compared against seven baseline pipelines and against a bare agent and
+       a pure-dense controller.
+
+   5. A verifier-failure analysis and its role decomposition (Sec-
+       tion 8.7, E4, E6): same-domain inflation quantified inside a deployed
+       pipeline, the filter/re-ranker asymmetry, a threshold that never ab-
+       stains out of corpus, and robustness of the failure to paraphrase, to a
+       second verification signal and to a second corpus.
+
+   6. An operational account of the system (Sections 7 and 9, E7):
+       resident-worker and subprocess engineering, engine-agnostic harness
+       integration with cost measured across three engines, a catalogue of
+       failure modes with their detection symptoms, and the non-functional
+       behaviour observed under concurrent writes.
+
+    A preliminary demo describing the platform's organization and retrieval
+layers was published as a CIKM 2026 demo [8]. This paper extends it with
+four components that the demo does not contain: the acquisition pipeline
+
+                                                4
+with its measured parse-failure budget and cross-lingual evaluation; life-cycle
+management and integrity auditing as a designed subsystem rather than a
+maintenance procedure; the operational-knowledge store with its credibility
+tiers and distillation loop; and the verifier-failure analysis with the filter/re-
+ranker decomposition. The demo also reports no negative result, which is
+the centrepiece here.
+
+1.1. Research questions and reading guide
+    The paper is organized as a design-to-evidence arc around five research
+
+questions, each answered by one evidence group and reported in one place
+(Table 1).
+
+RQ1 (Enforceable contracts). How can the three content commitments
+       be turned into system contracts that hold across retrieval strategies and
+       independent agent harnesses, rather than into prompt conventions?
+
+RQ2 (Acquisition and organization at scale). Do quality-gated acqui-
+       sition and content-routed organization produce collections that are us-
+       able and internally consistent when they grow, and what does the gate
+       reject?
+
+RQ3 (Content-verified retrieval). Does staged, multi-channel retrieval
+       with content verification outperform one-shot vector top-k and unver-
+       ified fusion -- and by which mechanism?
+
+RQ4 (Cost and benefit of verification). What does the gate cost and
+       buy, and is its failure mode structural rather than an artefact of one
+       checkpoint, domain or language?
+
+RQ5 (Operational contract). Where do honest abstention, latency, cost
+       and stability actually live in a running system?
+
+    The remainder of the paper follows the arc. Section 2 positions the
+work against knowledge management, document parsing, retrieval, verifi-
+cation and agent protocols. Sections 3­5 present the architecture, the acqui-
+sition pipeline and the organization subsystem, and answer RQ1 and RQ2.
+Section 6 presents the retrieval lanes and the verification gate, walking one
+real question end to end before the measurements begin, and states what the
+retrieval layer claims (RQ3). Section 7 reports the engineering that makes the
+
+                                                5
+Table 1: This paper at a glance: each research question, the evidence group that
+answers it, and the headline finding.
+
+RQ Question                     Evidence     Headline finding
+
+RQ1  Are the content commit- Architecture,   Yes: gates, placement rules, lane
+RQ2
+RQ3  ments enforceable con- interface, imple- whitelists and fail-closed ver-
+RQ4
+RQ5  tracts?                    mentation (§3­§7) dicts make them properties of
+
+                                             the enforcement layer
+
+     Do gated acquisition E1, E2 (§4, §5) Partly: routing and audits hold
+
+     and content routing                     at 322 documents, while 21% of
+
+     scale?                                  submitted papers fail to parse
+
+                                             and must be rejected visibly
+
+     Does staged verified E4 (§8.5)          Yes on reachability, through
+
+     retrieval beat one-shot                 staged recall plus content adju-
+
+     top-k?                                  dication; two-stage retrieval is
+
+                                             an accelerator, not the contribu-
+
+                                             tion
+
+     What does the gate cost E4, E6 (§8.7)   Costs <1 s; as a re-ranker it loses
+
+     and buy, and is the fail-               Hit@5 (0.94  0.44), as a filter it
+
+     ure structural?                         is neutral (0.94, p = 0.008); the
+
+                                             loss tracks confuser density, not
+
+                                             checkpoint or domain
+
+     Where do honesty, la- E5, E7 (§8.6, §7) Honesty lives in the reading
+
+     tency and cost live?                    and answering layer, never in
+
+                                             the threshold; latency is domi-
+
+                                             nated by LLM turns, and engine
+
+                                             choice moves cost by two orders
+
+                                             of magnitude
+
+                                          6
+contracts enforceable. Section 8 carries the seven evidence groups, including
+the verifier's own failure analysis (RQ4) and the operational measurements
+(RQ5). Sections 9­11 distil the lessons, state the threats to validity, and
+conclude. Table 3 maps every system function to its components and its
+evidence; Table 1 maps every research question to its evidence.
+
+2. Related work
+
+2.1. Knowledge bases, knowledge organization, and knowledge management
+    Large public knowledge bases such as DBpedia and YAGO are built by
+
+extracting structured facts from semi-structured sources and maintaining
+them under an ontology [9, 10]. The enterprise content management liter-
+ature treats organizational content as a management problem rather than
+an extraction problem: ECM integrates content, process, and records per-
+spectives [11], and later work characterizes the field's research agenda [12].
+Organizational knowledge creation describes how tacit experience becomes
+explicit, shareable knowledge through socialization, externalization, combi-
+nation, and internalization, sustained by a shared context [13, 14]. Com-
+plementary strands study metadata quality in digital repositories [15], the
+emergent vocabulary of collaborative tagging [16], human-in-the-loop review
+of machine-produced labels [17], and the inspectability of automated deci-
+sions [18].
+
+    This literature names the problems our design must answer -- inconsis-
+tent metadata, uncontrolled vocabulary, unverified labels, experience that
+never becomes reusable -- but it treats them as management and social
+problems and rarely closes the loop to machine answering. That loop is the
+contribution here: the content-derived metadata that organizes a base also
+constrains retrieval, verification, and abstention (Sections 5­6.2).
+
+2.2. Document parsing and acquisition pipelines
+    Document AI supplies the components of an acquisition pipeline. Pub-
+
+LayNet established large-scale layout analysis [19], and unified text­image
+pre-training improved layout-aware understanding of tables and figures [20].
+MinerU provides an open extraction pipeline for scientific and scanned docu-
+ments and is the parser this platform drives [7]. Near-duplicate detection by
+locality-sensitive hashing over shingles is the standard mechanism for redun-
+dancy control at crawl scale [21], and provenance has mature foundations in
+the W3C PROV family [22] and in database provenance [23].
+
+                                                7
+    Parsing is usually presented as preprocessing. We treat it as a precon-
+dition: an extraction error propagates into chunking, description, indexing,
+and every later citation, and it is invisible in retrieval metrics. In our own
+campaign 21 of 100 submitted arXiv papers never reached a retrievable state
+(Section 4). Acquisition therefore carries its own quality gate, duplicate
+check, index-verification step, and per-document provenance record.
+
+2.3. Retrieval: sparse, dense, hybrid, and RAG
+    Retrieval-augmented generation grounds generation in retrieved passages
+
+[1]; dense retrievers learn a shared query­passage space [2]; multi-lingual,
+multi-granularity embedders such as BGE-M3 combine dense and sparse
+signals [24]. Lexical probabilistic ranking remains a strong baseline [25],
+reciprocal-rank fusion merges ranked lists without training [26], and rank-
+ing in the large-data regime is benchmarked on MS MARCO [27]. Graded-
+relevance metrics are the standard evaluation instrument [28], and surveys
+systematize the design space as retrieve-then-read pipelines [6]. The platform
+stores vectors in a persistent store with graph-based approximate nearest-
+neighbour search [29, 30].
+
+    On our gold-annotated corpus the lexical baseline is not the weak part:
+BM25 reaches Hit@5 of 1.00. This paper does not compete on ranking quality.
+It treats all of these signals as candidate generators whose output must still
+be confirmed against content (Section 6).
+
+2.4. Structured and graph-based organization
+    GraphRAG builds entity­relation graphs and community summaries
+
+for query-focused summarization [31]; LightRAG reduces the idea to
+dual-level retrieval [32]; RAPTOR recursively abstracts document trees
+[33]. Knowledge-graph work supplies the representational vocabulary --
+embedding-based representation and link prediction [34], and the acquisi-
+tion, representation, and application taxonomy [35] -- with property-graph
+stores as the common substrate [36]. Structured organization is also moti-
+vated as a mitigation for ungrounded generation [5].
+
+    Our graph layer is deliberately thinner than these systems: Document,
+KnowledgeBase, and Tag nodes with membership, tag, and weighted relat-
+edness edges, built from metadata that acquisition already verified. It navi-
+gates and expands candidates and never answers alone. The measured basis
+is that keyword-limited graph search is the weakest standalone signal on our
+
+                                                8
+corpus (Hit@5 0.56), so the platform exposes it as one channel among several
+(Section 6).
+
+2.5. Content verification, correction, and abstention
+    Self-RAG trains a generator to critique retrieved evidence and its own
+
+output [37]; CRAG adds a corrective retriever that re-evaluates and re-
+queries when retrieval quality is low [38]; FLARE interleaves generation with
+forward-looking retrieval triggers [39]; Kamath et al. [40] formalize selective
+prediction under domain shift; and CyberBOT applies ontology-grounded
+retrieval in a reliability-critical domain [41]. Verifiability measurement in
+generative search [42] and citation-capable generation [43] frame the prob-
+lem this paper attacks: citations that are present but not supportive.
+
+    LLM-as-a-judge. The verification gate is a locally hosted judgement
+model [44], and the judging literature documents exactly the failure modes
+our measurements expose. MT-Bench and Chatbot Arena established the
+paradigm and its bias taxonomy [45]; LLM relevance judges agree imper-
+fectly with human relevance [46]; listwise LLM re-rankers trade quality for
+instability at scale [47]; evaluators favour generations that resemble their own
+distribution [48]; and verifiers can be gamed by optimization pressure [49].
+Our contribution is not the discovery that judges miscalibrate. It is the op-
+erational quantification of same-domain inflation inside a deployed pipeline
+and the decomposition of which judge role -- filter, ordering, or threshold
+-- is safe under which pool conditions (Sections 8.7 and 6.2).
+
+    These approaches verify during generation with the generator itself.
+This platform externalizes verification into a dedicated model that sees only
+(query, document text) pairs and is consumed as a tool: any lane, agent,
+or external system can call it, and its verdicts fail closed. Verification thus
+becomes an inspectable, reusable service rather than a property of one
+generator's prompting.
+
+    Abstention. Beyond selective prediction under domain shift [40], recent
+work probes whether LLMs know what they do not know [50] and orches-
+trates models to abstain on knowledge gaps [51]. Section 8.6 locates the
+abstention of this platform not in calibrated uncertainty but in the reading-
+and-answer structure -- a complementary, architectural answer to the same
+problem.
+
+                                                9
+2.6. Agentic retrieval and tool protocols
+    ReAct established interleaved reasoning and acting over tools [52]; tool-
+
+learning extended it to self-supervised tool use [53]; the Model Context Proto-
+col standardizes tool servers as a machine interface [3]; agentic-RAG surveys
+systematize the design space and list efficiency among its open challenges [4];
+and Modular RAG frames retrieval systems as reconfigurable modules [54].
+DeepRead shows that structure-aware navigation over long documents im-
+proves agentic search [55], which matches the document-coordinate reading
+of the librarian lane. The contribution here is a policy layer rather than a new
+reasoning scheme: per-lane tool whitelists enforced by the server, hard call
+budgets, and single-call server-side orchestration for the hybrid lane, aimed
+at the turn count that dominates agentic latency (Section 8.6).
+
+2.7. Positioning
+    Table 2 compares representative systems along the dimensions a
+
+knowledge-base management system has to satisfy.
+    Each tabulated system contributes one or two of these dimensions:
+
+GraphRAG organizes a corpus as a graph, RAPTOR as a tree, Self-RAG
+and CRAG verify with the generator, LLM judges order candidates, and
+ECM frameworks govern content across its lifecycle. None combines a
+quality-gated acquisition pipeline, a governed organization and lifecycle
+layer, first-class operational experience, per-citation content verification,
+enforced abstention, budgeted multi-lane retrieval, and a standard agent
+tool protocol.
+
+    This paper contributes that combination as one design: contracts that
+hold across acquisition, organization, verification, and abstention (Sec-
+tions 4­8.6), rather than capabilities implemented per component. It does
+not propose a better ranker. On the gold-annotated corpus BM25 reaches
+Hit@5 of 1.00 while the judged hybrid reaches 0.44; the value of the gate
+measured here is auditable, fail-closed, per-citation provenance, not ranking
+quality (Sections 8.5 and 8.7).
+
+3. System overview and design principles
+
+    QDCVR (v2.3) is a self-hosted knowledge-base management system that
+turns a folder of PDFs, Office documents, and scans into knowledge bases
+that agents can be trusted to answer from. It is deployed as four cooperating
+services behind one configuration file: a Python service that schedules parsing
+
+                                               10
+Table 2: Positioning against representative systems. Parse: a quality gate that
+rejects unusable documents before they enter the base. Org. & lifecycle: organi-
+zation and governance of the base beyond a flat index (catalog, metadata and tag
+control, duplicate control, move/merge/delete). Experience: operational lessons
+kept as first-class retrievable knowledge. Verify: every cited item is judged against
+the query before it may support an answer. Abstain: explicit not-found is terminal,
+not a fallback to parametric or web knowledge. Lanes: several retrieval strategies
+behind one interface under enforced budgets. Protocol : a standardized agent tool
+protocol as the machine interface.  present; ­ not addressed by the cited work;
+n/r not reported in the accessible source; italic entries name the mechanism where
+a bare mark would mislead. Marks denote capability, not measured quality.
+
+                          Parse
+                                      Org. & lifecycle
+                                                   Experience
+                                                              Verify
+                                                                           Abstain
+                                                                                       Lanes
+                                                                                                Protocol
+
+Vanilla RAG [1]           ­      ­     ­     ­  ­                                      ­­
+
+GraphRAG [31]             ­ communities ­    ­  ­                                      ­­
+
+RAPTOR [33]               ­      tree  ­     ­  ­                                      ­­
+
+LLM judge re-ranker [47]  ­      ­     ­ ordering ­                                    ­­
+
+Self-RAG [37]             ­      ­     ­ generator partial ­ ­
+
+CRAG [38]                 ­      ­     ­ corrective ­                                  ­­
+
+DeepRead [55]             ­ structure ­      ­  ­ agentic n/r
+
+ECM platforms [11, 12]    n/r lifecycle n/r  ­  ­                                      ­ n/r
+
+Public KBs, DBpedia/YAGO [9, n/r ontology ­  ­  ­                                      ­­
+
+10]
+
+QDCVR (this work)                                                                      
+
+                             11
+and owns the OCR engine, a TypeScript web application that serves the
+interface and acts as the server-side proxy, a Model Context Protocol (MCP)
+server that exposes the platform's capabilities as tools [3], and a set of storage
+engines that hold documents, vectors, graph edges and task state. The rest
+of this section states what the system has to do, the principles that shaped
+it, how it is put together, what it stores, and how its objects move through
+their life cycle.
+
+3.1. Requirements
+    The requirements below were derived from the deployment rather than
+
+postulated; each one names the failure it prevents.
+
+R1 -- Parse heterogeneous enterprise documents. Process regula-
+       tions, failure reports, scanned inspection records and journal articles
+       arrive as PDFs, Office documents and images. The system must
+       convert them to text it can govern, including scanned pages, tables
+       and formulas, and it must make a parse failure visible rather than
+       storing an empty or garbled document. The measured failure rate on
+       a 100-paper acquisition was 21% and is reported as a first-class result
+       (Section 8.2).
+
+R2 -- Organize by content, not by folder. A document's home must
+       be decided by what it says. Library membership, tags, descriptions
+       and graph edges are derived from the content, because folder paths
+       encode who filed a document rather than what it contains.
+
+R3 -- Manage the collection over its lifetime. Libraries and docu-
+       ments are created, moved, renamed, merged, split, deleted and re-
+       indexed. Every such operation must preserve agreement between the
+       document on disk, the tree registry and the library metadata, and the
+       agreement must be verifiable after the fact.
+
+R4 -- Retrieve with several independent channels. Lexical, dense,
+       catalog and graph channels fail differently, so the system must be able
+       to generate candidates with each of them, under explicit budgets, and
+       expose which channel proposed what.
+
+R5 -- Do not promote a similarity score into a citation. A candi-
+       date becomes an answer only after its fetched content has been judged
+
+                                               12
+       to contain direct evidence for the question. When no candidate sur-
+       vives, the system returns an explicit not-found report instead of the
+       closest text.
+
+R6 -- Be operable and engine-agnostic. The platform runs on a single
+       local workstation (RTX 5060, 8 GB, Windows), degrades rather than
+       crashes when a model or a subprocess fails, exposes long-running work
+       as pollable tasks, and drives whichever agent harness the operator has
+       configured rather than being bound to one vendor.
+
+3.2. Design principles
+    Six principles shape the architecture. They are stated as commitments
+
+because each one is enforced somewhere in the implementation rather than
+left to prompt discipline.
+
+P1 -- Content-routed organization. Documents are organized by what
+       they say, not by where they sat: placement, tagging, description and
+       graph edges are derived from the parsed content, and retrieval starts
+       from a library catalog rather than a directory path (§5).
+
+P2 -- Content outranks similarity. No similarity score, however high,
+       promotes a document into an answer. A judging model must read the
+       candidate's fetched content and vote, and the platform fetches that
+       content itself so an agent cannot argue for a document it has not read
+       (§6.2).
+
+P3 -- Every module terminates at a contract. Ingestion ends in a
+       checked post-condition, retrieval in a budgeted return value, verifica-
+       tion in a rubric score, and management in an audit. A module whose
+       result cannot be checked is a module that cannot be trusted.
+
+P4 -- Fail closed. Missing text, an engine error, a timeout or an un-
+       parseable verdict rejects the candidate rather than passing it, and a
+       document that cannot be retrieved after indexing is a failed ingest
+       rather than a warning.
+
+P5 -- Leave an audit trail. Every candidate, verdict, cut decision, tool
+       call and lifecycle operation is recorded, so that a claim about the system
+       can be re-examined from evidence instead of re-argued from memory.
+
+                                               13
+P6 -- Engine-agnostic agency. Answer agents are pluggable harnesses
+       (14 adapters, including omp, Claude and ACP-compatible CLIs); the
+       platform constrains them through tool whitelists, budgets and prompts,
+       never by coupling to a particular vendor.
+
+3.3. Architecture and subsystems
+
+    Fig. 1 shows the four layers. The client and agent layer contains the
+web interface and the chat endpoint that adapts external agent harnesses;
+requests are annotated with a lane policy before they leave this layer. The tool
+layer is an MCP server that exposes the platform's capabilities as 95 tools in
+eight groups (knowledge-base CRUD and catalog, document read/write, file
+system, parsing and task status, tags, search and vector index, knowledge
+graph, and experience and persona management); the lane policy is a server-
+side whitelist, so a lane physically cannot call a tool outside its set. The
+domain service layer holds the tree and catalog services, the parsing scheduler
+that manages the OCR engine as a supervised subprocess, the vector and two-
+stage candidate services, the experience service, the graph service and the
+resident judging worker. The storage layer holds the document tree with its
+registries, the vector collections, the graph database and the task and session
+databases.
+
+    Three properties of this arrangement matter for the rest of the paper.
+First, the retrieval lanes of Section 6 are not separate programs: they are
+policies over one tool layer, which is why a new capability is available to
+every lane at once and why lane behaviour is comparable across harnesses.
+Second, long-running work (parsing, indexing, graph construction, distilla-
+tion) is exposed as a pollable task rather than a blocking call, so a slow
+operation cannot stall an agent's turn. Third, the judging service is a resi-
+dent worker for engineering reasons, not architectural elegance: loading the
+verifier per request cost 10­12 s against 1­2 s for a warm verdict, which is
+why the worker, its file lock and its verdict cache exist (§7).
+
+    Table 3 maps each function of the system to the components that imple-
+ment it, the design decision that shapes it, and the experiment that provides
+evidence for it. The table is the paper's reading guide: Sections 4­7 describe
+these rows in order, and Section 8 evaluates them.
+
+3.4. Data model and storage layout
+
+    The platform deliberately keeps its data model readable: documents are
+Markdown files, and the two registries are JSON and YAML files that a
+
+                                               14
+Table 3: System functions, their implementing components, the decision that
+shapes each one, and the evidence that covers it. Evidence identifiers E1­E7 refer
+to the evaluation subsections of Section 8.
+
+Function       Components and repre- Key design decision                       Evidence
+               sentative tools
+
+Acquisition and parsing scheduler, OCR quality-gated: a document E1
+
+parsing        subprocess, duplicate de- that cannot be parsed is re-
+
+               tector, split gate        jected visibly, and a document
+
+                                         that cannot be retrieved after-
+
+                                         wards is a failed ingest
+
+Knowledge orga- content router, catalog, content decides placement; E1, E2
+
+nization       tag registry, description the catalog is the first retrieval
+
+               generator                 instrument
+
+Life cycle and in- tree registry, library re-indexing is explicit; ev- E2
+
+tegrity        metadata, re-index tasks, ery operation is audited after-
+
+               three-source audit        wards
+
+Document graph graph projection of docu- the graph is a navigation in- E2
+
+               ments, libraries and tags; dex, never an evidence source
+
+               related-document queries
+
+Catalog-first  library and document list- metadata before bodies, so a E4, E5
+
+navigation     ings, progressive disclo- candidate set is chosen with-
+
+               sure                      out loading content
+
+Content-verified vector, lexical, catalog verification is a promotion E4, E6
+
+retrieval      and graph channels; lane condition, not a ranking hint;
+
+               policies; retrieval gate verdicts fail closed
+
+Operational    experience store, credibil- a lesson is a claim about prac- E3
+
+knowledge      ity tiers, distillation runs tice, so it is drafted, gated and
+
+                                         capped until it is vetted
+
+Agent interface MCP tool layer, chat end- every capability is a tool with E5, E7
+
+and operations point, lane whitelists, task a schema; long work is pol-
+
+               registry                  lable; engines are interchange-
+
+                                         able
+
+                                   15
+human can open. Table 4 lists the stores and the fields that the rest of the
+paper refers to.
+
+Table 4: Stores and their principal contents. Field names are the ones used by
+the implementation and by the audit tools.
+
+Store           Contents
+
+Tree          registry version, root identifier and name, timestamps, node counter and
+
+(.tree-fs.json) aggregate statistics; per node: identifier, name, type, parent, path,
+
+                children, metadata map, timestamps. Authoritative structure of the
+
+                collection.
+
+Library metadata library identifier, name, description, creation and update times-
+
+(.knowledge-base.ymtla)mps, per-library configuration (including distillation settings); per
+
+                document: path, name, description, tags, content hash, file size,
+
+                vector-index metadata, free-form metadata. The retrieval index read
+
+                by catalog search.
+
+Document files  Markdown body per document or per split part, plus an image di-
+
+                rectory for figures extracted during parsing.
+
+Vector store    one collection per library (cosine space, 1024-dimensional embed-
+
+                dings, HNSW index), holding segment embeddings of 500 characters
+
+                with 50-character overlap.
+
+Graph store     nodes for documents, libraries, tags, folders and entities; edges for
+
+                membership, tagging, relatedness, identity and containment.
+
+Task and session pollable task records for parsing, indexing, graph builds and distil-
+
+databases       lation; chat sessions; service credentials; distillation signals.
+
+    Two consequences of this layout appear throughout the paper. Because
+the registries are files rather than a database, a document's address is a
+path and its identity is a path plus a content hash, which is what makes the
+three-source audit of §5.2 possible. And because the vector store is a separate
+engine, it can disagree with the registries; the system treats that disagreement
+as a detectable, repairable condition rather than as an impossibility.
+
+3.5. Object life cycle
+
+    A document moves through five states. It is raw when it arrives, with a
+content hash recorded. It is parsed when text has been extracted and has
+passed the parse-quality checks. It is stored when the body, its description
+and its tags have been written to disk and registered in both registries. It
+is indexed when the vector store and the retrieval indexes contain it, which
+requires an explicit indexing call. It is verified when a retrieval probe returns
+the document for a query derived from its own content. Only the last state
+
+                                    16
+counts as a successful ingest; a document that stalls at stored is an incomplete
+operation, not a warning.
+
+    Libraries have a simpler life cycle: a library is active while it is addressable
+and searchable, and it becomes merged or split when an operator consolidates
+or divides it. Library metadata travels with the library when it moves, in-
+cluding its distillation configuration, which is why the configuration is stored
+per library rather than in the deployment file. Platform-level versioning is
+explicit: the platform reports its version (2.3.0 in this deployment) and can
+update itself from its repository through the same command-line interface
+that performs the other operations.
+
+    Re-indexing deserves its own paragraph, because it is where the object
+life cycle meets retrieval quality. Re-indexing is explicit, asynchronous and
+observable: it returns a task identifier, it can be forced, and its post-condition
+is a segment count that matches the document content. Nothing in the write
+path re-indexes as a side effect. This is a deliberate trade of convenience for
+the property that no document can silently be missing from the vector store:
+the cost is that a writer who forgets the call leaves a stale index, and the
+mitigation is the audit of §5.8, which detects exactly that condition.
+
+4. Knowledge acquisition: parsing, ingestion, and index verifica-
+    tion
+
+    Acquisition is where a document becomes knowledge the system may
+later answer from, and it is the stage this design treats most defensively. The
+pipeline runs its gates in a fixed order, and a document that fails one is refused
+rather than stored and indexed anyway. This section follows the stages in
+execution order, with the audit numbers we have and the measurement gaps
+we do not.
+
+4.1. Multi-format intake and parsing
+    Upload starts in the browser at POST /api/parse/file-vt. The
+
+Nuxt server forwards the payload to the backend parser endpoint POST
+/api/v1/parse/file/vt, which is asynchronous and returns a task iden-
+tifier rather than a result. The backend then runs MinerU [7] as a hidden
+subprocess on an ephemeral port to convert the source into structured
+Markdown: OCR for scanned pages, layout-aware recovery of tables, and
+formula extraction. The subprocess is reachable only through the manager
+
+                                               17
+object, which resolves the assigned port at runtime; the service never hard-
+codes it. Its combined standard output and standard error are redirected
+to backend/logs/mineru-api.log and never to a pipe--an earlier build
+failed on pipe closure with a bare I/O error, and appending to a file removed
+the failure mode. Parse jobs are polled with a 600 s timeout, so a stuck
+conversion terminates in a recorded failure instead of blocking the caller.
+
+    The backend returns a markdown_path--a filesystem location, not doc-
+ument text. The proxy layer reads that file back and writes the document
+into the knowledge base through the tree filesystem service, which updates
+the on-disk Markdown, the tree index, and the per-library metadata file in
+one operation. Keeping the transfer as a path rather than a response body
+matters for large scanned documents: the parse output can exceed what a
+single JSON response should carry, and the proxy already needs filesystem
+access to place extracted images.
+
+4.2. Quality gates before storage
+
+    Before any parse is scheduled, exact-duplicate detection hashes the source
+with SHA-256 and compares it against the stored records. Near-duplicates
+are then detected in vector space: kb_find_duplicates(threshold=0.90).
+A manual fallback channel runs the same check at a 0.85 similarity threshold,
+combining a filename and file-size match with a vector probe when the tool is
+unavailable. On the 322-part corpus the audit recorded 0 true duplicates and
+35 near-duplicate pairs, all of them adjacent parts of the same paper, which
+is the expected shape when a split document is compared against itself.
+
+    The parse-quality gate inspects the first 1,500 characters of the markdown
+and refuses the parse on any of five signatures: OCR garbage (more than 30 %
+garbled), binary residue such as null bytes or base64 fragments, headings
+without body text, whitespace collapse, or a language mismatch between
+the source and the extracted text. Refusal is terminal for that attempt; the
+operator either re-parses with a different OCR mode or reports the source as
+unusable.
+
+    Storage has one rule: parsed documents are written with kb_doc_save_parsed,
+never kb_doc_create. The parsed path transfers the complete Markdown
+and copies all extracted images; the generic create path truncates long
+content and drops images, so using it on a parsed document silently loses
+both. Parts produced by the split gate are stored individually through the
+create path because each part is already a complete, size-bounded unit.
+
+                                               18
+Table 5: Acquisition gates, their trigger, and what refusal means. Gate names
+follow the packaged ingestion contract.
+
+Gate                  Trigger                                              On refusal
+
+Exact duplicate       SHA-256 hit                                          Skip the source; report th
+Near duplicate        Vector similarity  0.90; manual channel  0.85
+Parse quality         Garbled, empty, binary, or language-mismatched body  ing path
+Split ceiling         Body beyond 30,000 characters
+Atomic unit           Indivisible unit larger than the target              Skip; supplement tags or
+
+Tag anchoring         Tag absent from the read body sample                 tion only
+Description readback  Claim not supported by the body
+                                                                           Reject the parse; re-pars
+
+                                                                           port the source
+
+                                                                           Split into parts; never st
+
+                                                                           oversized original
+
+                                                                           Keep           whole
+
+                                                                           oversized_atomic_unit;
+
+                                                                           cuts disabled
+
+                                                                           Return to extraction; do
+
+                                                                           lease the document
+
+                                                                           Rewrite the description;
+
+                                                                           the body
+
+Index verification    Collection wrong or total_chunks = 0                 Ingest incomplete; do not
+                                                                           success
+
+4.3. Structure-aware splitting and addressability
+
+    Documents longer than a 30,000-character ceiling do not enter the knowl-
+edge base as single files. A splitting pass proposes boundaries from the doc-
+ument's own structure and a validator enforces a target utilisation of 0.85
+and refuses oversized atomic units: a block that cannot be divided without
+cutting an equation or a table stays whole. Each surviving part is written
+as its own file labelled part k of N , and every part is read through a line-
+offset address rather than from its beginning, so retrieval can open a section
+without paying for the whole document. The ceiling itself is a budget, not a
+format limit. It keeps a stored unit inside the context window of the agents
+that later read it, and it bounds the per-query read cost of a single hit.
+
+    The measured outcome for the 100-paper arXiv corpus is 322 stored parts,
+which is the corpus size the audits and the regression probes later operate on.
+A separate 50-paper campaign under the same 30,000-character setting pro-
+duced 165 documents (nine whole, 156 parts) and 3,798,446 characters from
+
+                               19
+2,672 s of parsing; the same campaign at a 2,000-character setting produced
+2,713 fragments, which is what the ceiling exists to prevent. The vector store
+chunks what is stored at 500 characters with 50 characters of overlap [29, 30];
+a separate dense replica index for comparison uses 800-character chunks and
+produced 4,528 chunks for the same corpus.
+
+4.4. Content-derived descriptions and tags
+
+    Descriptions and tags are generated from the body text that the inges-
+tion agent has actually read, not from filenames or directory positions. A
+description must carry four elements--subject, method or technology, sce-
+nario or problem, and key data or conclusion--with at least two concrete
+nouns among them, and every claim is read back against the body before
+storage; a mismatch rewrites the description, never the body. Tags pass a
+blacklist filter, are normalised for case and language, and are then re-checked
+against a sample of the body: a tag that does not appear in the text is
+dropped rather than kept for vocabulary reuse.
+
+    This gate exists because of what an earlier audit found. Of 26 document
+descriptions checked against their own bodies, 24 did not match: the boiler-
+plate "Gutenberg front/back matter" had been applied to real chapters across
+a batch, and the librarian that reads part labels selected two parts instead
+of seven. The wider catalog carries the same class of defect, with 156 of 322
+documents flagged for a broken part prefix. Description quality is therefore
+an empirical result of this work, not an assumption: a description is a claim
+about content, not a fact about it. The consequence is architectural rather
+than editorial. Because a claim can be wrong at ingest scale, it must be
+cheap to verify and cheap to repair--which is why verification later became
+a platform primitive (Section 6) and why the acquisition audit ends with
+descriptions upgraded 165/165 rather than with a generation count.
+
+4.5. Index construction and retrievability verification
+
+    Indexing writes to three channels: a per-library vector collection, a lex-
+ical BM25 index [25] over chunked documents, and a document graph in
+Neo4j [36]. Ingestion success is judged by observable effects rather than by
+the tool's success envelope. A path that reported success once returned an
+empty index payload after a GPU out-of-memory failure, so the verifica-
+tion gate now requires a non-empty collection name, the collection identifier
+expected for the target library, and total_chunks  1 before the docu-
+ment counts as indexed. Graph construction is asynchronous and returns a
+
+                                               20
+task identifier that is polled, but task status is not accepted as completion
+evidence--an earlier graph build left a task row stuck in running while its
+artifacts were already queryable. The step closes with an eight-point final
+check that includes the stored copy read back at 500 characters, the chunk
+and graph node counts, and three-layer metadata consistency across the tree
+index, the library metadata file, and the files on disk.
+
+4.6. Asynchronous execution, failure recovery, and observability
+
+    Parsing and graph construction are non-blocking: each returns a task
+identifier immediately, and a task registry resolves that identifier across tool
+processes, so a caller polls status instead of holding a connection open. Batch
+ingestion is resumable, and it was resumed in practice: an interruption dur-
+ing a 100-paper run was recovered by restarting the client, which skipped
+documents already present and continued from the recorded position. Per-
+paper parse time in the 50-paper campaign ranged from 16.3 s to 40.4 s over
+26 subject domains, 1,115.5 s in total--an average of 22.3 s per paper.
+
+    The same campaign exposes the limit of that bookkeeping. Of 100 sub-
+mitted papers, the state file records 91 names, 79 were retrievable in the
+knowledge base at evaluation time, and 21 never became retrievable. The
+reported failure mode is formula-dense scanned documents, and a mid-run
+client crash was recovered by restart, but no artifact counts parse attempts,
+parse failures, or the error text of a failed document. The 91-versus-79 dif-
+ference is therefore an observability gap: we can report what the artifacts
+show, and we cannot attribute the difference from them.
+
+    Cross-lingual ingestion shows the same gates holding without language-
+specific tuning. The corpus is 400 Wikipedia pages per language in English,
+Chinese, and Japanese, ingested in two rounds; the second round was bit-
+identical to the first (Table 6). Ingestion success rate was 1.0 for all three
+languages in both rounds. Membership asks where each page landed, and the
+recorded knowledge-base membership accuracy is 0.875 for English, 1.0 for
+Chinese, and 1.0 for Japanese. Storage completeness sums the split parts of
+large documents back to the source length and is 0.975, 0.9559, and 0.9402 re-
+spectively. Self-retrieval Hit@1--the score for the page's own indexed text--
+is 0.975, 1.0, and 1.0.
+
+    Taken together, the gates buy a specific property: a document that fails
+a gate is refused rather than silently indexed. The 100-paper pipeline au-
+dit records that property directly--100/100 papers parsed and routed by
+content, nine per-paper ingest checks 100/100, content and storage audits
+
+                                               21
+Table 6: Cross-lingual ingestion, 400 Wikipedia pages per language, first round.
+The second round reproduced these values bit-for-bit, so one column is shown.
+Self-retrieval Hit@1 uses 40 queries per language.
+
+Language       Ingestion KB membership Storage Self-retrieval
+
+               success  accuracy  completeness  Hit@1
+
+English (en)   1.0      0.875     0.975         0.975
+                         1.0      0.9559         1.0
+Chinese (zh)   1.0       1.0      0.9402         1.0
+
+Japanese (ja)  1.0
+
+322/322 and 33/33. What the gates do not buy is accounting. The arti-
+facts carry no counter of attempted or failed acquisitions, so the difference
+between 91 recorded and 79 retrievable papers cannot be resolved into parse
+losses and lost records. We report it as an observability gap, and we treat a
+submission as knowledge only once verification has found it.
+
+5. Knowledge organization and lifecycle management
+
+    Acquisition decides what enters the system; organization decides what
+the system is. In this platform organization is not a folder convention that
+a human maintains by hand, nor an emergent property of embedding simi-
+larity. It is a governed process with three invariants: content decides where
+a document belongs, the disk, the tree registry and the library metadata
+must agree about every document, and every operation that removes or relo-
+cates knowledge is preceded by a survey and followed by a verification. This
+chapter describes how those invariants are implemented, which of them are
+enforced by the interface rather than by convention, and where the current
+implementation still allows the three stores to diverge.
+
+5.1. Content-routed placement
+    Placement reads the parsed document, not its filename or its folder of
+
+origin. For each arriving document the pipeline selects the library whose
+stated scope covers the content, or proposes a new library when no existing
+scope does; it then writes the document, derives a description and a tag set,
+and runs the same final check used by acquisition before the document counts
+as placed. Two rules keep the catalog usable as a retrieval instrument. First,
+an existing library is preferred over a new one: the catalog stays shallow,
+
+                        22
+and the number of libraries an agent must inspect before searching stays
+small. Second, a document is placed once; re-routing is an explicit lifecycle
+operation, not a side effect of a later ingest.
+
+    The library tree supports one level of content grouping in which a parent
+library contains child libraries, and the metadata of a child is addressable
+through the parent. The implementation carries a caveat that we report
+rather than hide: the vector segments of child documents are stored in the
+parent library's collection, so a search that targets a child library identifier
+returns no candidates. The shipped operational guidance is therefore to
+search the parent collection and to use the child libraries for navigation and
+scoping rather than as search endpoints. This is a limitation of the current
+storage mapping, not of the routing rule, and it is the kind of coupling
+between an organizational decision and a retrieval path that a system paper
+has to expose.
+
+5.2. Catalog and metadata registries
+
+    Two registries describe the same collection, and Table 4 lists their fields:
+the global tree (.tree-fs.yml) is the authoritative structure, and each li-
+brary carries a .knowledge-base.yml that indexes its documents. Docu-
+ments themselves are Markdown files with an accompanying image directory.
+
+    Agents read this catalog through a progressive-disclosure interface: the
+library listing returns names, descriptions and document counts; the docu-
+ment listing returns metadata without bodies; only an explicit read returns
+content, and a read is attributed to a specific document. This design choice
+is what makes the catalog-first retrieval lane viable: a caller can narrow a
+search to a handful of candidate documents without ever loading a body,
+which is why the catalog lane completes in 5­6 turns and 54­91 s (Table 9).
+
+    Correctness of the catalog is defined as three-source consistency: for every
+document, the file on disk, its entry in the tree registry, and its record in the
+library metadata must agree on existence, path, size and index state. The
+platform verifies this agreement rather than assuming it, and the audit is
+productive: in the acceptance campaign a renamed document kept its old
+vector segments, so the recorded chunk count read 18 where 9 chunks existed,
+and the document matched its own former path at 0.9738 similarity, which
+is high enough to be reported as a near-duplicate pair. Only an explicit force
+re-index repaired it (18  9). The design lesson is that metadata consistency
+and index consistency are two different obligations: the first can be satisfied
+
+                                               23
+by a single write operation, the second cannot, because the vector store is
+updated by a separate call.
+
+5.3. Tag taxonomy and governance
+    Tags are the coarse, human-legible axis of the collection. A tag registry
+
+holds the vocabulary; each document's tags are normalized before they are
+written, filtered against a blacklist of structural strings (section headings,
+generic words such as "introduction"), and re-checked against the document
+body so that a tag must actually occur in the content it labels. Retrieval
+by tag is a first-class operation, which makes tag quality a retrieval concern
+rather than a cosmetic one.
+
+    Governance is a maintenance loop rather than a schema. The registry
+is curated, not centralized: no taxonomy is imposed on authors, and the
+vocabulary grows with the corpus. The audit therefore treats the registry
+as a health surface: it reports tags with zero referencing documents, which
+accumulate from test documents, abandoned naming experiments and chap-
+ter headings, and it removes them only when instructed. In the audited
+campaign 165 documents passed the tag gate with no failures, and the live
+registry held 316 tags. We do not claim a controlled vocabulary; we claim
+that the vocabulary is inspectable and that orphaned entries are detectable.
+
+5.4. Duplicate detection and collection hygiene
+    Acquisition refuses exact duplicates by content hash and flags near du-
+
+plicates by vector similarity; at the collection level the question is different,
+because the same content can legitimately arrive through two ingest paths
+or into two libraries. The hygiene procedure is survey-then-act: enumerate
+candidate duplicate groups at a similarity threshold (0.90, with a manual
+fallback channel at 0.85), inspect each group, and delete nothing automati-
+cally.
+
+    The audited run illustrates why the survey step matters more than the
+threshold. On the 322-document corpus the detector reported 35 candidate
+groups with similarities between 0.90 and 0.975; every one of them turned
+out to be a pair of adjacent parts of the same long paper rather than a true
+duplicate, and no deletion was performed. A policy that deleted on detection
+would have destroyed 35 legitimate document parts. The same run confirmed
+zero true duplicates, which is the expected outcome when acquisition gates
+run before storage. Cross-library duplication is detected but not merged
+
+                                               24
+automatically: merging two libraries is a lifecycle decision with provenance
+consequences, so it stays with the operator.
+
+5.5. Library lifecycle operations
+    Table 7 lists the operations the platform exposes, the interface that per-
+
+forms them, and the consistency obligation each one carries. All of them are
+available to agents through the same tool surface that the user interface uses,
+which is deliberate: an agent that may read a collection should be able to
+maintain it under the same rules a human operator follows.
+
+    Two properties of this table carry the argument of the chapter. The first
+is that re-indexing is not implicit. Creating, moving or rewriting a document
+does not update the vector store; an explicit index operation does, and the
+audit treats a missing or stale index as an incomplete operation rather than as
+a warning. This is the single rule we would carry into any successor system:
+an index that is updated by side effect is an index that silently disagrees
+with the truth. Keeping an approximate index coherent with a mutating
+document store is itself an active research problem [56]; the contribution here
+is not a new maintenance algorithm but a contract under which disagreement
+becomes detectable. The second is the honest boundary of the evidence.
+Move, rename, update, delete and re-index were exercised with real tool
+calls and audited afterwards; merge and split are implemented and were
+demonstrated on live libraries, but they have no controlled evaluation, and
+the sub-library hierarchy was analysed and deliberately not executed pending
+an operator decision. No concurrent organizational operation was tested. We
+prefer to state this than to imply that a lifecycle operation is verified because
+it has an interface.
+
+5.6. The document graph
+    The platform maintains a property graph over the collection with docu-
+
+ment, library, tag, folder and entity nodes and membership, tagging, related-
+ness, identity and containment edges. Edges are derived from three signals:
+co-membership of tags, vector similarity above a threshold, and the verdicts
+produced by content verification during retrieval. Adding one document to a
+library added four edges in the audited run (4,675  4,679), one per assigned
+tag; a full build over the 100-paper corpus produced 658 nodes covering 333
+documents and 316 tags, and the 165-document intermediate state held 335
+nodes and 1,671 edges.
+
+                                               25
+    The graph has a deliberately restricted role. It is a navigation instrument:
+it expands a candidate set, surfaces documents that share context across
+libraries, and identifies central documents in a collection. It is never evidence.
+Every candidate a graph traversal proposes still has to pass the same content-
+verification gate as a candidate proposed by a dense retriever, and the graph's
+own contribution to retrieval is measured separately: as a standalone retriever
+it reached Hit@5 of 0.5625 on the industrial corpus and 0.2 on the second
+corpus, well below the lexical and dense channels (Table 14). We report this
+because it is the honest status of graph-based organization in this system:
+useful for discovery, weak as a ranker.
+
+    Two implementation gaps belong here as well. Graph construction is not
+yet guaranteed by the ingestion path: a document ingested through one agent
+harness received no graph node, so a library reported two of three documents,
+which is a silent incompleteness of the kind the three-source audit is designed
+to catch elsewhere. And batch graph builds have been observed to leave a
+task record in the running state after the work completed, so task status
+cannot be used as completion evidence; the graph itself must be queried.
+
+5.7. Operational knowledge as a first-class collection
+
+    Process documents describe what the organization intends; operational
+lessons describe what actually happened. The platform stores the second
+kind as a first-class collection with the same addressing, indexing and re-
+trieval interface as ordinary documents, plus two differences that reflect the
+epistemic status of a lesson.
+
+    First, an experience carries a credibility tier, and the tier controls whether
+it may be shown (Table 8). Knowledge that is a claim about practice is held
+to a stricter bar than a document: the experience channel's similarity thresh-
+old is 0.55 against the document channel's 0.35, and an unvetted or disputed
+entry is capped even when it scores well. Second, entries are drafted before
+they are served. Extraction produces candidates from ingested content or
+from recurring question-answer pairs; automated distillation runs as a sepa-
+rate agent process on a schedule, guarded by a circuit breaker (three consec-
+utive failures suspend it for 24 hours) and a heuristic fallback whose output
+is marked low-confidence. Nothing reaches the served collection without an
+explicit approval step, which is the same fail-closed posture the retrieval gate
+applies to citations.
+
+    The evidence for this subsystem is deliberately presented as case evidence.
+One extraction campaign produced thirteen candidate drafts; one end-to-
+
+                                               26
+end scenario sedimented a single experience, which a later global experience
+search returned first with a local similarity of 0.711; and the approval path
+was never exercised, because the draft pool was empty when it was tested.
+A single scenario and thirteen candidates cannot support an effectiveness
+claim, and we do not make one. What the campaign does establish is that
+operational knowledge travels through the same pipeline as documents --
+addressed, indexed, gated and auditable -- rather than living in a wiki or a
+prompt.
+
+5.8. Integrity verification as routine
+
+    Every property claimed in this chapter is checked by a verification pass
+that runs against the live collection: three-source consistency per document,
+document integrity, parse quality, index coverage with optional repair, tag
+health, experience health, and a scorecard that summarizes the findings. The
+pass is read-only by default; repairs require an explicit instruction, and the
+report is produced before any repair. This is a deliberate ordering: an audit
+that repairs as it goes cannot report what it found.
+
+    The pass is not ceremonial. It is how the two index-integrity incidents
+of this deployment were found -- a silently lost collection and a stale in-
+dex -- and how the reorganization campaign was certified after the fact
+(322/322 metadata checks, 165/165 description checks, 33/33 sampled con-
+sistency checks, 15/15 retrieval regression probes with no degradation). In
+the same campaign the audit also surfaced the failures reported above: the
+rename-time chunk duplication, the missing graph node, and a task-status
+record that outlived its task. A collection whose health is a command is a
+collection whose health can be argued about with evidence.
+
+5.9. What organization buys, and what it does not
+
+    Organization buys candidate quality and auditability. Because the cata-
+log is curated and consistent, an agent can select a library and a document
+set without loading bodies, which is the mechanism behind the catalog-first
+lane and behind cross-library discovery in an environment with nineteen li-
+braries. Because every placement, tag, description and deletion left a record,
+the collection can be re-verified after the fact; the numbers in this chapter
+are not survey estimates but audit outputs.
+
+    Three things organization does not do, and the paper does not claim. It
+does not repair a bad parse: a document whose parse lost its tables cannot be
+recovered by placing it well. It does not prevent divergence by construction:
+
+                                               27
+the write path can leave the vector index behind, and only an audit and an
+explicit re-index restore agreement. And it does not scale without limits: the
+largest collection we report is 322 documents in five libraries, the merge and
+split operations are unevaluated, and no organizational operation was tested
+under concurrency. These are engineering boundaries, and the next chapter
+describes the retrieval contract that is built on top of them.
+
+6. Content-verified retrieval
+
+    Every citation a lane proposes must pass a content-verification gate before
+it may appear in an answer. The gate scores each retrieved segment on a 0­8
+rubric (topic 0­3, scenario 0­3, evidence 0­2) and keeps a document only if
+at least one of its segments reaches the acceptance threshold: 0.5 in general,
+0.3 for enumeration questions. It processes at most six references per call,
+takes the matched text from the server side rather than from the caller, and
+fails closed. No surviving evidence means the caller must answer that the
+corpus does not contain the answer.
+
+6.1. One query through the gate
+    Q2 of Section 8.1 is "EL inspection shows edge delamination: root cause
+
+and corrective actions", asked through the public chat API with the failure-
+analysis library pinned and the Hybrid lane selected. Its timeline shows
+where candidates come from, what the gate decides, and how much text the
+agent may read.
+
+   1. Policy. The chat endpoint attaches the Hybrid lane's tool whitelist
+       and instructions server-side, so the agent cannot call a tool outside it.
+
+   2. Candidate generation (one call). The agent issues a single
+       kb_hybrid_search. Two channels run server-side: a dense vector
+       channel (top-30, cosine threshold 0.35) and a catalog keyword channel
+       over the pinned library's descriptions. Candidates merge on (library,
+       document), documents agreed by both channels are ordered first, and
+       the pool is capped at twelve. On Q2 the pool is the gold root-cause
+       report plus eleven same-domain siblings.
+
+   3. The gate. The server fetches each candidate's full text itself, segments
+       it, and scores does this text contain direct evidence that answers the
+       query in batches of at most six. The agent never supplies text, so it
+       cannot argue for a document it has not read. On Q2 the gold report
+       scores 0.846 while five extruder-telemetry reports score 0.887­0.926.
+
+                                               28
+   4. Cut and read budget. A document-level relative cut keeps scores
+        best - 0.15 with a top-5 floor and a cross-domain anchor guard, so
+       an inflated out-of-domain score cannot set the cut line; the top five
+       survivors are returned in full, at most 2 000 characters each. That read
+       window is the only full-content channel the agent sees; the rest of the
+       pool survives as scores in the audit trail.
+
+   5. The answer. Citations name the document path, the lane, and the
+       engine score, graded P0 (direct evidence) through P2 (weak).
+
+   6. The terminal paths. If the cut leaves no survivor, Lane A escalates
+       once to Lane B; if Lane B also exhausts its budget, the run ends in an
+       explicit not-found report instead of a speculation.
+
+    The trace also shows where the design fails. Under the shipped re-ranking
+role, Q2's gold (0.846) is pushed to rank eight by the five higher-scoring
+telemetry reports, outside the five-document read window, so the agent reads
+confusers (Fig. 8). Under the filter role the same pool, the same scores, and
+the same verdicts leave the gold first: same gate, same evidence, only the
+role of the induced ordering changes. This one trace foreshadows the paper's
+central result (Section 8.7).
+
+6.2. The gate contract
+    The gate is a locally hosted evidence-classification model, the Laya judg-
+
+ing service [44], invoked through a kb_laya_judge tool. Given a query and
+a batch of document references, the server fetches each document itself, seg-
+ments it, and scores every segment under one of three criteria: evidence
+(specific substantiation; a mere topic match is insufficient), instance (the
+text contains at least one member of the requested class, routed automati-
+cally for enumeration questions), or auto. A document survives only if its
+best segment reaches the threshold, so a document at vector score 0.40 with
+one yes verdict survives while a document at 0.95 that the judge rejects is
+dropped.
+
+    At the protocol layer the platform documents the score as a 0­8 rubric
+(topic 0­3, scenario 0­3, evidence 0­2; 6 answers directly, 5 escalates to the
+librarian lane, 4 drops). The [0, 1] score is the machine-readable projection
+of that rubric. The projection can saturate -- the logged maximum score
+is 1.0000 -- which is one reason thresholds carry little discriminating power
+between golds and same-domain confusers (Section 8.7).
+
+                                               29
+    Every operating constant is a shipped production default: the thresholds,
+the six-reference judge batch, the hybrid candidate cap of twelve, and the
+0.15 relative-cut margin with its top-5 floor. They were fixed during earlier
+deployments on a different corpus and were not tuned on the evaluation
+questions of Section 8.1. The classifier is a single, locally fine-tuned evidence
+classifier whose checkpoint reference ships with the platform artifacts; it is
+deterministic in our replays (repeat calls with identical inputs reproduced
+identical orderings), and every verifier finding in this paper inherits that
+choice, a scope limit noted in Section 10.
+
+    Fail-closed semantics apply to every failure mode: fetch errors, engine
+errors, and timeouts count as rejection. Survivors are aggregated into an
+evidence pack with per-passage provenance.
+
+6.3. Three lanes
+
+    The three lanes are not three implementations of one idea; they are three
+points on a latency/coverage frontier (Table 9; Fig. 2). The Hybrid lane is
+the fastest and the most auditable, because it moves orchestration server-side
+and ships its audit trail in one response; it is the interactive default. The
+Librarian lane is the one that must not miss a document: it spends its twelve-
+call budget on catalog navigation and buys exhaustive coverage with explicit
+blind-spot disclosure. The Search lane is the latency-tuned interactive path
+for pinned libraries.
+
+    Lane A (Search). Phase A0 rewrites the query into (subject, attribute,
+constraints) form, splits multi-entity and comparison questions into parallel
+sub-queries, and routes incident-style queries to the experience store (Sec-
+tion 3) first. Phase A1 issues one wide dense query (top-30, threshold 0.35,
+cross-library balancing), deduplicates by document, and keeps all candidate
+documents rather than truncating to the top chunks. Phase A2 submits
+citation-only references (library id plus document path) to the gate in batches
+of at most six, and Phase A3 returns the judge's evidence pack, the only full-
+content channel in this lane, from which the agent composes an answer whose
+citations carry confidence levels (P0 direct evidence, P1 partial, P2 weak).
+
+    Lane B (Librarian). A fixed spine under a hard budget of twelve tool
+calls. L0 reads the library catalog (ids, names, descriptions, counts) and
+prunes shelves by the rewritten query; L1 lists each surviving shelf's docu-
+ments with descriptions; L2 routes by query shape, sending literal and enu-
+meration questions ("which documents mention X") to a machine-side scanner
+(0.5 s per document, no LLM turns) and semantic questions to judging; L3
+
+                                               30
+judges in batches of at most six, because larger batches historically trig-
+gered transport timeouts and fail-closed batch loss; L4 reads only survivors,
+bounded to 2 000 characters and starting at the judge-reported evidence line;
+L5 emits a five-part report (search paths, answer, sources, confidence, blind
+spots). Two rules are absolute: catalog descriptions never prune documents
+by themselves, and an exhausted budget terminates in blind-spot disclosure,
+not in a guessed answer.
+
+    Lane C (Hybrid). Agentic latency is dominated by LLM turns, not by
+tools (Section 8.6), so Lane C spends exactly one call by moving the whole
+pipeline into the server. A single kb_hybrid_search call executes P1 (a
+parallel block of a vector channel, top-30 at threshold 0.35, and a catalog
+keyword channel); P3 merges candidates by (library, document), agreed-by-
+both documents first, capped at twelve; P4 judges every candidate with the
+gate in batches of six (criterion evidence, threshold 0.5); P4b applies the
+document-level relative cut; and P5 reads the top five documents in full
+(2 000 characters each). The response carries the complete audit trail (per-
+lane candidates, merge counts, judge statistics, cut decisions, read contents),
+so a one-call lane is still an inspectable lane.
+
+6.4. Selecting a lane is a budget decision
+    The three lanes trade latency for recall under an enforced call and turn
+
+budget, so the choice is not which retriever is better but how much of the
+budget to spend before the gate runs. Hybrid is the interactive default,
+Librarian the must-not-miss lane, Search the pinned-library path.
+
+    What makes the lanes interchangeable is the gate. All three terminate in
+the same contract -- one gate, one fail-closed semantics, one evidence pack
+-- so replacing a lane changes the retrieval affordance and the budget, not
+the meaning of a citation. Escalation follows a trigger rather than a hunch:
+zero verified evidence escalates Lane A to Lane B exactly once. Query-shape
+auto-selection is future work (Section 10).
+
+    One caveat is honest to record. On the evaluated corpus Lane A occu-
+pies no distinct operating point of its own: the Hybrid lane is faster and
+the Librarian lane more exhaustive. A two-lane deployment (Hybrid plus
+Librarian) is therefore defensible today, with the Search lane retained as the
+pinned-library interactive default; because the lanes share one gate and one
+abstention semantics, that reduction costs coverage, not trust.
+
+                                               31
+6.5. The gate as a platform primitive
+    The gate is not a prompt. It is a server-side tool reachable only through
+
+the platform's own interface, and its operating point is an explicit argument
+rather than a sentence in an instruction: kb_laya_judge(query,documents,
+criterion=auto,threshold=0.5,max_evidence_chars=40000). The plat-
+form, not the agent, chooses the criterion and fixes the threshold. Calls
+are serialized through a single judge worker -- an early concurrent work-
+load crashed the worker with a torch paging-file error, so verdicts take a
+lock -- with a 900 s call timeout, and every verdict is logged with its query,
+references, scores, and decision.
+
+    That placement makes verification a property of the layer rather than an
+aspiration of the agent. Any lane, harness, or external client that answers
+through the platform inherits the gate; none can skip it, and none can re-
+threshold it per query. Enforcement has a second half in the lane policy,
+which attaches a per-lane tool whitelist server-side: a librarian-lane agent is
+denied the vector and two-stage tools at the protocol level, so it cannot reach
+around the catalog-first path it was given.
+
+    Externalized verification also distinguishes this design from verifiers that
+run inside the generator. Self-RAG and CRAG verify during generation with
+the generator itself [37, 38]; the gate sees only (query, document text) pairs
+and is consumed as a tool. That is what makes it reusable and inspectable,
+and, by the same placement, fallible: the LLM-judge critique applies here
+as much as anywhere [45], which is why verdicts fail closed, are logged, and
+are reported as evidence rather than as truth (Section 8.7). The cost is paid
+once per deployment: a twelve-candidate verification adds 0.5 s to a call
+(Table 14), tens of milliseconds per verdict once the worker is resident, while
+a cold judge load costs 10­12 s (Section 7).
+
+6.6. Honest abstention
+    A threshold that never rejects a candidate cannot refuse a query. On four
+
+out-of-corpus probes the judged hybrid still keeps 9­11 of its 12 candidates
+(Section 8.6, Fig. 5), and the graded probes behave no differently: prompts
+with partial coverage and prompts with none both keep 10­12 of 12 candi-
+dates, with top scores up to 0.983 (Table 18 and Section 8.8). Because the
+[0, 1] projection saturates, no cut point separates a supported answer from
+an unsupported one.
+
+    Abstention therefore lives in the reading-and-answering layer, enforced by
+the lane contract rather than advised in a prompt. A caller with no surviving
+
+                                               32
+evidence must report a not-found with its search scope: which libraries and
+how many documents were searched, how the query was routed, and which
+topics sit outside the corpus. The escalation rule makes that state terminal,
+so an exhausted budget produces a report and not a guess.
+
+    Because abstention is a terminal state enforced server-side, it can be
+evaluated like any other outcome: all six out-of-corpus probe runs returned
+explicit not-found reports with zero fabricated citations, even though the
+tool layer had handed them candidates (Sections 8.6 and 8.6). The division
+of labour is the point: the gate decides what may be cited, the reading layer
+decides whether to answer at all, and the measurements put the reliability
+in the second and not the first.
+
+7. Agent interface, implementation, and non-functional properties
+
+7.1. The tool surface
+    The platform is exposed to agents as a single Model Context Protocol
+
+server [3] carrying 95 tools in eight groups: knowledge-base CRUD and
+catalog; document read/write; file system; parsing and task status; tags;
+search and vector index; knowledge graph; and experience and persona
+management. The count is the number of registered tool decorators in
+kb-mcp/server.py, checked one-to-one against the function definitions they
+register; the project's own documentation had drifted to a lower number,
+so we report the measured one. The interface is not a reduced agent-only
+view: it owns no private data path. Writes go through the same HTTP
+services the user interface calls, reads read the same .tree-fs.json and
+.knowledge-base.yml registries the web server reads, and the MCP process
+itself contains no HTTP code, only a client module.
+
+    Three governance rules make a surface this wide safe to hand to a model.
+First, read-path tools and write-path tools are disjoint families, and retrieval
+lanes are granted the read family only. Second, a stored parsed document
+cannot enter a knowledge base through the generic document writer: it must
+pass the parsed-document writer (kb_doc_save_parsed), the single entry
+point that carries parse provenance and forces the ingestion quality gates
+to run. Third, long-running operations--a parse batch, a re-index, a graph
+build, a meditation pass--return a task id immediately instead of blocking
+the session, and are polled through the task-status tools backed by an in-
+process task registry.
+
+                                               33
+7.2. Harness integration and lane policy
+    One chat endpoint adapts fourteen agent harnesses to a uniform message
+
+stream, so a vendor CLI, an ACP-compatible agent, and the platform's own
+engine all reach the same retrieval lanes. The lane policy of Section 6 is
+enforced here rather than by prompt discipline: each lane is attached to a
+tool allow-list, of which 21 entries are read-only MCP retrieval tools, and to a
+deny-list of more than 40 harness-internal tools (file editors, web search, sub-
+agent spawning). The gate was observed working in the harness campaign:
+on its first turn a model attempted to end the session early, the attempt
+was blocked by the deny-list, and the retrieval that followed was unaffected.
+Sessions are budgeted as well, with per-lane turn and call caps (Table 9); the
+campaign ran 18 end-to-end scenarios, all of which passed with no fabricated
+answer.
+
+    Three operational findings from that campaign matter to callers. A trivial
+ping prompt triggered a six-skill pre-flight before any retrieval, and the probe
+was killed by a 30 s timeout; the platform's default caller timeout is therefore
+420 s, not the few seconds a request such as "list my libraries" suggests. The
+streaming endpoint emits bare data: frames with no event names, so a client
+must parse data-only frames instead of waiting for a named event. Finally,
+engine choice dominates cost by one to two orders of magnitude at the same
+quality tier: $0.90­1.80 per question for the agent harness, $0.11­0.36 for
+the second engine, and $0.03­0.07 for the third. Wall clock was 50­176 s,
+23­52 s, and 34­171 s respectively, but the third engine's engine-side time
+was only 15­83 s: its extra wall clock is harness cold start of 50­90 s per
+call, not retrieval. One residual gap appeared in the same campaign: a
+document ingested through the third harness had no graph node, while the
+same operation through the agent surface created one.
+
+7.3. Implementation and runtime engineering
+    The backend is Python 3.12 with FastAPI. ChromaDB [29] stores one
+
+HNSW [30] collection per knowledge base in cosine space; embeddings are
+BGE-M3 [24], 1024-dimensional and normalized, encoded in batches of 32 by
+a lazy-loaded singleton with an LRU encode cache. Neo4j 5.20 [36] holds the
+document graph, jieba [57] tokenizes the keyword lane, MinerU [7] performs
+parsing and OCR, and MCP is spoken over stdio and SSE.
+
+    The enforcement described in Section 6 depends on engineering invisible
+in the interfaces. The judging model runs as a resident worker behind a
+machine-level file lock, with an LRU verdict cache and explicit CUDA-cache
+
+                                               34
+release between workloads. A cold judge load costs 10­12 s per batch; the
+resident worker answers in 1­2 s. The worker also removes a failure mode
+met in production: when judge and bulk-embedding workloads ran inter-
+leaved without cache cleanup, one end-to-end run degraded from 68 s to 27
+minutes under the Windows display driver model's paging behaviour. Judge
+calls are serialized by one lock, because two concurrent judgments on a sin-
+gle GPU raise a native allocator failure; a call is held to a 900 s ceiling
+and fails closed beyond it. MinerU is launched as a hidden subprocess with
+platform-specific parent-death cleanup--a Windows Job Object with kill-on-
+close, Linux prctl(PR_SET_PDEATHSIG), and a process group plus atexit on
+macOS--and its stdout is redirected to a log file rather than a pipe, because
+the pipe variant failed with a spurious Errno 22 once the reader closed. Be-
+fore start, the backend probes its own port with a bare socket bind and refuses
+to start if the port is occupied, so a surviving process cannot be shadowed by
+a second one. Vector writes are serialized per collection, after one production
+incident traced to concurrent segment handles; the keyword index updates
+incrementally. Every HTTP client is constructed with trust_env=False, so
+a corporate proxy cannot intercept calls to localhost.
+
+7.4. Configuration, deployment, and reproducibility
+    A single config.yml is the source of truth for ports and thresholds; en-
+
+vironment variables override it. The mechanism is used in practice, not only
+documented: in the harness campaign the services ran on web 6789, backend
+8771, and kb-mcp 8000, the backend port being an override of the shipped
+development default. Rate limiting (a general bucket and a smaller bucket
+for expensive routes), authentication tokens for the MCP, user, and legacy
+clients, and the retrieval thresholds all live in the same file. The ragctl
+command-line tool covers setup, start, status, dependency, configuration,
+and update operations. The system runs self-hosted on a single workstation:
+ChromaDB runs in-process, Neo4j runs locally on bolt port 7687, and MinerU
+runs as a local subprocess, so no external service is required for a deployment.
+The same file carries the higher retrieval threshold (0.55) used by the experi-
+ence subsystem, whose rolling summary of operational lessons is regenerated
+by a rules-based pass every fifth ingestion. Source code and all experiment
+scripts are public at https://github.com/kingdol666/rag-knowledge.
+
+                                               35
+8. Evaluation
+
+    We evaluate the deployed system on three corpora that differ in origin,
+language and scale, using three metric families, and we organise the evidence
+into seven groups. E1 and E2, reported here, cover the stages that precede a
+question: acquisition and parsing, and organisation, consistency and manage-
+ment operations. E3­E7, reported in Sections 8.4­8.8, cover retrieval-quality
+ablations, agent behaviour and verifier behaviour. Numbers are reported
+against the corpus that produced them, and results from different corpora
+are never merged.
+
+8.1. Experimental setup
+
+    Corpora. (i) Deployed industrial corpus: five knowledge bases in a live
+deployment hold 42 documents, one of them containing twenty near-duplicate
+equipment-telemetry reports that share prefixes, vocabulary and structure,
+a deliberate stressor for near-duplicate detection and confuser density [21].
+Sixteen gold questions and four out-of-corpus probes were run against it.
+(ii) arXiv corpus: 100 submitted papers spanning about 25 domains; at
+evaluation time the state file records 91 paper names and 79 papers are re-
+trievable. Content routing placed them in five domain libraries holding 322
+stored parts, and ten gold questions (BQ01­BQ10) target books referenced
+by these papers, keyed by arXiv identifier. The live environment held 19
+libraries. (iii) Cross-lingual ingestion corpus: 400 Wikipedia pages per lan-
+guage for English, Chinese and Japanese, with 40 extractive cloze queries
+per language whose answers occur verbatim in the source page. It is used for
+ingestion only; we report no retrieval-quality numbers for it.
+
+    Questions and gold annotations. The sixteen industrial questions
+(Table 10) were written by the authors rather than sampled from logs, a cir-
+cularity we state rather than hide; each identifies one or two gold documents
+by a unique filename fragment and one to three fact markers. Q16 names
+the event heatdecay092, a token that also occurs in its gold document's
+filename, so a retriever ranking on filenames alone could match it without
+reading content; we keep the question and report the weakness. On the arXiv
+corpus a question passes only if the gold identifier is traceable in the answer
+or the tool trajectory and at least 60% of the gold keywords occur at word
+boundaries, evaluated deterministically with no language model in the loop.
+
+    Metric families. Retrieval results use Hit@5, Recall@5 and MRR@5,
+following passage-ranking evaluation conventions [27]. A graded measure,
+
+                                               36
+nDCG@5 [28], was computed only inside one exploratory arm of the cross-
+lingual benchmark that we do not report; no nDCG@5 value appears here.
+Grounding and key-fact verification use deterministic string tests: whether
+the answer cites the gold document, whether at least 60% of gold key facts
+appear at word boundaries, and whether part, section and table citation
+markers are present. These checks are mechanical, not model-based faithful-
+ness estimates such as RAGAS [58] or ARES [59]. The third family covers
+wall-clock time, agent turns, tool calls, monetary cost, and the correctness
+of refused answers.
+
+    Controls. Deterministic lanes were re-run and compared field by field
+with latency excluded, so a re-run could disagree only on content and order-
+ing; model-driven lanes were repeated with the same model version and are
+reported as mean with the observed spread. A fixed retry policy applied: an
+empty zero-turn response or a transient gateway timeout was retried once,
+which fired on two runs and succeeded both times. Before measurement we
+repaired two corpus-integrity faults through the platform's own operations:
+one document missing from its vector collection was re-indexed, and one li-
+brary whose collection had been silently lost was rebuilt. All measurements
+ran on one workstation whose RTX 5060 (8 GB) serves the embedding model
+and the judge worker, with every service local under Windows.
+
+    What is deterministic. The tool-layer retrieval lanes, the grading rule,
+the audits, duplicate adjudication and the cross-lingual ingestion pipeline are
+deterministic: repeating them reproduces the same values, and cross-lingual
+round 2 was bit-identical to round 1. The agent lanes, and anything derived
+from generated text, are not, and are reported with their repetition spread.
+
+8.2. E1: Acquisition and parsing
+
+    One hundred submitted papers were parsed and routed by content into
+five domain libraries, producing 322 stored parts after the 30,000-character
+split. Table 11 lists the acquisition audit: nine per-paper ingest checks passed
+100/100, no true duplicate was found against 35 near-duplicate pairs, 165
+document descriptions were upgraded, the content and storage audits passed
+322/322 and 33/33, all 15 retrieval regression probes passed, and the dense
+replica index holds 4,528 chunks. Values are asserted by the run scripts from
+saved artifacts rather than hand-counted; the content audit samples the first
+1,000 characters of each part and the storage audit covers 33 storage units.
+
+    Accounting gap. This campaign does not support the claim that all
+100 papers became usable, and we do not make it: 100 papers were sub-
+
+                                               37
+mitted, the state file exp10_ingest_state.json records 91 names, and 79
+were retrievable at evaluation time, so 21 papers were never retrievable. The
+reported failure modes are formula-dense scanned papers, which the parser
+handled poorly, and one crash of the tool layer during batch parsing that was
+restarted from a checkpoint. No artifact records a count of attempted against
+failed papers, and the state file has no per-paper parse status, so we cannot
+say whether the nine papers missing between submission and the recorded
+list failed or were never recorded. The absent counter is an observability gap:
+reconciliation is possible only against the artifacts that survive [22].
+
+    Cross-lingual ingestion. The benchmark ran twice over 400 pages per
+language. The ingest success rate was 1.0 in both rounds for all three lan-
+guages. Membership accuracy, whether a stored page landed in the intended
+library, was 0.875 for English, 1.0 for Chinese and 1.0 for Japanese (400 pages
+per language). Storage completeness, computed on a sample of 40 pages per
+language with the shards of large documents summed, was 0.975, 0.9559 and
+0.9402 respectively. Self-retrieval Hit@1, again at 40 pages per language,
+was 0.975, 1.0 and 1.0. Round 2 was bit-identical to round 1. The English
+figure of 0.875 is the weakest cross-lingual number we report, and it is an
+organisation defect rather than a parsing defect: the page was stored, but in
+the wrong library roughly one time in eight.
+
+    Smaller campaigns. A 50-paper, 26-domain campaign parsed and veri-
+fied 50/50 papers, took 1,115.5 s at 16.3­40.4 s per paper, produced 202 tags,
+batch-indexed 50 documents and reported all_probes_ok; in its routing run
+43 of the 50 documents carried tag_ok:false while verify_ok passed for
+all 50, so the tag-quality check failed often without blocking ingestion. Its
+30,000-character tier turned 50 papers into 165 documents (nine whole doc-
+uments and 156 parts), passed the storage check 50/50 and the description-
+and-tag check 165/165 with zero failures, stored 3,798,446 characters and
+took 2,672 s to parse. Two caveats attach: one stage re-ran because of inbox
+ordering, and more than 800 extracted images were not uploaded. Descrip-
+tions and tags are checked against document content before storage [15].
+
+8.3. E2: Organization, consistency, and management operations
+
+    We define organisational correctness as three-source consistency: the files
+on disk, the tree index and the per-library metadata must agree about which
+documents exist, where they live and how much indexed content each has.
+Under that definition we found a real defect in a disposable test library. Af-
+ter a document was renamed, the vector index retained the chunks of the old
+
+                                               38
+name: the recorded chunk count was 18 where 9 were expected, a duplicate
+search matched the document against its own former path at 0.9738 simi-
+larity, and a vector probe returned every chunk twice with identical scores.
+Neither the automatic re-indexing that follows a rename nor a forced batch
+index removed the stale chunks; only an explicit force re-index repaired the
+document, after which the recorded count was 9. The failure is invisible from
+the metadata alone.
+
+    Reorganisation campaign. The full reorganisation workflow then ran
+over the 322-document arXiv corpus: 322/322 metadata checks and 165/165
+description checks passed, the tag registry was de-duplicated, all 322 docu-
+ments were batch-indexed, 15/15 retrieval regression probes passed with zero
+degradation, and 35 near-duplicate candidate groups (similarities 0.90­0.975)
+were adjudicated as zero true duplicates, every group being a set of adjacent
+parts of the same paper; no document was deleted (Table 12). Two honesty
+notes apply: the three-source spot check sampled 33 of the 322 documents,
+so it is a sample rather than a full pass, and sub-library splitting and hi-
+erarchy creation were analysed but deliberately not executed, pending user
+confirmation, so the campaign is not evidence for hierarchical restructuring.
+
+    Scale. Growing the corpus from 50 to 100 papers (163 to 322 documents)
+did not cost retrieval quality: dense top-1 hits went from 48/50 to 49/50 and
+MRR from 0.98 to 1.00, and reorganisation itself produced a 2 percentage
+point improvement. The judgement field recorded with that comparison
+reads "held (within ±5 pp)"; we report the field rather than restating the
+gain as a retrieval improvement.
+
+    Lifecycle operations. Table 13 lists the operations exercised. Cre-
+ate, move, delete and forced re-index behaved as specified: the move left the
+source library at zero documents and the target at one, and batch deletion re-
+moved both disposable test libraries. Two failure modes are worth reporting.
+The task-status tool reports a task as running after it has finished: the record
+carries a finished_at timestamp while the status field still reads running,
+and the same symptom appeared in the reorganisation graph build, where
+node reconciliation replaced task polling. The update check timed out after
+30 s (ragctl version --json timed out after 30s, success false) while
+every other probe in the batch passed; the project-status tool also silently
+ignores its version flag. Merge and split were never exercised under controlled
+conditions and we claim nothing about them. These 16 skill scenarios ran
+against two disposable test libraries in a standalone skill environment; the
+ingest tools were exercised in E1, not here.
+
+                                               39
+    Tags and graph. The live tag registry held 316 tags, and the tag-
+quality check passed 165 documents with zero failures in 47.6 s. Orphan
+tags do accumulate, among them test tags and section titles extracted from
+headings; the registry offers a dry-run detector and a cleanup operation,
+and in one case tags from a test library leaked into the production registry,
+the failure mode that vocabulary-based organisation is prone to [16]. The
+document graph is used for navigation and candidate expansion, never as
+evidence. Writing one document's four tag edges moved the edge count
+from 4,675 to 4,679, against 658 nodes, 333 documents and 316 tags; graph
+statistics for the 165-document corpus were 335 nodes and 1,671 edges.
+
+8.4. E3: Operational knowledge and automated distillation
+
+    The experience store holds operational lessons as first-class retrievable
+documents: an entry is addressed, indexed and searched through the same
+interfaces as an ordinary document, and it carries a credibility tier that
+decides whether it may be shown at all (Section 5.7, Table 8). The design
+claim is that a lesson about practice should be governed like any other content
+object. The evidence collected for that claim is case evidence and we report
+it as such.
+
+    Three measurements exist. (i) One extraction campaign over a single
+small knowledge base produced thirteen candidate drafts (benchmark-suite/results/experience_
+extract_candidates 13, drafts_created 13). (ii) One end-to-end sce-
+nario was sedimented into one experience (exp-d6f4d47ae3d6) and a later
+global experience search returned that entry first, with a local similar-
+ity of 0.711 (review/fulltest-20261012, scenario A6). (iii) The draft-
+approval path was never exercised: the draft pool was empty when it was
+queried (experience_drafts_list returned count 0 with no drafts), so
+experience_draft_read and experience_draft_approve could not run at
+all (benchmark-suite/results/SKILL-E2E-REPORT.md, lines 27 and 103).
+The heuristic extraction path was exercised only in dry-run mode, where it
+returned a raw document dump that the quality gate would reject (line 100).
+
+    One scenario and thirteen candidates cannot support an effectiveness
+claim, and we do not make one. The larger part of the automated-distillation
+pipeline is unverified: scheduled distillation, review and approval at scale, ap-
+plication feedback, and credibility decay were not exercised end to end. What
+the measurements show is narrower and sufficient for the design argument:
+an operational lesson can travel the document path -- created, indexed, re-
+turned first by search, with its tier attached -- and nothing more.
+
+                                               40
+8.5. E4: Retrieval quality and the role of the verdict
+    Table 14 compares nine configurations on the sixteen gold-annotated
+
+questions of the deployed industrial corpus (42 documents; paper-kbs/experiments/results/exp1
+and exp5_judge_filter.json). The tool-layer arms retrieve and never an-
+swer: their latencies are retrieval latencies, and, because no generation
+follows, they carry no token cost. With sixteen questions the Wilson 95%
+intervals on the headline proportions are wide (judged hybrid [0.23, 0.67];
+judge-as-filter [0.72, 0.99]; BM25 and RRF [0.81, 1.00]), so the decomposi-
+tion below, not the point estimates, is the claim. A separate six-method
+retrieval-mode ablation exists in the released logs but covers two questions;
+it is a smoke check at n = 2 and no claim rests on it.
+
+    On this corpus, lexical retrieval is strong. BM25 [25] reaches Hit@5
+1.00 (MRR 0.958) at about a millisecond per call; reciprocal rank fusion [26]
+matches it in Hit@5 and follows in MRR (0.927); the two-stage BM25+graph-
+then-dense pipeline reaches Hit@5 1.00 with Recall@5 0.97, one gold of a two-
+gold question falling outside the top-5. Dense retrieval with BGE-M3 [24]
+misses exactly one question (Q16), where four near-duplicate sibling reports
+from one incident family crowd the top-5 -- a confuser-density failure, not
+a vocabulary one. Graph search over the document graph [31], limited to
+node-name and tag matching, is the weakest standalone signal (Hit@5 0.56,
+MRR 0.562). Nothing here is a retrieval advance: the corpus is curated,
+the questions are written in its vocabulary, three configurations tie at Hit@5
+1.00, and the one that uses only words leads on MRR.
+
+    The central result is the verdict's role, not its existence. The
+same judged scores enter three configurations: not used (fusion-only, Hit@5
+0.94), used to re-rank candidates (QDCVR-Hybrid, 0.44), and used as a filter
+that keeps survivors in their fusion order (judge-as-filter, 0.94). On the eight
+questions where re-ranking and filtering differ (Q2, Q4, Q5, Q6, Q8, Q9,
+Q11, Q12), filtering wins all eight and loses none, with eight further ties on
+Hit@5, and it restores MRR to 0.856 (exact binomial sign test, two-sided
+p = 0.008); the only ranking movement is Q7, where the gold slips from
+third to fifth inside the top-5. The verdicts were not wrong about which
+documents are evidence -- they were wrong as an ordering. This matches
+the judge-miscalibration pattern reported for model-generated preferences
+[45, 48]: an individually plausible verdict can be ordinally unreliable, and the
+fix is the placement of the verdict, not its existence or its strength. Its price
+is measurable: judging twelve candidates adds well under a second with the
+resident worker, and the hybrid call's latency surcharge over fusion-only is the
+
+                                               41
+observed difference between 542 ms and 62 ms per call. Two caveats travel
+with the test. It is post-hoc and descriptive -- one of nine configurations
+evaluated on the same sixteen questions -- and the gate is a single locally
+fine-tuned checkpoint (Section 6.2), so every verifier finding in this paper
+inherits that choice.
+
+    A second corpus reproduces the baselines, not the collapse. Ten
+questions over the 79 retrievable papers of the 100-paper arXiv ingestion
+(8,031 chunks; paper-kbs/experiments/results/exp10_papers_toollayer.json)
+are answered at Hit@5 0.9 by every configuration except graph search, which
+reaches 0.2. One question (BQ03) is missed by all eight configurations,
+and its gold paper is one of the 21 papers that never became retrievable in
+that campaign: the single shared miss is an ingestion failure, not a retrieval
+failure. We therefore report both denominators -- 0.9 over the ten questions
+as asked, 1.00 over the nine answerable ones -- and say which is which. The
+judged collapse of the industrial corpus does not reproduce on this corpus,
+where the same-family confuser cluster that drives it is absent; the graph
+configuration's 0.2 tracks absent relation tagging, since the bulk import
+bypassed the tagging path.
+
+    Thresholds and margins. All 191 judged candidates from the sixteen
+hybrid runs passed the 0.5 acceptance threshold, the lowest logged score be-
+ing 0.589, so at the threshold layer the gate filtered nothing on this corpus
+(exp1_retrieval.json). The margin sweep that follows replays these logged
+candidate pairs rather than re-retrieving them: with the top-5 floor un-
+changed, a margin of 0.15 keeps the gold in 16 of the 17 in-pool gold instances
+and 0.20 keeps it in all 17 (paper-kbs/notes/review-2026-10-08.md). A
+leave-one-out procedure that selects the margin per question from the other
+fifteen reaches a gold survival of 0.9375, its single miss being Q11, which
+the shipped 0.15 margin also loses, while a fixed 0.20 floor reaches 1.00
+(exp6_loo_margin.json). The shipped floor is thus an engineering con-
+stant, not a fitted parameter, and the calibration that would justify it has
+not been run.
+
+    Rephrasing shows where the fragility sits. On a grid of sixteen para-
+phrase questions (exp6_paraphrase.json) the judged configuration falls to
+Hit@5 0.5 (MRR 0.189), while judge-as-filter and fusion-only hold at 0.9375
+(MRR 0.833) and dense retrieval stays at 0.9375; BM25 falls from 1.00 to
+0.875 (MRR 0.958 to 0.755). Both the lexical baseline and the judged re-
+ranking lose ground when the wording changes, and the configuration that
+refuses to let the verdict order the list does not. The gate's weakness is in
+
+                                               42
+the ordering it induces, not in the verdicts it returns.
+    End to end, the modes differ in checkability. Ten fixed questions
+
+ran through three modes that share one harness, one model and one neutral
+prompt template and differ only in retrieval affordance: the platform's full
+read surface, a bare agent with file tools over the exported papers, and dense
+retrieval over an 800-character replica index of the corpus (4,528 chunks).
+Table 15 reports the outcome. All three modes produce answers, and the bare
+agent grounds as many of them as the platform (10/10 vs. 10/10), but its
+answers name files where the platform names checkable addresses, and dense
+retrieval cites an address once in ten questions. The modes differ mainly in
+checkability rather than in whether an answer was produced. Three caveats
+belong to this comparison: both dense grounding misses were tool-availability
+aborts; grading is conservative, and word-boundary matching zeroes the bare
+agent's plural "cathodes" on BQ08; and two platform cells re-ran once after a
+harness timeout, correctness calls are the authors' trace readings, and cache
+state was uncontrolled.
+
+    E4 establishes one thing. Content verification placed as a filter rather
+than as a ranker is the difference between a citation and a claim: every
+returned document is judged, and the ordering the reader sees is not the
+verdict's. Verification before answering is not itself new [37, 38]; what is
+measured here is where the verdict belongs in the pipeline and what it costs
+there. E4 does not establish a retrieval advance -- BM25 reaches Hit@5 1.00
+on this corpus -- so recall is not the contribution, and no margin, threshold
+or paraphrase variant tested repairs the ordering role of the verdicts. That
+is the question the failure analysis of the verifier takes up.
+
+8.6. E5: End-to-end agent behaviour, abstention, and cost
+
+    The agentic grid. Four arms -- the Search, Librarian and Hybrid lanes
+plus a bare model with no retrieval tools at all -- answered four questions
+(Q2, Q4, Q6, Q7) twice each through the public chat API, with one engine
+(omp over GLM-5.3-Flash) and a 20-turn budget. Citation outcomes agree
+on all 16 of 16 arm­question cells across the two rounds: every grounded
+cell named the gold document (12/12); the bare arm -- the same model,
+told to answer from its own knowledge -- cited a source in 0 of 4 cells in
+either round. The de-contaminated fact-marker check (delete every answer
+line naming a gold document from the answer's first 600 characters, then re-
+test the remainder) is 12/12 in round 1 and 11/12 in round 2; the exception,
+Hybrid-Q2, keeps its markers only inside lines that also cite the gold -- an
+
+                                               43
+artifact of the deletion rule, and its citation hit stands. Six of the twelve
+grounded cells answer from libraries of one or two documents, where hitting
+the gold is a low bar; the substantive evidence is the six cells over the 31-
+document process library. Lane operating points are in Table 9. Where
+the bare arm is wrong, it is wrong in the way that motivates retrieval: on
+the lamination question it gave a plausible textbook diagnosis (interfacial
+adhesion failure, moisture ingress) missing the corpus's recorded root cause,
+thermocouple drift leaving the encapsulant under-cured.
+
+    Abstention is a property of the reading-and-answering layer, not
+of a threshold. Three out-of-corpus questions produced three explicit not-
+found reports (47.9, 73.3 and 113.5 s wall clock; turns were not recorded for
+this probe family), each enumerating the scope it searched (five libraries, 42
+documents), declining to answer from memory, and citing no document as
+evidence. The retrieval tools themselves never abstain: six graded probes at
+the tool layer -- three partially covered, three absent -- retained 10 to 12
+of their 12 candidates at every tier, with top scores up to 0.983 on absent
+probes and 0.965 on partial ones; the acceptance threshold of 0.5 never fired
+as a refusal. Honesty is therefore enforced where the answer is written --
+in the lane's read-then-answer contract [37, 51, 50] -- not by a similarity
+cut-off.
+
+    Where the time goes. In the twelve grounded cells, machine-side re-
+trieval and verification stayed sub-second (BM25 0.9 ms mean, dense 18 ms,
+two-stage 77 ms, judged hybrid 542 ms mean) against an end-to-end wall
+clock of 36­91 s. The gap is model turns: 11.7, 12.8 and 15.3 s per turn
+for the Search, Librarian and Hybrid arms -- roughly 12­15 s per turn, the
+turn-dominated profile reported for agentic retrieval [4], and the reason the
+platform moves orchestration server-side and caps turns. Results repeat; wall
+clock does not: Search-Q2 took 70 s over 6 turns in round 1 and 165 s over
+11 turns in round 2, Librarian-Q4 84 s over 6 turns and 92 s over 11.
+
+    Cost. The same task set on three engines separates by one to two orders
+of magnitude at the same quality tier (Table 16): all 18 scenarios pass with
+every answer gold-hit and no fabricated citation. The cheapest engine pays a
+50­90 s harness cold start per call, so its wall clock is about twice its engine
+time; the Claude harness's wall clock is approximately its engine time.
+
+8.7. E6: When the verifier fails
+
+    Same-domain score inflation. The 191 candidates judged across the
+sixteen hybrid tool runs -- twelve per run except Q14, whose merge produced
+
+                                               44
+eleven -- carry no usable separation between gold and non-gold. Every
+candidate scored at least 0.589, far above the 0.5 acceptance threshold, so
+on this corpus the threshold rejects nothing. The 17 in-pool gold instances
+(Q16's gold never entered its pool) have a median of 0.88 and the 174 non-
+gold candidates 0.86, a difference a two-sided Mann­Whitney test cannot
+distinguish from chance (p = 0.26). Only five of the 17 golds rank in the top
+three of the judged ordering and nine rank eighth or lower. Re-ranking with
+the verdict therefore loses gold: the judged ordering reaches Hit@5 0.4375
+(7/16; 0.44 in Table 14), where the verdict used only as a filter, or as one
+signal in rank fusion, holds 0.94 (Section 8.5).
+
+    The verdict is a model [44], and a second model fails the same
+way. We replayed the same 191 logged (query, candidate) pairs -- a replay,
+not a re-retrieval -- through a generic natural-language-inference checkpoint:
+330M parameters, one question-as-context template, premises truncated to
+roughly the first 500 characters after tokenization, with 59 of the 191 pairs
+hitting the cap. It scores below the verdict (Hit@5 0.3125, MRR 0.1375)
+and its separation is inverted: gold median 0.0113 against non-gold 0.05285
+(Mann­Whitney p = 0.120). Truncation is not the explanation, because six
+of the ten gold documents that fit the context window whole still score below
+0.01; nor is it an out-of-domain effect, as unrelated topics still score corpus
+documents at up to 0.9973, so an NLI threshold would abstain on nothing
+either. A span-level replay inverts harder and significantly: over the 191
+pairs and 3,489 span inferences at roughly 320 characters per span, the max-
+pooled score is 0.4728 for gold against 0.91855 for non-gold (p = 0.0074),
+with Hit@5 0.1875. Rank fusion of the two signals repairs neither (Hit@5
+0.3125, MRR 0.111458). Replacing the judge checkpoint is not the repair.
+
+    Paraphrase. The verdict's agreement with gold collapses when the same
+questions are rephrased; that grid is reported in Section 8.5 and not repeated
+here.
+
+    What the failure tracks. Neither a generic NLI checkpoint, nor a
+span-level variant of it, nor rank fusion over both reaches the verdict's own
+quality; the second corpus shows the same gate losing nothing there (Sec-
+tion 8.5), so the collapse tracks confuser density within one domain -- many
+near-duplicate documents competing for the same question -- and not the
+checkpoint, the domain, the language, or the corpus size [45, 48, 49, 50]. The
+verdict earns its place as a filter and loses it as a ranker.
+
+                                               45
+8.8. E7: Non-functional behaviour
+
+    Stability. A 27-run suite -- three task types × three lanes × three
+rounds on the live multi-base instance (review/stability-multiround-20260930)
+-- is summarised in Table 17. Session-trace replay confirms 27/27 lane-
+contract compliance, with per-cell median wall clock spanning 34­76 s.
+Caveats: correctness calls are the authors' trace readings, cache state was
+uncontrolled, two platform cells re-ran once after a timeout, and the ±35 s
+variance sits in the answer-generation window.
+
+    Concurrency and integrity. A separate load campaign (review/stress-20260923/STRESS-R
+2026-09-23) wrote one library concurrently: 20 simultaneous document cre-
+ations finished in 0.8 s, 20/20 HTTP 200, with no corruption of .tree-fs.json
+or .knowledge-base.yml (list count 20); 20 simultaneous index builds fin-
+ished in 4.1 s (20/20, 620 chunks); 10 simultaneous experience creations
+finished 10/10. Lexical re-verification found 3/3 probe documents and a
+vector top-3 check found one; the artifact attributes that to homogeneous
+templates diluting the semantic signal, not to data loss. This bounds con-
+current writes only: no crash-mid-write or partial-index adversarial test was
+run, so durability under interruption remains untested.
+
+    Integrity incidents. Two index-integrity incidents surfaced during
+evaluation setup -- one document missing from its vector collection, one
+library whose collection had been silently lost. Both were caught by the
+pre-measurement checks and repaired through the platform's own path
+(index-document, reindex); the detection path, not the incident, is the
+point.
+
+    Deployment reality. The live snapshot of 2026-10-12 shows a running
+system with 19 libraries, including the 322-document arXiv corpus content-
+routed into five domain libraries. Every live-system figure here is a times-
+tamped snapshot of a system in use, not a frozen benchmark; the five indus-
+trial libraries behind the measurements above were then absent from the live
+catalog.
+
+9. Discussion and lessons learned
+
+    The evidence in Section 8 supports a distinction that the retrieval lit-
+erature tends to blur: finding a document and being allowed to cite it are
+different operations, and the second one is a system property. The lessons
+below are ordered from the retrieval layer outwards, because that is the order
+in which we learned them.
+
+                                               46
+L1. Vectors are fast; content is accurate, and verification has two
+costs. The tool-layer comparison is the cleanest statement of the retrieval
+subproblem: on a curated corpus a millisecond-level BM25 beats an 18 ms
+dense retriever, and neither knows whether a document answers the question.
+The gate converts ranked candidates into accountable evidence with per-
+citation provenance. Its costs are temporal (about 0.5 s per dozen candidates
+end to end; 1­2 s per six-document batch for the resident worker) and, on this
+corpus, accuracy-related: 0.94  0.44 Hit@5 under same-domain inflation
+when the verdicts are used as an ordering. Auditability is what the gate
+buys today; ranking quality is what calibration must earn back.
+L2. Latency engineering is turn engineering. With retrieval sub-
+second, the only lever that matters for interactive latency is the number of
+agent turns. Tool whitelists that remove detour tools, one-call server-side
+pipelines, and small judge batches that avoid transport timeouts together
+took the hybrid lane from about 29 turns in the earliest serial-skill configura-
+tion to 3­5 turns in the present measurements. The same accounting explains
+the engine comparison: the third engine's wall clock exceeded its engine-side
+time by 50­90 s per call, which is harness startup, not retrieval.
+L3. The verifier is a model too, so calibrate it. The inflation analy-
+sis is the paper's cautionary result: a verifier inherits domain-internal blind
+spots, and a threshold calibrated on cross-domain negatives (0.5) does not
+separate same-domain near-misses. Fail-closed semantics and forced read-
+ing contain the damage; they do not replace calibration. The second-signal
+probes sharpen the point: a generic entailment model fails too, but differ-
+ently, anti-separating golds while still rejecting no out-of-corpus topic, and
+a symbolic rule decides the numeric case that the shipped judge mishandles.
+Verifier choice changes which errors you get, not whether you get any.
+L4. Honesty needs an enforcement layer, not a prompt. Lane sep-
+aration works because the server physically withholds tools: a librarian-lane
+agent cannot call the vector tool even if instructed to. The out-of-corpus
+probes show the same asymmetry for abstention. A threshold cannot refuse;
+it accepted every out-of-corpus candidate it was shown. The reading-and-
+answer layer refused all six probe prompts with disclosed searches and zero
+fabricated citations. A bare agent without the platform refused explicitly in
+two of four runs, and in the others produced confident, unsourced, partly
+wrong answers whose wrongness no audit trail exposes. Unassisted honesty
+is a coin flip; enforced honesty is inspectable.
+L5. Production incidents taught honest observability. Three early
+
+                                               47
+incidents shaped the implementation: a corrupted index segment that made
+one library silently un-retrievable across lanes, an out-of-memory indexing
+run that returned success with an empty payload, and judge failures that
+had to reject candidates rather than pass them. The common thread is that
+every layer reports what it actually verified and every consumer treats the
+unverifiable as failed. Table 19 consolidates the incident log into the failure-
+mode catalogue we wish we had on day one, extended with the three defects
+the organization and functional campaigns surfaced.
+L6. The acquisition gate sets the ceiling for everything above it.
+In the 100-document campaign, 21 documents failed to parse, mostly dense
+scanned material with formulas and tables. The system's value here is not
+that the rate is low, but that the failure is a reported outcome: a parse failure
+that is stored as an empty or garbled document would enter the catalog,
+receive a description, be indexed, and be retrieved and cited by the same
+machinery that cites good documents, with no signal anywhere that anything
+was lost. The same argument applies to a missing index or a stale description.
+This is why the acquisition layer owns a post-condition rather than a warning,
+and why the knowledge layer is a component of the system rather than a
+precondition to retrieval.
+L7. Organization is a retrieval budget. Content routing decides what
+the candidate generator can see. A catalog that is curated and consistent
+lets an agent choose a library and a document set from metadata alone,
+which is the mechanism behind the catalog-first lane and behind cross-library
+discovery in a deployment with nineteen libraries. An ungoverned catalog
+produces the opposite: candidate generation degenerates into a global vector
+search whose recall is limited by the cap, and no downstream verification
+can recover a document that was never proposed. The organization layer is
+therefore not administrative overhead around retrieval; it is where retrieval's
+recall is decided.
+
+    The lessons share one implication for how systems of this kind should
+be evaluated. A claim about enforcement is a claim about a control, so it
+needs a matched ablation: the same pipeline with the mechanism disabled,
+the same questions, the same corpus. Where we have that control (retrieval
+with and without verification at the tool layer) the claim is quantified; where
+we did not have it at first (an end-to-end agent arm with the gate disabled)
+we fixed the protocol before running it rather than after (Section 8.6). The
+verifier's negative result is the reason we insist on the distinction: without
+the matched ablation, a filter and a re-ranker are indistinguishable from the
+
+                                               48
+outside, and only one of them is defensible.
+
+10. Threats to validity
+
+Scale. The retrieval corpus at the centre of the evaluation is 42 documents
+across five libraries; the acquisition and organization campaigns scale that
+to 322 documents, and the second corpus adds 79. Absolute Hit@5 values
+(BM25 at 1.00 on the industrial corpus) will not transfer to collections orders
+of magnitude larger, where the hybrid lane's candidate cap and the librarian's
+shelf pruning become load-bearing rather than optional. The benchmark
+suite shipped with the platform is the intended scaling path, and a hundreds-
+of-documents run with an author-independent question set remains the full
+answer.
+Question set. Sixteen tool-layer and four agent-layer questions on the in-
+dustrial corpus, ten on the second corpus and forty cloze questions per lan-
+guage in the acquisition campaign were authored by the system's developers.
+Gold documents and fact markers are released for independent scrutiny, but
+the samples are small and favour the corpora's vocabulary. The paraphrase
+grid quantifies part of that exposure, since lexical ceilings drop under re-
+wording while the verifier findings hold. One circularity is named rather
+than silently enjoyed: Q16's question embeds its gold document's filename
+token, which guarantees lexical success on that question; the fix is sched-
+uled, and because Q16 is the one question on which the fusion stage loses a
+gold, the correction can only tighten the reported decomposition. The second
+corpus carries a related exposure that we disclose instead of exploiting: the
+acquired arXiv documents are named {domain}__{identifier}__{slug},
+so content-routing accuracy against the topical prefix is not an independent
+measurement of routing quality, and we report routing coverage rather than
+routing accuracy (Section 8.3).
+Experimental controls. The tool layer isolates the gate's contribution
+cleanly: its nine configurations include retrieval without verification and the
+same retrieval with the gate in either role, so the ranking-layer claim rests on
+a matched control. The agent layer originally did not carry the correspond-
+ing control, because its four arms are three grounded lanes (retrieval and
+verification) plus a bare agent (neither), which cannot separate the contribu-
+tion of retrieval from that of verification. The missing arm, a grounded lane
+with the gate disabled and the fusion order returned, was added at the end
+of this revision with its protocol fixed before the run (Section 8.6), together
+
+                                               49
+with a second ablation that varies the search partition rather than the gate
+(Section 8.3). Both inherit the same questions, libraries, engine and turn
+budget; neither was tuned after its results were seen.
+Evidence provenance is uneven. The evidence groups differ in how they
+were produced, and the paper reports the difference rather than smoothing
+it. The acquisition, organization and functional campaigns are audited runs
+whose per-check outcomes are released. The experience subsystem, by con-
+trast, is supported by case evidence: one distillation campaign with thirteen
+candidate drafts, a single sedimented experience, and an approval path that
+was never exercised. The full 100-document ingestion exists as a derived
+state file rather than as a timed, per-document log, and its accounting is
+not fully closed: 100 documents were submitted, 91 names appear in the
+derived state, and 79 documents are present in the library. Part of the gap
+is the 21 reported parse failures, but the remainder is unattributed, so the
+parse-failure rate should be read as a bounded estimate rather than as an
+exact measurement. We state this because a system paper's most useful
+contribution may be the honesty of its ledger.
+Judge and engine dependence. Scores and turn counts come from one
+judging checkpoint and one agent engine per campaign; lanes, not models,
+are the object of comparison, but absolute numbers will move with engine
+versions. The deployed gate remains a single checkpoint, although the two
+strongest verifier findings are no longer single-signal: a generic entailment
+model fails too, but differently (it anti-separates golds and still rejects no out-
+of-corpus topic), and a symbolic rule decides the numeric case the shipped
+judge mishandles. Trained evidence-verification models and learned signal
+ensembles remain open; the naive span-max probe and the rank-fusion en-
+semble answer the two easiest upgrades negatively.
+Design surface. Three lanes triple the policy surface an adopter must test,
+and the reported evidence supports two distinct operating points, with the
+catalog-first lane as the exhaustive option and the orchestrated lane as the
+latency-tuned interactive default. A two-lane deployment is defensible today,
+and query-shape auto-selection is future work.
+Consumer-side evidence. The honesty contract is evaluated from the sys-
+tem's side, that is, that not-found reports are well formed and non-fabricated,
+not from the reader's side. Whether an operator acts on a not-found report,
+escalates to a human, or ingests the recommended source is not measured,
+and this is the paper's main missing external-validity leg. The natural study
+is a small operator trial over a fixed probe set with two conditions, platform
+
+                                               50
+reports versus the same model's unaided answer, scored on the downstream
+action taken; the probe set and transcripts are released so it can be run
+independently.
+Nondeterminism. Agent runs are stochastic. We report two full repeti-
+tions of the sixteen-cell grid (citation agreement 16/16, with wall time and
+turn counts fluctuating substantially), retry only zero-turn transport flakes,
+and release all per-run logs including timeout re-runs. Fact-marker checks
+are automated substring matches; we additionally report decontaminated
+checks computed after removing answer lines that name a gold document,
+and the out-of-corpus answers were audited manually. Deterministic layers
+were verified to be bit-identical across two rounds except for latency fields.
+
+11. Conclusion
+
+    QDCVR turns "the retriever found it" into "the system verified it". Its
+design position is that the governed object of a knowledge-base management
+system is content: content decides where a document belongs, content de-
+cides whether a candidate may be cited, and the absence of content that
+answers the question is itself an outcome the system must report. That posi-
+tion is implemented as contracts rather than conventions (RQ1): parse gates
+that reject visibly, placement rules that read the document, a three-source
+consistency audit over the disk, the tree registry and the library metadata,
+lane policies enforced by a server-side tool whitelist, and verdicts that fail
+closed.
+
+    The five research questions are answered by measurement rather than
+assertion. Acquisition and content routing hold at the scale we tested, while
+21% of submitted papers failed to parse and were rejected rather than stored
+(RQ2). Staged, multi-channel retrieval with content adjudication reaches
+documents that one-shot vector top-k misses, and the benefit comes from
+staged recall plus content verification, not from the fusion of the two retrieval
+stages (RQ3). Verification costs well under a second and buys per-citation
+provenance, but as an ordering it inherits a same-domain blind spot that
+we quantify and partially repair; the failure tracks confuser density rather
+than the checkpoint, domain, language or scale (RQ4). Honest abstention
+lives in the reading and answering layer, never in the threshold, end-to-end
+latency belongs to model turns, and engine choice moves cost by two orders
+of magnitude at the same quality tier (RQ5).
+
+                                               51
+    The roadmap follows from the same ledger. Verifier calibration against
+per-library null distributions, trained evidence-verification models, and the
+verdict-as-filter role that the tool layer already supports are the immediate
+next steps; larger-corpus evaluation with an author-independent question set,
+consumer-side evidence that not-found reports serve their readers, and lane
+auto-selection from query shape are the open empirical ones. The direction
+is towards retrieval systems whose trustworthiness is an inspectable property
+of the pipeline rather than a hope about the model.
+
+Data availability
+
+    The platform source code, the acquisition and organization campaign logs,
+the tool-layer and agentic experiment scripts, the gold question set with fact
+markers, the paraphrase grid, the leave-one-out margin replay, the second-
+signal and span-level NLI replays, the graded abstention probes, the cross-
+lingual acquisition results, the gate and partition ablation runs, and all raw
+per-run JSON logs (tool-layer retrieval rows and agentic transcripts, includ-
+ing the timeout re-runs) are available at https://github.com/kingdol666/
+rag-knowledge (benchmark suite: benchmark-suite/; paper artifacts and
+evidence inventories: paper-kbs/).
+
+Ethics statement
+
+    This article does not report studies involving human participants, human
+data, or animals.
+
+Declaration of generative AI in the writing process
+
+    During the preparation of this work the authors used LLM-based coding
+agents to assist with experiment execution, data tabulation, figure prepa-
+ration, and manuscript drafting. All experimental numbers originate from
+logged runs of the deployed system on the authors' machine; the authors
+reviewed and take full responsibility for the content of the published article.
+
+Declaration of competing interest
+
+    The authors declare that they have no known competing financial inter-
+ests or personal relationships that could have appeared to influence the work
+reported in this paper.
+
+                                               52
+Author contributions (CRediT)
+
+    Author 1: Conceptualization, Methodology, Software, Investigation,
+Data curation, Writing ­ original draft. Author 2: Validation, Writing
+­ review & editing, Supervision.
+
+Acknowledgments
+
+    This research did not receive any specific grant from funding agencies in
+the public, commercial, or not-for-profit sectors.
+
+Appendix A. Per-question tool-layer results
+
+    Table A.1 breaks the tool-layer comparison down to individual questions:
+the best gold rank each configuration reached in its top-5 window, for every
+gold-annotated question. Reading the columns side by side localizes every
+aggregate number in the paper: BM25 and RRF miss at most one question
+(Q16's confuser family and Q7's telemetry cluster account for the remaining
+sub-1.0 MRRs); the judged hybrid's nine misses are exactly the questions
+where same-domain confusers outranked the gold (Q2, Q4, Q5, Q6, Q8, Q9,
+Q11, Q12) or crowded it out upstream (Q16); and judge-as-filter restores the
+gold on every one of the eight judging losses while inheriting Q16's upstream
+failure -- the decomposition that Fig. 4(b) aggregates and Fig. 8 dissects one
+query at a time.
+
+References
+
+ [1] Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni,
+      Vladimir Karpukhin, Naman Goyal, Heinrich Küttler, Mike Lewis,
+      Wen-tau Yih, Tim Rocktäschel, Sebastian Riedel, and Douwe
+      Kiela. Retrieval-augmented generation for knowledge-intensive
+      NLP tasks. In Advances in Neural Information Processing Sys-
+      tems, volume 33, pages 9459­9474. Curran Associates, Inc.,
+      2020. URL https://proceedings.neurips.cc/paper/2020/hash/
+      6b493230205f780e1bc26945df7481e5-Abstract.html.
+
+ [2] Vladimir Karpukhin, Barlas Ouz, Sewon Min, Patrick Lewis, Ledell
+      Wu, Sergey Edunov, Danqi Chen, and Wen-tau Yih. Dense passage
+      retrieval for open-domain question answering. In Proceedings of the
+
+                                               53
+    2020 Conference on Empirical Methods in Natural Language Processing
+    (EMNLP), pages 6769­6781, 2020. doi: 10.18653/v1/2020.emnlp-main.
+    550. URL https://aclanthology.org/2020.emnlp-main.550/.
+
+[3] Model Context Protocol Contributors. Model context proto-
+    col specification (2025-11-25). https://modelcontextprotocol.io/
+    specification/2025-11-25, 2025. Accessed September 19, 2026; spec-
+    ification revision 2025-11-25.
+
+[4] Aditi Singh, Abul Ehtesham, Saket Kumar, Tala Talaei Khoei, and
+    Athanasios V. Vasilakos. Agentic retrieval-augmented generation: A
+    survey on agentic RAG. arXiv preprint arXiv:2501.09136, 2025. doi:
+    10.48550/arXiv.2501.09136.
+
+[5] Yue Zhang, Yafu Li, Leyang Cui, Deng Cai, Lemao Liu, Tingchen Fu,
+    Xinting Huang, Enbo Zhao, Yu Zhang, Chen Xu, Yulong Chen, Longyue
+    Wang, Anh Tuan Luu, Wei Bi, Freda Shi, and Shuming Shi. Siren's song
+    in the AI ocean: A survey on hallucination in large language models.
+    arXiv preprint arXiv:2309.01219, 2023. URL https://arxiv.org/abs/
+    2309.01219.
+
+[6] Yunfan Gao, Yun Xiong, Xinyu Gao, et al. Retrieval-augmented
+    generation for large language models: A survey. arXiv preprint
+    arXiv:2312.10997, 2023.
+
+[7] Bin Wang, Chao Xu, Xiaomeng Zhao, Linke Ouyang, Fan Wu, Zhiyuan
+    Zhao, Rui Xu, Kaiwen Liu, Yuan Qu, Fukai Shang, Bo Zhang, Liqun
+    Wei, Zhihao Sui, Wei Li, Botian Shi, Yu Qiao, Dahua Lin, and Conghui
+    He. MinerU: An open-source solution for precise document content ex-
+    traction. arXiv preprint arXiv:2409.18839, 2024. doi: 10.48550/arXiv.
+    2409.18839. URL https://arxiv.org/abs/2409.18839.
+
+[8] Author Name. QDCVR: Content-routed organization and layered agent
+    retrieval with inspectable evidence. In Proc. of the 35th ACM Interna-
+    tional Conference on Information and Knowledge Management (CIKM
+    '26), Demo Track, 2026. To appear.
+
+[9] Sören Auer, Christian Bizer, Georgi Kobilarov, Jens Lehmann, Richard
+    Cyganiak, and Zachary Ives. DBpedia: A nucleus for a web of open
+    data. In The Semantic Web (ISWC/ASWC 2007), Lecture Notes
+
+                                              54
+      in Computer Science, pages 722­735. Springer, 2007. doi: 10.1007/
+      978-3-540-76298-0_52.
+
+[10] Johannes Hoffart, Fabian M. Suchanek, Klaus Berberich, and Gerhard
+      Weikum. YAGO2: A spatially and temporally enhanced knowledge base
+      from Wikipedia. Artificial Intelligence, 194:28­61, 2013. doi: 10.1016/
+      j.artint.2012.06.001.
+
+[11] Tero Päivärinta and Bjørn Erik Munkvold. Enterprise content man-
+      agement: An integrated perspective on information management. In
+      Proc. 38th Annual Hawaii International Conference on System Sciences
+      (HICSS), pages 96­96. IEEE, 2005. doi: 10.1109/hicss.2005.244.
+
+[12] Pasi Tyrväinen, Tero Päivärinta, Airi Salminen, and Juhani Iivari.
+      Characterizing the evolving research on enterprise content management.
+      European Journal of Information Systems, 15(6):627­634, 2006. doi:
+      10.1057/palgrave.ejis.3000648.
+
+[13] Ikujiro Nonaka. A dynamic theory of organizational knowledge creation.
+      Organization Science, 5(1):14­37, 1994. doi: 10.1287/orsc.5.1.14.
+
+[14] Ikujiro Nonaka, Ryoko Toyama, and Noboru Konno. SECI, Ba and
+      leadership: a unified model of dynamic knowledge creation. Long Range
+      Planning, 33(1):5­34, 2000. doi: 10.1016/s0024-6301(99)00115-6.
+
+[15] Jung-Ran Park. Metadata quality in digital repositories: A survey of
+      the current state of the art. Cataloging & Classification Quarterly, 47
+      (3-4):213­228, 2009. doi: 10.1080/01639370902737240.
+
+[16] Scott A. Golder and Bernardo A. Huberman. Usage patterns of collabo-
+      rative tagging systems. Journal of Information Science, 32(2):198­208,
+      2006. doi: 10.1177/0165551506062337.
+
+[17] Eduardo Mosqueira-Rey, Elena Hernández-Pereira, David Alonso-Ríos,
+      José Bobes-Bascarán, and Ángel Fernández-Leal. Human-in-the-loop
+      machine learning: a state of the art. Artificial Intelligence Review, 56
+      (4):3005­3054, 2022. doi: 10.1007/s10462-022-10246-w.
+
+[18] Alejandro Barredo Arrieta, Natalia Díaz-Rodríguez, Javier Del Ser,
+      Adrien Bennetot, Siham Tabik, Alberto Barbado, Salvador Garcia, Ser-
+      gio Gil-Lopez, Daniel Molina, Richard Benjamins, Raja Chatila, and
+
+                                               55
+      Francisco Herrera. Explainable artificial intelligence (XAI): Concepts,
+      taxonomies, opportunities and challenges toward responsible AI. Infor-
+      mation Fusion, 58:82­115, 2020. doi: 10.1016/j.inffus.2019.12.012.
+
+[19] Xu Zhong, Jianbin Tang, and Antonio Jimeno Yepes. PubLayNet:
+      Largest dataset ever for document layout analysis. In 2019 Interna-
+      tional Conference on Document Analysis and Recognition (ICDAR),
+      pages 1015­1022. IEEE, 2019. doi: 10.1109/icdar.2019.00166.
+
+[20] Yupan Huang, Tengchao Lv, Lei Cui, Yutong Lu, and Furu Wei. Lay-
+      outLMv3: Pre-training for document AI with unified text and image
+      masking. In Proc. 30th ACM International Conference on Multimedia
+      (MM '22), pages 4083­4091. ACM, 2022. doi: 10.1145/3503161.3548112.
+
+[21] Gurmeet Singh Manku, Arvind Jain, and Anish Das Sarma. Detecting
+      near-duplicates for web crawling. In Proc. 16th International Conference
+      on World Wide Web (WWW '07), pages 141­150. ACM, 2007. doi:
+      10.1145/1242572.1242592.
+
+[22] Paolo Missier, Khalid Belhajjame, and James Cheney. The W3C
+      PROV family of specifications for modelling provenance metadata. In
+      Proc. 16th International Conference on Extending Database Technology
+      (EDBT/ICDT '13), pages 773­776. ACM, 2013. doi: 10.1145/2452376.
+      2452478.
+
+[23] James Cheney, Laura Chiticariu, and Wang-Chiew Tan. Provenance in
+      databases: Why, how, and where. Foundations and Trends in Databases,
+      1(4):379­474, 2009. doi: 10.1561/1900000006.
+
+[24] Jianlyu Chen, Shitao Xiao, Peitian Zhang, Kun Luo, Defu Lian, and
+      Zheng Liu. M3-Embedding: Multi-linguality, multi-functionality, multi-
+      granularity text embeddings through self-knowledge distillation. In
+      Findings of the Association for Computational Linguistics: ACL 2024,
+      pages 2318­2335. Association for Computational Linguistics, 2024. doi:
+      10.18653/v1/2024.findings-acl.137. URL https://aclanthology.org/
+      2024.findings-acl.137/.
+
+[25] Stephen Robertson and Hugo Zaragoza. The probabilistic relevance
+      framework: BM25 and beyond. Foundations and Trends in Information
+      Retrieval, 3(4):333­389, 2009.
+
+                                               56
+[26] Gordon V. Cormack, Charles L. A. Clarke, and Stefan Buettcher. Recip-
+      rocal rank fusion outperforms Condorcet and individual rank learning
+      methods. In Proceedings of the 32nd International ACM SIGIR Con-
+      ference on Research and Development in Information Retrieval, pages
+      759­760, 2009. doi: 10.1145/1571941.1572114.
+
+[27] Nick Craswell, Bhaskar Mitra, Emine Yilmaz, Daniel Campos, and
+      Jimmy Lin. MS MARCO: Benchmarking ranking models in the large-
+      data regime. In Proc. 44th International ACM SIGIR Conference (SI-
+      GIR '21), pages 1566­1576. ACM, 2021. doi: 10.1145/3404835.3462804.
+
+[28] Kalervo Järvelin and Jaana Kekäläinen. Cumulated gain-based evalua-
+      tion of IR techniques. ACM Transactions on Information Systems, 20
+      (4):422­446, 2002. doi: 10.1145/582415.582418.
+
+[29] Chroma. Chroma: The AI-native open-source embedding database.
+      https://www.trychroma.com (accessed 2026-09-18), 2026.
+
+[30] Yu A. Malkov and Dmitry A. Yashunin. Efficient and robust approx-
+      imate nearest neighbor search using hierarchical navigable small world
+      graphs. IEEE Transactions on Pattern Analysis and Machine Intelli-
+      gence, 42(4):824­836, 2020. doi: 10.1109/TPAMI.2018.2889473.
+
+[31] Darren Edge, Ha Trinh, Newman Cheng, Joshua Bradley, Alex Chao,
+      Apurva Mody, Steven Truitt, Dasha Metropolitansky, Robert Os-
+      azuwa Ness, and Jonathan Larson. From local to global: A
+      GraphRAG approach to query-focused summarization. arXiv preprint
+      arXiv:2404.16130, 2024. URL https://arxiv.org/abs/2404.16130.
+
+[32] Zirui Guo, Lianghao Xia, Yanhua Yu, Tu Ao, and Chao Huang. Ligh-
+      tRAG: Simple and fast retrieval-augmented generation. arXiv preprint
+      arXiv:2410.05779, 2024.
+
+[33] Parth Sarthi, Salman Abdullah, Aditi Tuli, Shubh Khanna, Anna
+      Goldie, and Christopher D. Manning. RAPTOR: Recursive abstrac-
+      tive processing for tree-organized retrieval. In The Twelfth International
+      Conference on Learning Representations (ICLR), 2024.
+
+[34] Quan Wang, Zhendong Mao, Bin Wang, and Li Guo. Knowledge graph
+      embedding: A survey of approaches and applications. IEEE Transac-
+
+                                               57
+      tions on Knowledge and Data Engineering, 29(12):2724­2743, 2017. doi:
+      10.1109/tkde.2017.2754499.
+
+[35] Shaoxiong Ji, Shirui Pan, Erik Cambria, Pekka Marttinen, and Philip S.
+      Yu. A survey on knowledge graphs: Representation, acquisition, and
+      applications. IEEE Transactions on Neural Networks and Learning Sys-
+      tems, 33(2):494­514, 2022. doi: 10.1109/tnnls.2021.3070843.
+
+[36] Neo4j, Inc. Neo4j graph database. https://neo4j.com (accessed 2026-
+      09-18), 2026.
+
+[37] Akari Asai, Zeqiu Wu, Yizhong Wang, Avirup Sil, and Hannaneh Ha-
+      jishirzi. Self-RAG: Learning to retrieve, generate, and critique through
+      self-reflection. In The Twelfth International Conference on Learning
+      Representations (ICLR), 2024. URL https://openreview.net/forum?
+      id=hSyW5go0v8.
+
+[38] Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, and Zhen-Hua Ling. Corrective
+      retrieval augmented generation. arXiv preprint arXiv:2401.15884, 2024.
+      doi: 10.48550/arXiv.2401.15884. URL https://arxiv.org/abs/2401.
+      15884v3.
+
+[39] Zhengbao Jiang, Frank Xu, Luyu Gao, Zhiqing Sun, Qian Liu, Jane
+      Dwivedi-Yu, Yiming Yang, Jamie Callan, and Graham Neubig. Active
+      retrieval augmented generation. In Proceedings of the 2023 Conference
+      on Empirical Methods in Natural Language Processing (EMNLP), pages
+      7969­7992, 2023. doi: 10.18653/v1/2023.emnlp-main.495. URL https:
+      //aclanthology.org/2023.emnlp-main.495/.
+
+[40] Amita Kamath, Robin Jia, and Percy Liang. Selective question an-
+      swering under domain shift. In Proceedings of the 58th Annual Meet-
+      ing of the Association for Computational Linguistics (ACL), pages
+      5684­5696, 2020. doi: 10.18653/v1/2020.acl-main.503. URL https:
+      //aclanthology.org/2020.acl-main.503/.
+
+[41] Chengshuai Zhao, Riccardo De Maria, Tharindu Kumarage, Ku-
+      mar Satvik Chaudhary, Garima Agrawal, Yiwen Li, Jongchan Park,
+      Ying-Chih Chen, Yuli Deng, and Huan Liu. CyberBOT: Ontology-
+      grounded retrieval augmented generation for reliable cybersecurity ed-
+      ucation. In Proceedings of the 34th ACM International Conference on
+
+                                               58
+      Information and Knowledge Management, pages 6752­6756. Association
+      for Computing Machinery, 2025. doi: 10.1145/3746252.3761478. URL
+      https://doi.org/10.1145/3746252.3761478.
+
+[42] Nelson F. Liu, Tianyi Zhang, and Percy Liang. Evaluating verifiability
+      in generative search engines. In Findings of the Association for Compu-
+      tational Linguistics: EMNLP 2023, 2023.
+
+[43] Tianyu Gao, Howard Yen, Jiatong Yu, and Danqi Chen. Enabling large
+      language models to generate text with citations. In Proceedings of the
+      2023 Conference on Empirical Methods in Natural Language Processing
+      (EMNLP), 2023.
+
+[44] Laya. Model card, https://huggingface.co/convaiinnovations/
+      laya, 2025. Locally hosted decision model, used in this work as the
+      content-verification judge. Accessed 2026-10-08.
+
+[45] Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, et al. Judging LLM-as-
+      a-judge with MT-Bench and Chatbot Arena. In Advances in Neural
+      Information Processing Systems (NeurIPS), volume 36, 2023.
+
+[46] Wei Sun, Lingyao Yan, Xinyu Wang, et al. Is ChatGPT good at search?
+      investigating relevance reasoning with LLM-as-a-judge. In Proceedings
+      of the 2023 Conference on Empirical Methods in Natural Language Pro-
+      cessing (EMNLP), 2023.
+
+[47] Wei Sun, Liang Chen, Xianyu Zhang, et al. Are large language models
+      good at listwise rerankers? In Proceedings of the 47th International
+      ACM SIGIR Conference on Research and Development in Information
+      Retrieval, 2024.
+
+[48] Arjun Panickssery, Samuel R. Bowman, and Shi Feng. LLM evalua-
+      tors recognize and favor their own generations. In Advances in Neural
+      Information Processing Systems (NeurIPS), volume 37, 2024.
+
+[49] Hunter Lightman, Vineet Kosaraju, Yura Burda, et al. Let's verify step
+      by step. In The Twelfth International Conference on Learning Repre-
+      sentations (ICLR), 2024.
+
+                                               59
+[50] Zhangyue Yin, Qiushi Sun, Qipeng Guo, et al. Do large language mod-
+      els know what they don't know? In Findings of the Association for
+      Computational Linguistics: ACL 2023, 2023.
+
+[51] Shangbin Feng, Weijia Shi, Yike Wang, et al. Don't hallucinate, ab-
+      stain: Identifying LLM knowledge gaps via multi-LLM collaboration.
+      In Proceedings of the 62nd Annual Meeting of the Association for Com-
+      putational Linguistics (ACL), 2024.
+
+[52] Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik
+      Narasimhan, and Yuan Cao. ReAct: Synergizing reasoning and acting in
+      language models. In The Eleventh International Conference on Learning
+      Representations (ICLR), 2023.
+
+[53] Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, Roberta Raileanu, Maria
+      Lomeli, Eric Hambro, Luke Zettlemoyer, Nicola Cancedda, and Thomas
+      Scialom. Toolformer: Language models can teach themselves to use
+      tools. In Advances in Neural Information Processing Systems, vol-
+      ume 36, 2023.
+
+[54] Yunfan Gao, Yun Xiong, Kang Wang, et al. Modular RAG: Trans-
+      forming RAG systems into LEGO-like reconfigurable frameworks. arXiv
+      preprint arXiv:2402.19473, 2024.
+
+[55] Zhanli Li, Huiwen Tian, Lvzhou Luo, Yixuan Cao, and Ping Luo. Deep-
+      Read: Document structure-aware reasoning to enhance agentic search.
+      arXiv preprint arXiv:2602.05014v3, 2026. doi: 10.48550/arXiv.2602.
+      05014. URL https://arxiv.org/abs/2602.05014v3.
+
+[56] Yuming Xu, Hengyu Liang, Jin Li, Shuotao Xu, Qi Chen, Qianxi Zhang,
+      Cheng Li, Ziyue Yang, Fan Yang, Yuqing Yang, Peng Cheng, and
+      Mao Yang. SPFresh: Incremental in-place update for billion-scale vec-
+      tor search. In Proc. 29th Symposium on Operating Systems Principles
+      (SOSP '23), pages 545­561. ACM, 2023. doi: 10.1145/3600006.3613166.
+
+[57] jieba: Chinese text segmentation. https://github.com/fxsjy/jieba,
+      2020. Accessed 2026-10-08.
+
+[58] Shahul Es, Jithin James, Luis Espinosa Anke, and Steven Schockaert.
+      RAGAs: Automated evaluation of retrieval augmented generation. In
+
+                                               60
+      Proc. 18th Conference of the European Chapter of the ACL: System
+      Demonstrations, pages 150­158. ACL, 2024. doi: 10.18653/v1/2024.
+      eacl-demo.16.
+[59] Jon Saad-Falcon, Omar Khattab, Christopher Potts, and Matei Zaharia.
+      ARES: An automated evaluation framework for retrieval-augmented
+      generation systems. In Proc. 2024 Conference of the North American
+      Chapter of the ACL: Human Language Technologies (Vol. 1: Long Pa-
+      pers), pages 338­354. ACL, 2024. doi: 10.18653/v1/2024.naacl-long.20.
+
+                                               61
+   Ingestion                      Clients                                                (REHSTTTP+ASPSIE)                                                         (raCgLcItl)                  (ClaMuCdPe c&lieangtesnts)
+(PDF/UOpffliocaed/scan)
+                                         (WNuexbtU3I)
+  MinPearUrseOCR
+ aSgeemnat-nptliacnsnpeldit,      Agentic orchestration (chat API)                       pert-ularnnLaebnuteodogglaewttihn6ig0te0lissts,                                        on1Re2edtMerileCevPgaacltaseludlsbr-peaetgrrieetnavtsekr,
+  >30 k chars                        (o1m4 phC,ahCranlateusedsnega,idnAaeCpsPte, r.s..)
+ +Codnetsecnritpttaiognss
+ vect+oInrBd+Me2xg5raph           Retrieval lanes (Section 4)                                                                                                                   mseinrggLeleansjeuedrCvgeeHr-yscibduretidcraelal:d
+rePtroiestv-acboinlidtyitigoante      quecriytarteLiowannr-ieotenAlySjdeueadnrgcsihnegtogpa-t3e0 fallback(ca6tarleofgsL/baansteccahBn) Librrreoaaurdtiaesnurvjuivdogres
+
+                                  MCP tool layer -- kb-mcp server (97 tools in 8 groups)
+
+                                  se(a4r)ch  g(r1a1p)h                     jud(1g)ing exp(e2r5ie)nce S(O22U)L                                                      pinagrseest(9&) cyKcBleli(fe1-2) fs(/1t3a)gs
+
+                                  DoCmhVHareoNicnmStosWareDrscBveoirpcsveienicsre-eK(FBastAPI)BMdTw2e5nos-+setagregrafeipnhe      GDraoNpceh/oKs4Bej/rT5vaigce       Experience                 rerusLbidareyicnaptjruwodotgorekceorl,
+                                                                                                                                                                   +vearusitoon-seudmcmasaersy
+
+                                  mTerMetaeadrfkaildteaoswryensgti+esmtry  perC-KhBrocmolaleDcBtion                               BRENELeLOoAN4TGjES5D_._2TT0OO /  jieBbMa2i5nvinedrteexd,      LaMyBaoGdcEeh-leMcca3kcp+hoeint
+                                                                           BGE-M3 1024-d                                                                            incremental
+                                                                                         Solid arrows: runtime call path; the ingestion pipeline feeds all four stores.
+
+Figure 1: QDCVR architecture. Documents enter through the acquisition
+pipeline (left) and are parsed, quality-gated, split, described and indexed into four
+stores. At run time (right), clients and external agent harnesses reach the platform
+through the chat endpoint, which attaches a lane policy; the policy is enforced
+against the MCP tool layer, whose 95 tools call domain services that operate the
+storage engines. All retrieval lanes terminate at the content-verification gate, and a
+lane that survives no candidate returns an explicit not-found report. Organization
+and life-cycle management (bottom) maintain agreement between the tree registry,
+the document files and the library metadata.
+
+                                                                                                                              62
+Table 7: Library and document lifecycle operations, their consistency obligation,
+and the state observed in the acceptance campaign. "Audited" means the three
+stores were compared after the operation.
+
+Operation        Interface               Obligation        Observed
+Create library   library create
+                                         tree + metadata   audited
+Rename or move document move             + directory
+document                                 path updated in   audited; stale seg-
+                                         all three stores  ments until force re-
+Update descrip- document update                            index
+tion or tags                             metadata          audited (165/165)
+                                         rewritten,
+Update content document update           body re-checked   re-index not im-
+                                         new hash, re-     plicit
+Delete document document delete          index required    audited (1  0)
+                                         removal from all
+Batch delete     batch delete            three stores      1/1 in campaign
+                                         per-document
+Move library     library move            verification      audited (0  1)
+                                         subtree and
+Merge libraries  library merge           metadata move     demonstrated, not
+Split library    library split           together          controlled
+Rebuild index    re-index (task id)      provenance pre-   analysed, deliber-
+                                         served            ately not executed
+                                         no part or-       18  9 after force
+                                         phaned
+                                         segment count
+                                         matches content
+
+                                     63
+Table 8: Experience credibility tiers and modifiers. Tiers combine retrieval score,
+content-verification score, ratings and review count; modifiers cap the tier rather
+than promote it.
+
+Tier          Condition                                                         Effect
+
+P0 strong     sim  0.65  content  6  rating  4  reviews  1                      may be presented first
+P1 reference  sim  0.45  content  4                                             presented with credibility noted
+P2 weak       sim  0.35  content  3                                             suppressed unless expanded
+discard       content verification fails or sim < 0.35                          never presented
+
+disputed      reviews  3  rating < 2.0                                          capped at P2
+                                                                                capped at P1
+unvetted      0 reviews  0 applications                                         capped at P1 until applied twice
+                                                                                rated  4
+auto-extracted not human-reviewed
+
+Table 9: The three lanes as operating points. Measured figures are the round-1
+agentic runs of Section 8.6. All three share one verification gate and one honesty
+contract; they differ only in retrieval affordance and budget.
+
+Lane          Optimises for             Tool budget   Measured (round Use when
+                                                      1)
+
+A. Search     latency on pinned         20-turn cap   6­8 turns;  interactive default;
+B. Librarian  libraries                               70­165 s    single-library questions
+              exhaustive recall across  hard 12-call  5­6 turns;  must-not-miss;
+              all libraries             budget        54­91 s     enumeration questions;
+                                                                  no library pinned
+C. Hybrid     single-call server-side exactly 1 call  3­5 turns;  fastest grounded
+              orchestration                           36­70 s     answer; latency-critical
+
+                                        64
+                                                                                 User query (natural language)
+
+fast veLcatonre+Av--erSifeicaartcihon gate                                           hieLraanrechBic--al Lniabvraigraiatnion                                                    servLear-nseidCe --orcHhyebsrtirdation
+
+esxupbejreiecnt c×Ae0-afitQrtsruitbefuorytrerine×cwicdroietnensttrqauienrtise;s  kBbd0_e­lsiBsct1ripCtpiaoetnar-slsohagree+lfcddlaoeicsmucmsri,pentnioottnlfiasstccitansng;  vect(oornCte1opMD-C3uP0acl-alcallan,teaallcloasgnekdrveideyarw-tsoeirdsde)rank
+
+kpbe_r-sdeoacrAcdh1e_dvDueepcnteos,erctrwooipsds-e3--K0nB,ettbharl0a.n3c5e,      literal/sBee2nmuQmanuetericrayt-ioshnjuadpgeminraogcuphtaiinntghe scan;                     (kb, docc)adCne2ddiudMpaeetre;g_aecga+rpece=adp1d2ocs first;
+
+kb_telAaxy2ta; _sJujcudodgrgeinengbegavatectrheo(vce6itr;ersu-oelenrvslyevrreefrefdsti)cchtes b0a.t3chenu6mreeBrfas3t;iotJhunrd;egfsaihnilog-cldgloa0st.ee5dsoenmearnrotircs/ tLoapy-5a fvloeCor3dr;icJcutrsdo;gsksee-de+pomrealabinteivsaetn-cc0hu.ot1r5gwuiatrhd
+
+     coonnlyfidveeArni3cfieeEdPv0pid/aPes1ns/acPeg2eppsaercrekctuitranteiodn;    kb_d(osBco4_ur­reBca5eds,Rce2oa0nd0fi0sduecrnhvcaiveros,;rbsflii+vnedr-epspaporotrttsre) port 200w0itchCh4paerFsr-ucelilat-atcethixotnreglaarnoduetno+dpes-d5coarneswer
+
+     zero survivors  escalate to Lane B Hone(tsetrnmoitn-afolusntadtere)port still empty  not-found
+
+Figure 2: The three retrieval lanes. Every lane ends at the same content-
+verification gate and the same honesty contract: zero verified evidence escalates
+(Lane AB) or terminates in an explicit not-found report.
+
+    (a) Effectiveness                                                                                                                                                        (b) Latency (42 docs, 5 KBs)
+1.0
+Score (mean over 16 questions)                                                                                    100                                                                                           0.54 s
+                                                                           Mean latency per query (s, log scale)
+0.8
+
+0.6                                                                                                               10-1                                                                       68 ms 77 ms 62 ms
+
+0.4                                                                                                               10-2                                                       18.0 ms11.0 ms
+
+0.2  Hit@5 Recall@5 MRR                                                                                           10-3 1.0 ms
+
+0.0  BM25 Dense RRF Graph sTtwaog-e Fusion QDCHVR-                                                                         BM25 Dense RRF Graph sTtwaog-e FusionQDCHVR-
+
+Figure 3: Tool-layer retrieval over the 42-document production corpus (sixteen
+gold questions, top-5 document lists). Lexical retrieval is strong on this corpus:
+BM25 reaches Hit@5 1.00. The judged hybrid loses more than half of its top-5 hits
+(0.44); placing the same verdicts in a filter role recovers the fusion result (0.94)
+because the verdicts were not wrong about which documents are evidence, only
+about their order.
+
+                                                                                 65
+Table 10: Gold-annotated question set over the five production knowledge bases.
+"Gold" lists unique filename fragments of the ground-truth documents. All sixteen
+questions serve the tool-layer experiment; Q2, Q4, Q6, Q7 also serve the agentic
+experiment.
+
+# Question (abridged, translated)       Gold document(s)                  Design intent
+
+Q1 EVA encapsulation film lamination: how EVA process essentials; EVA multi-gold
+
+to set the temperature, pressure and time hydro-thermal aging mecha-
+
+window; how to control cure degree      nism
+
+Q2 EL inspection shows edge delamination: EL-2025-0317 delamination incident  RCA
+
+root cause and corrective actions       RCA report
+
+Q3 Why does humid aging of EVA generate EVA hydro-thermal aging mechanism
+
+acetic acid and corrode ribbons; moisture mechanism
+
+transport mechanism
+
+Q4 Moisture-barrier behavior of POE encap- POE process essentials         cross-material
+
+sulant; lamination differences vs. EVA
+
+Q5 Summer power drop at a PV plant: sys- Power-drop troubleshooting synonym gap ("drop"
+
+tematic troubleshooting order           manual; O&M lessons               vs. "plunge")
+
+Q6 Trigger condition, nominal value and tol- Watch-clause  document numeric exactness
+
+       erance of the line-1027 part weight alarm (31.35 g ±0.05 g, 5 min)
+Q7 Melt temperature fell 206180C on ex- TC0 dead-loop RCA revision confuser density
+
+truder line 1: final root-cause verdict (among 20 telemetry dups)
+
+Q8 PET biaxial stretching process flow and PET process regulation         plain factual
+
+critical temperature ranges
+
+Q9 Frequent inverter alarm trips: handling Inverter alarm handling man- PV O&M family
+
+steps                                   ual
+
+Q10 Hot-spot acceptance criteria and disposal Hot-spot detection and dis- PV O&M family
+
+                                        posal procedure
+
+Q11 String mismatch causes; IV-curve diag- String mismatch analysis PV O&M family
+
+nosis                                   method
+
+Q12 PP cast-film extrusion parameters; chill- PP cast film process regulation plain factual
+
+roll temperature
+
+Q13 Weight closed-loop run1: staircase exci- Weight optimization staircase telemetry cluster
+
+tation design                           record
+
+Q14 FT full-function regression after P0 opti- FT regression test record  telemetry cluster
+
+mization
+
+Q15 Multimodal diagnosis: fusing scalar, vec- Three-modality closed-loop telemetry cluster
+
+tor and image signals                   record
+
+Q16 Post-compensation recovery verification heatdecay092 compensation confuser density
+
+of the heatdecay092 event               verification (among 3 near-dup
+
+                                        incident docs)
+
+                                        66
+Table 11: Acquisition and parsing audit over the 100 submitted arXiv papers.
+Values are asserted by the run scripts from saved artifacts, not hand-counted.
+The content audit samples the first 1,000 characters of each part. Duplicates are
+compared by fingerprint at a 0.90 threshold [21].
+
+             Check                                             Result
+
+             Papers parsed and content-routed                  100/100
+
+             Content-routed libraries                          5
+
+             Stored parts after 30,000-character split         322
+
+             Per-paper ingest checks (nine checks)      100/100 pass
+
+             True duplicates (35 near-duplicate pairs)         0
+
+             Descriptions upgraded                             165/165
+
+             Content audit                                     322/322
+
+             Storage audit                                     33/33
+
+             Retrieval regression probes                       15/15
+
+             Dense replica index (800-character chunks) 4,528 chunks
+
+Table 12: Reorganisation campaign over the 322-document arXiv corpus. The
+three-source spot check samples 33 documents; the description, tag and duplicate
+checks cover the full corpus.
+
+Check                                                   Scale           Result
+
+Metadata consistency (three sources)          322 documents             322/322 pass
+
+Description check                             165 documents             165/165 pass
+
+Tag de-duplication                                  4 groups            4/4 pass
+
+Batch index                                   322 documents             322 indexed
+
+Duplicate adjudication                              35 groups  0 true duplicates
+
+Three-source spot check                33 of 322 documents              33/33 pass
+
+Retrieval regression probes                         15 probes 15/15, no degradation
+
+                                          67
+Table 13: Lifecycle operations exercised on disposable test libraries. Merge and
+split were analysed but never executed.
+
+Operation Observed outcome
+
+Create       Pass, document indexed and retrievable
+
+Rename       Pass, stale chunks remained until forced re-index (18 recorded, 9 expected)
+
+Move         Pass, source 101, target 010
+
+Delete       Pass, batch delete 1/1; both test libraries removed
+
+Re-index     Automatic and batch paths did not purge; pass with force=true (189)
+
+Merge, split Not evaluated
+
+Task status Fail, reports running after finished_at is set
+
+Update check Fail, ragctl version timed out after 30 s
+
+Table 14: Tool-layer retrieval on the 42-document deployed industrial corpus
+(mean over 16 gold-annotated questions; top-5 document lists; latency per call,
+warmed).
+
+Method         Hit@5 Recall@5 MRR@5 Latency (mean) Latency (median)
+
+BM25           1.00 1.00 0.958                0.9 ms               1 ms
+                                              18 ms               17 ms
+Dense (BGE-M3) 0.94 0.94 0.856                11 ms                9 ms
+                                              68 ms               68 ms
+RRF (BM25Dense) 1.00 1.00 0.927               77 ms               40 ms
+                                              62 ms               66 ms
+Graph (Neo4j)  0.56 0.53 0.562                542 ms              582 ms
+
+Two-stage      1.00 0.97 0.927
+
+Fusion-only    0.94 0.94 0.856
+
+QDCVR-Hybrid   0.44 0.41 0.226
+
+Derived (offline, same logged hybrid pools):
+
+Judge-as-filter 0.94 0.94 0.856 542 ms / 582 ms
+
+RRF-fuse       0.88 0.88 0.606 (same single call)
+
+ Derived rows replay the QDCVR-Hybrid run's own logged 12-candidate pools
+and judge scores, so they reuse that call's latency; the judge executes once either
+way.
+
+                            68
+Table 15: Three-mode end-to-end comparison on ten fixed questions over the 100-
+paper arXiv corpus. Grounded : strict arXiv-id citation of the designated paper.
+Key-fact: at least 60% of the fixed gold key facts matched at word boundaries.
+Cited : the answer names a part, section or table. Wall clock and cost are per
+question.
+
+Mode                       Grounded Key-fact Cited Wall clock Cost
+
+Platform (read surface)    10/10                                                             10/10  9/10  116 s        $0.55
+Bare agent (file tools)    10/10                                                             8/10   6/10  48 s         $0.63
+Dense retrieval (replica)  8/10                                                              6/10   1/10  41 s         $0.28
+
+    (a) cut-margin replay                                                                           (b) same pipeline, three verdict roles
+
+golds kept16                                                                             12  1.0 0.94            0.94  0.88
+                                                         mean kept set size (of 12)      11  0.8
+14                                                                                       10
+                                                             Hit@5                       9
+12                                                                                       8   0.6
+                                                                                         7
+10                                                                                 0.35 6    0.4          0.44
+
+8                  s0h.1ip5ped 0.20                                                          0.2
+6 0.05
+        0.10 0.15 0.20 0.25 0.30                                                             0.0
+                                                                                                  (nFoujsuidogne) (rJue-drgaendk) Judfiglteeras fRuRsFe
+         relative cut margin (best - m)
+
+Figure 4: Margin and paraphrase variants over the same 191 logged judged can-
+didate pairs. (a) The relative cut replays the logged pairs with the top-5 floor
+unchanged: the shipped 0.15 margin loses one of seventeen in-pool gold instances,
+a 0.20 floor loses none, and a leave-one-out selection over the other fifteen questions
+lands at 0.9375. (b) Under sixteen paraphrases the judged re-ranking collapses to
+Hit@5 0.50 (MRR 0.189) while the filter repair and dense retrieval hold at 0.9375
+and BM25 falls to 0.875 (MRR 0.755).
+
+                                                                                   69
+                                judged candidates kept (of 12)          dense chunks above 0.35 threshold
+
+                      15.0                                                                    11
+                                                                         9
+                      12.5  11                     11
+
+               count  10.0
+
+                      7.5
+
+                      5.0
+
+                      2.5
+
+                      0.0   lithiruumnatwhaeyrmal  vascchciendautlieon  conPcyuthrroenncy  mdoeldsivgennt
+
+Figure 5: Out-of-corpus probes at the tool layer: for every probe the judged
+hybrid keeps 9­11 of its 12 candidates and dense retrieval passes chunks above
+the 0.35 threshold--the threshold alone never abstains. At the agent layer, all six
+probe runs returned explicit not-found reports with zero fabricated citations.
+
+Table 16: Three engines on one task set (18 runs; artifact:
+review/fulltest-20261012/SUMMARY.md). Cost is per run in USD as me-
+tered by the harness.
+
+Engine (surface)                                   Runs Wall (s) Turns Cost per run
+
+Agent                           surface                7 50.5­175.9 2­9 $0.9­1.8
+                                                       6 23.2­52.4 5­8 $0.11­0.36
+(/api/kb/agent/chat)                                   5 33.5­171.4 2­9 $0.03­0.07
+
+Claude                      harness
+
+(engine=claude)
+
+OMP                         harness
+
+(engine=omp)
+
+Table 17: The 27-run stability suite (three task types × three lanes × three
+rounds).
+
+Task type      Expected behaviour                                                          Outcome
+
+Answerable     correct attention formula                                                   9/9 correct
+Not covered    report that the library holds no such                                       9/9 correct not-found
+               content
+Out of corpus  refusal (the librarian lane stops at the                                    9/9 refusals
+               catalog layer)
+
+                                                       70
+120  (a) Wall time per run (numbers = agent turns)                                                 Hybrid (Lane C)     1.0 (b) Cost vs. groHuynbdrieddnSeeasrsch
+                                                                                                   Bare agent (no KB)
+                                         Search (Lane A)
+                               1Librarian (Lane B)                                                   8
+100         1           6                                                                                53                                   Librarian
+End-to-end wall time (s)6                                                                                              0.8
+                                                                             Citation gold-hit rate              1
+80 6     4           5  5                                                                           TC0 roQo7t cause   0.6
+
+60                                                             5                                                       0.4
+
+40                                                          3     3
+
+20                                                                   1                                                 0.2
+
+0 EL delaQm2ination                                                                                                    0.0
+
+                     POE Qb4arrier                          weighQt6alarm                                                   0  2 Bare ag4ent 6                    8 10
+                                                                                                                               Mean agent turns per run
+
+Figure 6: Agentic runs. (a) Wall time per run; printed numbers are agent turns.
+(b) Citation gold-hit rate vs. mean agent turns (horizontal offsets added for read-
+ability): the hybrid lane reaches fully grounded answers with the fewest turns, the
+librarian lane spends the most turns for exhaustive recall, and the bare agent can-
+not ground citations at all.
+
+                                                       1.0                                         median 0.86
+
+                        Laya evidence-criterion score  0.9                  median 0.88
+
+                                                       0.8        Gold documents
+                                                                  Non-gold survivors
+
+                                                       0.7
+
+                                                       0.6
+
+                                                       0.5                                                              accept threshold 0.5
+                                                                                                                       sNuornv-igvoolrds
+                                                            Gold documents
+
+Figure 7: Evidence-criterion judge scores from the sixteen QDCVR-Hybrid tool
+runs: all 191 judged candidates. Gold documents (green, n = 17; Q16's gold never
+entered its candidate pool) and same-domain non-gold survivors (orange, n = 174)
+overlap almost completely: medians 0.876 versus 0.863, Mann­Whitney p = 0.26.
+The 0.5 acceptance threshold separates both groups from zero, not from each other.
+
+                                                                                                   71
+  (a) Judge as re-ranker (shipped ordering)         PLC telemetry 0.926      (b) Judge as filter (verdicts only)  gold read first (0.846)
+                                                    gonldot0r.8e4a6d
+ 1                                           score order                        top-5 read window
+ 2
+ 3                                                                           fusion rank  (all 12 verdicts fu0si.o5nkoerpdte, rorder untouched)
+ 4
+ 5 top-5 read window
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+
+            fusion rank
+
+gold: EL-2025-0317 delamination RCA report extruder-PLC demo telemetry reports (5) other corpus documents (6)
+
+Figure 8: Anatomy of one real query (Q2; single logged QDCVR-Hybrid call).
+Each line is one of the 12 fused candidates; the green band is the top-5 window
+the answer agent reads in full. (a) The shipped re-ranking: the judge scores five
+extruder-PLC telemetry reports 0.887­0.926 and the gold root-cause report 0.846,
+demoting it from fusion rank 1 to rank 8 -- outside the read window. (b) The same
+call with the verdicts used only as a filter: all 12 pass, the fusion order stands, and
+the gold is the first document read. Same pool, same scores, same verdicts; only
+the role of the induced ordering differs.
+
+                                                                         72
+            (a) paraphrase grid                                                                            (b) NLI anti-separation (medians)
+                                                                                                       1.0
+BM25                                                           0.88
+                                                                                                                                                                                 0.92
+Dense
+                                                                                                       0.8
+                                                                             NLI entailment score
+   RRF                                                         0.88                                    0.6
+2-stage                                                              0.94                                                                                     0.47
+ Fusion
+                                                                                                       0.4
+
+Judged         original0(1.560q)                                                                       0.2
+ Filter        paraphrase (16 q)
+            0.4 0.5 0.6                                                                                0.0              0.01                  0.05
+
+                                             0.7 0.8           0.9 0.94 1.0                                 (hgeoaldd)        (nohne-agdold)        (sgpoaldn)       (nosnp-agnold)
+                                            Hit@5
+
+            (c) second corpus: judged = fusion = filter                                                     (d) graded probes: threshold keeps everything
+
+            1.00                                                                                       14                     partial coverage           absent
+                  0.90
+       1.0                       0.94 0.90               0.90  0.94 0.90                               12 pool1s2ize 12 12
+
+                                                                             candidates kept by judge                         11                    10          11   11
+
+       0.8                                                                                             10
+
+Hit@5  0.6                                                                                             8
+                                                   0.44
+                                                                                                       6
+       0.4
+                                                                                                       4
+
+       0.2  PV corpus (42 docs)                                                                        2
+
+       0.0  arXiv corpus (79 docs)                                                                     0
+
+            BM25                 Fusion     Judged                   Filter                                 PA1         PA2   PA3                   AB1         AB2  AB3
+
+Figure 9: The robustness tier at a glance. (a) Paraphrase grid: per-method Hit@5
+on the original questions (blue) and their paraphrases (orange); BM25's ceiling is
+vocabulary-dependent while dense, fusion, and the filter repair hold. (b) NLI sepa-
+ration over the 191 logged candidates (span scores from 3,489 span inferences): both
+granularities anti-separate -- gold medians sit below non-gold medians. (c) Do-
+main, language, and scale shift to 79 ingested arXiv papers: the judged collapse
+disappears when no same-family confuser clusters exist. (d) Graded abstention
+probes: the threshold keeps 10­12 of 12 candidates in every tier.
+
+                                                                             73
+Table 18: Robustness checks: the question each probe was designed to answer
+and the measured result. All numbers come from released logs.
+
+Check   Question              Result
+
+Cut-margin LOO Is the 0.20 margin an arti- The smallest-margin rule chosen on 15
+
+        fact of selecting on all 16 questions transfers to 15/16 holdouts
+
+        questions?            (miss = Q11, which the shipped 0.15
+
+                              also loses); the deployed 0.20 retains
+
+                              all 16 holdout golds. The +0.02 pad
+
+                              is engineering judgment, not an LOO
+
+                              value.
+
+Paraphrase grid Does the tool layer de- BM25  1.000.88  (MRR
+
+(n=16)  pend on the questions' 0.9580.755); dense 0.94; judged
+
+        vocabulary?           0.50; filter = fusion 0.94. Pooled over
+
+                              32 variants: 15 wins, 0 losses, 17 ties
+
+                              (p < 0.0001). Failure and repair are
+
+                              wording-robust.
+
+Second signal Is inflation specific to the A generic Chinese NLI ranks worse
+
+(NLI)   Laya checkpoint?      (Hit@5 0.31, MRR 0.138;  = -0.13)
+
+                              and anti-separates (gold median 0.011
+
+                              below non-gold 0.053, p = 0.12); out-
+
+                              of-corpus topics still score corpus doc-
+
+                              uments up to 0.997. Naive span-max
+
+                              NLI is worse still (0.19; anti-separation
+
+                              p = 0.007); the rank-fusion ensemble
+
+                              recovers nothing (0.31).
+
+Symbolic check Can rule checks cover The watch value "31.35" appears in the
+
+(Q6)    what model judges miss? gold (1/1) and in no confuser (0/11):
+
+                              the numeric case the judge mishandled
+
+                              is solved by a trivial substring rule.
+
+Graded probes Does the threshold be- No: the threshold keeps 10­12 of 12
+
+(n=6)   have differently between candidates (up to 0.983) in every tier.
+
+        partial and absent cover- Agent layer: scoped disclosures on par-
+
+        age?                  tial probes (one reclassified as covered
+
+                              -- the corpus held a verified rework
+
+                              case); 3/3 absent probes returned ex-
+
+                              plicit not-found.
+
+Second corpus Does the judged collapse No collapse at 79 indexed papers (8,031
+
+(100 arXiv pa- survive a domain, lan- chunks): judged = fusion = filter =
+
+pers)   guage, and scale shift 0.90 (one shared miss -- that gold pa-
+
+        with no confuser clusters? per failed parsing). The loss tracks
+
+                              confuser density, not domain, lan-
+
+                              guage, or size; graph 0.20 without rela-
+
+                              tion tagging (bulk import bypasses it).
+
+                          74
+Table 19: Failure-mode catalogue from production and campaign use: how each
+failure presents, the detection signal, the fix, and the residual risk an adopter still
+carries.
+
+Failure         Presents as          Detection signal Fix / residual risk
+
+Corrupted index "Success, zero re- Treat zero-result Re-index the collec-
+
+segment (silent sults" for one library success as suspect; tion; residual: any
+
+loss)           across lanes         cross-lane census new silent-loss mode
+
+                                                     needs the same trip-
+
+                                                     wire
+
+Out-of-memory Success envelopes Judge success by Memory hygiene
+
+during indexing with empty vector chunk counts, not between embed-
+
+                payloads             envelopes       ding and judging
+
+                                                     workloads; residual:
+
+                                                     other silent trunca-
+
+                                                     tions
+
+Driver contention Embedding latency Latency budget Isolate embedding
+
+(Windows)       68 s  27 min         on the embedding and judging work-
+
+                                     path            loads; on Linux,
+
+                                                     watch VRAM con-
+
+                                                     tention instead
+
+Judge worker cold First judge batch Worker residency Keep the resident
+
+start           stalls 10­12 s       heartbeat       worker warm; resid-
+
+                                                     ual: first-call time-
+
+                                                     outs still fail closed
+
+Un-whitelisted  14­170 s detours per Turn count and Server-side per-lane
+
+harness tools   run                  tool-call audit log whitelists; residual:
+
+                                                     new harnesses need
+
+                                                     new whitelists
+
+Judge or engine er- Wrong or missing Fail-closed rejects Errors reject, never
+
+rors            verdicts             at the gate     pass; residual: avail-
+
+                                                     ability, not correct-
+
+                                                     ness
+
+Rename without Chunk count 18 Three-source audit; Force     re-index;
+
+re-index        where 9 exist; the near-duplicate re- residual: the write
+
+                document matches port                path still cannot
+
+                its own former path                  re-index implicitly
+
+Graph node not A library reports Per-library docu- Rebuild the graph
+
+created         two of three docu- ment count versus for that document;
+
+                ments                graph overview  residual: construc-
+
+                                                     tion is not yet guar-
+
+                                                     anteed by ingestion
+
+Task record out- A finished build still Compare task sta- Query the artifact,
+
+lives its task  reports "running" tus against the ar- not the task; resid-
+
+                                     tifact it was to pro- ual: status is not
+
+                                     duce            completion evidence
+
+                                     75
+Table A.1: Per-question best gold rank (top-5 window; `­' = gold absent) for the
+seven tool-layer pipelines (logged runs) and the two derived configurations (offline
+replay of the same logged QDCVR-Hybrid pools as Fig. 4). Fusion = fusion-only
+(no judge); Hybrid = the shipped QDCVR-Hybrid judged ordering; Filter = judge-
+as-filter. Question numbers and texts: Table 10.
+
+Q BM25 Dense RRF Graph 2-stage Fusion Hybrid Filter RRF-fuse
+
+1  1  1  1  1  1   1  4  1  1
+
+2  1  1  1  ­  1   1  ­  1  1
+
+3  1  1  1  ­  1   1  1  1  1
+
+4  1  1  1  ­  1   1  ­  1  1
+
+5  1  1  1  1  1   1  ­  1  2
+
+6  1  1  1  1  1   1  ­  1  ­
+
+7  3  5  3  ­  3   5  3  5  3
+
+8  1  1  1  1  1   1  ­  1  2
+
+9  1  1  1  1  1   1  ­  1  3
+
+10 1  1  1  1  1   1  3  1  1
+
+11 1  2  1  1  1   2  ­  2  5
+
+12 1  1  1  1  1   1  ­  1  3
+
+13 1  1  1  ­  1   1  2  1  1
+
+14 1  1  1  1  1   1  1  1  1
+
+15 1  1  1  ­  1   1  5  1  2
+
+16 1  ­  2  ­  2   ­  ­  ­  ­
+
+               76
+

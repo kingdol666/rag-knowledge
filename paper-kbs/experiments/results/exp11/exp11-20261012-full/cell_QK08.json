@@ -1,0 +1,205 @@
+{
+ "qid": "QK08",
+ "question": "Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?",
+ "stratum": "crosskb",
+ "field": "climate-science",
+ "gold_docs": [
+  "2409.13934"
+ ],
+ "started": "2026-10-12T05:16:52.368474+00:00",
+ "candidate_stage": {
+  "n_fused": 12,
+  "fusion_trace": {
+   "agreed": 44,
+   "vector_only_pool": 5,
+   "catalog_only_pool": 258,
+   "vector_only_taken": 5,
+   "catalog_only_taken": 4,
+   "fused_before_cap": 53,
+   "fused_after_cap": 12,
+   "candidate_cap": 12
+  },
+  "vector_trace": {
+   "per_lib_hits": {
+    "计算机与人工智能": 30,
+    "自然科学与地球科学": 30,
+    "生命科学与医学": 30,
+    "工程与能源": 30,
+    "经济与社会": 30
+   },
+   "raw_hits": 150,
+   "doc_level": 49,
+   "seconds": 1.9
+  },
+  "catalog_trace": {
+   "per_lib_docs": {
+    "计算机与人工智能": 131,
+    "自然科学与地球科学": 75,
+    "生命科学与医学": 53,
+    "工程与能源": 39,
+    "经济与社会": 24
+   },
+   "catalog_size": 322,
+   "catalog_overlap_gt0": 302,
+   "seconds": 1.4
+  },
+  "fetch_errors": [],
+  "candidate_order": [
+   "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+   "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+   "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+   "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+   "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+   "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+   "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+   "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+   "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+   "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md",
+   "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md"
+  ]
+ },
+ "gold_matchable": true,
+ "gold_parts_in_corpus": 3,
+ "gold_doc_paths": [
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md"
+ ],
+ "judge": {
+  "status": "ok",
+  "real_engine": true,
+  "criterion": "evidence",
+  "threshold": 0.5,
+  "candidate_count": 106,
+  "scored_count": 106,
+  "survivor_count": 91,
+  "docs_with_yes": 12,
+  "evidence_pack_chars": 4001,
+  "fetch_errors": [],
+  "errors": [],
+  "seconds": 14.2
+ },
+ "judge_survivors": [
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+  "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+  "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+  "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+  "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+  "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+  "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md",
+  "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md"
+ ],
+ "arms": {
+  "C-nogate": {
+   "n_docs": 12,
+   "docs": [
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+    "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+    "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient to answer this question. The retrieved chunks from `climate-science__2409.13934__on-the-extrapolation-of-generative-adversari` include only the paper's title/author header (parts 1/3 and 3/3) and a truncated opening of Section 3.2 that cuts off mid-sentence at \"At the 90th perc…\". That truncated fragment names the 90th percentile but never states any comparison between a GAN and a deterministic baseline, nor any explicit threshold percentile beyond which the GAN outperformed it. The remaining evidence (STRAND and the \"No Such Thing as an Index\" chunks) is unrelated to precipitation downscaling. No source in the provided evidence answers the question, so I cannot state a percentile without falling back on prior knowledge.\n\nSources consulted: `climate-science__2409.13934__on-the-extrapolation-of-generative-adversari` (parts 1/3, 2/3, 3/3).",
+   "answer_error": null,
+   "answer_latency_s": 6.0,
+   "tokens": {
+    "input": 996,
+    "output": 213,
+    "cache_read": 48256,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.035606399999999996,
+   "model": null,
+   "grade": 0,
+   "verdict": "refusal",
+   "rationale": "The question is answerable (95th percentile) but the answer declined to answer, so it scores 0 as a refusal on an answerable item.",
+   "grade_latency_s": 8.4
+  },
+  "C-judge": {
+   "n_docs": 12,
+   "docs": [
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+    "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+    "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient to answer this question.\n\nThe retrieved chunks contain the paper's title/authors and the beginning of Section 3.2 (\"Extreme Precipitation Climate Change Signal\"), which mentions a multi-model mean signal at the 50th percentile and cuts off mid-sentence at the \"9 0 t h\" (90th) percentile. No text in the evidence describes a comparison between a GAN and a deterministic baseline, nor any percentile threshold above which the GAN clearly outperformed it.\n\nSources used:\n- `climate-science__2409.13934__on-the-extrapolation-of-generative-adversari` (parts 1/3, 2/3, 3/3) — only the abstract metadata and the truncated opening of Section 3.2 are present.\n\nI cannot fall back on prior knowledge to supply the missing threshold.",
+   "answer_error": null,
+   "answer_latency_s": 6.1,
+   "tokens": {
+    "input": 100,
+    "output": 177,
+    "cache_read": 49152,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.0298054,
+   "model": null,
+   "grade": 0,
+   "verdict": "wrong",
+   "rationale": "The question is answerable (the GAN outperformed the deterministic baseline beyond the 95th percentile), but the answer declared the evidence insufficient, which is incorrect per the gold points.",
+   "grade_latency_s": 2.8
+  },
+  "C-judge-seg": {
+   "n_docs": 12,
+   "docs": [
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+    "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+    "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient to answer precisely. The abstract reports extreme-precipitation results only at the **99.5th percentile** (GANs capture 97% of the warming-driven increase when trained on a future climate vs. 65% for the deterministic baseline; 77% for historically trained GANs), and the Key Points state that deterministic methods underestimate future increases while GANs better capture them — but no percentile threshold above which the GAN \"clearly\" outperforms the baseline is stated in the retrieved text. The phrases \"beyond which percentile\" and any comparison at additional percentiles (e.g., 95th, 99th) do not appear in the provided chunks; only Section 1 (Introduction) and the abstract/summary material were retrieved, not the results section where such a threshold would presumably be given.\n\nSource used: `自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md` (Abstract, Key Points, Plain Language Summary, Section 1).",
+   "answer_error": null,
+   "answer_latency_s": 7.9,
+   "tokens": {
+    "input": 893,
+    "output": 227,
+    "cache_read": 48256,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.0353484,
+   "model": null,
+   "grade": 0,
+   "verdict": "refusal",
+   "rationale": "The question is answerable — the gold point states the GAN clearly outperforms beyond the 95th percentile — but the answer declines to give it, reporting only 99.5th-percentile figures and declaring the evidence insufficient.",
+   "grade_latency_s": 4.6
+  }
+ },
+ "wall_clock_s": 57.9
+}

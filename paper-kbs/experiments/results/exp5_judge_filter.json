@@ -1,0 +1,389 @@
+{
+ "rows": [
+  {
+   "qid": "Q1",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": true,
+    "recall": 0.5,
+    "mrr": 0.25,
+    "best_rank": 4
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "Q2",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "Q3",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "Q4",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "Q5",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.5,
+    "best_rank": 2
+   }
+  },
+  {
+   "qid": "Q6",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   }
+  },
+  {
+   "qid": "Q7",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.3333333333333333,
+    "best_rank": 3
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.2,
+    "best_rank": 5
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.3333333333333333,
+    "best_rank": 3
+   }
+  },
+  {
+   "qid": "Q8",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.5,
+    "best_rank": 2
+   }
+  },
+  {
+   "qid": "Q9",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.3333333333333333,
+    "best_rank": 3
+   }
+  },
+  {
+   "qid": "Q10",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.3333333333333333,
+    "best_rank": 3
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "Q11",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.5,
+    "best_rank": 2
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.2,
+    "best_rank": 5
+   }
+  },
+  {
+   "qid": "Q12",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.3333333333333333,
+    "best_rank": 3
+   }
+  },
+  {
+   "qid": "Q13",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.5,
+    "best_rank": 2
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "Q14",
+   "n_fusion": 12,
+   "n_survivors": 11,
+   "judged": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   }
+  },
+  {
+   "qid": "Q15",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.2,
+    "best_rank": 5
+   },
+   "filter_only": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 1.0,
+    "best_rank": 1
+   },
+   "rrf_fuse": {
+    "hit": true,
+    "recall": 1.0,
+    "mrr": 0.5,
+    "best_rank": 2
+   }
+  },
+  {
+   "qid": "Q16",
+   "n_fusion": 12,
+   "n_survivors": 12,
+   "judged": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "filter_only": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   },
+   "rrf_fuse": {
+    "hit": false,
+    "recall": 0.0,
+    "mrr": 0.0,
+    "best_rank": null
+   }
+  }
+ ],
+ "summary": {
+  "judged": {
+   "hit@5": 0.4375,
+   "recall@5": 0.40625,
+   "mrr": 0.22604166666666667
+  },
+  "filter_only": {
+   "hit@5": 0.9375,
+   "recall@5": 0.9375,
+   "mrr": 0.85625
+  },
+  "rrf_fuse": {
+   "hit@5": 0.875,
+   "recall@5": 0.875,
+   "mrr": 0.60625
+  }
+ }
+}

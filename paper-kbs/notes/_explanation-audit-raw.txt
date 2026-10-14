@@ -1,0 +1,992 @@
+[assistant]
+The system-explanation audit is in — very substantial. It reports 12 prioritized edits with file:line. Note some claims need verification against my knowledge:
+
+1. The "100/100 parsed" vs "21 never retrievable" contradiction — need to check n4:182-184.
+2. `tab:appendixranks` undefined — but my build reported 0 undefined references! The subagent says the PDF prints `??`. My compiled preprint build had "0 undefined" — so this may be stale/wrong, OR the check counted differently. Let me verify: grep n_back.tex for tab:appendixranks and check the aux has the label. Earlier verification said "0 undefined references" and 82 labels. Hmm, I previously fixed float citations. Let me verify this specific one.
+3. Duplicate `\label{tab:org-ops}` — plausible since I moved tables to the appendix (I created tab:org-ops in n_appendix_tables.tex while n5_organization.tex:106 may still define it — but wait, my relocation REMOVED the table from n5? The earlier summary said tab:questions + tab:org-ops came from n8a_eval.tex. Hmm, maybe n5_organization.tex has its own tab:org-ops label. LaTeX would warn "multiply defined labels" — my build reported 0 errors but multiply-defined is a warning; I checked "undefined" count = 0, not duplicate labels. Let me check.
+4. n6:126 `sec:system` wrong ref — verify.
+5. `tree-fs.yml` vs `.tree-fs.json` in n5:38 — verify.
+6. "seven evidence groups" vs eight subsections — verify.
+7. Judge threshold conflict (0.5 vs ≥6/0-8 rubric) — verify.
+8. n8b "nine configurations" but Table 5 shows 7 live + 2 derived — check.
+9. BM25 two-stage lane has no home section — verify n3:92 mention and n6:192 denial.
+10. meditation/enrichment dangling terms.
+
+The audit's claim that the compiled PDF prints `??` for tab:appendixranks directly contradicts my earlier verification (0 undefined). I must check this myself before acting. Possibly the reviewer read a stale PDF/build, or the aux resolves it now.
+
+Let me verify the concrete defect claims quickly with grep:
+- tab:appendixranks label existence
+- duplicate tab:org-ops
+- sec:system in n6
+- .tree-fs.yml in n5
+- "seven evidence groups"
+
+Then plan the work. Note the other two agents are still running (compliance 1a61e89d, evidence freshness 689d6d01, figures 2fc9d4ac).
+
+Meanwhile I should also finish the journal build verification (33 pages, 0 errors, 0 overfull — need to confirm bibitems 0?? "bibitems: 0" is suspicious: the regex `bibitem` counted 0 in main2.log — but the log doesn't list bibitems; that's fine, the count came from the .bbl not the log. Let me instead check the .bbl file and that citations render. Also "undefined: 1" = the natbib 'Author undefined for citation kamath' — I should fix refs.bib's missing author field.
+
+Let me do a batch of verification greps now.
+
+[assistant]
+<acp tokens="35" type="text">m02038</acp>
+The explanation audit landed. Several of its "broken reference" claims contradict my own build verification, so let me check them directly.
+
+[assistant • pwsh]
+{"command":"$tex='D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex'\n\"=== tab:appendixranks (label vs ref) ===\"\nSelect-String -Path \"$tex\\*.tex\" -Pattern 'tab:appendixranks' | ForEach-Object { $_.Filename + ':' + $_.LineNumber + '  ' + $_.Line.Trim() }\n\"`n=== tab:org-ops ===\"\nSelect-String -Path \"$tex\\*.tex\" -Pattern 'tab:org-ops' | ForEach-Object { $_.Filename + ':' + $_.LineNumber + '  ' + $_.Line.Trim() }\n\"`n=== aux label check ===\"\nSelect-String -Path \"$tex\\main2.aux\" -Pattern 'newlabel\\{tab:(appendixranks|org-ops)\\}' | ForEach-Object { $_.Line }\n\"`n=== multiply defined labels in build log ===\"\n$log = Get-Content \"$tex\\main2.log\" -Raw\nif($log -match '(?s)multiply defined'){ \"YES - multiply defined present\" } else { \"none\" }\n\"`n=== sec:system refs ===\"\nSelect-String -Path \"$tex\\n6_retrieval.tex\" -Pattern 'sec:system|tree-fs\\.yml|seven evidence' | ForEach-Object { $_.LineNumber.ToString() + ': ' + $_.Line.Trim() }","description":"Verify audit's reference defect claims"}
+
+[tool • pwsh]
+=== tab:appendixranks (label vs ref) ===
+main.tex:1771  Table~\ref{tab:appendixranks} breaks Table~\ref{tab:retrieval} down to
+n_back.tex:43  Table~\ref{tab:appendixranks} breaks the tool-layer comparison down to
+tab_appendix_ranks.tex:7  \label{tab:appendixranks}
+
+=== tab:org-ops ===
+n8a_eval.tex:91  \textbf{Lifecycle operations.} Table~\ref{tab:org-ops} lists the operations exercised. Create, move, delete and forced re-index behaved as specified: the move left the source library at zero documents and the target at one, and batch deletion removed both disposable test libraries. Two failure modes are worth reporting. The task-status tool reports a task as \texttt{running} after it has finished: the record carries a \texttt{finished\_at} timestamp while the status field still reads \texttt{running}, and the same symptom appeared in the reorganisation graph build, where node reconciliation replaced task polling. The update check timed out after 30\,s (\texttt{ragctl version -{}-json timed out after 30s}, success false) while every other probe in the batch passed; the project-status tool also silently ignores its version flag. Merge and split were never exercised under controlled conditions and we claim nothing about them. These 16 skill scenarios ran against two disposable test libraries in a standalone skill environment; the ingest tools were exercised in E1, not here.
+n_appendix_tables.tex:122  \label{tab:org-ops}
+
+=== aux label check ===
+\newlabel{tab:appendixranks}{{A.1}{62}{Per-question best gold rank (top-5 window; `--' = gold absent) for the seven tool-layer pipelines (logged runs) and the two derived configurations (offline replay of the same logged QDCVR-Hybrid pools as Fig.~\ref {fig:marginvariants}). Fusion = fusion-only (no judge); Hybrid = the shipped QDCVR-Hybrid judged ordering; Filter = judge-as-filter. Question numbers and texts: Table~\ref {tab:questions}}{table.caption.32}{}}
+\newlabel{tab:org-ops}{{B.5}{65}{Lifecycle operations exercised on disposable test libraries. Merge and split were analysed but never executed}{table.caption.36}{}}
+
+=== multiply defined labels in build log ===
+none
+
+=== sec:system refs ===
+127: (Section~\ref{sec:system}) first. Phase A1 issues one wide dense query (top-30,
+
+
+[assistant]
+Verified results:
+
+1. **tab:appendixranks is FINE** — label exists in tab_appendix_ranks.tex:7 and the aux resolves it to A.1 on page 62. The subagent's claim #10 about `??` is **wrong** (it likely looked at an older PDF or misread). Good that I checked.
+
+2. **tab:org-ops duplicate label: FALSE** — n8a_eval.tex:91 is a `\ref`, not a label; the only `\label{tab:org-ops}` is n_appendix_tables.tex:122. So no duplicate. Another wrong claim.
+
+3. **sec:system in n6_retrieval.tex:127** — confirmed: "(Section~\ref{sec:system})" refers to the experience store but points to the overview section. Need to check what `sec:system` is and fix to `sec:org-experience`.
+
+4. tree-fs.yml — not found in n6 (the grep pattern included tree-fs\.yml but only matched line 127 for sec:system; so n5 has it — need to check n5).
+
+So the auditor's defect list is partly unreliable (2 of 4 ref claims false). I must verify each claim before editing. The valuable parts are the structural/coverage gaps (BM25 two-stage lane missing, nine configurations undefined, meditation dangling, threshold conflict, 100/100 vs 21 contradiction), which I should verify too.
+
+Let me verify the remaining high-value claims:
+- n4:182-184 "100/100 parsed and routed by content" vs 21 never retrievable.
+- n6:192 denies two-stage tools; n8b:66 scores two-stage.
+- n8b:82 "nine configurations"; count rows in Table 5.
+- n1:185/n8a:4 "seven evidence groups" vs eight subsections (E8 exists).
+- n6:8 vs n6:68-70 threshold conflict.
+- n7:116-118 meditation / n7:29.
+- n5:38 `.tree-fs.yml`.
+
+Let me grep these.
+
+[assistant • pwsh]
+{"command":"$tex='D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex'\n\"=== 100/100 claim in n4 ===\"\nSelect-String -Path \"$tex\\n4_acquisition.tex\" -Pattern '100/100|100 of 100|100 papers' | ForEach-Object { $_.LineNumber.ToString() + ': ' + $_.Line.Trim() }\n\"`n=== 21 / 79 in n4 and n8a ===\"\nSelect-String -Path \"$tex\\n4_acquisition.tex\",\"$tex\\n8a_eval.tex\",\"$tex\\main2.tex\" -Pattern '21 (papers|of)|21 never|79 papers|never became retrievable' | ForEach-Object { $_.Filename + ':' + $_.LineNumber + '  ' + $_.Line.Trim() }\n\"`n=== .tree-fs.yml vs .json ===\"\nSelect-String -Path \"$tex\\*.tex\" -Pattern 'tree-fs\\.yml' | ForEach-Object { $_.Filename + ':' + $_.LineNumber + '  ' + $_.Line.Trim() }\n\"`n=== seven evidence groups ===\"\nSelect-String -Path \"$tex\\*.tex\" -Pattern 'seven evidence|eight evidence|evidence groups' | ForEach-Object { $_.Filename + ':' + $_.LineNumber + '  ' + $_.Line.Trim() }","description":"Verify contradiction and term claims"}
+
+[tool • pwsh]
+=== 100/100 claim in n4 ===
+182: The 100-paper pipeline audit records the outcome directly---100/100
+184: 100/100, content and storage audits 322/322 and 33/33. What the gates do
+
+=== 21 / 79 in n4 and n8a ===
+n4_acquisition.tex:162  evaluation time, and 21 never became retrievable. The reported failure
+n8a_eval.tex:9  \textbf{Corpora.} (i)~\emph{Deployed industrial corpus}: five knowledge bases in a live deployment hold 42 documents, one of them containing twenty near-duplicate equipment-telemetry reports that share prefixes, vocabulary and structure, a deliberate stressor for near-duplicate detection and confuser density~\cite{manku-near-dup-2007}. Sixteen gold questions and four out-of-corpus probes were run against it. (ii)~\emph{arXiv corpus}: 100 submitted papers spanning about 25 domains; at evaluation time the state file records 91 paper names and 79 papers are retrievable. Content routing placed them in five domain libraries holding 322 stored parts, and ten gold questions (BQ01--BQ10) target books referenced by these papers, keyed by arXiv identifier. The live environment held 19 libraries. (iii)~\emph{Cross-lingual ingestion corpus}: 400 Wikipedia pages per language for English, Chinese and Japanese, with 40 extractive cloze queries per language whose answers occur verbatim in the source page. It is used for ingestion only; we report no retrieval-quality numbers for it.
+n8a_eval.tex:53  \textbf{Accounting gap.} This campaign does not support the claim that all 100 papers became usable, and we do not make it: 100 papers were submitted, the state file \texttt{exp10\allowbreak\_ingest\allowbreak\_state.json} records 91 names, and 79 were retrievable at evaluation time, so 21 papers were never retrievable. The reported failure modes are formula-dense scanned papers, which the parser handled poorly, and one crash of the tool layer during batch parsing that was restarted from a checkpoint. No artifact records a count of attempted against failed papers, and the state file has no per-paper parse status, so we cannot say whether the nine papers missing between submission and the recorded list failed or were never recorded. The absent counter is an observability gap: reconciliation is possible only against the artifacts that survive~\cite{missier-prov-2013}.
+main2.tex:70  papers never became retrievable; the accounting gap between submission,
+
+=== .tree-fs.yml vs .json ===
+n5_organization.tex:38  describe the same collection: the global tree (\texttt{.tree-fs.yml}) is the
+
+=== seven evidence groups ===
+n1_intro.tex:186  evidence groups (RQ4--RQ5).
+
+
+[assistant]
+Verified:
+
+1. **100/100 vs 21 never retrievable — REAL.** n4:182 says "100/100" for the pipeline audit, while n4:162 and n8a:53 say 21 never became retrievable. However, context matters: n4:182 might be about "parsed" (parse success 100/100) vs retrievability (79). The auditor's claim that it reads as a contradiction is fair if the sentence conflates parse with retrievable. Let me read n4:155-190 to judge and fix precisely.
+
+2. **`.tree-fs.yml` in n5_organization.tex:38 — REAL typo** (should be `.tree-fs.json`). Easy fix.
+
+3. **"seven evidence groups" at n1_intro.tex:186** — need to see the sentence; and check whether §8 has 8 subsections (E1..E7 + sec:e8 ablations). If E8 was added as a subsection but the intro still says seven, need reconciliation. Let me read around n1:180-190 and the E-subsection list.
+
+Let me read those two spots plus n4:150-190.
+
+Then decide on edits. The bigger structural items (BM25 two-stage section, nine configurations list, MCP interface table) are substantial writing tasks. Given the user's request — "内容设计是否优秀，是否把整个系统讲述清楚" — the answer must include both an assessment AND fixes. I should implement the highest-leverage fixes.
+
+Plan: I'll implement a set of targeted edits myself (they're delicate), and delegate the bulkier new prose (two-stage lane subsection; configuration definitions; tool interface table) to a subagent? Careful: concurrent editing of the same files risks conflicts. Better: I do the edits sequentially myself, or delegate distinct files to distinct agents.
+
+Since the user asked for (a) template/style compliance, (b) content-design excellence, (c) latest experiments complete — and three agents are already running (compliance, evidence, figures) — let me handle the content edits myself in a focused sequence after reading the relevant passages.
+
+But first, let me check on the running agents' status and continue the journal build checks (kamath bib fix).
+
+Priority now:
+1. Read n4:150-190 (the 100/100 passage) and fix the staged ledger.
+2. Fix `.tree-fs.yml` → `.tree-fs.json`.
+3. Fix n6:127 `sec:system` → `sec:org-experience`.
+4. Check evidence-group numbering (n1:186, n8a:4).
+5. Fix refs.bib kamath missing author (journal build warning).
+6. Verify threshold conflict claim (n6:8 vs 68-70).
+7. Verify "nine configurations" claim in n8b.
+
+Let me batch reads.
+
+[assistant • read]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n4_acquisition.tex","offset":150,"limit":45}
+
+[tool • read]
+<path>D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n4_acquisition.tex</path>
+<type>file</type>
+<content>
+150: 
+151: Parsing and graph construction are non-blocking: each returns a task
+152: identifier that a registry resolves across tool processes, so callers
+153: poll status instead of holding a connection open. Batch ingestion is
+154: resumable and was resumed in practice: restarting the client after an
+155: interruption in a 100-paper run skipped documents already present and
+156: continued from the recorded position. Per-paper parse time in the
+157: 50-paper campaign ranged from 16.3\,s to 40.4\,s over 26 subject
+158: domains, 1{,}115.5\,s in total, an average of 22.3\,s per paper.
+159: 
+160: That bookkeeping has a limit. Of 100 submitted papers, the state file
+161: records 91 names, 79 were retrievable in the knowledge base at
+162: evaluation time, and 21 never became retrievable. The reported failure
+163: mode is formula-dense scanned documents, and a mid-run client crash was
+164: recovered by restart, but no artifact counts parse attempts, parse
+165: failures, or the error text of a failed document: the 91-versus-79
+166: difference is an observability gap we can report from the artifacts but
+167: not attribute from them.
+168: 
+169: Cross-lingual ingestion shows the same gates holding without
+170: language-specific tuning. The corpus is 400 Wikipedia pages per language
+171: in English, Chinese, and Japanese, ingested in two rounds; the second
+172: round was bit-identical to the first (Table~\ref{tab:acq-crosslang})
+173: and ingestion success was 1.0 for all three languages in both rounds.
+174: Membership---where each page landed---is 0.875 for English, 1.0 for
+175: Chinese, and 1.0 for Japanese; storage completeness---split parts summed
+176: back to the source length---is 0.975, 0.9559, and 0.9402; and
+177: self-retrieval Hit@1, the score for the page's own indexed text, is
+178: 0.975, 1.0, and 1.0.
+179: 
+180: 
+181: 
+182: The 100-paper pipeline audit records the outcome directly---100/100
+183: papers parsed and routed by content, nine per-paper ingest checks
+184: 100/100, content and storage audits 322/322 and 33/33. What the gates do
+185: not buy is accounting: with no counter of attempted or failed
+186: acquisitions, the difference between 91 recorded and 79 retrievable
+187: papers cannot be split into parse losses and lost records. We treat a
+188: submission as knowledge only once verification has found it.
+
+(End of file - total 188 lines)
+</content>
+
+[assistant]
+The passage at n4:182-188 is actually *coherent*: "100/100 papers parsed and routed by content" refers to the per-paper ingest checks passing, and immediately after it says "What the gates do not buy is accounting... difference between 91 recorded and 79 retrievable". So the paper does not hide the gap — it states it twice (n4:160-167 and n4:182-188).
+
+But the auditor's point stands in a narrower sense: "100/100 parsed" can be misread as "100/100 retrievable" since 21 never became retrievable. The fix is cheap and improves precision: qualify "100/100 papers parsed and routed by content" as "100/100 of the papers that entered the pipeline were parsed and content-routed (the checks below are per-paper; retrievability is the separate 79/100 ledger above)". Hmm, but careful: is 100/100 accurate given 21 never became retrievable? If 100 papers were parsed successfully but only 79 retrievable, the loss is in storage/index/membership, not parsing. The text says "no artifact counts parse attempts/failures", so "100/100 papers parsed" is itself an overclaim — the honest statement is "all 100 submitted papers entered the pipeline; 91 are recorded in the state file and 79 were retrievable".
+
+So the fix: change n4:182 to a staged ledger that cannot be misread:
+"The 100-paper pipeline audit records what the gates did check: per-paper ingest checks passed for the documents that reached them, and the content and storage audits report 322/322 and 33/33. What the gates do not buy is accounting: ..."
+
+That removes the unsupported "100/100 parsed and routed by content". But wait — was "100/100" an actual reported metric from the campaign (e.g., nine per-paper ingest checks each 100/100)? n8a Table tab:acq-pipeline shows 100/100. If the underlying artifact says 100/100 checks passed, it's a real number for the documents checked. The honest framing: "each per-paper ingest check passed for every paper it was run on (100/100 on the nine checks), while only 79 of 100 papers were retrievable".
+
+I'll rewrite that sentence to be explicitly staged, matching the auditor's edit #1 but preserving the real numbers. Also update the table caption/row if it says something misleading — let me look at n8a:30-45 for tab:acq-pipeline.
+
+Let me read n8a_eval.tex lines 1-95 to see the campaign table + accounting gap prose.
+
+[assistant • read]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n8a_eval.tex","limit":95}
+
+[tool • read]
+<path>D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n8a_eval.tex</path>
+<type>file</type>
+<content>
+1: \section{Evaluation}
+2: \label{sec:eval}
+3: 
+4: We evaluate the deployed system on three corpora that differ in origin, language and scale, using three metric families, and we organise the evidence into seven groups. E1 and E2, reported here, cover the stages that precede a question: acquisition and parsing, and organisation, consistency and management operations. E3--E7, reported in Sections~\ref{sec:e3}--\ref{sec:e7}, cover retrieval-quality ablations, agent behaviour and verifier behaviour. Numbers are reported against the corpus that produced them, and results from different corpora are never merged.
+5: 
+6: \subsection{Experimental setup}
+7: \label{sec:eval-setup}
+8: 
+9: \textbf{Corpora.} (i)~\emph{Deployed industrial corpus}: five knowledge bases in a live deployment hold 42 documents, one of them containing twenty near-duplicate equipment-telemetry reports that share prefixes, vocabulary and structure, a deliberate stressor for near-duplicate detection and confuser density~\cite{manku-near-dup-2007}. Sixteen gold questions and four out-of-corpus probes were run against it. (ii)~\emph{arXiv corpus}: 100 submitted papers spanning about 25 domains; at evaluation time the state file records 91 paper names and 79 papers are retrievable. Content routing placed them in five domain libraries holding 322 stored parts, and ten gold questions (BQ01--BQ10) target books referenced by these papers, keyed by arXiv identifier. The live environment held 19 libraries. (iii)~\emph{Cross-lingual ingestion corpus}: 400 Wikipedia pages per language for English, Chinese and Japanese, with 40 extractive cloze queries per language whose answers occur verbatim in the source page. It is used for ingestion only; we report no retrieval-quality numbers for it.
+10: 
+11: \textbf{Questions and gold annotations.} The sixteen industrial questions (Table~\ref{tab:questions}) were written by the authors rather than sampled from logs, a circularity we state rather than hide; each identifies one or two gold documents by a unique filename fragment and one to three fact markers. Q16 names the event \texttt{heatdecay092}, a token that also occurs in its gold document's filename, so a retriever ranking on filenames alone could match it without reading content; we keep the question and report the weakness. On the arXiv corpus a question passes only if the gold identifier is traceable in the answer or the tool trajectory and at least 60\% of the gold keywords occur at word boundaries, evaluated deterministically with no language model in the loop.
+12: 
+13: 
+14: 
+15: \textbf{Metric families.} Retrieval results use Hit@5, Recall@5 and MRR@5, following passage-ranking evaluation conventions~\cite{craswell-msmarco-2021}. A graded measure, nDCG@5~\cite{jarvelin-cumulated-gain-2002}, was computed only inside one exploratory arm of the cross-lingual benchmark that we do not report; no nDCG@5 value appears here. Grounding and key-fact verification use deterministic string tests: whether the answer cites the gold document, whether at least 60\% of gold key facts appear at word boundaries, and whether part, section and table citation markers are present. These checks are mechanical, not model-based faithfulness estimates such as RAGAS~\cite{es-ragas-2024} or ARES~\cite{saad-falcon-ares-2024}. The third family covers wall-clock time, agent turns, tool calls, monetary cost, and the correctness of refused answers.
+16: 
+17: \textbf{Controls.} Deterministic lanes were re-run and compared field by field with latency excluded, so a re-run could disagree only on content and ordering; model-driven lanes were repeated with the same model version and are reported as mean with the observed spread. A fixed retry policy applied: an empty zero-turn response or a transient gateway timeout was retried once, which fired on two runs and succeeded both times. Before measurement we repaired two corpus-integrity faults through the platform's own operations: one document missing from its vector collection was re-indexed, and one library whose collection had been silently lost was rebuilt. All measurements ran on one workstation whose RTX~5060 (8\,GB) serves the embedding model and the judge worker, with every service local under Windows.
+18: 
+19: \textbf{What is deterministic.} The tool-layer retrieval lanes, the grading rule, the audits, duplicate adjudication and the cross-lingual ingestion pipeline are deterministic: repeating them reproduces the same values, and cross-lingual round~2 was bit-identical to round~1. The agent lanes, and anything derived from generated text, are not, and are reported with their repetition spread.
+20: 
+21: \subsection{E1: Acquisition and parsing}
+22: \label{sec:e1}
+23: 
+24: One hundred submitted papers were parsed and routed by content into five domain libraries, producing 322 stored parts after the 30{,}000-character split. Table~\ref{tab:acq-pipeline} lists the acquisition audit: nine per-paper ingest checks passed 100/100, no true duplicate was found against 35 near-duplicate pairs, 165 document descriptions were upgraded, the content and storage audits passed 322/322 and 33/33, all 15 retrieval regression probes passed, and the dense replica index holds 4{,}528 chunks. Values are asserted by the run scripts from saved artifacts rather than hand-counted; the content audit samples the first 1{,}000 characters of each part and the storage audit covers 33 storage units.
+25: 
+26: \begin{table}[t]
+27: \centering
+28: \small
+29: \setlength{\tabcolsep}{4pt}
+30: \caption{Acquisition and parsing audit over the 100 submitted arXiv papers.
+31: Values are asserted by the run scripts from saved artifacts, not hand-counted.
+32: The content audit samples the first 1{,}000 characters of each part. Duplicates
+33: are compared by fingerprint at a 0.90 threshold~\cite{manku-near-dup-2007}.}
+34: \label{tab:acq-pipeline}
+35: \begin{tabular}{@{}lr@{}}
+36: \toprule
+37: Check & Result \\
+38: \midrule
+39: Papers parsed and content-routed & 100/100 \\
+40: Content-routed libraries & 5 \\
+41: Stored parts after 30{,}000-character split & 322 \\
+42: Per-paper ingest checks (nine checks) & 100/100 pass \\
+43: True duplicates (35 near-duplicate pairs) & 0 \\
+44: Descriptions upgraded & 165/165 \\
+45: Content audit & 322/322 \\
+46: Storage audit & 33/33 \\
+47: Retrieval regression probes & 15/15 \\
+48: Dense replica index (800-character chunks) & 4{,}528 chunks \\
+49: \bottomrule
+50: \end{tabular}
+51: \end{table}
+52: 
+53: \textbf{Accounting gap.} This campaign does not support the claim that all 100 papers became usable, and we do not make it: 100 papers were submitted, the state file \texttt{exp10\allowbreak\_ingest\allowbreak\_state.json} records 91 names, and 79 were retrievable at evaluation time, so 21 papers were never retrievable. The reported failure modes are formula-dense scanned papers, which the parser handled poorly, and one crash of the tool layer during batch parsing that was restarted from a checkpoint. No artifact records a count of attempted against failed papers, and the state file has no per-paper parse status, so we cannot say whether the nine papers missing between submission and the recorded list failed or were never recorded. The absent counter is an observability gap: reconciliation is possible only against the artifacts that survive~\cite{missier-prov-2013}.
+54: 
+55: \textbf{Cross-lingual ingestion.} The benchmark ran twice over 400 pages per language, with both rounds retained under \path{benchmark-web/benchmark/results/benchmark/}. The ingest success rate was 1.0 in both rounds for all three languages. Membership accuracy, whether a stored page landed in the intended library, was 0.875 for English, 1.0 for Chinese and 1.0 for Japanese (400 pages per language). Storage completeness, computed on a sample of 40 pages per language with the shards of large documents summed, was 0.975, 0.9559 and 0.9402 respectively. Self-retrieval Hit@1, again at 40 pages per language, was 0.975, 1.0 and 1.0. Round~2 was bit-identical to round~1. The English figure of 0.875 is the weakest cross-lingual number we report, and it is an organisation defect rather than a parsing defect: the page was stored, but in the wrong library roughly one time in eight.
+56: 
+57: \textbf{Smaller campaigns.} A 50-paper, 26-domain campaign parsed and verified 50/50 papers, took 1{,}115.5\,s at 16.3--40.4\,s per paper, produced 202 tags, batch-indexed 50 documents and reported \texttt{all\_probes\_ok}; in its routing run 43 of the 50 documents carried \texttt{tag\_ok:false} while \texttt{verify\_ok} passed for all 50, so the tag-quality check failed often without blocking ingestion. Its 30{,}000-character tier turned 50 papers into 165 documents (nine whole documents and 156 parts), passed the storage check 50/50 and the description-and-tag check 165/165 with zero failures, stored 3{,}798{,}446 characters and took 2{,}672\,s to parse. Two caveats attach: one stage re-ran because of inbox ordering, and more than 800 extracted images were not uploaded. Descriptions and tags are checked against document content before storage~\cite{park-metadata-quality-2009}.
+58: 
+59: \subsection{E2: Organization, consistency, and management operations}
+60: \label{sec:e2}
+61: 
+62: We define organisational correctness as three-source consistency: the files on disk, the tree index and the per-library metadata must agree about which documents exist, where they live and how much indexed content each has. Under that definition we found a real defect in a disposable test library. After a document was renamed, the vector index retained the chunks of the old name: the recorded chunk count was 18 where 9 were expected, a duplicate search matched the document against its own former path at 0.9738 similarity, and a vector probe returned every chunk twice with identical scores. Neither the automatic re-indexing that follows a rename nor a forced batch index removed the stale chunks; only an explicit force re-index repaired the document, after which the recorded count was 9. The failure is invisible from the metadata alone.
+63: 
+64: \textbf{Reorganisation campaign.} The full reorganisation workflow then ran over the 322-document arXiv corpus: 322/322 metadata checks and 165/165 description checks passed, the tag registry was de-duplicated, all 322 documents were batch-indexed, 15/15 retrieval regression probes passed with zero degradation, and 35 near-duplicate candidate groups (similarities 0.90--0.975) were adjudicated as zero true duplicates, every group being a set of adjacent parts of the same paper; no document was deleted (Table~\ref{tab:org-campaign}). Two honesty notes apply: the three-source spot check sampled 33 of the 322 documents, so it is a sample rather than a full pass, and sub-library splitting and hierarchy creation were analysed but deliberately not executed, pending user confirmation, so the campaign is not evidence for hierarchical restructuring.
+65: 
+66: \begin{table}[t]
+67: \centering
+68: \small
+69: \setlength{\tabcolsep}{2pt}
+70: \caption{Reorganisation campaign over the 322-document arXiv corpus.
+71: The three-source spot check samples 33 documents; the description, tag and
+72: duplicate checks cover the full corpus.}
+73: \label{tab:org-campaign}
+74: \begin{tabular}{@{}lrr@{}}
+75: \toprule
+76: Check & Scale & Result \\
+77: \midrule
+78: Metadata consistency (three sources) & 322 documents & 322/322 pass \\
+79: Description check & 165 documents & 165/165 pass \\
+80: Tag de-duplication & 4 groups & 4/4 pass \\
+81: Batch index & 322 documents & 322 indexed \\
+82: Duplicate adjudication & 35 groups & 0 true duplicates \\
+83: Three-source spot check & 33 of 322 documents & 33/33 pass \\
+84: Retrieval regression probes & 15 probes & 15/15, no degradation \\
+85: \bottomrule
+86: \end{tabular}
+87: \end{table}
+88: 
+89: \textbf{Scale.} Growing the corpus from 50 to 100 papers (163 to 322 documents) did not cost retrieval quality: dense top-1 hits went from 48/50 to 49/50 and MRR from 0.98 to 1.00, and reorganisation itself produced a 2 percentage point improvement. The judgement field recorded with that comparison reads ``held (within $\pm$5\,pp)''; we report the field rather than restating the gain as a retrieval improvement.
+90: 
+91: \textbf{Lifecycle operations.} Table~\ref{tab:org-ops} lists the operations exercised. Create, move, delete and forced re-index behaved as specified: the move left the source library at zero documents and the target at one, and batch deletion removed both disposable test libraries. Two failure modes are worth reporting. The task-status tool reports a task as \texttt{running} after it has finished: the record carries a \texttt{finished\_at} timestamp while the status field still reads \texttt{running}, and the same symptom appeared in the reorganisation graph build, where node reconciliation replaced task polling. The update check timed out after 30\,s (\texttt{ragctl version -{}-json timed out after 30s}, success false) while every other probe in the batch passed; the project-status tool also silently ignores its version flag. Merge and split were never exercised under controlled conditions and we claim nothing about them. These 16 skill scenarios ran against two disposable test libraries in a standalone skill environment; the ingest tools were exercised in E1, not here.
+92: 
+93: 
+94: 
+95: \textbf{Tags and graph.} The live tag registry held 316 tags, and the tag-quality check passed 165 documents with zero failures in 47.6\,s. Orphan tags do accumulate, among them test tags and section titles extracted from headings; the registry offers a dry-run detector and a cleanup operation, and in one case tags from a test library leaked into the production registry, the failure mode that vocabulary-based organisation is prone to~\cite{golder-tagging-2006}. The document graph is used for navigation and candidate expansion, never as evidence. Writing one document's four tag edges moved the edge count from 4{,}675 to 4{,}679, against 658 nodes, 333 documents and 316 tags; graph statistics for the 165-document corpus were 335 nodes and 1{,}671 edges.
+
+(End of file - total 95 lines)
+</content>
+
+[assistant]
+Assessment of the "contradiction": Table tab:acq-pipeline row "Papers parsed and content-routed & 100/100" together with §E1 line 24 "One hundred submitted papers were parsed and routed by content into five domain libraries, producing 322 stored parts" — while line 53 says 79 retrievable, 21 never retrievable. 
+
+The real issue: "100/100 parsed and content-routed" is not supported by artifacts (the paper itself says no artifact records parse failures), and it sits in a table that a reader will read as "all 100 succeeded". Two honest fixes:
+1. Change the table row label to "Papers submitted" = 100, and "Papers retrievable at evaluation time" = 79/100 — adding the retrievability row makes the table a complete ledger.
+2. Adjust line 24's "One hundred submitted papers were parsed and routed by content" → "One hundred papers were submitted; the pipeline parsed and content-routed those it admitted, and 79 were retrievable at evaluation time."
+
+This is exactly the auditor's edit #1, and it also serves the user's requirement "把系统的测试...结果都要展示完整" (show the system test results completely) — the acquisition ledger should carry the full funnel: submitted 100 → recorded 91 → retrievable 79 → 322 parts.
+
+So I'll add two rows to Table tab:acq-pipeline:
+- Papers recorded in the ingest state file & 91 \\
+- Papers retrievable at evaluation time & 79 \\
+and relabel the first row to "Papers parsed and content-routed" → keep but the caption should note the retrievability ledger follows. Better: rename to "Papers admitted to the pipeline" = 100? The audit value came from scripts. Hmm.
+
+Let me be careful and honest: the table is "Acquisition and parsing audit over the 100 submitted arXiv papers" with values "asserted by the run scripts from saved artifacts". "Papers parsed and content-routed 100/100" — if the run script asserted that (e.g., each of 100 papers got a routing decision), then it's a real assertion, but "parsed" is the questionable word given the parser failures. Actually if 91 names are in the state file and 79 retrievable, then 100/100 parsed can't be true (formula-dense papers "the parser handled poorly" — those 21 presumably failed or were lost). So "100/100 parsed and content-routed" IS contradicted by the paper's own accounting. It's likely a leftover from an earlier draft/generated table.
+
+Cleanest honest fix: replace that row with a staged ledger:
+```
+Papers submitted & 100 \\
+Papers parsed and content-routed (routing decisions recorded) & 100 \\
+Papers in the ingest state file & 91 \\
+Papers retrievable at evaluation time & 79 \\
+```
+Hmm, is "routing decisions recorded = 100" defensible? The paper says "Content routing placed them in five domain libraries holding 322 stored parts". And 21 never became retrievable — those 21 could have been parsed and routed but lost from the index/state. Honestly, the paper cannot say. So the safest table:
+
+```
+Papers submitted & 100 \\
+Papers recorded in the ingest state file & 91 \\
+Papers retrievable at evaluation time & 79 \\
+Content-routed libraries & 5 \\
+Stored parts after 30,000-character split & 322 \\
+Per-paper ingest checks (nine checks) & 100/100 pass \\
+...
+```
+And line 24 rewrite: "One hundred papers were submitted; content routing placed the ingested ones into five domain libraries, producing 322 stored parts after the 30,000-character split. Of the 100, the state file records 91 and 79 were retrievable at evaluation time (Section 'Accounting gap')."
+
+Wait — but is the 100/100 for per-paper ingest checks (nine checks) also affected? Those checks ran on the papers that were ingested (91?). The value "100/100 pass" for nine checks is from the run scripts; keep as is but it's about the papers checked.
+
+Then n4:182 rewrite to remove "100/100 papers parsed and routed by content".
+
+Good. This is edit #1 done properly. I also need to check the abstract (main2.tex:69-70) which says "Twenty-one of 100 submitted papers never became retrievable" — consistent ✓.
+
+Now, before making a batch of edits, let me collect the full verified list. Other claims to verify:
+- n6:8 vs n6:68-70 threshold conflict.
+- n8b:66 two-stage row + n6:192 denial.
+- "nine configurations" in n8b.
+- evidence group count (seven vs eight) — n1:186 and n8a:4 say seven; n8c has `sec:e8` ablations subsection (added by me). So now there are eight. Need to update n1:186, n8a:4.
+
+Let me read the relevant snippets: n6:1-20, n6:60-80, n6:185-195, n8b:60-90, n1:180-190.
+
+Let me batch these reads.
+
+[assistant • pwsh]
+{"command":"$tex='D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex'\n\"########## n6_retrieval.tex 1-20\"; Get-Content \"$tex\\n6_retrieval.tex\" | Select-Object -Skip 0 -First 20 | ForEach-Object -Begin {$i=1} -Process { \"$i`: $_\"; $i++ }\n\"`n########## n6_retrieval.tex 60-80\"; Get-Content \"$tex\\n6_retrieval.tex\" | Select-Object -Skip 59 -First 21 | ForEach-Object -Begin {$i=60} -Process { \"$i`: $_\"; $i++ }\n\"`n########## n6_retrieval.tex 185-195\"; Get-Content \"$tex\\n6_retrieval.tex\" | Select-Object -Skip 184 -First 11 | ForEach-Object -Begin {$i=185} -Process { \"$i`: $_\"; $i++ }","description":"Read gate threshold passages"}
+
+[tool • pwsh]
+########## n6_retrieval.tex 1-20
+1: \section{Content-verified retrieval}
+2: \label{sec:retrieval}
+3: \label{sec:lanes}
+4: 
+5: Every citation a lane proposes must pass a content-verification gate before it
+6: may appear in an answer. The gate scores each retrieved segment on a 0--8 rubric
+7: (topic 0--3, scenario 0--3, evidence 0--2) and keeps a document only if at least
+8: one of its segments reaches the acceptance threshold: 0.5 in general, 0.3 for
+9: enumeration questions. It processes at most six references per call, takes the
+10: matched text from the server side rather than from the caller, and fails closed.
+11: No surviving evidence means the caller must answer that the corpus does not
+12: contain the answer.
+13: 
+14: \subsection{One query through the gate}
+15: \label{sec:trace}
+16: 
+17: Q2 of Section~\ref{sec:eval-setup} is \emph{``EL inspection shows edge delamination:
+18: root cause and corrective actions''}, asked through the public chat API with the
+19: failure-analysis library pinned and the Hybrid lane selected.
+20: 
+
+########## n6_retrieval.tex 60-80
+60: query and a batch of references, the server fetches and segments each document
+61: and scores every segment under one of three criteria: \emph{evidence} (specific
+62: substantiation; a topic match alone is insufficient), \emph{instance} (the text
+63: contains a member of the requested class, routed automatically for enumeration
+64: questions), or \emph{auto}. A document survives only if its best segment reaches
+65: the threshold, so one at vector score 0.40 with a \emph{yes} verdict survives
+66: while one at 0.95 that the judge rejects is dropped.
+67: 
+68: The score is documented as a 0--8 rubric (topic 0--3, scenario 0--3,
+69: evidence 0--2; $\geq$6 answers directly, 5 escalates to the librarian lane,
+70: $\leq$4 drops), with the $[0,1]$ score as its machine-readable projection. That
+71: projection saturates (the logged maximum score is 1.0000), one reason thresholds
+72: discriminate poorly between golds and same-domain confusers
+73: (Section~\ref{sec:inflation}).
+74: 
+75: Every operating constant is a shipped production default: the thresholds, the
+76: six-reference judge batch, the hybrid candidate cap of twelve, and the 0.15
+77: relative-cut margin with its top-5 floor. They were fixed during earlier
+78: deployments on a different corpus and were not tuned on the evaluation questions
+79: of Section~\ref{sec:eval-setup}. The classifier is a single, locally fine-tuned
+80: evidence classifier whose checkpoint reference ships with the platform
+
+########## n6_retrieval.tex 185-195
+185: with a torch paging-file error; every verdict is logged with its query,
+186: references, scores, and decision.
+187: 
+188: That placement makes verification a layer property rather than an agent
+189: aspiration: any lane, harness, or external client inherits the gate, and none can
+190: skip or re-threshold it per query. Enforcement has a second half in the lane
+191: policy, a server-side per-lane tool whitelist: a librarian-lane agent is denied
+192: the vector and two-stage tools and cannot reach around the catalog-first path it
+193: was given.
+194: 
+195: Externalized verification also distinguishes this design from verifiers inside
+
+
+[assistant]
+The threshold "conflict" is actually not a contradiction: line 6-9 says the gate scores on a 0–8 rubric and keeps a document if the best segment reaches "the acceptance threshold: 0.5 in general, 0.3 for enumeration"; lines 68-70 say the rubric's ≥6/5/≤4 bands are documented, with the [0,1] score as its machine-readable projection. So 6/8 = 0.75, not 0.5... The mapping 0–8 → [0,1] could be score/8, so ≥6 ↔ 0.75, but the acceptance threshold is 0.5 ↔ 4/8. So the bands (≥6 direct, 5 escalate, ≤4 drop) are the *documented interpretation* while the *machine* threshold is 0.5. Hmm — "≤4 drops" vs "acceptance threshold 0.5 (=4/8)": if a segment scores exactly 4 (0.5), the rubric says drop while the threshold says keep. That's a genuine inconsistency at the boundary, and "5 escalates" is a third rule not reflected at line 6-9.
+
+So the auditor's point is fair but smaller than claimed: the two statements are reconcilable but the boundary is inconsistent (4 vs >4). A precise fix: at line 6-9, say the gate keeps a document only if its best segment's machine-readable score reaches 0.5 (general) or 0.3 (enumeration), which corresponds to the rubric's band boundary: ≤4 (≤0.5) drops... hmm, need ≥6 ↔ 0.75 for direct answers.
+
+Cleanest: state one rule with the mapping made explicit:
+"…keeps a document only if at least one of its segments reaches the acceptance threshold on that projection: 0.5 in general, 0.3 for enumeration; the rubric's own bands (≥6 answers directly, 5 escalates to the librarian lane, ≤4 drops) are the reading guidance for the human-facing consumer of the same score."
+
+That resolves it: acceptance = 0.5 on the projection (=(≥4)/8 → hmm 0.5 = 4/8). If ≤4 drops, then a 4 (=0.5) would drop, but acceptance threshold 0.5 keeps it. To be strictly consistent, the projection is probably score/8 → 0.5 = 4/8 = the top of the "drop" band. The band says ≤4 drops, so the acceptance threshold should be ">0.5" or the bands are ≥6/5/≤4 for *answer* quality not gate survival.
+
+Rather than guess semantics, the honest edit is to make the relationship explicit and flag that the 0.5 threshold corresponds to the 4/8 boundary, i.e. the gate is *at least as permissive* as the drop band... I'd rather ask: does the paper elsewhere state the mapping? Let me grep for "projection" and "0.5" in n6 and n8c.
+
+Actually, an important consideration: I should not fabricate precision. Let me check the actual implementation (kb-mcp/server.py kb_laya_judge) to determine ground truth about the threshold semantics. The paper is about the real system, and the code is available. Earlier I established kb_laya_judge exists on the live server with criterion auto/evidence and threshold 0.5.
+
+Let me grep the repo for the judge implementation to see how threshold vs 0–8 rubric works.
+
+That's the right way to resolve it — and it also gives me the interface facts the auditor wants (edit #5: tool interfaces).
+
+Let me search kb-mcp for laya judge code.
+
+[assistant • pwsh]
+{"command":"$py='D:\\anaconda3\\python.exe'\n@'\nimport re\nfrom pathlib import Path\nroot = Path(r\"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\")\nhits = []\nfor p in root.rglob(\"*.py\"):\n    if any(x in p.parts for x in (\".venv\", \"node_modules\", \"__pycache__\", \".git\")):\n        continue\n    try:\n        t = p.read_text(encoding=\"utf-8\", errors=\"ignore\")\n    except Exception:\n        continue\n    if \"laya\" in t.lower() and (\"threshold\" in t.lower() or \"rubric\" in t.lower()):\n        hits.append(p)\nfor p in hits[:40]:\n    print(p.relative_to(root))\nprint(\"total\", len(hits))\n'@ | Set-Content 'D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\_find_laya.py' -Encoding UTF8\n& $py 'D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\_find_laya.py'","description":"Locate Laya judge implementation"}
+
+[tool • pwsh]
+kb-mcp\server.py
+scripts\123_demo_docx_ingest_qa.py
+scripts\124_mode_c_parallel.py
+tmp\hybrid_scrape3.py
+tmp\make_candidates.py
+tmp\rerun_failed.py
+tmp\run_wc1_judge.py
+.claude\skills\knowledgebase-hybrid\scripts\hybrid_search.py
+.claude\skills\knowledgebase-hybrid\tests\test_hybrid_search.py
+.claude\skills\knowledgebase-librarian\scripts\complete_recall.py
+.claude\skills\knowledgebase-librarian\scripts\jev_filter.py
+.claude\skills\knowledgebase-search\scripts\vector_jev_search.py
+.claude\skills\knowledgebase-search\tests\test_vector_jev_search.py
+benchmark-suite\experiments\chat_tracks.py
+benchmark-suite\experiments\retrieval_modes.py
+paper-kbs\experiments\exp11_gate_ablation.py
+paper-kbs\experiments\exp12_partition_ablation.py
+paper-kbs\figures\figures.py
+paper-kbs\figures\figures_ieee.py
+paper-kbs\figures\_recover.py
+paper-kbs\tex\_find_laya.py
+review\answer-compare-20260926\run_compare.py
+review\e2e-chain-20260925\run_retrieval.py
+review\hybrid-serial-20260928\run_serial_flow.py
+review\hybrid-skill-20260923\run_skill_modes.py
+review\laya-three-mode-20260925\run_three_modes.py
+review\librarian-opt-20260928\librarian_opt.py
+review\multidoc-opt-20260924\run_round.py
+review\rag-weak-20260926\run_ragweak.py
+review\skill-e2e-20260928\mcp_functions_e2e.py
+review\three-mode-20260926\driver.py
+review\three-mode-chat-20260926\run_all.py
+review\weicheng-3mode-20260926\wc_prompts.py
+total 33
+
+
+[assistant]
+Let me look at the canonical judge implementation: `kb-mcp/server.py` kb_laya_judge tool, and the worker that does scoring (likely in a service). Let me grep for the threshold semantics there.
+
+I'll read the relevant part of kb-mcp/server.py around kb_laya_judge.
+
+[assistant • grep]
+{"pattern":"def kb_laya_judge|threshold|rubric|0\\.5|score\",|min_score","path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\kb-mcp\\server.py","include":"*.py"}
+
+[tool • grep]
+Found 48 matches
+
+kb-mcp\server.py
+Line 1088: async def kb_find_duplicates(kb_id: str = "", threshold: float = 0.90) -> str:
+Line 1093:       2. NEAR: vector similarity >= threshold (default 0.90) within the same KB.
+Line 1097:         threshold: vector similarity cutoff for near-dup (0.85-0.95 recommended).
+Line 1201:             search_resp = await client.vector_search(probe_content[:500], kb_id=kid, top_k=5, score_threshold=threshold)
+Line 1220:             score = hit.get("score", 0)
+Line 1221:             if score < threshold:
+Line 1325:     vector_score = exp.get("vector_score", 0)
+Line 1326:     content_score = exp.get("content_score", 0)
+Line 1543:                                      score_threshold: float = None,
+Line 1547:     Vector recall -> hard threshold -> experience-level dedup -> content verification -> credibility tiering -> honest empty return.
+Line 1556:         score_threshold: Vector hard threshold; None=0.45 (precision 0.55 / recall 0.35)
+Line 1566:         query, top_k, score_threshold=score_threshold, verify_content=verify_content))
+Line 1571:                                    score_threshold: float = None,
+Line 1578:     - Adaptive thresholding (stricter for troubleshooting 0.55, relaxed for learning 0.35)
+Line 1582:     Rounds: Round1=original threshold, Round2=threshold*0.7 if 0 results, Round3=threshold*0.5+skip content verify.
+Line 1587:         score_threshold: Vector hard threshold; None=adaptive (type-based, recommended)
+Line 1592:          adaptive_threshold, effective_threshold,
+Line 1599:     # 2. Adaptive threshold
+Line 1600:     type_thresholds = {"troubleshooting": 0.55, "decision": 0.50, "best_practice": 0.45, "learning": 0.35}
+Line 1601:     adaptive = type_thresholds.get(query_type, 0.45)
+Line 1602:     threshold = score_threshold if score_threshold is not None else adaptive
+Line 1607:         query, top_k=top_k * 2, score_threshold=threshold, verify_content=verify_content)
+Line 1636:     # Backend already reports rounds/degraded/threshold in its response;
+Line 1640:         result["adaptive_threshold"] = adaptive
+Line 1641:         result["effective_threshold"] = result.get("threshold", threshold)
+Line 1721:             "vector_score": exp.get("vector_score", 0) or 0,
+Line 1722:             "content_score": exp.get("content_score", 0) or 0,
+Line 2116:                             score_threshold: float = 0.0,
+Line 2125:         score_threshold: Minimum cosine similarity threshold (0~1); <=0 uses backend default (0.35). Lower to recall more chunks
+Line 2140:     result = await client.vector_search(query, kb_id, top_k, score_threshold, balance_kbs)
+Line 2150:                 if key not in seen or r.get("score", 0) > seen[key].get("score", 0):
+Line 2168:     score_threshold: float = 0.0,
+Line 2182:         score_threshold: Vector similarity threshold (0~1); <=0 uses backend default (0.35)
+Line 2198:         score_threshold, balance_kbs
+Line 2211:                     if key not in seen or r.get("score", 0) > seen[key].get("score", 0):
+Line 2239:                 score_threshold=score_threshold, balance_kbs=True
+Line 2668:                      threshold: float, max_segment_chars: int,
+Line 2689:                 "threshold": threshold, "max_segment_chars": max_segment_chars,
+Line 2725: async def kb_laya_judge(query: str, documents: str, criterion: str = "auto",
+Line 2726:                         threshold: float = 0.5,
+Line 2732:     Laya engine (GPU, fail-closed): noul >= threshold survives; missing model
+Line 2749:         threshold: survival threshold, default 0.5.
+Line 2756:     Returns: {status, real_engine, criterion, threshold, candidate_count,
+Line 2823:                 _laya_judge_impl, query, docs, criterion, threshold, 3000, max_evidence_chars)
+Line 2832:         # {jev:{status,real_engine,criterion,threshold,scores,...}, survivors[],
+Line 2855:                 "threshold": jev.get("threshold"),
+Line 3499: async def soul_export(soul_kb_id: str, min_score: float = 4.0, limit: int = 1000) -> str:
+Line 3501:     return _j(await _client().soul_export(soul_kb_id, min_score, limit))
+
+[assistant]
+Line 2725-2732: `kb_laya_judge(query, documents, criterion="auto", threshold=0.5, ...)` with docstring "Laya engine (GPU, fail-closed): noul >= threshold survives". "noul" is probably a typo/garbled for "score". So survival = score >= threshold, where score is a [0,1] value. The 0–8 rubric is documented separately (topic 0–3, scenario 0–3, evidence 0–2) — likely the raw judge output before normalization; the projection = raw/8.
+
+So: 0.5 threshold = raw 4/8. The band text "≤4 drops" is consistent with "score ≥ 0.5 survives"? raw 4 → 0.5 → survives (0.5 >= 0.5), but "≤4 drops" says 4 drops. Boundary inconsistency only at exactly 4. That's a trivial edge, but the paper's phrasing "≥6 answers directly, 5 escalates, ≤4 drops" describes *interpretation bands*, whereas the gate uses the numeric threshold. A reviewer could see it as sloppy; the fix is a clause making clear the bands are guidance and the threshold is the operative rule.
+
+Now, I have limited budget: 3 background agents running; a lot of work to integrate. Let me now prioritize what to actually change, driven by the user's three asks:
+
+**Ask 1 — KBS template/style/figure compliance**: journal build done (33 pp, 0 overfull, numbered ref style, times font). TODO: fix the `kamath` bib author warning; wait for compliance agent; figures agent running.
+
+**Ask 2 — content design: is the system explained clearly?** The audit gives 12 edits. I should implement a focused subset that removes the worst gaps:
+ - E2: BM25 two-stage lane section (biggest "A" column) — new subsection in §6.
+ - E3: define the nine configurations in §8 (E3) before Table 5.
+ - E1: 100/100 ledger fix (done soon).
+ - E7: data model promotion? (tab:datamodel currently in appendix) — maybe skip or do cheaply.
+ - E9: single unambiguous gate rule.
+ - E10: fix ref defects (verified: only sec:system is real; .tree-fs.yml real).
+ - Evidence-group count seven → eight.
+ - E11: evidence column in tab:modules (cheap, high value) — maybe.
+ - scanner/router contradiction in §6.3/§6.4 — check.
+
+**Ask 3 — experiments complete & latest**: waiting on the evidence agent; then add missing rows/tables.
+
+Given the volume, I'll implement the content edits myself in a careful sequence (they touch distinct files), while the agents finish. Let me start with the small verified defects, then the bigger structural additions.
+
+Order of my edits:
+1. n5_organization.tex:38 `.tree-fs.yml` → `.tree-fs.json`. (1 char)
+2. n6_retrieval.tex:127 `sec:system` → `sec:org-experience`.
+3. n4:182 + tab:acq-pipeline ledger (n8a:24, 39, caption).
+4. n1_intro.tex:186 & n8a:4 seven → eight evidence groups.
+5. Gate threshold clause (n6:5-12 + 68-73).
+6. BM25 two-stage subsection in §6.
+7. Nine-configuration definitions in §8.3 (n8b).
+
+Then recompile, re-verify.
+
+Let me also keep an eye on agent completions. Let me do edits 1-4 now.
+
+First, check n5:38 context and n1:180-190.
+
+[assistant • pwsh]
+{"command":"$tex='D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex'\n\"##### n5_organization.tex 30-45\"; Get-Content \"$tex\\n5_organization.tex\" | Select-Object -Skip 29 -First 16 | ForEach-Object -Begin {$i=30} -Process { \"$i`: $_\"; $i++ }\n\"`n##### n1_intro.tex 175-190\"; Get-Content \"$tex\\n1_intro.tex\" | Select-Object -Skip 174 -First 16 | ForEach-Object -Begin {$i=175} -Process { \"$i`: $_\"; $i++ }\n\"`n##### sec:org-experience label location\"; Select-String -Path \"$tex\\*.tex\" -Pattern 'label\\{sec:org-experience\\}|label\\{sec:system\\}' | ForEach-Object { $_.Filename + ':' + $_.LineNumber + '  ' + $_.Line.Trim() }","description":"Read contexts for tree-fs and evidence-group edits"}
+
+[tool • pwsh]
+##### n5_organization.tex 30-45
+30: to search the parent collection and to use the child libraries for navigation
+31: and scoping rather than as search endpoints. This is a limitation of the
+32: storage mapping, not of the routing rule.
+33: 
+34: \subsection{Catalog and metadata registries}
+35: \label{sec:org-registries}
+36: 
+37: Table~\ref{tab:datamodel} lists the fields of the two registries that
+38: describe the same collection: the global tree (\texttt{.tree-fs.yml}) is the
+39: authoritative structure, and each library carries a
+40: \texttt{.knowledge-base.yml} indexing its Markdown documents and their image
+41: directory.
+42: 
+43: Agents read the catalog through a progressive-disclosure interface: the
+44: listing returns names, descriptions and counts, document listings return
+45: metadata without bodies, and only an explicit read returns content,
+
+##### n1_intro.tex 175-190
+175: \end{table}
+176: 
+177: The remainder of the paper follows the arc.
+178: Section~\ref{sec:related} positions the work against knowledge management,
+179: document parsing, retrieval, verification and agent protocols.
+180: Sections~\ref{sec:system}--\ref{sec:organization} present the architecture,
+181: the acquisition pipeline and the organization subsystem, answering RQ1 and
+182: RQ2. Section~\ref{sec:lanes} presents the retrieval lanes and the verification
+183: gate, walking one real question end to end, and states what the retrieval layer
+184: claims (RQ3). Section~\ref{sec:implementation} reports the engineering that
+185: makes the contracts enforceable. Section~\ref{sec:eval} carries the seven
+186: evidence groups (RQ4--RQ5).
+187: Sections~\ref{sec:discussion}--\ref{sec:conclusion} distil the lessons and
+188: state the threats to validity. Table~\ref{tab:modules} maps system functions
+189: to components and evidence; Table~\ref{tab:ataglance} maps research questions
+190: to evidence.
+
+##### sec:org-experience label location
+main.tex:390  \label{sec:system}
+n3_overview.tex:2  \label{sec:system}
+n5_organization.tex:166  \label{sec:org-experience}
+
+
+[assistant]
+Confirmed:
+- n5:38 `.tree-fs.yml` → should be `.tree-fs.json`.
+- n1:185-186 "seven evidence groups" → now eight (E1..E7 + E8 ablations). Need to check if §8 truly has 8 subsections: n8a has E1, E2; n8b has E3(?), E4; n8c has E5(?), E6, E7, and sec:e8. Let me count the `\subsection{En:` headings.
+- n6:127 `sec:system` → `sec:org-experience` (n5:166).
+
+Let me count evidence subsections first, then make edits.
+
+[assistant • pwsh]
+{"command":"$tex='D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex'\nSelect-String -Path \"$tex\\n8a_eval.tex\",\"$tex\\n8b_eval.tex\",\"$tex\\n8c_eval.tex\" -Pattern '\\\\subsection\\{' | ForEach-Object { $_.Filename + ':' + $_.LineNumber + '  ' + $_.Line.Trim() }\n\"`n=== E-references in text ===\"\nSelect-String -Path \"$tex\\*.tex\" -Pattern '\\bE[1-9]\\b' | Group-Object Filename | ForEach-Object { $_.Name + '  ' + $_.Count }","description":"Count evidence subsections"}
+
+[tool • pwsh]
+n8a_eval.tex:6  \subsection{Experimental setup}
+n8a_eval.tex:21  \subsection{E1: Acquisition and parsing}
+n8a_eval.tex:59  \subsection{E2: Organization, consistency, and management operations}
+n8b_eval.tex:9  \subsection{E3: Operational knowledge and automated distillation}
+n8b_eval.tex:45  \subsection{E4: Retrieval quality and the role of the verdict}
+n8c_eval.tex:5  \subsection{E5: End-to-end agent behaviour, abstention, and cost}
+n8c_eval.tex:95  \subsection{E6: When the verifier fails}
+n8c_eval.tex:184  \subsection{E7: Non-functional behaviour}
+n8c_eval.tex:316  \subsection{Ablations: verification gate and search scope}
+
+=== E-references in text ===
+n10_threats.tex  2
+n1_intro.tex  10
+n2_related.tex  1
+n3_overview.tex  10
+n6_retrieval.tex  1
+n8a_eval.tex  6
+n8b_eval.tex  12
+n8c_eval.tex  16
+
+
+[assistant]
+Confirmed: 8 evidence subsections (E1–E7 + the ablations section which is unlabeled E8). The intro and n8a:4 say "seven evidence groups".
+
+Fix options: (a) rename the ablation subsection to "E8: Ablations..." and update "seven" → "eight" in n1:186, n8a:4, and the E3--E7 range statement; or (b) keep the ablation section as a *sub-part* of E4/E6 (since it's about gate + scope) and keep "seven".
+
+The cleanest: label it **E8: Ablations: verification gate and search scope** and update the two "seven" mentions plus n8a:4's "E3--E7, reported in Sections~\ref{sec:e3}--\ref{sec:e7}" to include E8 (need a label for the ablations subsection — currently `sec:e8`? Let me check: the summary said `\label{sec:e8}`. Yes.)
+
+So n8a:4 becomes: "we organise the evidence into eight groups. E1 and E2, reported here, ... E3--E8, reported in Sections~\ref{sec:e3}--\ref{sec:e8}, cover retrieval-quality ablations, agent behaviour, verifier behaviour, non-functional behaviour and the component ablations."
+
+And n1:185-186: "Section~\ref{sec:eval} carries the eight evidence groups (RQ4--RQ5)."
+
+Now let me also check `sec:e3`..`sec:e7` label existence to make the range correct. Let me grep labels in n8b/n8c subsections... The subsection headings don't show labels in the grep output (only \subsection lines). The labels are on the following line (e.g. n8b:10 `\label{sec:e3}`).
+
+OK. Let me now make the batch of small edits:
+
+E1. n5:38 `.tree-fs.yml` → `.tree-fs.json`
+E2. n6:127 `sec:system` → `sec:org-experience`
+E3. n1:186 "seven" → "eight"
+E4. n8a:4 "seven groups" → "eight groups", and the E3--E7 sentence extend to E8; plus rename the ablation subsection heading to "E8: ..." in n8c:316.
+E5. n4:182 ledger rewrite + tab:acq-pipeline rows (n8a:24, 30-33 caption, 39 row).
+
+Then the gate-threshold clause and the two bigger additions.
+
+Let me start. Use edit tool with exact strings.
+
+For n1:185-186 the text is:
+"Section~\ref{sec:eval} carries the seven
+evidence groups (RQ4--RQ5)."
+→ "Section~\ref{sec:eval} carries the eight
+evidence groups (RQ4--RQ5)."
+
+n8a:4: "using three metric families, and we organise the evidence into seven groups. E1 and E2, reported here, cover the stages that precede a question: acquisition and parsing, and organisation, consistency and management operations. E3--E7, reported in Sections~\ref{sec:e3}--\ref{sec:e7}, cover retrieval-quality ablations, agent behaviour and verifier behaviour."
+→ "...into eight groups. E1 and E2, reported here, ... . E3--E8, reported in Sections~\ref{sec:e3}--\ref{sec:e8}, cover retrieval-quality ablations, agent behaviour, verifier behaviour, non-functional behaviour and the component ablations."
+
+n8c:316: "\subsection{Ablations: verification gate and search scope}" → "\subsection{E8: Ablations of the verification gate and the search scope}"
+
+Let me verify n8c:316-318 first to see the label line.
+
+[assistant • read]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n8c_eval.tex","limit":8,"offset":314}
+
+[tool • read]
+<path>D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n8c_eval.tex</path>
+<type>file</type>
+<content>
+314: state of a static corpus.
+315: 
+316: \subsection{Ablations: verification gate and search scope}
+317: \label{sec:e8}
+318: Every measurement above describes the system as shipped. Two matched
+319: ablations test the two mechanisms that the design chapters argue for --- the
+320: content gate of Section~\ref{sec:gate} and the content-routed partition of
+321: Section~\ref{sec:org-placement} --- by disabling each in a control arm. Both
+
+(Showing lines 314-321 of 425. Use offset=322 to continue.)
+</content>
+
+[assistant]
+
+
+[assistant]
+<acp tokens="8" type="text">m02069</acp>
+Now the verified defect fixes:
+
+[assistant • edit]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n5_organization.tex","new_string":"describe the same collection: the global tree (\\texttt{.tree-fs.json}) is the","old_string":"describe the same collection: the global tree (\\texttt{.tree-fs.yml}) is the"}
+
+[tool • edit]
+Error: cannot edit "D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n5_organization.tex": file changed since it was read — re-read the file, then retry
+
+[assistant]
+The file changed since read? I read it via PowerShell Get-Content, not the read tool. The fs-observation policy requires the read tool. Let me read the file (a portion) with the read tool and then edit.
+
+Actually the error says "file changed since it was read" — maybe the figures subagent touched it? Unlikely. It's because the read tool hasn't observed it. Let me read the relevant lines with the read tool.
+
+[assistant • read]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n5_organization.tex","limit":12,"offset":34}
+
+[tool • read]
+<path>D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n5_organization.tex</path>
+<type>file</type>
+<content>
+34: \subsection{Catalog and metadata registries}
+35: \label{sec:org-registries}
+36: 
+37: Table~\ref{tab:datamodel} lists the fields of the two registries that
+38: describe the same collection: the global tree (\texttt{.tree-fs.yml}) is the
+39: authoritative structure, and each library carries a
+40: \texttt{.knowledge-base.yml} indexing its Markdown documents and their image
+41: directory.
+42: 
+43: Agents read the catalog through a progressive-disclosure interface: the
+44: listing returns names, descriptions and counts, document listings return
+45: metadata without bodies, and only an explicit read returns content,
+
+(Showing lines 34-45 of 254. Use offset=46 to continue.)
+</content>
+
+[assistant]
+
+
+[assistant • edit]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n5_organization.tex","new_string":"Table~\\ref{tab:datamodel} lists the fields of the two registries that\ndescribe the same collection: the global tree (\\texttt{.tree-fs.json}) is the\nauthoritative structure, and each library carries a","old_string":"Table~\\ref{tab:datamodel} lists the fields of the two registries that\ndescribe the same collection: the global tree (\\texttt{.tree-fs.yml}) is the\nauthoritative structure, and each library carries a"}
+
+[tool • edit]
+The file D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n5_organization.tex has been updated successfully.
+
+[assistant]
+
+
+[assistant • read]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n6_retrieval.tex","limit":10,"offset":122}
+
+[tool • read]
+<path>D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n6_retrieval.tex</path>
+<type>file</type>
+<content>
+122: \end{figure}
+123: 
+124: \textbf{Lane A (Search).} Phase A0 rewrites the query into (subject, attribute,
+125: constraints) form, splits comparison questions into parallel sub-queries, and
+126: routes incident-style queries to the experience store
+127: (Section~\ref{sec:system}) first. Phase A1 issues one wide dense query (top-30,
+128: threshold 0.35, cross-library balancing), deduplicates by document, and keeps
+129: candidate documents rather than truncating to top chunks. Phase A2 submits
+130: citation-only references (library id plus document path) to the gate, and Phase
+131: A3 returns the judge's evidence pack, this lane's only full-content channel, from
+
+(Showing lines 122-131 of 230. Use offset=132 to continue.)
+</content>
+
+[assistant]
+
+
+[assistant • edit]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n6_retrieval.tex","new_string":"routes incident-style queries to the experience store\n(Section~\\ref{sec:org-experience}) first. Phase A1 issues one wide dense query (top-30,","old_string":"routes incident-style queries to the experience store\n(Section~\\ref{sec:system}) first. Phase A1 issues one wide dense query (top-30,"}
+
+[tool • edit]
+The file D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n6_retrieval.tex has been updated successfully.
+
+[assistant]
+
+
+[assistant • read]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n1_intro.tex","limit":8,"offset":183}
+
+[tool • read]
+<path>D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n1_intro.tex</path>
+<type>file</type>
+<content>
+183: gate, walking one real question end to end, and states what the retrieval layer
+184: claims (RQ3). Section~\ref{sec:implementation} reports the engineering that
+185: makes the contracts enforceable. Section~\ref{sec:eval} carries the seven
+186: evidence groups (RQ4--RQ5).
+187: Sections~\ref{sec:discussion}--\ref{sec:conclusion} distil the lessons and
+188: state the threats to validity. Table~\ref{tab:modules} maps system functions
+189: to components and evidence; Table~\ref{tab:ataglance} maps research questions
+190: to evidence.
+
+(End of file - total 190 lines)
+</content>
+
+[assistant]
+
+
+[assistant • edit]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n1_intro.tex","new_string":"makes the contracts enforceable. Section~\\ref{sec:eval} carries the eight\nevidence groups (RQ4--RQ5).","old_string":"makes the contracts enforceable. Section~\\ref{sec:eval} carries the seven\nevidence groups (RQ4--RQ5)."}
+
+[tool • edit]
+The file D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n1_intro.tex has been updated successfully.
+
+[assistant]
+
+
+[assistant • read]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n8a_eval.tex","limit":1,"offset":4}
+
+[tool • read]
+<path>D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n8a_eval.tex</path>
+<type>file</type>
+<content>
+4: We evaluate the deployed system on three corpora that differ in origin, language and scale, using three metric families, and we organise the evidence into seven groups. E1 and E2, reported here, cover the stages that precede a question: acquisition and parsing, and organisation, consistency and management operations. E3--E7, reported in Sections~\ref{sec:e3}--\ref{sec:e7}, cover retrieval-quality ablations, agent behaviour and verifier behaviour. Numbers are reported against the corpus that produced them, and results from different corpora are never merged.
+
+(Showing lines 4-4 of 95. Use offset=5 to continue.)
+</content>
+
+[assistant]
+
+
+[assistant • edit]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n8a_eval.tex","new_string":"We evaluate the deployed system on three corpora that differ in origin, language and scale, using three metric families, and we organise the evidence into eight groups. E1 and E2, reported here, cover the stages that precede a question: acquisition and parsing, and organisation, consistency and management operations. E3--E8, reported in Sections~\\ref{sec:e3}--\\ref{sec:e8}, cover retrieval quality and the role of the verdict, the operational-knowledge store, end-to-end agent behaviour, verifier failure, non-functional behaviour, and the component ablations. Numbers are reported against the corpus that produced them, and results from different corpora are never merged.","old_string":"We evaluate the deployed system on three corpora that differ in origin, language and scale, using three metric families, and we organise the evidence into seven groups. E1 and E2, reported here, cover the stages that precede a question: acquisition and parsing, and organisation, consistency and management operations. E3--E7, reported in Sections~\\ref{sec:e3}--\\ref{sec:e7}, cover retrieval-quality ablations, agent behaviour and verifier behaviour. Numbers are reported against the corpus that produced them, and results from different corpora are never merged."}
+
+[tool • edit]
+The file D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n8a_eval.tex has been updated successfully.
+
+[assistant]
+
+
+[assistant • edit]
+{"file_path":"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\n8c_eval.tex","new_string":"\\subsection{E8: Ablations of the verification gate and the search scope}\n\\label{sec:e8}","old_string":"\\subsection{Ablations: verification gate and search scope}\n\\label{sec:e8}"}
+
+[tool • edit]
+The file D:\codes\ClaudeGPT\rag_project\rag-knowledge\paper-kbs\tex\n8c_eval.tex has been updated successfully.
+
+[assistant]
+Now the acquisition ledger fix (edit E5). Two places:
+1. n4:182-188 — the "100/100 papers parsed and routed by content" sentence.
+2. n8a Table tab:acq-pipeline row 39 + line 24 + caption.
+
+For the table, add the retrievability ledger rows and reword the first row:
+```
+Papers parsed and content-routed & 100/100 \\
+```
+→
+```
+Papers submitted & 100 \\
+Papers in the ingest state file & 91 \\
+Papers retrievable at evaluation time & 79 \\
+```
+But then the row "Content-routed libraries & 5" stays. And the "Per-paper ingest checks (nine checks) & 100/100 pass" stays.
+
+Wait: is removing "Papers parsed and content-routed 100/100" losing a real asserted value? The E1 prose (line 24) also says "One hundred submitted papers were parsed and routed by content into five domain libraries, producing 322 stored parts". Given the accounting gap paragraph explicitly says the campaign does NOT support "all 100 became usable", the honest framing is that 100 were submitted; the pipeline's own audit found no failures among the documents it checked. I'll rewrite line 24 to be staged and non-overclaiming, and make the table a funnel.
+
+Proposed table rows (top):
+```
+Papers submitted & 100 \\
+Papers recorded in the ingest state file & 91 \\
+Papers retrievable at evaluation time & 79 \\
+Content-routed libraries & 5 \\
+Stored parts after 30{,}000-character split & 322 \\
+Per-paper ingest checks (nine checks) & 100/100 pass \\
+...
+```
+Hmm, "Per-paper ingest checks (nine checks) 100/100 pass" — 100/100 of what? Of the papers checked. With 91 recorded, "100/100" is confusing. But the value comes from the artifact. I'll keep it but rename the row to "Per-paper ingest checks on routed documents (nine checks) & 100/100 pass" — hmm, that's asserting 100 documents were checked. 
+
+Since I can't verify the artifact right now (the evidence agent may report it), safer: keep the artifact's raw value but make the caption state the funnel explicitly and move retrievability into the table. Let me check the actual artifact quickly — is there a file with these nine checks? Let me grep benchmark-suite for "ingest checks" or the run script that asserts 100/100.
+
+Given budget, let me look for the exp10 ingest state file and any audit JSON: search for exp10_ingest_state.json and any acquisition audit JSON.
+
+[assistant • pwsh]
+{"command":"$root='D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge'\nGet-ChildItem -Path $root -Recurse -Filter 'exp10*' -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\\\\\\.venv|node_modules' } | Select-Object -First 20 | ForEach-Object { $_.FullName.Replace($root,'.') + '  ' + $_.Length }\n\"`n=== files mentioning nine ingest checks ===\"\nGet-ChildItem -Path \"$root\\benchmark-suite\",\"$root\\review\" -Recurse -Include '*.json','*.md' -ErrorAction SilentlyContinue | Select-String -Pattern 'nine.?checks|ingest_checks|per_paper_checks' -List | Select-Object -First 12 | ForEach-Object { $_.Path.Replace($root,'.') }","description":"Locate the acquisition audit artifacts"}
+
+[tool • pwsh]
+.\paper-kbs\experiments\exp10b_toollayer_papers.py  4715
+.\paper-kbs\experiments\exp10c_ingest_all.py  3135
+.\paper-kbs\experiments\exp10_ingest_papers.py  4641
+.\paper-kbs\experiments\results\exp10_ingest_state.json  8189
+.\paper-kbs\experiments\results\exp10_papers_toollayer.json  7356
+
+=== files mentioning nine ingest checks ===
+
+
+[assistant]
+
+
+[assistant • pwsh]
+{"command":"$py='D:\\anaconda3\\python.exe'\n@'\nimport json\nfrom pathlib import Path\np = Path(r\"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\experiments\\results\\exp10_ingest_state.json\")\nd = json.loads(p.read_text(encoding=\"utf-8\"))\ndef walk(o, pre=\"\", depth=0):\n    if depth > 2: return\n    if isinstance(o, dict):\n        for k, v in list(o.items())[:25]:\n            if isinstance(v, (dict, list)):\n                print(f\"{pre}{k}: {type(v).__name__} len={len(v)}\")\n                walk(v, pre + \"  \", depth + 1)\n            else:\n                print(f\"{pre}{k} = {v!r}\")\n    elif isinstance(o, list) and o:\n        print(f\"{pre}[0] {json.dumps(o[0])[:200]}\")\nwalk(d)\n'@ | Set-Content 'D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\_peek_state.py' -Encoding UTF8\n& $py 'D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\_peek_state.py'","description":"Inspect the ingest state artifact"}
+
+[tool • pwsh]
+kb_id = '6a3c45f2-a1a1-4ce7-b64d-7a5a2f293bb5'
+parse_task_done = True
+parse_task_id = '40f6fd42930d'
+saved: list len=10
+  [0] "artificial-intelligence__1706.03762__attention-is-all-you-need.pdf"
+saved_all: list len=91
+  [0] "agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.pdf"
+
+
+[assistant]
+The state file confirms: `saved_all` has 91 entries. Let me also check exp10_papers_toollayer.json for the "nine checks" and 100/100 claims — that's likely the source of "100/100 papers parsed and content-routed".
+
+Let me peek at it.
+
+[assistant • pwsh]
+{"command":"$py='D:\\anaconda3\\python.exe'\n@'\nimport json\nfrom pathlib import Path\np = Path(r\"D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\experiments\\results\\exp10_papers_toollayer.json\")\nd = json.loads(p.read_text(encoding=\"utf-8\"))\nprint(json.dumps(d, ensure_ascii=False)[:2600])\n'@ | Set-Content 'D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\_peek_tl.py' -Encoding UTF8\n& $py 'D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\paper-kbs\\tex\\_peek_tl.py'","description":"Inspect tool-layer papers audit artifact"}
+
+[tool • pwsh]
+{"kb_id": "6a3c45f2-a1a1-4ce7-b64d-7a5a2f293bb5", "n_docs": 79, "rows": [{"qid": "BQ01", "paper": "Attention Is All You Need", "latency_s": 2.253, "hybrid_latency_s": 3.763, "n_candidates": 12, "n_kept": 11, "bm25": {"hit": true, "best_rank": 1}, "dense": {"hit": true, "best_rank": 1}, "rrf": {"hit": true, "best_rank": 1}, "graph": {"hit": false, "best_rank": null}, "twostage": {"hit": true, "best_rank": 1}, "fusion_only": {"hit": true, "best_rank": 1}, "judged": {"hit": true, "best_rank": 1}, "filter_only": {"hit": true, "best_rank": 1}}, {"qid": "BQ02", "paper": "Quantum Computing in the NISQ era and beyond", "latency_s": 0.621, "hybrid_latency_s": 3.274, "n_candidates": 12, "n_kept": 9, "bm25": {"hit": true, "best_rank": 1}, "dense": {"hit": true, "best_rank": 1}, "rrf": {"hit": true, "best_rank": 1}, "graph": {"hit": false, "best_rank": null}, "twostage": {"hit": true, "best_rank": 1}, "fusion_only": {"hit": true, "best_rank": 1}, "judged": {"hit": true, "best_rank": 2}, "filter_only": {"hit": true, "best_rank": 1}}, {"qid": "BQ03", "paper": "Large Language Models Encode Clinical Knowledge", "latency_s": 0.233, "hybrid_latency_s": 3.212, "n_candidates": 12, "n_kept": 6, "bm25": {"hit": false, "best_rank": null}, "dense": {"hit": false, "best_rank": null}, "rrf": {"hit": false, "best_rank": null}, "graph": {"hit": false, "best_rank": null}, "twostage": {"hit": false, "best_rank": null}, "fusion_only": {"hit": false, "best_rank": null}, "judged": {"hit": false, "best_rank": null}, "filter_only": {"hit": false, "best_rank": null}}, {"qid": "BQ04", "paper": "Primer on the Gene Ontology", "latency_s": 0.187, "hybrid_latency_s": 1.86, "n_candidates": 5, "n_kept": 5, "bm25": {"hit": true, "best_rank": 1}, "dense": {"hit": true, "best_rank": 1}, "rrf": {"hit": true, "best_rank": 1}, "graph": {"hit": false, "best_rank": null}, "twostage": {"hit": true, "best_rank": 1}, "fusion_only": {"hit": true, "best_rank": 1}, "judged": {"hit": true, "best_rank": 2}, "filter_only": {"hit": true, "best_rank": 1}}, {"qid": "BQ05", "paper": "Unified Growth Theory Contradicted by the Economic Growth in Europe", "latency_s": 0.242, "hybrid_latency_s": 1.766, "n_candidates": 12, "n_kept": 11, "bm25": {"hit": true, "best_rank": 1}, "dense": {"hit": true, "best_rank": 1}, "rrf": {"hit": true, "best_rank": 1}, "graph": {"hit": false, "best_rank": null}, "twostage": {"hit": true, "best_rank": 1}, "fusion_only": {"hit": true, "best_rank": 1}, "judged": {"hit": true, "best_rank": 2}, "filter_only": {"hit": true, "best_rank": 1}}, {"qid": "BQ06", "paper": "Precipitation extremes under
+
+
+[assistant]
+Excellent — this artifact confirms: **n_docs = 79** (retrievable papers) and shows **nine configuration lanes per question**: bm25, dense, rrf, graph, twostage, fusion_only, judged, filter_only — that's 8 keys, plus the hybrid (hybrid_latency_s) = 9 configurations. This is the "nine configurations" of Table 5! So the definitions are: BM25, Dense, RRF, Graph, Two-stage, Fusion-only, Judged (QDCVR-Hybrid), Filter, and Hybrid(lane C). 
+
+This also confirms the auditor's edit #3: the nine configurations need definitions in the paper.
+
+Now, with `n_docs: 79` visible in an artifact, the table row "Papers parsed and content-routed 100/100" is clearly about the *submission funnel* and the retrievable count is 79.
+
+Let me now make the ledger edit:
+- Table rows: add "Papers retrievable at evaluation time & 79" and change first row to "Papers submitted & 100" plus "Papers recorded in the ingest state file & 91"? Hmm, is "Paper parsed and content-routed 100/100" an actual asserted check from a run script? The claim "nine per-paper ingest checks passed 100/100" (line 24) is a separate row. The first row of the table ("Papers parsed and content-routed 100/100") may be a summary row derived from the 100 submissions.
+
+Decision: make the table an honest funnel with the retrievability rows, and reword line 24 + n4:182 so nothing claims 100/100 retrievability. Specifically:
+
+Table (n8a:39):
+```
+Papers submitted & 100 \\
+Papers in the ingest state file & 91 \\
+Papers retrievable at evaluation time & 79 \\
+Content-routed libraries & 5 \\
+Stored parts after 30{,}000-character split & 322 \\
+Per-paper ingest checks (nine checks) & 100/100 pass \\
+...
+```
+And caption: "...The first three rows are the submission funnel; the ingest checks below were asserted by the run scripts on the documents they processed, and retrievability (79/100) is the gate the campaign does not fully close (Section on the accounting gap)."
+
+Hmm — but per-paper ingest checks 100/100: if only 91 recorded, was the check run on 100? The E1 prose says "nine per-paper ingest checks passed 100/100". Since the campaign submitted 100 and the checks passed for every paper they were run on... The number 100/100 suggests all 100 had the checks pass, which contradicts 21 unretrievable papers. Unless the checks measured *ingest quality* (images, tables, headings present) on successfully parsed docs.
+
+I can't resolve without the artifact. Options: (a) find the artifact that asserts the nine checks; (b) soften the row label to "Per-paper ingest checks (nine checks, on routed documents) & pass". 
+
+Let me search the benchmark-suite for the nine-check audit quickly — grep for 'ingest_ok' or 'nine' in benchmark-suite JSONs. If not found fast, I'll take the conservative wording.
+
+Actually, the evidence-freshness agent may have already found this. Let me check if it's done — no notification yet. 
+
+Let me do a quick targeted search for a JSON with "checks" keys under benchmark-suite/results.
+
+[assistant • pwsh]
+{"command":"$root='D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge'\nGet-ChildItem -Path \"$root\\benchmark-suite\" -Recurse -Include '*.json' -ErrorAction SilentlyContinue |\n  Where-Object { $_.Name -notmatch 'node_modules' } |\n  ForEach-Object { $t = Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue; if($t -match 'ingest_checks|checks_passed|nine|per_paper'){ $_.FullName.Replace($root,'.') } } | Select-Object -First 15\n\"`n=== any json with 'papers_parsed' or '100' check lists ===\"\nSelect-String -Path \"$root\\benchmark-suite\\**\\*.json\",\"$root\\paper-kbs\\experiments\\results\\*.json\" -Pattern 'papers_parsed|parsed_ok|content_routed' -List -ErrorAction SilentlyContinue | Select-Object -First 10 | ForEach-Object { $_.Path.Replace($root,'.') }","description":"Search for the nine-check audit artifact"}
+
+[tool • pwsh]
+.\benchmark-suite\algorithms\cache\texts_Corpus-Chunks800.json
+.\benchmark-suite\algorithms\cache\texts_Corpus-Paras.json
+.\benchmark-suite\algorithms\cache\texts_Corpus-Struct.json
+.\benchmark-suite\algorithms\cache\texts_LitQA-Chunks800.json
+.\benchmark-suite\algorithms\cache\texts_LitQA-Paras.json
+.\benchmark-suite\algorithms\cache\texts_LitQA-Struct.json
+.\benchmark-suite\results\runs\e2e-20260927T111600Z-a476b0f\arm_C-QK01.json
+.\benchmark-suite\results\runs\e2e-20260927T111600Z-a476b0f\arm_C-QK03.json
+.\benchmark-suite\results\runs\e2e-20260927T111600Z-a476b0f\arm_C-QK06.json
+.\benchmark-suite\results\runs\e2e-20260927T111600Z-a476b0f\arm_C-QK08.json
+.\benchmark-suite\results\runs\e2e-20260927T111600Z-a476b0f\arm_C-QK09.json
+.\benchmark-suite\results\runs\e2e-20260927T120830Z-a476b0f\arm_B-QK10.json
+.\benchmark-suite\results\runs\e2e-20260927T120830Z-a476b0f\arm_C-QK01.json
+.\benchmark-suite\results\runs\e2e-20260927T120830Z-a476b0f\arm_C-QK03.json
+.\benchmark-suite\results\runs\e2e-20260927T120830Z-a476b0f\arm_C-QK06.json
+
+=== any json with 'papers_parsed' or '100' check lists ===
+.\benchmark-suite\results\upload_parse.json

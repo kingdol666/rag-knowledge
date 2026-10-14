@@ -1,0 +1,227 @@
+\section{Knowledge acquisition: parsing, ingestion, and index verification}
+\label{sec:acquisition}
+
+Acquisition is where a document becomes knowledge the system may later
+answer from, and it is the stage this design treats most defensively.
+The pipeline runs its gates in a fixed order, and a document that fails
+one is refused rather than stored and indexed anyway. This section
+follows the stages in execution order, with the audit numbers we have
+and the measurement gaps we do not.
+
+\subsection{Multi-format intake and parsing}
+
+Upload starts in the browser at \texttt{POST /api/parse/file-vt}. The
+Nuxt server forwards the payload to the backend parser endpoint
+\texttt{POST /api/v1/parse/file/vt}, which is asynchronous and returns a
+task identifier rather than a result. The backend then runs
+MinerU~\citep{mineru} as a hidden subprocess on an ephemeral port to
+convert the source into structured Markdown: OCR for scanned pages,
+layout-aware recovery of tables, and formula extraction. The subprocess
+is reachable only through the manager object, which resolves the
+assigned port at runtime; the service never hardcodes it. Its combined
+standard output and standard error are redirected to
+\texttt{backend/logs/mineru-api.log} and never to a pipe---an earlier
+build failed on pipe closure with a bare I/O error, and appending to a
+file removed the failure mode. Parse jobs are polled with a 600\,s
+timeout, so a stuck conversion terminates in a recorded failure instead
+of blocking the caller.
+
+The backend returns a \texttt{markdown\_path}---a filesystem location,
+not document text. The proxy layer reads that file back and writes the
+document into the knowledge base through the tree filesystem service,
+which updates the on-disk Markdown, the tree index, and the per-library
+metadata file in one operation. Keeping the transfer as a path rather
+than a response body matters for large scanned documents: the parse
+output can exceed what a single JSON response should carry, and the
+proxy already needs filesystem access to place extracted images.
+
+\subsection{Quality gates before storage}
+
+Before any parse is scheduled, exact-duplicate detection hashes the
+source with SHA-256 and compares it against the stored records.
+Near-duplicates are then detected in vector space:
+\texttt{kb\_find\_duplicates(threshold=0.90)}. A manual fallback channel
+runs the same check at a 0.85 similarity threshold, combining a
+filename and file-size match with a vector probe when the tool is
+unavailable. On the 322-part corpus the audit recorded 0 true
+duplicates and 35 near-duplicate pairs, all of them adjacent parts of
+the same paper, which is the expected shape when a split document is
+compared against itself.
+
+The parse-quality gate inspects the first 1{,}500 characters of the
+markdown and refuses the parse on any of five signatures: OCR garbage
+(more than 30\,\% garbled), binary residue such as null bytes or base64
+fragments, headings without body text, whitespace collapse, or a
+language mismatch between the source and the extracted text. Refusal is
+terminal for that attempt; the operator either re-parses with a
+different OCR mode or reports the source as unusable.
+
+Storage has one rule: parsed documents are written with
+\texttt{kb\_doc\_save\_parsed}, never \texttt{kb\_doc\_create}. The
+parsed path transfers the complete Markdown and copies all extracted
+images; the generic create path truncates long content and drops
+images, so using it on a parsed document silently loses both. Parts
+produced by the split gate are stored individually through the create
+path because each part is already a complete, size-bounded unit.
+
+\begin{table}[t]
+\centering
+\caption{Acquisition gates, their trigger, and what refusal means. Gate
+names follow the packaged ingestion contract.}
+\label{tab:acq-gates}
+\small
+\begin{tabular}{@{}llp{5.5cm}@{}}
+\toprule
+\textbf{Gate} & \textbf{Trigger} & \textbf{On refusal} \\
+\midrule
+Exact duplicate & SHA-256 hit & Skip the source; report the existing path \\
+Near duplicate & Vector similarity $\geq 0.90$; manual channel $\geq 0.85$ & Skip; supplement tags or description only \\
+Parse quality & Garbled, empty, binary, or language-mismatched body & Reject the parse; re-parse or report the source \\
+Split ceiling & Body beyond 30{,}000 characters & Split into parts; never store the oversized original \\
+Atomic unit & Indivisible unit larger than the target & Keep whole with \texttt{oversized\_atomic\_unit}; hard cuts disabled \\
+Tag anchoring & Tag absent from the read body sample & Return to extraction; do not release the document \\
+Description readback & Claim not supported by the body & Rewrite the description; never the body \\
+\midrule
+Index verification & Collection wrong or \texttt{total\_chunks} $= 0$ & Ingest incomplete; do not report success \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Structure-aware splitting and addressability}
+
+Documents longer than a 30{,}000-character ceiling do not enter the
+knowledge base as single files. A splitting pass proposes boundaries
+from the document's own structure and a validator enforces a target
+utilisation of 0.85 and refuses oversized atomic units: a block that
+cannot be divided without cutting an equation or a table stays whole.
+Each surviving part is written as its own file labelled
+\texttt{part $k$ of $N$}, and every part is read through a line-offset
+address rather than from its beginning, so retrieval can open a section
+without paying for the whole document. The ceiling itself is a budget,
+not a format limit. It keeps a stored unit inside the context window of
+the agents that later read it, and it bounds the per-query read cost of
+a single hit.
+
+The measured outcome for the 100-paper arXiv corpus is 322 stored
+parts, which is the corpus size the audits and the regression probes
+later operate on. A separate 50-paper campaign under the same
+30{,}000-character setting produced 165 documents (nine whole, 156
+parts) and 3{,}798{,}446 characters from 2{,}672\,s of parsing; the
+same campaign at a 2{,}000-character setting produced 2{,}713
+fragments, which is what the ceiling exists to prevent. The vector
+store chunks what is stored at 500 characters with 50 characters of
+overlap~\citep{chroma,hnsw}; a separate dense replica index for
+comparison uses 800-character chunks and produced 4{,}528 chunks for
+the same corpus.
+
+\subsection{Content-derived descriptions and tags}
+
+Descriptions and tags are generated from the body text that the
+ingestion agent has actually read, not from filenames or directory
+positions. A description must carry four elements---subject,
+method or technology, scenario or problem, and key data or
+conclusion---with at least two concrete nouns among them, and every
+claim is read back against the body before storage; a mismatch rewrites
+the description, never the body. Tags pass a blacklist filter, are
+normalised for case and language, and are then re-checked against a
+sample of the body: a tag that does not appear in the text is dropped
+rather than kept for vocabulary reuse.
+
+This gate exists because of what an earlier audit found. Of 26 document
+descriptions checked against their own bodies, 24 did not match: the
+boilerplate ``Gutenberg front/back matter'' had been applied to real
+chapters across a batch, and the librarian that reads part labels
+selected two parts instead of seven. The wider catalog carries the same
+class of defect, with 156 of 322 documents flagged for a broken part
+prefix. Description quality is therefore an empirical result of this
+work, not an assumption: a description is a claim about content, not a
+fact about it. The consequence is architectural rather than editorial.
+Because a claim can be wrong at ingest scale, it must be cheap to
+verify and cheap to repair---which is why verification later became a
+platform primitive (Section~\ref{sec:lanes}) and why the acquisition
+audit ends with descriptions upgraded 165/165 rather than with a
+generation count.
+
+\subsection{Index construction and retrievability verification}
+
+Indexing writes to three channels: a per-library vector collection, a
+lexical BM25 index~\citep{bm25} over chunked documents, and a document
+graph in Neo4j~\citep{neo4j}. Ingestion success is judged by observable
+effects rather than by the tool's success envelope. A path that reported
+success once returned an empty index payload after a GPU
+out-of-memory failure, so the verification gate now requires a
+non-empty collection name, the collection identifier expected for the
+target library, and \texttt{total\_chunks} $\geq 1$ before the document
+counts as indexed. Graph construction is asynchronous and returns a
+task identifier that is polled, but task status is not accepted as
+completion evidence---an earlier graph build left a task row stuck in
+\texttt{running} while its artifacts were already queryable. The
+step closes with an eight-point final check that includes the stored
+copy read back at 500 characters, the chunk and graph node counts, and
+three-layer metadata consistency across the tree index, the library
+metadata file, and the files on disk.
+
+\subsection{Asynchronous execution, failure recovery, and observability}
+
+Parsing and graph construction are non-blocking: each returns a task
+identifier immediately, and a task registry resolves that identifier
+across tool processes, so a caller polls status instead of holding a
+connection open. Batch ingestion is resumable, and it was resumed in
+practice: an interruption during a 100-paper run was recovered by
+restarting the client, which skipped documents already present and
+continued from the recorded position. Per-paper parse time in the
+50-paper campaign ranged from 16.3\,s to 40.4\,s over 26 subject
+domains, 1{,}115.5\,s in total---an average of 22.3\,s per paper.
+
+The same campaign exposes the limit of that bookkeeping. Of 100
+submitted papers, the state file records 91 names, 79 were retrievable
+in the knowledge base at evaluation time, and 21 never became
+retrievable. The reported failure mode is formula-dense scanned
+documents, and a mid-run client crash was recovered by restart, but no
+artifact counts parse attempts, parse failures, or the error text of a
+failed document. The 91-versus-79 difference is therefore an
+observability gap: we can report what the artifacts show, and we cannot
+attribute the difference from them.
+
+Cross-lingual ingestion shows the same gates holding without
+language-specific tuning. The corpus is 400 Wikipedia pages per
+language in English, Chinese, and Japanese, ingested in two rounds; the
+second round was bit-identical to the first
+(Table~\ref{tab:acq-crosslang}). Ingestion success rate was 1.0 for all
+three languages in both rounds. Membership asks where each page landed,
+and the recorded knowledge-base membership accuracy is 0.875 for
+English, 1.0 for Chinese, and 1.0 for Japanese. Storage completeness sums the
+split parts of large documents back to the source length and is 0.975,
+0.9559, and 0.9402 respectively. Self-retrieval Hit@1---the score for
+the page's own indexed text---is 0.975, 1.0, and 1.0.
+
+\begin{table}[t]
+\centering
+\caption{Cross-lingual ingestion, 400 Wikipedia pages per language,
+first round. The second round reproduced these values bit-for-bit, so
+one column is shown. Self-retrieval Hit@1 uses 40 queries per
+language.}
+\label{tab:acq-crosslang}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Language} & \textbf{Ingestion} & \textbf{KB membership} & \textbf{Storage} & \textbf{Self-retrieval} \\
+ & \textbf{success} & \textbf{accuracy} & \textbf{completeness} & \textbf{Hit@1} \\
+\midrule
+English (en) & 1.0 & 0.875  & 0.975   & 0.975 \\
+Chinese (zh) & 1.0 & 1.0    & 0.9559  & 1.0 \\
+Japanese (ja) & 1.0 & 1.0    & 0.9402  & 1.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Taken together, the gates buy a specific property: a document that
+fails a gate is refused rather than silently indexed. The 100-paper
+pipeline audit records that property directly---100/100 papers parsed
+and routed by content, nine per-paper ingest checks 100/100, content
+and storage audits 322/322 and 33/33. What the gates do not buy is
+accounting. The artifacts carry no counter of attempted or failed
+acquisitions, so the difference between 91 recorded and 79 retrievable
+papers cannot be resolved into parse losses and lost records. We report
+it as an observability gap, and we treat a submission as knowledge only
+once verification has found it.

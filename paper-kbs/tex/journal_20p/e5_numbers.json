@@ -1,0 +1,143 @@
+{
+ "run": "run-20261013T094350Z-5f9faac",
+ "per_arm": {
+  "a2": {
+   "n": 10,
+   "lat_mean": 52.6,
+   "lat_med": 49.3,
+   "lat_min": 25.3,
+   "lat_max": 97.4,
+   "cost_mean": 0.711,
+   "cost_sum": 7.11,
+   "tools_mean": 6,
+   "tools_min": 3,
+   "tools_max": 10,
+   "turns_mean": 7,
+   "tok_in": 869860,
+   "tok_out": 62957,
+   "errors": 0
+  },
+  "b": {
+   "n": 10,
+   "lat_mean": 22.2,
+   "lat_med": 20.4,
+   "lat_min": 11.6,
+   "lat_max": 38.6,
+   "cost_mean": 0.4867,
+   "cost_sum": 4.87,
+   "tools_mean": 6.4,
+   "tools_min": 4,
+   "tools_max": 12,
+   "turns_mean": 7.4,
+   "tok_in": 615774,
+   "tok_out": 30016,
+   "errors": 0
+  },
+  "c": {
+   "n": 10,
+   "lat_mean": 24.5,
+   "lat_med": 21.4,
+   "lat_min": 11.2,
+   "lat_max": 48.6,
+   "cost_mean": 0.5269,
+   "cost_sum": 5.27,
+   "tools_mean": 3.7,
+   "tools_min": 2,
+   "tools_max": 11,
+   "turns_mean": 4.7,
+   "tok_in": 740512,
+   "tok_out": 32656,
+   "errors": 0
+  }
+ },
+ "pair": [
+  {
+   "qid": "BQ01",
+   "dcost_ab": 0.3523,
+   "dlat_ab": 30.6,
+   "dcost_ac": 0.1624,
+   "dlat_ac": 21.4
+  },
+  {
+   "qid": "BQ02",
+   "dcost_ab": 0.1028,
+   "dlat_ab": 11.6,
+   "dcost_ac": 0.1119,
+   "dlat_ac": 14.4
+  },
+  {
+   "qid": "BQ03",
+   "dcost_ab": 0.2948,
+   "dlat_ab": 55.0,
+   "dcost_ac": 0.3283,
+   "dlat_ac": 56.7
+  },
+  {
+   "qid": "BQ04",
+   "dcost_ab": 0.1361,
+   "dlat_ab": 13.6,
+   "dcost_ac": 0.0682,
+   "dlat_ac": 8.6
+  },
+  {
+   "qid": "BQ05",
+   "dcost_ab": 0.1987,
+   "dlat_ab": 16.0,
+   "dcost_ac": 0.0572,
+   "dlat_ac": 5.6
+  },
+  {
+   "qid": "BQ06",
+   "dcost_ab": 0.3909,
+   "dlat_ab": 67.5,
+   "dcost_ac": 0.2304,
+   "dlat_ac": 48.8
+  },
+  {
+   "qid": "BQ07",
+   "dcost_ab": 0.1102,
+   "dlat_ab": 13.7,
+   "dcost_ac": 0.0757,
+   "dlat_ac": 14.1
+  },
+  {
+   "qid": "BQ08",
+   "dcost_ab": 0.3916,
+   "dlat_ab": 56.8,
+   "dcost_ac": 0.3683,
+   "dlat_ac": 57.3
+  },
+  {
+   "qid": "BQ09",
+   "dcost_ab": 0.3109,
+   "dlat_ab": 23.5,
+   "dcost_ac": 0.2134,
+   "dlat_ac": 20.6
+  },
+  {
+   "qid": "BQ10",
+   "dcost_ab": -0.0454,
+   "dlat_ab": 16.1,
+   "dcost_ac": 0.2248,
+   "dlat_ac": 33.4
+  }
+ ],
+ "grand_total_cost": 17.25,
+ "paired": {
+  "dcost_ab_mean": 0.2243,
+  "dcost_ab_t": 4.84,
+  "dcost_ab_a2_dearer": 9,
+  "dlat_ab_mean": 30.4,
+  "dlat_ab_t": 4.54,
+  "dcost_ac_mean": 0.1841,
+  "dcost_ac_t": 5.35,
+  "dlat_ac_mean": 28.1,
+  "dlat_ac_t": 4.51
+ },
+ "stability": {
+  "cells": 27,
+  "wall_min": 14.9,
+  "wall_max": 182.0,
+  "wall_median": 52.5
+ }
+}

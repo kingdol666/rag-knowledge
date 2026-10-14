@@ -1,0 +1,261 @@
+\section{System overview and design principles}
+\label{sec:system}
+
+QDCVR (v2.3) is a self-hosted knowledge-base management system that turns a
+folder of PDFs, Office documents, and scans into knowledge bases that agents
+can be trusted to answer from. It is deployed as four cooperating services
+behind one configuration file: a Python service that schedules parsing and
+owns the OCR engine, a TypeScript web application that serves the interface
+and acts as the server-side proxy, a Model Context Protocol (MCP) server that
+exposes the platform's capabilities as tools \cite{mcp}, and a set of storage
+engines that hold documents, vectors, graph edges and task state. The rest of
+this section states what the system has to do, the principles that shaped it,
+how it is put together, what it stores, and how its objects move through their
+life cycle.
+
+\subsection{Requirements}
+\label{sec:req}
+
+The requirements below were derived from the deployment rather than
+postulated; each one names the failure it prevents.
+
+\begin{description}
+\item[R1 --- Parse heterogeneous enterprise documents.] Process regulations,
+failure reports, scanned inspection records and journal articles arrive as
+PDFs, Office documents and images. The system must convert them to text it
+can govern, including scanned pages, tables and formulas, and it must make a
+parse failure visible rather than storing an empty or garbled document. The
+measured failure rate on a 100-paper acquisition was 21\% and is reported as
+a first-class result (Section~\ref{sec:e1}).
+\item[R2 --- Organize by content, not by folder.] A document's home must be
+decided by what it says. Library membership, tags, descriptions and graph
+edges are derived from the content, because folder paths encode who filed a
+document rather than what it contains.
+\item[R3 --- Manage the collection over its lifetime.] Libraries and
+documents are created, moved, renamed, merged, split, deleted and re-indexed.
+Every such operation must preserve agreement between the document on disk,
+the tree registry and the library metadata, and the agreement must be
+verifiable after the fact.
+\item[R4 --- Retrieve with several independent channels.] Lexical, dense,
+catalog and graph channels fail differently, so the system must be able to
+generate candidates with each of them, under explicit budgets, and expose
+which channel proposed what.
+\item[R5 --- Do not promote a similarity score into a citation.] A candidate
+becomes an answer only after its fetched content has been judged to contain
+direct evidence for the question. When no candidate survives, the system
+returns an explicit not-found report instead of the closest text.
+\item[R6 --- Be operable and engine-agnostic.] The platform runs on a single
+local workstation (RTX 5060, 8\,GB, Windows), degrades rather than crashes
+when a model or a subprocess fails, exposes long-running work as pollable
+tasks, and drives whichever agent harness the operator has configured rather
+than being bound to one vendor.
+\end{description}
+
+\subsection{Design principles}
+\label{sec:principles}
+
+Six principles shape the architecture. They are stated as commitments because
+each one is enforced somewhere in the implementation rather than left to
+prompt discipline.
+
+\begin{description}
+\item[P1 --- Content-routed organization.] Documents are organized by what
+they say, not by where they sat: placement, tagging, description and graph
+edges are derived from the parsed content, and retrieval starts from a
+library catalog rather than a directory path (\S\ref{sec:organization}).
+\item[P2 --- Content outranks similarity.] No similarity score, however high,
+promotes a document into an answer. A judging model must read the candidate's
+fetched content and vote, and the platform fetches that content itself so an
+agent cannot argue for a document it has not read (\S\ref{sec:gate}).
+\item[P3 --- Every module terminates at a contract.] Ingestion ends in a
+checked post-condition, retrieval in a budgeted return value, verification in
+a rubric score, and management in an audit. A module whose result cannot be
+checked is a module that cannot be trusted.
+\item[P4 --- Fail closed.] Missing text, an engine error, a timeout or an
+unparseable verdict rejects the candidate rather than passing it, and a
+document that cannot be retrieved after indexing is a failed ingest rather
+than a warning.
+\item[P5 --- Leave an audit trail.] Every candidate, verdict, cut decision,
+tool call and lifecycle operation is recorded, so that a claim about the
+system can be re-examined from evidence instead of re-argued from memory.
+\item[P6 --- Engine-agnostic agency.] Answer agents are pluggable harnesses
+(14 adapters, including \texttt{omp}, Claude and ACP-compatible CLIs); the
+platform constrains them through tool whitelists, budgets and prompts, never
+by coupling to a particular vendor.
+\end{description}
+
+\subsection{Architecture and subsystems}
+\label{sec:architecture}
+
+Fig.~\ref{fig:arch} shows the four layers. The \emph{client and agent layer}
+contains the web interface and the chat endpoint that adapts external agent
+harnesses; requests are annotated with a lane policy before they leave this
+layer. The \emph{tool layer} is an MCP server that exposes the platform's
+capabilities as 95 tools in eight groups (knowledge-base CRUD and catalog,
+document read/write, file system, parsing and task status, tags, search and
+vector index, knowledge graph, and experience and persona management);
+the lane policy is a server-side whitelist, so a lane physically cannot call
+a tool outside its set. The \emph{domain service layer} holds the tree and
+catalog services, the parsing scheduler that manages the OCR engine as a
+supervised subprocess, the vector and two-stage candidate services, the
+experience service, the graph service and the resident judging worker. The
+\emph{storage layer} holds the document tree with its registries, the vector
+collections, the graph database and the task and session databases.
+
+Three properties of this arrangement matter for the rest of the paper. First,
+the retrieval lanes of Section~\ref{sec:lanes} are not separate programs:
+they are policies over one tool layer, which is why a new capability is
+available to every lane at once and why lane behaviour is comparable across
+harnesses. Second, long-running work (parsing, indexing, graph construction,
+distillation) is exposed as a pollable task rather than a blocking call, so a
+slow operation cannot stall an agent's turn. Third, the judging service is a
+resident worker for engineering reasons, not architectural elegance: loading
+the verifier per request cost 10--12\,s against 1--2\,s for a warm verdict,
+which is why the worker, its file lock and its verdict cache exist
+(\S\ref{sec:impl}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig1_architecture}
+\caption{QDCVR architecture. Documents enter through the acquisition
+pipeline (left) and are parsed, quality-gated, split, described and indexed
+into four stores. At run time (right), clients and external agent harnesses
+reach the platform through the chat endpoint, which attaches a lane policy;
+the policy is enforced against the MCP tool layer, whose 95 tools call domain
+services that operate the storage engines. All retrieval lanes terminate at
+the content-verification gate, and a lane that survives no candidate returns
+an explicit not-found report. Organization and life-cycle management
+(bottom) maintain agreement between the tree registry, the document files and
+the library metadata.}
+\label{fig:arch}
+\end{figure}
+
+Table~\ref{tab:modules} maps each function of the system to the components
+that implement it, the design decision that shapes it, and the experiment
+that provides evidence for it. The table is the paper's reading guide:
+Sections~\ref{sec:acquisition}--\ref{sec:implementation} describe these rows
+in order, and Section~\ref{sec:eval} evaluates them.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\caption{System functions, their implementing components, the decision that
+shapes each one, and the evidence that covers it. Evidence identifiers
+E1--E7 refer to the evaluation subsections of Section~\ref{sec:eval}.}
+\label{tab:modules}
+\begin{tabular}{p{2.6cm}p{4.0cm}p{4.6cm}p{1.9cm}}
+\toprule
+Function & Components and representative tools & Key design decision & Evidence \\
+\midrule
+Acquisition and parsing & parsing scheduler, OCR subprocess, duplicate
+detector, split gate & quality-gated: a document that cannot be parsed is
+rejected visibly, and a document that cannot be retrieved afterwards is a
+failed ingest & E1 \\
+Knowledge organization & content router, catalog, tag registry, description
+generator & content decides placement; the catalog is the first retrieval
+instrument & E1, E2 \\
+Life cycle and integrity & tree registry, library metadata, re-index tasks,
+three-source audit & re-indexing is explicit; every operation is audited
+afterwards & E2 \\
+Document graph & graph projection of documents, libraries and tags;
+related-document queries & the graph is a navigation index, never an evidence
+source & E2 \\
+Catalog-first navigation & library and document listings, progressive
+disclosure & metadata before bodies, so a candidate set is chosen without
+loading content & E4, E5 \\
+Content-verified retrieval & vector, lexical, catalog and graph channels;
+lane policies; retrieval gate & verification is a promotion condition, not a
+ranking hint; verdicts fail closed & E4, E6 \\
+Operational knowledge & experience store, credibility tiers, distillation
+runs & a lesson is a claim about practice, so it is drafted, gated and
+capped until it is vetted & E3 \\
+Agent interface and operations & MCP tool layer, chat endpoint, lane
+whitelists, task registry & every capability is a tool with a schema; long
+work is pollable; engines are interchangeable & E5, E7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Data model and storage layout}
+\label{sec:datamodel}
+
+The platform deliberately keeps its data model readable: documents are
+Markdown files, and the two registries are JSON and YAML files that a human
+can open. Table~\ref{tab:datamodel} lists the stores and the fields that the
+rest of the paper refers to.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Stores and their principal contents. Field names are the ones used
+by the implementation and by the audit tools.}
+\label{tab:datamodel}
+\begin{tabular}{p{3.1cm}p{10.4cm}}
+\toprule
+Store & Contents \\
+\midrule
+Tree registry (\texttt{.tree-fs.json}) & version, root identifier and name,
+timestamps, node counter and aggregate statistics; per node:
+identifier, name, type, parent, path, children, metadata map, timestamps.
+Authoritative structure of the collection. \\
+Library metadata (\texttt{.knowledge-base.yml}) & library identifier, name,
+description, creation and update timestamps, per-library configuration
+(including distillation settings); per document: path, name, description,
+tags, content hash, file size, vector-index metadata, free-form metadata.
+The retrieval index read by catalog search. \\
+Document files & Markdown body per document or per split part, plus an image
+directory for figures extracted during parsing. \\
+Vector store & one collection per library (cosine space, 1024-dimensional
+embeddings, HNSW index), holding segment embeddings of 500 characters with
+50-character overlap. \\
+Graph store & nodes for documents, libraries, tags, folders and entities;
+edges for membership, tagging, relatedness, identity and containment. \\
+Task and session databases & pollable task records for parsing, indexing,
+graph builds and distillation; chat sessions; service credentials;
+distillation signals. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two consequences of this layout appear throughout the paper. Because the
+registries are files rather than a database, a document's address is a path
+and its identity is a path plus a content hash, which is what makes the
+three-source audit of \S\ref{sec:org-registries} possible. And because the
+vector store is a separate engine, it can disagree with the registries; the
+system treats that disagreement as a detectable, repairable condition rather
+than as an impossibility.
+
+\subsection{Object life cycle}
+\label{sec:lifecycle}
+
+A document moves through five states. It is \emph{raw} when it arrives, with
+a content hash recorded. It is \emph{parsed} when text has been extracted and
+has passed the parse-quality checks. It is \emph{stored} when the body, its
+description and its tags have been written to disk and registered in both
+registries. It is \emph{indexed} when the vector store and the retrieval
+indexes contain it, which requires an explicit indexing call. It is
+\emph{verified} when a retrieval probe returns the document for a query
+derived from its own content. Only the last state counts as a successful
+ingest; a document that stalls at \emph{stored} is an incomplete operation,
+not a warning.
+
+Libraries have a simpler life cycle: a library is \emph{active} while it is
+addressable and searchable, and it becomes \emph{merged} or \emph{split} when
+an operator consolidates or divides it. Library metadata travels with the
+library when it moves, including its distillation configuration, which is why
+the configuration is stored per library rather than in the deployment file.
+Platform-level versioning is explicit: the platform reports its version
+(2.3.0 in this deployment) and can update itself from its repository through
+the same command-line interface that performs the other operations.
+
+Re-indexing deserves its own paragraph, because it is where the object life
+cycle meets retrieval quality. Re-indexing is explicit, asynchronous and
+observable: it returns a task identifier, it can be forced, and its
+post-condition is a segment count that matches the document content. Nothing
+in the write path re-indexes as a side effect. This is a deliberate trade of
+convenience for the property that no document can silently be missing from
+the vector store: the cost is that a writer who forgets the call leaves a
+stale index, and the mitigation is the audit of \S\ref{sec:org-integrity},
+which detects exactly that condition.

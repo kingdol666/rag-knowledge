@@ -1,0 +1,38 @@
+\section{Agent interface and implementation}
+\label{sec:implementation}
+\label{sec:impl}
+
+\subsection{MCP tools and lane policy}
+\label{sec:impl-tools}
+
+The platform exposes 95 MCP tools across twelve functional groups: catalog and
+library access; document read and write; parsing and OCR; keyword, vector and
+two-stage search; content verification; indexing and re-indexing; tags; the
+document graph; operational experience; project lifecycle and health; pollable
+task management; and persona distillation, which shares the same storage,
+catalog and gate but lies outside the scope of this evaluation. Retrieval lanes
+receive read-oriented tool sets; administrative writes remain separate, and
+long-running parse, re-index and graph operations return pollable task
+identifiers.
+
+The chat endpoint adapts multiple agent harnesses to the same lane interface.
+The server selects a supported harness and permission mode, applies a timeout,
+and can execute synchronously or register an asynchronous task. Lane policies
+combine tool allow-lists, deny-lists and call budgets---server-side controls
+rather than prompt-only instructions.
+
+\subsection{Runtime and deployment}
+\label{sec:impl-runtime}
+
+The backend uses Python 3.12 and FastAPI. ChromaDB stores cosine-space HNSW
+collections with normalized BGE-M3 embeddings (1024 dimensions)
+\cite{chroma,hnsw,bge-m3}; Neo4j stores the document graph \cite{neo4j};
+BM25 supports lexical search \cite{bm25}; MinerU provides parsing and OCR
+\cite{mineru}. The Laya verifier runs locally as a serialized worker.
+
+The evaluation environment is one self-hosted Windows workstation with an
+RTX 5060 (8 GB) used for embeddings and judging. Local execution reduces
+external service dependencies but does not establish privacy, access-control or
+multi-host deployment guarantees. The implementation and scripts are available
+at \url{https://github.com/kingdol666/rag-knowledge}; experimental corpora
+remain subject to their data-use constraints.

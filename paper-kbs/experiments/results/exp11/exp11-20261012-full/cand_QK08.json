@@ -1,0 +1,167 @@
+{
+ "qid": "QK08",
+ "query": "Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?",
+ "fused": [
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+   "lane": "both",
+   "vector_score": 0.7897226810455322,
+   "vector_rank": 1,
+   "catalog_rank": 3,
+   "fused_rank": 1
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+   "lane": "both",
+   "vector_score": 0.7089682817459106,
+   "vector_rank": 2,
+   "catalog_rank": 13,
+   "fused_rank": 2
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+   "lane": "both",
+   "vector_score": 0.6512495875358582,
+   "vector_rank": 3,
+   "catalog_rank": 14,
+   "fused_rank": 3
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+   "lane": "both",
+   "vector_score": 0.5415685772895813,
+   "vector_rank": 4,
+   "catalog_rank": 165,
+   "fused_rank": 4
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+   "lane": "both",
+   "vector_score": 0.519490659236908,
+   "vector_rank": 5,
+   "catalog_rank": 164,
+   "fused_rank": 5
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+   "lane": "both",
+   "vector_score": 0.5065999627113342,
+   "vector_rank": 6,
+   "catalog_rank": 99,
+   "fused_rank": 6
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+   "lane": "both",
+   "vector_score": 0.5051926970481873,
+   "vector_rank": 7,
+   "catalog_rank": 297,
+   "fused_rank": 7
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.5001343488693237,
+   "vector_rank": 8,
+   "catalog_rank": 274,
+   "fused_rank": 8
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+   "lane": "both",
+   "vector_score": 0.4956103563308716,
+   "vector_rank": 9,
+   "catalog_rank": 52,
+   "fused_rank": 9
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+   "lane": "both",
+   "vector_score": 0.4849059581756592,
+   "vector_rank": 10,
+   "catalog_rank": 246,
+   "fused_rank": 10
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md",
+   "lane": "both",
+   "vector_score": 0.47950899600982666,
+   "vector_rank": 12,
+   "catalog_rank": 177,
+   "fused_rank": 11
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md",
+   "lane": "both",
+   "vector_score": 0.4768558144569397,
+   "vector_rank": 14,
+   "catalog_rank": 53,
+   "fused_rank": 12
+  }
+ ],
+ "fusion_trace": {
+  "agreed": 44,
+  "vector_only_pool": 5,
+  "catalog_only_pool": 258,
+  "vector_only_taken": 5,
+  "catalog_only_taken": 4,
+  "fused_before_cap": 53,
+  "fused_after_cap": 12,
+  "candidate_cap": 12
+ },
+ "vector_trace": {
+  "per_lib_hits": {
+   "计算机与人工智能": 30,
+   "自然科学与地球科学": 30,
+   "生命科学与医学": 30,
+   "工程与能源": 30,
+   "经济与社会": 30
+  },
+  "raw_hits": 150,
+  "doc_level": 49,
+  "seconds": 1.9
+ },
+ "catalog_trace": {
+  "per_lib_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "catalog_size": 322,
+  "catalog_overlap_gt0": 302,
+  "seconds": 1.4
+ },
+ "fetch_trace": {
+  "seconds": 3.3,
+  "errors": []
+ },
+ "heads": {
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md": "# climate-science__2409.13934__on-the-extrapolation-of-generative-adversari（第 2/3 部分）\n章节: On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates > 3.2 Extreme Precipitation Climate Change Signal\n## 3.2 Extreme Precipitation Climate Change Signal\n\n\nThe multi-model mean (MME) climate change signal from CCAM varies significantly at different precipitation percentiles. As expected, at the 50th percentile the signal closely matches the annual mean (Section 3.1). This shows a mix of drying and wetting across the country (Supplementary Figure S2), leading to a near-zero or negative signal (Figure 1c). At the $9 0 ^ { \\mathrm { t h } }$ perc",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md": "# climate-science__2409.13934__on-the-extrapolation-of-generative-adversari（第 1/3 部分）\n章节: On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n# On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n\n\nNeelesh Rampal1,3, Peter B. Gibson2, Steven Sherwood³ and Gab Abramowitz³\n\n1National Institute of Water and Atmospheric Research, Auckland, New Zealand.\n\n2National Institute of Water and Atmospheric Research, Wellington, New Zealand\n\n3 Climate Change Research Centre & ARC Centre of Excellence for Climate Extremes, University of New South Wales, Sydney, Australia.\n\nCorrespondi",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md": "# climate-science__2409.13934__on-the-extrapolation-of-generative-adversari（第 3/3 部分）\n章节: On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n# On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n\n\nNeelesh Rampal1’3, Peter B. Gibson², Steven Sherwood³ and Gab Abramowitz³\n\n1National Institute of Water and Atmospheric Research, Auckland, New Zealand.\n\n²National Institute of Water and Atmospheric Research, Wellington, New Zealand\n\n³ Climate Change Research Centre & ARC Centre of Excellence for Climate Extremes, University of New South Wales, Sydney, Australia.\n\nContents of",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md": "# genomics__2602.10156__strand-sequence-conditioned-transport-for-si（第 2/6 部分）\n章节: STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations > 4. Experimental Setup\n## 4. Experimental Setup\n\n\nData Source and Preprocessing. We utilize single-cell perturbation datasets from PerturbQA (Wu et al., 2025), spanning four cell lines. We restrict our analysis to K562, Jurkat, and RPE1, excluding HepG2 due to low statistical power for differential expression evaluation arising from reduced cell counts per perturbation (median 45 cells in HepG2 versus 72 in RPE1, 83 in Jurkat, and 121 in K562 (Nadig et al. 2025)). We further constructed a cross-cell-line dataset (termed Combined) using the t",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md": "# genomics__2602.10156__strand-sequence-conditioned-transport-for-si（第 1/6 部分）\n章节: STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations\n# STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations\n\n\nBoyang Fu1 George Dasoulas2 Sameer Gabbita3 Xiang Lin1 Shanghua Gao1 Xiaorui Su1 Soumya Ghosh2 Marinka Zitnik1456\n\n## Abstract\n\n\nPredicting how genetic perturbations change cellular state is a core problem for building controllable models of gene regulation. Perturbations targeting the same gene can produce different transcriptional responses depending on their genomic locus, including different transcription start sites and regulatory elements. Gene-level perturbation m",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md": "# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 3/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers > 6 EXPERIMENTAL EVALUATION\n## 6 EXPERIMENTAL EVALUATION\n\n\nIn our experiments, we first determine a suitable set of hyperparameters for our genetic framework. Based on those hyperparameters, we then carefully evaluate GENE. We highlight the cost for training and the ability to automatically reach a certain performance baseline. Finally, we show the capability of GENE to match and even beat the performance of several state-of-the-art index structures. System. All experiments were executed on a machine with an AMD Ryzen Threadripper 1900X 8-",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md": "# statistics__2604.22320__nonparametric-estimation-of-isotropic-covari（第 3/9 部分）\n章节: Nonparametric Estimation of Isotropic Covariance Function\\* > 4 Numerical Illustrations using Simulated Data Sets\n## 4 Numerical Illustrations using Simulated Data Sets\n\n\nTo assess the finite sample accuracy of our methodology, a simulation study was conducted. For comparison purposes, we performed covariance estimation using our proposed likelihood-based nonparametric method as well as the recent popular nonparametric methods (Choi et al., 2013) and (Huang et al., 2011), referred to as Choi method and Huang method respectively Their estimator were obtained through restricted weighted least squares as\n\n$$\n\\b",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md": "# nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md.md（第 1/4 部分）\n章节: How do language models learn facts? Dynamics, curricula and hallucinations\n# How do language models learn facts? Dynamics, curricula and hallucinations\n\n\nNicolas Zucchet1,+, Jörg Bornschein2, Stephanie Chan2, Andrew Lampinen², Razvan Pascanu² and Soham De²\n\n1ETH Zürich, 2Google DeepMind, +Work done at Google DeepMind\n\nLarge language models accumulate vast knowledge during pre-training, yet the dynamics governing this acquisition remain poorly understood. This work investigates the learning dynamics of language models on a synthetic factual recall task, uncovering three key findings: First, language models lear",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md": "# genomics__2602.10156__strand-sequence-conditioned-transport-for-si（第 5/6 部分）\n章节: STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations > G. Detailed Performance Benchmarks\n## G. Detailed Performance Benchmarks\n\n\nWe provide the comprehensive breakdown of performance metrics across all datasets and settings.\n\nTable S5. Low sample gene perturbation performance comparison Values are reported as mean ± standard error. For readability, Ov.@N, Prec.@N, Dir.Match, and Disc.Cos are scaled by $1 0 ^ { - 1 }$ , and MSE is scaled by $1 0 ^ { - 2 }$ . Avg. Rank measures the overall rank averaged across all metrics. Best Avg. Rank is shown in bold.\n<table><tr><td></td><td></td><td colspan",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md": "# large-language-models__2005.14165__language-models-are-few-shot-learners.md.md（第 3/13 部分）\n章节: Language Models are Few-Shot Learners > 3.6 Reading Comprehension\n## 3.6 Reading Comprehension\n\n\nNext we evaluate GPT-3 on the task of reading comprehension. We use a suite of 5 datasets including abstractive, multiple choice, and span based answer formats in both dialog and single question settings. We observe a wide spread in GPT-3's performance across these datasets suggestive of varying capability with different answer formats. In general we observe GPT-3 is on par with initial baselines and early results trained using contextual representations on each respective dataset.\n\nGPT-3 performs best",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md": "# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 6/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance > E.3. Bootstrapping In-Context Segmentation\n## E.3. Bootstrapping In-Context Segmentation\n\n\nSetup. For UniverSeg [16], a non-interactive in-context segmentation method, we segment the dataset by bootstrapping from a single context example with ground truth segmentation. For each image in the dataset, we make an incontext prediction and then add the prediction to the context set for the next image until all images in the dataset have been segmented. As an upper bound on performance, we also evaluated u",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md": "# genomics__2602.10156__strand-sequence-conditioned-transport-for-si（第 6/6 部分）\n章节: STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations > I.4. Concatenation Predictor Architecture\n## I.4. Concatenation Predictor Architecture\n\n\nThe concatenation baseline predicts the perturbed cell embedding $\\hat { z } _ { p }$ via a deterministic feedforward network:\n\n$$\n\\hat { z } _ { p } = g _ { \\psi } \\big ( [ z _ { c } ; z _ { \\mathrm { D N A } } ] \\big ) ,\n$$\n\nwhere $[ \\cdot ; \\cdot ]$ denotes vector concatenation and $g _ { \\psi } : \\mathbb { R } ^ { 2 d }  \\mathbb { R } ^ { d }$ is a multilayer perceptron.\n\nThe predictor $g _ { \\psi }$ consists of:\n\n• An input layer of dimension 2d\n\n•"
+ },
+ "built": "2026-10-12T05:16:58.968706+00:00"
+}

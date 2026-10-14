@@ -1,0 +1,1297 @@
+{
+  "n_questions": 2,
+  "conditions": {
+    "pinned-gold": {
+      "n": 2,
+      "hit@5_rate": 1.0,
+      "hit@10_rate": 1.0,
+      "gold_rank_mean": 1.0,
+      "n_candidates_mean": 4.0,
+      "kept_after_gate_mean": null,
+      "latency_s_mean": 0.15,
+      "gold_rank_raw": [
+        1,
+        1
+      ]
+    },
+    "pinned-other": {
+      "n": 2,
+      "hit@5_rate": 0.0,
+      "hit@10_rate": 0.0,
+      "gold_rank_mean": null,
+      "n_candidates_mean": 7.5,
+      "kept_after_gate_mean": null,
+      "latency_s_mean": 0.0,
+      "gold_rank_raw": [
+        null,
+        null
+      ]
+    },
+    "flat": {
+      "n": 2,
+      "hit@5_rate": 1.0,
+      "hit@10_rate": 1.0,
+      "gold_rank_mean": 1.0,
+      "n_candidates_mean": 7.0,
+      "kept_after_gate_mean": null,
+      "latency_s_mean": 0.0,
+      "gold_rank_raw": [
+        1,
+        1
+      ]
+    },
+    "catalog-only": {
+      "n": 2,
+      "hit@5_rate": 1.0,
+      "hit@10_rate": 1.0,
+      "gold_rank_mean": 1.5,
+      "n_candidates_mean": 129.5,
+      "kept_after_gate_mean": null,
+      "latency_s_mean": 0.0,
+      "gold_rank_raw": [
+        2,
+        1
+      ]
+    }
+  },
+  "catalog_library_top1_routing": {
+    "hits": 2,
+    "n": 2
+  },
+  "environment": {
+    "naming": {
+      "exact_call": "kb_get_documents(kb_id=<each of 5 libraries>, lightweight=True)",
+      "n_document_parts": 322,
+      "parts_with_domain_double_underscore_prefix": 322,
+      "prefix_leak_fraction": 1.0,
+      "parts_with_double_md_suffix": 165,
+      "double_md_examples": [
+        "计算机与人工智能/artificial-intelligence__2504.16021__navigating-the-state-of-cognitive-flow-conte.md.md",
+        "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+        "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+        "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+        "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md"
+      ],
+      "distinct_prefixes": 26,
+      "prefix_histogram": {
+        "large-language-models": 32,
+        "mathematics": 30,
+        "quantum-physics": 20,
+        "nlp": 19,
+        "genomics": 19,
+        "economics": 19,
+        "artificial-intelligence": 17,
+        "databases": 17,
+        "clinical-medicine": 17,
+        "statistics": 14,
+        "chemistry": 14,
+        "climate-science": 12,
+        "neuroscience": 10,
+        "robotics": 9,
+        "medical-imaging": 9,
+        "materials": 9,
+        "speech": 8,
+        "astronomy": 7,
+        "seismology": 7,
+        "power-systems": 7,
+        "social-networks": 5,
+        "oceanography": 5,
+        "finance": 5,
+        "immunology": 4,
+        "agriculture": 4,
+        "gravitational-physics": 3
+      },
+      "prefix_leak_per_library": {
+        "计算机与人工智能": 131,
+        "自然科学与地球科学": 75,
+        "生命科学与医学": 53,
+        "工程与能源": 39,
+        "经济与社会": 24
+      },
+      "sample_doc_paths": [
+        "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+        "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+        "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+        "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+        "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md",
+        "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+        "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md",
+        "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md"
+      ]
+    },
+    "router": {
+      "exact_call": "kb_get_documents(kb_id=<each of 5 libraries>, lightweight=True) + glob(benchmark-suite/data/papers/*.pdf)",
+      "n_parts_sampled": 322,
+      "n_papers": 96,
+      "prefixes_spanning_multiple_libraries": {
+        "mathematics": {
+          "自然科学与地球科学": 7,
+          "工程与能源": 23
+        }
+      },
+      "papers_matching_majority_library": 95,
+      "papers_total": 96,
+      "paper_agreement_fraction": 0.9896,
+      "disk_cross_check": {
+        "checked": 96,
+        "agree": 96,
+        "missing_on_disk": [],
+        "rows": [
+          {
+            "arxiv_id": "0706.3294",
+            "disk_domain": "gravitational-physics",
+            "live_prefix": "gravitational-physics",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1001.3181",
+            "disk_domain": "social-networks",
+            "live_prefix": "social-networks",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1104.2730",
+            "disk_domain": "oceanography",
+            "live_prefix": "oceanography",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1105.1887",
+            "disk_domain": "astronomy",
+            "live_prefix": "astronomy",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1207.3189",
+            "disk_domain": "astronomy",
+            "live_prefix": "astronomy",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1210.0979",
+            "disk_domain": "astronomy",
+            "live_prefix": "astronomy",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1301.6357",
+            "disk_domain": "neuroscience",
+            "live_prefix": "neuroscience",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1308.1846",
+            "disk_domain": "seismology",
+            "live_prefix": "seismology",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1311.2485",
+            "disk_domain": "quantum-physics",
+            "live_prefix": "quantum-physics",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1311.6857",
+            "disk_domain": "agriculture",
+            "live_prefix": "agriculture",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1404.4184",
+            "disk_domain": "neuroscience",
+            "live_prefix": "neuroscience",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1405.4980",
+            "disk_domain": "mathematics",
+            "live_prefix": "mathematics",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1412.5558",
+            "disk_domain": "finance",
+            "live_prefix": "finance",
+            "live_library": [
+              "经济与社会"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1503.07557",
+            "disk_domain": "climate-science",
+            "live_prefix": "climate-science",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1506.03880",
+            "disk_domain": "statistics",
+            "live_prefix": "statistics",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1512.08067",
+            "disk_domain": "economics",
+            "live_prefix": "economics",
+            "live_library": [
+              "经济与社会"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1602.01876",
+            "disk_domain": "genomics",
+            "live_prefix": "genomics",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1606.00335",
+            "disk_domain": "materials",
+            "live_prefix": "materials",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1609.00415",
+            "disk_domain": "economics",
+            "live_prefix": "economics",
+            "live_library": [
+              "经济与社会"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1610.04013",
+            "disk_domain": "quantum-physics",
+            "live_prefix": "quantum-physics",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1706.03762",
+            "disk_domain": "artificial-intelligence",
+            "live_prefix": "artificial-intelligence",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1706.05261",
+            "disk_domain": "artificial-intelligence",
+            "live_prefix": "artificial-intelligence",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1706.06697",
+            "disk_domain": "databases",
+            "live_prefix": "databases",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1709.02924",
+            "disk_domain": "robotics",
+            "live_prefix": "robotics",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1712.01369",
+            "disk_domain": "materials",
+            "live_prefix": "materials",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1801.00862",
+            "disk_domain": "quantum-physics",
+            "live_prefix": "quantum-physics",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1802.09426",
+            "disk_domain": "nlp",
+            "live_prefix": "nlp",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1805.00397",
+            "disk_domain": "climate-science",
+            "live_prefix": "climate-science",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1807.09475",
+            "disk_domain": "economics",
+            "live_prefix": "economics",
+            "live_library": [
+              "经济与社会"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1809.03210",
+            "disk_domain": "robotics",
+            "live_prefix": "robotics",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1809.08199",
+            "disk_domain": "clinical-medicine",
+            "live_prefix": "clinical-medicine",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1810.04805",
+            "disk_domain": "nlp",
+            "live_prefix": "nlp",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1810.09292",
+            "disk_domain": "mathematics",
+            "live_prefix": "mathematics",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1811.04224",
+            "disk_domain": "speech",
+            "live_prefix": "speech",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1901.03951",
+            "disk_domain": "economics",
+            "live_prefix": "economics",
+            "live_library": [
+              "经济与社会"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1904.11280",
+            "disk_domain": "clinical-medicine",
+            "live_prefix": "clinical-medicine",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1906.10015",
+            "disk_domain": "neuroscience",
+            "live_prefix": "neuroscience",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1909.03801",
+            "disk_domain": "clinical-medicine",
+            "live_prefix": "clinical-medicine",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1909.07748",
+            "disk_domain": "finance",
+            "live_prefix": "finance",
+            "live_library": [
+              "经济与社会"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1911.02792",
+            "disk_domain": "chemistry",
+            "live_prefix": "chemistry",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "1911.06206",
+            "disk_domain": "economics",
+            "live_prefix": "economics",
+            "live_library": [
+              "经济与社会"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2001.10696",
+            "disk_domain": "neuroscience",
+            "live_prefix": "neuroscience",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2005.03328",
+            "disk_domain": "databases",
+            "live_prefix": "databases",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2005.14165",
+            "disk_domain": "large-language-models",
+            "live_prefix": "large-language-models",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2007.10574",
+            "disk_domain": "climate-science",
+            "live_prefix": "climate-science",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2009.10669",
+            "disk_domain": "databases",
+            "live_prefix": "databases",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2011.07200",
+            "disk_domain": "chemistry",
+            "live_prefix": "chemistry",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2011.14424",
+            "disk_domain": "economics",
+            "live_prefix": "economics",
+            "live_library": [
+              "经济与社会"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2012.10385",
+            "disk_domain": "climate-science",
+            "live_prefix": "climate-science",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2102.02440",
+            "disk_domain": "databases",
+            "live_prefix": "databases",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2109.05887",
+            "disk_domain": "chemistry",
+            "live_prefix": "chemistry",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2109.14357",
+            "disk_domain": "speech",
+            "live_prefix": "speech",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2110.07787",
+            "disk_domain": "genomics",
+            "live_prefix": "genomics",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2110.07844",
+            "disk_domain": "nlp",
+            "live_prefix": "nlp",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2110.08918",
+            "disk_domain": "clinical-medicine",
+            "live_prefix": "clinical-medicine",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2201.00752",
+            "disk_domain": "quantum-physics",
+            "live_prefix": "quantum-physics",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2201.03675",
+            "disk_domain": "clinical-medicine",
+            "live_prefix": "clinical-medicine",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2203.15752",
+            "disk_domain": "social-networks",
+            "live_prefix": "social-networks",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2207.08146",
+            "disk_domain": "power-systems",
+            "live_prefix": "power-systems",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2209.15032",
+            "disk_domain": "speech",
+            "live_prefix": "speech",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2211.04977",
+            "disk_domain": "materials",
+            "live_prefix": "materials",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2211.12700",
+            "disk_domain": "mathematics",
+            "live_prefix": "mathematics",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2212.13138",
+            "disk_domain": "clinical-medicine",
+            "live_prefix": "clinical-medicine",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2301.08436",
+            "disk_domain": "genomics",
+            "live_prefix": "genomics",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2303.00445",
+            "disk_domain": "quantum-physics",
+            "live_prefix": "quantum-physics",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2303.14061",
+            "disk_domain": "artificial-intelligence",
+            "live_prefix": "artificial-intelligence",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2304.12442",
+            "disk_domain": "astronomy",
+            "live_prefix": "astronomy",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2306.01022",
+            "disk_domain": "medical-imaging",
+            "live_prefix": "medical-imaging",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2310.10981",
+            "disk_domain": "nlp",
+            "live_prefix": "nlp",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2311.00487",
+            "disk_domain": "quantum-physics",
+            "live_prefix": "quantum-physics",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2312.10793",
+            "disk_domain": "large-language-models",
+            "live_prefix": "large-language-models",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2401.06823",
+            "disk_domain": "genomics",
+            "live_prefix": "genomics",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2402.07064",
+            "disk_domain": "mathematics",
+            "live_prefix": "mathematics",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2402.11690",
+            "disk_domain": "large-language-models",
+            "live_prefix": "large-language-models",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2402.12317",
+            "disk_domain": "large-language-models",
+            "live_prefix": "large-language-models",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2408.09942",
+            "disk_domain": "materials",
+            "live_prefix": "materials",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2409.09639",
+            "disk_domain": "climate-science",
+            "live_prefix": "climate-science",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2409.13934",
+            "disk_domain": "climate-science",
+            "live_prefix": "climate-science",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2410.10669",
+            "disk_domain": "robotics",
+            "live_prefix": "robotics",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2411.18583",
+            "disk_domain": "large-language-models",
+            "live_prefix": "large-language-models",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2412.06333",
+            "disk_domain": "artificial-intelligence",
+            "live_prefix": "artificial-intelligence",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2412.15058",
+            "disk_domain": "medical-imaging",
+            "live_prefix": "medical-imaging",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2502.00306",
+            "disk_domain": "large-language-models",
+            "live_prefix": "large-language-models",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2503.21676",
+            "disk_domain": "nlp",
+            "live_prefix": "nlp",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2504.16021",
+            "disk_domain": "artificial-intelligence",
+            "live_prefix": "artificial-intelligence",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2508.05896",
+            "disk_domain": "agriculture",
+            "live_prefix": "agriculture",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2508.18304",
+            "disk_domain": "genomics",
+            "live_prefix": "genomics",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2509.05359",
+            "disk_domain": "speech",
+            "live_prefix": "speech",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2509.14191",
+            "disk_domain": "robotics",
+            "live_prefix": "robotics",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2510.13343",
+            "disk_domain": "artificial-intelligence",
+            "live_prefix": "artificial-intelligence",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2602.10156",
+            "disk_domain": "genomics",
+            "live_prefix": "genomics",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2604.01385",
+            "disk_domain": "immunology",
+            "live_prefix": "immunology",
+            "live_library": [
+              "生命科学与医学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2604.22320",
+            "disk_domain": "statistics",
+            "live_prefix": "statistics",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2606.10843",
+            "disk_domain": "seismology",
+            "live_prefix": "seismology",
+            "live_library": [
+              "自然科学与地球科学"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2607.03098",
+            "disk_domain": "power-systems",
+            "live_prefix": "power-systems",
+            "live_library": [
+              "工程与能源"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          },
+          {
+            "arxiv_id": "2608.05850",
+            "disk_domain": "nlp",
+            "live_prefix": "nlp",
+            "live_library": [
+              "计算机与人工智能"
+            ],
+            "domain_matches_prefix": true,
+            "single_library": true
+          }
+        ]
+      }
+    },
+    "per_lib_counts": {
+      "计算机与人工智能": 131,
+      "自然科学与地球科学": 75,
+      "生命科学与医学": 53,
+      "工程与能源": 39,
+      "经济与社会": 24
+    }
+  },
+  "run_id": "exp12-20261012-131120",
+  "started": "2026-10-12T05:11:24.569781+00:00",
+  "finished": "2026-10-12T05:11:28.396023+00:00",
+  "wall_clock_s": 3.8,
+  "per_question": [
+    {
+      "qid": "QK01",
+      "gold_arxiv": [
+        "1706.03762"
+      ],
+      "gold_libraries": [
+        "计算机与人工智能"
+      ],
+      "rows": {
+        "pinned-gold": {
+          "n_candidates": 5,
+          "raw_chunk_hits": 10,
+          "gold_rank": 1,
+          "hit@5": true,
+          "hit@10": true,
+          "kept_after_gate": null,
+          "gate_status": "skipped",
+          "latency_s": 0.3
+        },
+        "pinned-other": {
+          "n_candidates": 8,
+          "raw_chunk_hits": 10,
+          "gold_rank": null,
+          "hit@5": false,
+          "hit@10": false,
+          "kept_after_gate": null,
+          "gate_status": "skipped",
+          "latency_s": 0.0
+        },
+        "flat": {
+          "n_candidates": 8,
+          "raw_chunk_hits": 10,
+          "gold_rank": 1,
+          "hit@5": true,
+          "hit@10": true,
+          "kept_after_gate": null,
+          "gate_status": "skipped",
+          "latency_s": 0.0
+        },
+        "catalog-only": {
+          "n_candidates": 165,
+          "raw_chunk_hits": null,
+          "gold_rank": 2,
+          "hit@5": true,
+          "hit@10": true,
+          "kept_after_gate": null,
+          "gate_status": "skipped",
+          "latency_s": 0.0
+        }
+      },
+      "catalog_routing": {
+        "scores": {
+          "计算机与人工智能": {
+            "lib_desc_overlap": 1,
+            "best_doc_overlap": 3
+          },
+          "自然科学与地球科学": {
+            "lib_desc_overlap": 1,
+            "best_doc_overlap": 2
+          },
+          "生命科学与医学": {
+            "lib_desc_overlap": 1,
+            "best_doc_overlap": 2
+          },
+          "工程与能源": {
+            "lib_desc_overlap": 1,
+            "best_doc_overlap": 2
+          },
+          "经济与社会": {
+            "lib_desc_overlap": 1,
+            "best_doc_overlap": 3
+          }
+        },
+        "order_by_lib_description": [
+          "计算机与人工智能",
+          "自然科学与地球科学",
+          "生命科学与医学",
+          "工程与能源",
+          "经济与社会"
+        ],
+        "order_by_best_doc_overlap": [
+          "经济与社会",
+          "计算机与人工智能",
+          "工程与能源",
+          "生命科学与医学",
+          "自然科学与地球科学"
+        ]
+      }
+    },
+    {
+      "qid": "QK02",
+      "gold_arxiv": [
+        "1602.01876"
+      ],
+      "gold_libraries": [
+        "生命科学与医学"
+      ],
+      "rows": {
+        "pinned-gold": {
+          "n_candidates": 3,
+          "raw_chunk_hits": 10,
+          "gold_rank": 1,
+          "hit@5": true,
+          "hit@10": true,
+          "kept_after_gate": null,
+          "gate_status": "skipped",
+          "latency_s": 0.0
+        },
+        "pinned-other": {
+          "n_candidates": 7,
+          "raw_chunk_hits": 9,
+          "gold_rank": null,
+          "hit@5": false,
+          "hit@10": false,
+          "kept_after_gate": null,
+          "gate_status": "skipped",
+          "latency_s": 0.0
+        },
+        "flat": {
+          "n_candidates": 6,
+          "raw_chunk_hits": 10,
+          "gold_rank": 1,
+          "hit@5": true,
+          "hit@10": true,
+          "kept_after_gate": null,
+          "gate_status": "skipped",
+          "latency_s": 0.0
+        },
+        "catalog-only": {
+          "n_candidates": 94,
+          "raw_chunk_hits": null,
+          "gold_rank": 1,
+          "hit@5": true,
+          "hit@10": true,
+          "kept_after_gate": null,
+          "gate_status": "skipped",
+          "latency_s": 0.0
+        }
+      },
+      "catalog_routing": {
+        "scores": {
+          "计算机与人工智能": {
+            "lib_desc_overlap": 0,
+            "best_doc_overlap": 1
+          },
+          "自然科学与地球科学": {
+            "lib_desc_overlap": 0,
+            "best_doc_overlap": 1
+          },
+          "生命科学与医学": {
+            "lib_desc_overlap": 0,
+            "best_doc_overlap": 3
+          },
+          "工程与能源": {
+            "lib_desc_overlap": 0,
+            "best_doc_overlap": 1
+          },
+          "经济与社会": {
+            "lib_desc_overlap": 0,
+            "best_doc_overlap": 1
+          }
+        },
+        "order_by_lib_description": [
+          "计算机与人工智能",
+          "自然科学与地球科学",
+          "生命科学与医学",
+          "工程与能源",
+          "经济与社会"
+        ],
+        "order_by_best_doc_overlap": [
+          "生命科学与医学",
+          "工程与能源",
+          "经济与社会",
+          "自然科学与地球科学",
+          "计算机与人工智能"
+        ]
+      }
+    }
+  ],
+  "protocol_deviations": [],
+  "failures": []
+}

@@ -1,0 +1,170 @@
+\section{Experimental setup}
+\label{sec:setup}
+
+\subsection{Corpus and gold questions}
+The live catalog contains five deployed knowledge bases from an industrial
+setting spanning photovoltaic materials, module failure analysis, plant
+O\&M, and discrete-manufacturing telemetry: thin-film process regulations
+(3 documents), a
+PV-module failure-analysis library (2), a PV-plant O\&M library (5), an
+industrial workshop library with 31 documents including 20 near-duplicate
+equipment-telemetry reports, and a one-document production watch-clause
+library --- 42 documents in total. The telemetry cluster is a deliberate
+stressor: its documents share prefixes, domains, and vocabulary, mimicking
+the confuser density of real deployments. We authored sixteen domain
+questions (Table~\ref{tab:questions}), each with one or two gold documents
+identified by unique filename fragments, and 1--3 fact markers (numbers or
+terms any grounded answer must contain, e.g.\ the 61--68\% vs.\ $\geq$85\%
+cure-degree contrast for the EL question (Q2), and the ``TC0'' dead-loop
+verdict for the telemetry question (Q7)).
+Two corpus-integrity incidents surfaced while setting up the evaluation and
+were repaired through the platform's own remediation path before any
+measurement: one document missing from its vector collection (re-indexed
+via \texttt{index-document}) and one library whose collection had been
+silently lost (rebuilt via \texttt{reindex}); both incidents are instances
+of the failure class discussed in Section~\ref{sec:discussion}.
+
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Gold-annotated question set over the five production knowledge
+bases. ``Gold'' lists unique filename fragments of the ground-truth
+documents. All sixteen questions serve the tool-layer experiment; Q2, Q4, Q6, Q7 also
+serve the agentic experiment.}
+\label{tab:questions}
+\begin{tabular}{lp{5.3cm}p{4.0cm}p{2.8cm}}
+\toprule
+\# & Question (abridged, translated) & Gold document(s) & Design intent \\
+\midrule
+Q1 & EVA encapsulation film lamination: how to set the temperature, pressure
+and time window; how to control cure degree & EVA process essentials; EVA
+hydro-thermal aging mechanism & multi-gold \\
+Q2 & EL inspection shows edge delamination: root cause and corrective
+actions & EL-2025-0317 delamination RCA report & incident $\to$ RCA \\
+Q3 & Why does humid aging of EVA generate acetic acid and corrode ribbons;
+moisture transport mechanism & EVA hydro-thermal aging mechanism & mechanism \\
+Q4 & Moisture-barrier behavior of POE encapsulant; lamination differences
+vs.\ EVA & POE process essentials & cross-material \\
+Q5 & Summer power drop at a PV plant: systematic troubleshooting order &
+Power-drop troubleshooting manual; O\&M lessons & synonym gap
+(``drop'' vs.\ ``plunge'') \\
+Q6 & Trigger condition, nominal value and tolerance of the line-1027 part
+weight alarm & Watch-clause document (31.35\,g $\pm$0.05\,g, 5\,min) &
+numeric exactness \\
+Q7 & Melt temperature fell 206$\to$180$^\circ$C on extruder line 1: final
+root-cause verdict & TC0 dead-loop RCA revision (among 20 telemetry dups) &
+confuser density \\
+Q8 & PET biaxial stretching process flow and critical temperature ranges &
+PET process regulation & plain factual \\
+Q9 & Frequent inverter alarm trips: handling steps & Inverter alarm handling
+manual & PV O\&M family \\
+Q10 & Hot-spot acceptance criteria and disposal & Hot-spot detection and
+disposal procedure & PV O\&M family \\
+Q11 & String mismatch causes; IV-curve diagnosis & String mismatch analysis
+method & PV O\&M family \\
+Q12 & PP cast-film extrusion parameters; chill-roll temperature & PP cast
+film process regulation & plain factual \\
+Q13 & Weight closed-loop run1: staircase excitation design & Weight
+optimization staircase record & telemetry cluster \\
+Q14 & FT full-function regression after P0 optimization & FT regression test
+record & telemetry cluster \\
+Q15 & Multimodal diagnosis: fusing scalar, vector and image signals &
+Three-modality closed-loop record & telemetry cluster \\
+Q16 & Post-compensation recovery verification of the heatdecay092 event &
+heatdecay092 compensation verification (among 3 near-dup incident docs) &
+confuser density \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Methods and arms}
+\sloppypar
+\emph{Tool layer} (Section~\ref{sec:retrieval}): seven methods answer ``which
+documents back this question'' with top-5 document lists: BM25 (jieba+Okapi,
+$k_1{=}1.5$, $b{=}0.75$, built over all 42 full texts), Dense
+(\texttt{kb\_search\_vector}, BGE-M3, per-document best chunk), RRF (k=60
+fusion of the two), Graph (\texttt{kb\_graph\_search} over top jieba
+keywords, best-rank merge), Two-stage (\texttt{kb\_search\_two-stage}:
+BM25+graph candidates then dense refine), Fusion-only (the hybrid lane's
+merge order without judging), QDCVR-Hybrid (the full single-call lane
+with judging and relative cut), and two \emph{derived} configurations
+computed from the hybrid lane's logged candidate pools and per-candidate
+judge scores --- \emph{judge-as-filter} (verdicts accept or reject; fusion
+order preserved) and \emph{RRF-fuse} (reciprocal-rank fusion of the fusion
+and judge orderings) --- which isolate whether the retrieval loss comes
+from the verdicts or from the ordering they induce. (The replay re-issues
+one QDCVR-Hybrid call per question with an identical configuration and
+reads the pools and scores from its logged response; the judged orderings
+reproduce the original runs exactly, indicating deterministic judging.
+One merge-stage exception: Q14's replay merge produced twelve candidates
+against the original run's eleven judged; all statistics use the original
+logged pools.)
+The seven pipeline methods
+run over the full
+42-document catalog with no library pinning; all output document-level
+rankings (BM25 scores full texts; dense aggregates chunks by max-pooling),
+so lists are directly comparable. Two construction asymmetries should be
+kept in mind when reading the lexical results: BM25 is an evaluation-side
+reimplementation over full texts (the platform's internal lexical channel
+uses the same tokenizer with chunked documents), and its full-text
+granularity plus the questions' corpus-vocabulary phrasing both favor
+lexical matching. All platform methods are invoked exactly as
+an external agent would invoke them: through the MCP tool interface against
+the live services.
+
+\emph{Agent layer} (Section~\ref{sec:agentic}): four arms answer four
+questions (Q2, Q4, Q6, Q7) through the public chat API, non-streaming,
+20-turn budget, 15-minute client timeout: \emph{Search} (library pinned,
+Lane A policy), \emph{Librarian} (all libraries, Lane B policy),
+\emph{Hybrid} (library pinned + Lane C suffix), and \emph{Bare} (no
+knowledge-base tools, answer from parametric knowledge only). Note the
+deliberate scope difference from the tool layer: pinned arms search a
+single library (as small as two documents), so their confuser pools are a
+fraction of the full catalog --- Section~\ref{sec:agentic} returns to this.
+Every arm is
+driven by the \texttt{omp} CLI agent engine\footnote{\url{https://github.com/can1357/oh-my-pi}}
+(v18.4.10) wrapping the same
+LLM (GLM-5.3-Flash,\footnote{Model card:
+\url{https://open.bigmodel.cn}} default thinking level), so arms differ
+only in retrieval affordance --- plus one honesty instruction appended to
+the bare arm's prompt, disclosed verbatim in
+Section~\ref{sec:agentic}. Zero-turn empty responses and transient
+gateway timeouts are retried once (a known transport flake): across the
+campaign the retry fired on two runs, both of which succeeded on re-run;
+orphaned engine processes are cleaned between runs. The entire grid is run
+twice (rounds 1 and 2); Section~\ref{sec:agentic} reports round 1 in its
+tables and both rounds in the text.
+
+\subsection{Abstention and calibration probes}
+Beyond the gold questions, four out-of-corpus queries probe the honesty
+contract at the tool layer, two of them also at the agent layer (across
+all three grounded arms); and because every judged score is logged, the hybrid cut's relative margin is replayed offline across a
+sweep of values (Section~\ref{sec:inflation}).
+
+\subsection{Metrics}
+Tool layer: Hit@5 (any gold document in top-5), Recall@5 (fraction of gold
+documents in top-5), MRR@5, and per-call latency (mean and median; each
+method warmed up once, first call discarded; BM25 is timed in-process
+while platform methods additionally pay MCP transport, a sub-millisecond
+cost at the reported scale). Agent layer: end-to-end wall
+time, agent turns returned by the engine, gold-document citation hit ---
+the answer text contains the gold document's unique filename fragment
+(automated substring check; gold fragments were chosen to be unambiguous) ---
+and fact-marker hits (automated substring check against 2--3
+ground-truth values or terms per question). Fact markers are treated as
+\emph{corroborating}, not primary, evidence: several markers overlap the
+question's own wording, so marker hits alone cannot establish grounding
+(the citation check is primary; Section~\ref{sec:agentic} additionally
+decontaminates marker matching by deleting gold-citing lines). Refusals
+are detected when a hedging marker appears in the answer's opening 200
+characters; on the six out-of-corpus agent probes this rule agrees with
+the manual transcript audit on five and misses one explicit not-found
+report, so refusal counts reported here are the manually audited ones. All checks
+are automated string matches against the released transcripts; no human
+rater was involved. For the verifier analysis we log per-candidate judge
+scores from the hybrid response. Hardware: one RTX 5060 (8\,GB) serves
+embeddings and the judge worker; all services run locally on Windows.
+Per-question best ranks for all nine retrieval configurations are
+tabulated in \ref{app:perq}.
+

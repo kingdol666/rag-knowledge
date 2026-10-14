@@ -1,0 +1,193 @@
+\section{Introduction}
+\label{sec:intro}
+
+Enterprises accumulate process regulations, failure analyses, and operational
+lessons as unstructured documents on shared drives. Answering a concrete
+engineering question --- \emph{why did edge delamination appear in an
+electroluminescence inspection of a laminated photovoltaic module?} ---
+requires locating the one report among thousands that records the decision and
+reading it. Retrieval-augmented generation (RAG) addresses the location step by
+embedding documents and the query into a shared vector space
+\cite{rag-lewis,dpr}, and agentic stacks let a large language model orchestrate
+retrieval tools iteratively \cite{mcp,singh-agentic-rag}. The dominant ranking
+signal, dense cosine similarity, measures \emph{topic relatedness} rather than
+\emph{evidence presence} \cite{siren,gao-ragsurvey}.
+
+Three actions this task requires are addressed by three research communities,
+each solving its own and leaving the others' problems intact. Retrieval
+research optimizes \emph{finding}: sparse, dense and hybrid rankers, and more
+recently graph-based and hierarchical indexes, are judged by whether a relevant
+passage appears in a top-$k$ list. Knowledge management addresses
+\emph{organizing}: classification schemes, controlled vocabularies and
+lessons-learned systems organize how documents are arranged and reused, but do
+not close the loop to an answer a machine must justify. Document AI
+addresses \emph{reading}: layout-aware parsing recovers text, tables and
+formulas from scanned pages \cite{mineru}, but a parsed document still has to
+be placed, indexed, governed and trusted. In deployment the three concerns
+compound.
+
+The object all three actions govern is \emph{content}: a knowledge-base
+management system expresses that position as enforceable contracts rather than
+as good practice. Three commitments follow, each implemented and measured here.
+First, \emph{content decides placement}: library membership, tags, descriptions
+and graph edges are derived from what a document says, not from the folder it
+arrived in, and the resulting catalog is the first retrieval instrument.
+Second, \emph{content decides admissibility}: no similarity score, however
+high, promotes a candidate into an answer, because the platform must itself
+fetch the candidate's content and judge it to contain direct evidence. Third,
+\emph{absence of evidence is an answer}: when verification eliminates every
+candidate, the system returns an explicit not-found report rather than the
+closest text. Claims are therefore auditable, with every placement, verdict,
+cut and lifecycle operation on record.
+
+QDCVR (Query-Driven Content-Verified Retrieval, v2.3), the self-hosted
+knowledge-base management system built here,
+implements this position end to end on a deployed industrial corpus and on
+acquisition and functional campaigns. Six functional subsystems carry the
+platform: a quality-gated parsing and ingestion pipeline, knowledge
+organization with content routing, tags and a document graph, life-cycle
+management with three-source consistency audits, an operational-knowledge store
+with credibility tiers, a multi-lane content-verified retrieval layer, and a
+tool interface exposing the platform as 95 Model Context Protocol tools
+\cite{mcp}; the system runs on a single workstation. On the acquisition side,
+of 100 papers submitted to a 100-document campaign, 21 never became
+retrievable, and the
+design decision that matters is that a document which fails a gate is
+reported rather than
+stored as an empty document (Section~\ref{sec:e1}). On the retrieval side, the
+content-verification gate is a better filter than a ranker: reusing the
+\emph{same} verdicts as a re-ranking signal lowers Hit@5 from 0.94 to 0.44,
+while using them as a binary filter restores 0.94 (sign test $p = 0.008$),
+because same-domain score inflation makes non-gold candidates statistically
+indistinguishable from gold ones (Mann--Whitney $p = 0.26$)
+(Section~\ref{sec:eval-verify}).
+
+\noindent Contributions:
+\begin{enumerate}
+\item \textbf{A content-governed knowledge-base management architecture}
+(Sections~\ref{sec:system}--\ref{sec:implementation}): requirements derived
+from deployment, six design principles enforced in code, a four-layer
+architecture, and an explicit data model whose contracts --- parse gates,
+placement rules, three-source consistency, promotion conditions, task
+semantics --- are stated as obligations rather than conventions.
+\item \textbf{A quality-gated acquisition pipeline with a measured failure
+budget} (Section~\ref{sec:acquisition}, E1): multi-format parsing with OCR,
+exact and near-duplicate detection, structure-aware splitting of oversized
+documents with part addressing, content-derived descriptions and tags, and an
+index post-condition; evaluated on a 100-document campaign (79 retrievable,
+a 21\% retrievability gap whose cause the campaign record does not
+attribute) and on a cross-lingual corpus.
+\item \textbf{Content-routed organization and life-cycle management}
+(Section~\ref{sec:organization}, E2): placement by content, catalog and
+metadata registries with progressive disclosure, tag governance, duplicate
+hygiene, a document graph with an explicitly restricted role, an experience
+store with credibility tiers, and lifecycle operations certified by a
+read-only audit (322 documents in five libraries).
+\item \textbf{Multi-channel content-verified retrieval} (Section~\ref{sec:lanes},
+E4--E5): three lanes over one tool surface under enforced budgets, a
+verification gate served by a resident judging worker, and an honest
+abstention path --- compared against nine retrieval configurations, two of
+them derived offline from the same logged candidate pools, and against a
+bare agent and a pure-dense controller. What the ablation measures is where
+the verdict belongs, and what the platform delivers is an auditable record of
+every candidate and every rejection, not a recall gain.
+\item \textbf{A verifier-failure analysis and its role decomposition}
+(Section~\ref{sec:eval-verify}, E4, E6): same-domain inflation quantified
+inside a deployed pipeline, the filter/re-ranker asymmetry, a threshold that
+never abstains out of corpus, and robustness of the failure to paraphrase, to
+a second verification signal and to a second corpus.
+\item \textbf{An operational account of the system} (Sections~\ref{sec:impl}
+and~\ref{sec:discussion}, E7): resident-worker and subprocess engineering,
+engine-agnostic harness integration with cost measured across three engines,
+a catalogue of failure modes with their detection symptoms, and the
+non-functional behaviour observed under concurrent writes.
+\end{enumerate}
+
+A demo describing the platform's organization and retrieval layers was
+published as a CIKM~2026 demo \cite{qdcvr-demo}. This paper extends it with
+four components the demo does not contain: the acquisition pipeline with its
+measured retrievability gap and cross-lingual evaluation; life-cycle
+management and integrity auditing as a designed subsystem rather than a
+maintenance procedure; the operational-knowledge store with its credibility
+tiers and distillation loop; and the verifier-failure analysis with the
+filter/re-ranker decomposition. The demo also reports no negative result, which
+is the centrepiece here.
+
+\subsection{Research questions and reading guide}
+\label{sec:rq}
+
+The paper is organized as a design-to-evidence arc around five research
+questions, answered by one evidence group each and reported in one place
+(Table~\ref{tab:ataglance}).
+
+\begin{description}
+\item[RQ1 (Enforceable contracts).] How can the three content commitments be
+turned into system contracts that hold across retrieval strategies and
+independent agent harnesses, rather than into prompt conventions?
+\item[RQ2 (Acquisition and organization at scale).] Do quality-gated
+acquisition and content-routed organization produce collections that are
+usable and internally consistent when they grow, and what does the gate
+reject?
+\item[RQ3 (Content-verified retrieval).] Does staged, multi-channel retrieval
+with content verification outperform one-shot vector top-$k$ and unverified
+fusion --- and by which mechanism?
+\item[RQ4 (Cost and benefit of verification).] What does the gate cost and
+buy, and is its failure mode structural rather than an artefact of one
+checkpoint, domain or language?
+\item[RQ5 (Operational contract).] Where do honest abstention, latency, cost
+and stability actually live in a running system?
+\end{description}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{This paper at a glance: each research question, the evidence group
+that answers it, and the headline finding.}
+\label{tab:ataglance}
+\begin{tabular}{p{0.8cm}p{3.7cm}p{2.9cm}p{4.9cm}}
+\toprule
+RQ & Question & Evidence & Headline finding \\
+\midrule
+RQ1 & Are the content commitments enforceable contracts? &
+Architecture, interface, implementation
+(\S\ref{sec:system}--\S\ref{sec:implementation}) & Yes: gates, placement
+rules, lane whitelists and fail-closed verdicts make them properties of the
+enforcement layer \\
+RQ2 & Do gated acquisition and content routing scale? &
+E1, E2, E8 (\S\ref{sec:acquisition}, \S\ref{sec:organization}) & Partly: routing
+and audits hold at 322 documents, while 21 of 100 submitted papers never
+became retrievable and the record does not attribute the gap. Routing is
+measured as coverage rather than accuracy, because every stored filename
+carries the acquisition prefix (\S\ref{sec:e8}) \\
+RQ3 & Does staged verified retrieval beat one-shot top-$k$? &
+E4 (\S\ref{sec:eval-retrieval}) & Yes on reachability, through staged
+recall plus content adjudication; two-stage retrieval is an accelerator, not
+the contribution \\
+RQ4 & What does the gate cost and buy, and is the failure structural? &
+E4, E6 (\S\ref{sec:eval-verify}) & Costs $<$1\,s; as a re-ranker it loses
+Hit@5 ($0.94\!\to\!0.44$), as a filter it is neutral ($0.94$,
+$p=0.008$); the loss tracks confuser density, not checkpoint or domain \\
+RQ5 & Where do honesty, latency and cost live? &
+E5, E7 (\S\ref{sec:eval-agent}, \S\ref{sec:implementation}) & Honesty lives
+in the reading and answering layer, never in the threshold; latency is
+dominated by LLM turns, and engine choice moves cost by two orders of
+magnitude \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The remainder of the paper follows the arc.
+Section~\ref{sec:related} positions the work against knowledge management,
+document parsing, retrieval, verification and agent protocols.
+Sections~\ref{sec:system}--\ref{sec:organization} present the architecture,
+the acquisition pipeline and the organization subsystem, answering RQ1 and
+RQ2. Section~\ref{sec:lanes} presents the retrieval lanes and the verification
+gate, walking one real question end to end, and states what the retrieval layer
+claims (RQ3). Section~\ref{sec:implementation} reports the engineering that
+makes the contracts enforceable. Section~\ref{sec:eval} carries the eight
+evidence groups (RQ4--RQ5).
+Sections~\ref{sec:discussion}--\ref{sec:conclusion} distil the lessons and
+state the threats to validity. Table~\ref{tab:modules} maps system functions
+to components and evidence; Table~\ref{tab:ataglance} maps research questions
+to evidence.

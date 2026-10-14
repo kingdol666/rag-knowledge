@@ -1,0 +1,93 @@
+\section{Introduction}
+\label{sec:intro}
+
+Enterprises record regulations, failure analyses and operational lessons in
+unstructured documents. Answering a question such as \emph{why did edge
+delamination appear in a photovoltaic inspection?} requires finding the report
+that records the decision, reading its evidence and citing it accurately.
+Retrieval-augmented generation (RAG) addresses document discovery by embedding
+queries and passages in a shared vector space \cite{rag-lewis,dpr}; agentic
+systems extend this process by letting a language model call retrieval tools
+\cite{mcp,singh-agentic-rag}. Yet semantic similarity measures topical
+relatedness, not whether a passage contains evidence for the requested claim
+\cite{siren,gao-ragsurvey}.
+
+The relevant capabilities are usually treated separately. Retrieval asks
+whether a relevant passage enters a ranked list. Knowledge management governs
+how documents are organized and maintained. Document AI recovers text, tables
+and formulas from complex layouts \cite{mineru}. In deployed systems, these
+operations form one dependency chain: parsing errors affect indexing, placement
+limits what retrieval can see, and ranking alone cannot establish whether a
+candidate supports an answer. No single stage owns the property the user
+actually needs---that the sentence being cited is supported by the document
+being cited---and so no stage is accountable for it.
+
+This paper presents QDCVR (Query-Driven Content-Verified Retrieval), a
+self-hosted knowledge-base management system that makes content the governing
+object across acquisition, organization and question answering, and assigns
+that accountability to three enforceable contracts:
+
+\begin{enumerate}
+\item \emph{Content governs placement.} The parsed body, not the filename or
+the source directory, decides which library holds a document, what its
+description and tags say, and therefore what a later search is able to see.
+\item \emph{Content governs admission.} A retrieved candidate becomes
+admissible evidence only after the server fetches its text and a content gate
+scores it; rank position confers no authority of its own.
+\item \emph{Absence is reported.} When no fetched segment meets the evidence
+criterion, the system returns an explicit not-found report naming the scope it
+searched, instead of a plausible unsupported answer drawn from parametric
+knowledge.
+\end{enumerate}
+
+Enforcement is server-side --- quality checks, lifecycle audits, lane-specific
+tool policies and a fail-closed evidence gate --- and each contract is measured
+on a deployed collection rather than asserted from the implementation. The
+deployed platform integrates document parsing, content-routed organization,
+lifecycle management, operational experiences, multi-lane retrieval and a Model
+Context Protocol (MCP) server with 95 registered tools \cite{mcp}, runs
+locally, and exposes the same retrieval functions to several agent harnesses;
+untested functions are identified rather than inferred from their
+implementation.
+
+\noindent\textbf{Contributions.}
+\begin{enumerate}
+\item A content-governance architecture whose three contracts are enforced by
+mechanism rather than convention: quality-gated acquisition, content-derived
+placement, three-source consistency checks and evidence-based answer admission
+(Sections~\ref{sec:system}--\ref{sec:implementation}).
+\item A verified-retrieval design that separates candidate discovery from
+evidence admission: three budgeted lanes over one server-side content gate,
+with an explicit abstention contract. The evaluation attributes outcomes to the
+verdict's role on identical candidate pools---the same verdicts work as a
+filter and fail as a re-ranker (Section~\ref{sec:lanes} and
+Section~\ref{sec:e4}).
+\item A deployment-based evaluation spanning three corpora that reports
+negative results alongside successful checks: papers that never became
+retrievable and an inventory that cannot attribute them, a gate with no
+measured filtering power on the industrial corpus, and ablations that return
+null (Section~\ref{sec:eval}).
+\end{enumerate}
+
+A CIKM~2026 demonstration introduced the organization and retrieval layers
+\cite{qdcvr-demo}. This article adds the acquisition pipeline, lifecycle
+contracts, operational-knowledge store and a broader deployment evaluation.
+
+\subsection{Research questions and reading guide}
+\label{sec:rq}
+
+Five questions structure the design-to-evidence sequence: how content
+commitments can be enforced across retrieval strategies and agent interfaces
+(RQ1); how parsing gates, content routing and lifecycle checks behave on
+deployed collections (RQ2); how the retrieval lanes balance document recall,
+evidence verification and operating cost (RQ3); under what conditions content
+verification helps, fails or requires calibration (RQ4); and where abstention,
+latency, cost and reliability constraints arise (RQ5).
+
+Section~\ref{sec:related} positions the work; Sections~\ref{sec:system}--
+\ref{sec:organization} describe the architecture and management functions;
+Section~\ref{sec:lanes} specifies retrieval and verification;
+Section~\ref{sec:implementation} covers deployment and enforcement; and
+Section~\ref{sec:eval} evaluates the system, followed by implications,
+limitations and conclusions in
+Sections~\ref{sec:discussion}--\ref{sec:conclusion}.

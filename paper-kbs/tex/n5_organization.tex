@@ -1,0 +1,267 @@
+\section{Knowledge organization and lifecycle management}
+\label{sec:organization}
+
+Acquisition decides what enters the system; organization decides what the
+system is. Here organization is a governed process rather than a folder
+convention or an emergent property of embedding similarity, with three
+invariants: content decides where a document belongs, the disk, the tree
+registry and the library metadata must agree about every document, and every
+operation that removes or relocates knowledge is preceded by a survey and
+followed by a verification. This chapter describes their implementation and
+where the three stores can still diverge.
+
+\subsection{Content-routed placement}
+\label{sec:org-placement}
+
+Placement reads the parsed document, not its filename or its folder of
+origin. The pipeline selects the library whose stated scope covers the
+content, or proposes a new library when no existing scope does, writes the
+document, derives a description and a tag set, and runs the same final check
+used by acquisition before the document counts as placed. Two rules keep the
+catalog usable as a retrieval instrument: an existing library is preferred
+over a new one; and a document is placed once, because re-routing is an
+explicit lifecycle operation rather than a side effect of a later ingest.
+
+The decision itself is made over library scope rather than folder names. The
+ingest agent is given the candidate libraries with their scope descriptions and
+the parsed body of the document, and selects the library whose scope covers the
+content. That assignment is recorded in the catalog and the document is written
+to that library. The decision is per document, not per part: a split document's
+parts inherit the assignment made for their source. When no scope fits, the
+agent defines a new library and states its scope before writing into it. The one
+ingest run we instrumented carried its assignments in a classification file
+keyed by paper identifier and built from their content together with the library
+descriptions; an unassigned paper raised an error rather than a guess. The
+prototype fixes neither a model nor a similarity threshold for the choice, so it
+remains operator-visible at review time.
+
+The library tree supports one level of content grouping in which child
+libraries are addressable through a parent. The implementation carries a
+caveat we report rather than hide: the vector segments of child documents are
+stored in the parent library's collection, so a search that targets a child
+library identifier returns no candidates. The shipped operational guidance is
+to search the parent collection and to use the child libraries for navigation
+and scoping rather than as search endpoints. This is a limitation of the
+storage mapping, not of the routing rule.
+
+\subsection{Catalog and metadata registries}
+\label{sec:org-registries}
+
+Table~\ref{tab:datamodel} lists the fields of the two registries that
+describe the same collection: the global tree (\texttt{.tree-fs.json}) is the
+authoritative structure, and each library carries a
+\texttt{.knowledge-base.yml} indexing its Markdown documents and their image
+directory.
+
+Agents read the catalog through a progressive-disclosure interface: the
+listing returns names, descriptions and counts, document listings return
+metadata without bodies, and only an explicit read returns content,
+attributed to a specific document. A caller can therefore narrow a search to
+a handful of candidates without loading a body, which makes the catalog lane
+viable at 5--6 turns and 54--91~s (Table~\ref{tab:lanes}).
+
+Correctness of the catalog is three-source consistency: for every document,
+the file on disk, its entry in the tree registry, and its record in the
+library metadata must agree on existence, path, size and index state. The
+platform verifies this agreement rather than assuming it: in the acceptance
+campaign a renamed document kept its old vector segments, so the recorded
+chunk count read 18 where 9 chunks existed, and the document matched its own
+former path at 0.9738 similarity, high enough to be reported as a
+near-duplicate pair. Only an explicit force re-index repaired it
+(18~$\rightarrow$~9). Metadata and index consistency are therefore two
+different obligations: the first is satisfied by a single write, the second
+is not, because the vector store is updated by a separate call.
+
+\subsection{Tag taxonomy and duplicate detection}
+\label{sec:org-tags}
+\label{sec:org-dedup}
+
+Tags are the coarse, human-legible axis of the collection, and retrieval by
+tag is a first-class operation. A tag registry holds the vocabulary; each
+document's tags are normalized, filtered against a blacklist of structural
+strings (section headings, generic words such as ``introduction''), and
+re-checked against the document body so that a tag must occur in the content
+it labels. Governance is a maintenance loop rather than a schema: no taxonomy
+is imposed on authors and the vocabulary grows with the corpus, so the audit
+reports tags with zero referencing documents, accumulated from test documents
+and chapter headings, and removes them only when instructed. In the audited
+campaign 165 documents passed the tag gate with no failures, and the live
+registry held 316 tags. We do not claim a controlled vocabulary; we claim
+that the vocabulary is inspectable and that orphaned entries are detectable.
+
+Deduplication is a collection-level question as well: the same content can
+arrive through two ingest paths or into two libraries. The procedure is
+survey-then-act --- enumerate candidate duplicate groups at a similarity
+threshold (0.90, with a manual fallback channel at 0.85), inspect each group,
+delete nothing automatically --- and the audited run illustrates why the
+survey step matters more than the threshold. On the 322-document corpus the
+detector reported 35 candidate groups with similarities between 0.90 and
+0.975, every one of them a pair of adjacent parts of the same long paper, and
+no deletion was performed; a policy that deleted on detection would have
+destroyed 35 legitimate document parts. The same run confirmed zero true
+duplicates. Cross-library duplication is detected but not merged
+automatically, because merging two libraries carries provenance consequences
+and stays with the operator.
+
+\subsection{Library lifecycle operations}
+\label{sec:org-lifecycle}
+
+Table~\ref{tab:org-lifecycle} lists the operations the platform exposes, the
+interface that performs them, the consistency obligation each one carries,
+and the state observed for each.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Library and document lifecycle operations, their consistency
+obligation, and the state observed in the acceptance campaign. ``Audited''
+means the three stores were compared after the operation.}
+\label{tab:org-lifecycle}
+\begin{tabular}{@{}p{0.22\textwidth}p{0.24\textwidth}p{0.20\textwidth}p{0.24\textwidth}@{}}
+\toprule
+Operation & Interface & Obligation & Observed \\
+\midrule
+Create library & library create & tree + metadata + directory & audited \\
+Rename or move document & document move & path updated in all three stores & audited; stale segments until force re-index \\
+Update description or tags & document update & metadata rewritten, body re-checked & audited (165/165) \\
+Update content & document update & new hash, re-index required & re-index not implicit \\
+Delete document & document delete & removal from all three stores & audited (1~$\rightarrow$~0) \\
+Batch delete & batch delete & per-document verification & 1/1 in campaign \\
+Move library & library move & subtree and metadata move together & audited (0~$\rightarrow$~1) \\
+Merge libraries & library merge & provenance preserved & demonstrated, not controlled \\
+Split library & library split & no part orphaned & analysed, deliberately not executed \\
+Rebuild index & re-index (task id) & segment count matches content & 18~$\rightarrow$~9 after force \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The rule the table carries is that re-indexing is not implicit: creating,
+moving or rewriting a document does not update the vector store, only an
+explicit index operation does, and the audit treats a missing or stale index
+as an incomplete operation rather than as a warning. The contribution here is
+a contract under which disagreement between an approximate index and a
+mutating document store becomes detectable, not a new maintenance algorithm
+\citep{xu-spfresh-2023}. The evidence boundary is narrower: move, rename,
+update, delete and re-index were exercised with real tool calls and audited
+afterwards; merge and split are implemented and were demonstrated on live
+libraries, but they have no controlled evaluation, and the sub-library
+hierarchy was analysed and deliberately not executed pending an operator
+decision. No concurrent organizational operation was tested.
+
+\subsection{The document graph}
+\label{sec:org-graph}
+
+The platform maintains a property graph with document, library, tag, folder
+and entity nodes connected by membership, tagging, relatedness, identity and
+containment edges. Those edges derive from tag co-membership, vector
+similarity above a threshold, and the verdicts produced by content
+verification during retrieval. Adding one document to a library added four
+edges in the audited run (4{,}675~$\rightarrow$~4{,}679), one per assigned
+tag; a full build over the 100-paper corpus produced 658 nodes covering 333
+documents and 316 tags, and the 165-document intermediate state held 335
+nodes and 1{,}671 edges.
+
+The graph keeps a deliberately restricted role. It is a navigation instrument
+that expands a candidate set and surfaces documents sharing context across
+libraries. It is never evidence: as a standalone retriever it reached Hit@5
+of 0.5625 on the industrial corpus and 0.2 on the second corpus, well below
+the lexical and dense channels (Table~\ref{tab:retrieval}). Graph-based
+organization in this system is useful for discovery and weak as a ranker.
+
+Two implementation gaps belong here. Graph construction is not yet guaranteed
+by the ingestion path: a document ingested through one agent harness received
+no graph node, so a library reported two of three documents. And batch graph
+builds have been observed to leave a task record in the running state after
+the work completed, so task status cannot be used as completion evidence; the
+graph itself must be queried.
+
+\subsection{Operational knowledge as a first-class collection}
+\label{sec:org-experience}
+
+Process documents describe what the organization intends; operational lessons
+describe what actually happened. The platform stores the second kind as a
+first-class collection with the same addressing, indexing and retrieval
+interface as ordinary documents, but with two differences that reflect the
+epistemic status of a lesson. First, an experience carries a credibility tier
+that controls whether it may be shown (Table~\ref{tab:exp-tiers}); the
+experience channel's similarity threshold is 0.55 against the document
+channel's 0.35, and an unvetted or disputed entry is capped even when it
+scores well. Second, entries are drafted before they are served: extraction
+produces candidates from ingested content or from recurring question-answer
+pairs, and automated distillation runs as a separate agent process on a
+schedule, guarded by a circuit breaker (three consecutive failures suspend it
+for 24 hours) and a heuristic fallback marked low-confidence. Nothing reaches
+the served collection without an explicit approval step, the same fail-closed
+posture the retrieval gate applies to citations.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Experience credibility tiers and modifiers. Tiers combine retrieval
+score, content-verification score, ratings and review count; modifiers cap
+the tier rather than promote it.}
+\label{tab:exp-tiers}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{3.6cm}p{0.46\textwidth}@{}}
+\toprule
+Tier & Condition & Effect \\
+\midrule
+P0 strong & sim $\ge 0.65$ $\wedge$ content $\ge 6$ $\wedge$ rating $\ge 4$ $\wedge$ reviews $\ge 1$ & may be presented first \\
+P1 reference & sim $\ge 0.45$ $\wedge$ content $\ge 4$ & presented with credibility noted \\
+P2 weak & sim $\ge 0.35$ $\wedge$ content $\ge 3$ & suppressed unless expanded \\
+discard & content verification fails or sim $< 0.35$ & never presented \\
+\addlinespace
+disputed & reviews $\ge 3$ $\wedge$ rating $< 2.0$ & capped at P2 \\
+unvetted & 0 reviews $\wedge$ 0 applications & capped at P1 \\
+auto-extracted & not human-reviewed & capped at P1 until applied twice and rated $\ge 4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The evidence for this subsystem is deliberately case evidence. One extraction
+campaign produced thirteen candidate drafts; one end-to-end scenario
+sedimented a single experience, which a later global experience search
+returned first with a local similarity of 0.711; and the approval path was
+never exercised, because the draft pool was empty when it was tested. A
+single scenario and thirteen candidates cannot support an effectiveness
+claim, and we do not make one. What the campaign establishes is that
+operational knowledge travels through the same pipeline as documents,
+addressed, indexed, gated and auditable, rather than living in a wiki or a
+prompt.
+
+\subsection{Integrity verification as routine}
+\label{sec:org-integrity}
+
+Every property claimed in this chapter is checked by a verification pass
+against the live collection, so that consistency, integrity and health are
+measured rather than asserted. The pass is read-only by default; repairs
+require an explicit instruction, and the report is produced first, because an
+audit that repairs as it goes cannot report what it found.
+
+The pass is not ceremonial. It is how the two index-integrity incidents of
+this deployment were found, a silently lost collection and a stale index, and
+how the reorganization campaign was certified after the fact: 322/322
+metadata checks, 165/165 description checks, 33/33 sampled consistency
+checks, and 15/15 retrieval regression probes with no degradation. In the
+same campaign the audit surfaced the failures reported above: the rename-time
+chunk duplication, the missing graph node, and a task-status record that
+outlived its task. A collection whose health is a command is a collection
+whose health can be argued about with evidence.
+
+\subsection{What organization buys, and what it does not}
+\label{sec:org-summary}
+
+Organization buys candidate quality and auditability. Because the catalog is
+curated and consistent, an agent can select a library and a document set
+without loading bodies, which is the mechanism behind the catalog lane and
+behind cross-library discovery in an environment with nineteen libraries.
+Because every placement, tag, description and deletion left a record, the
+collection can be re-verified after the fact; the numbers in this chapter are
+audit outputs rather than survey estimates.
+
+Three things organization does not do, and the paper does not claim. It does
+not repair a bad parse: a document whose parse lost its tables cannot be
+recovered by placing it well. It does not prevent divergence by construction:
+the write path can leave the vector index behind, and only an audit and an
+explicit re-index restore agreement. And it does not scale without limits:
+the largest collection we report is 322 documents in five libraries, and the
+merge and split operations are unevaluated. These are engineering boundaries.

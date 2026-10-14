@@ -1,0 +1,204 @@
+{
+ "qid": "QK01",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "stratum": "single",
+ "field": "artificial-intelligence",
+ "gold_docs": [
+  "1706.03762"
+ ],
+ "started": "2026-10-12T05:10:17.184216+00:00",
+ "candidate_stage": {
+  "n_fused": 12,
+  "fusion_trace": {
+   "agreed": 39,
+   "vector_only_pool": 29,
+   "catalog_only_pool": 126,
+   "vector_only_taken": 8,
+   "catalog_only_taken": 4,
+   "fused_before_cap": 51,
+   "fused_after_cap": 12,
+   "candidate_cap": 12
+  },
+  "vector_trace": {
+   "per_lib_hits": {
+    "计算机与人工智能": 30,
+    "自然科学与地球科学": 30,
+    "生命科学与医学": 30,
+    "工程与能源": 30,
+    "经济与社会": 30
+   },
+   "raw_hits": 150,
+   "doc_level": 68,
+   "seconds": 1.4
+  },
+  "catalog_trace": {
+   "per_lib_docs": {
+    "计算机与人工智能": 131,
+    "自然科学与地球科学": 75,
+    "生命科学与医学": 53,
+    "工程与能源": 39,
+    "经济与社会": 24
+   },
+   "catalog_size": 322,
+   "catalog_overlap_gt0": 165,
+   "seconds": 1.4
+  },
+  "fetch_errors": [],
+  "candidate_order": [
+   "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+   "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+   "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+   "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+   "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+   "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md"
+  ]
+ },
+ "gold_matchable": true,
+ "gold_parts_in_corpus": 2,
+ "gold_doc_paths": [
+  "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+  "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md"
+ ],
+ "judge": {
+  "status": "ok",
+  "real_engine": true,
+  "criterion": "evidence",
+  "threshold": 0.5,
+  "candidate_count": 122,
+  "scored_count": 122,
+  "survivor_count": 109,
+  "docs_with_yes": 12,
+  "evidence_pack_chars": 4001,
+  "fetch_errors": [],
+  "errors": [],
+  "seconds": 15.1
+ },
+ "judge_survivors": [
+  "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+  "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+  "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+  "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+  "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+  "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+  "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md"
+ ],
+ "arms": {
+  "C-nogate": {
+   "n_docs": 12,
+   "docs": [
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+    "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+    "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+    "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+    "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+    "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+    "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient to answer this question. The retrieved chunks contain only the title/author header of \"Attention Is All You Need\" (part 1/2) and its Model Variations section (part 2/2, Section 6.2), neither of which describes the attention mechanism or the rationale for replacing recurrence and convolution — Section 6.2 only reports architecture ablations on newstest2013 and Table 3. The remaining chunks (BERT, AOAD-MAT, and two \"How do language models learn facts?\" sections) are unrelated to the question. The core sections that would answer it (Abstract, Section 3 Model Architecture, Section 3.2 Attention) were not retrieved, so I cannot answer from evidence.\n\nSources used: `artificial-intelligence__1706.03762__attention-is-all-you-need.md.md` (parts 1/2 and 2/2). No answer can be given without the missing sections.",
+   "answer_error": null,
+   "answer_latency_s": 8.9,
+   "tokens": {
+    "input": 726,
+    "output": 199,
+    "cache_read": 48512,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.033659800000000004,
+   "model": null,
+   "grade": 0,
+   "verdict": "refusal",
+   "rationale": "The question is answerable, but the answer refuses because the retrieved evidence lacked the relevant sections, providing no substantive content.",
+   "grade_latency_s": 3.2
+  },
+  "C-judge": {
+   "n_docs": 12,
+   "docs": [
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+    "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+    "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+    "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+    "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+    "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+    "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The retrieved evidence does not answer this question. The chunks I have contain only the paper's front matter (title and author list) and the opening lines of Section 6.2 \"Model Variations,\" which merely states that the base model was varied to measure performance changes on English-to-German translation (newstest2013) and refers to Table 3 — the table itself is not included. There is no content describing the attention mechanism's computation (scaled dot-product attention, multi-head attention) or the paper's arguments for replacing recurrence and convolution. The other retrieved sources (BERT, \"How do language models learn facts?\", AOAD-MAT) are unrelated to the specific question and were not used.\n\nSources used (insufficient):\n- `artificial-intelligence__1706.03762__attention-is-all-you-need.md.md` (parts 1/2 and 2/2) — front matter + Section 6.2 heading only\n- No chunk containing Sections 3 (Model Architecture) or 4 (Why Self-Attention) was retrieved\n\nThe evidence is insufficient to answer the question.",
+   "answer_error": null,
+   "answer_latency_s": 9.9,
+   "tokens": {
+    "input": 86,
+    "output": 228,
+    "cache_read": 49152,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.031001400000000002,
+   "model": null,
+   "grade": 5,
+   "verdict": "correct",
+   "rationale": "The answer is a faithful abstention on account of retrieved evidence containing only front matter and an unrelated section, correctly refusing rather than falling back on prior knowledge.",
+   "grade_latency_s": 3.4
+  },
+  "C-judge-seg": {
+   "n_docs": 12,
+   "docs": [
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+    "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+    "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+    "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+    "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+    "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+    "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The evidence does not contain the answer.\n\nThe retrieved chunks (`chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md`) cover sampling and thermodynamics for molecular simulation — MD time-step scales, generative learning (VAEs/GANs/flows), KL divergence, and the energy loss in Boltzmann generation. They say nothing about Transformer attention mechanics, recurrence, or convolution. No source in the evidence addresses the question, so I am stopping rather than answering from prior knowledge.",
+   "answer_error": null,
+   "answer_latency_s": 10.0,
+   "tokens": {
+    "input": 1176,
+    "output": 106,
+    "cache_read": 48192,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.0339104,
+   "model": null,
+   "grade": 0,
+   "verdict": "refusal",
+   "rationale": "The question is answerable from the cited evidence domain, but the provided evidence contains no relevant chunks, so the answer correctly refuses and earns 0 under the rubric for refusal on an answerable question.",
+   "grade_latency_s": 5.6
+  }
+ },
+ "wall_clock_s": 63.7
+}

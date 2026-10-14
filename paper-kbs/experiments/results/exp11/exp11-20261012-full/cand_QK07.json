@@ -1,0 +1,167 @@
+{
+ "qid": "QK07",
+ "query": "What is MameLoshnLM and what parameter scale does it have?",
+ "fused": [
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.5682450532913208,
+   "vector_rank": 1,
+   "catalog_rank": 103,
+   "fused_rank": 1
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+   "lane": "both",
+   "vector_score": 0.5314515829086304,
+   "vector_rank": 2,
+   "catalog_rank": 104,
+   "fused_rank": 2
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md",
+   "lane": "both",
+   "vector_score": 0.5134633183479309,
+   "vector_rank": 3,
+   "catalog_rank": 2,
+   "fused_rank": 3
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.4729292392730713,
+   "vector_rank": 4,
+   "catalog_rank": 106,
+   "fused_rank": 4
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md",
+   "lane": "both",
+   "vector_score": 0.4585162401199341,
+   "vector_rank": 7,
+   "catalog_rank": 12,
+   "fused_rank": 5
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.4520629048347473,
+   "vector_rank": 8,
+   "catalog_rank": 113,
+   "fused_rank": 6
+  },
+  {
+   "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+   "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+   "lane": "both",
+   "vector_score": 0.41512978076934814,
+   "vector_rank": 18,
+   "catalog_rank": 58,
+   "fused_rank": 7
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+   "lane": "both",
+   "vector_score": 0.39130908250808716,
+   "vector_rank": 28,
+   "catalog_rank": 34,
+   "fused_rank": 8
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+   "lane": "both",
+   "vector_score": 0.39017510414123535,
+   "vector_rank": 30,
+   "catalog_rank": 61,
+   "fused_rank": 9
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "lane": "both",
+   "vector_score": 0.3892916440963745,
+   "vector_rank": 31,
+   "catalog_rank": 62,
+   "fused_rank": 10
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+   "lane": "both",
+   "vector_score": 0.38726359605789185,
+   "vector_rank": 35,
+   "catalog_rank": 28,
+   "fused_rank": 11
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.3864825963973999,
+   "vector_rank": 36,
+   "catalog_rank": 75,
+   "fused_rank": 12
+  }
+ ],
+ "fusion_trace": {
+  "agreed": 23,
+  "vector_only_pool": 38,
+  "catalog_only_pool": 94,
+  "vector_only_taken": 8,
+  "catalog_only_taken": 4,
+  "fused_before_cap": 35,
+  "fused_after_cap": 12,
+  "candidate_cap": 12
+ },
+ "vector_trace": {
+  "per_lib_hits": {
+   "计算机与人工智能": 30,
+   "自然科学与地球科学": 30,
+   "生命科学与医学": 30,
+   "工程与能源": 30,
+   "经济与社会": 26
+  },
+  "raw_hits": 146,
+  "doc_level": 61,
+  "seconds": 0.4
+ },
+ "catalog_trace": {
+  "per_lib_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "catalog_size": 322,
+  "catalog_overlap_gt0": 117,
+  "seconds": 1.4
+ },
+ "fetch_trace": {
+  "seconds": 3.3,
+  "errors": []
+ },
+ "heads": {
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md": "# nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md（第 1/4 部分）\n章节: MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\n# MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\n\n\nUri Katz1 Omer Goldman² Tomasz Limisiewicz³\n\nReut Tsarfaty1,Noah A. Smith3,4,\n\n1Bar-Ilan University 2University of Cambridge\n\n3University of Washington 4Allen Institute for AI\n\n## Abstract\n\n\nWe present MAMELOSHNLM,1 the first open-source 8B-parameter language model built specifically for Yiddish. Despite Yiddish's rich textual tradition, its limited digital presence and the scarcity of reliable evaluation resources have constrained progress in Yiddish language modeling. Existing multil",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md": "# nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md（第 4/4 部分）\n章节: MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark > D Auditing the Yiddish Split of mC4\n## D Auditing the Yiddish Split of mC4\n\n\nThis appendix details the analysis summarized in subsection 3.1. The split contains 143,708 pages from 7,621 distinct domains, each labelled yi by the CLD3 identifier used in mC4's construction (Xue et al., 2021). We audit all 143,708 pages for two failure modes, Hebrew misidentified as Yiddish through the shared script, and machine translation; Table 11 gives the resulting composition.\n\nHebrew and Yiddish share a script, and general-purpose language identifiers are unrel",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md": "# nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md（第 2/4 部分）\n章节: MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark > 8 Analysis\n## 8 Analysis\n\n\nYiddish is a useful test case for analyzing what multilingual language models learn in lowresource settings. A general multilingual model can often produce something understandable in Yiddish because Yiddish is typically represented, at least to some extent, in the training data, and also overlaps with neighboring languages and shares script with Hebrew. But this surface fluency can be misleading: models may produce plausible Yiddish while still missing many of the features that make the language sound native. This makes",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md": "# robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md.md（第 1/2 部分）\n章节: MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\n# MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\n\n\nTaozhe Li¹ and Wei Sun²\n\nAbstract—The Visual Simultaneous Localization and Mapping (V-SLAM) system has advanced significantly in recent years, achieving high precision in environments with few dynamic objects. However, its performance declines in settings with numerous movable objects, such as those with pedestrians, cars, and buses, which are common in outdoor scenes. While some researchers are tackling this issue with artificial mathematical met",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md": "# nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md（第 3/4 部分）\n章节: MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark > References\n## References\n\n\nJulien Abadji, Pedro Ortiz Suarez, Laurent Romary, and Benoît Sagot. Towards a cleaner document-oriented multilingual crawled corpus. In Nicoletta Caǐzolari, Frédéric Béchet, Philippe Blache, Khalid Choukri, Christopher Cieri, Thierry Declerck, Sara Goggi, Hitoshi Isahara, Bente Maegaard, Joseph Mariani, Hélène Mazo, Jan Odijk, and Stelios Piperidis (eds.), Proceedings of the Thirteenth Language Resources and Evaluation Conference, pp. 4344–4355, Marseille, France, June 2022. European Language Resources Association. URL ",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md": "# speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre（第 1/2 部分）\n章节: An Empirical Analysis of Discrete Unit Representations in Speech Language Modeling Pre-training\n# An Empirical Analysis of Discrete Unit Representations in Speech Language Modeling Pre-training\n\n\nYanis Labrak1,3, Richard Dufour2, and Mickaël Rouvier1\n\nLaboratoire Informatique d’Avignon, Avignon University, Avignon, France Nantes Université, École Centrale Nantes, CNRS, LS2N, UMR 6004, Nantes, France Zenidoc, Marseille, France\n\nAbstract. This paper investigates discrete unit representations in Speech Language Models (SLMs), focusing on optimizing speech modeling during continual pre-training. In this paper, we sy",
+  "f5770687-6b05-4a8d-8645-af31686ca87e||经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md": "# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 1/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n# On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n\n\nNiko HAUZENBERGER, Michael PFARRHOFER and Anna STELZER\\*\n\nUniversity of Salzburg\n\nIn this paper, we investigate the effectiveness of conventional and unconventional monetary policy measures by the European Central Bank (ECB) conditional on the prevailing level of uncertainty. To obtain exogenous variation in central bank policy, we rely on high-frequency surprises in financial market dat",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md": "# power-systems__2607.03098__integrating-power-electronics-based-energy-s（第 3/5 部分）\n章节: Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges > 4.2. Issues and Solutions of Dynamic Analysis for Large-scale DC-PEESs\n## 4.2. Issues and Solutions of Dynamic Analysis for Large-scale DC-PEESs\n\n\n(c) Distributed connections  \n![](images/2fb074c9cf82c926b898ad24be3e6095d51b55a60daf6eb816ef184a9d797f4d.jpg)\n\n(a) Series connections  \n(b) Parallel connections  \n![](images/afb24cc14ab29ffee73b2f819bad060b85ebed9449f39b44d05eb4f16d174a8b.jpg)  \nFig 12. DC power systems integrated with large-scale PEESs.\n\nAs shown in Fig. 12, th",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md": "# astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md.md（第 2/2 部分）\n章节: The Dark Energy Survey Data Processing and Calibration System > 3.5 Coaddition with PSF Homogenization\n## 3.5 Coaddition with PSF Homogenization\n\n\nA typical challenge in real datasets is that the image quality can vary among the single epoch images that one combines into a coadd image. This can be minimized by obtaining all the images one right after another under similar conditions, but typically this requirement is difficult to meet for a large survey and for ground based observatories this strategy then still leads to inhomogeneity in the PSF from location to location on the sky. For the DES observing",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md": "# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 2/4 部分）\n章节: Machine learning for molecular simulation > 2.5 Sampling and Thermodynamics\n## 2.5 Sampling and Thermodynamics\n\n\nMD time steps are on the order of one femtosecond $\\left( 1 0 ^ { - 1 5 } \\mathrm { ~ s \\right) }$ , while configuration changes governing molecular function are often rare events that may take $1 0 ^ { - 3 }$ to $1 0 ^ { 3 } ~ \\mathrm { s } .$ Even when evaluating the potential and the forces it generates is fast, simulating single protein folding and unfolding events by direct MD simulation may take years to centuries on a supercomputer. To avoid this sampling problem, machine learning methods can b",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md": "# mathematics__1405.4980__convex-optimization-algorithms-and-complexit（第 8/12 部分）\n章节: Beyond the black-box model > ISTA (Iterative Shrinkage-Thresholding Algorithm)\n## ISTA (Iterative Shrinkage-Thresholding Algorithm)\n\n\nRecall that gradient descent on the smooth function $f$ can be written as (see (4.5))\n\n$$\nx _ { t + 1 } = \\operatorname * { a r g m i n } _ { x \\in \\mathbb { R } ^ { n } } \\eta \\nabla f ( x _ { t } ) ^ { \\top } x + \\frac { 1 } { 2 } \\| x - x _ { t } \\| _ { 2 } ^ { 2 } .\n$$\n\nHere one wants to minimize $f + g ,$ and $g$ is assumed to be known and “simple\". Thus it seems quite natural to consider the following update rule, where only f is locally approximated with a first order ",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md": "# seismology__1308.1846__developing-and-testing-the-automated-post-ev.md.md（第 1/4 部分）\n章节: Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique\n# Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique\n\n\nAnthony Astoul, Christopher Filliter, Eric Mason, Andrew Rau-Chaplin, Kunal Shridhar, Blesson Varghese and Naman Varshney\n\nReceived: 5 September 2012 / Accepted: 22 June 2013\n\nAbstract An automated, real-time, multiple sensor dat: source relying and globally applicable earthquake loss model and visualiser is desirable for post-event earthquake analysis. To achieve this there "
+ },
+ "built": "2026-10-12T05:16:07.050610+00:00"
+}

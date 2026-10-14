@@ -1,0 +1,144 @@
+\section{Discussion and lessons learned}
+\label{sec:discussion}
+
+The evidence in Section~\ref{sec:eval} supports a distinction that the
+retrieval literature tends to blur: finding a document and being allowed to
+cite it are different operations, and the second one is a system property. The
+lessons below are ordered from the retrieval layer outwards, because that is
+the order in which we learned them.
+
+\noindent\textbf{L1. Vectors are fast; content is accurate, and verification
+has two costs.} The tool-layer comparison is the cleanest statement of the
+retrieval subproblem: on a curated corpus a millisecond-level BM25 beats an
+18\,ms dense retriever, and neither knows whether a document \emph{answers}
+the question. The gate converts ranked candidates into accountable evidence
+with per-citation provenance. Its costs are temporal (about 0.5\,s per dozen
+candidates end to end; 1--2\,s per six-document batch for the resident worker)
+and, on this corpus, accuracy-related: 0.94\,$\to$\,0.44 Hit@5 under
+same-domain inflation when the verdicts are used as an ordering. Auditability
+is what the gate buys today; ranking quality is what calibration must earn
+back.
+
+\noindent\textbf{L2. Latency engineering is turn engineering.} With retrieval
+sub-second, the only lever that matters for interactive latency is the number
+of agent turns. Tool whitelists that remove detour tools, one-call server-side
+pipelines, and small judge batches that avoid transport timeouts together took
+the hybrid lane from about 29 turns in the earliest serial-skill configuration
+to 3--5 turns in the present measurements. The same accounting explains the
+engine comparison: the third engine's wall clock exceeded its engine-side time
+by 50--90\,s per call, which is harness startup, not retrieval.
+
+\noindent\textbf{L3. The verifier is a model too, so calibrate it.} The
+inflation analysis is the paper's cautionary result: a verifier inherits
+domain-internal blind spots, and a threshold calibrated on cross-domain
+negatives (0.5) does not separate same-domain near-misses. Fail-closed
+semantics and forced reading contain the damage; they do not replace
+calibration. The second-signal probes sharpen the point: a generic entailment
+model fails too, but differently, anti-separating golds while still rejecting
+no out-of-corpus topic, and a symbolic rule decides the numeric case that the
+shipped judge mishandles. Verifier choice changes which errors you get, not
+whether you get any.
+
+\noindent\textbf{L4. Honesty needs an enforcement layer, not a prompt.} Lane
+separation works because the server physically withholds tools: a
+librarian-lane agent cannot call the vector tool even if instructed to. The
+out-of-corpus probes show the same asymmetry for abstention. A threshold
+cannot refuse; it accepted every out-of-corpus candidate it was shown. The
+reading-and-answer layer refused all six probe prompts with disclosed searches
+and zero fabricated citations. A bare agent without the platform refused
+explicitly in two of four runs, and in the others produced confident,
+unsourced, partly wrong answers whose wrongness no audit trail exposes.
+Unassisted honesty is a coin flip; enforced honesty is inspectable.
+
+\noindent\textbf{L5. Production incidents taught honest observability.} Three
+early incidents shaped the implementation: a corrupted index segment that made
+one library silently un-retrievable across lanes, an out-of-memory indexing
+run that returned success with an empty payload, and judge failures that had
+to reject candidates rather than pass them. The common thread is that every
+layer reports what it actually verified and every consumer treats the
+unverifiable as failed. Table~\ref{tab:failures} consolidates the incident log
+into the failure-mode catalogue we wish we had on day one, extended with the
+three defects the organization and functional campaigns surfaced.
+
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{0.95}
+\setlength{\tabcolsep}{3pt}
+\caption{Failure-mode catalogue from production and campaign use: how each
+failure presents, the detection signal, the fix, and the residual risk an
+adopter still carries.}
+\label{tab:failures}
+\begin{tabular}{p{3.2cm}p{3.2cm}p{3.2cm}p{3.2cm}}
+\toprule
+Failure & Presents as & Detection signal & Fix / residual risk \\
+\midrule
+Corrupted index segment (silent loss) & ``Success, zero results'' for one
+library across lanes & Treat zero-result success as suspect; cross-lane
+census & Re-index the collection; residual: any new silent-loss mode needs
+the same tripwire \\
+Out-of-memory during indexing & Success envelopes with empty vector payloads
+& Judge success by chunk counts, not envelopes & Memory hygiene between
+embedding and judging workloads; residual: other silent truncations \\
+Driver contention (Windows) & Embedding latency 68\,s $\to$ 27\,min &
+Latency budget on the embedding path & Isolate embedding and judging
+workloads; on Linux, watch VRAM contention instead \\
+Judge worker cold start & First judge batch stalls 10--12\,s & Worker
+residency heartbeat & Keep the resident worker warm; residual: first-call
+timeouts still fail closed \\
+Un-whitelisted harness tools & 14--170\,s detours per run & Turn count and
+tool-call audit log & Server-side per-lane whitelists; residual: new harnesses
+need new whitelists \\
+Judge or engine errors & Wrong or missing verdicts & Fail-closed rejects at
+the gate & Errors reject, never pass; residual: availability, not
+correctness \\
+Rename without re-index & Chunk count 18 where 9 exist; the document matches
+its own former path & Three-source audit; near-duplicate report &
+Force re-index; residual: the write path still cannot re-index implicitly \\
+Graph node not created & A library reports two of three documents &
+Per-library document count versus graph overview & Rebuild the graph for that
+document; residual: construction is not yet guaranteed by ingestion \\
+Task record outlives its task & A finished build still reports ``running'' &
+Compare task status against the artifact it was to produce & Query the
+artifact, not the task; residual: status is not completion evidence \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{L6. The acquisition gate sets the ceiling for everything
+above it.} In the 100-document campaign, 21 submitted documents never became
+retrievable --- the campaign record does not separate parse losses from
+record-keeping losses, and the material is dense scanned work with formulas
+and tables. The system's value here is
+not that the rate is low, but that a loss becomes a reported outcome: a
+document that fails a gate and is nevertheless stored as empty or garbled
+would enter the
+catalog, receive a description, be indexed, and be retrieved and cited by the
+same machinery that cites good documents, with no signal anywhere that
+anything was lost. The same argument applies to a missing index or a stale
+description. This is why the acquisition layer owns a post-condition rather
+than a warning, and why the knowledge layer is a component of the system
+rather than a precondition to retrieval.
+
+\noindent\textbf{L7. Organization is a retrieval budget.} Content routing
+decides what the candidate generator can see. A catalog that is curated and
+consistent lets an agent choose a library and a document set from metadata
+alone, which is the mechanism behind the catalog-first lane and behind
+cross-library discovery in a deployment with nineteen libraries. An
+ungoverned catalog produces the opposite: candidate generation degenerates
+into a global vector search whose recall is limited by the cap, and no
+downstream verification can recover a document that was never proposed. The
+organization layer is therefore not administrative overhead around retrieval;
+it is where retrieval's recall is decided.
+
+The lessons share one implication for how systems of this kind should be
+evaluated. A claim about enforcement is a claim about a control, so it needs a
+matched ablation: the same pipeline with the mechanism disabled, the same
+questions, the same corpus. Where we have that control (retrieval with and
+without verification at the tool layer) the claim is quantified; where we did
+not have it at first (an end-to-end agent arm with the gate disabled) we fixed
+the protocol before running it rather than after
+(Section~\ref{sec:eval-agent}). The verifier's negative result is the reason
+we insist on the distinction: without the matched ablation, a filter and a
+re-ranker are indistinguishable from the outside, and only one of them is
+defensible.

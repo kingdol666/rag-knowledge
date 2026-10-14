@@ -1,0 +1,39 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+QDCVR connects knowledge-base management with evidence-checked retrieval through
+three contracts, and the contracts rather than any single component are the
+claim. \emph{Content governs placement}: the parsed body, not the filename,
+decides which library holds a document and what its description and tags say, so
+what a later search can see is settled at ingest rather than at query time.
+\emph{Content governs admission}: a retrieved candidate becomes admissible
+evidence only after the server fetches its text and a content gate returns a
+verdict with provenance, which makes rank position advisory rather than
+authoritative. \emph{Absence is reported}: when no fetched segment meets the
+evidence criterion the answer layer returns an explicit not-found report naming
+the scope searched. All three are enforced by server-side mechanisms, and
+Section~\ref{sec:eval} measures them one at a time.
+
+The 13 October evaluation separates retrieval-only document recall from
+answer-layer citation and abstention behavior, and it does not flatter the
+system: lexical retrieval reaches Hit@5 1.00 on the industrial corpus while the
+content gate filters nothing at its acceptance threshold, and the same verdicts
+are worth 0.94 as a filter and 0.44 as a re-ranker over identical candidate
+pools. Acquisition left 21 of 100 submitted papers unretrievable with no
+surviving artifact to attribute them, and an oversized tool response can hide
+relevant catalog entries --- a tested failure path that a server-side budget
+guard with pagination repaired. The contribution these findings support is
+explicit, auditable contracts on the measured paths, not universal superiority
+over lexical or dense retrieval.
+
+The next step is evaluation on larger, independently curated question sets
+with repeated agent runs, transport stress tests and downstream operator
+measures. The practical objective is to make the path from stored content to
+cited claim inspectable, reproducible and explicit about its limits.
+
+%% The back matter — CRediT, competing interest, funding, ethics statement,
+%% data availability, acknowledgements, appendix and the mandated generative-AI
+%% declaration — lives in n_back.tex, which main_20p.tex inputs immediately
+%% after this file. Keeping it there gives every declaration one source of
+%% truth and puts the AI declaration last before the reference list, as the
+%% KBS guide requires.

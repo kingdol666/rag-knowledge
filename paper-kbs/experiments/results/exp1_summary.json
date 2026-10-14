@@ -1,0 +1,56 @@
+{
+ "n_questions": 16,
+ "summary": {
+  "bm25": {
+   "hit@5": 1.0,
+   "recall@5": 1.0,
+   "mrr": 0.9583333333333334,
+   "latency_mean": 0.001,
+   "latency_p50": 0.001
+  },
+  "dense": {
+   "hit@5": 0.9375,
+   "recall@5": 0.9375,
+   "mrr": 0.85625,
+   "latency_mean": 0.018,
+   "latency_p50": 0.017
+  },
+  "rrf": {
+   "hit@5": 1.0,
+   "recall@5": 1.0,
+   "mrr": 0.9270833333333334,
+   "latency_mean": 0.011,
+   "latency_p50": 0.009
+  },
+  "graph": {
+   "hit@5": 0.5625,
+   "recall@5": 0.53125,
+   "mrr": 0.5625,
+   "latency_mean": 0.068,
+   "latency_p50": 0.068
+  },
+  "twostage": {
+   "hit@5": 1.0,
+   "recall@5": 0.96875,
+   "mrr": 0.9270833333333334,
+   "latency_mean": 0.077,
+   "latency_p50": 0.04
+  },
+  "fusion_only": {
+   "hit@5": 0.9375,
+   "recall@5": 0.9375,
+   "mrr": 0.85625,
+   "latency_mean": 0.062,
+   "latency_p50": 0.066
+  },
+  "qdcvr_hybrid": {
+   "hit@5": 0.4375,
+   "recall@5": 0.40625,
+   "mrr": 0.22604166666666667,
+   "latency_mean": 0.542,
+   "latency_p50": 0.581
+  }
+ },
+ "corpus_docs": 42,
+ "bm25_build_s": 0.61
+}

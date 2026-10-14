@@ -1,0 +1,200 @@
+\section{Related work}
+\label{sec:related}
+
+\subsection{Knowledge bases, knowledge organization, and knowledge management}
+Large public knowledge bases such as DBpedia and YAGO are built by extracting
+structured facts from semi-structured sources and maintaining them under an
+ontology \citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}. The enterprise
+content management literature treats organizational content as a management
+problem rather than an extraction problem: ECM integrates content, process, and
+records perspectives \citep{paivarinta-ecm-2005}, and later work characterizes
+the field's research agenda \citep{tyrvaainen-ecm-2006}. Organizational
+knowledge creation describes how tacit experience becomes explicit, shareable
+knowledge through socialization, externalization, combination, and
+internalization, sustained by a shared context \citep{nonaka-seci-1994,
+nonaka-seci-ba-2000}. Complementary strands study metadata quality in digital
+repositories \citep{park-metadata-quality-2009}, the emergent vocabulary of
+collaborative tagging \citep{golder-tagging-2006}, human-in-the-loop review of
+machine-produced labels \citep{mosqueira-rey-hitl-2022}, and the inspectability
+of automated decisions \citep{barredo-arrieta-xai-2020}.
+
+This literature names the problems our design must answer --- inconsistent
+metadata, uncontrolled vocabulary, unverified labels, experience that never
+becomes reusable --- but it treats them as management and social problems and
+rarely closes the loop to machine answering. That loop is the contribution
+here: the content-derived metadata that organizes a base also constrains
+retrieval, verification, and abstention
+(Sections~\ref{sec:organization}--\ref{sec:gate}).
+
+\subsection{Document parsing and acquisition pipelines}
+Document AI supplies the components of an acquisition pipeline. PubLayNet
+established large-scale layout analysis \citep{zhong-publaynet-layout-2019},
+and unified text--image pre-training improved layout-aware understanding of
+tables and figures \citep{huang-layoutlmv3-docai-2022}. MinerU provides an open
+extraction pipeline for scientific and scanned documents and is the parser this
+platform drives \citep{mineru}. Near-duplicate detection by locality-sensitive
+hashing over shingles is the standard mechanism for redundancy control at crawl
+scale \citep{manku-near-dup-2007}, and provenance has mature foundations in the
+W3C PROV family \citep{missier-prov-2013} and in database provenance
+\citep{cheney-provenance-2009}.
+
+Parsing is usually presented as preprocessing. We treat it as a precondition:
+an extraction error propagates into chunking, description, indexing, and every
+later citation, and it is invisible in retrieval metrics. In our own campaign
+21 of 100 submitted arXiv papers never reached a retrievable state
+(Section~\ref{sec:acquisition}). Acquisition therefore carries its own quality
+gate, duplicate check, index-verification step, and per-document provenance
+record.
+
+\subsection{Retrieval: sparse, dense, hybrid, and RAG}
+Retrieval-augmented generation grounds generation in retrieved passages
+\citep{rag-lewis}; dense retrievers learn a shared query--passage space
+\citep{dpr}; multi-lingual, multi-granularity embedders such as BGE-M3 combine
+dense and sparse signals \citep{bge-m3}. Lexical probabilistic ranking remains
+a strong baseline \citep{bm25}, reciprocal-rank fusion merges ranked lists
+without training \citep{rrf-cormack}, and ranking in the large-data regime is
+benchmarked on MS~MARCO \citep{craswell-msmarco-2021}. Graded-relevance metrics
+are the standard evaluation instrument \citep{jarvelin-cumulated-gain-2002}, and
+surveys systematize the design space as retrieve-then-read pipelines
+\citep{gao-ragsurvey}. The platform stores vectors in a persistent store with
+graph-based approximate nearest-neighbour search \citep{chroma,hnsw}.
+
+On our gold-annotated corpus the lexical baseline is not the weak part: BM25
+reaches Hit@5 of 1.00. This paper does not compete on ranking quality. It treats
+all of these signals as candidate generators whose output must still be
+confirmed against content (Section~\ref{sec:lanes}).
+
+\subsection{Structured and graph-based organization}
+GraphRAG builds entity--relation graphs and community summaries for
+query-focused summarization \citep{graphrag}; LightRAG reduces the idea to
+dual-level retrieval \citep{lightrag}; RAPTOR recursively abstracts document
+trees \citep{raptor}. Knowledge-graph work supplies the representational
+vocabulary --- embedding-based representation and link prediction
+\citep{wang-kg-embedding-2017}, and the acquisition, representation, and
+application taxonomy \citep{ji-kg-survey-2022} --- with property-graph stores as
+the common substrate \citep{neo4j}. Structured organization is also motivated as
+a mitigation for ungrounded generation \citep{siren}.
+
+Our graph layer is deliberately thinner than these systems: Document,
+KnowledgeBase, and Tag nodes with membership, tag, and weighted relatedness
+edges, built from metadata that acquisition already verified. It navigates and
+expands candidates and never answers alone. The measured basis is that
+keyword-limited graph search is the weakest standalone signal on our corpus
+(Hit@5 0.56), so the platform exposes it as one channel among several
+(Section~\ref{sec:lanes}).
+
+\subsection{Content verification, correction, and abstention}
+Self-RAG trains a generator to critique retrieved evidence and its own output
+\citep{selfrag}; CRAG adds a corrective retriever that re-evaluates and
+re-queries when retrieval quality is low \citep{crag}; FLARE interleaves
+generation with forward-looking retrieval triggers \citep{flare};
+\citet{kamath} formalize selective prediction under domain shift; and CyberBOT
+applies ontology-grounded retrieval in a reliability-critical domain
+\citep{cyberbot}. Verifiability measurement in generative search
+\citep{liu-verifiability} and citation-capable generation \citep{gao-citations}
+frame the problem this paper attacks: citations that are present but not
+supportive.
+
+\emph{LLM-as-a-judge.} The verification gate is a locally hosted judgement
+model \citep{laya}, and the judging literature documents exactly the failure
+modes our measurements expose. MT-Bench and Chatbot Arena established the
+paradigm and its bias taxonomy \citep{zheng-llmjudge}; LLM relevance judges
+agree imperfectly with human relevance \citep{sun-urara}; listwise LLM
+re-rankers trade quality for instability at scale \citep{rankgpt}; evaluators
+favour generations that resemble their own distribution
+\citep{panickssery-selfpref}; and verifiers can be gamed by optimization
+pressure \citep{lightman-verify}. Our contribution is not the discovery that
+judges miscalibrate. It is the operational quantification of same-domain
+inflation inside a deployed pipeline and the decomposition of which judge
+\emph{role} --- filter, ordering, or threshold --- is safe under which pool
+conditions (Sections~\ref{sec:inflation} and \ref{sec:gate}).
+
+These approaches verify \emph{during generation} with the generator itself.
+This platform externalizes verification into a dedicated model that sees only
+(query, document text) pairs and is consumed as a tool: any lane, agent, or
+external system can call it, and its verdicts fail closed. Verification thus
+becomes an inspectable, reusable service rather than a property of one
+generator's prompting.
+
+\emph{Abstention.} Beyond selective prediction under domain shift
+\citep{kamath}, recent work probes whether LLMs know what they do not know
+\citep{yin-knowwhat} and orchestrates models to abstain on knowledge gaps
+\citep{feng-abstain}. Section~\ref{sec:abstention} locates the abstention of
+this platform not in calibrated uncertainty but in the reading-and-answer
+structure --- a complementary, architectural answer to the same problem.
+
+\subsection{Agentic retrieval and tool protocols}
+ReAct established interleaved reasoning and acting over tools \citep{react-yao};
+tool-learning extended it to self-supervised tool use \citep{toolformer}; the
+Model Context Protocol standardizes tool servers as a machine interface
+\citep{mcp}; agentic-RAG surveys systematize the design space and list
+efficiency among its open challenges \citep{singh-agentic-rag}; and Modular RAG
+frames retrieval systems as reconfigurable modules \citep{modular-rag}. DeepRead
+shows that structure-aware navigation over long documents improves agentic
+search \citep{deepread}, which matches the document-coordinate reading of the
+librarian lane. The contribution here is a policy layer rather than a new
+reasoning scheme: per-lane tool whitelists enforced by the server, hard call
+budgets, and single-call server-side orchestration for the hybrid lane, aimed
+at the turn count that dominates agentic latency
+(Section~\ref{sec:composition}).
+
+\subsection{Positioning}
+Table~\ref{tab:positioning} compares representative systems along the
+dimensions a knowledge-base management system has to satisfy.
+
+\begin{table}[!htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Positioning against representative systems. \emph{Parse}: a quality
+gate that rejects unusable documents before they enter the base. \emph{Org.\ \&
+lifecycle}: organization and governance of the base beyond a flat index
+(catalog, metadata and tag control, duplicate control, move/merge/delete).
+\emph{Experience}: operational lessons kept as first-class retrievable
+knowledge. \emph{Verify}: every cited item is judged against the query before it
+may support an answer. \emph{Abstain}: explicit not-found is terminal, not a
+fallback to parametric or web knowledge. \emph{Lanes}: several retrieval
+strategies behind one interface under enforced budgets. \emph{Protocol}: a
+standardized agent tool protocol as the machine interface. \yes{} present;
+\no{} not addressed by the cited work; \textit{n/r} not reported in the
+accessible source; italic entries name the mechanism where a bare mark would
+mislead. Marks denote capability, not measured quality.}
+\label{tab:positioning}
+\begin{tabular}{@{}p{5.6cm}ccccccc@{}}
+\toprule
+ & \rotatebox{90}{Parse} & \rotatebox{90}{Org.\ \& lifecycle} &
+\rotatebox{90}{Experience} & \rotatebox{90}{Verify} &
+\rotatebox{90}{Abstain} & \rotatebox{90}{Lanes} &
+\rotatebox{90}{Protocol} \\
+\midrule
+Vanilla RAG \citep{rag-lewis} & \no & \no & \no & \no & \no & \no & \no \\
+GraphRAG \citep{graphrag} & \no & \emph{communities} & \no & \no & \no & \no & \no \\
+RAPTOR \citep{raptor} & \no & \emph{tree} & \no & \no & \no & \no & \no \\
+LLM judge re-ranker \citep{rankgpt} & \no & \no & \no & \emph{ordering} & \no & \no & \no \\
+Self-RAG \citep{selfrag} & \no & \no & \no & \emph{generator} & \emph{partial} & \no & \no \\
+CRAG \citep{crag} & \no & \no & \no & \emph{corrective} & \no & \no & \no \\
+DeepRead \citep{deepread} & \no & \emph{structure} & \no & \no & \no & \emph{agentic} & \textit{n/r} \\
+ECM platforms \citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006} & \textit{n/r} & \emph{lifecycle} & \textit{n/r} & \no & \no & \no & \textit{n/r} \\
+Public KBs, DBpedia/YAGO \citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013} & \textit{n/r} & \emph{ontology} & \no & \no & \no & \no & \no \\
+\midrule
+QDCVR (this work) & \yes & \yes & \yes & \yes & \yes & \yes & \yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each tabulated system contributes one or two of these dimensions: GraphRAG
+organizes a corpus as a graph, RAPTOR as a tree, Self-RAG and CRAG verify with
+the generator, LLM judges order candidates, and ECM frameworks govern content
+across its lifecycle. None combines a quality-gated acquisition pipeline, a
+governed organization and lifecycle layer, first-class operational experience,
+per-citation content verification, enforced abstention, budgeted multi-lane
+retrieval, and a standard agent tool protocol.
+
+This paper contributes that combination as one design: contracts that hold
+across acquisition, organization, verification, and abstention
+(Sections~\ref{sec:acquisition}--\ref{sec:abstention}), rather than capabilities
+implemented per component. It does not propose a better ranker. On the
+gold-annotated corpus BM25 reaches Hit@5 of 1.00 while the judged hybrid reaches
+0.44; the value of the gate measured here is auditable, fail-closed,
+per-citation provenance, not ranking quality (Sections~\ref{sec:e4} and
+\ref{sec:inflation}).

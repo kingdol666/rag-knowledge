@@ -1,0 +1,356 @@
+%% n8b_eval.tex -- evaluation, middle part: E3 (operational knowledge and
+%% automated distillation) and E4 (retrieval quality and the role of the
+%% verdict). Assembled 2026-10-12. Labels owned here: sec:e3, sec:e4,
+%% tab:retrieval, tab:e4-modes.
+%% Numbers: restructure-plan-2026-10-12.md (\S C.1 items 8.4/8.5, \S D-3, \S H),
+%% functional-test-evidence-2026-10-12.md, v2/s7_OLDresults.tex, and the
+%% artifacts named inline (paper-kbs/experiments/results/, benchmark-suite/
+%% results/, review/fulltest-20261012, review-2026-10-08.md).
+\subsection{E3: Operational knowledge and automated distillation}
+\label{sec:e3}
+
+The experience store holds operational lessons as first-class retrievable
+documents: an entry is addressed, indexed and searched through the same
+interfaces as an ordinary document, and it carries a credibility tier that
+decides whether it may be shown at all
+(Section~\ref{sec:org-experience}, Table~\ref{tab:exp-tiers}). The design
+claim is that a lesson about practice should be governed like any other
+content object. The evidence collected for that claim is case evidence and we
+report it as such.
+
+Three measurements exist. (i)~One extraction campaign over a single small
+knowledge base produced thirteen candidate drafts
+(\path{benchmark-suite/results/experience_smoke.json}:
+\texttt{extract\_candidates}~13, \texttt{drafts\_created}~13). (ii)~One
+end-to-end scenario was sedimented into one experience
+(\texttt{exp-d6f4d47ae3d6}) and a later global experience search returned that
+entry first, with a local similarity of 0.711
+(\path{review/fulltest-20261012}, scenario A6). (iii)~The draft-approval
+path was never exercised: the draft pool was empty when it was queried
+(\texttt{experience\_drafts\_list} returned \texttt{count}~0 with no drafts),
+so \path{experience_draft_read} and \path{experience_draft_approve}
+could not run at all (\path{benchmark-suite/results/SKILL-E2E-REPORT.md},
+lines~27 and~103). The heuristic extraction path was exercised only in
+dry-run mode, where it returned a raw document dump that the quality gate
+would reject (line~100).
+
+One scenario and thirteen candidates cannot support an effectiveness claim,
+and we do not make one. The larger part of the automated-distillation
+pipeline is unverified: scheduled distillation, review and approval at scale,
+application feedback, and credibility decay were not exercised end to end.
+What the measurements show is narrower and sufficient for the design
+argument: an operational lesson can travel the document path --- created,
+indexed, returned first by search, with its tier attached --- and nothing more.
+
+\subsection{E4: Retrieval quality and the role of the verdict}
+\label{sec:e4}
+\label{sec:eval-retrieval}
+
+Nine configurations, defined here so the table can be read on its own. Seven
+were measured through their own tool-layer entry points: \emph{BM25} through the
+keyword search tool; \emph{Dense} through \texttt{kb\_search\_vector} with
+BGE-M3 \cite{bge-m3}; \emph{RRF} as reciprocal-rank fusion at $k=60$ of those
+two rankings \cite{rrf-cormack}; \emph{Graph} through
+\texttt{kb\_graph\_search}, a node-name and path match over the document graph;
+\emph{Two-stage} through \texttt{kb\_search\_two\_stage}
+(Section~\ref{sec:twostage}); and the hybrid lane through
+\texttt{kb\_hybrid\_search} with the gate switched off
+(\emph{Fusion-only}) and on (\emph{QDCVR-Hybrid}). That lane is implemented in
+the shipped tool layer as a server-side composition of the vector, catalog and
+judging tools named above; \texttt{kb\_hybrid\_search} was an earlier single-call
+wrapper that is no longer registered. Two further rows are derived
+offline by replaying the judged hybrid run's own logged twelve-candidate pools
+and verdict scores: \emph{Judge-as-filter} keeps the survivors in their fusion
+order, and \emph{RRF-fuse} fuses the fusion ranking with the judge-score
+ranking at $k=60$. The last three configurations see the same candidates and
+the same scores; only the verdict's role differs, which is what makes the
+comparison an attribution rather than a benchmark.
+
+\begin{table}[!htbp]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\caption{Tool-layer retrieval on the 42-document deployed industrial corpus
+(mean over 16 gold-annotated questions; top-5 document lists; latency per
+call, warmed). The paraphrase column re-asks those sixteen questions in
+different words (\protect\path{paper-kbs/experiments/results/exp6_paraphrase.json});
+block~(b) repeats the Hit@5 measurement on a second corpus, the 79 retrievable
+papers of the 100-paper arXiv ingestion, over ten questions.}
+\label{tab:retrieval}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+Method & Hit@5 & Recall@5 & MRR@5 & Paraphrase Hit@5 & Latency (mean) & Latency (median) \\
+\midrule
+BM25                  & 1.00 & 1.00 & 0.958 & 0.88 & 0.9\,ms    & 1\,ms \\
+Dense (BGE-M3)        & 0.94 & 0.94 & 0.856 & 0.94 & 18\,ms     & 17\,ms \\
+RRF (BM25$\|$Dense)   & 1.00 & 1.00 & 0.927 & 0.88 & 11\,ms     & 9\,ms \\
+Graph (Neo4j)         & 0.56 & 0.53 & 0.562 & 0.56 & 68\,ms     & 68\,ms \\
+Two-stage             & 1.00 & 0.97 & 0.927 & 0.94 & 77\,ms     & 40\,ms \\
+Fusion-only           & 0.94 & 0.94 & 0.856 & 0.94 & 62\,ms     & 66\,ms \\
+QDCVR-Hybrid          & 0.44 & 0.41 & 0.226 & 0.50 & 542\,ms    & 582\,ms \\
+\midrule
+\multicolumn{7}{l}{\emph{Derived (offline, same logged hybrid pools):}}\\
+\quad Judge-as-filter$^{\dagger}$ & 0.94 & 0.94 & 0.856 & 0.94 & \multicolumn{2}{l}{$^{\dagger}$542\,ms / 582\,ms} \\
+\quad RRF-fuse & 0.88 & 0.88 & 0.606 & 0.88 & \multicolumn{2}{l}{(same single call)} \\
+\bottomrule
+\end{tabular}}
+\par\smallskip
+\raggedright\small
+$^{\dagger}$\,Derived rows replay the QDCVR-Hybrid run's own logged
+12-candidate pools and judge scores, so they reuse that call's latency; the
+judge executes once either way.
+
+\par\smallskip
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\multicolumn{9}{@{}l}{\textbf{(b)} Second corpus: 79 retrievable arXiv papers of the 100 submitted, ten questions}\\
+\midrule
+Configuration & BM25 & Dense & RRF & Graph & Two-stage & Fusion-only & QDCVR-Hybrid & Judge-as-filter \\
+Hit@5 & 0.90 & 0.90 & 0.90 & 0.20 & 0.90 & 0.90 & 0.90 & 0.90 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Table~\ref{tab:retrieval} compares nine configurations on the sixteen
+gold-annotated questions of the deployed industrial corpus (42 documents;
+\path{paper-kbs/experiments/results/exp1_retrieval.json} and
+\texttt{exp5\_judge\_filter.json}). The tool-layer arms retrieve and never
+answer: their latencies are retrieval latencies, and, because no generation
+follows, they carry no token cost. With sixteen questions the Wilson 95\%
+intervals on the headline proportions are wide (judged hybrid $[0.23, 0.67]$;
+judge-as-filter $[0.72, 0.99]$; BM25 and RRF $[0.81, 1.00]$), so the
+decomposition below, not the point estimates, is the claim. A separate
+six-method retrieval-mode ablation exists in the released logs; a 2026-10-12
+pass of it covered two questions
+(\path{benchmark-suite/results/runs/run-20261012T062847Z-5f9faac/RETRIEVAL-COMPARE.md})
+and is superseded by the ten-question replication below, which replaces the
+smoke-check caveat the earlier $n=2$ pass carried. The 2026-09-27 comparison
+has modes B and C at 78.5/29.8\,s and 235.1/123.4\,s
+(\path{benchmark-suite/results/runs/run-20260927T094215Z-47cc948/RETRIEVAL-COMPARE.md}),
+and an earlier 2026-09-26 snapshot --- eleven libraries, before a catalog
+change --- recorded $\sim$342/234\,s and $\sim$1152/1818\,s for the same two
+modes
+(\path{benchmark-suite/results/runs/retmodes-20260927T062953Z-47cc948/THREE-MODE-REPORT.md}),
+though its mode~C arm is not contract-matched, keeping 173 surviving documents
+against 36 now.
+
+\textbf{A ten-question, six-method replication.} The mode comparison was
+re-run at scale on 2026-10-13: ten questions --- the built-in two plus the
+eight Quick10 gold questions, each gold document verified before the run to
+exist in both the live library and the corpus index that the lexical
+baselines search --- crossed with the three tool-layer modes (Section~\ref{sec:lanes})
+and three ranking baselines, pure retrieval, no generation
+(\path{benchmark-suite/results/runs/run-20261013T035250Z-5f9faac/retmatrix.json};
+Table~\ref{tab:e4-matrix}; Figure~\ref{fig:modematrix}). The baselines reach
+document-level gold recall 10/10 at near-zero latency; the modes reach
+10/10 (A), 9/10 (C) and 7/10 (B) at 14--33\,s mean wall clock. We report the
+parity and do not argue it away: on this question set, finding the gold
+document is not where the lanes earn their cost, and Section~\ref{sec:e5}
+measures what they add. The three mode misses are lane-diagnostic rather
+than noise. Mode~B's early-exit rule fired on QK01 after the description
+layer surfaced a same-topic distractor family (a multi-agent transformer
+paper), and the gold was never fetched; its two remaining misses (a
+chunked-window question and a multiple-competing-documents question) are
+description-overlap blind spots, the historical weak layer of navigation.
+The hybrid lane recovers two of the three through its vector arm and adds
+one of its own: on QK01 the judge discarded the gold document's segments, an
+instance of fail-closed verification losing gold at the document level --- the
+same verdict-quality question that Section~\ref{sec:e6} quantifies inside
+the industrial corpus. The matrix reads as lane complementarity with honest
+failure modes attached, not as a ranking advance. One measurement-hygiene
+note: the dense baseline's first pass searched an empty default library and
+returned zero documents on all ten questions; the released row is a
+cross-library re-run, and the default has since been removed from the
+runner.
+
+\begin{table}[!htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Six-method retrieval matrix, ten questions, pure retrieval (no
+generation). Gold recall is document-level: the gold document appears
+anywhere in the method's returned set. Every gold was verified to exist in
+both substrates (the live library for the modes; the 100-document corpus
+index for the baselines) before the run. Latency is mean wall clock per
+question.}
+\label{tab:e4-matrix}
+\begin{tabular}{lccc}
+\toprule
+Method & Gold recall & Mean latency & Range \\
+\midrule
+Mode A (pinned dense + judge) & 10/10 & 19.8\,s & 18--24\,s \\
+Mode B (ladder)               & 7/10  & 14.0\,s & 5--20\,s \\
+Mode C (hybrid)               & 9/10  & 33.1\,s & 26--44\,s \\
+BM25 (corpus index)           & 10/10 & $<$0.05\,s & --- \\
+Dense (cross-library)         & 10/10 & 0.1\,s  & --- \\
+RRF (BM25$\|$Dense)           & 10/10 & $<$0.05\,s & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig10_mode_matrix}
+\caption{The ten-question six-method matrix of Table~\ref{tab:e4-matrix}.
+(a)~Document-level gold recall: lexical and dense baselines reach 10/10 at
+near-zero latency; the tool-layer modes reach 10/10, 9/10 and 7/10 --- the
+lanes' contribution is not recall. (b)~Mean wall clock per question: the
+baselines are three orders of magnitude faster; the modes buy judged,
+cited and budget-bounded evidence at 14--33\,s (Section~\ref{sec:e5}).}
+\label{fig:modematrix}
+\end{figure}
+
+\textbf{On this corpus, lexical retrieval is strong.} BM25 \cite{bm25}
+reaches Hit@5 1.00 (MRR 0.958) at about a millisecond per call; reciprocal
+rank fusion \cite{rrf-cormack} matches it in Hit@5 and follows in MRR (0.927);
+the two-stage BM25+graph-then-dense pipeline reaches Hit@5 1.00 with
+Recall@5 0.97, one gold of a two-gold question falling outside the top-5.
+Dense retrieval with BGE-M3 \cite{bge-m3} misses exactly one question (Q16),
+where four near-duplicate sibling reports from one incident family crowd the
+top-5 --- a confuser-density failure, not a vocabulary one. Graph search over
+the document graph \cite{graphrag}, limited to node-name and tag matching, is
+the weakest standalone signal (Hit@5 0.56, MRR 0.562). Nothing here is a
+retrieval advance: the corpus is curated, the questions are written in its
+vocabulary, three configurations tie at Hit@5 1.00, and the one that uses only
+words leads on MRR.
+
+\textbf{The central result is the verdict's role, not its existence.} The same
+judged scores enter three configurations: not used (fusion-only, Hit@5 0.94),
+used to re-rank candidates (QDCVR-Hybrid, 0.44), and used as a filter that
+keeps survivors in their fusion order (judge-as-filter, 0.94). On the eight
+questions where re-ranking and filtering differ (Q2, Q4, Q5, Q6, Q8, Q9, Q11,
+Q12), filtering wins all eight and loses none, with eight further ties on
+Hit@5, and it restores MRR to 0.856 (exact binomial sign test, two-sided
+$p = 0.008$); the only ranking movement is Q7, where the gold slips from third
+to fifth inside the top-5. The verdicts were not wrong about which documents
+are evidence --- they were wrong as an ordering. This matches the
+judge-miscalibration pattern reported for model-generated preferences
+\cite{zheng-llmjudge,panickssery-selfpref}: an individually plausible verdict
+can be ordinally unreliable, and the fix is the placement of the verdict, not
+its existence or its strength. Its price is measurable: judging
+twelve candidates adds well under a second with the resident worker, and the
+hybrid call's latency surcharge over fusion-only is the observed difference
+between 542\,ms and 62\,ms per call. Two caveats travel with the test. It is
+post-hoc and descriptive --- one of nine configurations evaluated on the same
+sixteen questions --- and the gate is a single locally fine-tuned checkpoint
+(Section~\ref{sec:gate}), so every verifier finding in this paper inherits
+that choice.
+
+\textbf{A second corpus reproduces the baselines, not the collapse.} Ten
+questions over the 79 retrievable papers of the 100-paper arXiv ingestion
+(the campaign record logs 8{,}031 chunks; block~(b) of
+Table~\ref{tab:retrieval}; per-question results in
+\path{paper-kbs/experiments/results/exp10_papers_toollayer.json}) are answered
+at Hit@5 0.90 by seven of the eight configurations, graph search excepted at
+0.20. Question BQ03 is missed by all eight configurations, and apart from
+graph search no other configuration-level difference is worth noting: its gold
+paper is one of the 21 papers that never became
+retrievable in that campaign, so the single shared miss is an acquisition-side
+loss, not a retrieval failure. We therefore report both denominators --- 0.90 over
+the ten questions as asked, 1.00 over the nine answerable ones --- and say
+which is which. The judged collapse of the industrial corpus does not
+reproduce on this corpus, where the same-family confuser cluster that drives
+it is absent; the graph configuration's 0.20 tracks absent relation tagging,
+since the bulk import bypassed the tagging path.
+
+\textbf{Thresholds and margins.} All 191 judged candidates from the sixteen
+hybrid runs passed the 0.5 acceptance threshold, the lowest logged score being
+0.589, so at the threshold layer the gate filtered nothing on this corpus
+(\texttt{exp1\_retrieval.json}). The margin sweep that follows replays these
+logged candidate pairs rather than re-retrieving them: with the top-5 floor
+unchanged, a margin of 0.15 keeps the gold in 16 of the 17 in-pool gold
+instances and 0.20 keeps it in all 17
+(\texttt{exp6\_loo\_margin.json}). A leave-one-out procedure that
+selects the margin per question from the other fifteen reaches a gold survival
+of 0.9375, its single miss being Q11, which the shipped 0.15 margin also
+loses, while a fixed 0.20 floor reaches 1.00
+(\texttt{exp6\_loo\_margin.json}). The shipped floor is thus an engineering
+constant, not a fitted parameter, and the calibration that would justify it
+has not been run.
+
+\textbf{Rephrasing shows where the fragility sits.} On a grid of sixteen
+paraphrase questions (\texttt{exp6\_paraphrase.json}) the judged configuration
+falls to Hit@5 0.5 (MRR 0.189), while judge-as-filter and fusion-only hold at
+0.9375 (MRR 0.833) and dense retrieval stays at 0.9375; BM25 falls from 1.00
+to 0.875 (MRR 0.958 to 0.755). Both the lexical baseline and the judged
+re-ranking lose ground when the wording changes, and the configuration that
+refuses to let the verdict order the list does not. The gate's weakness is in
+the ordering it induces, not in the verdicts it returns.
+
+\textbf{End to end, the modes differ in checkability.} Ten fixed questions ran
+through three modes that share one harness, one model and one neutral prompt
+template and differ only in retrieval affordance: the platform's full read
+surface, a bare agent with file tools over the exported papers, and dense
+retrieval over an 800-character replica index of the corpus (4{,}528 chunks).
+Table~\ref{tab:e4-modes} reports the outcome. All three modes produce answers,
+and the bare agent grounds as many of them as the platform
+(10/10 vs.\ 10/10), but its answers name files where the platform names
+checkable addresses, and dense retrieval cites an address once in ten
+questions. The modes differ mainly in checkability rather than in whether an
+answer was produced. Three caveats belong to this comparison: both dense
+grounding misses were tool-availability aborts; grading is conservative, and
+word-boundary matching zeroes the bare agent's plural ``cathodes'' on BQ08; and
+two platform cells re-ran once after a harness timeout, correctness calls are
+the authors' trace readings, and cache state was uncontrolled.
+
+\begin{table}[!htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Three-mode end-to-end comparison on ten fixed questions over the
+100-paper arXiv corpus. \emph{Grounded}: strict arXiv-id citation of the
+designated paper. \emph{Key-fact}: at least 60\% of the fixed gold key facts
+matched at word boundaries. \emph{Cited}: the answer names a part, section or
+table. Wall clock and cost are per question.}
+\label{tab:e4-modes}
+\begin{tabular}{lccccc}
+\toprule
+Mode & Grounded & Key-fact & Cited & Wall clock & Cost \\
+\midrule
+Platform (read surface)   & 10/10 & 10/10 & 9/10 & 116\,s & \$0.55 \\
+Bare agent (file tools)   & 10/10 & 8/10  & 6/10 & 48\,s  & \$0.63 \\
+Dense retrieval (replica) & 8/10  & 6/10  & 1/10 & 41\,s  & \$0.28 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+E4 establishes one thing. Content verification placed as a filter rather than
+as a ranker is the difference between a citation and a claim: every returned
+document is judged, and the ordering the reader sees is not the verdict's.
+Verification before answering is not itself new \cite{selfrag,crag}; what is
+measured here is where the verdict belongs in the pipeline and what it costs
+there. E4 does not establish a retrieval advance --- BM25 reaches Hit@5 1.00
+on this corpus (Figure~\ref{fig:retrieval}) --- so recall is not the contribution, and no margin, threshold
+or paraphrase variant tested repairs the ordering role of the verdicts. That
+is the question the failure analysis of the verifier takes up.
+Figure~\ref{fig:marginvariants} plots both variants on the same logged
+candidate pairs, so the margin rule and the paraphrase collapse can be read
+against the aggregate numbers above.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig3_retrieval}
+\caption{Tool-layer retrieval over the 42-document production corpus
+(sixteen gold questions, top-5 document lists). Lexical retrieval is
+strong on this corpus: BM25 reaches Hit@5 1.00. The judged hybrid loses
+more than half of its top-5 hits (0.44); placing the same verdicts in a
+filter role recovers the fusion result (0.94) because the verdicts were
+not wrong about which documents are evidence, only about their order.}
+\label{fig:retrieval}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig6_margin_variants}
+\caption{Margin and paraphrase variants over the same 191 logged judged
+candidate pairs. (a) The relative cut replays the logged pairs with the
+top-5 floor unchanged: the shipped 0.15 margin loses one of seventeen
+in-pool gold instances, a 0.20 floor loses none, and a leave-one-out
+selection over the other fifteen questions lands at 0.9375. (b) Under
+sixteen paraphrases the judged re-ranking collapses to Hit@5 0.50
+(MRR 0.189) while the filter repair and dense retrieval hold at 0.9375
+and BM25 falls to 0.875 (MRR 0.755).}
+\label{fig:marginvariants}
+\end{figure}

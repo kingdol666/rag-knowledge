@@ -1,0 +1,275 @@
+\section{Content-verified retrieval}
+\label{sec:retrieval}
+\label{sec:lanes}
+
+Every citation a lane proposes must pass a content-verification gate before it
+may appear in an answer. The gate scores each retrieved segment on a 0--8 rubric
+(topic 0--3, scenario 0--3, evidence 0--2) and keeps a document only if at least
+one of its segments reaches the acceptance threshold on that rubric's $[0,1]$
+projection: 0.5 in general, 0.3 for enumeration questions, corresponding to the
+rubric's direct-answer band (Section~\ref{sec:gate}). It processes at most six
+references per call, takes the
+matched text from the server side rather than from the caller, and fails closed.
+No surviving evidence means the caller must answer that the corpus does not
+contain the answer.
+
+\subsection{One query through the gate}
+\label{sec:trace}
+
+Q2 of Section~\ref{sec:eval-setup} is \emph{``EL inspection shows edge delamination:
+root cause and corrective actions''}, asked through the public chat API with the
+failure-analysis library pinned and the Hybrid lane selected.
+
+\begin{enumerate}
+\item \textbf{Policy.} The chat endpoint attaches the Hybrid lane's tool
+whitelist server-side, so the agent cannot call a tool outside it.
+\item \textbf{Candidate generation (one call).} The agent issues a single
+retrieval call. In the shipped tool layer that call is a server-side
+composition of \texttt{kb\_search\_vector}, the catalog tools \texttt{kb\_list}
+and \texttt{kb\_get\_documents}, and the judging tool \texttt{kb\_laya\_judge};
+\texttt{kb\_hybrid\_search} was an earlier-generation wrapper that is no longer
+registered, so the configuration evaluated below was reproduced by composing
+those tools. Two server-side channels then run: a dense vector channel
+(the \texttt{kb\_search\_vector} call, top-30, cosine threshold 0.35) and a
+catalog keyword channel over the pinned library's descriptions. Candidates
+merge on (library, document), agreed documents rank first, and the pool is
+capped at twelve.
+\item \textbf{The gate.} The server fetches each candidate's text, segments it,
+and scores \emph{does this text contain direct evidence that answers the query}
+in batches of at most six. The agent supplies no text, so it cannot
+argue for a document it has not read. On Q2 the gold report scores 0.846 while
+five extruder-telemetry reports score 0.887--0.926.
+\item \textbf{Cut and read budget.} A document-level relative cut keeps scores
+$\geq \mathit{best}-0.15$ with a top-5 floor and a cross-domain anchor guard, so
+an out-of-domain score cannot set the cut line; the top five survivors return in
+full, at most 2\,000 characters each. That read window is the agent's only
+full-content channel; the rest of the pool survives as scores in the audit
+trail.
+\item \textbf{The answer.} Citations name the document path, the lane, and the
+engine score, graded P0 (direct evidence) through P2 (weak).
+\item \textbf{The terminal paths.} If the cut leaves no survivor, Lane~A
+escalates once to Lane~B; if Lane~B exhausts its budget, the run reports
+not-found.
+\end{enumerate}
+
+Where the design fails, the same trace is explicit. Under the shipped re-ranking
+role, Q2's gold (0.846) falls to rank eight behind the five higher-scoring
+telemetry reports, outside the five-document read window, so the agent reads
+confusers (Fig.~\ref{fig:anatomy}). Under the filter role the same pool, scores,
+and verdicts leave the gold first: same gate, same evidence, only the role of the
+induced ordering changes. This foreshadows the central result
+(Section~\ref{sec:inflation}).
+
+\subsection{The gate contract}
+\label{sec:gate}
+
+The gate is a locally hosted evidence-classification model, the Laya judging
+service \cite{laya}, invoked through a \texttt{kb\_laya\_judge} tool. Given a
+query and a batch of references, the server fetches and segments each document
+and scores every segment under one of three criteria: \emph{evidence} (specific
+substantiation; a topic match alone is insufficient), \emph{instance} (the text
+contains a member of the requested class, routed automatically for enumeration
+questions), or \emph{auto}. A document survives only if its best segment reaches
+the threshold, so one at vector score 0.40 with a \emph{yes} verdict survives
+while one at 0.95 that the judge rejects is dropped.
+
+The score is documented as a 0--8 rubric (topic 0--3, scenario 0--3,
+evidence 0--2; $\geq$6 answers directly, 5 escalates to the librarian lane,
+$\leq$4 drops), with the $[0,1]$ score as its machine-readable projection. That
+projection saturates (the logged maximum score is 1.0000), one reason thresholds
+discriminate poorly between golds and same-domain confusers
+(Section~\ref{sec:inflation}).
+
+Every operating constant is a shipped production default: the thresholds, the
+six-reference judge batch, the hybrid candidate cap of twelve, and the 0.15
+relative-cut margin with its top-5 floor. They were fixed during earlier
+deployments on a different corpus and were not tuned on the evaluation questions
+of Section~\ref{sec:eval-setup}. The paper states their status rather than
+selling the operating point: on the evaluated corpus none of the three
+thresholds ever fired, because every candidate the retrievers returned already
+scored far above them (Section~\ref{sec:inflation}). The gate's value there is
+fail-closed provenance and the filter role, not discrimination; a deployment on
+other content would have to re-tune these constants, and Section~\ref{sec:threats}
+records that as a threat rather than a result. The classifier is a single, locally fine-tuned
+evidence classifier whose checkpoint reference ships with the platform
+artifacts; it is deterministic in our replays, and every verifier finding in this
+paper inherits that choice, a scope limit noted in Section~\ref{sec:threats}.
+
+Fail-closed semantics apply to every failure mode: fetch errors, engine errors,
+and timeouts count as rejection. Survivors aggregate into an evidence pack with
+per-passage provenance.
+
+\subsection{Three lanes}
+
+The three lanes are three points on a latency/coverage frontier
+(Table~\ref{tab:lanes}; Fig.~\ref{fig:lanes}), not three implementations of one
+idea.
+
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{The three lanes as operating points. Measured figures are the
+round-1 agentic runs of Section~\ref{sec:agentic}. All three share one
+verification gate and one honesty contract; they differ only in retrieval
+affordance and budget.}
+\label{tab:lanes}
+\begin{tabular}{p{1.85cm}>{\raggedright\arraybackslash}p{3.05cm}>{\raggedright\arraybackslash}p{2.15cm}>{\raggedright\arraybackslash}p{2.25cm}>{\raggedright\arraybackslash}p{3.15cm}}
+\toprule
+Lane & Optimises for & Tool budget & Measured (round 1) & Use when \\
+\midrule
+A. Search & latency on pinned libraries & 20-turn cap & 6--8 turns; 70--165\,s & interactive default; single-library questions \\
+B. Librarian & exhaustive recall across all libraries & hard 12-call budget & 5--6 turns; 54--91\,s & must-not-miss; enumeration questions; no library pinned \\
+C. Hybrid & single-call server-side orchestration & exactly 1 call & 3--5 turns; 36--70\,s & fastest grounded answer; latency-critical \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig2_lanes}
+\caption{The three retrieval lanes. Every lane ends at the same
+content-verification gate and the same honesty contract: zero verified
+evidence escalates (Lane A$\to$B) or terminates in an explicit not-found
+report.}
+\label{fig:lanes}
+\end{figure}
+
+\textbf{Lane A (Search).} Phase A0 rewrites the query into (subject, attribute,
+constraints) form, splits comparison questions into parallel sub-queries, and
+routes incident-style queries to the experience store
+(Section~\ref{sec:org-experience}) first. Phase A1 issues one wide dense query (top-30,
+threshold 0.35, cross-library balancing), deduplicates by document, and keeps
+candidate documents rather than truncating to top chunks. Phase A2 submits
+citation-only references (library id plus document path) to the gate, and Phase
+A3 returns the judge's evidence pack, this lane's only full-content channel, from
+which the agent composes an answer whose citations carry confidence levels
+(P0 direct evidence, P1 partial, P2 weak).
+
+\textbf{Lane B (Librarian).} A fixed spine under a hard budget of twelve tool
+calls. L0 reads the library catalog (ids, names, descriptions, counts) and prunes
+shelves by the rewritten query; L1 lists each shelf's documents with
+descriptions; L2 routes by query shape, sending literal and enumeration questions
+(``which documents mention X'') to a deterministic scanner
+(\texttt{scripts/enumerate\_scan.py}, which pulls the shelf's documents through
+the tool layer and matches the requested terms literally and by regular
+expression: $\approx$0.5\,s per document, zero LLM turns) and semantic questions
+to judging; L3 judges in batches of at most six,
+because larger batches historically triggered transport timeouts
+and fail-closed batch loss; L4 reads only survivors, bounded to 2\,000 characters
+and starting at the judge-reported evidence line; L5 emits a five-part report
+(search paths, answer, sources, confidence, blind spots). The query-shape
+choice is measured, not stylistic: on a probe with nine documented mentions, the
+semantic judge recalled three of nine under the instance criterion at both
+thresholds, while the scanner recalled nine of nine in 11.3\,s. Two rules are absolute:
+catalog descriptions never prune documents by themselves, and an exhausted budget
+terminates in blind-spot disclosure, not in a guessed answer.
+
+\textbf{Lane C (Hybrid).} Agentic latency is dominated by LLM turns, not tools
+(Section~\ref{sec:composition}), so Lane C spends exactly one call by moving the
+pipeline into the server. A single call executes P1 (a
+parallel block of a vector channel, top-30 at threshold 0.35, and a catalog
+keyword channel); in the shipped tool layer that call is the composition of
+\texttt{kb\_search\_vector}, \texttt{kb\_list}, \texttt{kb\_get\_documents} and
+\texttt{kb\_laya\_judge} described above, not a single wrapper tool. P3 merges
+candidates by (library, document), agreed-by-both
+documents first, capped at twelve; P4 judges every candidate with the gate
+(criterion \emph{evidence}, threshold 0.5); P4b applies the document-level
+relative cut; and P5 reads the top five documents in full ($\leq$2\,000
+characters each). The complete audit trail ships in the response, so a one-call
+lane is still an inspectable lane.
+
+\subsection{Selecting a lane is a budget decision}
+
+The three lanes trade latency for recall under an enforced call and turn budget,
+so the choice is how much budget to spend before the gate runs, not which
+retriever is better.
+
+What makes the lanes interchangeable is the gate. All three terminate in the same
+contract: one gate, one fail-closed semantics, one evidence pack. Replacing a
+lane changes the retrieval affordance and the budget, not the meaning of a
+citation. Escalation follows a trigger, not a hunch: zero verified evidence
+escalates Lane~A to Lane~B exactly once. Query-shape auto-selection is future
+work (Section~\ref{sec:threats}).
+
+One caveat is honest to record. On the evaluated corpus Lane~A occupies no
+\emph{distinct} operating point, because Hybrid is faster and Librarian more
+exhaustive. A two-lane deployment (Hybrid plus Librarian) is therefore defensible
+today, with Search retained as the pinned-library interactive default; because
+the lanes share one gate and one abstention semantics, that reduction costs
+coverage, not trust.
+
+\subsection{The two-stage entry point}
+\label{sec:twostage}
+
+One configuration scored in Section~\ref{sec:e4} is not one of the three lanes:
+\path{kb_search_two_stage(query, kb_id, stage1_top_k=20, stage2_top_k=5, enable_graph_expansion=True, score_threshold=0.0, balance_kbs=False, slim=False)}.
+It serves callers that want recall without paying for a verification lane, and
+the platform's own retrieval skill names it the preferred entry point for agent
+searches. Stage~1 builds a candidate document pool from the lexical index and,
+when graph expansion is on, from the graph neighbours of the matched nodes
+($\leq$20 documents); stage~2 runs the dense retriever inside that pool and
+returns up to five chunks per document. A cross-library search that returns
+documents from fewer than two libraries triggers an automatic supplementary
+vector pass---the same lexical blind spot the librarian lane corrects by
+escalating. It is fast because it never calls a judge: Hit@5 is 1.00 at 77\,ms
+mean (Table~\ref{tab:retrieval}). That is also its limit, and the reason it is
+not a lane: stage~2 returns chunks, so a caller that stops here holds candidate
+text with no verdict attached, and any claim built on it is unverified by
+construction. Only the gate turns a candidate into evidence.
+
+\subsection{The gate as a platform primitive}
+\label{sec:gate-primitive}
+
+The gate is a server-side tool rather than a prompt:
+\path{kb_laya_judge(query, documents, criterion=auto, threshold=0.5, max_evidence_chars=40000)}. The platform, not the agent, chooses the criterion
+and fixes the threshold. Calls are serialized through a single judge worker with
+a 900\,s call timeout, because an early concurrent workload crashed the worker
+with a torch paging-file error; every verdict is logged with its query,
+references, scores, and decision.
+
+That placement makes verification a layer property rather than an agent
+aspiration: any lane, harness, or external client inherits the gate, and none can
+skip or re-threshold it per query. Enforcement has a second half in the lane
+policy, a server-side per-lane tool whitelist: a librarian-lane agent is denied
+the vector and two-stage tools and cannot reach around the catalog-first path it
+was given. Denial is a property of that lane, not of the platform: the same
+two-stage tool is scored directly as its own configuration in
+Section~\ref{sec:e4}, and the vector tool backs Lane~A.
+
+Externalized verification also distinguishes this design from verifiers inside
+the generator. Self-RAG and CRAG verify during generation with the generator
+itself \cite{selfrag,crag}; the gate sees only (query, document text) pairs and
+is consumed as a tool. It is therefore reusable and inspectable, and equally
+fallible: the LLM-judge critique applies here as much as anywhere
+\cite{zheng-llmjudge}, which is why verdicts fail closed, are logged, and are
+reported as evidence rather than as truth (Section~\ref{sec:inflation}). Deployment
+cost is paid once: a twelve-candidate verification adds $\approx$0.5\,s to a call
+(Table~\ref{tab:retrieval}), and a cold judge load costs 10--12\,s
+(Section~\ref{sec:impl}).
+
+\subsection{Honest abstention}
+
+A threshold that never rejects a candidate cannot refuse a query. On four
+out-of-corpus probes the judged hybrid still keeps 9--11 of its 12 candidates
+(Section~\ref{sec:abstention}, Fig.~\ref{fig:ood}), and the graded probes behave
+no differently: prompts with partial coverage and prompts with none both keep
+10--12 of 12 candidates, with top scores up to 0.983
+(Table~\ref{tab:robustness} and Section~\ref{sec:e7}). Because the $[0,1]$
+projection saturates, no cut point separates a supported answer from an
+unsupported one.
+
+Abstention therefore lives in the reading-and-answering layer, enforced by the
+lane contract at answer time rather than advised in a prompt. A caller with no
+surviving evidence must report a not-found with its search scope: which libraries
+and how many documents were searched, how the query was routed, and which topics
+sit outside the corpus. The escalation rule makes that state terminal, so an
+exhausted budget produces a report and not a guess.
+
+Abstention is thus a terminal state evaluated like any other outcome: all six
+out-of-corpus probe runs returned explicit not-found reports with zero fabricated
+citations, even though the tool layer had handed them candidates
+(Sections~\ref{sec:agentic} and \ref{sec:abstention}). The division of labour is
+the point: the gate decides what may be cited, the reading layer decides whether
+to answer at all, and the measurements put the reliability in the second and not
+the first.

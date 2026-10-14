@@ -1,0 +1,46 @@
+\section{Knowledge acquisition: parsing, ingestion and index verification}
+\label{sec:acquisition}
+
+Acquisition determines what later retrieval can support, and it is where
+content comes to govern placement. QDCVR submits PDFs,
+Office files and scans to MinerU through an asynchronous parsing service
+\citep{mineru}; parse tasks return identifiers that callers poll to completion,
+and OCR, layout and formula-extraction failures remain visible rather than
+being stored as empty documents.
+
+\subsection{Quality gates and ingest lifecycle}
+
+Before storage, duplicate detection checks exact content fingerprints and
+flags near-duplicates for review at a 0.90 similarity threshold. After parsing,
+a quality gate checks extracted text for OCR noise, binary residue, bodyless
+headings, whitespace collapse and language mismatch. The parsed result is saved
+with task provenance but is not indexed by that save; direct-text documents use
+the create path, which triggers background indexing. The ingestion agent
+selects a library whose scope matches the parsed content's subject, not its
+filename.
+
+Documents exceeding the 30,000-character reading-context ceiling are split
+at structural boundaries. The splitter targets 0.85 utilization and avoids
+cuts that would divide atomic units such as equations or tables. Descriptions
+and tags are derived from the body and checked against it; mismatches require
+metadata correction, not document rewriting. Indexing populates vector, lexical
+and graph representations separately; post-index verification checks for a
+non-empty vector collection, expected chunk identifiers and graph/document
+state. Ingestion also runs content-derived probes before marking an ingest
+complete; API success alone is not proof of retrievability.
+
+\subsection{Acquisition evidence and accounting limits}
+
+The deployed 100-paper campaign produced 322 stored parts in five libraries.
+Its reconciliation is incomplete: the state file records 91 submitted names,
+79 papers were retrievable at evaluation and 21 never became retrievable, and
+the surviving artifacts do not enumerate attempts and failures per paper, so
+the missing 21 cannot be attributed to parsing alone. Formula-dense scans and
+a recovered batch-process crash were observed; neither establishes the cause
+for every missing paper.
+
+A separate cross-lingual test processed 400 Wikipedia pages per language:
+ingestion success 1.0 in both rounds, membership accuracy 0.875 for English
+against 1.0 for Chinese and Japanese, with the per-language storage and
+self-retrieval results in Section~\ref{sec:e1}. These measurements
+characterize ingestion and storage, not answer quality.

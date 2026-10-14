@@ -1,0 +1,365 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "QDCVR content-governed knowledge-base system",
+    "repository": {
+      "url": "git@github.com:kingdol666/rag-knowledge.git",
+      "link_mode": "local-only",
+      "revision": "5f9faac9c14b7ad264f990732f6b8b37ef7abe41"
+    },
+    "quality_profile": "showcase",
+    "output": "qdcvr-architecture.html"
+  },
+  "components": [
+    {
+      "id": "docs",
+      "type": "external",
+      "label": "Enterprise documents",
+      "sublabel": "PDF · Office · scans",
+      "pos": [
+        44,
+        58
+      ],
+      "size": [
+        178,
+        62
+      ],
+      "sources": [
+        {
+          "path": "backend/app/api/routes/parse.py",
+          "line": 122,
+          "end_line": 159
+        }
+      ]
+    },
+    {
+      "id": "parse",
+      "type": "backend",
+      "label": "Parse + quality gate",
+      "sublabel": "MinerU · task-polled",
+      "pos": [
+        44,
+        164
+      ],
+      "size": [
+        178,
+        62
+      ],
+      "sources": [
+        {
+          "path": "backend/app/api/routes/parse.py",
+          "line": 122,
+          "end_line": 159
+        },
+        {
+          "path": "kb-mcp/server.py",
+          "line": 674,
+          "end_line": 737
+        }
+      ]
+    },
+    {
+      "id": "route",
+      "type": "backend",
+      "label": "Content-derived routing",
+      "sublabel": "description · tags · placement",
+      "pos": [
+        44,
+        270
+      ],
+      "size": [
+        178,
+        62
+      ],
+      "sources": [
+        {
+          "path": "kb-mcp/server.py",
+          "line": 840,
+          "end_line": 905
+        }
+      ]
+    },
+    {
+      "id": "index",
+      "type": "backend",
+      "label": "Index + post-check",
+      "sublabel": "vector · BM25 · graph",
+      "pos": [
+        44,
+        376
+      ],
+      "size": [
+        178,
+        62
+      ],
+      "sources": [
+        {
+          "path": "backend/app/api/routes/search.py",
+          "line": 166,
+          "end_line": 210
+        },
+        {
+          "path": "kb-mcp/server.py",
+          "line": 2290,
+          "end_line": 2341
+        }
+      ]
+    },
+    {
+      "id": "records",
+      "type": "database",
+      "label": "Knowledge-base records",
+      "sublabel": "document files · tree · YAML",
+      "pos": [
+        306,
+        270
+      ],
+      "size": [
+        204,
+        62
+      ],
+      "sources": [
+        {
+          "path": "web/server/services/tree-file-system-service.ts",
+          "line": 29,
+          "end_line": 30
+        },
+        {
+          "path": "web/server/services/tree-file-system-service.ts",
+          "line": 158,
+          "end_line": 160
+        },
+        {
+          "path": "web/server/services/knowledge-base-yaml-service.ts",
+          "line": 74,
+          "end_line": 95
+        }
+      ]
+    },
+    {
+      "id": "stores",
+      "type": "database",
+      "label": "Search indices",
+      "sublabel": "Chroma vectors · BM25 · Neo4j",
+      "pos": [
+        306,
+        376
+      ],
+      "size": [
+        204,
+        62
+      ],
+      "sources": [
+        {
+          "path": "backend/app/api/routes/search.py",
+          "line": 102,
+          "end_line": 210
+        },
+        {
+          "path": "kb-mcp/server.py",
+          "line": 2290,
+          "end_line": 2341
+        }
+      ]
+    },
+    {
+      "id": "client",
+      "type": "external",
+      "label": "Clients + harnesses",
+      "sublabel": "shared chat interface",
+      "pos": [
+        552,
+        58
+      ],
+      "size": [
+        188,
+        62
+      ],
+      "sources": [
+        {
+          "path": "web/server/api/kb/agent/chat.post.ts",
+          "line": 170,
+          "end_line": 234
+        }
+      ]
+    },
+    {
+      "id": "mcp",
+      "type": "backend",
+      "label": "MCP + lane policy",
+      "sublabel": "95 registered tools",
+      "pos": [
+        552,
+        164
+      ],
+      "size": [
+        188,
+        62
+      ],
+      "sources": [
+        {
+          "path": "kb-mcp/server.py",
+          "line": 310,
+          "end_line": 451
+        },
+        {
+          "path": "kb-mcp/server.py",
+          "line": 2115,
+          "end_line": 2289
+        }
+      ]
+    },
+    {
+      "id": "candidate",
+      "type": "backend",
+      "label": "Candidate retrieval",
+      "sublabel": "search · librarian · hybrid",
+      "pos": [
+        552,
+        270
+      ],
+      "size": [
+        188,
+        62
+      ],
+      "sources": [
+        {
+          "path": "kb-mcp/server.py",
+          "line": 410,
+          "end_line": 451
+        },
+        {
+          "path": "kb-mcp/server.py",
+          "line": 2115,
+          "end_line": 2289
+        }
+      ]
+    },
+    {
+      "id": "judge",
+      "type": "security",
+      "label": "Content-verification gate",
+      "sublabel": "Laya reads fetched text · fail-closed",
+      "pos": [
+        552,
+        376
+      ],
+      "size": [
+        188,
+        62
+      ],
+      "sources": [
+        {
+          "path": "kb-mcp/server.py",
+          "line": 2667,
+          "end_line": 2724
+        },
+        {
+          "path": "kb-mcp/server.py",
+          "line": 2725,
+          "end_line": 2800
+        }
+      ]
+    },
+    {
+      "id": "answer",
+      "type": "backend",
+      "label": "Answer or not-found",
+      "sublabel": "cited evidence · searched-scope report",
+      "pos": [
+        552,
+        482
+      ],
+      "size": [
+        188,
+        62
+      ],
+      "sources": [
+        {
+          "path": "kb-mcp/server.py",
+          "line": 2725,
+          "end_line": 2800
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Content-governed acquisition",
+      "wraps": [
+        "docs",
+        "parse",
+        "route",
+        "index"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Agent retrieval and evidence enforcement",
+      "wraps": [
+        "client",
+        "mcp",
+        "candidate",
+        "judge",
+        "answer"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "ingest-1",
+      "from": "docs",
+      "to": "parse"
+    },
+    {
+      "id": "ingest-2",
+      "from": "parse",
+      "to": "route"
+    },
+    {
+      "id": "ingest-3",
+      "from": "route",
+      "to": "index"
+    },
+    {
+      "id": "route-records",
+      "from": "route",
+      "to": "records"
+    },
+    {
+      "id": "index-stores",
+      "from": "index",
+      "to": "stores"
+    },
+    {
+      "id": "client-mcp",
+      "from": "client",
+      "to": "mcp"
+    },
+    {
+      "id": "mcp-candidate",
+      "from": "mcp",
+      "to": "candidate"
+    },
+    {
+      "id": "stores-candidate",
+      "from": "stores",
+      "to": "candidate",
+      "label": "candidate sources"
+    },
+    {
+      "id": "candidate-judge",
+      "from": "candidate",
+      "to": "judge",
+      "label": "fetched content"
+    },
+    {
+      "id": "judge-answer",
+      "from": "judge",
+      "to": "answer",
+      "label": "survivors / no evidence"
+    }
+  ]
+}

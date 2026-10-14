@@ -1,0 +1,33 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+QDCVR turns ``the retriever found it'' into ``the system verified it'':
+a platform where organization, retrieval, and agency all terminate at an
+explicit content-verification gate, where three interchangeable lanes trade
+latency for recall under enforced budgets, and where the system's refusal
+to speculate is a first-class outcome. Our four research questions are
+answered by measurement rather than assertion: verification can be
+\emph{enforced} as a platform primitive (RQ1); at the ranking layer the gate
+costs well under a second and buys per-citation provenance, but as an ordering
+it inherits a same-domain blind spot that we quantify and partially repair
+(RQ2); that failure is structural --- it tracks confuser density, not the
+checkpoint, domain, language, or scale (RQ3); and honest abstention lives in
+the reading--answer layer, never in the threshold, while end-to-end latency
+belongs to LLM turns (RQ4).
+
+The immediate roadmap is, in priority order: the missing agent-layer control
+--- a grounded lane with the gate disabled (Section~\ref{sec:threats}) --- to
+separate retrieval from verification end to end; verifier calibration against
+per-library null distributions; trained
+evidence-verification models and learned ensembles (the generic-NLI
+replay and its span-level, ensemble, and symbolic probes
+(Section~\ref{sec:robustness}) already answer the naive upgrades
+negatively); combining two-stage
+candidates with the verdict-as-filter role that the tool layer suggests;
+larger-corpus evaluation with the shipped benchmark suite and an
+author-independent question set; consumer-side evidence that
+not-found reports serve their readers; and lane auto-selection from
+query-shape features --- steps toward retrieval systems whose trustworthiness
+is an inspectable property of the pipeline rather than a hope about the
+model.
+

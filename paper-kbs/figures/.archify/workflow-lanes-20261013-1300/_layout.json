@@ -1,0 +1,390 @@
+{
+  "contract": "readable-v2",
+  "viewBox": [
+    1083,
+    912
+  ],
+  "requiredViewBox": [
+    1083,
+    912
+  ],
+  "columns": [
+    118,
+    238,
+    430,
+    622,
+    742,
+    978.2
+  ],
+  "nodes": [
+    {
+      "id": "q",
+      "lane": "intake",
+      "col": 0,
+      "x": 48,
+      "y": 94,
+      "width": 140,
+      "height": 52
+    },
+    {
+      "id": "a0",
+      "lane": "laneA",
+      "col": 1,
+      "x": 156,
+      "y": 220,
+      "width": 164,
+      "height": 52
+    },
+    {
+      "id": "a1",
+      "lane": "laneA",
+      "col": 2,
+      "x": 348,
+      "y": 220,
+      "width": 164,
+      "height": 52
+    },
+    {
+      "id": "a2",
+      "lane": "laneA",
+      "col": 3,
+      "x": 540,
+      "y": 220,
+      "width": 164,
+      "height": 52
+    },
+    {
+      "id": "b0",
+      "lane": "laneB",
+      "col": 1,
+      "x": 156,
+      "y": 338,
+      "width": 164,
+      "height": 68
+    },
+    {
+      "id": "b1",
+      "lane": "laneB",
+      "col": 2,
+      "x": 348,
+      "y": 346,
+      "width": 164,
+      "height": 52
+    },
+    {
+      "id": "b2",
+      "lane": "laneB",
+      "col": 3,
+      "x": 540,
+      "y": 346,
+      "width": 164,
+      "height": 52
+    },
+    {
+      "id": "c1",
+      "lane": "laneC",
+      "col": 1,
+      "x": 156,
+      "y": 472,
+      "width": 164,
+      "height": 52
+    },
+    {
+      "id": "c2",
+      "lane": "laneC",
+      "col": 2,
+      "x": 348,
+      "y": 472,
+      "width": 164,
+      "height": 52
+    },
+    {
+      "id": "c3",
+      "lane": "laneC",
+      "col": 3,
+      "x": 540,
+      "y": 472,
+      "width": 164,
+      "height": 52
+    },
+    {
+      "id": "gate",
+      "lane": "verdict",
+      "col": 4,
+      "x": 647,
+      "y": 598,
+      "width": 190,
+      "height": 52
+    },
+    {
+      "id": "answer",
+      "lane": "verdict",
+      "col": 5,
+      "x": 898.2,
+      "y": 598,
+      "width": 160,
+      "height": 52
+    },
+    {
+      "id": "notfound",
+      "lane": "exception",
+      "col": 4,
+      "x": 662,
+      "y": 724,
+      "width": 160,
+      "height": 52
+    }
+  ],
+  "edges": [
+    {
+      "id": "a0-a1",
+      "from": "a0",
+      "to": "a1",
+      "points": [
+        [
+          320,
+          246
+        ],
+        [
+          348,
+          246
+        ]
+      ]
+    },
+    {
+      "id": "a1-a2",
+      "from": "a1",
+      "to": "a2",
+      "points": [
+        [
+          512,
+          246
+        ],
+        [
+          540,
+          246
+        ]
+      ]
+    },
+    {
+      "id": "a2-b0",
+      "from": "a2",
+      "to": "b0",
+      "points": [
+        [
+          622,
+          272
+        ],
+        [
+          622,
+          294
+        ],
+        [
+          238,
+          294
+        ],
+        [
+          238,
+          338
+        ]
+      ]
+    },
+    {
+      "id": "a2-gate",
+      "from": "a2",
+      "to": "gate",
+      "points": [
+        [
+          704,
+          246
+        ],
+        [
+          735,
+          246
+        ],
+        [
+          735,
+          598
+        ]
+      ]
+    },
+    {
+      "id": "b0-b1",
+      "from": "b0",
+      "to": "b1",
+      "points": [
+        [
+          320,
+          372
+        ],
+        [
+          348,
+          372
+        ]
+      ]
+    },
+    {
+      "id": "b1-b2",
+      "from": "b1",
+      "to": "b2",
+      "points": [
+        [
+          512,
+          372
+        ],
+        [
+          540,
+          372
+        ]
+      ]
+    },
+    {
+      "id": "b2-gate",
+      "from": "b2",
+      "to": "gate",
+      "points": [
+        [
+          622,
+          346
+        ],
+        [
+          622,
+          288
+        ],
+        [
+          718,
+          288
+        ],
+        [
+          718,
+          598
+        ]
+      ]
+    },
+    {
+      "id": "c1-c2",
+      "from": "c1",
+      "to": "c2",
+      "points": [
+        [
+          320,
+          498
+        ],
+        [
+          348,
+          498
+        ]
+      ]
+    },
+    {
+      "id": "c2-c3",
+      "from": "c2",
+      "to": "c3",
+      "points": [
+        [
+          512,
+          498
+        ],
+        [
+          540,
+          498
+        ]
+      ]
+    },
+    {
+      "id": "c3-gate",
+      "from": "c3",
+      "to": "gate",
+      "points": [
+        [
+          622,
+          524
+        ],
+        [
+          622,
+          624
+        ],
+        [
+          647,
+          624
+        ]
+      ]
+    },
+    {
+      "id": "gate-answer",
+      "from": "gate",
+      "to": "answer",
+      "points": [
+        [
+          837,
+          624
+        ],
+        [
+          898.2,
+          624
+        ]
+      ]
+    },
+    {
+      "id": "gate-notfound",
+      "from": "gate",
+      "to": "notfound",
+      "points": [
+        [
+          742,
+          650
+        ],
+        [
+          742,
+          724
+        ]
+      ]
+    },
+    {
+      "id": "q-a0",
+      "from": "q",
+      "to": "a0",
+      "points": [
+        [
+          188,
+          120
+        ],
+        [
+          238,
+          120
+        ],
+        [
+          238,
+          220
+        ]
+      ]
+    }
+  ],
+  "labels": [
+    {
+      "edge": "a2-b0",
+      "label": "no survivor: escalate once",
+      "x": 430,
+      "y": 284,
+      "width": 134.8,
+      "height": 14
+    },
+    {
+      "edge": "gate-answer",
+      "label": "survivors",
+      "x": 867.6,
+      "y": 614,
+      "width": 53.199999999999996,
+      "height": 14
+    },
+    {
+      "edge": "gate-notfound",
+      "label": "zero verified evidence",
+      "x": 742,
+      "y": 687,
+      "width": 115.6,
+      "height": 14
+    }
+  ],
+  "diagnostics": []
+}

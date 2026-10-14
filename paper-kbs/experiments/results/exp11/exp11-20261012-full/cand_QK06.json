@@ -1,0 +1,167 @@
+{
+ "qid": "QK06",
+ "query": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "fused": [
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+   "lane": "both",
+   "vector_score": 0.7273397445678711,
+   "vector_rank": 1,
+   "catalog_rank": 1,
+   "fused_rank": 1
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 3 of 3).md",
+   "lane": "both",
+   "vector_score": 0.6552914381027222,
+   "vector_rank": 2,
+   "catalog_rank": 6,
+   "fused_rank": 2
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md",
+   "lane": "both",
+   "vector_score": 0.6391012072563171,
+   "vector_rank": 3,
+   "catalog_rank": 5,
+   "fused_rank": 3
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.6306114792823792,
+   "vector_rank": 4,
+   "catalog_rank": 193,
+   "fused_rank": 4
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.5324209928512573,
+   "vector_rank": 5,
+   "catalog_rank": 29,
+   "fused_rank": 5
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+   "lane": "both",
+   "vector_score": 0.500076174736023,
+   "vector_rank": 7,
+   "catalog_rank": 254,
+   "fused_rank": 6
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+   "lane": "both",
+   "vector_score": 0.4940534830093384,
+   "vector_rank": 8,
+   "catalog_rank": 128,
+   "fused_rank": 7
+  },
+  {
+   "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+   "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+   "lane": "both",
+   "vector_score": 0.4914082884788513,
+   "vector_rank": 9,
+   "catalog_rank": 175,
+   "fused_rank": 8
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.4872410297393799,
+   "vector_rank": 10,
+   "catalog_rank": 272,
+   "fused_rank": 9
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 4 of 6).md",
+   "lane": "both",
+   "vector_score": 0.48432087898254395,
+   "vector_rank": 12,
+   "catalog_rank": 264,
+   "fused_rank": 10
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+   "lane": "both",
+   "vector_score": 0.47740620374679565,
+   "vector_rank": 13,
+   "catalog_rank": 297,
+   "fused_rank": 11
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+   "lane": "both",
+   "vector_score": 0.4750887155532837,
+   "vector_rank": 14,
+   "catalog_rank": 127,
+   "fused_rank": 12
+  }
+ ],
+ "fusion_trace": {
+  "agreed": 50,
+  "vector_only_pool": 5,
+  "catalog_only_pool": 252,
+  "vector_only_taken": 5,
+  "catalog_only_taken": 4,
+  "fused_before_cap": 59,
+  "fused_after_cap": 12,
+  "candidate_cap": 12
+ },
+ "vector_trace": {
+  "per_lib_hits": {
+   "计算机与人工智能": 30,
+   "自然科学与地球科学": 30,
+   "生命科学与医学": 30,
+   "工程与能源": 30,
+   "经济与社会": 30
+  },
+  "raw_hits": 150,
+  "doc_level": 55,
+  "seconds": 1.8
+ },
+ "catalog_trace": {
+  "per_lib_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "catalog_size": 322,
+  "catalog_overlap_gt0": 302,
+  "seconds": 1.4
+ },
+ "fetch_trace": {
+  "seconds": 3.3,
+  "errors": []
+ },
+ "heads": {
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md": "# climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md（第 1/3 部分）\n章节: Precipitation extremes under climate change\n# Precipitation extremes under climate change\n\n\nPaul A. O'Gorman\n\nReceived: date / Accepted: date\n\nAbstract The response of precipitation extremes to climate change is considered using results from theory, modeling, and observations, with a focus on the physical factors that control the response. Observations and simulations with climate models show that precipitation extremes intensify in response to a warming climate. However, the sensitivity of precipitation extremes to warming remains uncertain when convection is important, and it may be higher in the",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 3 of 3).md": "# climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md（第 3/3 部分）\n章节: Precipitation extremes under climate change > References\n## References\n\n\n1. Alexander, L.V., Zhang, X., Peterson, T.C., Caesar, J., Gleason, B., Klein Tank, A.M.G., Haylock, M., Collins, D., Trewin, B., Rahimzadeh, F., et al.: Global observed changes in daily climate extremes of temperature and precipitation. J. Geophys. Res. Atmos. 111 (2006). D05109\n\n2. Allan, R.P., Soden, B.J.: Atmospheric warming and the amplification of precipitation extremes. Science 321, 1481–1484 (2008)\n\n3. Allan, R.P., Soden, B.J., John, V.O., Ingram, W., Good, P.: Current changes in tropical precipitation. Environ. Res. L",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md": "# climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md（第 2/3 部分）\n章节: Precipitation extremes under climate change > 6 Snowfall extremes\n## 6 Snowfall extremes\n\n\nChanges in snowfall extremes have received relatively little research attention, party because of the difficulties in producing long-term records of snowfall. Observational studies of daily snowfall extremes have been regional in nature and have found large interdecadal variability with, for example, no long term trend for Canada [94] but more frequent extremes snowstorms in recent decades in the eastern two-thirds of the United\n\nStates [44]. Studies using different metrics have reached different conclusions ",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 1 of 2).md": "# climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on（第 1/2 部分）\nAtmospheric Science\n\n\n\n# Impacts of the Madden-Julian Oscillation on Precipitation Extremes in Indonesia\n\n\nFadhlil R. Muhammad¹, Sandro W. Lubis2, Sonni Setiawan³\n\n1School of Earth Sciences, University of Melbourne, Australia\n\n2Rice University, Houston, Texas, USA\n\n3Department of Geophysics and Meteorology, IPB University, Indonesia\n\nCorrespondence   \nFadhlil R. Muhammad, School of Earth Sciences, The   \nUniversity of Melbourne, Melbourne, Victoria, 3010,   \nAustralia   \nEmail: fadhlilrizki@student.unimelb.edu.au\n\nFunding information Lembaga Pengelola Dana Pendidikan Indonesia, Beasiswa Ikatan Alumni Fakulta",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md": "# power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md.md（第 1/2 部分）\n章节: Mapping Disruption Sources in the Power Grid and Implications for Resilience\n# Mapping Disruption Sources in the Power Grid and Implications for Resilience\n\n\nMaureen S. Golan\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\nmgolan@utexas.edu\n\nJavad Mohammadi\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\njavadm@utexas.edu\n\nAbstract—Developing models and metrics that can address resilience against disruptions is vital to ensure power grid reliability and that adequate recovery and adaptation mechanisms are in place. In this",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md": "# large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md.md（第 7/9 部分）\n章节: Vision-Flan: Scaling Human-Labeled Tasks in Visual Instruction Tuning > Task: Semart\\_painting\\_type\\_recognition\n## Task: Semart\\_painting\\_type\\_recognition\n\n\nInstruction: Here is an image of some art. I want to know what type of painting   \nit is. Among others, some types could be: religious, self-portraits, or   \nlandscapes   \nTarget: This falls into the 'mythological' type\n\n## Task: WIKIART\\_artist\\_genre\\_style\\_recognition\n\n\nInstruction: For the given painting, give me the artist name. Also provide the genre and style, if possible.\n\nTarget: This artwork was created by Pyotr Konchalovs",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md": "# power-systems__2607.03098__integrating-power-electronics-based-energy-s（第 2/5 部分）\n章节: Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges > 3.1. Modeling of ESMs\n## 3.1. Modeling of ESMs\n\n\nBased on dynamic processes of ESMs, the mathematical equations between $V _ { B }$ and $I _ { B }$ can be obtained. The dynamic model of ESMs is then derived by linearizing them as:\n\n$$\n\\Delta V _ { _ B } = G _ { _ { E S M } } ( s ) \\Delta I _ { _ B }\\tag{1}\n$$\n\nwhere, $G _ { E S M } ( s )$ is a transfer function that represents the dynamics of ESMs.\n\n![](images/0a11e76a3850efb297fdffc3964b6b0b5954c2eadf26d8a0973eaf534c0b761a",
+  "f5770687-6b05-4a8d-8645-af31686ca87e||经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md": "# economics__1911.06206__bayesian-state-space-modeling-for-analyzing（第 1/5 部分）\n章节: Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy\n# Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy\n\n\nNIKO HAUZENBERGER and MICHAEL PFARRHOFER\\*\n\nUniversity of Salzburg\n\nUnderstanding disaggregate channels in the transmission of monetary policy is of crucial importance for effectively implementing policy measures. We extend the empirical econometric literature on the role of production networks in the propagation of shocks along two dimensions. First, we allow for industry-specific responses that vary over time, refle",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md": "# nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md.md（第 1/4 部分）\n章节: How do language models learn facts? Dynamics, curricula and hallucinations\n# How do language models learn facts? Dynamics, curricula and hallucinations\n\n\nNicolas Zucchet1,+, Jörg Bornschein2, Stephanie Chan2, Andrew Lampinen², Razvan Pascanu² and Soham De²\n\n1ETH Zürich, 2Google DeepMind, +Work done at Google DeepMind\n\nLarge language models accumulate vast knowledge during pre-training, yet the dynamics governing this acquisition remain poorly understood. This work investigates the learning dynamics of language models on a synthetic factual recall task, uncovering three key findings: First, language models lear",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 4 of 6).md": "# neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md.md（第 4/6 部分）\n章节: A Review on Neural Network Models of Schizophrenia and Autism Spectrum Disorder > 5.2. Self-organizing maps\n## 5.2. Self-organizing maps\n\n\nSelf-organizing maps (SOMs) are ANNs that are usually used for unsupervised learning and clustering tasks. They model the functionality of cortical feature maps, which are spatially organized neurons that respond to stimuli and self-organize according to the features in stimuli. They are able to learn the relation of different input data such as different sensory inputs. Approaches for modeling ASD with SOMs typically investigate the formation of higher-level ",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md": "# statistics__2604.22320__nonparametric-estimation-of-isotropic-covari（第 3/9 部分）\n章节: Nonparametric Estimation of Isotropic Covariance Function\\* > 4 Numerical Illustrations using Simulated Data Sets\n## 4 Numerical Illustrations using Simulated Data Sets\n\n\nTo assess the finite sample accuracy of our methodology, a simulation study was conducted. For comparison purposes, we performed covariance estimation using our proposed likelihood-based nonparametric method as well as the recent popular nonparametric methods (Choi et al., 2013) and (Huang et al., 2011), referred to as Choi method and Huang method respectively Their estimator were obtained through restricted weighted least squares as\n\n$$\n\\b",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md": "# power-systems__2607.03098__integrating-power-electronics-based-energy-s（第 1/5 部分）\n章节: Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges\n# Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges\n\n\nQiang Fuª,b, Changlong Daib, Siqi Buª,\\* , C. Y. Chungª\n\na Department of Electrical and Electronic Engineering, The Hong Kong Polytechnic University, Hong Kong, 999077, China b School of Electrical Engineering, Sichuan University, Chengdu, 610065, China\n\nAbstract: The integration of power electronics-based energy storage systems (PEESs) into "
+ },
+ "built": "2026-10-12T05:15:16.321218+00:00"
+}

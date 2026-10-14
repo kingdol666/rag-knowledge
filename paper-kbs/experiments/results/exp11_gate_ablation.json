@@ -1,0 +1,791 @@
+{
+ "experiment": "E-A verification-gate ablation (end-to-end)",
+ "run_id": "exp11-20261012-full",
+ "generated": "2026-10-12T05:38:18.014058+00:00",
+ "protocol": {
+  "questions": "benchmark-suite\\data\\papers\\qa_quick10.json",
+  "n_questions": 10,
+  "corpus": "live 100-paper / 322-part arXiv corpus in 5 content-routed libraries",
+  "libraries": {
+   "计算机与人工智能": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "自然科学与地球科学": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "生命科学与医学": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "工程与能源": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "经济与社会": "f5770687-6b05-4a8d-8645-af31686ca87e"
+  },
+  "candidate_cap": 12,
+  "vector_lane": {
+   "tool": "kb_search_vector",
+   "top_k": 30,
+   "score_threshold": 0.35,
+   "slim": true,
+   "per_library": true
+  },
+  "catalog_lane": {
+   "tools": [
+    "kb_list",
+    "kb_get_documents"
+   ],
+   "rank": "query<->(name+description) token overlap"
+  },
+  "fusion": "agreed-first, then vector top-8, then catalog top-4, cap 12",
+  "gate": {
+   "tool": "kb_laya_judge",
+   "criterion": "auto",
+   "threshold": 0.5,
+   "reference_mode": true,
+   "include_text": false
+  },
+  "arms": [
+   "C-nogate",
+   "C-judge",
+   "C-judge-seg"
+  ],
+  "primary_pair": [
+   "C-nogate",
+   "C-judge"
+  ],
+  "evidence_pack": "spread_pack(per_doc=700, budget=4000)",
+  "closing_channel": "chat_tracks.answer_closed_book (engine pinned 'claude' at chat_tracks.py:243, no tools, max_turns=1)",
+  "grader": "same LLM grader prompt for all arms (143_e2e_modes_baselines.py:223-233)",
+  "deviation_from_plan": "kb_hybrid_search(enable_judge=...) no longer exists on the live kb-mcp (95 tools, zero matches in kb-mcp/server.py). The ablation was rebuilt around kb_laya_judge applied to a frozen shared candidate set, so the gate is still the only difference between conditions."
+ },
+ "environment": {
+  "web_token_state": "ok",
+  "kb_list": [
+   {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "name": "计算机与人工智能",
+    "documentCount": null
+   },
+   {
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+    "name": "自然科学与地球科学",
+    "documentCount": null
+   },
+   {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "name": "生命科学与医学",
+    "documentCount": null
+   },
+   {
+    "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+    "name": "工程与能源",
+    "documentCount": null
+   },
+   {
+    "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+    "name": "经济与社会",
+    "documentCount": null
+   },
+   {
+    "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+    "name": "aw-industrial",
+    "documentCount": null
+   },
+   {
+    "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+    "name": "Corpus-Chunks800",
+    "documentCount": null
+   },
+   {
+    "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+    "name": "e2e-demo-0923-022632",
+    "documentCount": null
+   },
+   {
+    "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+    "name": "soul-e2e-tester-024115",
+    "documentCount": null
+   },
+   {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "name": "Novel-PridePrejudice",
+    "documentCount": null
+   },
+   {
+    "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+    "name": "AI 基础设施",
+    "documentCount": null
+   },
+   {
+    "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+    "name": "e2e-flow-20260926-022340",
+    "documentCount": null
+   },
+   {
+    "kb_id": "363ccb45-7a10-45b9-becb-0a3dbc156687",
+    "name": "soul-e2e-20260926-022340",
+    "documentCount": null
+   },
+   {
+    "kb_id": "b87f4dab-c83b-4a99-abe3-182773fc315a",
+    "name": "aw-industrial-e2e-20260926-022518",
+    "documentCount": null
+   },
+   {
+    "kb_id": "801c7549-103b-489f-9d7d-4864580d99be",
+    "name": "ZZ跨库复现库",
+    "documentCount": null
+   },
+   {
+    "kb_id": "a0db9ea9-5e1e-4c38-87ee-65f631335eb6",
+    "name": "ZZ跨库复现库2",
+    "documentCount": null
+   },
+   {
+    "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+    "name": "demo-qa-20260927",
+    "documentCount": null
+   },
+   {
+    "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+    "name": "soul-demo-qa",
+    "documentCount": null
+   },
+   {
+    "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+    "name": "soul-cs-library",
+    "documentCount": null
+   },
+   {
+    "kb_id": "50b6c4be-cccd-494c-90b8-be55566b57bc",
+    "name": "玄鸟演示库-125906",
+    "documentCount": null
+   }
+  ],
+  "mcp_tool_count": null
+ },
+ "warmup": {
+  "done": true,
+  "real_doc": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+  "seconds": 10.9,
+  "judge_status": "ok",
+  "judge_real_engine": true,
+  "judge_engine": "laya",
+  "judge_backend": "laya_sdk",
+  "judge_errors": [],
+  "judge_fetch_errors": []
+ },
+ "aggregate": {
+  "n_questions": 10,
+  "n_ok": 10,
+  "n_fatal": 0,
+  "fatal_qids": [],
+  "judge_failures": [],
+  "arms": {
+   "C-nogate": {
+    "n_cells": 10,
+    "n_gold_matchable": 8,
+    "mean_grade_all": 1.8,
+    "mean_grade_gold": 1.0,
+    "gold_survived_count": 8,
+    "gold_rank_mean": 1.0,
+    "mean_docs": 12.0,
+    "mean_chars": 4000.0,
+    "mean_latency_s": 6.92,
+    "grades": {
+     "QK01": 0,
+     "QK02": 0,
+     "QK03": 3,
+     "QK04": 0,
+     "QK05": 0,
+     "QK06": 0,
+     "QK07": 5,
+     "QK08": 0,
+     "QK09": 5,
+     "QK10": 5
+    },
+    "verdicts": {
+     "QK01": "refusal",
+     "QK02": "refusal",
+     "QK03": "partial",
+     "QK04": "refusal",
+     "QK05": "wrong",
+     "QK06": "refusal",
+     "QK07": "correct",
+     "QK08": "refusal",
+     "QK09": "correct",
+     "QK10": "correct"
+    }
+   },
+   "C-judge": {
+    "n_cells": 10,
+    "n_gold_matchable": 8,
+    "mean_grade_all": 2.0,
+    "mean_grade_gold": 1.25,
+    "gold_survived_count": 8,
+    "gold_rank_mean": 1.0,
+    "mean_docs": 11.2,
+    "mean_chars": 3880.6,
+    "mean_latency_s": 7.65,
+    "grades": {
+     "QK01": 5,
+     "QK02": 0,
+     "QK03": 0,
+     "QK04": 0,
+     "QK05": 0,
+     "QK06": 0,
+     "QK07": 5,
+     "QK08": 0,
+     "QK09": 5,
+     "QK10": 5
+    },
+    "verdicts": {
+     "QK01": "correct",
+     "QK02": "refusal",
+     "QK03": "refusal",
+     "QK04": "refusal",
+     "QK05": "refusal",
+     "QK06": "refusal",
+     "QK07": "correct",
+     "QK08": "wrong",
+     "QK09": "correct",
+     "QK10": "correct"
+    }
+   },
+   "C-judge-seg": {
+    "n_cells": 10,
+    "n_gold_matchable": 8,
+    "mean_grade_all": 1.3,
+    "mean_grade_gold": 0.375,
+    "gold_survived_count": 8,
+    "gold_rank_mean": 1.0,
+    "mean_docs": 11.2,
+    "mean_chars": 4000.0,
+    "mean_latency_s": 6.37,
+    "grades": {
+     "QK01": 0,
+     "QK02": 0,
+     "QK03": 0,
+     "QK04": 0,
+     "QK05": 0,
+     "QK06": 3,
+     "QK07": 0,
+     "QK08": 0,
+     "QK09": 5,
+     "QK10": 5
+    },
+    "verdicts": {
+     "QK01": "refusal",
+     "QK02": "refusal",
+     "QK03": "refusal",
+     "QK04": "refusal",
+     "QK05": "refusal",
+     "QK06": "partial",
+     "QK07": "refusal",
+     "QK08": "refusal",
+     "QK09": "correct",
+     "QK10": "correct"
+    }
+   }
+  },
+  "paired_primary": [
+   {
+    "qid": "QK01",
+    "nogate": 0,
+    "judge": 5,
+    "judge_seg": 0,
+    "delta": 5
+   },
+   {
+    "qid": "QK02",
+    "nogate": 0,
+    "judge": 0,
+    "judge_seg": 0,
+    "delta": 0
+   },
+   {
+    "qid": "QK03",
+    "nogate": 3,
+    "judge": 0,
+    "judge_seg": 0,
+    "delta": -3
+   },
+   {
+    "qid": "QK04",
+    "nogate": 0,
+    "judge": 0,
+    "judge_seg": 0,
+    "delta": 0
+   },
+   {
+    "qid": "QK05",
+    "nogate": 0,
+    "judge": 0,
+    "judge_seg": 0,
+    "delta": 0
+   },
+   {
+    "qid": "QK06",
+    "nogate": 0,
+    "judge": 0,
+    "judge_seg": 3,
+    "delta": 0
+   },
+   {
+    "qid": "QK07",
+    "nogate": 5,
+    "judge": 5,
+    "judge_seg": 0,
+    "delta": 0
+   },
+   {
+    "qid": "QK08",
+    "nogate": 0,
+    "judge": 0,
+    "judge_seg": 0,
+    "delta": 0
+   },
+   {
+    "qid": "QK09",
+    "nogate": 5,
+    "judge": 5,
+    "judge_seg": 5,
+    "delta": 0
+   },
+   {
+    "qid": "QK10",
+    "nogate": 5,
+    "judge": 5,
+    "judge_seg": 5,
+    "delta": 0
+   }
+  ],
+  "paired_mean_delta": 0.2,
+  "total_answer_cost_usd": 1.0015,
+  "total_answer_calls": 30
+ },
+ "per_question": [
+  {
+   "qid": "QK01",
+   "stratum": "single",
+   "gold_matchable": true,
+   "n_candidates": 12,
+   "n_kept": 109,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 122,
+   "gold_parts_in_corpus": 2,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 8.9,
+     "cost_usd": 0.033659800000000004
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 9.9,
+     "cost_usd": 0.031001400000000002
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 10.0,
+     "cost_usd": 0.0339104
+    }
+   }
+  },
+  {
+   "qid": "QK02",
+   "stratum": "single",
+   "gold_matchable": true,
+   "n_candidates": 12,
+   "n_kept": 56,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 104,
+   "gold_parts_in_corpus": 2,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 4.7,
+     "cost_usd": 0.035224399999999996
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 9.4,
+     "cost_usd": 0.0307316
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 6.0,
+     "cost_usd": 0.0320414
+    }
+   }
+  },
+  {
+   "qid": "QK03",
+   "stratum": "single",
+   "gold_matchable": true,
+   "n_candidates": 12,
+   "n_kept": 99,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 111,
+   "gold_parts_in_corpus": 2,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 3,
+     "verdict": "partial",
+     "latency_s": 10.1,
+     "cost_usd": 0.0396354
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 8.2,
+     "cost_usd": 0.03238699999999999
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 3.9,
+     "cost_usd": 0.0368294
+    }
+   }
+  },
+  {
+   "qid": "QK04",
+   "stratum": "single",
+   "gold_matchable": true,
+   "n_candidates": 12,
+   "n_kept": 92,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 96,
+   "gold_parts_in_corpus": 2,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 7.1,
+     "cost_usd": 0.035593
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 8.8,
+     "cost_usd": 0.030800599999999997
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 5.2,
+     "cost_usd": 0.0341114
+    }
+   }
+  },
+  {
+   "qid": "QK05",
+   "stratum": "single",
+   "gold_matchable": true,
+   "n_candidates": 12,
+   "n_kept": 117,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 119,
+   "gold_parts_in_corpus": 3,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "wrong",
+     "latency_s": 6.5,
+     "cost_usd": 0.035354399999999994
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 8.1,
+     "cost_usd": 0.0295704
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 7.0,
+     "cost_usd": 0.0328284
+    }
+   }
+  },
+  {
+   "qid": "QK06",
+   "stratum": "single",
+   "gold_matchable": true,
+   "n_candidates": 12,
+   "n_kept": 83,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 116,
+   "gold_parts_in_corpus": 3,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 3.9,
+     "cost_usd": 0.0332164
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 5.7,
+     "cost_usd": 0.0301904
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 3,
+     "verdict": "partial",
+     "latency_s": 5.3,
+     "cost_usd": 0.0326834
+    }
+   }
+  },
+  {
+   "qid": "QK07",
+   "stratum": "distractor",
+   "gold_matchable": true,
+   "n_candidates": 12,
+   "n_kept": 32,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 115,
+   "gold_parts_in_corpus": 4,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 3.8,
+     "cost_usd": 0.0323284
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 5.6,
+     "cost_usd": 0.0285742
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 4.1,
+     "cost_usd": 0.0323904
+    }
+   }
+  },
+  {
+   "qid": "QK08",
+   "stratum": "crosskb",
+   "gold_matchable": true,
+   "n_candidates": 12,
+   "n_kept": 91,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 106,
+   "gold_parts_in_corpus": 3,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 6.0,
+     "cost_usd": 0.035606399999999996
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "wrong",
+     "latency_s": 6.1,
+     "cost_usd": 0.0298054
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": 1,
+     "gold_survived": true,
+     "chars": 4000,
+     "grade": 0,
+     "verdict": "refusal",
+     "latency_s": 7.9,
+     "cost_usd": 0.0353484
+    }
+   }
+  },
+  {
+   "qid": "QK09",
+   "stratum": "unanswerable",
+   "gold_matchable": false,
+   "n_candidates": 12,
+   "n_kept": 7,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 127,
+   "gold_parts_in_corpus": 0,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": null,
+     "gold_survived": null,
+     "chars": 4000,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 7.6,
+     "cost_usd": 0.0371994
+    },
+    "C-judge": {
+     "n_docs": 4,
+     "gold_rank": null,
+     "gold_survived": null,
+     "chars": 2806,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 6.7,
+     "cost_usd": 0.032603200000000006
+    },
+    "C-judge-seg": {
+     "n_docs": 4,
+     "gold_rank": null,
+     "gold_survived": null,
+     "chars": 4000,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 4.7,
+     "cost_usd": 0.034724000000000005
+    }
+   }
+  },
+  {
+   "qid": "QK10",
+   "stratum": "outofcorpus",
+   "gold_matchable": false,
+   "n_candidates": 12,
+   "n_kept": 96,
+   "judge_status": "ok",
+   "judge_real_engine": true,
+   "judge_scored": 108,
+   "gold_parts_in_corpus": 0,
+   "arms": {
+    "C-nogate": {
+     "n_docs": 12,
+     "gold_rank": null,
+     "gold_survived": null,
+     "chars": 4000,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 10.6,
+     "cost_usd": 0.037045
+    },
+    "C-judge": {
+     "n_docs": 12,
+     "gold_rank": null,
+     "gold_survived": null,
+     "chars": 4000,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 8.0,
+     "cost_usd": 0.0291972
+    },
+    "C-judge-seg": {
+     "n_docs": 12,
+     "gold_rank": null,
+     "gold_survived": null,
+     "chars": 4000,
+     "grade": 5,
+     "verdict": "correct",
+     "latency_s": 9.6,
+     "cost_usd": 0.036945000000000006
+    }
+   }
+  }
+ ]
+}

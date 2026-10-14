@@ -1,0 +1,167 @@
+{
+ "qid": "QK04",
+ "query": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "fused": [
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.8245277404785156,
+   "vector_rank": 1,
+   "catalog_rank": 2,
+   "fused_rank": 1
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 2 of 2).md",
+   "lane": "both",
+   "vector_score": 0.6274552941322327,
+   "vector_rank": 2,
+   "catalog_rank": 11,
+   "fused_rank": 2
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.46709567308425903,
+   "vector_rank": 3,
+   "catalog_rank": 97,
+   "fused_rank": 3
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+   "lane": "both",
+   "vector_score": 0.4667472839355469,
+   "vector_rank": 4,
+   "catalog_rank": 205,
+   "fused_rank": 4
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+   "lane": "both",
+   "vector_score": 0.45843565464019775,
+   "vector_rank": 5,
+   "catalog_rank": 208,
+   "fused_rank": 5
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+   "lane": "both",
+   "vector_score": 0.45819658041000366,
+   "vector_rank": 6,
+   "catalog_rank": 83,
+   "fused_rank": 6
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md",
+   "lane": "both",
+   "vector_score": 0.45631325244903564,
+   "vector_rank": 7,
+   "catalog_rank": 75,
+   "fused_rank": 7
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+   "lane": "both",
+   "vector_score": 0.4512750506401062,
+   "vector_rank": 8,
+   "catalog_rank": 180,
+   "fused_rank": 8
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.4492816925048828,
+   "vector_rank": 9,
+   "catalog_rank": 197,
+   "fused_rank": 9
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 2 of 2).md",
+   "lane": "both",
+   "vector_score": 0.4463950991630554,
+   "vector_rank": 10,
+   "catalog_rank": 77,
+   "fused_rank": 10
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md",
+   "lane": "both",
+   "vector_score": 0.44521498680114746,
+   "vector_rank": 11,
+   "catalog_rank": 204,
+   "fused_rank": 11
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.443253755569458,
+   "vector_rank": 12,
+   "catalog_rank": 233,
+   "fused_rank": 12
+  }
+ ],
+ "fusion_trace": {
+  "agreed": 61,
+  "vector_only_pool": 3,
+  "catalog_only_pool": 241,
+  "vector_only_taken": 3,
+  "catalog_only_taken": 4,
+  "fused_before_cap": 68,
+  "fused_after_cap": 12,
+  "candidate_cap": 12
+ },
+ "vector_trace": {
+  "per_lib_hits": {
+   "计算机与人工智能": 30,
+   "自然科学与地球科学": 30,
+   "生命科学与医学": 30,
+   "工程与能源": 30,
+   "经济与社会": 30
+  },
+  "raw_hits": 150,
+  "doc_level": 64,
+  "seconds": 0.4
+ },
+ "catalog_trace": {
+  "per_lib_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "catalog_size": 322,
+  "catalog_overlap_gt0": 302,
+  "seconds": 1.4
+ },
+ "fetch_trace": {
+  "seconds": 3.3,
+  "errors": []
+ },
+ "heads": {
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md": "# speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u（第 1/2 部分）\n章节: Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\n# Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\n\n\nMarie Kunešová[0000-0002-7187-8481] and Markéta Rezáčková[0000-0002-6194-7826]\n\nNew Technologies for the Information Society and Department of Cybernetics, Faculty of Applied Sciences, University of West Bohemia, Pilsen, Czech Republic {mkunes,juzova}@ntis.zcu.cz\n\nAbstract. Prosodic boundaries in speech are of great relevance to both speech synthesis and audio annotation. In this paper, we apply the wav2vec 2.0 framework to the task of detecting these boundaries in speech signal, using on",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 2 of 2).md": "# speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u（第 2/2 部分）\n章节: Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0 > References\n## References\n\n\n1. Baevski, A., Zhou, Y., Mohamed, A., Auli, M.: wav2vec 2.0: A framework for self-supervised learning of speech representations. Advances in Neural Information Processing Systems 33, 12449–12460 (2020)\n\n2. Beckman, M.E., Ayers Elam, G.: Guidelines for ToBI Labelling, version 3. The Ohio State University Research Foundation, Ohio State University (1997)\n\n3. Bredin, H.: TristouNet: Triplet loss for speaker turn embedding. In: Proc. ICASSP 2017. pp. 5430–5434 (2017)\n\n4. Christodoulides, G., Avanzi, M., Simon, A.C.: Automatic ",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md": "# astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md.md（第 1/2 部分）\n章节: The Dark Energy Survey Data Processing and Calibration System\n# The Dark Energy Survey Data Processing and Calibration System\n\n\nJoseph J. Mohra,b, Robert Armstrong, Emmanuel Bertind, Gregory E. Daues°, Shantanu Desaia, Michelle Gowere, Robert Gruendlf, William Hanlon⁸, Nikolay Kuropatkinh, Huan Linh, John Marrinerh, Don Petravicke, Ignacio Sevilla, Molly Swanson, Todd Tomasheke, Douglas Tuckerh, and Brian Yannyh for the Dark Energy Survey Collaboration\n\naLudwig-Maximilians University Department of Physics, Scheinerstr 1, Munich, Germany 81679;   \nbMax Planck Institute for Extraterrestrial Physics, Giesse",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md": "# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 2/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance > 6. Experiment 1: Evaluation\n## 6. Experiment 1: Evaluation\n\n\nIn this experiment, we evaluate different approaches to segmenting an entire new biomedical dataset. We compare MultiverSeg to ScribblePrompt, SAM, SegNext, SAM-Med2D, IMIS-Net, and MedSAM, which perform interactive segmentation of each image independently, and to SP+UVS, which combines ScribblePrompt with an incontext segmentation model (UniverSeg). We show that MultiverSeg outperforms all of the baselines.\n\n## 6.1. Setup\n\n\nWe evaluate the",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md": "# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 5/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n# MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n\n\nSupplementary Material\n\n## Contents\n\n\nA Code 16   \nB. MultiverSeg Method 16   \nB.1. Architecture 16   \nC Data 16   \nC.1. Datasets . . 16   \nC.2. Synthetic Task Generation . . . . 17   \nC.3. Data Augmentation 17   \nD. Experimental Setup 17   \nD.1. Baselines 17   \nD.2 Inference 17   \nD.3. Metrics 18   \nE Experiment 1: Evaluation 18   \nE.1. Setup . . . 18   \nE.2. Interactions per Image as a Function ",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md": "# genomics__2602.10156__strand-sequence-conditioned-transport-for-si（第 5/6 部分）\n章节: STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations > G. Detailed Performance Benchmarks\n## G. Detailed Performance Benchmarks\n\n\nWe provide the comprehensive breakdown of performance metrics across all datasets and settings.\n\nTable S5. Low sample gene perturbation performance comparison Values are reported as mean ± standard error. For readability, Ov.@N, Prec.@N, Dir.Match, and Disc.Cos are scaled by $1 0 ^ { - 1 }$ , and MSE is scaled by $1 0 ^ { - 2 }$ . Avg. Rank measures the overall rank averaged across all metrics. Best Avg. Rank is shown in bold.\n<table><tr><td></td><td></td><td colspan",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md": "# genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md.md（第 1/3 部分）\n章节: Analysis and visualization of spatial transcriptomic data\n# Analysis and visualization of spatial transcriptomic data\n\n\nBoxiang Liu1\\*†, Yanjun Li¹†, Liang Zhang1\n\n1Baidu Research, Sunnyvale, CA, United States\n\n†These authors have contributed equally to this work\n\nCorrespondence: jollier.liu@gmail.com\n\nKeywords: spatial transcriptomics, single-cell RNA-seq, clustering, spatial expression pattern, cell-to-cell interaction, visualization.\n\n## Abstract\n\n\nHuman and animal tissues consist of heterogeneous cell types that organize and interact in highly structured manners. Bulk and single-cell sequencing techn",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md": "# mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and（第 5/6 部分）\n章节: Piecewise SOS-Convex Moment Optimization and Applications via Exact Semi-Definite Programs > 4 Applications to Newsvendor and Revenue Maximization\n$$\n\\begin{array} { r l } & { \\frac { 2 ^ { n } } { n } } \\\\ & { \\times \\frac { 1 } { n + \\mathrm { R e } ^ { - 2 } } \\epsilon \\epsilon ^ { 2 n } \\sum _ { i = 1 } ^ { n - 2 } } \\\\ & { \\times 2 \\epsilon \\epsilon ^ { 2 n } } \\\\ &  \\quad \\le 1 \\le 1 \\le 1 \\le 1 \\le 2 \\epsilon \\gamma _ { i } \\le 1 \\le 1 \\le 2 \\epsilon \\gamma _ { i } \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1 \\le 1",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md": "# genomics__2401.06823__interpretable-deep-learning-in-single-cell-o（第 1/2 部分）\n章节: Interpretable deep learning in single-cell omics\n# Interpretable deep learning in single-cell omics\n\n\nManoj M Wagle1,2,3,+, Siqu Long1,3,+, Carissa Chen1,3, Chunlei Liu1,3, Pengyi Yang1,2,3,4,\\*\n\n1 Computational Systems Biology Unit, Children's Medical Research Institute, Faculty of Medicine and Health, The University of Sydney, Westmead, NSW 2145, Australia\n\n2 School of Mathematics and Statistics, Faculty of Science, The University of Sydney, Camperdown, NSW 2006, Australia\n\n3 Sydney Precision Data Science Centre, The University of Sydney, Camperdown, NSW 2006, Australia\n\n4 Charles Perkins Centre, The Univers",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 2 of 2).md": "# genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md.md（第 2/2 部分）\n章节: Title: SpaceTx: A Roadmap for Benchmarking Spatial Transcriptomics Exploration of the Brain > Benchmarking Recommendations 4. Image Processing and Data Standardization:\n## Benchmarking Recommendations 4. Image Processing and Data Standardization:\n\n\n<table><tr><td colspan=\"2\">o Processed Data:</td></tr><tr><td>■</td><td>Standardize processed data outputs to facilitate downstream processing</td></tr><tr><td>O Raw Image Data:</td><td>and comparisons (See Appendix 1)</td></tr><tr><td></td><td>■ For benchmarking of experimental methods, we recommend storage of at least some raw data for every experiment. This",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md": "# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 1/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n# MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n\n\nHallee E. Wong MIT CSAIL & MGH hallee@mit.edu\n\nJose Javier Gonzalez Ortiz Databricks josejg@mit.edu\n\nJohn Guttag MIT CSAIL guttag@mit.edu\n\nAdrian V. Dalca MIT CSAIL & MGH,HMS adalca@mit.edu\n\n![](images/d6a669438f6028d1b5ea1365c52185be54aa54c7bbe26dc7c9324e1409ea5621.jpg)\n\n![](images/31faf5a35ca4068bfcdec69e31a37f3cae57e42299fdf351ddd4818135e7b5f5.jpg)  \nFigure 1. MultiverSeg enables users to rapid",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 1 of 4).md": "# quantum-physics__1311.2485__continuous-time-quantum-error-correction.md.md（第 1/4 部分）\n章节: Continuous-time quantum error correction\\*\n# Continuous-time quantum error correction\\*\n\n\nOgnyan Oreshkov\n\nQuIC, Ecole Polytechnique, CP 165, Université Libre de Bruxelles, 1050 Brussels, Belgium.\n\nContinuous-time quantum error correction (CTQEC) is an approach to protecting quantum information from noise in which both the noise and the error correcting operations are treated as processes that are continuous in time. This chapter investigates CTQEC based on continuous weak measurements and feedback from the point of view of the subsystem principle, which states that protected quantum information is con"
+ },
+ "built": "2026-10-12T05:13:27.729551+00:00"
+}

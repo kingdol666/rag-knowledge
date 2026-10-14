@@ -1,0 +1,167 @@
+{
+ "qid": "QK02",
+ "query": "Which three independent ontologies subdivide the Gene Ontology?",
+ "fused": [
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.6547621488571167,
+   "vector_rank": 1,
+   "catalog_rank": 1,
+   "fused_rank": 1
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+   "lane": "both",
+   "vector_score": 0.5409456491470337,
+   "vector_rank": 2,
+   "catalog_rank": 2,
+   "fused_rank": 2
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.46060049533843994,
+   "vector_rank": 6,
+   "catalog_rank": 70,
+   "fused_rank": 3
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.45737218856811523,
+   "vector_rank": 7,
+   "catalog_rank": 17,
+   "fused_rank": 4
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+   "lane": "both",
+   "vector_score": 0.45396625995635986,
+   "vector_rank": 8,
+   "catalog_rank": 72,
+   "fused_rank": 5
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+   "lane": "both",
+   "vector_score": 0.41936683654785156,
+   "vector_rank": 14,
+   "catalog_rank": 71,
+   "fused_rank": 6
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.4168512225151062,
+   "vector_rank": 17,
+   "catalog_rank": 79,
+   "fused_rank": 7
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+   "lane": "both",
+   "vector_score": 0.409179151058197,
+   "vector_rank": 19,
+   "catalog_rank": 86,
+   "fused_rank": 8
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md",
+   "lane": "both",
+   "vector_score": 0.40476638078689575,
+   "vector_rank": 23,
+   "catalog_rank": 35,
+   "fused_rank": 9
+  },
+  {
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+   "lane": "both",
+   "vector_score": 0.39827781915664673,
+   "vector_rank": 27,
+   "catalog_rank": 9,
+   "fused_rank": 10
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+   "lane": "both",
+   "vector_score": 0.38492316007614136,
+   "vector_rank": 29,
+   "catalog_rank": 40,
+   "fused_rank": 11
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+   "lane": "both",
+   "vector_score": 0.37118422985076904,
+   "vector_rank": 35,
+   "catalog_rank": 39,
+   "fused_rank": 12
+  }
+ ],
+ "fusion_trace": {
+  "agreed": 17,
+  "vector_only_pool": 40,
+  "catalog_only_pool": 77,
+  "vector_only_taken": 8,
+  "catalog_only_taken": 4,
+  "fused_before_cap": 29,
+  "fused_after_cap": 12,
+  "candidate_cap": 12
+ },
+ "vector_trace": {
+  "per_lib_hits": {
+   "计算机与人工智能": 30,
+   "自然科学与地球科学": 30,
+   "生命科学与医学": 30,
+   "工程与能源": 16,
+   "经济与社会": 9
+  },
+  "raw_hits": 115,
+  "doc_level": 57,
+  "seconds": 2.2
+ },
+ "catalog_trace": {
+  "per_lib_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "catalog_size": 322,
+  "catalog_overlap_gt0": 94,
+  "seconds": 1.4
+ },
+ "fetch_trace": {
+  "seconds": 3.3,
+  "errors": []
+ },
+ "heads": {
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md": "# genomics__1602.01876__primer-on-the-gene-ontology.md.md（第 1/2 部分）\n章节: Primer on the Gene Ontology\n# Primer on the Gene Ontology\n\n\nPascale Gaudet1,\\*, Nives Škunca2,3,4, James C. Hu⁵, and Christophe Dessimoz4,6\n\n1SIB Swiss Institute of Bioinformatics, 1 Michel-Servet, 1211 Geneva, Switzerland\n\n²ETH Zurich, Computer Science, Universitätstr. 19, 8092 Zurich, Switzerland\n\n3SIB Swiss Institute of Bioinformatics, Universitätstr. 19, 8092 Zurich, Switzerland\n\n4University College London, Gower St, London WC1E 6BT, UK\n\n⁵Department of Biochemistry and Biophysics, Texas A&M University and Texas AgriLife\n\nResearch, College Station, TX USA\n\n⁶Department of Ecology and Evolution and Center of Integrative",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md": "# genomics__1602.01876__primer-on-the-gene-ontology.md.md（第 2/2 部分）\n章节: Primer on the Gene Ontology > References\n## References\n\n\n1. M. Ashburner, C.A. Ball, J.A. Blake, et al. (2000) Gene ontology: tool for the unification of biology. The Gene Ontology Consortium, Nature genetics. 25, 25–29.\n\n2. H.C. Friedmann (2004) From “butyribacterium” to “E. coli”: an essay on unity in biochemistry, Perspectives in biology and medicine. 47, 47–66.\n\n3. S. Carbon, A. Ireland, C.J. Mungall, et al. (2009) AmiGO: online access to ontology and annotation data, Bioinformatics . 25, 288–289.\n\n4. S.Y. Rhee, V. Wood, K. Dolinski, et al. (2008) Use and misuse of the gene ontology annotations, Nature reviews. Genet",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md": "# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 1/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers\n# There is No Such Thing as an “Index”! or: The next 500 Indexing Papers\n\n\nJens Dittrich Saarland Informatics Campus jens.dittrich@bigdata.unisaarland.de\n\nJoris Nix\\* Saarland Informatics Campus joris.nix@bigdata.uni-saarland.de\n\nChristian Schön\\* Saarland Informatics Campus christian.schoen@uni-saarland.de\n\n## ABSTRACT\n\n\nIndex structures are a building block of query processing and computer science in general. Since the dawn of computer technology there have been index structures. And since then, a myriad of index structures are being inv",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md": "# genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md.md（第 1/2 部分）\n章节: Title: SpaceTx: A Roadmap for Benchmarking Spatial Transcriptomics Exploration of the Brain\n# Title: SpaceTx: A Roadmap for Benchmarking Spatial Transcriptomics Exploration of the Brain\n\n\nAuthors and affiliations: Brian Long1, Jeremy Miller1, The SpaceTx Consortium²\n\n1. Allen Institute for Brain Science, Seattle, WA, USA\n\n2. Consortium authors:\n\n<table><tr><td rowspan=1 colspan=1>Name</td><td rowspan=1 colspan=1>Affiliation</td><td rowspan=1 colspan=1>ORCID</td></tr><tr><td rowspan=1 colspan=1>Boudewijn Lelieveldt</td><td rowspan=1 colspan=1>Leiden University Medical Center; Delft University of Technolog",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md": "# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 3/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers > 6 EXPERIMENTAL EVALUATION\n## 6 EXPERIMENTAL EVALUATION\n\n\nIn our experiments, we first determine a suitable set of hyperparameters for our genetic framework. Based on those hyperparameters, we then carefully evaluate GENE. We highlight the cost for training and the ability to automatically reach a certain performance baseline. Finally, we show the capability of GENE to match and even beat the performance of several state-of-the-art index structures. System. All experiments were executed on a machine with an AMD Ryzen Threadripper 1900X 8-",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md": "# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 2/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers > 4.2 Initial Population Generation\n## 4.2 Initial Population Generation\n\n\nWhat is a good start population II for the genetic algorithm? In Algorithm 1, function InitPopulation (line 1), we need to define an initial population of individual index structures. There are several possible dimensions to consider. First, we can change the initial number $s _ { \\mathrm { i n i t } }$ of indexes in II. This basically defines how diverse the initial set of indexes may be. Second, we should determine how to actually build and populate the initial ph",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md": "# neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md.md（第 1/2 部分）\n章节: Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n# Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n\n\nMingyuan Meng   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nmengmy3@mail.sysu.edu.cn   \nXingyu Yang   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nyangxy266@mail2.sysu.edu.cn   \nShanlin Xiao   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nxiao",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md": "# nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md（第 4/4 部分）\n章节: MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark > D Auditing the Yiddish Split of mC4\n## D Auditing the Yiddish Split of mC4\n\n\nThis appendix details the analysis summarized in subsection 3.1. The split contains 143,708 pages from 7,621 distinct domains, each labelled yi by the CLD3 identifier used in mC4's construction (Xue et al., 2021). We audit all 143,708 pages for two failure modes, Hebrew misidentified as Yiddish through the shared script, and machine translation; Table 11 gives the resulting composition.\n\nHebrew and Yiddish share a script, and general-purpose language identifiers are unrel",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md": "# chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md.md（第 2/8 部分）\n章节: Autonomous Reaction Network Exploration in Homogeneous and Heterogeneous Catalysis > 3.3 Autocatalysis\n## 3.3 Autocatalysis\n\n\nThe simplest definition of autocatalysis is given by a (series of) elementary step(s), in which a product X catalyzes its own creation [241].\n\n$$\n\\mathrm { A + X \\longrightarrow 2 X }\\tag{8}\n$$\n\nDue to the nonlinear chemical dynamics [242] (such as oscillations) that autocatalysis can cause, it has attracted little interest by the chemical industry until recently [241]. Accordingly, the topic has received much attention in origin of life studies $[ { \\mathcal { Z } } _ { 4 } { \\m",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631||工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md": "# mathematics__1405.4980__convex-optimization-algorithms-and-complexit（第 9/12 部分）\n章节: Beyond the black-box model > 5.3.2 Traditional analysis of Newton's method\n## 5.3.2 Traditional analysis of Newton's method\n\n\nWe start by describing Newton's method together with its standard analysis showing the quadratic convergence rate when initialized close enough to the optimum. In this subsection we denote $\\| \\cdot \\|$ for both the Euclidean norm on $\\mathbb { R } ^ { n }$ and the operator norm on matrices (in particular $\\| A x \\| \\leq \\| A \\| \\cdot \\| x \\| )$\n\nLet $f : \\mathbb { R } ^ { n } $ R be a $C ^ { 2 }$ function. Using a Taylor's expansion of $f$ around x one obtains\n\n$$\nf ( x + h ) = f ( ",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md": "# climate-science__2409.13934__on-the-extrapolation-of-generative-adversari（第 2/3 部分）\n章节: On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates > 3.2 Extreme Precipitation Climate Change Signal\n## 3.2 Extreme Precipitation Climate Change Signal\n\n\nThe multi-model mean (MME) climate change signal from CCAM varies significantly at different precipitation percentiles. As expected, at the 50th percentile the signal closely matches the annual mean (Section 3.1). This shows a mix of drying and wetting across the country (Supplementary Figure S2), leading to a near-zero or negative signal (Figure 1c). At the $9 0 ^ { \\mathrm { t h } }$ perc",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md": "# climate-science__2409.13934__on-the-extrapolation-of-generative-adversari（第 1/3 部分）\n章节: On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n# On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n\n\nNeelesh Rampal1,3, Peter B. Gibson2, Steven Sherwood³ and Gab Abramowitz³\n\n1National Institute of Water and Atmospheric Research, Auckland, New Zealand.\n\n2National Institute of Water and Atmospheric Research, Wellington, New Zealand\n\n3 Climate Change Research Centre & ARC Centre of Excellence for Climate Extremes, University of New South Wales, Sydney, Australia.\n\nCorrespondi"
+ },
+ "built": "2026-10-12T05:11:27.864223+00:00"
+}

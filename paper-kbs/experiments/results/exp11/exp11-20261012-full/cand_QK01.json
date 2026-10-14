@@ -1,0 +1,167 @@
+{
+ "qid": "QK01",
+ "query": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "fused": [
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+   "lane": "both",
+   "vector_score": 0.7191494703292847,
+   "vector_rank": 1,
+   "catalog_rank": 2,
+   "fused_rank": 1
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.695902943611145,
+   "vector_rank": 2,
+   "catalog_rank": 32,
+   "fused_rank": 2
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "lane": "both",
+   "vector_score": 0.5972465872764587,
+   "vector_rank": 4,
+   "catalog_rank": 146,
+   "fused_rank": 3
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.5956343412399292,
+   "vector_rank": 5,
+   "catalog_rank": 35,
+   "fused_rank": 4
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+   "lane": "both",
+   "vector_score": 0.5804077386856079,
+   "vector_rank": 7,
+   "catalog_rank": 140,
+   "fused_rank": 5
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.580050528049469,
+   "vector_rank": 8,
+   "catalog_rank": 145,
+   "fused_rank": 6
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "lane": "both",
+   "vector_score": 0.579797625541687,
+   "vector_rank": 9,
+   "catalog_rank": 147,
+   "fused_rank": 7
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "lane": "both",
+   "vector_score": 0.5616867542266846,
+   "vector_rank": 10,
+   "catalog_rank": 64,
+   "fused_rank": 8
+  },
+  {
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "doc_path": "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.5542424321174622,
+   "vector_rank": 12,
+   "catalog_rank": 36,
+   "fused_rank": 9
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.5518695712089539,
+   "vector_rank": 13,
+   "catalog_rank": 57,
+   "fused_rank": 10
+  },
+  {
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+   "lane": "both",
+   "vector_score": 0.5165531039237976,
+   "vector_rank": 17,
+   "catalog_rank": 87,
+   "fused_rank": 11
+  },
+  {
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "doc_path": "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+   "lane": "both",
+   "vector_score": 0.500636637210846,
+   "vector_rank": 20,
+   "catalog_rank": 63,
+   "fused_rank": 12
+  }
+ ],
+ "fusion_trace": {
+  "agreed": 39,
+  "vector_only_pool": 29,
+  "catalog_only_pool": 126,
+  "vector_only_taken": 8,
+  "catalog_only_taken": 4,
+  "fused_before_cap": 51,
+  "fused_after_cap": 12,
+  "candidate_cap": 12
+ },
+ "vector_trace": {
+  "per_lib_hits": {
+   "计算机与人工智能": 30,
+   "自然科学与地球科学": 30,
+   "生命科学与医学": 30,
+   "工程与能源": 30,
+   "经济与社会": 30
+  },
+  "raw_hits": 150,
+  "doc_level": 68,
+  "seconds": 1.4
+ },
+ "catalog_trace": {
+  "per_lib_docs": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "catalog_size": 322,
+  "catalog_overlap_gt0": 165,
+  "seconds": 1.4
+ },
+ "fetch_trace": {
+  "seconds": 3.3,
+  "errors": []
+ },
+ "heads": {
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md": "# artificial-intelligence__1706.03762__attention-is-all-you-need.md.md（第 2/2 部分）\n章节: Attention Is All You Need > 6.2 Model Variations\n## 6.2 Model Variations\n\n\nTo evaluate the importance of different components of the Transformer, we varied our base model in different ways, measuring the change in performance on English-to-German translation on the development set, newstest2013. We used beam search as described in the previous section, but no checkpoint averaging. We present these results in Table 3.\n\nTable 3: Variations on the Transformer architecture. Unlisted values are identical to those of the base model. All metrics are on the English-to-German translation development set, newstest2013",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md": "# artificial-intelligence__1706.03762__attention-is-all-you-need.md.md（第 1/2 部分）\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n\n\n# Attention Is All You Need\n\n\nAshish Vaswani\\* Google Brain avaswani@google.com\n\nNoam Shazeer\\* Google Brain noam@google.com\n\nNiki Parmar\\* Google Research nikip@google.com\n\nJakob Uszkoreit\\* Google Research usz@google.com\n\nLlion Jones\\* Google Research 1lion@google.com\n\nAidan N. Gomez\\* † University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser\\* Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin\\* ↓ illia.polosukhin@gmail.com\n\n## A",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md": "# nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md.md（第 2/4 部分）\n章节: steps > 4. Hallucinations hinder the integration of new knowledge post-training\n## 4. Hallucinations hinder the integration of new knowledge post-training\n\n\nThis final section examines the challenge of expanding language models' parametric knowledge through post-training procedures like fine-tuning. We find that certain types of hallucinations (overconfident predictions on unseen individuals) emerge simultaneously with knowledge about individuals within the training distribution and can be detected at the population level. These hallucinations significantly impact learning dynamics on new data, requiring numer",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md": "# artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep（第 1/2 部分）\n章节: AOAD-MAT: Transformer-based Multi-Agent Deep Reinforcement Learning Model considering Agents’ Order of Action Decisions \\*\n# AOAD-MAT: Transformer-based Multi-Agent Deep Reinforcement Learning Model considering Agents’ Order of Action Decisions \\*\n\n\nShota Takayama and Katsuhide Fujita\n\nGraduate School of Engineering, Tokyo University of Agriculture and Technology\n\nAbstract. Multi-agent reinforcement learning focuses on training the behaviors of multiple learning agents that coexist in a shared environment. Recently, MARL models, such as the Multi-Agent Transformer (MAT) and ACtion dEpendent deep ",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md": "# nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md.md（第 1/3 部分）\n章节: BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\n# BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\n\n\nJacob DevlinMing-Wei Chang Kenton Lee Kristina Toutanova\n\nGoogle AI Language\n\n{jacobdevlin,mingweichang,kentonl,kristout}@google.com\n\n## Abstract\n\n\nWe introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models (Peters et al., 2018a; Radford et al., 2018), BERT is designed to pretrain deep bidirectional representations from un",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md": "# nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md.md（第 1/4 部分）\n章节: How do language models learn facts? Dynamics, curricula and hallucinations\n# How do language models learn facts? Dynamics, curricula and hallucinations\n\n\nNicolas Zucchet1,+, Jörg Bornschein2, Stephanie Chan2, Andrew Lampinen², Razvan Pascanu² and Soham De²\n\n1ETH Zürich, 2Google DeepMind, +Work done at Google DeepMind\n\nLarge language models accumulate vast knowledge during pre-training, yet the dynamics governing this acquisition remain poorly understood. This work investigates the learning dynamics of language models on a synthetic factual recall task, uncovering three key findings: First, language models lear",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md": "# nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md.md（第 3/4 部分）\n章节: steps > B.2. Details about the biography generation process\n## B.2. Details about the biography generation process\n\n\nOur data generation process largely follows Allen-Zhu and Li (2023), with a few important differences regarding how templates are generated and manipulated.\n\nPrior to training, we generate a population of individuals, each with a full name (first, middle, and last) and six attributes: birth place, birth date, university, major, company, and current location. These are generated as follows:\n\n• Full name. First and middle names are sampled from a list of 900, and last names from a list of 1,000, r",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md": "# genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m（第 1/4 部分）\n章节: $\\mathrm { s c l ^ { 2 } C L }$ : Effectively Integrating Single-cell Multi-omics by Intra- and Inter-omics Contrastive Learning\n# $\\mathrm { s c l ^ { 2 } C L }$ : Effectively Integrating Single-cell Multi-omics by Intra- and Inter-omics Contrastive Learning\n\n\nWuchao Liu¹, Han Peng1, Wengen Li¹, Yichao Zhang1, Jihong Guan1,\\*, and Shuigeng Zhou2,\\*\n\n1School of Computer Science and Technology, Tongji University, Shanghai 201804, China   \n2College of Computer Science and Artificial Intelligence, Fudan University, Shanghai   \n200438, China\n\nCorresponding author. jhguan@tongji.edu.cn and sgzhou@fudan.edu.cn\n\nAugu",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba||计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md": "# neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md.md（第 1/2 部分）\n章节: Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n# Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n\n\nMingyuan Meng   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nmengmy3@mail.sysu.edu.cn   \nXingyu Yang   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nyangxy266@mail2.sysu.edu.cn   \nShanlin Xiao   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nxiao",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md": "# clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md.md（第 1/2 部分）\n章节: Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions\n# Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions\n\n\nBatuhan Bardak and Mehmet Tan\n\nDepartment of Computer Engineering\n\nTOBB University of Economics and Technology\n\nAnkara, Turkey\n\nEmail:{b.bardak, mtan } @etu.edu.tr\n\nAbstract—Drug representations have played an important role in cheminformatics. However, in the healthcare domain, drug representations have been underused relative to the rest of Electronic Health Record (EHR) data, due to the complexity of high dime",
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b||自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md": "# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 2/4 部分）\n章节: Machine learning for molecular simulation > 2.5 Sampling and Thermodynamics\n## 2.5 Sampling and Thermodynamics\n\n\nMD time steps are on the order of one femtosecond $\\left( 1 0 ^ { - 1 5 } \\mathrm { ~ s \\right) }$ , while configuration changes governing molecular function are often rare events that may take $1 0 ^ { - 3 }$ to $1 0 ^ { 3 } ~ \\mathrm { s } .$ Even when evaluating the potential and the forces it generates is fast, simulating single protein folding and unfolding events by direct MD simulation may take years to centuries on a supercomputer. To avoid this sampling problem, machine learning methods can b",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28||生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md": "# genomics__2401.06823__interpretable-deep-learning-in-single-cell-o（第 1/2 部分）\n章节: Interpretable deep learning in single-cell omics\n# Interpretable deep learning in single-cell omics\n\n\nManoj M Wagle1,2,3,+, Siqu Long1,3,+, Carissa Chen1,3, Chunlei Liu1,3, Pengyi Yang1,2,3,4,\\*\n\n1 Computational Systems Biology Unit, Children's Medical Research Institute, Faculty of Medicine and Health, The University of Sydney, Westmead, NSW 2145, Australia\n\n2 School of Mathematics and Statistics, Faculty of Science, The University of Sydney, Camperdown, NSW 2006, Australia\n\n3 Sydney Precision Data Science Centre, The University of Sydney, Camperdown, NSW 2006, Australia\n\n4 Charles Perkins Centre, The Univers"
+ },
+ "built": "2026-10-12T05:10:23.357468+00:00"
+}

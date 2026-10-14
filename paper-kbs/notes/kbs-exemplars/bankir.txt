@@ -1,0 +1,1061 @@
+                                                LLM-based IR-system for Bank Supervisors
+
+                                                                                  Ilias Aaraba,1,
+
+                                       aEuropean Central Bank, SSM/DG-SIB, Sonnemannstrasse 20, Frankfurt am Main, 60314, Hesse, Germany
+
+arXiv:2508.02945v1 [cs.IR] 4 Aug 2025  Abstract
+
+                                       Bank supervisors face the complex task of ensuring that new measures are consistently aligned with historical prece-
+                                       dents. To address this challenge, we introduce a novel Information Retrieval (IR) System tailored to assist supervisors
+                                       in drafting both consistent and effective measures. This system ingests findings from on-site investigations. It then
+                                       retrieves the most relevant historical findings and their associated measures from a comprehensive database, providing
+                                       a solid basis for supervisors to write well-informed measures for new findings. Utilizing a blend of lexical, semantic,
+                                       and Capital Requirements Regulation (CRR) fuzzy set matching techniques, the IR system ensures the retrieval of
+                                       findings that closely align with current cases. The performance of this system, particularly in scenarios with partially
+                                       labeled data, is validated through a Monte Carlo methodology, showcasing its robustness and accuracy. Enhanced
+                                       by a Transformer-based Denoising AutoEncoder for fine-tuning, the final model achieves a Mean Average Preci-
+                                       sion (MAP@100) of 0.83 and a Mean Reciprocal Rank (MRR@100) of 0.92. These scores surpass those of both
+                                       standalone lexical models such as BM25 and semantic BERT-like models.
+
+                                       Keywords: Information Retrieval (IR), Large Language Models (LLMs), Semantic Analysis, Machine Learning
+                                       2000 MSC: 68T50, 62P20, 68T05, 91G80, 91B82
+
+                                       1. Introduction
+
+                                           Banking supervision in the Euro area is organized in the Single Supervisory Mechanism (SSM), consisting of
+                                       the European Central Bank (ECB) together with the National Competent Authorities (NCA) of the 20 Euro area
+                                       countries (as well as Bulgaria through close cooperation). The largest banking groups (and their subsidiaries in the
+                                       Euro area) are supervised directly by the ECB, while the less significant institutions remain under the supervision of
+                                       their respective NCAs. Among the responsibilities assigned to it, the ECB as the competent authority, has to approve
+                                       (material changes to) Supervised Entities' internal models for the use of own funds requirements calculation. Such
+                                       approval is usually granted by means of an ECB Decision, being the outcome of an Internal Model Investigation
+                                       (IMI). The main outcome of an IMI is an in-depth Assessment Report (AR) containing observed findings and their
+                                       related severity of the inspected model in question. A finding within the AR describes non-compliance with either
+                                       a legal requirement (e.g., CRR) or a non-binding standard (e.g., EBA Guidelines, ECB Guide to Internal Model), or
+                                       both. Each finding within the AR is thoroughly and objectively motivated with respect to the violations of the legal
+                                       frameworks. This process includes a dedicated and thorough consistency checking phase executed at the ECB. After
+                                       the finalization, the AR is shared with the Joint Supervisory Team (JST) that supervises the institution in question.
+                                       The respective JST takes the AR as main input in order to prepare a Draft Decision (DD) with respect to the approval
+                                       inquiry to the (material changes of the) internal model. More precisely, the JST links findings within the AR to
+                                       specific measures, which are further decomposed in conditions, limitations, obligations and recommendations with
+                                       respect to the (material changes of the) internal model. The use of approvals with measures is embedded into the
+                                       ECBs supervisory approach, and introduces a range of advantages:
+
+                                           Corresponding author
+                                            Email address: ilias.aarab@ecb.europa.eu (Ilias Aarab)
+                                           1The views expressed in this paper are those of the author and do not necessarily reflect those of the European Central Bank or the Single
+                                       Supervisory Mechanism.
+
+                                       Preprint submitted to Knowledge-Based Systems                                                      May 09, 2025
+    · Ability to approve a model that does not perfectly meet regulatory expectations, but is better than its predecessor,
+       combined with clearly defined remediation actions
+
+    · Distribution of work between on-site and off-site, i.e., detection of issues via onsite and follow-up of remediation
+       via ongoing model monitoring
+
+    · Ensure adequacy of capital requirements at all times via the use of limitations
+
+    · Ability to compel the Supervised Entity to improve its models via obligations
+
+Although clearly of merit, the drafting of the ancillary provision requires a significant effort from the JST in terms
+of time and needed expertise in order to ensure consistency and objectification of the final results. The goal hereby
+is to maintain uniformity of IMI decisions within the SSM, i.e., the outcome of these decisions is in line with the
+treatment given to previous similar cases, as well as to ensure a level playing field across SSM institutions. Auxiliary,
+the consistency and objectification aids in the prevention of legal and reputation risk for the ECB.2 While being of
+utmost importance, a consistent conversion of findings into measures is not framed into a strict set of rules given its
+own very qualitative nature but largely relies on expert judgment and experience of the decision drafter and reviewers.
+In the domain of decision drafting, an important challenge is the write-up of consistent measures conditional on the set
+of findings found back in the AR of the IMI. One way to ensure such consistency is by comparing a new finding with
+a set of historical findings and their associated measures. Assessing the relevance of, and the relationship between
+findings and measures is one of the key skills used by JSTs to ensure consistent writing of Decisions. JST members
+need to know which previous findings are relevant to a current investigation, in order to draft their Decision and
+associated measures in a uniform way. More so, they need to assess whether a piece of legislation is relevant to a
+fact pattern in a finding and determine the effect of the legislation on the measures. Assessing relevance can pose
+significant challenges, requiring complex analysis and determinations. Automating this task, even partially, could
+have tremendous implications for JST members across multiple vertical business areas at the SSM. These implications
+extend to both the composition of draft decisions and the achievement of a heightened level of consistency.
+
+    In this paper, we present a novel project aimed at augmenting the decision-drafting process through the incorpo-
+ration of semi-automated tools. This initiative seeks to mitigate existing workload challenges and further bolster the
+consistency goals. Central to our approach is the development of an Information Retrieval (IR) system, tailored to the
+specific needs of JSTs. Leveraging Large Language Models (LLMs), this system facilitates efficient retrieval of his-
+torical and peer-based findings, alongside their measures, given the new set of findings derived from a new IMI. Our
+methodology underscores the intersection of applied deep learning techniques with judicial administrative processes,
+setting a precedent for future innovations in this domain.
+
+    The paper is structured as follows. The next section describes related work. Section 3 presents the characteristics
+of the text data underlying the historical Findings. Section 4 presents the main methodology and experimental setup.
+Section 5 describes our evaluation methodology, while section 6 summarizes the results of our experiments. Section
+7 concludes.
+
+2. Related work
+
+    The field of natural language processing (NLP) and information retrieval (IR) has observed significant advance-
+ments in recent years, predominantly due to the introduction of Transformer-based models and novel approaches
+leveraging deep learning technologies. The seminal work on the Transformer network by Vaswani et al. (2017) pio-
+neered the transformative shift in NLP. Rejecting recurrence and convolutions, the architecture utilizes self-attention
+and scaled dot-product attention mechanisms, radically improving efficiency and performance in sequence trans-
+duction tasks such as machine translation. The Transformer has been at the core of BERT (Bidirectional Encoder
+Representations from Transformers) introduced by Devlin et al. (2018), which has set profound benchmarks across a
+spectrum of NLP tasks, including question answering and language inference. BERT innovatively leverages Masked
+Language Modeling and Next Sentence Prediction, contributing to a deeper contextual understanding of language.
+
+    2"This Regulation confers on the ECB. . . with full regard and duty of care for the unity and integrity of the internal market based on equal
+treatment of credit institutions with a view to preventing regulatory arbitrage." Council Regulation (EU) No 1024/2013 Chapter1/Article1
+
+                                                                      2
+Further adaptation of Transformers for specific domains and tasks is exemplified by Legal-BERT (Chalkidis et al.,
+2020a), which underscores the potential of domain-specific pretraining. Another transformative adaptation can be
+seen in Sentence-BERT by Reimers and Gurevych (2019a), which modifies the base BERT model for efficient com-
+putation of sentence embeddings suitable for semantic similarity assessments.
+
+    On the frontier of information retrieval, there is a continuous effort to overcome the limitations of traditional lexical
+models like BM25. The creation of BEIR, a heterogeneous benchmark by Thakur et al. (2021), has enabled a compre-
+hensive zero-shot evaluation of retrieval models across diverse domains, challenging the generalization capabilities of
+state-of-the-art models. The BM25's capabilities have been expanded in the probabilistic relevance framework pre-
+sented by Robertson et al. (2009). Novel IR frameworks, such as ColBERT by Khattab and Zaharia (2020), leverage
+a late BERT-based interaction for efficient passage search, balancing between effectiveness and cost-efficiency. This
+shift towards integrating deep learning within IR systems is further exemplified by UDEG (Jeong et al., 2021), which
+employs stochastic text generation to enhance document representation.
+
+    Research by Gururangan et al. (2020) has explored the strategic domain-adaptive and task-adaptive pretraining,
+demonstrating significant progress in the field. Through such adaptations, FinBERT by Araci (2019a), specifically
+pretrained on financial corpora, demonstrates how targeted domain pretraining can yield state-of-the-art results for
+financial sentiment analysis. Similarly, exploring various strategies to address the challenge posed by very long docu-
+ments in IR, Lv and Zhai (2011b) presented BM25L, an extension of BM25, which provided more robust performance
+across test collections from TREC.
+
+    Further contributions include those from Pennington et al. (2014), who introduced GloVe, a new global log-bilinear
+regression model enabling robust word representation learning by capturing global statistics. This advancement along
+with the CBOW and Skip-gram models by Mikolov et al. (2013) represent significant efforts to compute continuous
+vector representations of words through unsupervised learning.
+
+    The unsupervised learning approach has been exemplified by Wang et al. (2021) through the proposal of TSDAE, a
+Transformer-based sequential denoising auto-encoder that has set new standards in unsupervised sentence embedding
+learning. This has paved the way for creating semantically rich representations without reliance on labeled data.
+
+    The tenets established by foundational works such as those by Sutskever et al. (2014) on sequence to sequence
+learning with neural networks have consequently evolved into advanced methodologies such as Transformers that
+dominate the current research landscape. These advancements mark significant strides toward a more nuanced and
+contextually-informed understanding of language, which can be leveraged across a host of applications in both NLP
+and IR. Based on these advancements we explore the use of Transformer based models to build an IR system for our
+specific prudential domain.
+
+3. Data
+
+    We collect findings from a centralized SSM data lake, focusing specifically on finalized Internal Model Investi-
+gations. We exclude data before 2017 to address quality concerns and remove findings linked to problematic IMIs,
+such as those withdrawn. Our refined dataset consists of approximately 7000 findings. Figure 1 shows text statistics
+of the final database. Notably, around 85% of these findings are under 512 tokens, fitting the positional embedding
+size of BERT-based models for straightforward processing. The rest, exceeding this token limit, are segmented based
+on paragraphs for processing compatibility.
+
+3.1. Tokenization
+
+    When dealing with Transformer-based models we make use of the accompanying WordPiece tokenizers to process
+the data before feeding them into the model. These tokenizers are similar to Byte Pair Encoding (BPE) (Sennrich et al.,
+2016), but begin the merging process at the word level rather than with individual characters. WordPiece merges the
+most frequent pairs and uses a greedy algorithm to perform token segmentation in a way that maximizes the likelihood
+of the training data given the vocabulary (Devlin et al., 2018).
+
+    In contrast, for the lexical models, we employ a custom tokenization scheme. We start with lowercasing and
+removal of stop words. This step is crucial in eliminating common words such as "the", "and", "is", etc., which occur
+frequently in the database of findings but often contribute little to understanding the contextual meaning of sentences.
+For example, consider the stylized sentence:
+
+                                                                      3
+     character count                              word count           token count        avg word length         sentence count      avg sentence length
+
+                      450                                     350                   200                    700                    350
+                                                              300                                                                 300
+350                                                           250                                          600
+                                             400              200
+                                                              150
+300
+                                             350
+
+                                                                                                           500
+
+                      300                                                           150                                           250
+
+250
+
+                                             250                                                                                 400
+200                                                                                                                                                                           200
+
+                                             200                                    100
+150                                                                                                                              300
+                                                                                                                                                                              150
+                                             150
+                                                                                                           200                    100
+100
+                                             100              100
+
+ 50                                                                                 50
+                                              50
+                                                              50                                           100                    50
+
+00   5k  10k          00                          1000 2000   00   1000 2000           0  4  5  6          0      20 40 60 80     0                                                100 200
+
+                                                              Figure 1: Text statistics of the findings database
+
+                                                                                    4
+    Institutions shall estimate conversion factors by facility grade or pool on the basis of the average realized conver-
+sion factors by facility grade (amidst 2024 planning), pursuant article 182(1)(f) of Regulation (EU) No 575/2013.
+
+    The stop words here are "shall", "by", "or", "on", "the", "of", and "by". After this step, the sentence would read:
+
+    Institutions estimate conversion factors facility grade pool basis average realized conversion factors facility grade
+(amidst 2024 planning), pursuant article 182(1)(f) Regulation (EU) No 575/2013.
+
+    Following this, we proceed to lemmatize all remaining tokens. This process involves reducing each word to its
+base or root form, thereby standardizing vocabulary and ensuring consistency in the processing. For example, after
+lemmatization, we get:
+
+    Institution estimate conversion factor facility grade pool basis average realize conversion factor facility grade
+amidst planning, pursuant article 182(1)(f) Regulation (EU) No 575/2013.
+
+    Next, we add bi- and trigrams whenever the conditional probability of two adjacent tokens occurring together is
+higher than their respective unconditional probabilities3:
+
+    Institution estimate conversion factor facility grade pool basis average realize conversion factor facility grade
+amidst planning, pursuant article 182(1)(f) Regulation (EU) No 575/2013.
+
+    Next we remove tokens that occur in more than 90% of findings, as these act as in-domain stop words. We
+also remove tokens occurring in less than .05% of findings as these are idiosyncratic tokens that do not capture any
+similarity between findings. In the example this yields the removal of amidst, persuant and article.
+
+    The most distinguishing characteristic of our tokenization scheme is how we handle references to the CRR (Capital
+Requirements Regulation) articles. We implement a custom regular expression that identifies and correctly tokenizes
+these references. This ensures that each CRR article reference is treated as a unique token, thereby preserving the
+specific importance and contextual implications these references carry in financial and regulatory communications.
+
+4. Methodology & Experimental Setup
+
+    Let F = { f0, f1, f2, . . . , fn} represent the population of historical findings with the following properties:
+
+    · |F| = n < : there is a finite number n of possible findings
+
+    · |F| : the set is non-empty
+
+    Let fn+ j for j = 1, . . . ,  represent a new finding derived from a new IMI, containing  findings.
+    Furthermore, let M = {m0, m1, m2, . . . , ml} represent the population of historical measures with similar properties
+as F. Correspondingly, P1(M) = {S : S  M, S } represents the power set of M excluding the empty set. Then
+let  : F  P1(M) represent the set-valued function, mapping elements from F onto one or more measures.
+    Assuming that findings that are similar to each other share similar measures, a JST member can rely on historical
+similar findings of fn+ j, and on the observed mapping of , to ensure a consistent drafting of the new measures based
+on historical ones.
+    We implement a simple IR system whose central aspect is the ranking and retrieval of the top k, with k  n,
+relevant findings. The system processes a user's new finding fn+ j and computes a similarity score with each finding
+in the set of historical findings F with respect to fn+ j. Once each finding fi  F has been scored, the system sorts the
+
+    3Probabilities are empirically estimated across the entire Findings database. Trigrams are estimated as the conditional probability of a bigram
+with an adjacent unigram.
+
+                                                                      5
+findings in descending order based on their similarity. The top k findings Fn + j = { fn1+ j, fn2+ j, fn3+ j, . . . , fnk+ j} are then
+retrieved. The user receives this ranked list of findings, with the system's most relevant results appearing first.
+
+    More formally, the IR system can be viewed as a general function :
+
+  :  F  ×F  G          F  :  ( f n+ j,  F)      ( fn+ j,  F, ,  k)  =               (1)
+
+                                                                       Fn+ j
+
+    Typically, the function  represents some sort of semantic similarity, i.e., to which extent two documents or
+passages are semantically close together. In our work, the similarity between any two findings reflects the extent to
+which they elaborate on the same non-compliance issue(s) as reflected by the Capital Requirement Regulation (derived
+from one or more regulatory articles).
+
+    Cosine similarity is a popular metric in information retrieval systems, valued for its ability to detect semantic
+similarities within high-dimensional vector spaces. It calculates the cosine of the angle between two vectors to produce
+a score that indicates the degree of alignment between the vectors, without being affected by their sizes. This feature
+is particularly beneficial in text retrieval systems, where document embeddings can vary widely, and the focus is
+on the document's content direction within the vector space. Research has consistently shown that cosine similarity
+surpasses other metrics in retrieval efficiency in such contexts (Manning et al., 2008).
+
+    Thus, we now have,
+
+ : F × F  [-1, 1] :          fn+ j, fi      := yn+ j,i =  vn+ j · vi                (2)
+                                                          vn+ j vi 
+
+    with vn+ j and vi respectively the vector embeddings of findings fn+ j and fi, and yn+ j,i the similarity score between
+them. In practice, for computational efficiency, we compute the cosine similarity of all findings simultaneously by
+
+constructing the following matrices:
+
+·   Rn×d, where each row i represents the normalized embedding vector of the historical finding fi stored in
+   our database.
+
+·   R×d, where each row j represents the normalized embedding vector of the set of new findings fn+ j.
+
+We can then easily compute the similarity matrix:
+
+                        =  ()T  R×n                                                 (3)
+
+    With n+ j,i the cosine similarity between a new finding fn+ j and the historical finding fi, i  {1, 2, . . . , n} ,  j 
+{1, 2, . . . , }.
+
+    Building a proficient IR system is a challenging task, primarily due to the necessity of establishing an effective em-
+bedding scheme capable of converting findings into meaningful and representative vectors. We group the embedding
+
+schemes into three broad categories: (i) lexical, (ii) word-level embeddings and (iii) document-level embeddings.
+    Lexical: The TF-IDF model computes the importance of a term within a finding fi relative to the entire findings
+
+database F , leveraging the term frequency (TF) and the inverse document frequency (IDF) as follows:
+
+        TF-IDF(t, fi, F) = T F(t, fi) × IDF(t, F)                                   (4)
+
+where t represents the term, fi is the finding, and F is the findings database. TF-IDF increases with the number
+of occurrences of the term in the finding but is offset by the term's frequency in the finding database, ensuring that
+common terms are appropriately weighted (SPARCK JONES, 1972). BM25 extends upon the basic principles of
+TF-IDF by incorporating document length normalization and a saturation function, making it less sensitive to term
+frequency increases beyond a certain threshold. It is defined as:
+
+BM25(t, fi, F) =   n   IDF(ti, F) ·     f (ti,    f (ti, fi) · (k1 + 1)   | fi|     (5)
+                  i=1                           fi) + k1 · (1 - b + b ·  avgdl
+                                                                                 )
+
+where f (ti, fi) is ti's term frequency in finding fi, | fi| is the length of the document, avgdl is the average finding length
+in the database, and k1 and b are free parameters (Robertson and Zaragoza, 2009). BM25L further refines BM25 by
+
+                                                                      6
+addressing its limitations related to term frequency saturation. It introduces a term frequency normalization step that
+is less prone to saturation, making it more effective in environments where term distribution is sparse. Its formulation
+can be viewed as an extension to the BM25 formula with additional normalization factors (Lv and Zhai, 2011b):
+
+                         BM25L(t,   fi, F)  =   n   IDF(ti, F) ·         (k1 + 1)(c(t, fi) + )                (6)
+                                               i=1                        k1 + (c(t, fi) + )
+
+with                                                       f (ti, fi)
+
+                                         c(t,  fi)  =         +           | fi|                               (7)
+                                                                         avgdl
+                                                       1-  b       b  ·
+
+and  > 0 a shift parameter. In contrast, BM25+ refines the BM25 model by adding a small constant  to the
+
+term frequency component, enhancing sensitivity to term frequency without compromising normalization, thereby
+
+improving document relevance assessment (Lv and Zhai, 2011a).
+
+               BM25+(t,  fi, F)  =   n   IDF(ti, F) · (    f (ti,    f (ti, fi) · (k1 + 1)   | fi|     + )    (8)
+                                    i=1                            fi) + k1 · (1 - b + b ·  avgdl
+                                                                                                    )
+
+This adjustment allows for more linear scaling with term frequency, addressing term frequency saturation more ef-
+fectively. Figure 2 highlights the difference between the three BM25 implementations by computing scores of a new
+finding containing one unique term at different frequencies. As can be seen, both BM25L and BM25+ show a higher
+tolerance for shorter documents, which results in a generally higher score for the same term frequencies compared to
+BM25. This makes them particularly useful for environments where document length varies greatly (see Figure 1) but
+shorter documents still contain valuable content.
+
+           %0
+
+           %0/
+
+                   %0
+       
+
+       
+
+6FRUH  
+
+       
+
+       
+
+       
+
+                                                         f(ti, fi)                                          
+
+                         Figure 2: Comparison of BM25, BM25L and BM25+
+
+    Word-level Embeddings: GloVe (Global Vectors for Word Representation) is a model designed to efficiently
+learn word vectors by aggregating global word-word co-occurrence statistics from a corpus, capturing both local and
+
+                                                                      7
+global semantic relationships between words (Pennington et al., 2014). Building on this, we propose an extension to
+adapt GloVe embeddings for the prudential domain by training on a corpus comprising financial reports, regulatory
+documents, and related texts, thereby embedding financial jargon and context to enhance the relevance of repre-
+sentations for improved information retrieval performance. We further enhance semantic understanding of findings
+with BERT's contextual embeddings, which unlike GloVe's static representations, dynamically adjust word meanings
+based on surrounding text, offering nuanced insights (Devlin et al., 2018). FinBERT (Araci, 2019b) and LEGAL-
+BERT (Chalkidis et al., 2020b) extend this with finance and legal domain specializations, embedding sector-specific
+contexts for more nuanced document representations. We aggregate GloVe embeddings, by computing the average
+vector across all word embeddings. For BERT embeddings, we do the same but exclude the [CLS] token embedding.
+
+    Document-level Embeddings: Sentence Transformers (Reimers and Gurevych, 2019b) advance BERT-like mod-
+els by generating document-level embeddings, contrasting traditional word-level embeddings by capturing broader
+semantic contexts. Unlike word embeddings, which focus on individual word meanings, Sentence Transformers
+embed entire documents, leading to better performance in tasks requiring nuanced comprehension of text, such as
+document retrieval and question answering. To fine-tune Sentence Transformers, we use a Transformer-based Se-
+quential Denoising Auto-Encoder (TSDAE) (Feng et al., 2021). TSDAE trains by reconstructing documents from
+their noise-altered forms, improving the model's grasp on language structure and semantics without needing labeled
+data. More formally, let (·) represent a pretrained Sentence Transformer. Let fi be the original finding, and f~i = ( fi)
+be a noisy version obtained by applying a noise function  that randomly deletes 50% of the tokens. In the denoising
+step, we use ( f~i) to reconstruct the original tokenization of the finding fi. To learn (·) to reconstruct the original
+finding, we utilize the following loss objective:
+
+                                                     L() = -E fiF [log P( fi| f~i)]
+
+where  represents the set of weights of the Sentence Transformer (·), E fiF[·] denotes the expectation taken over
+the set of findings, and P( fi| f~i) is the conditional probability under  of generating fi given f~i. The loss function is
+minimized using backpropagation (Vaswani et al., 2017). Once trained, the transformer (·) can generate embeddings
+for findings fi that are specifically adapted to our domain, even in the absence of labeled data (see Figure 3).
+
+    The pretrained Sentence Transformer used is all-MiniLM-L6-v2 (Reimers and Gurevych, 2019b), a smaller and
+faster version of BERT designed for sentence embeddings. The all-MiniLM-L6-v2 model consists of 6 layers (trans-
+former blocks) with 8 attention heads per layer, totaling 48 attention heads. To enhance the understanding of (·) in
+the context of prudential regulation, we initially train the network on all CRR articles Ci before incorporating our
+historical findings. The model is trained using TSDAE for 125 epochs, which corresponds to the point at which our
+loss reaches its lowest value, with a batch size of 64.
+
+4.1. Fuzzy CRR article matching
+
+    Semantic similarity of the findings is only part of the story. Each finding in the database is also linked to a set of
+Capital Requirements Regulation (CRR) articles4. We leverage this metadata to consider the overlap in CRR articles
+between findings. The more CRR articles two findings share, the higher their Jaccard similarity, indicating that these
+findings are likely more related to each other. This aspect lends an additional layer of robustness to the information
+retrieval system.
+
+    The Jaccard similarity between two findings is computed based on the CRR articles linked to each finding. Let A
+and B denote the set of CRR articles associated with two different findings. The Jaccard similarity is given by the size
+of the intersection of A and B divided by the size of their union:
+
+                                                            J(A, B) = |A  B|
+                                                                        |A  B|
+
+    Similar to cosine similarity, this measure ranges from 0 to 1. A value of 0 implies no shared articles between the
+findings, while a value of 1 implies that all articles linked to one finding are also linked to the other.
+
+    4The Capital Requirements Regulation (CRR) is a part of the European Union's regulatory framework for financial institutions, aimed at
+ensuring their resilience and stability by setting out prudential requirements for banks and other financial institutions.
+
+                                                                      8
+    The Jaccard similarity is particularly advantageous as it considers both the similar and different articles between
+two findings, unlike the Szymkiewicz-Simpson coefficient, which only highlights the overlapping set between two
+findings. This distinction is important because the different articles can indicate differences in findings. Similarly,
+the Sørensen-Dice coefficient may dilute the similarity between findings, especially when some findings have a large
+number of associated articles, as it focuses on the full cardinality of each set of articles. In contrast, the Jaccard
+similarity considers the union of the sets, making it less susceptible to this issue.
+
+    We further model the hierarchical structure of CRR articles as a directed rooted tree. Each CRR article is a node
+in the tree, with edges representing the parent-child relationships between articles. For instance, articles 181(a) and
+181(b) are child nodes of the parent node 181. The root of the tree represents the highest level of the CRR hierarchy.
+
+    Given this structure, we can define a similarity measure based on shared ancestry. Let P(x) denote the set of parent
+nodes (ancestors) of a node x in the tree. The hierarchical similarity between two nodes x and y can then be defined
+as:
+
+                                                        H(x, y) = |P(x)  P(y)|
+                                                                     |P(x)  P(y)|
+
+    This measure, similar to the Jaccard similarity, ranges from 0 (no shared ancestors) to 1 (all ancestors are shared),
+providing a quantification of the degree to which two findings are related through their associated CRR articles. By
+considering both Jaccard and hierarchical similarities, we can achieve a more nuanced understanding of the relation-
+ship between findings based on their associated CRR articles.
+
+4.2. Experimental setup
+
+Consider a test dataset D comprising labeled findings, intended for evaluating the efficacy of embedding schemes.
+
+To establish a benchmark for comparison, we introduce a naive IR system that randomly retrieves a set of findings from
+
+F, based on a slight modification of the hyper geometric distribution as depicted in (Bestgen, 2015). Furthermore,
+
+we introduce a hybrid model based on the average of similarity matrices  (see Equation 3) , derived from both a
+
+fully configured BM25L+ model and a fine-tuned sentence transformer model SentTRF+TSDAE, dubbed Hybrid. The
+
+fuzzy CRR matching component reduces the search space by only including findings fi that meet specific criteria: a
+
+CRR  Jaccard  similarity  of  J(A, B)    1  and  a  hierarchical  similarity  of  H(A, B)    1  .  When  the  IR  system  processes
+                                         3                                                   3
+
+a finding fi, it first limits the search to findings that satisfy these criteria. After narrowing down the search space,
+
+the system then proceeds to identify similar findings within this constrained set. Table 1 gives an overview of the
+
+different embeddings used.
+
+5. Evaluation methodology
+
+5.1. Evaluation metrics
+
+    Evaluating the performance of an IR system necessitates utilizing a variety of metrics to gain a comprehensive
+understanding of its effectiveness. In our research, we primarily focus on two metrics: Mean Average Precision
+(MAP) and Mean Reciprocal Rank (MRR). Both MAP and MRR are extensively recognized and employed in the
+assessment of IR systems. MAP provides a measure of precision across recall levels, while MRR offers insight into
+the rank position of the first relevant item in the retrieved results. These metrics are critical in understanding the
+overall performance of IR systems, as demonstrated in Shah and Croft (2004).
+
+    MAP is a standard measure for IR tasks, particularly important in scenarios where the order of returned documents
+is crucial. MAP calculates the mean of average precisions across all queries. The average precision of a query is
+computed as the average of precisions at the positions of each relevant document within the ranked retrieval results.
+By aggregating precision scores at each relevant document, MAP effectively encapsulates both precision and recall,
+providing a comprehensive single-figure measure of the quality of ranked retrieval outcomes. More precisely, for each
+new finding f(n+ j), the average precision (AP) is given by:
+
+                                                                                                      1
+
+                                                            AP = p(r)dr
+
+                                                                                                    0
+
+                                                                  9
+        Embedding Scheme                              Details
+        Lexical
+        TFIDF                                         Default implementation.
+        BM25                                          Parameters: k = 1.6, b = 0.75.
+        BM25Plus                                      Parameters: k = 1.6, b = 0.75,  = 1.
+        BM25L                                         Parameters: k = 1.6, b = 0.75,  = 0.5.
+        BM25L+                                        Parameters: k = 1.6, b = 0.75, min d f = 0.0005, max d f = 0.9,
+                                                      ngram = 3.
+        Word-level Embeddings
+        GloVe                                         Dimension: d = 300, Pooling: Mean.
+        FinGloVe                                      Dimension: d = 300, Pooling: Mean.
+        BERT                                          Configuration: bert-base-uncased, Dimension: d = 512, Pooling:
+                                                      Mean.
+        FinBERT                                       Configuration: finbert, Dimension: d = 512, Pooling: Mean.
+        LEGAL-BERT                                    Configuration: legal-bert-base-uncased, Dimension: d = 512, Pooling:
+                                                      Mean.
+        Document-level Embeddings
+        SentTRF                                       Model: all-MiniLM-L6-v2, Dimension: d = 384.
+        SentTRF+TSDAE
+                                                      Model: all-MiniLM-L6-v2, Dimension: d = 384, Training Corpus: F
+        Hybrid
+                                                      + CRR
+
+                                                      Hybrid Model:           =    . (BM25L++S entT RF+T S DAE )
+
+                                                                                                  2
+
+Table 1: Overview of Evaluated Embedding Schemes. min df and max df represent respectively the minimum and maximum document frequency
+that a token can have. Pretrained Transformer models are pulled from HuggingFace (Wolf et al., 2019). The Pretrained GloVe model is downloaded
+from Stanford's NLP website (https://nlp.stanford.edu/projects/glove/)
+
+Here, AP represents the area under the precision-recall curve for every position in the ranked sequence of returned
+historical findings by the IR system. The MAP score is then the mean of the APs over all findings f(n+ j) for j  1, . . . , :
+
+                                                            MAP =                  AP(  f(n+  j))
+                                                                              j=1
+
+                                                                                   
+
+The MAP score is generally calculated up to a certain threshold k of the number of retrieved documents, often ex-
+
+pressed as MAP@k Joshi et al. (2012).
+
+On the other hand, MRR is a statistical measure for evaluating any process that produces a list of possible re-
+
+sponses to a sample of queries, ordered by probability of correctness. The reciprocal rank of a query response is the
+
+multiplicative inverse of the rank of the first correct answer. MRR is the average of these values across queries Shah
+
+and Croft (2004). This metric is particularly useful when the most relevant documents are desired at the top of the
+
+ranking list, which is a desired property of the IR system we develop. Mathematically, the reciprocal rank (RR) for a
+
+single  finding  f(n+ j)  is  simply      , 1         with  rank( f(n+ j))  defined  as  the  position  of        the  first  retrieved  similar  finding  by
+
+                                      rank( f(n+ j))
+
+the IR system. MRR is then simply:                                                 
+                                                                                   j=1
+                                                      MRR( f(n+ j)) =                   RR(  f(n+  j))
+
+                                                                                         
+
+Both MAP and MRR have been used extensively in the field of information retrieval, allowing for meaningful
+
+comparisons with other systems and benchmarks. Their widespread acceptance in the research community lends
+
+credibility and comparability to our evaluation process.
+
+5.2. Validation approach
+    In the context of IR systems, it is customary for researchers to utilize standardized labeled data from sources
+
+like TREC (Text Retrieval Conference) for model validation Voorhees (2005). These datasets are manually labeled by
+experts, allowing for the evaluation of systems across a diverse set of queries and documents. However, their coverage
+of specific domains, such as the prudential domain in our study, may be limited Lupu et al. (2009); Abacha and
+
+                                                                     10
+Demner-Fushman (2019). Given our explicit goal to assess the performance of our system on prudential data, relying
+on these generic datasets might lead to biased or unrepresentative results. Thus, we need to devise a methodology to
+work with our unlabeled data, a situation frequently encountered in domain-specific applications due to the prohibitive
+costs of exhaustive manual labeling Zhou et al. (2007).
+
+    One of the significant challenges in creating a labeled test dataset for our IR system is the need to label all
+findings in the database as either relevant or non-relevant compared to a test finding, and this for all test findings.
+This task is resource-intensive and can be prohibitively expensive Koh et al. (2009); Duh and Kirchhoff (2008). A
+straightforward solution is to label only a portion of the database as relevant compared to a test finding, however,
+this approach introduces a risk of not identifying some genuinely relevant findings. As a result, an ideal IR system
+that retrieves these non-identified relevant findings would be erroneously penalized, creating an illusion of the system
+ranking irrelevant findings high. To address these issues, we propose a simple validation approach that accommodates
+the uncertainty of non-identified relevant findings.
+
+    Let f j be a test finding. Let G = { fi  F|( fi, f j)  T } be the true set of similar findings relative to f j, with
+T  [0, 1] a theoretical threshold value indicating that two findings are similar to each other. Then, let G^  G be the
+set of identified similar findings, so that G~ = G \ G^ is the remaining set of non-identified similar findings related to f j.
+Lastly, let D = { fi  F| fi G^} be the set of historical findings excluding those findings that are identified as similar to
+
+fj.
+
+    Assume the existence of a perfect IR system. In case we test the performance of the system against f j, the first set
+of retrieved findings would be G, whereas the labelled dataset would only classify the subset G^ as correctly retrieved
+findings and would wrongly punish the system for retrieving the subset G~.
+
+    Now, assume |D \ G~|  |G~|, such that p(G~|D)  0, i.e., if the number of historical findings that are truly not similar
+
+to the test finding f j is much larger than the number of non-identified similar findings, then the conditional probability
+
+of randomly drawing from D a sample that is also a non-identified similar finding becomes very low. More formally:
+Let Q = { fi  D| fi G~} for ease of notation. If we keep |G~| fixed and let |D| grow to infinity, then the conditional
+probability p(G~|D) goes to zero, as
+
+ lim      p(G~ |D)  =   lim         |G~ |    =  0,
+                                 |G~| + |Q|
+(|D|)                  (|Q|)
+
+noting that D = G~  Q with Q  G~ = .
+    Similarly, if we keep |Q| fixed and let |G~| shrink to zero, then the conditional probability p(G~|D) goes to zero, as
+
+ lim      p(G~ |D)  =   lim         |G~ |    =  0.
+                                 G~| + |Q|
+(|G~ |0)               (|G~ |0)
+
+    This reflects the intuitive idea that the less of D is made up of G~, the less likely we are to draw an element from
+G~. This happens both when G~ gets smaller and when Q gets larger, assuming that we're drawing uniformly at random
+from D.
+
+    Based on the above, we introduce the following simple Monte Carlo sampling method Hastings (1970); Burgin
+(1999):
+
+    Step 1: Let di = {di1, di2, di3, . . . , dim}  U(D) be a random uniformly distributed subset of D of size m.
+    Step 2: We then add the identified similar findings to the random subset, such that d¯i = di  G^. where d¯i can be
+seen as a down-sampled version of the full historical database of findings.
+    Step 3: We repeat this process M times, creating M different down-sampled versions of the historical database.
+    Step 4: For each of the down-sampled versions of the database, we test the performance of the system in retrieving
+similar findings of f j by computing MAP and MRR scores.
+    Step 5: We average the MAP and MRR values across the M down-sampled sets to obtain the final performance
+figures for f j.
+
+    Now we can safely test the IR system by averaging across the down-sampled versions d¯i instead of the full database
+F. This approach should offer a better estimate of its performance, as the down-sampled versions would contain only
+
+                                                                     11
+those relevant findings that we have actually identified as relevant in case D was truly infinitely large. While both G~
+and D are finite in practical scenarios, the approximation method still holds provided the cardinality of G~ is much less
+than D \ G~, i.e., |G~|  |D \ G~|. Figure 4 shows a birdview of the methodology, and Table 2 shows an overview of the
+
+different set definitions used.
+
+Set Symbol         Definition                       Description
+      F           Findings set            The complete set of findings
+      G     { fi  F | ( fi, f j)  T }  Set of true similar findings relative
+      G^
+      G~             G^  G                               to f j
+                     G \ G^             Set of identified similar findings
+      D
+               { fi  F | fi G^}            Set of non-identified similar
+      Q        { fi  D | fi G~}                        findings
+
+      di           di  U(D)            Set of historical findings excluding
+      d¯i                                            those in G^
+                     di  G^
+                                            Theoretical ground set of
+                                       non-similar findings relative to f j
+                                        A random uniformly distributed
+
+                                               subset of D of size m
+                                       Down-sampled version of the full
+
+                                                historical database
+
+            Table 2: Description of the sets utilized within the validation methodology.
+
+    In order to further quantify the deviation from the theoretical setup, we conduct the following simulation exercise:
+
+Firstly, an artificial database of documents (db) is created, having the same size as our findings database F, such that
+
+|db|  7000. An artificial test finding t is also introduced.
+    The constructed database db and test finding t possess certain properties: the sets G and its subsets G^ and G~ are
+
+known and adjustable in terms of their sizes. This is unlike our real database F, where G~ is unobservable. Therefore,
+both D and D \ G~ are known and their sizes can be adjusted. We then introduce a perfect IR system, 1(.), which
+greedily retrieves all similar findings of t such that, 1(t, db) = {gG1~ , gG2~ , . . . , gG|G~~|, gG1^ , gG2^ , . . . , gG|G^^|}, where 1(.) retrieves
+all similar findings of t but it does so in a particular manner, where the ranking is such that first all elements of G~ are
+retrieved and then all elements of G^. Considering that our main metrics of interest, MAP and MRR, are rank-sensitive,
+the perfect IR system will get non-perfect scores due to the preference of elements from G~ over G^. Our validation
+approach is then applied to construct M = 1000 down-sampled versions (d¯i) of db, with m = 100. The IR system
+is applied to each of these d¯i, which may or may not contain some samples belonging to G~, given the finite size of
+
+db. The average scores yielded by the IR system with respect to MAP and MRR are then computed. This exercise
+is repeated mc = 10, 000 times for different ranges of |G~| = {5, 10, 15, 20} while fixing |G^| = 35. The averages across
+
+the runs serve as the theoretical upper bounds of the scores that can be achieved. This strategy allows us to validate
+
+our models on a much larger scale than manual labelling of the entire database would allow, while still providing
+
+an accurate estimate of the model's performance. It effectively reduces the possibility of misjudging an optimal IR
+
+system due to unidentified relevant findings, thus making the performance evaluation more fair and reliable.
+
+    The outcomes of the simulation exercise are depicted in Figure 5. The left panel illustrates the theoretical upper
+bounds of MAP scores across various values for |G~|, while the right panel mirrors this depiction for MRR.
+
+    Additionally, we consider two other systems: 2(.) and 3(.). 2(.) is a biased system that samples from G
+with a higher probability than from D\G. 3(.) is a similar system, albeit with a lower likelihood of sampling from G
+
+5The chosen values are based on a rough investigation of the findings database F and expert judgement.
+
+                                                                  12
+compared to 2(.). Under the premise of a valid evaluation methodology, the performance hierarchy should ideally be:
+1(.) outperforming 2(.), which in turn outperforms 3(.). The results indeed confirm this expected order, thereby
+validating our evaluation approach.
+
+    The performance of the perfect system, evident from both MAP and MRR metrics, exhibits a monotonic decrease
+in response to an increase in |G~|. As |G~| increases, while |db| is fixed, the probability of drawing samples from |G~| when
+constructing a down sampled version dbi of the database increases, leading the IR system to be wrongly penalized.
+
+    The theoretical upper limit for MAP scores ranges between 97% (for |G~| = 5) and 90% (for |G~| = 20). Similarly,
+the theoretical upper bound for MRR ranges from 97% (for |G~| = 5) to 87% (for |G~| = 20). These values are
+instrumental in the evaluation of the performance of our models on the actual database F.
+
+6. Results & Discussion
+
+    Table 3 presents the results of the evaluation methodology applied to different variations of the IR system, de-
+pending on the underlying embedding scheme applied. For every variant of the IR system (enumerated in rows), we
+calculate the Mean Average Precision at 100 (MAP@100), the Mean Reciprocal Rank (MRR), and the aggregate mean
+score (avg score). From the table, it is evident that the performance of IR systems significantly varies, indicating that
+the choice of embedding can markedly affect the efficiency and accuracy of information retrieval tasks.
+
+    Lexical
+    Starting with baseline models, the Random model exhibits the lowest performance across all metrics (MAP=0.07
+and MRR=0.11), serving as a control to underscore the effectiveness of more sophisticated approaches. Among tra-
+ditional models, TFIDF and variations of BM25 showed substantial improvements. Notably, BM25L+ outperformed
+other variations with a MAP of 0.87 and an MRR of 0.70, demonstrating the effectiveness of optimizations on the
+basic BM25 model for retrieving relevant findings. This model incorporated length normalization, pruned token fre-
+quency matrix based on the document frequency of the tokens, as well as bi- and trigrams, to better handle variations
+in document length and term frequency.
+    Word-level Embeddings
+    Moving on to semantic approaches, the word embedding models GloVe (MAP=0.39, MAP=0.66) and FinGloVe
+(MAP=0.37, MRR=0.64) demonstrate less satisfactory results. The sub-optimal performance of GloVe can be largely
+attributed to insufficient training on prudential data, leaving it unable to embed specialized terms like "probability
+of default" effectively Pennington et al. (2014). This deficiency illustrates a critical gap in vocabulary that hinders
+the model's effectiveness in specialized domains. Despite being trained on financial data, FinGloVe performs even
+worse, echoing concerns in previous studies about the detrimental effect of limited training data on the effectiveness
+of word embedding models Mikolov et al. (2013). The limited scope of its training data, which covered a narrow
+range of prudential documents relative to the pretrained GloVe model, likely contributed to its underperformance by
+not providing a sufficiently diverse linguistic context.
+    The BERT-based systems underperform as a group. BERT (MAP=0.34, MRR=0.60) and FinBERT (MAP=0.33,
+MRR=0.61) register the lowest scores in MRR and MAP metrics, respectively. These models' limitations could
+be attributed to the complex and domain-specific language of the prudential documents, which these models might
+struggle to comprehend Devlin et al. (2018). However, LegalBERT (MAP=0.39, MRR=0.68)), which is trained on
+legal domain data, shows a slight improvement, suggesting that further training on domain-related data might yield
+more positive results Chalkidis et al. (2020b).
+    Document-level Embeddings
+    In contrast, the sentence transformers show more promise. The base sentence transformer, SentTRF, outperforms
+the BERT-like models (MAP=0.47, MRR=0.69), implying that pretrained sentence transformers might have learned
+to create meaningful embeddings capturing the global context of findings to some extent Reimers and Gurevych
+(2019b). Nonetheless, its performance is still considerably lower than the fully configured BM25L+ model.
+    However, when trained on the CRR and historical findings F (based on TSDAE), the sentence transformer's per-
+formance improves significantly (MAP=0.72, MRR=0.88), reinforcing the importance of domain-specific training in
+generating high-quality embeddings. These embeddings surpass BM25L+ significantly in terms of MAP and slightly
+in MRR.
+    The hybrid model, Hybrid, combining the strengths of lexical matching (BM25L+) and semantic understanding
+(SentTRF+TSDAE) delivers the most encouraging results. The hybrid model achieves a MAP score of 0.74 and MRR
+
+                                                                     13
+score of 0.89, outperforming all other models. This suggests that combining multiple retrieval strategies and model
+architectures can lead to superior performance in IR systems. More specific, combining lexical and semantic tech-
+niques in prudential data can enhance IR system performance, aligning with research supporting integrated methods
+Jin et al. (2020).
+
+                                               Table 3: Performance Metrics across different IR-system variations
+
+Model               MAP@100   MRR@100    avg score
+
+Random                0.0708     0.1124   0.0916
+
+TFIDF                 0.6296     0.8218   0.7257
+BM25                  0.6458     0.8487   0.7473
+BM25Plus              0.6440     0.8539   0.7489
+BM25L                 0.6466     0.8543   0.7504
+BM25L+                0.6957     0.8722   0.7840
+
+GloVe                 0.3938     0.6570   0.5254
+FinGloVe              0.3726     0.6413   0.5069
+
+BERT                  0.3410     0.5959   0.4685
+FinBERT               0.3283     0.6063   0.4673
+Legal-BERT            0.3874     0.6838   0.5356
+
+SentTRF               0.4678     0.6904   0.5791
+SentTRF+TSDAE         0.7173     0.8750   0.7961
+Hybrid                0.7425     0.8925   0.8175
+
+Perfect model 1(.)    0.9383     0.9455   0.9419
+
+    Table 4 presents the results of incorporating the fuzzy matching component into the different variations of the
+IR system. The inclusion of fuzzy matching, particularly evident in the Random model (MAP=0.57, MRR=0.63),
+demonstrates the substantial improvement achieved by leveraging this approach. By employing fuzzy matching based
+on CRR articles, the search space is refined, providing contextual relevance and aiding both lexical and semantic
+models. Lexical models such as TFIDF and BM25 significantly benefit from operating within this refined space,
+evidenced by their enhanced performance metrics: TFIDF attains a MAP of 0.79 and an MRR of 0.88, while BM25
+achieves a MAP of 0.80 and an MRR of 0.91. The fine-tuned BM25L+ model shows the best performance among
+lexical models, with a MAP of 0.82 and an MRR of 0.93, demonstrating the effectiveness of fuzzy matching in
+enhancing the precision of these models.
+
+    For semantic models, word embeddings and BERT-based systems also leverage the narrowed semantic under-
+standing task to enhance their performance. For instance, GloVe and FinGloVe show improved results with MAPs of
+0.71 and 0.70, and MRRs of 0.84 and 0.87, respectively. However, FinGloVe, despite its specialized training, slightly
+lags behind GloVe in MAP. BERT-based models like LegalBERT benefit significantly from fuzzy matching, with a
+MAP of 0.72 and an MRR of 0.89, outperforming both BERT and FinBERT.
+
+    The domain-adapted Sentence Transformer, SentTRF+TSDAE, substantially benefits from fuzzy matching, achiev-
+ing a MAP of 0.82 and an MRR of 0.92. The Hybrid model, which combines the strengths of lexical and semantic
+models optimized with fuzzy matching, records the highest performance metrics of all variations: a MAP of 0.83 and
+an MRR of 0.93.
+
+    The insights gained from Figure 6, which charts the MAP scores against varying k values for the Hybrid model,
+further substantiate these findings. The application of fuzzy CRR matching uplifts the performance of the model
+almost uniformly. Interestingly, only a marginal increase in MAP scores is observed beyond k = 10, suggesting that
+retrieving the top 10 similar findings should suffice for the majority of usecases.
+
+    As a last evaluation method, we conduct the following performance evaluation, to enact a realistic retrieval sce-
+
+                                                                     14
+Figure 3: The diagram illustrates a transformer-based sequential denoising autoencoder. The process begins in the top part where the input finding
+fi is corrupted using the function f~i = ( fi). The corrupted finding f~i is then processed through the left middle part, which contains the encoder
+
+network that generates a latent representation. This latent representation (shown in the center) is passed to the decoder network in the right middle
+part to reconstruct the original finding. The model is optimized by minimizing the reconstruction loss L () = -E fiF [log P( fi| f~i)], calculated at
+the bottom part of the diagram, ensuring that the output closely matches the original input after denoising.
+
+Table 4: Performance Metrics across different IR-system variations (with CRR matching)
+
+Model               MAP@100   MRR@100    avg score
+
+Random                0.5688     0.6317   0.6003
+
+TFIDF                 0.7868     0.8836   0.8352
+BM25                  0.8014     0.9109   0.8561
+BM25Plus              0.8035     0.9178   0.8607
+BM25L                 0.8031     0.9157   0.8594
+BM25L+                0.8218     0.9266   0.8742
+
+GloVe                 0.7145     0.8426   0.7786
+FinGloVe              0.7028     0.8667   0.7848
+
+BERT                  0.6982     0.8452   0.7717
+FinBERT               0.6768     0.8015   0.7392
+LegalBERT             0.7222     0.8857   0.8040
+
+SentTRF               0.7255     0.8304   0.7780
+SentTRF+TSDAE         0.8199     0.9202   0.8700
+Hybrid                0.8301     0.9274   0.8788
+
+Perfect model 1(.)    0.9383     0.9455   0.9419
+
+                    15
+                             Findings set F
+
+G = { fi  F|( fi, f j)  T }                  D = { fi  F| fi G^}
+
+G~ = G \ G^  G^  G                           di  U(D)
+
+                                                                  Repeat M times
+
+                                             d¯i = di  G^
+
+                                             M APij  MRRij
+
+                                                                            MAP j and MRR j
+
+                                                          Figure 4: Birdview of the validation methodology.
+
+nario. Given 76 handpicked findings from F, we ask the top performing variations, to retrieve the top k = 10 similar
+findings. We then ask experts in the field to manually evaluate the retrieved findings for each of the models. After-
+wards we compute the MRR of the models. The results are depicted in table 5. Hybrid is the top performer with an
+MRR score of 82%, indicating that on average a similar finding is retrieved within the first 3 ranked findings.
+
+7. Limitations & Future Work
+
+    While the proposed IR system offers substantial benefits, it is important to recognize its limitations. First, the
+evolving regulatory landscape poses challenges, as changing regulations can make it difficult for supervisors to locate
+historically similar findings and measures. Addressing this requires more than minor adjustments; it necessitates
+an auxiliary system that adapts to regulatory changes, with regular updates and continuous learning mechanisms.
+Second, the system retrieves similar past findings and associated measures, but there is potential to enhance it by
+approximating the mapping  : F  P1(M). A well-defined approximation, ^, could suggest new measures based
+on inputted findings. Rewriting the problem as a Neural Machine Translation (NMT) task, using a generative Large
+
+    6due to time-constraints, the number of input findings is kept small.
+
+                                                                     16
+Table 5: MRR performance of manual evaluation exercise
+
+BM25L+         MRR
+SentTRF+TSDAE
+Hybrid         0.75
+               0.76
+               0.82
+
+Language Model to "translate" findings into measures, is a promising approach. Conditioned on past measures, the
+NMT model would ensure consistency with historical data, offering dynamic and contextually appropriate responses.
+However, this introduces complexities and potential inaccuracies that must be thoroughly validated.
+
+8. Conclusion
+
+    In this paper, we introduce a novel Information Retrieval (IR) system that leverages Large Language Models
+(LLMs) to support supervisors in drafting consistent and effective measures within the Single Supervisory Mechanism
+(SSM) framework. By integrating lexical, semantic, and fuzzy set matching techniques, the system enhances the
+ability of supervisors to draft measures grounded in a robust analytical comparison with historical data.
+
+    Our results demonstrate that the IR system significantly improves the efficiency and quality of supervisory decision-
+making by providing supervisors with relevant historical contexts and parallels, thereby reducing time spent on manual
+searches and increasing the accuracy of measure formulation. The use of Monte Carlo validation methods has fur-
+ther confirmed the system's effectiveness, even in scenarios characterized by partially labeled data, showcasing its
+robustness and adaptability.
+
+References
+
+Abacha, A.B., Demner-Fushman, D., 2019. A question-entailment approach to question answering. BMC Bioinformatics 20, 1­14. URL: https:
+   //bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-3119-4, doi:10.1186/s12859-019-3119-4.
+
+Araci, D., 2019a. Finbert: Financial sentiment analysis with pre-trained language models. arXiv preprint arXiv:1908.10063 .
+Araci, D., 2019b. Finbert: Financial sentiment analysis with pre-trained language models. URL: https://arxiv.org/abs/1908.10063,
+
+   doi:10.48550/ARXIV.1908.10063.
+Bestgen, Y., 2015. Exact expected average precision of the random baseline for system evaluation. The Prague Bulletin of Mathematical Linguistics
+
+   103, 131­138. URL: http://dx.doi.org/10.1515/pralin-2015-0007, doi:10.1515/pralin-2015-0007.
+Burgin, R., 1999. The monte carlo method and the evaluation of retrieval system performance. Journal of the Association for Information Science
+
+   and Technology 50, 181­191. doi:10.1002/(SICI)1097-4571(1999)50:2<181::AID-ASI8>3.0.CO;2-9.
+Chalkidis, I., Fergadiotis, M., Malakasiotis, P., Aletras, N., Androutsopoulos, I., 2020a. Legal-bert: The muppets straight out of law school. arXiv
+
+   preprint arXiv:2010.02559 .
+Chalkidis, I., Fergadiotis, M., Malakasiotis, P., Androutsopoulos, I., 2020b. Legal-bert: The muppets straight out of law school. arXiv preprint
+
+   arXiv:2012.06924 .
+Devlin, J., Chang, M.W., Lee, K., Toutanova, K., 2018. Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv
+
+   preprint arXiv:1810.04805 .
+Duh, K., Kirchhoff, K., 2008. Learning to rank with partially-labeled data, in: Proceedings of the 31st annual international ACM SIGIR conference
+
+   on Research and development in information retrieval, ACM. pp. 251­258. URL: https://dl.acm.org/doi/10.1145/1390334.1390379,
+   doi:10.1145/1390334.1390379.
+Feng, Y., Yang, Y., Cer, D., 2021. Transformer-based sequential denoising auto-encoder for unsupervised sentence embedding learning. arXiv
+   preprint arXiv:2101.02429 .
+Gururangan, S., Marasovic´, A., Swayamdipta, S., Lo, K., Beltagy, I., Downey, D., Smith, N.A., 2020. Don't stop pretraining: Adapt language
+   models to domains and tasks. arXiv preprint arXiv:2004.10964 .
+Hastings, W.K., 1970. Monte carlo sampling methods using markov chains and their applications. Biometrika 57, 97­109. URL: https:
+   //academic.oup.com/biomet/article-abstract/57/1/97/284580, doi:10.1093/BIOMET/57.1.97.
+Jeong, S., Baek, J., Park, C., Park, J.C., 2021. Unsupervised document expansion for information retrieval with stochastic text generation. arXiv
+   preprint arXiv:2105.00666 .
+Jin, Z., Lai, X., Cao, J., 2020. Multi-label sentiment analysis base on bert with modified tf-idf, in: 2020 IEEE International Symposium on Product
+   Compliance Engineering-Asia (ISPCE-CN), pp. 1­6. doi:10.1109/ISPCE-CN51288.2020.9321861.
+Joshi, H., Pareek, J., Patel, R., Chauhan, K., 2012. To stop or not to stop -- experiments on stopword elimination for information retrieval of
+   gujarati text documents, in: 2012 Nirma University International Conference on Engineering (NUiCONE), IEEE. pp. 1­4. URL: https:
+   //ieeexplore.ieee.org/document/6493219, doi:10.1109/NUICONE.2012.6493219.
+
+                                                                     17
+Khattab, O., Zaharia, M., 2020. Colbert: Efficient and effective passage search via contextualized late interaction over bert, in: Proceedings of the
+   43rd International ACM SIGIR conference on research and development in Information Retrieval, pp. 39­48.
+
+Koh, E., Kerne, A., Berry, S., 2009. Test collection management and labeling system, in: Proceedings of the 27th Annual ACM Symposium on
+   User Interface Software and Technology, ACM. pp. 39­42. URL: https://dl.acm.org/doi/10.1145/1600193.1600203, doi:10.1145/
+   1600193.1600203.
+
+Lupu, M., Huang, J., Zhu, J., Tait, J., 2009. Trec-chem: large scale chemical information retrieval evaluation at trec. SIGIR Forum 43, 63­70.
+   URL: https://dl.acm.org/doi/10.1145/1670564.1670576, doi:10.1145/1670564.1670576.
+
+Lv, Y., Zhai, C., 2011a. Lower-bounding term frequency normalization, in: Proceedings of the 20th ACM International Conference on Information
+   and Knowledge Management, ACM. pp. 7­16.
+
+Lv, Y., Zhai, C., 2011b. When documents are very long, bm25 fails!, in: Proceedings of the 34th international ACM SIGIR conference on Research
+   and development in Information Retrieval, pp. 1103­1104.
+
+Manning, C.D., Raghavan, P., Schu¨tze, H., 2008. Introduction to Information Retrieval. Cambridge University Press, Cambridge, UK. URL:
+   http://nlp.stanford.edu/IR-book/information-retrieval-book.html.
+
+Mikolov, T., Chen, K., Corrado, G., Dean, J., 2013. Efficient estimation of word representations in vector space. arXiv preprint arXiv:1301.3781 .
+Pennington, J., Socher, R., Manning, C.D., 2014. Glove: Global vectors for word representation, in: Proceedings of the 2014 Conference on
+
+   Empirical Methods in Natural Language Processing (EMNLP), pp. 1532­1543.
+Reimers, N., Gurevych, I., 2019a. Sentence-bert: Sentence embeddings using siamese bert-networks. arXiv preprint arXiv:1908.10084 .
+Reimers, N., Gurevych, I., 2019b. Sentence-bert: Sentence embeddings using siamese bert-networks, in: Proceedings of the 2019 Conference on
+
+   Empirical Methods in Natural Language Processing.
+Robertson, S., Zaragoza, H., 2009. The probabilistic relevance framework: Bm25 and beyond. Foundations and Trends® in Information Retrieval
+
+   3, 333­389. URL: http://dx.doi.org/10.1561/1500000019, doi:10.1561/1500000019.
+Robertson, S., Zaragoza, H., et al., 2009. The probabilistic relevance framework: Bm25 and beyond. Foundations and Trends® in Information
+
+   Retrieval 3, 333­389.
+Sennrich, R., Haddow, B., Birch, A., 2016. Neural machine translation of rare words with subword units, in: Proceedings of the 54th Annual
+
+   Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pp. 1715­1725.
+Shah, C., Croft, W.B., 2004. Evaluating high accuracy retrieval techniques, in: Proceedings of the 27th annual international ACM SIGIR conference
+
+   on Research and development in information retrieval, ACM. pp. 2­9. URL: https://dl.acm.org/doi/10.1145/1008992.1008996,
+   doi:10.1145/1008992.1008996.
+SPARCK JONES, K., 1972. A statistical interpretation of term specificity and its application in retrieval. Journal of Documentation 28, 11­21.
+   URL: http://dx.doi.org/10.1108/eb026526, doi:10.1108/eb026526.
+Sutskever, I., Vinyals, O., Le, Q.V., 2014. Sequence to sequence learning with neural networks. arXiv:1409.3215.
+Thakur, N., Reimers, N., Ru¨ckle´, A., Srivastava, A., Gurevych, I., 2021. Beir: A heterogenous benchmark for zero-shot evaluation of information
+   retrieval models. arXiv preprint arXiv:2104.08663 .
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A.N., Kaiser, L., Polosukhin, I., 2017. Attention is all you need. CoRR
+   abs/1706.03762. URL: http://arxiv.org/abs/1706.03762, arXiv:1706.03762.
+Voorhees, E.M., 2005. Trec: Continuing information retrieval's tradition of experimentation. Communications of the ACM 48, 36­40.
+Wang, K., Reimers, N., Gurevych, I., 2021. Tsdae: Using transformer-based sequential denoising auto-encoder for unsupervised sentence embed-
+   ding learning. arXiv preprint arXiv:2104.06979 .
+Wolf, T., Debut, L., Sanh, V., Chaumond, J., Delangue, C., Moi, A., Cistac, P., Rault, T., Louf, R., Funtowicz, M., Brew, J., 2019. Hugging-
+   face's transformers: State-of-the-art natural language processing. CoRR abs/1910.03771. URL: http://arxiv.org/abs/1910.03771,
+   arXiv:1910.03771.
+Zhou, W., Yu, C.T., Smalheiser, N., Torvik, V.I., Hong, J., 2007. Knowledge-intensive conceptual retrieval and passage extraction of biomedical
+   literature, in: Proceedings of the 30th annual international ACM SIGIR conference on Research and development in information retrieval, ACM.
+   pp. 655­662. URL: https://dl.acm.org/doi/10.1145/1277741.1277853, doi:10.1145/1277741.1277853.
+
+                                                                     18
+                                                                                        213(((...  )
+                                                                                                   )
+                                                                                                   )
+
+       
+                                                                            
+
+       
+
+MAP#100                                                    
+                                                      MRR
+       
+                                                                            
+
+       
+
+                                                           
+
+                                                                                    
+
+                             |G|                                                                  |G|
+
+Figure 5: Simulation exercise of a perfect IR system, 1(.). 2(.) is a biased system that samples from G with a higher probability than from D\G.
+3(.) is a similar system, albeit with a lower likelihood of sampling from G compared to 2(.).
+
+                  N 
+       
+0$3#.  
+       
+                                                                                        :LWKRXWIX]]\PDWFKLQJ
+                                                                                        :LWKIX]]\PDWFKLQJ
+
+                                      N                                                 
+
+                        Figure 6: MAP across different k values for the Hybrid model
+
+                                  19
+

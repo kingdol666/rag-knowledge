@@ -1,0 +1,174 @@
+\section{Introduction}
+\label{sec:intro}
+
+Enterprises accumulate process regulations, failure analyses, and operational
+lessons as unstructured documents spread across shared drives. Answering a
+concrete engineering question --- \emph{why did edge delamination appear in an
+EL inspection of a laminated photovoltaic module?} --- requires locating the
+one report among thousands that records the decision, reading it, and citing
+it. Retrieval-augmented generation (RAG) addresses the location step by
+embedding documents and the query into a shared vector space
+\cite{rag-lewis,dpr}, and modern agentic stacks let a large language model
+(LLM) orchestrate retrieval tools iteratively \cite{mcp,singh-agentic-rag}.
+Yet the dominant ranking signal --- dense cosine similarity --- is a measure
+of \emph{topic relatedness}, not of \emph{evidence presence}. A document that
+merely discusses similar materials can outrank the one document that contains
+the answer, and a fluent generator can readily synthesize an answer from the
+wrong source. The result is the well-documented hallucination and
+misgrounding behavior of LLM pipelines \cite{siren}.
+
+This paper argues that a primitive most deployed RAG stacks leave implicit
+is an \emph{explicit content-verification gate}: before a candidate document
+is allowed to support an answer, its actual text must be fetched and judged
+against the query by a model whose only job is to answer ``does this text
+contain direct evidence for this question?'' Vectors are fast; only the
+content can confirm. We built QDCVR (Query-Driven Content-Verified Retrieval), a
+self-hosted platform that makes this primitive the backbone of a complete
+knowledge-base system --- content-routed organization at ingestion, a
+97-tool MCP server as the machine interface \cite{mcp}, and three retrieval
+lanes that all terminate at the same verification gate --- and, because the
+primitive is itself a model, subjects it to the same scrutiny as any model
+(Section~\ref{sec:inflation}).
+
+The three lanes embody a deliberate latency/recall trade-off. The
+\emph{Search} lane is a vector fast lane: rewrite the query, retrieve a wide
+candidate net, and submit citation-only references to the verification gate. The
+\emph{Librarian} lane is a hierarchical navigator that walks
+library$\to$document catalogs, routes enumeration-style queries to a machine
+scanner, judges survivors in small batches, and reads only what survived ---
+all within a hard budget of twelve tool calls. The \emph{Hybrid} lane
+collapses vector and catalog channels into a single server-side orchestrated
+call that merges candidates, judges them, applies a relative cut with a
+top-5 floor, and returns full text for the top documents. All lanes fail
+closed: zero verified evidence yields an explicit not-found report, never a
+speculative answer.
+
+We assess the platform with two experiment tiers on a deployed industrial
+corpus of five knowledge bases spanning photovoltaic materials, module
+failure analysis, plant O\&M, and discrete-manufacturing telemetry
+(42 documents): a tool-layer
+comparison of seven retrieval pipelines plus two derived configurations
+on sixteen gold-annotated questions (plus a sixteen-question paraphrase
+grid), and
+16 end-to-end agentic runs that answer four questions through the platform's
+public chat API in four arms (three lanes plus a bare agent without
+knowledge-base tools), followed by a robustness tier: leave-one-out margin
+generalization, a second verification signal replayed over the logged
+candidate pools, and graded abstention probes. The contributions are:
+
+\begin{enumerate}
+\item \textbf{A verifiable-retrieval architecture} (Sections
+\ref{sec:system}--\ref{sec:lanes}): content-verified retrieval as a
+platform primitive whose measured value lies in auditability, per-citation
+provenance, and fail-closed semantics --- with three interchangeable lanes
+under enforced budgets and an engine-agnostic harness layer that exposes
+everything as MCP tools.
+\item \textbf{A two-tier empirical analysis} (Sections
+\ref{sec:setup}--\ref{sec:results}): at the tool layer, BM25 and reciprocal-rank
+fusion are strong baselines on a curated same-domain corpus, and dense
+retrieval misses exactly one question (Q16) through a near-duplicate
+confuser family; the
+verification gate's re-ranking \emph{reduces} top-5 hit rate from 0.94 to
+0.44 when confusers
+--- near-miss same-domain distractors --- dominate the candidate pool. At
+the agent layer, all knowledge-base-grounded lanes ground their answers in
+gold documents while end-to-end latency is almost entirely LLM turns
+(machine retrieval is sub-second).
+\item \textbf{A quantified verifier-failure analysis} (Section
+\ref{sec:inflation}): an operational quantification, inside a deployed
+verified-retrieval pipeline, of LLM-judge miscalibration --- whose
+general causes (score compression, self-preference) are documented in the
+judging literature \cite{zheng-llmjudge,panickssery-selfpref} but whose
+pipeline-level consequences we decompose and measure: same-domain evidence
+inflation (non-gold median 0.86 versus gold 0.88; Mann--Whitney $p = 0.26$,
+i.e.\ no separation), a verdict role asymmetry (verdicts are safe as a
+binary filter --- Hit@5 restored to 0.94, sign test $p = 0.008$ --- and
+unsafe as an ordering), a threshold that never abstains out of corpus,
+and robustness of both the failure and the repair to question paraphrase
+and to the choice of verification signal.
+Mitigations (hierarchical reading, relative cuts with floors, calibration)
+are scoped to what this decomposition supports.
+\item \textbf{Operational lessons from production use} (Section
+\ref{sec:discussion}): three documented incidents, each with its detection
+symptom and fix --- resident judge workers (batch judging 10--12\,s
+$\to$ 1--2\,s), vector-index segment corruption surfacing as honest
+``success with zero results'' failures, and GPU memory hygiene between
+embedding and judging workloads.
+\end{enumerate}
+
+A preliminary demo describing the platform's organization and retrieval
+layers was accepted as a CIKM~2026 demo \cite{qdcvr-demo}. This paper extends
+it with three components that do not appear in the demo: (i)~the multi-lane
+agentic retrieval methodology with enforced per-lane tool budgets; (ii)~the
+verifier-failure analysis --- quantified same-domain inflation, the
+filter/re-ranker role decomposition, and its configuration-level repair;
+and (iii)~the two-tier empirical evaluation on the deployed corpus with all
+per-run logs released.
+
+\subsection{Research questions and reading guide}
+\label{sec:rq}
+The paper is organized as a design-to-evidence arc built around four research
+questions, each answered by one evidence tier and reported in one place
+(Table~\ref{tab:ataglance}):
+
+\begin{description}
+\item[RQ1 (Architecture).] Can content verification be \emph{enforced} as a
+platform-wide primitive --- that is, can a deployed knowledge-base platform
+guarantee that no citation enters an answer without its content having been
+judged, across heterogeneous retrieval strategies and independent agent
+harnesses?
+\item[RQ2 (Ranking trade-off).] What does the verification gate \emph{cost}
+and what does it \emph{buy} at the ranking layer --- and does the answer depend
+on the role the verdicts play (a filter, an ordering, or a threshold)?
+\item[RQ3 (Verifier generality).] Is the verifier's failure mode an artifact
+of one checkpoint, one domain, one language, or one corpus size, or is it
+structural?
+\item[RQ4 (Operational contract).] Where does honest abstention actually live,
+and where does end-to-end latency go?
+\end{description}
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{This paper at a glance: each research question, the evidence tier
+that answers it, and the headline finding.}
+\label{tab:ataglance}
+\begin{tabular}{p{0.75cm}p{4.0cm}p{2.6cm}p{5.3cm}}
+\toprule
+RQ & Question & Evidence tier & Headline finding \\
+\midrule
+RQ1 & Is verification an enforceable platform primitive? & Architecture and
+lanes (\S\ref{sec:system}--\S\ref{sec:impl}) & Yes --- server-side tool
+whitelists and fail-closed contracts make it a property of the enforcement
+layer, not of prompt discipline \\
+RQ2 & What does the gate cost and buy? & Tool layer, nine configurations
+(\S\ref{sec:retrieval}--\S\ref{sec:inflation}) & Costs $<$1\,s; as a
+\emph{re-ranker} it loses Hit@5 ($0.94\!\to\!0.44$), as a \emph{filter} it is
+neutral ($0.94$; sign test $p=0.008$) --- its measured value is per-citation
+provenance, not ranking quality \\
+RQ3 & Is the verifier failure structural? & Second signal, span-NLI, symbolic
+check, second corpus (\S\ref{sec:inflation}, \S\ref{sec:robustness}) &
+Structural: the loss tracks confuser density, not checkpoint, domain,
+language, or scale \\
+RQ4 & Where do honesty and latency live? & Out-of-corpus and graded probes,
+turn accounting (\S\ref{sec:abstention}--\S\ref{sec:composition}) & Honesty
+lives in the reading--answer layer, never in the threshold; latency is
+LLM-turn-dominated \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The remainder of the paper follows the arc.
+Sections~\ref{sec:system} and \ref{sec:lanes} present the architecture and
+the three retrieval lanes and answer RQ1 (Section~\ref{sec:trace} first walks
+one real question end to end so the components are concrete before the
+measurements begin); Section~\ref{sec:impl} reports the engineering that makes
+the contracts enforceable; Sections~\ref{sec:setup}--\ref{sec:results} carry
+the two experiment tiers plus the robustness tier and answer RQ2--RQ4;
+Section~\ref{sec:discussion} distills the operational lessons, threats, and
+roadmap; Section~\ref{sec:conclusion} concludes.
+Table~\ref{tab:modules} in Section~\ref{sec:system} maps every module to its
+responsibility; Table~\ref{tab:ataglance} maps every research question to its
+evidence.
+

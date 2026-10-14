@@ -1,0 +1,136 @@
+\section{Related work}
+\label{sec:related}
+
+\subsection{Retrieval-augmented generation and ranking}
+RAG couples a retriever with a generator to ground open-domain QA
+\cite{rag-lewis}; dense retrievers encode queries and passages into a shared
+space \cite{dpr} and multi-lingual, multi-granularity embedders such as
+BGE-M3 support hybrid dense--sparse signals \cite{bge-m3}. Lexical
+probabilistic ranking remains a strong baseline in many regimes \cite{bm25},
+and reciprocal-rank fusion is a standard parameter-light way to merge ranked
+lists \cite{rrf-cormack}. Surveys systematize the design space as
+retrieve-then-read pipelines \cite{gao-ragsurvey} and as modular,
+reconfigurable stacks \cite{modular-rag}; QDCVR is naturally read as a
+modular-RAG instantiation whose added module is the verification gate.
+Our tool-layer evaluation confirms this picture on
+a curated industrial corpus: BM25 and RRF match or beat dense retrieval at
+Hit@5, at millisecond latency. QDCVR uses dense, BM25, and graph signals, but
+treats all of them as \emph{candidate generators} whose output must still
+pass content verification.
+
+\subsection{Structured and graph-based organization}
+GraphRAG builds entity--relation graphs over corpora for query-focused
+summarization \cite{graphrag}, LightRAG distills the idea into a simpler
+dual-level retrieval \cite{lightrag}, and RAPTOR recursively abstracts
+document trees \cite{raptor}. QDCVR's graph layer is intentionally leaner ---
+Document, KnowledgeBase, and Tag nodes with \textsc{BelongsTo},
+\textsc{HasTag}, and weighted \textsc{RelatedTo} edges --- because its graph
+serves two engineering purposes (two-stage candidate expansion and
+cross-library navigation) rather than global summarization. Our measurements
+show the keyword-limited graph search is the weakest standalone signal on
+this corpus (Hit@5 0.56), which is why the platform never lets it answer
+alone. Industrial deployments in adjacent domains --- reliability-preserving
+diagnosis for distributed drive systems \cite{rrpdg} and LLM-multi-agent
+knowledge-graph QA for industrial models \cite{comaikg} --- share QDCVR's
+concern that domain answers be inspectable; QDCVR differs by making the
+inspection a standalone, fail-closed gate rather than a property of the
+answering agent.
+
+\subsection{Verification, correction, and abstention}
+Self-RAG trains a generator to critique retrieved evidence and its own output
+\cite{selfrag}; CRAG adds a corrective retriever that re-evaluates and
+re-queries when retrieval quality is low \cite{crag}; FLARE interleaves
+generation with forward-looking retrieval triggers \cite{flare}; Kamath et
+al.\ formalize selective prediction under domain shift \cite{kamath}; and
+CyberBOT applies ontology-grounded retrieval for reliability-critical
+domains \cite{cyberbot}. Verifiability measurement in generative search
+\cite{liu-verifiability} and citation-capable generation \cite{gao-citations}
+frame the problem QDCVR attacks: citations that are present but not
+supportive.
+
+\emph{LLM-as-a-judge.} The verification gate is an LLM judge, and the
+judging literature documents exactly the failure modes our measurements
+expose. MT-Bench/Chatbot-Arena established the paradigm and its bias
+taxonomy \cite{zheng-llmjudge}; LLM relevance judges agree imperfectly with
+human relevance \cite{sun-urara}; listwise LLM re-rankers trade quality for
+instability at scale \cite{rankgpt}; evaluator scores exhibit position and
+verbosity biases \cite{zheng-llmjudge}, and evaluators favor generations
+that resemble their own distribution \cite{panickssery-selfpref};
+and verifiers can be gamed by optimization pressure \cite{lightman-verify}.
+Our contribution is not the discovery that judges miscalibrate --- it is the
+operational quantification of \emph{same-domain inflation} inside a deployed
+verified-retrieval pipeline and the decomposition of which judge \emph{role}
+(filter, ordering, or threshold) is safe under which pool conditions.
+
+These approaches verify \emph{during generation} with the generator itself.
+QDCVR instead externalizes verification into a dedicated judging model that
+sees only (query, document-text) pairs and is consumed as a tool; any lane,
+agent, or external system can call it, and its verdicts fail closed. This
+makes verification an inspectable, reusable platform service rather than an
+implicit property of one generator's prompting.
+
+\emph{Abstention.} Beyond selective prediction under domain shift
+\cite{kamath}, recent work probes whether LLMs know what they do not know
+\cite{yin-knowwhat} and trains or orchestrates models to abstain on
+knowledge gaps \cite{feng-abstain}. Section~\ref{sec:abstention} locates
+QDCVR's abstention not in any of these calibrated-uncertainty mechanisms
+but in the pipeline's reading-and-answer structure --- a complementary,
+architectural answer to the same problem.
+
+\subsection{Agentic retrieval and tool protocols}
+ReAct established interleaved reasoning and acting over tools
+\cite{react-yao}; tool-learning extended it to self-supervised tool use
+\cite{toolformer}; the Model Context Protocol standardizes tool servers as a
+machine interface \cite{mcp}; and recent surveys systematize agentic RAG
+\cite{singh-agentic-rag}, listing efficiency among its open challenges.
+DeepRead shows that structure-aware navigation over
+long documents improves agentic search \cite{deepread}, which matches our
+librarian lane's document-coordinate reading. QDCVR contributes an
+agentic-retrieval \emph{policy} layer: per-lane tool whitelists enforced by
+the server (a librarian-lane agent physically cannot call the vector tool),
+hard call budgets, and single-call server-side orchestration for the hybrid
+lane, targeting the turn count that our measurements (Section
+\ref{sec:composition}) show dominates agentic latency.
+
+\subsection{Positioning}
+Table~\ref{tab:positioning} contrasts QDCVR with representative systems.
+No prior system combines (i) content-verified citations as a platform-wide
+gate, (ii) multiple interchangeable lanes with enforced tool budgets, and
+(iii) fail-closed abstention, inside one self-hosted knowledge-base product
+with a standard tool protocol. We also report where this design fails
+(Section~\ref{sec:inflation}), which closed systems rarely do.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Positioning against representative systems. ``Verified'' = retrieved
+content is judged against the query by a dedicated model before it may enter
+an answer (Self-RAG's check is performed internally by the generator
+\cite{selfrag}; CRAG re-queries on low retrieval confidence \cite{crag};
+LLM judge re-rankers score relevance but their ordering is consumed
+directly \cite{rankgpt}). ``Abstain'' = an explicit not-found is a terminal
+system state (Self-RAG's partial abstention is mediated by its
+critique/reflection tokens; CRAG instead falls back to parametric knowledge
+or web search). ``Lanes'' =
+multiple retrieval strategies behind one interface; ``KB mgmt'' = ingestion,
+organization, and library lifecycle management. Presence in the table marks
+capability, not measured quality.}
+\label{tab:positioning}
+\begin{tabular}{lcccccc}
+\toprule
+System & Dense/lex. & Graph & Verified & Abstain & Lanes & KB mgmt \\
+\midrule
+Vanilla RAG \cite{rag-lewis}          & \checkmark &            &            &     &  &  \\
+GraphRAG \cite{graphrag}              & \checkmark & \checkmark &            &     &  &  \\
+RAPTOR \cite{raptor}                  & \checkmark &            &            &     &  &  \\
+LLM judge re-ranker \cite{rankgpt}    & \checkmark &            & re-ranker &  &  &  \\
+Self-RAG \cite{selfrag}               & \checkmark &            & gen.-internal & partial &  &  \\
+CRAG \cite{crag}                      & \checkmark &            & corrective &     &  &  \\
+DeepRead \cite{deepread}              & \checkmark &            &            &     & agentic &  \\
+\midrule
+QDCVR (this work)                     & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+

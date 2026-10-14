@@ -1,0 +1,2135 @@
+                                     SurveyAgent-HKA: A multi-agent framework for scientific survey
+                                     generation with LLMs and human knowledge augmentation
+
+                                     Tong Baoa,b, Mir Tafseer Nayeemb, Yi Zhaoc, Davood Rafieib and Chengzhi Zhanga
+
+                                     aDepartment of Information Management, Nanjing University of Science and Technology, Nanjing, China
+                                     bDepartment of Computing Science, University of Alberta, Edmonton, Canada
+                                     cSchool of Management, Anhui University, Hefei, China
+
+arXiv:2609.05938v1 [cs.CL] 5 Sep 2026ARTICLE INFO                    ABSTRACT
+
+                                     Keywords:                       Automatic scientific survey generation has become an important task in scientific document
+                                     Scientific survey generation    processing. The common approach of retrieving literature from a single source (e.g., arXiv)
+                                     Large language models           and generating surveys through a one-pass large language model (LLM) call often leads to
+                                     Human knowledge augmentation    limited reference coverage and, more importantly, fails to replicate the expert-driven revision
+                                     Multi-agent collaboration       process that is crucial for writing high-quality surveys. In this paper, we introduce SurveyAgent-
+                                     AI-assisted scientific writing  HKA, a multi-agent framework that improves end-to-end scientific survey generation by incor-
+                                                                     porating knowledge derived from published surveys and peer-review comments. The framework
+                                                                     decomposes survey generation into well-defined sub-tasks handled by LLM-powered agent. It
+                                                                     first retrieves relevant papers from multiple sources and identifies key topics through clustering
+                                                                     to construct an initial outline, which is then refined using outlines from related human-written
+                                                                     surveys. Based on the refined outline, topic-focused papers are retrieved and re-ranked to select
+                                                                     for drafting a well-grounded survey. Then, we identify common issues raised by experts in
+                                                                     peer-review comments from published surveys to guide the revisions and finalize the survey.
+                                                                     Experiments on two domains show that our approach outperforms mainstream baselines in
+                                                                     citation quality, structural consistency, and content quality. Furthermore, our framework is
+                                                                     efficient in both time and cost, making it a practical solution for broader AI-assisted scientific
+                                                                     writing applications.
+
+                                     1. Introduction
+
+                                         Within the scientific research community, the number of published academic papers has been growing rapidly.
+                                     Taking preprints as an example, arXiv received more than 20,000 submissions per month on average, with over
+                                     280,000 submissions in 2025, nearly three times the number from a decade ago1. The rapid increase in publications
+                                     helps accelerate scientific progress but also makes it harder for researchers to keep up with the latest developments
+                                     [1, 2, 3]. Scientific surveys play an important role in synthesizing existing research, highlighting current limitations and
+                                     challenges, and offering valuable insights for future directions [4, 5]. However, the dramatic increase in publications
+                                     poses significant concerns to traditional survey writing. On the one hand, drafting a high-quality scientific survey often
+                                     requires weeks or even months of effort, including literature search, paper screening, and summarization, especially
+                                     in fast-moving fields [6, 7]. On the other hand, survey quality largely depends on the author's domain knowledge
+                                     and personal judgment, which may result in missed important studies or potential biases [8, 9]. Therefore, automated
+                                     scientific survey writing has become an important task in scientific document processing.
+
+                                         Recent advances in large language models (LLMs) [10] have enabled promising progress in automated survey
+                                     generation [11, 12, 13, 14]. However, directly generating scientific surveys with LLMs remains challenging, as the
+                                     generated content often lacks the logical coherence and structural rigor required for long-form scientific papers.
+                                     Existing studies usually formulate scientific survey generation as a two-stage process: (1) literature retrieval, and
+                                     (2) survey generation. In the retrieval stage, many studies use retrieval-augmented generation (RAG) methods
+                                     [15, 16, 17, 18] to integrate external sources into an LLM for retrieving reliable literature. In the generation stage,
+                                     evaluate whether LLMs can produce high-quality survey outlines and content, using both automatic metrics and human
+
+                                          Corresponding author: Chengzhi Zhang.
+                                               tbao@njust.edu.cn (T. Bao); mnayeem@ualberta.ca (M.T. Nayeem); yizhao93@ahu.edu.cn (Y. Zhao); drafiei@ualberta.ca
+
+                                     (D. Rafiei); zhangcz@njust.edu.cn (C. Zhang)
+                                           ORCID(s): 0000-0001-9522-2914 (C. Zhang)
+                                          1https://arxiv.org/stats/monthly_submissions
+
+                                     T. Bao et al.: Preprint submitted to Elsevier  Page 1 of 38
+judgments. Despite the recent progress of LLM-based scientific survey generation, existing studies still treat survey
+generation mainly as a model-centered generation process. That is, the system retrieves a set of papers, asks LLMs to
+organize the content, and then uses prompt-based or self-refinement strategies to improve the generated draft. Although
+this paradigm has improved the efficiency of survey writing, it still differs substantially from how high-quality human-
+written surveys are produced.
+
+    First, existing systems still provide limited support for building a reliable literature foundation. Many methods
+retrieve papers from a single platform, such as arXiv [13, 14] or Semantic Scholar [19]. In addition, most of them rely
+mainly on titles and abstracts for survey generation [13, 19, 20], without fully using full-text content, metadata, citation
+relations, and other scholarly signals. Such limited evidence may lead to incomplete or biased literature selection,
+reducing the coverage and reliability of the generated survey. Second, existing retrieval methods often pay limited
+attention to the quality of candidate papers. Most of them select papers based on the semantic similarity between
+the survey topic and textual information, such as titles and abstracts [20, 21]. While this approach facilitates efficient
+retrieval, it does not evaluate whether a paper is influential or makes an important contribution. A high-quality survey
+should not only synthesize prior work but also highlight studies that have made important contributions to the field and
+guided subsequent research [22, 23]. Therefore, retrieval only on textual similarity may include papers that are relevant
+but less important, which weakens the scholarly value of the survey. Third, existing systems mainly rely on LLM-
+generated outlines, LLM-generated critiques, or prompt-based refinement during survey generation [12, 13, 14, 20].
+As a result, the planning and revision stages remain largely model-internal. In contrast, human-written surveys are
+often shaped by structural conventions from published surveys and refined through expert feedback from peer review
+[5, 8, 9]. These human-created knowledge artifacts provide valuable guidance on how a survey can be improved in
+terms of coverage, logic, and academic rigor. However, such human knowledge is time-consuming and has not been
+systematically incorporated into existing LLM-based survey generation frameworks.
+
+    To address the above issues, we propose SurveyAgent-HKA, a multi-agent collaborative approach for scientific
+survey generation with LLMs and human knowledge augmentation. In SurveyAgent-HKA, we decompose survey
+generation into multiple subtasks, including literature retrieval, outline generation, survey writing, and survey
+refinement. In the literature retrieval stage, we design a unified framework to integrate diverse literature sources,
+expanding the pool of candidate papers for subsequent generation and evaluation. Next, we perform topic clustering on
+the retrieved literature to generate an initial outline that covers multiple subtopics closely aligned with the survey and
+further refine it using human-authored outlines from existing published surveys to improve its overall quality. In the
+generation stage, we first identify literature closely related to the subtopics, then perform citation network analysis and
+re-ranking to select influential and representative papers for each topic, which are used to generate the corresponding
+sections and integrated to form the draft survey. Finally, peer review comments were collected from open published
+surveys on related topics to distill commonly raised concerns from reviewers into a structured checklist, which is used
+to refine the draft survey from the perspective of human experts, enhancing its overall quality to maintain academic
+rigor. In SurveyAgent-HKA, each subtask is assigned an LLM-powered agent, enabling collaboration and improving
+automated generation efficiency. Experiments conducted in two domains validate the performance of our proposed
+approach compared to the baseline. The contributions of our work are outlined below:
+
+    · We propose SurveyAgent-HKA, a multi-agent framework that integrates human structural and review knowledge
+       into scientific survey generation.
+
+    · We designed a unified literature retrieval pipeline, which not only helps retrieve relevant literature from multiple
+       data sources but also selects representative papers through advanced citation network analysis and a re-ranking
+       module, ensuring the coverage and reliability of the references for generating well-grounded scientific surveys.
+
+    · We introduce two types of human knowledge augmentation for automatic survey generation. Hierarchical
+       outlines extracted from human-written surveys provide structural guidance for outline construction, while real
+       peer-review comments support targeted multi-round revision. To the best of our knowledge, this is the first work
+       to use real review feedback from published survey papers to guide automatic survey revision.
+
+    · Experiments on two domains show that the surveys generated by our model outperform mainstream baselines in
+       citation quality, structural consistency, and content quality, with each module in SurveyAgent-HKA contributing
+       to the overall performance. A user study further validates the practical value of the generated surveys.
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 2 of 38
+    The structure of the paper is as follows: In Section 2, we review related work on scientific survey generation. In
+Section 3, we present our proposed SurveyAgent-HKA. Section 4 describes the experimental setup and implementation
+details. In Section 5, we present the experimental results and discuss the implications and limitations in Section 6.
+Finally, we summarize the conclusion and future work in Section 7.
+
+2. Related work
+
+2.1. Automated scientific survey generation
+    Early approaches to automated scientific survey generation mainly relied on pre-trained models [24, 25, 26], which
+
+aimed to compose survey drafts through the selection and aggregation of representative sentences from multiple
+sources. However, due to their extractive or template-driven nature, the generated surveys often lacked coherence and
+systematic organization. With the rapid development of LLMs, recent studies have used their capabilities to improve
+scientific survey generation [11, 12, 14, 21]. For example, Wang et al. [13] proposed AutoSurvey, which uses RAG
+to retrieve relevant literature, generate structured outlines, and produce survey content. Based on this work, Liang
+et al. [14] improved the search process with expanded keywords and used an attribute-based strategy to extract key
+information for survey writing. Yan et al. [20] introduced SurveyForge, which achieved strong performance in LLM-
+based survey generation in reference selection, outline organization, and content quality. Recently, several practical
+systems have also been developed to further support LLM-based scientific writing. For instance, DeepResearch [27]
+and ScholarAI [28] provide unified platforms to draft scientific surveys with minimal manual effort. At the evaluation
+stage, several studies have assessed LLM-generated surveys in terms of reference accuracy, hallucination rate,
+information coverage, and human preference [29, 30, 31, 32]. Beyond full survey generation, recent work on scholarly
+retrieval and literature synthesis also provides useful insights for this task. For example, OpenScholar [33] and Ai2
+ScholarQA [34] use retrieval-augmented methods to synthesize citation-grounded answers or reports from large-
+scale scientific corpora. In addition, systematic-review automation has also explored how LLMs can support search,
+screening, data extraction, and evidence synthesis [35].
+
+    Existing Limitations. In summary, these studies provide valuable foundations for automated survey generation.
+However, several limitations remain. First, existing approaches show fragmented retrieval sources and text-based
+textural ranking strategy, with most experiments conducted in the computer science domain and using arXiv as the
+primary data source. This limited setting, together with an overreliance on semantic similarity for paper ranking,
+may reduce the breadth and reliability of the retrieved literature. Second, while many methods aim to optimize surveys
+using the generative capabilities of LLMs, they fail to incorporate human-written feedback and revision improvements,
+which are essential to ensure the survey meets academic standards expected in scientific papers. Third, cross-domain
+evaluation is still limited. Most studies focus on computer science, while survey writing practices can differ greatly
+across disciplines. This makes it difficult to assess whether these methods can generalize to other domains. Finally,
+in the evaluation process, LLMs are mainly used to assess the generated survey, with limited comparison to human-
+written ground truth. Without such comparison, it's difficult to determine if the generated surveys align with human
+expectations, which makes it unclear what the upper bound of these models is for this task and how they might impact
+real-world applicability.
+
+    We differ from previous works in several aspects, as summarized in Table 1. First, our SurveyAgent-HKA
+framework supports multi-source data retrieval, which not only provides a more diverse and comprehensive set
+of references but also incorporates quality signals to evaluate and re-rank the literature, helping to identify more
+representative and influential publications in the field. Second, SurveyAgent-HKA supports downloading and parsing
+full-text PDFs of candidate papers, automatically extracting key information to produce a structured summary. By
+leveraging full texts rather than abstracts alone, this approach provides a more complete view of each paper for survey
+generation. Third, Third, SurveyAgent-HKA incorporates human-derived knowledge into both outline construction
+and multi-round revision. This design helps the generated surveys better follow structural conventions from published
+surveys and address common issues raised by expert reviewers. Lastly, our framework supports cross-domain survey
+generation based on a multi-source data retrieval system and compares the results with human-written gold standards,
+offering strong generalization capabilities compared to baseline approaches.
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 3 of 38
+Table 1
+Comparison with mainstream survey generation baselines. Our framework supports multi-source literature retrieval, full-text
+utilization, human knowledge augmentation, and enables cross-domain survey generation. Moreover, we compare against
+human-written ground truth for evaluation rather than relying on LLM-based evaluation to avoid potential bias.
+
+Model                  Year   Data             Quality  Re-ranking  Full    Knowledge     Cross  Ground
+                             Source            Signals    Module    Text  Augmentation  Domains   Truth
+Naive-RAG [12]         2024
+AutoSurvey [13]        2024  Single                x          x       x           x          x      
+SurveyX [14]           2025  Single                x          x       x           x          x       x
+SurveyGen [19]         2025   Multi                x          x                   x          x       x
+SurveyForge [20]       2025  Single                                   x           x                 
+SurveyAgent-HKA(Ours)        Single                x                  x                      x       x
+                         -    Multi                                                                 
+
+2.2. Multi-agent systems for text generation
+    A Multi-Agent System (MAS) is composed of several autonomous agents that work together to achieve a common
+
+goal. These agents are often powered by LLMs and have the ability to understand human instructions or make self-
+directed decisions based on their environment, task requirements, or the information inputted [36, 37, 38, 39]. MAS
+has been applied to various content generation tasks such as medical treatment [40, 41, 42], programming assistance
+[43, 44], and social interaction simulation [45]. In long-text writing tasks, Huot et al. [46] proposed AgentsRoom,
+which employs multiple agents to handle narrative planning and content generation for story writing separately. Wang
+et al. [47] designed AutoPatent, where a planner agent, writer agents, and an examiner agent collaboratively perform
+the patent drafting process. Shao et al. [48] propose STORM, a multi-agent system capable of generating long-form
+articles comparable in scope and depth to Wikipedia entries. D'Arcy et al. [49] propose MARG, an approach for
+generating feedback that leverages multiple LLM instances to engage in internal discussions for providing more specific
+and helpful feedback on scientific papers. Xia et al. [50] presents StoryWriter, a modular, open-source multi-agent
+framework designed for scalable and controllable long story generation. Recent studies on agentic RAG and LLM self-
+critique further demonstrate the value of agent-based workflows in knowledge-intensive scientific tasks. For example,
+SIM-RAG [51] and RAG-CRITIC [52] show that retrieval and self-evaluation can improve the reliability of generated
+content.
+
+    To sum up, the above studies demonstrate that MAS holds strong potential for long-form document generation.
+However, its application in scientific writing remains underexplored. In this work, we view scientific survey writing
+as a multi-stage workflow that naturally benefits from task decomposition and role-based agent collaboration.
+Accordingly, we design an LLM-powered multi-agent framework for this task. By using scientific survey generation
+as a representative scenario, we investigate the potential of MAS for scientific content generation and provide insights
+for broader AI-assisted scientific writing.
+
+3. Methodology
+
+    This section first outlines the task formulation for automatic scientific survey generation and then provides the
+design of our SurveyAgent-HKA and its implementation in the scientific survey generation task.
+
+3.1. Problem formalization
+    Automatic scientific survey generation is formally defined as: Given a survey topic  and a large academic corpus
+
+ = {1, 2, ... , }, the task aims to draft a comprehensive survey  that summarizes the subset of documents  that
+are relevant to  . Specifically, this task can be decomposed into two sequential stages: (1) paper retrieval: for a survey
+topic  , a retrieval system identifies a subset of relevant papers   , ensuring sufficient coverage to provide a
+thorough overview of the topic (formally,  ,   ). (2) survey generation: based on the topic  and the retrieved
+document set , a generative system generates the final survey  (formally,  ,   ). The output  is expected to
+be structured into sections corresponding to subtopics within  and to incorporate claims from the retrieved literature
+ into a long-form and well-structured survey. The main symbols used in this paper are summarized in Table 2.
+
+T. Bao et al.: Preprint submitted to Elsevier                                                    Page 4 of 38
+Table 2
+List of symbols used in this paper.
+
+Symbol       Description
+
+             Survey topic
+             Set of documents in the academic corpus
+             Set of relevant papers for the survey topic 
+             Cluster of papers based on embeddings
+             Prompt used to guide LLMs for generation
+             The generated survey outline
+             Template tree for extracting knowledge from candidate literature
+             A specific section in the survey
+             The generated survey
+[RETRIEVER]  Agent for retrieving literature from external databases
+[RANKER]     Agent for assessing and ranking retrieved papers
+[EXTRACTOR]  Agent for extracting structured knowledge from retrieved literature
+[OUTLINER]   Agent for constructing the hierarchical outline of the survey
+[WRITER]     Agent for expanding the outline into detailed textual sections and drafting the survey
+[REVIEWER]   Agent for reviewing and revising the generated survey
+[REFINER]    Agent for polishing and finalizing the generated survey
+             Central Router (coordinates the order of agent execution)
+             Memory Module (stores intermediate results and context information)
+
+Figure 1: The framework of SurveyAgent-HKA, which involves multiple agents collaborating through a central router and
+a memory module, with shared resources and tools supporting end-to-end scientific survey generation.
+
+3.2. SurveyAgent-HKA: The overall architecture
+    Figure 1 presents the overall architecture of SurveyAgent-HKA. Given a survey topic  , the goal of the framework
+
+is to automatically generate a corresponding scientific survey . To achieve this, we break the survey generation into
+several sub-tasks and deploy multiple agents, each responsible for a unique stage of the process, that work together
+under a central router to draft the topic-related survey. Below, we describe the definition of the agents and the agent
+design in our SurveyAgent-HKA framework.
+
+    · Agents. An agent    is defined as an autonomous entity designed to perform specific subtasks that contribute
+       to achieving the overall goal. In this definition, an agent can be an LLM that was fine-tuned on task-specific
+       data, a zero-shot prompted LLM with a user-defined prompt, or a simple functional module with instructions.
+       In scientific survey writing, we focus on the zero-shot prompted LLM as an agent, as it has strong capabilities
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 5 of 38
+       to understand user input and execute the complex generation process. However, we treat this agent as a modular
+       component to support future work, which may integrate other types of agents (e.g., image recognition, speech
+       understanding, and multimodal LLMs) for different purposes. We design two types of agents: retrieval agents
+       and writing agents, along with central router and memory module, each of which performs distinct functions
+       to collaborate in the survey generation pipeline.
+
+    · Retrieval Agents. Retrieval agents are designed for retrieving, filtering, and analyzing relevant literature 
+       from external databases based on the survey topic  . We design three retrieval agents, each responsible for
+       specific phases of the retrieval process. The [RETRIEVER] is responsible for searching external literature
+       databases  (e.g., Semantic Scholar, arXiv) to collect papers related to the target survey topic  , together with
+       their metadata (e.g., DOI, abstracts, citations, and accessible PDF links). In addition, it is also responsible for
+       retrieving existing survey-related materials, such as human-authored survey outlines and topic-relevant peer-
+       review comments, to support downstream processes. The [RANKER] is designed to evaluate the candidate
+       papers and to re-rank them to obtain a more representative and accurate subset . Finally, the [EXTRACTOR]
+       parses PDFs and extracts the information required for subsequent writing stages from the candidate literature.
+
+    · Writing Agents. Writing agents are designed to summarize and generate survey content based on the retrieved
+       literature . Given that LLMs often struggle to generate sufficiently long text content in a one-step call, we
+       divide the writing process into three steps and design corresponding agents to perform each of them. First, the
+       [OUTLINER] constructs a hierarchical outline  that captures the main topics and logical flow of the survey,
+       serving as a guiding framework for follow-up survey generation. The [WRITER] develops the outline  into a
+       set of detailed sections {-1, , ... }  . Each section is grounded in claims and evidence drawn from the
+       literature retrieved for that specific subtopic by the retrieval agents, and these sections are integrated to form the
+       full survey draft . Then, the [REVIEWER] simulates a peer reviewer by assessing the draft survey  against
+       insights observed in real-world survey peer reviews and produces targeted suggestions for improvement. Finally,
+       the [REFINER] polishes the draft , improving its clarity, coherence, and structure to meet academic writing
+       standards. Therefore, the final survey can be regarded as the product of a pipeline of components, each building
+       upon the outputs generated by the individual agents.
+
+    · Central Router. As different agents are responsible for executing specific sub-tasks of the survey generation
+       process, we design a central router  to manage the collaboration among agents according to the workflow of
+       scientific survey writing. Given an input instruction or an intermediate output  along with a set of designed
+       agents , the router  decides which agent +1   should be invoked next. To keep track of the workflow,
+       at each time step , we record the agent's label together with its output as a tuple (, o utput), which serves
+       as input reference for the next agent to be called. Additionally, the central router is responsible for determining
+       the stopping condition (e.g., when all subtasks are completed or when there is no further improvement in results).
+
+    · Memory Module. Since the entire survey generation process is based on collaboration between different agents,
+       a memory module  is designed to save and update the status throughout the execution of the framework.
+       Unlike the central router, which focuses on task delegation, the memory module serves as dynamic storage
+       that shares key information throughout the process. This includes agent outputs, intermediate results, and any
+       context that the next agents need to refer to. For instance, if [OUTLINER] constructs a survey outline that
+       needs to be referenced later by [WRITER] or [REFINER], the structure is stored and made accessible in
+       memory. In this module, different agents can share information to avoid generating duplicate or conflicting
+       content. Additionally, the memory module can track all retrieved references and validate them in the final version
+       to maintain consistency, preventing the LLM from including hallucinated references during generation.
+
+3.3. SurveyAgent-HKA for scientific survey generation
+    As shown in Figure 2, the SurveyAgent-HKA consists of multiple agents responsible for performing different
+
+subtasks. For better understanding, the complete algorithm is summarized in Algorithm 1. In this section, we describe
+the implementation of SurveyAgent-HKA for the scientific survey generation task.
+
+3.3.1. Literature retrieval and citation-based expansion
+    Given a user-input survey topic  , to increase retrieval efficiency and capture a broader set of relevant documents,
+
+we first use an LLM to perform query expansion to transform the user-provided topic into multiple queries (e.g., a
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 6 of 38
+Figure 2: The overall framework SurveyAgent-HKA, which includes two main stages: literature retrieval and survey
+generation. In the retrieval stage, relevant papers are collected from multiple sources [S1] and clustered to create an
+initial outline [S2]. Based on this outline, a section-focused retrieval is performed to collect more topic-specific papers,
+which are re-ranked to obtain the final reference set for each section [S3]. In the generation stage, the full texts of retrieved
+papers are used to generate the corresponding sections and compose the survey, which is then refined based on expert
+peer-review comments collected from related published surveys [S4-S5]. Finally, the generated survey is evaluated using
+both automatic metrics and human judgment [S6].
+
+set of keywords). Then, we first retrieve relevant literature from external academic databases (e.g., Semantic Scholar)
+
+to ensure that all retrieved papers are authentic and verifiable, which serve as grounding sources for the subsequent
+
+content generation. Let  = {1, 2, ... , } denote the papers collected from these sources. We use a text embedding
+model to encode each document and the expanded survey topic  , and then compute their cosine similarity as follows:
+
+Sim( , )  =                                    cos( ,  )  =          [RETRIEVER]       (1)
+                                                                
+
+where  and  refer to the embeddings of the survey topic and the abstract of candidate papers.
+    We select the top- articles based on their embedding similarity to form the candidate set . However, relying
+
+solely on semantic similarity for retrieval is not robust enough and may miss key papers that are semantically distant
+
+from the query. For example, the paper that introduced the "Transformer" [53] architecture may receive a low similarity
+
+score when queried with the topic "Large Language Models", since neither its title nor abstract directly mentions the
+
+topic. Yet, it is widely cited in the publications of this field and recognized as a foundational work in this area. To
+
+address this, we perform a co-citation expansion to identify papers that are cited by at least two articles in  and add
+
+them to the candidate set. Here, the assumption is that papers which are co-cited are likely to be topically related to
+
+those in , and are therefore considered indirectly relevant to the target topic  because  is directly related to  . Let
+
+co denote the set of co-cited papers. The final expanded candidate set is defined as:
+
+          ex =   co  [RETRIEVER]                                                       (2)
+
+    Given that relying on a single data source may limit coverage or miss relevant literature, the agent is designed to
+query multiple academic databases (e.g., Semantic Scholar, arXiv) and aggregate the returned results using DOIs to
+remove duplicates.
+
+3.3.2. Dynamic survey outline generation and enhancement
+    A well-structured outline is crucial for scientific survey writing as it not only helps organize the survey's content but
+
+also prevents common issues in one-shot LLM-based generation, where the output may be too short to cover essential
+
+T. Bao et al.: Preprint submitted to Elsevier                                          Page 7 of 38
+Algorithm 1 Algorithm of SurveyAgent-HKA.
+
+1: Input: Survey topic  , external database , human reference outlines human, peer reviews on survey 
+
+2: Output: Final survey final
+
+3: initial  RetrieveFromDatabase( , )
+4: top  Top-n papers by semantic similarity from initial
+5: Compute embeddings   Embedding(abstract),   top
+
+6: Cluster embeddings: {1, ... ,  }  Cluster({})
+
+7: Summarize each cluster:   Summarize()
+
+8: Generate initial outline: initial  GenerateOutline( , )
+
+9: Refine outline: refined  RefineOutline(initial, human)
+
+10: section  ExtractSectionTitles(refined)
+
+11: for each section   section do
+
+12: sec  RetrieveBySectionTitle(, )
+
+13: ranked  ReRank(sec)
+
+14: Initialize   
+
+15: for each paper   ranked do
+
+16:      DraftSection(, )
+
+17: draft  AssembleSurvey({})
+18: relevant  RetrievePeerReviewsByTopic( , )
+19: Checklist  ExtractChecklist(relevant)
+20: Comments  LLM(draft, Checklist)  GenerateComments
+21: revised  Refine(draft, Comments)
+22: final  SelectOptimalSurvey(revised)
+23: return final
+
+topics. Although LLMs have demonstrated potential to generate outlines, they still do not meet the high standards
+
+required for scientific surveys [54]. In this paper, we introduce a dynamic outline generation strategy to iteratively
+
+refine the outline based on the retrieved literature and LLM-based optimization. For each paper in ex, we encode its
+abstract into a feature vector using a text embedding model to capture its semantic content:
+
+                                     = Embedding(abstract),   ex                                       (3)
+
+    We then use K-Means [55] to group papers into predefined clusters based on their semantic embeddings. Formally,
+
+let {1, 2, ... , } be the set of paper embeddings. K-Means aims to partition these embeddings into  clusters by
+minimizing the within-cluster sum of squared distances:
+
+                                                                        
+
+                               {1,  ...        ,    }  =  arg    min             -   2,                (4)
+
+                                                               1 ,...,  =1   
+
+where  is the centroid of cluster , and the  is determined based on the distribution of topics observed in published
+surveys and prior research in the field.
+
+    Let  = {1, 2, ...,  } represent the set of clusters. For each cluster , the abstracts of all included papers are
+fed into the LLM to generate a cluster summary , which captures the main themes and key topics of the cluster. Next,
+given the survey topic  and the set of cluster summaries {1, ... , }, the LLM is prompted to generate a hierarchical
+outline that lays out the scope and main topics of sections, while also providing a short explanation of the purpose of
+
+each section. The generated initial outline is denoted as:
+
+     initial = LLM( , (1, 1), (2, 2), ... , ( ,  )), )  [OUTLINER]                                     (5)
+
+where  is the summary of the cluster .
+    To further refine the expanded outline and make it more aligned with human writing preferences, we collect a set of
+
+human-written survey outlines that are highly semantically similar to the focus topic as the optimization target. These
+
+T. Bao et al.: Preprint submitted to Elsevier                                            Page 8 of 38
+Table 3
+Evaluation criteria for candidate papers.
+
+Aspects            Description
+
+Topical relevance  To ensure that the paper is closely related to the target topic.
+Academic impact    To select papers that have greater scholarly influence within the research field.
+Recent popularity  To identify papers that reflect current trends or emerging areas of interest in the field.
+
+human-authored outlines serve as the gold standard of high-quality, well-structured published surveys, guiding the
+
+LLM in improving the coherence and structure of the initial outline through few-shot learning. Let ref_structure denote
+the set of human-authored outlines. The refined outline can be expressed as:
+
+                   refined = LLM(initial, human_written)  [OUTLINER]                                           (6)
+
+    As mentioned above, our dynamic outline generation method iteratively updates the initial outline by leveraging
+literature clustering to identify core themes, LLM-based expansion to enrich the outline with more detailed subsections,
+and human-authored outlines as few-shot learning to ensure the structure and language align with human writing
+standards. We then use this refined outline to guide the survey generation process.
+
+3.3.3. Topic-focused literature retrieval and re-ranking
+
+    In survey writing, each section usually focuses on a specific subtopic, and therefore requires more targeted
+
+literature. However, our first-round search mainly concentrated on broad surveys, which may have missed some of
+
+these specialized works. To address this, we conduct a second-round retrieval using the section titles as queries to find
+
+literature that better matches the specific information needs of each section. The retrieval follows the same steps as the
+
+first round, but usually returns fewer documents since it is more targeted. Let sec denote the set of documents retrieved
+for the corresponding section. While the papers in sec are related to the section topic, not all are equally suitable for
+inclusion, as a survey should cover foundational and representative research in the field. Therefore, we further re-rank
+
+the sec to identify the most representative and impactful works for the section. Specifically, based on the metadata of
+the candidate papers, we evaluate them from the following three aspects: (1) topical relevance, (2) academic impact,
+
+and (3) recent popularity. These aspects were chosen because they ensure a comprehensive selection of papers that
+
+are not only highly relevant to the topic but also influential within the academic community and current research trends,
+
+which are commonly emphasized factors in scientific survey writing outlines [8, 9]. The descriptions of these aspects
+
+are summarized in Table 3.
+
+    For topical relevance, we use LLM-as-judge to assess the relevance between each  in ex and the section topic
+sec. The relevance score can be denoted as:
+
+                    = LLMjudge(, sec)  [RANKER]                                                                (7)
+
+    For academic impact, we assess the academic influence of each paper from three dimensions: citation performance,
+author influence, and venue reputation, as these are commonly used indicators for evaluating the innovation and impact
+of academic papers [56, 57]. To balance the contributions of each dimension, we assign a weight to each dimension
+based on its relative importance in determining the overall academic impact as follows:
+
+ =   citation performance +   author influence +   venue reputation  [RANKER]                                  (8)
+
+where , ,  are the weights assigned to citation performance, author influence, and venue reputation, respectively.
+    For recent popularity, we define the score as the product of citations in the past three years (relative to the survey's
+
+publication time) and the logarithm of total citations:
+
+                    () = (citations in past 3 years) × log(total citations)  [RANKER]             (9)
+Lastly, the final score for each paper is defined as:
+                                                                                                (10)
+                     final                     =    +        +     [RANKER]            Page 9 of 38
+                                                          3
+
+T. Bao et al.: Preprint submitted to Elsevier
+    where , ,  denote the ranks of the paper in topical relevance, academic impact, and recent
+
+popularity, respectively. The articles are then ranked in ascending order of final, with the top-K articles 
+selected as representative works that are most relevant to the section for section-level composition.
+
+3.3.4. Information extraction from candidate papers
+    Previous studies typically rely on abstracts as the primary information source. However, we argue that abstracts are
+
+insufficient in coverage and often omit critical information such as methodological details and experimental findings.
+Therefore, we download the PDFs of the papers in sec for information extraction. Specifically, for papers whose PDFs
+are successfully obtained, we use MinerU2 [58] to extract the main textual content from the PDFs and then clean the
+extracted text to remove noise and ensure consistency. During this process, non-textual elements such as figures and
+tables are removed. Next, we employ an LLM to extract essential information from each paper, following the same
+predefined template tree , introduced in SurveyX [14]. This template outlines a hierarchical structure that covers key
+elements such as the background, methodology, datasets, and results. Guided by this template, the LLM organizes the
+extracted content from each paper into a structured "Knowledge Card", providing a standardized representation that
+can be used by downstream components. Finally, for papers whose PDFs cannot be downloaded, we follow common
+practice in prior studies and use abstracts as the primary source for downstream generation.
+
+           {                                                                 )
+
+ = Title      Knowledge Card = LLM(FullText, ), if PDF available                 []  (11)
+
+              Abstract,                                  otherwise
+
+3.3.5. Reference-grounded survey drafting and peer review-guided refinement
+
+To ensure comprehensive coverage and improve generation efficiency, instead of writing the entire survey in one
+
+go, we first write each subsection in parallel to focus on the specific topic in detail, ensuring that each subsection is
+
+both comprehensive and well-supported by claims from relevant references. Specifically, for each subsection , we
+
+use the generated outline refined, the set of section-relevant documents sec, and the prompt  to guide the LLM for
+section drafting as follows:
+
+                          = LLM(refined, sec, )  []                                  (12)
+
+    Here, all statements and arguments in the generated content are grounded in sec. Once all the subsections are
+written, we assemble them to form the complete raw survey draft.
+
+    To further improve the quality and scholarly reliability of draft, we introduce a reviewer-guided refinement
+stage that leverages peer-review comments from published surveys as an external source of expert knowledge. These
+
+comments, which reflect expert judgment formed through rigorous academic evaluation, are retrieved by matching the
+
+target topic with existing surveys to ensure domain relevance. Formally, given the target survey topic  and a corpus
+
+of peer review comments  from published surveys, the reviewer comments retrieval can be defined as computing
+
+the semantic similarity between the target survey topic and the titles and abstracts of published surveys, and selecting
+
+the comments associated with the most similar surveys:
+
+                         = arg max             Sim( , )   []                         (13)
+
+                                     
+
+    Given  , we prompt the LLM to identify the key aspects that reviewers frequently focus on when evaluating
+survey papers, such as coverage completeness, structural organization, and clarity of taxonomy. By aggregating these
+
+reviewer-identified aspects across surveys within the same domain, we construct a domain-specific review checklist,
+
+denoted as Checklist , and then the [REVIEWER] evaluates the draft survey draft based on the generated checklist
+Checklist , to identify potential issues and generate a list of targeted revision comments, denoted as Comments :
+
+              Comments = LLM(draft, Checklist )  []                                  (14)
+
+    Once the revision Comments is generated, it triggers the survey refinement process. These Comments are used
+to guide the LLM to refine the draft survey to the revised survey, ensuring that the survey better reflects the knowledge
+
+and insights gained from experts, thus meeting the high academic rigor outlined in  . This process can be
+denoted as:
+
+              revised = LLM(draft, Comments )  []                                    (15)
+
+2https://github.com/opendatalab/MinerU
+
+T. Bao et al.: Preprint submitted to Elsevier                                   Page 10 of 38
+    Here, based on the suggested revisions, we can invoke the previously defined agents to perform additional actions,
+such as literature retrieval and content supplementation. We trigger this process by setting a task flag signal in the
+output. The revised survey is then put through further automated evaluation, where different versions are assessed to
+select the optimal survey draft. As the final step, we refine the raw survey to polish it to proof-ready version:
+
+final = LLM(revised, )  []                     (16)
+
+where  denotes a refinement prompt that includes instructions for maintaining consistency in formatting, standardiz-
+ing references and citations, organizing sections and subsections logically, and ensuring correct grammar throughout
+the generated survey.
+
+4. Experiments
+
+    In this section, we present the experimental setup, including comparison baselines, datasets, and implementation
+details. We then describe the evaluation protocol as well as the prompt design for LLMs.
+
+4.1. Baselines
+    We compare our model against several strong baselines for scientific survey generation, including:
+    (1) Naive-RAG (2024) [12]: A standard retrieval-augmented framework that retrieves relevant documents through
+
+similarity search and directly uses an LLM for survey generation.
+    (2) AutoSurvey (2024) [13]: An automated survey generation system that consists of multiple stages, including
+
+literature retrieval, LLM-based drafting, and iterative refinement.
+    (3) SurveyX (2025) [14]: An efficient and organized automated survey generation pipeline that divides the process
+
+into preparation and generation to ensure a streamlined workflow.
+    (4) SurveyGen (2025) [19]: An RAG-based framework that explores the performance of LLMs in survey
+
+generation under different input settings.
+    (5) SurveyForge (2025) [20]: A framework that improves survey generation by using human-written surveys as
+
+references, which is considered the current state-of-the-art (SOTA).
+    (6) DeepResearch (2025) [27]: A deep semantic retrieval paradigm that leverages multi-stage reasoning to retrieve,
+
+aggregate, and synthesize information from various online sources to perform complex tasks, such as survey generation.
+
+4.2. Dataset
+
+4.2.1. Dataset for survey generation
+
+    We conduct experiments in two domains: Computer Science and Medicine, as they are representative fields with
+rapidly growing publications and are fast-moving in scientific research. For computer science, we select the same set of
+20 surveys employed in AutoSurvey [13], which have also been used for comparison in subsequent works in SurveyX
+[14] and SurveyForge [20]. These surveys are highly cited and cover a wide range of topics within the field, and they
+are also used as targets for survey generation in both the Naive-RAG [12] and DeepResearch [27]. For each survey,
+we retrieve the corresponding human-written version from arXiv and parse the PDF using MinerU [58] to extract the
+outline, content, and reference list as the gold standard; all identifying information, tables, and images are removed.
+For the medicine domain, we use SurveyGen [19], a dataset that includes 4.2K human-written scientific surveys with
+full-text content, structured outlines, and complete reference lists for all included surveys. We also select the same 10
+surveys from the medicine domain for fair comparison. A comparison setting of the baseline models is provided in
+Table 4, and detailed information on these surveys is provided in Appendix A.1.
+
+4.2.2. Peer-review comments collection for survey papers
+
+    As mentioned earlier, peer-review comments on high-quality, published survey papers will serve as human feedback
+signals to refine and improve the generated surveys. For the computer science domain, we first collect peer-review
+comments from OpenReview3, a public platform for peer reviews of most top-tier computer science conferences.
+Specifically, we download peer reviews for papers submitted to conferences that provide open peer review comments,
+such as ICLR and EMNLP, two leading conferences in the fields of AI and the broader computer science community.
+
+     3https://openreview.net/
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 11 of 38
+Table 4
+Selected survey examples for evaluation across domains and baselines.
+
+Domain                                         Data Source      #Survey  Compared Baseline
+Computer Science                               AutoSurvey [13]  20
+                                                                         Naive-RAG [12]
+Medicine                                       SurveyGen [19]   10       AutoSurvey [13]
+                                                                         SurveyX [14]
+                                                                         SurveyForge [20]
+                                                                         DeepResearch [27]
+
+                                                                         SurveyGen [19]
+                                                                         Naive-RAG [12]
+                                                                         DeepResearch [27]
+
+Table 5
+Statistics of the collected peer-review comments, where each comment represents the complete feedback from an individual
+reviewer and may include multiple specific points.
+
+Domain                                         Venue            #Survey  #Peer-reviews
+Computer Science
+                                               ICLR             12       45
+Medicine                                       EMNLP            20       44
+                                               F1000            29       83
+
+                                               PLOS One         188      1039
+                                               F1000            231      467
+
+We filter the survey-type papers by checking whether the title of a submission contains keywords such as "a survey",
+"a systematic review", "a review", etc. Following this, we conduct a secondary verification using LLMs to judge
+whether the title and abstract accurately represent a survey-type paper according to the following criteria: (i) the title
+and abstract clearly indicate a systematic overview and summary of a specific research area, and (ii) the paper focuses
+on summarizing prior studies rather than introducing new techniques or empirical findings. Next, we further extend
+our data collection by adding peer comments from F1000 Research4, a platform known for publishing open-access,
+peer-reviewed research in various scientific domains. We restrict the articles to be survey-type papers and focus on the
+computer science domain.
+
+    For the medical domain, we collect peer-review comments from DeepReview [59], a large-scale benchmark that
+includes peer-review comments from the well-known medical journal PLOS One5. We use the same two-stage process
+to identify published survey papers and include the corresponding peer-review comments in our collection. Similarly,
+we also supplement peer review comments from survey papers published in F1000 Research in the medical domain.
+In total, we collected peer-review comments for 480 published survey papers that covered various topics and research
+areas in computer science and medicine. Table 5 summarizes the peer review comments collected in our study, while
+Appendix A.2 provides two examples of these peer reviews.
+
+4.3. Evaluation metrics
+    We design a comprehensive evaluation protocol that covers citation quality, structural consistency, and content
+
+quality, including automatic and human evaluation, to evaluate our proposed framework. For all evaluations, we use
+the collected human-written surveys as the ground truth.
+
+4.3.1. Automatic evaluation
+    (1) Citation quality. To evaluate the reliability of the retrieved module, we select the Precision, Recall, and F1
+
+score of the retrieved papers by comparing them with the references selected by human authors. Specifically, we
+calculate the pairwise textual similarity between the titles of the retrieved papers and the corresponding titles in the
+
+     4https://f1000research.com/
+     5https://journals.plos.org/plosone/
+
+T. Bao et al.: Preprint submitted to Elsevier                                               Page 12 of 38
+human-written surveys. Two titles are considered a correct match if their textual similarity exceeds 0.956. The metrics
+are defined as follows:
+
+                     Number of correctly selected citations                                                        (17)
+Precision = Total number of citations selected by the model
+
+                   Number of correctly selected citations                                                          (18)
+Recall = Total number of citations in the human-selected set
+
+                                                  1  =  2  ×  Precision  ×  Recall                                 (19)
+                                                              Precision  +  Recall
+
+    (2) Structural consistency. This metric evaluates how well the generated survey aligns with the structural
+organization of human-written surveys. Since our model generates surveys with a hierarchical section up to the second
+level, we denote first-level and second-level section headings as H1 and H2, respectively, and evaluate their alignment
+using the corresponding F1 scores, F1-H1 and F1-H2. To address variations in heading phrasing, we consider a heading
+as matched when its semantic similarity with the corresponding human-written heading exceeds a predefined threshold
+of 0.8, a threshold determined through preliminary experiments and prior work to optimally capture valid semantic
+matches. We define the heading matching F1 score as:
+
+MatchF1                                              =     2 × (human  generated)                                  (20)
+                                                              human + generated
+
+    where human and generated denote the sets of headings in the human-written and LLM-generated surveys,
+respectively, and human  generated represents the number of matched headings.
+
+    In addition to heading matching, we further employ LLM-as-judge as an auxiliary evaluator to assess the overall
+
+structural relevance between the generated and human-written surveys from 1 (poor) to 5 (excellent). We evaluate each
+
+pair of outlines ten times using the same prompt and report the average score. To ensure a fair and focused comparison,
+
+we exclude non-content sections such as "References", "Acknowledgements", "Funding", and "Appendices" from all
+
+structural consistency evaluations.
+
+    (3) Content quality. To evaluate content overlap between the generated and human-written surveys, we use
+
+established summarization metrics, including Semantic Similarity and ROUGE score [60]. The former assesses how
+
+closely the meanings or concepts of the two surveys align, independent of exact word choice. The ROUGE score
+
+quantifies the overlap by identifying common subsequences between the two surveys. Precision, recall, and F1 score
+for ROUGE score are computed as:
+
+Precisionn-gram =                                    N-grams()  N-grams()                                          (21)
+
+                                                              N-grams()
+
+Recalln-gram =                                       N-grams()  N-grams()                                          (22)
+
+                                                              N-grams()
+
+                                                  2  × PrecisionN-gram × RecallN-gram                              (23)
+                                                     PrecisionN-gram + RecallN-gram
+F1                                             =
+
+    where n-grams() and n-grams() denote the sets of n-grams in the generated survey  and the
+human-written survey , respectively. In this work, we report ROUGE-L7, which computes the longest common
+
+subsequence (LCS) between the generated and ground-truth surveys. We report the balanced F1 score to ensure a more
+robust evaluation of content overlap.
+
+    Given the potential bias of traditional metrics when evaluating uncontrollable generated text [61], we also compute
+
+Key Point Recall (KPR) [62], which measures the proportion of key points in the original survey that are successfully
+
+covered by the generated survey. To do so, an LLM is used to extract key points from the human-written surveys,
+
+forming the reference set. We then use a question-answering approach to determine whether each key point is covered
+
+6This threshold accounts for minor variations such as differences in mathematical symbols, formatting, or emojis.
+7Based on the official Python package, all ROUGE scores reported include 95% confidence intervals.
+
+T. Bao et al.: Preprint submitted to Elsevier                                                                      Page 13 of 38
+in the generated survey. Let  denote the set of key points from the human-written survey and  the set of key
+points present in the generated survey. The KPR score is then defined as:
+
+KPR =                                          1  | |  {      if    ,  (24)
+                                                          1,
+                                                  
+
+                                               | | =1 0, otherwise.
+
+4.3.2. Human evaluation
+    Pairwise Comparison. We perform human evaluation based on the same three aspects as previous studies
+
+[13, 14, 20]: (1) Coverage: the extent to which the survey addresses the main aspects of the input topic; (2) Structure:
+the clarity and coherence of the organization of sections and subsections; and (3) Relevance: the relevance of the
+content to the user-provided survey topic. The criteria for the three metrics are summarized in Appendix A.3. As
+survey evaluation requires domain expertise and significant time effort, we limit human evaluation to the computer
+science domain. We conduct two groups of pairwise comparisons. First, we conduct an internal comparison between
+the initial and final versions generated by our SurveyAgent-HKA to validate the benefits of improving the quality
+of the survey through multi-agent collaboration refinements. Second, we compare our generated survey with the
+corresponding human-written survey to explore the upper bound of our approach. For each group, we select 10 surveys
+generated by our model and pair each of them with its RAG-generated or a human-written survey on the same topic.
+We invite five PhD students with background in computer science, specializing in downstream applications of LLMs
+and each holding at least two peer-reviewed publications, to conduct the evaluation based on our predefined criteria.
+To minimize potential bias, the assigned topics are adjusted according to the annotator's domain expertise to ensure
+that all judges are knowledgeable about the topics they evaluate. The annotators are asked to compare each pair and
+judge which survey is better, comparable, or worse along each evaluation dimension and provide a brief explanation.
+To ensure evaluation reliability, annotators are provided with detailed guidelines and training prior to annotation, and
+all identifying information is removed to support a double-blind evaluation setup.
+
+    User Study. We further conduct a user study to assess the practical value of the generated surveys. We select 10
+generated surveys from the computer science domain and invite 30 participants, including undergraduate, master's,
+and PhD students. To ensure that the evaluations are informed by relevant background knowledge, participants may
+select one or more surveys based on their familiarity with the corresponding topics. For each selected survey, they
+rate its usefulness on a scale from 1 (poor) to 5 (excellent) across three aspects: (1) Field Overview, whether the
+survey helps them quickly understand the target topic; (2) Useful References, whether the survey helps them identify
+important papers in the field; (3) Research Insights, whether the survey provides useful information about research
+trends, limitations, or future directions. Participants are also encouraged to briefly describe any limitations they identify
+in each survey. All participants receive the same evaluation instructions, and responses are collected anonymously to
+reduce possible bias.
+
+4.4. Implementation details
+
+    (1) Literature retrieval and re-ranking
+
+    We use Semantic Scholar8 as our primary literature retrieval corpus, as it contains over 80 million peer-reviewed
+English scientific papers. To ensure domain-specific coverage, we supplement it with papers from arXiv9 for computer
+science, the most widely used preprint platform in the field, and papers from PubMed10, which includes 36 million
+biomedical papers in the medical domain. For Semantic Scholar, we directly perform retrieval using its official API,
+while for arXiv, we employ the bge-large-en-v1.511 as an embedding model to encode 530,000 computer science
+papers as the retrieval database, following the same setup as AutoSurvey [13]. During the first-round retrieval, for each
+topic, we calculate the semantic similarity between the survey topic and the abstracts of candidate papers from both
+databases and retrieve the top 200 papers with the highest similarity scores, including 150 from Semantic Scholar and
+50 from arXiv or PubMed. The former was determined based on the observation of this quantity to ensure it covers
+the majority of the references typically included in survey papers. The latter was selected based on our experiments,
+
+     8https://api.semanticscholar.org/api-docs/datasets
+     9https://arxiv.org/help/api
+    10https://www.nlm.nih.gov/databases/download/pubmed_medline.html
+    11https://huggingface.co/BAAI/bge-large-en-v1.5
+
+T. Bao et al.: Preprint submitted to Elsevier                          Page 14 of 38
+Table 6
+Key parameters for SurveyAgent-HKA implementation.
+
+Parameter                                                 Set Value                      Test Range
+
+Top-n related papers (first-round)                        200                            (150,200,250)
+Section-based retrieval                                   60                             (40,60,80,100)
+Co-cited papers added                                     20                             (10,20,30)
+Candidate papers per section                              80                             ­
+Final retained papers per section                         50                             (30,50,70,90)
+Number of clusters for outline generation                 6                              (4,5,6,7)
+Citation performance indicator                            Total/3-year citations         ­
+Venue reputation indicator                                Venue h-index                  ­
+Author impact indicator                                   H-index of first/last authors  ­
+Re-ranking weight: Citation performance                   0.5                            (0.3,0.5,0.7)
+Re-ranking weight: Author impact                          0.2                            (0.1,0.2,0.3)
+Re-ranking weight: Venue reputation                       0.3                            (0.2,0.3,0.4)
+Related surveys used for peer-review comments collection  20                             ­
+LLM for data processing and evaluation                    GPT-4.1-mini                   ­
+
+which showed that the primary database to supplementary database ratio of 2:1 yielded the best results. We restrict all
+retrieved papers to those published prior to the release date of the target survey to ensure time consistency.
+
+    For section-based retrieval, we use section titles as search queries to identify the top-60 most relevant papers
+and remove any papers without DOI. Next, through citation network analysis, we identify the top-20 most co-cited
+papers among the retrieved papers and include them in the candidate pool. The selected papers are then linked to the
+OpenAlex12 database via their DOIs to supplement quality-related signals for re-ranking purposes. For each paper,
+we quantify its academic impact using three indicators: (1) the total number of citations as a measure of citation
+performance, (2) the venue h-index13 as an indicator of venue reputation, and (3) the average h-index of the first and
+last authors [63], which are typically the corresponding authors and have greater influence [64], as a measure of author
+impact. During the re-ranking stage, we assign weights of 0.5, 0.3, and 0.2 to citation count, author impact, and venue
+reputation, respectively, based on preliminary experiments that indicate their relative importance in ranking papers.
+Finally, we retain the top-50 papers per section as the final set of references for content generation. We set the mentioned
+parameters based on performance testing, with a summary presented in Table 6.
+
+    (2) Outline generation and survey drafting
+
+    For outline generation, we first perform embedding-based clustering over the candidate papers retrieved in the first
+round to determine the main themes to be included in the outline. We set the number of clusters to 6, as we observed that
+most published surveys commonly organize their core content into around six major sections, which also aligns with the
+setting used in prior work [13, 20]. We use the same LLMs as the corresponding baselines for generating the outline and
+survey. Specifically, we use Claude-3.5-haiku-20241022 for comparisons with AutoSurvey [13], SurveyGen [19], and
+SurveyForge [20], and GPT-4o-mini for comparisons with SurveyX [14]. For each cluster, based on the title/abstracts
+of the papers within the group, we generate a summary and feed it into the LLM to generate the initial survey structure.
+Then, we select the human-written outlines from the 10 most relevant surveys in the SurveyGen [19] dataset as gold
+standards to perform few-shot learning for optimization, resulting in the final outline.
+
+    For survey drafting, during the information extraction stage, we build on SurveyX [14] and use the same knowledge
+extraction template, which is specifically tailored to reflect the typical structure of surveys in computer science.
+Similarly, for the biomedical domain, we design a knowledge template based on the widely recognized IMRaD structure
+(Introduction, Methods, Results, and Discussion) [65, 66], which is commonly used in medical scientific writing. Both
+knowledge extraction templates are illustrated in Appendix A.4. In addition, we refine the surveys by leveraging peer
+review comments from published surveys that are related to the target topics. To balance extracting insights from
+human reviews while maintaining topic consistency, for each topic, we select 20 of the most relevant surveys and use
+the corresponding peer review comments as the source to extract reviewer checklists, which are then used to generate
+
+    12https://openalex.org/
+    13The h-index is defined as the largest  for which an author or venue has  papers cited at least  times.
+
+T. Bao et al.: Preprint submitted to Elsevier                                            Page 15 of 38
+Table 7
+Overall comparison of model performance; P and R represent precision and recall; H1 and H2 represent the match between
+the first and second-level headings with the human-written outline; Rel indicates the relevance score (1­5) rated by the
+LLM. The best and second-best results are highlighted in bold and underlined.
+
+Domain Model         Citation quality          Structural consistency  Content quality
+
+                     P R F1 H1(F1) H2(F1) Rel Similarity ROUGE-L KPR
+
+     Naive-RAG [12]  4.36 10.24 6.12 29.35 12.07 2.5 80.06                              8.54   38.04
+
+     AutoSurvey [13] 6.58 11.39 8.34 33.07 14.13 2.7 82.28                              10.21 43.38
+
+CS   SurveyX [14]    9.44 15.15 11.63 36.84 20.96 3.8 83.11                             13.72 50.37
+
+     SurveyForge [20] 11.57 17.62 13.97 33.30 10.57 3.0 82.14                           12.49 48.19
+
+     DeepResearch [27] 6.72 14.78 9.24 34.37 15.12 3.2 83.75                            16.29 45.63
+
+     SurveyAgent-HKA 14.95 19.53 16.94 38.43 22.17 3.5 83.49                            14.68  53.85
+
+     Naive-RAG [12]  8.27 12.90 10.08 22.12 11.04 3.2 82.93                             14.37  46.52
+                                                                                        15.25  53.90
+Med  SurveyGen [19]  15.31 19.82 17.28 25.07 13.68 3.4 83.42                            17.40  51.81
+                                                                                        15.96  57.07
+     DeepResearch [27] 11.15 16.04 13.16 27.25 18.72 3.0 85.07
+
+     SurveyAgent-HKA 16.78 22.95 19.39 30.22 19.26 3.9 83.71
+
+targeted revision comments for survey revision. To mitigate potential model bias, GPT-4.1-mini is used throughout all
+data processing and evaluation stages.
+
+    (3) Agents communication and stopping conditions
+
+    We design each agent as an LLM-powered module that handles specific subtasks with crafted prompts. In line
+with the process of writing a scientific survey, the sequence in which the agents perform their tasks follows the
+order: [RETRIEVER]  [OUTLINER]  [RETRIEVER]  [RANKER]  [WRITER]  [REVIEWER] 
+[REFINER]. Here, the two [RETRIEVER] stages serve different purposes. The first retrieval focuses on the survey-
+level scope, whereas the second targets section-related literature. It is worth noting that this sequence is flexible. For
+example, when the refinement stage requires additional references or content, the central router can re-invoke the
+subsequence [RETRIEVER]  [RANKER]  [WRITER] as needed. However, the overall sequence cannot be
+reversed; for instance, the outline generation cannot be called before any retrieval has occurred. The memory module
+is designed to store information that is likely to be reused in subsequent steps. This includes: (1) the literature retrieved
+in the first-round retrieval, which enable efficient reuse for the section-based retrieval round; (2) the initial outline,
+which serves as a blueprint to guide content generation; (3) the outputs from each step, including agent labels and
+generated content, which can be referenced in the follow-up steps; (4) execution records that track both current and
+historical agent activities. We define stop conditions as follows: the process is complete when all agent calls have been
+executed, and the optimization of the survey cannot exceed three iterations to balance cost and improvement gains.
+
+5. Results
+
+    In this section, we present the overall comparison results in Section 5.1. Sections 5.2, 5.3, and 5.4 provide detailed
+analyses of literature retrieval, outline generation, and survey content quality, respectively. Section 5.8 reports the
+ablation study, and Section 5.9 presents case studies.
+
+5.1. Overall comparison with baselines
+    We first report the overall comparison results with the baselines in Table 7. As shown, our model achieves the
+
+best citation quality in both the computer science (14.95% for Precision, 19.53% for Recall, and 16.94% for F1)
+and medical domains (16.78% for Precision, 22.95% for Recall, and 19.39% for F1). These results are attributed to
+the fact that, compared to the baselines, our approach has the advantage of integrating multiple large-scale corpus
+sources such as Semantic Scholar, along with domain-specific databases like arXiv and PubMed, enabling access to a
+more comprehensive set of literature. Moreover, we designed a re-ranking module based on multiple indicators (e.g.,
+academic impact, recent popularity, and content diversity), which helps identify more representative and influential
+papers rather than relying solely on semantic similarity, which has been shown to yield higher consistency with human
+
+T. Bao et al.: Preprint submitted to Elsevier                                           Page 16 of 38
+selection preferences. For structural consistency, our model not only achieves the highest structural match with human-
+written surveys on both domains but also attains the best scores in LLM-based structural relevance evaluation (3.5/5
+for computer science and 3.9/5 for medicine). These results indicate that, instead of generating the outline in one-step
+LLM call, our dynamic outline generation process first clusters the retrieved literature related to the survey topic and
+produces cluster summaries. This approach allows the model to identify the main research themes within the topic,
+which provides a foundation for organizing the survey structure and ensures that the outline is comprehensive and
+logical. In addition, expanding the first-level outline into a second-level outline produces a chained effect, which also
+aligns with the strategy behind SurveyX [14] achieving the second-best performance. In terms of content quality,
+our model achieves higher key-point recall (53.85% for computer science and 57.07% for medicine), indicating that
+it captures the most important findings present in human-written surveys. Additionally, it ranks second only to the
+commercial model DeepResearch in terms of content overlap, which also outperforms all other baselines. The statistical
+significance tests for the main evaluation metrics are reported in Appendix A.5.
+
+5.2. Further analysis of citation performance
+
+5.2.1. Citation performance with different retrieval strategies
+
+    We further analyze the impact of different retrieval strategies on the results by examining different Top-K papers
+for each section. We compare two main approaches: (i) the similarity-only retrieval methods, represented by Naive-
+RAG [12], AutoSurvey [13], and SurveyX [14], and (ii) the combined similarity and citation-based retrieval method
+like SurveyForge [20]. As illustrated in Figure 3, in both domains, purely similarity-based retrieval performs the
+worst, showing minimal performance improvement even as K increases. In contrast, citation-based methods excel at
+identifying highly cited, influential papers, which are typically regarded as crucial references in survey writing due to
+their academic significance. Notably, we observe that citation-based methods show clear performance improvements as
+K increases; however, beyond a certain threshold (K=50), the rate of improvement begins to slow down, as most highly-
+cited papers have already been included, and additional papers struggle to overcome the cut-off gains. In comparison,
+our approach consistently outperforms all other methods across a range of K values. This enhanced performance can
+be attributed to the dual consideration of our retrieval strategy, which not only incorporates citation counts but also
+accounts for the short-term relevance of papers. Through this multidimensional evaluation, we are able to capture
+newly relevant literature that may not yet have accumulated a high citation count but remains valuable for recent topics
+of focus in the survey. This combination ensures continuous performance enhancement as K increases, setting our
+approach apart from the others.
+
+(a) Computer Science                           (b) Medicine
+
+Figure 3: Citation performance across different strategies, where K denotes the number of papers retrieved per section.
+In paper re-ranking, our method considers not only citation counts but also recent popularity, as well as the influence of
+authors and venues.
+
+T. Bao et al.: Preprint submitted to Elsevier                Page 17 of 38
+(a) Computer Science                           (b) Medicine
+
+Figure 4: Impact of different data collection sources on literature retrieval performance, where arXiv and PubMed are used
+as supplementary data sources for computer science and medicine domains, respectively.
+
+5.2.2. Citation performance with different data sources
+
+    In Figure 4, we report the impact of different data sources on citation quality in literature retrieval. As mentioned
+previously, we use Semantic Scholar as the primary data source, while arXiv and PubMed serve as specialized databases
+for the computer science and medical fields, respectively. It can be observed that, for the computer science field, retrieval
+results from arXiv alone do not perform as well as those from Semantic Scholar. Although arXiv covers cutting-edge
+research, some papers have not yet undergone thorough peer review, which compromises their reliability, and certain
+publications that do not have preprints available on arXiv may also further contribute to this issue. For the medical
+field, the retrieval results of PubMed are also lower than those from Semantic Scholar, but the gap is smaller compared
+to the computer science field. This is mainly because PubMed is widely regarded as the authoritative database in the
+medical field, containing a large number of high-quality, rigorously peer-reviewed papers. Although Semantic Scholar
+has broader coverage, its advantage over PubMed in the medical domain is limited compared to the computer science
+field, but it remains useful for cross-source retrieval. In general, our findings indicate that the use of multiple data
+sources for literature retrieval can improve both search accuracy and recall, offering advantages over the use of a
+single database. In practice, the primary database should be given more weight, while secondary databases can play a
+supporting role, helping to improve the recall of relevant literature and enhance its overall quality.
+
+5.2.3. Distribution analysis of the retrieved references
+
+    Taking computer science domain as an example, we investigate how the retrieved references are distributed across
+different models and compare them with the ground truth references in Figure 5, focusing on the following four aspects:
+citation count (5a), author H-index (5b), journal H-index (5c), and time gap (5d). As shown, our method outperforms
+the baseline models and aligns more closely with the ground truth distribution across all four dimensions, as evidenced
+by the lower KS values obtained. Specifically, in terms of citation count, similarity-based models such as AutoSurvey
+[13] and SurveyX [14] show a higher density in retrieving low-citation papers, which is also consistent with the
+distribution of these papers' publication years (5d), with more recent publications in arXiv being retrieved. Therefore,
+these papers tend to have lower citation counts, as they have not yet had time to accumulate higher citations. However,
+our model, which takes both citation count and recent popularity into the literature selection process, is more effective
+in identifying influential papers that have accumulated citations over time, while also including the latest research
+on hot topics. For author and journal impact, all models similarly reflect a consistent long-tail distribution, where a
+small number of influential authors and journals are heavily cited, while a larger proportion of less-cited works still
+contribute to the overall academic landscape. Overall, although all methods show some alignment with the human
+ground truth distribution, they still show significant differences compared to the references selected by humans. For
+example, humans writing surveys may choose papers that were published up to 30 years ago, but these papers may not
+
+T. Bao et al.: Preprint submitted to Elsevier                Page 18 of 38
+(a) Citation counts                            (b) Author H-index
+
+(c) Journal H-index Sum                        (d) Time Gap
+
+Figure 5: Distribution of retrieved references compared to ground truth, where the KS represents the Kolmogorov-Smirnov
+test, and a smaller KS value indicates a closer distribution to human-selected references. *** denotes a p-value < 0.001.
+The time gap refers to the interval between the publication date of the retrieved reference and the corresponding survey.
+
+be included in mainstream databases due to issues like the lack of a digital version or limited accessibility. Additionally,
+the significant differences observed across all models highlight the challenge of the task, as human selection behavior
+is a complex process and difficult to replicate.
+
+5.3. Further analysis of the generated survey outline
+
+5.3.1. Statistical analysis of the generated survey outline
+
+    We first analyze the consistency between the numbers of survey outlines generated by different models and those
+written by humans, as summarized in Table 8. As can be observed, in the computer science domain, the number of
+generated outlines varies notably across models. Specifically, the number of generated first-level sections normally
+ranges from 5 to 8, while the number of second-level subsections ranges from 13 to 20, which is comparable to
+the number of sections observed in human-generated outlines. Our model achieves the highest F1 match scores for
+both outline levels, with 38.53% for first-level sections (H1) matching and 33.42% for second-level (H2) matching,
+suggesting a better balance between coverage and precision when aligning with human-written outlines. In the medical
+domain, our model also demonstrates superior performance, achieving F1 match scores of 45.38% for H1 matching
+and 33.85% for H2 matching. In addition, when a model generates a smaller number of outline headings, such as
+DeepResearch [27], it tends to achieve higher precision; however, it also results in limited coverage of human-written
+content, leading to lower recall and consequently lower F1 scores. Across both domains, generating second-level
+
+T. Bao et al.: Preprint submitted to Elsevier                      Page 19 of 38
+Table 8
+Performance comparison of generated outlines, where H1 denotes the number of first-level headings and H2 denotes the
+number of second-level headings. The best and second-best results are highlighted in bold and underlined.
+
+Model                   #H1                     #H1    H1-Match          #H2    #H2         H2-Match
+                        LLM                    Human  (P/R/F1%)          LLM   Human       (P/R/F1%)
+Naive-RAG [12]
+AutoSurvey [13]          5.0                        Computer Science     17.6    18.2  25.59/24.73/25.14
+SurveyX [14]             5.3                                             20.7          27.54/31.32/29.31
+SurveyForge [20]         7.8                          36.40/24.59/29.35  14.6    15.6  36.61/28.57/31.71
+DeepResearch [27]        8.2                                             33.8          22.78/42.30/29.62
+SurveyAgent-HKA (Ours)   5.4                          39.62/28.38/33.07  13.6          27.21/25.33/23.27
+                         7.0                                             20.1          31.84/35.17/33.42
+Naive-RAG [12]                                 7.4    35.90/37.85/36.84
+SurveyGen [19]           5.2                          31.71/35.06/33.30  16.3          26.99/28.20/27.59
+DeepResearch [27]        6.5                                             17.5          30.27/33.97/32.02
+SurveyAgent-HKA (Ours)   4.9                          40.74/29.73/34.37  12.7          33.89/27.54/30.39
+                         6.3                                             16.9          32.54/35.26/33.85
+                                                      39.57/37.35/38.43
+
+                                                      Medicine
+
+                                                      36.54/33.93/35.19
+
+                                               5.6    35.39/41.07/38.02
+                                                      40.82/35.71/38.10
+
+                                                      42.86/48.21/45.38
+
+subsections is more challenging than first-level sections because the latter require capturing finer thematic distinctions
+or task-specific categorizations, while first-level sections typically correspond to high-level rhetorical functions shared
+across surveys (e.g., Introduction and Conclusion). Furthermore, outlines in computer science tend to be more difficult
+to generate than those in medicine. A key contributing factor is the stronger degree of structural standardization in
+medical literature, where surveys frequently conform to well-established organizational paradigms--most notably the
+IMRaD format [66, 67, 68], which facilitates more accurate outline generation by LLMs. Additionally, the widespread
+use of biomedical corpora in LLM training may also contribute to this phenomenon [69].
+
+(a) Computer Science                                                           (b) Medicine
+
+Figure 6: Position distribution of matched section and subsection headings in the generated survey.
+
+5.3.2. Distribution analysis of the matched section
+    We further examined the distribution of matched headings that exceeded the predefined semantic similarity
+
+threshold. Specifically, we divided the relative position of the generated section within a survey into four equal
+segments: the beginning (0-25%), the early middle (25-50%), the late middle (50-75%), and the ending section (75-
+100%). As shown in Figure 6, most of the matched first-level sections (H1) generated by LLMs were clustered at
+the beginning and the end of the survey. This observation further validates our conclusion that first-level headings
+are generally easier for LLMs to generate, since the beginning and ending of surveys typically contain standardized
+sections, such as "Introduction" and "Conclusion", that are largely shared across disciplines and thus more readily
+
+T. Bao et al.: Preprint submitted to Elsevier                                                Page 20 of 38
+(a) Computer Science                           (b) Medicine
+
+Figure 7: Structural consistency performance under different shot settings, where shot outlines are selected from related
+human-written surveys based on topical similarity.
+
+generated by LLMs. Moreover, H2 matches are more commonly observed in the middle sections, which tend to include
+more subtopics to provide detailed overview.
+
+5.3.3. Structural performance under different shot settings
+
+    In the outline generation process, we provide LLMs with published human-written outlines on topics closely related
+to the target survey for few-shot learning. As shown in Figure 7, as the few-shot examples increase, the performance
+of both H1 and H2 generation improves consistently cross both domains, with more pronounced improvements
+observed in computer science. The optimal performance peaks when the number of few-shot examples is set to 10.
+Although LLMs present limited controllability in text generation, this result indicates that human-written outlines offer
+effective structural guidance, enabling LLMs to better capture high-level organizational patterns as well as finer-grained
+hierarchical relationships. However, it is worth noting that when the number of few-shot examples exceeds a certain
+threshold, performance begins to decline, as additional examples may introduce irrelevant or redundant structural cues,
+which in turn reduce the model's capacity to identify the structural patterns needed for effective outline generation.
+
+5.4. Further analysis of the generated survey content
+
+5.4.1. Analysis of peer review comments on survey revision
+
+    To examine the impact of peer review comments on survey generation, we use the initial draft without peer review
+as the baseline (0) and compare it with the final version refined by our SurveyAgent-HKA after generating a revision
+list from peer review comments of related surveys and applying the corresponding modifications. The comparison is
+conducted across three dimensions: citation quality, structural consistency, and content quality. As shown in Table
+9, the refined version shows improvements over the initial draft across all three dimensions. In the computer science
+domain, the citation quality F1 score increased by 3.86%, with first- and second-level heading match F1 scores increased
+by 9.31% and 6.19%, respectively, while ROUGE and KPR scores increased by 2.81% and 10.25%. In the medical
+domain, citation quality increased by 2.62%, while first- and second-level heading matches improved by 4.92% and
+6.71%, respectively, and ROUGE and KPR scores increased by 4.22% and 8.48%. These results indicate that after
+simulating the peer review process, when the model incorporates these simulated review suggestions, it reorganizes
+sections and adjusts the hierarchy of content, resulting in a more coherent and logically structured survey. In addition,
+such structural refinements and the supplementation of references can trigger additional literature retrieval, allowing
+the model to identify and add relevant studies that were missed in the prior round, further elevating the completeness
+of the generated survey.
+
+5.4.2. Analysis of the revision stopping rounds
+    Taking the computer science domain as an example, we further analyze how the stopping condition for revision
+
+rounds impacts generated survey performance. As shown in Table 10, the initial draft (V0) starts with relatively low
+
+T. Bao et al.: Preprint submitted to Elsevier                Page 21 of 38
+Table 9
+Comparison of survey draft (V0) and final version in citation quality, structural consistency, and content quality. The best
+and second-best results are highlighted in bold and underlined.
+
+Domain  Model         Citation quality         Structural consistency         Content quality
+CS
+Med     Surveyv0       P R F1                  H1(F1) H2(F1) Rel              Similarity ROUGE-L      KPR
+        Surveyf inal
+        Surveyv0      11.72 14.79 13.08        29.12        15.98 2.9         83.04            11.87  43.60
+        Surveyf inal  14.95 19.53 16.94        38.43        22.17 3.5         83.49            14.68  53.85
+
+                      14.61 19.69 16.77        25.30        12.55 3.6         81.92            11.74  48.59
+                      16.78 22.95 19.39        30.22        19.26 3.9         83.71            15.96  57.07
+
+Table 10
+Comparison of survey draft and refined version (in computer science domain) in key metrics: citation quality (F1), structural
+consistency (H1-, H2-F1), and content quality (KPR). The best and second-best results are highlighted in bold and
+underlined.
+
+                      Versions                 Citation F1  H1(F1)   H2(F1)   KPR
+
+                      V0                           13.08      29.12    15.98  43.60
+                      V1                           14.36      33.85    19.17  48.15
+                      V2                           17.25      36.21    20.55  50.34
+                      V3                           16.94      38.43    22.17  53.85
+                      V4                           16.12      32.29    21.73  51.56
+
+scores across all metrics, with a citation F1 of 13.08%, H1 (F1) of 29.12%, H2 (F1) of 15.98%, and KPR of 43.60%.
+Early revisions (V1-V2) contribute notable gains across multiple dimensions, and the third revision (V3) achieves
+the highest overall performance, indicating that iterative refinement effectively enhances the survey's quality and
+coherence. Beyond this point, additional revisions yield only marginal improvements, and the performance tends to
+converge. One possible explanation is that, as the survey becomes more polished, the model has fewer substantial errors
+to correct, and excessive iterations primarily reinforce existing content rather than introduce meaningful improvements.
+Additionally, extra revision rounds incur higher token usage and time costs. Therefore, we set the stopping condition
+at three iterations to balance performance gains and computational efficiency.
+
+5.5. Parameter sensitivity analysis
+
+    We perform a parameter sensitivity analysis to justify the parameter choices, including the ranking weights,
+which determine the priority of candidate references during re-ranking; the number of clusters, which affects the
+structural organization of the survey; and the similarity thresholds used to match reference titles and section headings
+during evaluation. As shown in Figure 8, in the citation re-ranking module, assigning a larger weight to citation
+performance leads to better results than emphasizing author impact or venue influence. This suggests that citation-based
+indicators provide a more direct signal for identifying influential and representative references. For topic clustering,
+KPR generally increases with the number of clusters, as more clusters enable the system to cover a broader range
+of subtopics. However, when the number of clusters exceeds 6, the improvement in KPR becomes marginal, while
+the additional retrieval costs increase. Therefore, following prior studies, we set the number of clusters to 6 in the
+main experiments. For reference matching, the results indicate that a similarity threshold of 0.95 yields the highest
+title-matching accuracy. In contrast, when the threshold is set to 1.00, the matching rate drops noticeably. Through
+manual inspection, we find that exact matching is highly sensitive to minor variations, such as spelling differences,
+emojis, or formatting inconsistencies. For title matching, a threshold of 0.85 provides an optimal trade-off between
+correctly identifying matched titles and avoiding missed matches, leading to the highest F1 score.
+
+T. Bao et al.: Preprint submitted to Elsevier                                                         Page 22 of 38
+Figure 8: Parameter sensitivity analysis. In the re-ranking module, , , and  denote citation performance, author impact,
+and venue influence, respectively. The results of reference matching and section heading matching are measured based on
+human evaluation of 200 matched samples.
+
+5.6. Human evaluation results
+5.6.1. Comparison across LLM-generated and Human-written surveys
+
+    The human evaluation results are shown in Figure 9, which includes two groups. The first group compares the final
+version with the initial version generated by our SurveyAgent-HKA framework (9a), and the second group compares
+our model with the human-written survey (9b). It can be observed that, in the internal model comparison, the final
+version outperforms the initial version in all three dimensions with improvements in structure and coverage exceeding
+40%. This further highlights the importance of dynamic updates and iteration in improving the structure and quality
+of the survey generated by SurveyAgent-HKA. However, when compared to the human-written ground truth, the
+human-written surveys still have a clear advantage, indicating that while our framework can automatically generate
+basic surveys, there is still a considerable gap for further enhancement to match the quality of human-written surveys.
+To quantify the differences, we provide some detailed human evaluation results in Table 11.
+
+(a) SurveyAgent-HKA (Final) VS SurveyAgent-HKA (V0)  (b) SurveyAgent-HKA VS Human-written
+
+Figure 9: Human evaluation results in two groups.
+
+Figure 10: Score distributions of the user study across three evaluation aspects.
+
+T. Bao et al.: Preprint submitted to Elsevier                                      Page 23 of 38
+Table 11
+Detailed human evaluation examples of Human-written versions and SurveyAgent-HKA generated surveys.
+
+Survey topics               Reference Win                       Explanation
+
+LLM-Generated Texts Detection [70]             Human            LLM version is somewhat limited in scope, while
+                                               Human            the human version has broader analysis of
+LLMs for Recommendation     [71]               SurveyAgent-HKA  recent developments and emerging technologies.
+                                               Human            LLM version shows clear signs of AI generation,
+Acceleration for LLMs       [72]               Human            contains redundant statements, while the human
+                                                                version provides a clear method comparison that
+LLMs for Information Retrieval [73]                             helps in understanding the field.
+                                                                LLM version has a better structural design,
+LLMs for Software Engineering [74]                              while human-written ones are too flat, and the
+                                                                definitions are not clear.
+                                                                Human-written version provides a complete
+                                                                introduction to query, retrieval, and
+                                                                ranking-related work; the LLM version lacks
+                                                                work related to ranking and future discussion.
+                                                                Human version delivers a trend analysis and
+                                                                solid summary of different topics, while the LLM
+                                                                version only lists the related work.
+
+Table 12
+Human validation of LLM-based judgments for survey classification, structural evaluation, and content evaluation. Survey
+classification is treated as a binary task, structural consistency is rated on a 5-point scale, and content evaluation verifies
+the LLM judgments used to measure key point recall (KPR).
+
+LLM-based              N Phds Human task                           Metric                            Result
+evaluation
+
+Survey classification 20 1  Verify the LLM-assigned survey labels  Accuracy                          Acc = 90%
+Structural evaluation 20 2                                                                           MAE1 = 0.70
+                            Score the consistency between outline pairs Mean Absolute Error          MAE2 = 0.95
+Content evaluation 30 2                                                                               = 0.82
+                            Judge whether key points are covered   Cohen's Kappa                     Acc = 84%
+                                                                   Accuracy
+
+5.6.2. Practical evaluation through user study
+    In the user study, 10 generated surveys were distributed, yielding 83 valid responses. As shown in Figure 10,
+
+ratings across all three dimensions are predominantly concentrated between 3 and 4, indicating that participants
+generally found the generated surveys useful. The relatively strong ratings for Field Overview and Useful References
+suggest that the surveys are effective in helping users quickly grasp the scope of a research field and identify relevant
+literature. In comparison, Research Insights receives slightly lower ratings, indicating that the system is less consistent
+in synthesizing open challenges, identifying research gaps, and developing future directions. These findings suggest
+that the generated surveys can serve as useful starting points for literature exploration and survey drafting, but still
+require expert involvement to strengthen critical analysis and high-level research synthesis.
+
+5.6.3. Consistency between LLM-as-judge and human evaluations
+    Since LLMs are involved in several evaluation stages, we further conduct human validation to examine the
+
+reliability of their judgments in survey classification, structural evaluation, and content evaluation. Since evaluating
+scientific surveys requires domain knowledge, we conduct the human validation in the computer science domain. The
+annotators are PhD students with computer science backgrounds and peer-reviewed publications in related venues. The
+validation settings and results are summarized in Table 12. For survey classification, one annotator manually verifies
+20 papers identified as surveys by the LLM, resulting in an accuracy of 90%. For structural evaluation, two annotators
+
+T. Bao et al.: Preprint submitted to Elsevier                                                        Page 24 of 38
+Table 13
+Average cost and time efficiency in SurveyAgent-HKA.
+
+Stage      Input Tokens Output Tokens Time (min) Cost
+
+Retrieval  0          0                               4          $0
+                                                                 $0.75 (GPT-4.1-mini)
+Data processing 1.1M  0.18M                           8          $0.50 (GPT-4o-mini) / $0.89 (Claude-3.5-Haiku)
+
+Writing    2.5M       0.21M                           12
+
+Table 14
+Ablation experiments results on citation quality. The best and second-best results are highlighted in bold and underlined.
+
+           Model                               CS          R      F1    Med     R      F1
+
+           SurveyAgent-HKA                      P         19.53  16.94   P     22.95  19.39
+              w/o Citation expansion                      16.29  13.84         18.73  16.67
+              w/o Re-ranking                   14.95      14.95  12.11  16.78  17.44  14.83
+                                               12.03                    15.02
+                                               10.17                    12.90
+
+independently assess 20 outline pairs using the same 5-point criteria. We separately calculate the MAE between the
+ten-run average LLM scores and each annotator's scores, obtaining MAE values of 0.70 and 0.95, indicating that their
+evaluations differ by less than one point on average. For content evaluation, two annotators independently determine
+whether 30 key points extracted from five human-written surveys are covered by the corresponding generated surveys.
+Their judgments achieve a Cohen's  of 0.82, while the LLM-based evaluator obtains an accuracy of 84% against the
+adjudicated human labels. Overall, these results indicate that the LLM-based evaluations show reasonable agreement
+with human judgments and can provide scalable evaluation signals in our setting.
+
+5.7. Cost and efficiency analysis
+    The average cost and efficiency in the SurveyAgent-HKA are presented in Table 13. We divide the process into three
+
+phases: literature retrieval, data processing, and survey writing. It can be seen that the retrieval phase is time-efficient,
+taking only 4 minutes for retrieval, citation expansion, and quality signal supplement. Additionally, it does not require
+LLM calls, as it relies on APIs or full-text databases for data acquisition. During the data processing phase, which
+involves tasks such as rating the relevance of literature, knowledge extraction from downloadable PDF full-text papers,
+retrieving relevant review comments, generating peer-review checklists, and other related tasks, the average cost is
+$0.75. In the Writing stage, SurveyAgent-HKA generates a survey of length comparable to that of human-written
+surveys, with an average input length of 2.5M tokens and an average output of 0.21M tokens, which also includes the
+intermediate polishing process. This phase is completed in approximately 12 minutes (variations based on API call).
+Specifically, the cost is $0.50 when using GPT-4o-mini and increases to $0.89 when using Claude-3.5-Haiku. Overall,
+our method can assist researchers in generating a comprehensive survey while remaining within a reasonable budget
+in both time and financial cost.
+
+5.8. Ablation study
+
+5.8.1. Ablation experiments on citation quality
+
+    We report the ablation experiments on citation quality in Table 14, focusing on two key components: citation
+expansion and re-ranking. It is evident that removing either component leads to significant drops in citation
+performance. Specifically, removing citation expansion results in a drop in F1-score by 3.10% in Computer Science
+and 2.72% in Medicine. Similarly, removing re-ranking causes a larger decline in F1-score, with a decrease of 4.83%
+in computer science and 4.56% in medicine. We believe that citation quality is fundamental to the overall quality of the
+generated content, as well-supported citations ensure that the survey is both reliable and comprehensive. Therefore,
+the above results highlight that expanding citations to include a wider range of relevant work, while re-ranking them
+to select the most important sources, is crucial for our SurveyAgent-HKA framework.
+
+T. Bao et al.: Preprint submitted to Elsevier                                                Page 25 of 38
+Table 15
+Ablation experiments results on structural consistency. The best and second-best results are highlighted in bold and
+underlined.
+
+Model                                          CS      F1-H2    Med     F1-H2
+
+SurveyAgent-HKA                                F1-H1    22.17   F1-H1    19.26
+   w/o Topic cluster                                    18.54            17.73
+   w/o Few-shot learning                        38.43   15.09    30.22   14.32
+                                                35.09            28.07
+                                                31.41            25.86
+
+Table 16
+Ablation experiments results on content quality. The best and second-best results are highlighted in bold and underlined.
+
+Model                        CS                ROUGE-L   KPR    Med         ROUGE-L   KPR
+
+SurveyAgent-HKA              Similarity           14.68  53.85  Similarity     15.96  57.07
+   w/o Knowledge extraction                       12.08  50.31                 14.15  54.64
+   w/o Peer-review feedback     83.49             11.87  43.60     83.71       11.74  48.59
+                                83.23                              83.26
+                                83.04                              81.92
+
+5.8.2. Ablation experiments on structural consistency
+    The ablation experiments on structural consistency are shown in Table 15, examining the impact of topic clustering
+
+and few-shot learning on the quality of the generated survey outlines. When topic clustering is removed, the first-level
+section F1-score decreases by 3.34% in computer science and 2.15% in medicine, highlighting the importance of
+clustering in organizing the primary sections of the survey, as they provide the main topic covered by the retrieved
+candidate literature. Meanwhile, the second-level section F1-score also drops by 3.63% in computer science and 1.53%
+in medicine. Similarly, removing few-shot learning leads to a more significant decline, with a decrease of 7.02% in
+computer science and 4.36% in medicine. This highlights the important role of human-written outlines, which provide
+a clear understanding of how different sections of a survey should be organized logically, helping LLMs learn the
+structure of scientific surveys and generate outlines that better align with human-written structures.
+
+5.8.3. Ablation experiments on content quality
+
+    We further evaluate the impact of knowledge extraction and peer-review feedback on content quality, as shown
+in Table 16. When knowledge extraction is removed, there is a slight decrease in performance, with the KPR score
+dropping to 50.31% for computer science and 54.64% for medicine. Additionally, Similarity and ROUGE scores also
+declined. This decrease can be attributed to the fact that knowledge extraction, which pulls content directly from full-
+text papers using predefined templates, offers a richer and more detailed understanding of the literature compared to
+abstracts. However, due to copyright restrictions, we are only able to access a limited number of full-text PDFs, which
+limits the scope of knowledge extraction. Removing peer-review feedback also leads to a more significant decline, with
+KPR scores decreasing to 43.60% in computer science and 48.59% in medicine. This drop underscores the crucial role
+of peer reviews, particularly from field experts, who offer valuable insights into the weaknesses of scientific surveys,
+such as missing topics, methodological flaws, or unaddressed areas that could strengthen the quality of the draft survey.
+To our knowledge, SurveyAgent-HKA is the first model to optimize survey generation by using existing feedback from
+human experts to simulate the real-world peer review process, which sets it apart as an innovative approach to improving
+content quality in this task. To further examine whether the observed improvements are solely due to additional retrieval
+resources, we also conduct a resource-controlled experiment, with detailed results reported in Appendix A.6
+
+5.9. Case study
+    In this case study, we explore the effectiveness of SurveyAgent-HKA in generating the survey on the topic of
+
+"Large Language Models for Information Retrieval". As shown in Figure 11, the generated survey showcases a clear
+and logical structure, with each section well designed to ensure a balanced flow of sections and seamless transitions
+
+T. Bao et al.: Preprint submitted to Elsevier                                         Page 26 of 38
+Large Language Models for Information Retrieval: A Survey
+
+1.Introduction                                                                                                                 2.2 Traditional Information Retrieval Methods
+                                                                                                                               2.3 Development of Large Language Models (LLM)
+1.1 Overview of Information Retrieval
+Traditional IR methods, including Boolean retrieval, vector space models, and probabilistic ranking approaches, have           3. Applications of LLM in Information Retrieval
+served as the backbone of early search engines and document retrieval systems. While these methods are                         3.1 Query Understanding and Writing
+computationally efficient and well-understood, they often struggle with capturing semantic similarity between                  3.2 Document Matching and Ranking
+queries and documents, handling ambiguous or conversational queries, and supporting multilingual or cross-domain               3.3 Question Answering and LLM-based Retrieval
+retrieval. To overcome these limitations, researchers have explored advanced NLP techniques, such as latent                    3.4 Data Augmentation with LLMs
+semantic analysis, topic modeling, and embedding-based retrieval. However, these approaches are still limited by               3.5 Resource and Evaluation
+the representational capacity of their models and the difficulty of scaling to extremely large datasets.
+                                                                                                                               4. Challenges of LLM in Information Retrieval
+Large language models (LLMs) have recently emerged as a transformative technology in natural language processing               4.1 Large-Scale Computation and Resource Consumption
+(NLP) and information retrieval [3]. LLMs, such as GPT, LLaMA, T5, and their variants, leverage deep neural networks,          4.2 Model Interpretability and Transparency
+self-attention mechanisms, and massive pretraining corpora to learn rich contextual representations of language [4].           4.3 Data Bias and Fairness
+Unlike traditional models, LLMs are capable of understanding complex semantic relationships, generating coherent               4.4 Multilingual and Cross-Language Information Retrieval
+text, and performing reasoning tasks. Their ability to comprehend user queries in a contextualized manner enables              4.5 Handling Long Documents and Complex Queries
+IR systems to move beyond exact keyword matches to semantic search, query rewriting, and even generative
+retrieval. For example, LLMs can infer user intent in ambiguous queries [5], summarize relevant documents [6], and             5. Cutting-edge Research on LLM in Information Retrieval
+generate precise answers in open-domain question answering scenarios [7].                                                      5.1 Multimodal Retrieval with LLMs
+                                                                                                                               5.2 Adaptive Learning of Large Language Models
+The integration of LLMs into IR systems has spurred a range of new research directions. LLMs can enhance query                 5.3 Integration of LLMs with Reinforcement Learning in Information Retrieval
+understanding by capturing the semantic meaning and intent behind user queries, improve document matching                      5.4 Fine-Tuning and Transfer Learning for Domain-Specific Retrieval
+through deep contextual embeddings, and facilitate advanced tasks such as conversational search, summarization,                5.5 Explainable LLMs in Information Retrieval
+and cross-lingual retrieval [8]. Moreover, LLMs can support data augmentation, synthetic query generation, and few-
+shot or zero-shot learning, reducing the dependency on large annotated datasets [9]. These capabilities position               6. Future Directions
+LLMs as a key technology for next-generation IR systems that are more intelligent, adaptable, and user-centric [10].           6.1 Multimodal Information Retrieval with LLMs
+                                                                                                                               6.2 Optimizing LLMs for Large-Scale Real-Time Retrieval Systems
+Despite their potential, the application of LLMs in IR also presents significant challenges. LLMs are computationally          6.3 Enhancing Model Explainability and Transparency
+intensive, requiring substantial hardware and energy resources. Their opaque reasoning processes raise questions               6.4 Implications of LLMs for User Privacy and Data Security
+about interpretability and trustworthiness. Furthermore, biases present in training data can propagate through
+LLMs, affecting fairness and reliability in retrieval results [11]. Addressing these issues is critical to ensuring the safe,
+ethical, and effective deployment of LLM-based retrieval systems.
+
+1.2 Purpose and Structure of the Review                                                                                        7. Conclusion
+This review aims to provide a comprehensive overview of the role of LLMs in information retrieval, covering
+foundational concepts, applications, challenges, and future research directions. The structure of this paper is                Reference
+organized as follows: Section 2 introduces the definitions and background of IR and LLMs; Section 3 discusses the key
+applications of LLMs in IR, including query understanding, document matching, question answering, and data                     [1] Evaluating the Effectiveness of Retrieval-Augmented Large Language Models in Scientific Document
+augmentation; Section 4 highlights the challenges and limitations associated with using LLMs in IR; Section 5 reviews          Reasoning. 10.18653/v1/2024.sdp-1.8
+cutting-edge research and recent advances in the field; Section 6 explores future directions and potential                     [2] Applications and Challenges for Large Language Models: From Data Management Perspective. 10.1109/
+developments; and Section 7 concludes the review by summarizing key findings and perspectives.                                 ICDE60146.2024.00441
+                                                                                                                               [3] Training language models to follow instructions with human feedback. 10.48550/arxiv.2203.02155
+2. Definition and Background                                                                                                   [4] In-Context Retrieval-Augmented Language Models. 10.1162/tacl_a_00605
+                                                                                                                               [5] Large Language Models can Accurately Predict Searcher Preferences. 10.1145/3626772.3657707
+2.1 Definition of Information Retrieval                                                                                        [6] Text Summarization Using Large Language Models: A Comparative Study of MPT-7b-instruct, Falcon-7b-
+Information Retrieval (IR) is the discipline that studies the representation, storage, organization of, and access to          instruct, and OpenAI Chat-GPT Models. 10.48550/arXiv.2310.10449
+information items, and the techniques for evaluating the relevance of these items with respect to user information             [7] Natural Questions: A Benchmark for Question Answering Research. https://doi.org/10.1162/
+needs expressed through queries. Formally, an IR system is a function f: Q × D  R that maps a query q  Q and a                 tacl_a_00276
+document collection D = {d1, ..., dN} to a relevance ranking R = (d(1), s1), ..., (d(N), sN) such that s1  ...  sN. The        [8] Information Retrieval Meets Large Language Models: A Strategic Report from Chinese IR Community.
+objective is to minimize the expected loss L(R, R*) between the predicted ranking R and the human-annotated gold               10.1016/j.aiopen.2023.08.001
+ranking R*, under a user-centric utility measure such as nDCG, MAP, or ERR. IR therefore subsumes not only                     [9] Data Augmentation for Text-based Person Retrieval Using Large Language Models. 10.48550/
+"search" in the narrow sense, but also filtering, recommendation, question answering, conversational browse, and               arXiv.2405.11971
+any task whose core primitive is the estimation of relevance.                                                                  [10] LLM4Eval: Large Language Model for Evaluation in IR. 10.1145/3626772.3657992
+                                                                                                                               [11] Enabling Large Language Models to Generate Text with Citations.10.18653/v1/2023.emnlp-main.398
+                                                                                                                               ......
+
+Figure 11: Example of the generated survey by our SurveyAgent-HKA, where the section marked with green color represents
+the overlap with the ground truth survey [73], and the red references represent the same literature selected by humans.
+
+from one topic to the next. Unlike the previous work AutoSurvey [13], which tends to have an equal number of sub-
+chapters for each section, our system offers a more focused and detailed exploration of key topics rather than a rigid
+distribution of subsections. In particular, our survey begins with a historical overview of "Information Retrieval"
+and the second section provides a detailed examination of traditional IR models and the rise of LLMs, focusing on
+their distinct advantages over classical models. In the third section, the survey focuses on the application of LLMs in
+IR and is subdivided into five main sub-chapters; three of them overlap with sections in the human-written survey,
+highlighting that SurveyAgent-HKA effectively identifies key research areas that correspond with those selected by
+human experts. Furthermore, out of the 11 references in the "Introduction" section, 2 match the references chosen by
+human experts, and we observed that each statement is clearly related to the cited literature. However, compared to the
+sections summarizing past research, many subsections in the generated survey are less detailed than those in human-
+written surveys, especially in areas requiring summary and in-depth analysis, such as challenges and future directions.
+These sections involve more than basic summarization and require thorough analysis and a deep understanding of the
+field, capabilities that, at this point, may be beyond the capabilities of LLMs [75].
+
+5.10. Error analysis
+    To better understand the remaining limitations of SurveyAgent-HKA, we conduct a manual error analysis of the
+
+generated surveys, as shown in Table 17. The fine-grained error taxonomy was derived from recurring issues identified
+in the written explanations provided during the pairwise human evaluation and limitations described by participants
+in the user study and was further refined through a pilot inspection. The most frequent problems concern research
+insights and cross-paper comparison, suggesting that the system is more reliable at summarizing individual studies
+
+T. Bao et al.: Preprint submitted to Elsevier                                                                                  Page 27 of 38
+Table 17
+Residual error analysis of generated surveys.
+
+Dimension Error type Counts Common issues                     Cause analysis
+
+Citation Missing key       12 Foundational, representative, Human­algorithm ranking mismatch;
+              references
+                           or recently published studies Incomplete database coverage;
+
+                           are missed.                        Query­paper semantic mismatch.
+
+         Citation­         8 Citations do not support the Restricted access to full-text PDFs;
+         claim                    associated claims or are placed Loss of supporting evidence during PDF parsing;
+         mismatch                 with inappropriate statements. Incorrect source attribution during writing;
+                                                                             LLM hallucinations during generation.
+
+Structure Missing key      13 Important research directions Fixed clusters obscure minor topics;
+              topics/sec-
+              tions        or specialized subtopics are Related but distinct topics are merged;
+
+                           missing from the generated Inaccurate topic expansion during outline
+
+                           outline.                           generation.
+
+         Homogenized       6 Different sections follow similar Uniform outline prompts across topics;
+         section                  organizational patterns and Homogenization in LLM outputs.
+         structure                lack topic-specific structures.
+
+Content  Insufficient      16 The surveys provide limited Paper-level extraction limits cross-paper synthesis;
+         research
+         insights/dis-     discussion of open challenges Compressed evidence weakens critical analysis;
+         cussion
+                           and future directions.             Generic feedback lacks topic specificity.
+
+         Limited           14 Studies are summarized          Limited extraction of cross-paper relations;
+         cross-paper
+         comparison        individually, with limited         Visual information is excluded;
+
+                           comparison of their methods, Insufficient comparison-oriented guidance;
+
+                           results, strengths, and            Separate generation of individual study
+
+                           limitations.                       summaries.
+
+         Non-              5 The writing is sometimes         Limited academic-style guidance;
+         academic                 overly repetitive or        Repetition introduced during iterative rewriting;
+         language                 insufficiently precise for  Insufficient language-focused refinement.
+                                  academic communication.
+
+than at producing deeper synthesis. These limitations are also related to earlier stages of the pipeline. Relevant studies
+may be missed because they are not indexed in the selected databases or are not adequately identified by the search
+queries and ranking process. Even when a paper is successfully retrieved, copyright restrictions may prevent access
+to its full-text PDF. As a result, the framework can make fuller use of open-access papers, whereas information from
+inaccessible papers is often limited to titles and abstracts. Such information loss also affects the writing stage, making
+it difficult to provide detailed comparisons across studies or develop sufficiently critical discussions. Therefore, fully
+automated survey writing remains difficult in practice; human input is needed earlier in the workflow, particularly for
+literature selection, evidence verification, and outline refinement, since errors introduced at these stages are difficult to
+correct during writing.
+
+6. Discussion
+
+6.1. Implications
+    Our work has several practical implications. First, automatic survey generation can help reduce the burden of
+
+information overload. For early-stage researchers, in particular, a high-quality survey is an essential resource for
+understanding research development and trends in their field, and it can provide insights for future research directions.
+Our method integrates the entire process of literature retrieval, paper ranking, knowledge extraction, survey generation,
+and evaluation, improving the efficiency of writing such long-form survey documents.
+
+T. Bao et al.: Preprint submitted to Elsevier                                                     Page 28 of 38
+    The value of our framework is twofold. First, it provides an efficient solution for survey generation in domains where
+large amounts of literature need to be synthesized. By using multiple LLM-powered agents, researchers can generate
+draft surveys that summarize key studies, identify major trends, and highlight research gaps. This can help researchers
+stay up to date with fast-growing scientific literature. Second, our work is also complementary to other methods that
+aim to automate or assist scientific review writing. For example, network-analysis and NLP-based methods have been
+used to provide a landscape view of a research field by identifying major topics, topic evolution, and influential research
+areas from large-scale literature collections [76]. Such methods do not directly generate full survey articles, but they can
+provide valuable upstream support for survey generation. The topic structures, citation networks, and impact signals
+produced by these methods could be integrated into our retrieval and ranking stages to improve paper selection and
+outline construction. Recent AI-assisted review writing systems further use RAG and modular LLM agents to generate
+citation-rich review drafts from manually curated papers or citation-network-derived corpora [77]. This study supports
+our motivation by showing that LLM-based scientific writing tools can assist researchers in producing initial review
+drafts. However, it also highlights the need for more reliable and human-controllable review generation. SurveyAgent-
+HKA extends this line of work by moving beyond draft generation from a predefined literature set and introducing an
+end-to-end framework that integrates cross-platform retrieval, literature re-ranking, human-written outline guidance,
+and peer-review-based revision.
+
+    In real-world implementation, our model is based on publicly accessible databases that provide full-data downloads
+and support online API retrieval. All of the tools used are also publicly available. Moreover, Table 13 demonstrates
+the effectiveness of our model in terms of time and financial cost. Considering that our writing process relies on LLM
+APIs, there are almost no data annotation or training costs. Finally, the dataset and evaluation protocols introduced in
+this study establish a foundation for future research on automated survey generation, enabling systematic comparisons
+across models and domains, and facilitating progress toward more reliable AI-related scientific writing practices.
+
+6.2. Limitations
+    We acknowledge several limitations in this study.
+    Limited visual content and evaluation scale. The generated surveys focus on textual content and do not include
+
+figures, tables, or other visual information, which are common elements in published surveys. However, we maintained
+consistency with the experimental setups of previous works to ensure a fair comparison. In addition, due to the high
+API cost of long-form generation and evaluation, our experiments are conducted on a relatively small dataset. Although
+the framework demonstrates consistent effectiveness in both computer science and medicine, its applicability to other
+disciplines, publication venues, survey lengths, and emerging research areas remains to be further examined. Since
+our evaluation relies on human-written surveys as gold standards, a rigorous length- or venue-aware evaluation would
+require additional matched human surveys and comparable annotations, which are beyond the scope of this study.
+
+    Potential data contamination. We cross-referenced the earliest public release dates of the evaluation surveys
+with the knowledge cutoff points reported from the backbone LLMs, as detailed in the Appendix A.1. According to
+the official documentation, GPT-4o has a knowledge cutoff of October 2023, while Claude-3.5-Sonnet has a cutoff of
+April 2024. Therefore, some human-written surveys may have appeared in the models' pretraining data. Potential prior
+exposure could influence generation by enabling the backbone LLM to recall the references, structure, or conclusions
+of a target survey. It may also bias the LLM-based evaluation of structural consistency and key point coverage through
+familiarity with the reference survey. To reduce the risk of direct information leakage during our experiments, we
+excluded each target survey and its alternative versions, including preprints and extended versions, from the literature
+retrieval results and from the human-written surveys used for outline enhancement. Moreover, all compared methods
+were developed after 2024 and evaluated on the same survey set using the same backbone LLMs. Therefore, any
+contamination-related advantage would be largely shared across the compared methods, potentially affecting the
+absolute scores but being less likely to fully explain their relative performance differences.
+
+    Gap from expert-written surveys. Finally, despite promising results, generated surveys still lag behind expert-
+written ones, particularly in identifying key references, maintaining balanced and coherent outlines, and providing in-
+depth cross-paper comparisons and research insights. The generated surveys should therefore be regarded as supportive
+materials for literature exploration rather than substitutes for expert-written surveys. Human verification and further
+refinement remain necessary. To support future research in this area, we will release the dataset and code used in
+this study, enabling other researchers to build upon our work and push the boundaries of automated scientific survey
+generation.
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 29 of 38
+7. Conclusion and future work
+
+    We proposed SurveyAgent-HKA, a multi-agent framework for automated survey generation that combines LLMs
+and human knowledge augmentation. In SurveyAgent-HKA, we first define a unified data collection pipeline to retrieve
+relevant literature from multiple data sources related to the survey topic. Then, we generate a topic-related survey
+structure based on the retrieved literature and use human-crafted outlines to guide the LLM for outline optimization.
+Building upon the refined outline, we further gather literature relevant to subtopics and employ citation network analysis
+along with a re-ranking module to identify key, influential papers for each section. Furthermore, to better utilize the
+retrieved references, we extract the structured knowledge typically required for writing survey papers and use it to
+generate well-supported sections that contribute to the raw survey draft. Afterward, we gather peer review comments
+from relevant published surveys, identify common issues highlighted by experts, and use this human knowledge to
+generate revision suggestions and iteratively refine the draft into the final survey. Experiments in both the computer
+science and biomedical domains show that our approach outperforms mainstream baselines in terms of citation quality,
+structural consistency, and content quality, and ablation studies further confirm the contribution of each module
+designed in our framework. In an era of rapidly expanding publications, our work provides a timely solution to assist
+researchers in quickly generating surveys on a given topic, while also offering valuable insights for broader academic
+collaboration scenarios, such as related work generation and other knowledge synthesis tasks.
+
+    In future work, we plan to incorporate visual information, such as images and tables, into the survey generation
+process to help researchers gain deeper insights into the field. Additionally, conducting experiments on larger datasets
+and across other disciplines to further validate the robustness of our approach is also being considered. Furthermore,
+we intend to develop a web-based system that will serve as an easy-to-use platform for users to generate customized
+surveys that meet their specific needs.
+
+Declaration of competing interest
+
+The authors declare that they have no competing interests.
+
+Data availability
+
+The code and dataset will be released at https://github.com/tongbao96/code-for-SurveyAgent-HKA after review.
+
+Acknowledgment
+
+This paper was supported by the Jiangsu Social Science Fund (No.26XZA001).
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 30 of 38
+Table 18
+Detail of the selected survey papers.
+
+Topic                                    Survey Title                                                                                                                                                 Citations   Publication Year
+
+In-context Learning                                                                                                       Computer Science                                                                   323             2022.12
+LLMs for Recommendation                                                                                                                                                                                       55             2023.05
+LLM-Generated Texts Detection            A survey for in-context learning                                                                                                                                     42             2023.10
+Explainability for LLMs                  A Survey on Large Language Models for Recommendation                                                                                                                 25             2023.09
+Evaluation of LLMs                       A Survey of Detecting LLM-Generated Texts                                                                                                                                           2023.07
+LLMs-based Agents                        Explainability for Large Language Models                                                                                                                            183             2023.08
+LLMs in Medicine                         A Survey on Evaluation of Large Language Models                                                                                                                     101             2023.11
+Domain Specialization of LLMs            A Survey on Large Language Model based Autonomous Agents                                                                                                            234             2023.05
+Challenges of LLMs in Education          A Survey of Large Language Models in Medicine                                                                                                                                       2023.03
+Alignment of LLMs                        Domain Specialization as the Key to Make Large Language Models Disruptive                                                                                            14             2023.07
+ChatGPT                                  Practical and Ethical Challenges of Large Language Models in Education                                                                                               53             2023.04
+Instruction Tuning for LLMs              Aligning Large Language Models with Human                                                                                                                            53             2023.08
+LLMs for Information Retrieval           A Survey on ChatGPT and Beyond                                                                                                                                      144             2023.08
+Safety in LLMs                           Instruction Tuning for Large Language Models                                                                                                                         45             2023.02
+Chain of Thought                         Large Language Models for Information Retrieval                                                                                                                      22             2023.09
+Hallucination in LLMs                    Towards Safer Generative Language Models: Safety Risks, Evaluations, and Improvements                                                                                17             2023.11
+Bias and Fairness in LLMs                A Survey of Chain of Thought Reasoning                                                                                                                               13             2023.09
+Large Multi-Modal Language Models        A Survey on Hallucination in Large Language Models                                                                                                                  116             2023.02
+Acceleration for LLMs                    Bias and Fairness in Large Language Models                                                                                                                           12             2022.11
+LLMs for Software Engineering            Large-scale Multi-Modal Pre-trained Models                                                                                                                           61             2023.08
+                                         A Survey on Model Compression and Acceleration for Pretrained Language Models                                                                                        22
+Impact of Sugars on Body Weight          Large Language Models for Software Engineering                                                                                                                       49             2012.01
+Benefits of Medicinal Plant Compounds                                                                                                                                                                                        2018.08
+Patient Involvement in Medical Research                                                                                         Medicine                                                                   1583              2014.02
+Delirium on Clinical Outcome                                                                                                                                                                               1408              2013.03
+Chinese Medicine for SARS-CoV-2          Dietary Sugars and Body Weight: Systematic Review and Meta-analyses of Randomised Controlled Trials and Cohort Studies                                            1135              2020.03
+Cognitive Reserve and Dementia Risk      Flavonoids and Other Phenolic Compounds from Medicinal Plants for Pharmaceutical and Medical Aspects: An Overview                                                                   2012.06
+Effectiveness of ADHD Medications        Patient Engagement in Research: A Systematic Review                                                                                                                 793             2018.08
+Air Pollutions in Stroke Development     Impact of Delirium on Clinical Outcome in Critically Ill Patients: A Meta-analysis                                                                                  769             2015.03
+Clinical Perspectives on ALS             Traditional Chinese Medicine in the Treatment of Patients Infected with 2019-new Coronavirus (SARS-CoV-2): A Review and Perspective                                 740             2020.06
+Maternal Smoking on Birth Defects        Education and Dementia in the Context of the Cognitive Reserve Hypothesis: A Systematic Review with Meta-analyses and Qualitative Analyses                          705             2011.07
+                                         Comparative Efficacy and Tolerability of Medications for Attention-deficit Hyperactivity Disorder in Children, Adolescents, and Adults: A Systematic Review         705
+                                         Short Term Exposure to Air Pollution and Stroke: Systematic Review and Meta-analysis                                                                                657
+                                         Amyotrophic Lateral Sclerosis: A Clinical Review                                                                                                                    626
+                                         Maternal Smoking in Pregnancy and Birth Defects: A Systematic Review Based on 173,687 Malformed Cases and 11.7 Million Controls
+
+Table 19
+Criteria for human evaluation.
+
+Dimension Guidelines
+
+Coverage   Win: The survey comprehensively covers all key aspects of the topic, addressing all major
+           points better than the other survey.
+           Tie: Both surveys cover similar key aspects, with only minor differences in coverage.
+           Loss: The survey misses important key aspects or addresses fewer points compared to the
+           other survey.
+
+Structure  Win: The structure is well-organized with clear and logical sections, making it more readable
+           and easier to follow than the other survey.
+           Tie: Both surveys have similar structural clarity, with only minor differences in organization.
+           Loss: The structure is incomplete, with unclear organization or sections, making it harder to
+           follow than the other survey.
+
+Relevance  Win: The content is highly relevant and aligns well with the survey topic, offering a more
+           focused and precise exploration than the other survey.
+           Tie: Both surveys are equally relevant to the topic, with only minor gaps in content alignment.
+           Loss: The content is less relevant to the topic or covers less relevant aspects compared to
+           the other survey.
+
+A. Appendix
+A.1. Survey examples
+
+    To ensure a fair comparison, we selected 30 surveys that are the same as those in previous studies for comparison.
+Among them, the surveys in the computer science field are from AutoSurvey [13], and those in the medical field are
+from SurveyGen [19]. The specific surveys are shown in Table 18.
+
+A.2. Peer review examples
+    We provide two peer review examples from our dataset in Figure 12.
+
+A.3. Human evaluation criteria
+    We provide the human evaluation criteria in Table 19.
+Table 20
+Knowledge extraction trees for paper in Computer Science and Medicine domains.
+
+Attribute        Details
+1. Background                                                    Computer Science
+2. Idea
+3. Method        a. Definition: Specific description of the problem.
+                 b. Key Obstacle: Main difficulty, main challenge.
+4. Experiments   a. Intuition: Idea was inspired by what.
+5. Discussion    b. Opinion: What's the idea?
+                 c. Innovation: What's the main difference compared to previous method, or where is the primary improvement.
+1. Introduction  a. Method Definition: Given the problem, what's the definition of the method.
+2. Methods       b. Method Description: In one sentence, describe the method.
+3. Results       c. Method Steps: Procedures of method.
+4. Discussion    d. Principle: Why this method is effective.
+                 a. Experiment Setting: Including dataset, baseline, evaluation metrics.
+                 b. Experiment Results: Summarize the main results and findings in one paragraph.
+                 a. Advantage: What's the advantages of this paper.
+                 b. Limitation: What's the disadvantages of this paper.
+                 c. Future Work: Based on the advantages and disadvantages, what and where can be improved in the future.
+
+                                                                       Medicine
+                 a. Disease/Condition Overview: Briefly describe the disease or condition under study.
+                 b. Key Challenge/Research Gap: What is the key issue or research gap being addressed?
+                 a. Study Design: What is the study design (e.g., clinical trial, cohort study)?
+                 b. Sample/Participants: What are the inclusion/exclusion criteria for the study sample?
+                 c. Intervention/Procedure: What treatments, interventions, or procedures were used in the study?
+                 a. Main Findings: Summarize the key results and findings of the study.
+                 b. Statistical Significance: What were the statistical results?
+                 a. Strengths and Limitations: What are the strengths and limitations of the study?
+                 b. Future Directions: What are the suggested future research directions or areas for improvement?
+
+A.4. Knowledge extraction trees for the retrieved papers
+    Table 20 presents knowledge extraction trees for the retrieved papers. Unlike abstracts, which provide a brief
+
+overview, these knowledge extraction trees offer a more comprehensive representation of the paper content, particularly
+the details such as datasets, results, and other important information that are usually not included in abstracts. Moreover,
+they condense the full text into a more structured and concise format, which helps reduce token cost while retaining
+the most relevant content for survey generation.
+
+A.5. Statistical significance against baselines
+    We conduct paired significance tests at the topic level. For each topic, we compute the performance difference
+
+between SurveyAgent-HKA and the baseline, and then apply the Wilcoxon signed-rank test to these paired differences.
+As shown in Table 21, SurveyAgent-HKA achieves statistically significant improvements over most baselines across
+both domains. In the CS domain, the improvements over Naive-RAG, AutoSurvey, and SurveyForge are significant
+across all four key metrics. Compared with the stronger SurveyX baseline, SurveyAgent-HKA still obtains significant
+gains in Citation F1 and KPR, while the improvements in H1(F1) and H2(F1) are positive but not statistically
+significant. In the Medicine domain, SurveyAgent-HKA significantly outperforms Naive-RAG across all metrics, and
+shows significant improvements over SurveyGen in structural consistency and KPR. These results indicate that the
+observed gains are not merely caused by random variation, although some comparisons with stronger baselines remain
+non-significant under the limited evaluation scale.
+
+A.6. Resource-controlled comparison
+    We further conduct a resource-controlled comparison to examine whether the performance gains of SurveyAgent-
+
+HKA can be attributed only to richer retrieval resources. In this setting, candidate papers were retrieved exclusively
+from arXiv for Computer Science and S2ORC for Medicine, and only their metadata, including titles and abstracts,
+were used for subsequent generation. All other configurations remained the same as in the original experiments. As
+shown in Table 22, the single-source and abstract-only setting leads to performance drops compared with the full
+system, confirming the contribution of multi-source retrieval and full-text evidence. Under the same resource setting,
+the controlled version still outperforms the baselines on most metrics. In Computer Science, the controlled version
+
+T. Bao et al.: Preprint submitted to Elsevier                                   Page 32 of 38
+Table 21
+Statistical significance test of SurveyAgent-HKA against baselines across domains and metrics. Each cell reports  and
+the corresponding significance level, where  denotes the average topic-level improvement of SurveyAgent-HKA over the
+compared method.
+
+     Domain Compared Method                    Citation F1   H1(F1)        H2(F1)               KPR
+
+              Naive-RAG [12]    +10.82 ( < 0.01) +9.08 ( < 0.01) +10.10 ( < 0.01) +15.81 ( < 0.01)
+
+     CS       AutoSurvey [13]   +8.59 ( < 0.01) +5.36 ( < 0.01) +8.04 ( < 0.01) +10.47 ( < 0.01)
+              SurveyForge [20]  +2.97 ( < 0.01) +5.13 ( < 0.01) +11.60 ( < 0.01) +5.66 ( < 0.01)
+
+              SurveyX [14]      +5.30 ( < 0.01)              +1.59 (n.s.)  +1.21 (n.s.)  +3.48 ( < 0.05)
+
+     Med      Naive-RAG [12]    +9.31 ( < 0.01) +8.10 ( < 0.01) +8.22 ( < 0.01) +10.55 ( < 0.01)
+
+              SurveyGen [19]                   +2.11 (n.s.)  +5.15 ( < 0.01) +5.58 ( < 0.01) +3.17 ( < 0.05)
+
+Table 22
+Performance comparison under the resource-controlled and full settings. The best and second-best results are highlighted in
+bold and underlined, respectively. In the arXiv-only setting, the venue reputation weight is reassigned to citation performance
+during the re-ranking because all candidates share the same venue index.
+
+Domain Model                    Citation quality             Structural consistency             Content quality
+
+                              P R F1 H1 (F1) H2 (F1) Rel. Similarity ROUGE-L KPR
+
+     Naïve-RAG [12] 4.36 10.24 6.12 29.35                            12.07 2.5           80.06  8.54             38.04
+                                                                                                10.21            43.38
+     AutoSurvey [13] 6.58 11.39 8.34 33.07                           14.13 2.7           82.28  12.49            48.19
+                                                                                                12.82            50.67
+CS   SurveyForge [20] 11.57 17.62 13.97 33.30                        10.57 3.0           82.14  14.68            53.85
+
+     Ours (Controlled) 11.09 17.13 13.61 36.76                       17.95 3.2           82.45
+
+     Ours (Full)            14.95 19.53 16.94 38.43 22.17 3.5 83.49
+
+     Naïve-RAG [12] 8.27 12.90 10.08 22.12                           11.01 3.2           82.93  14.37            46.52
+                                                                     13.68 3.4           83.42  15.25            53.90
+Med  SurveyGen [19] 15.31 19.82 17.28 25.07                          18.57 3.8           83.37  15.53            55.13
+     Ours (Controlled) 15.56 20.18 17.57 28.94                       19.26 3.9           83.71  15.96            57.07
+
+     Ours (Full)            16.78 22.95 19.39 30.22
+
+achieves citation quality comparable to SurveyForge, with a slightly lower F1 score of 13.46% versus 13.97%. However,
+it achieves better structural consistency and content quality, suggesting that the proposed human-knowledge-guided
+planning and revision components still contribute beyond resource advantages.
+
+A.7. Prompts used in this study
+    Prompt design is key to ensuring that LLMs perform tasks reliably. In practice, structured prompts have proven to
+
+be effective in improving model performance, as they guide the LLM more clearly towards desired outcomes, reducing
+ambiguity and increasing task accuracy [78, 79]. Therefore, we also employ a structured prompting strategy to reduce
+variability in model behavior and to ensure consistent adherence to task objectives. The prompt is constructed using
+four elements: (1) Instruction: Specifies which task and stage in survey generation the LLM is expected to perform,
+and clarifies the objective of the task. In the instruction, we can add human-informed empirical observations to better
+guide the LLM in completing the task. For example, survey papers in computer science typically cover methodological
+advances, datasets, and evaluation metrics, which could be part of the instruction to provide high-level structural
+guidance during generation. (2) Context Information: Provides the context information required for completing the
+task, such as conceptual definitions or evaluation criteria, to help the LLM better respond within a well-defined semantic
+framework. (3) Input Data: Provides the specific data that the LLM needs to analyze under the guidance of the given
+instruction. This may also include gold-standard examples that help the model better infer the task. (4) Output Format:
+Defines the structure and layout of the model's response, ensuring that outputs follow a standardized format and
+remain consistent across different instances. At all stages, our prompts strictly adhere to the predefined guidelines
+and are adjusted according to specific task requirements. For example, during the outline generation stage, the LLM is
+instructed to output strictly in JSON format and provide brief explanations for the settings of each section. However,
+during the survey generation stage, such explanations are not required. Overall, this structured prompt design enables
+greater control over the model's outputs and minimizes variability across tasks, which helps ensure that the generated
+content remains practical and consistent. While we acknowledge that different prompts may yield varying results, this
+
+T. Bao et al.: Preprint submitted to Elsevier                                                        Page 33 of 38
+issue falls outside the scope of this study. Due to space limitations, the prompt is not included in the main paper and
+can be found in the supplementary files attached.
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 34 of 38
+(a) Peer reviewer comments from the OpenReview plat-  (b) Peer reviewer comments from PLOS One.
+form.
+
+Figure 12: Examples of peer reviewer comments on survey paper from OpenReview and PLOS One, where the former is
+the peer review platform for most major leading computer science conferences, and the latter is a well-known open-access
+medical journal.
+
+T. Bao et al.: Preprint submitted to Elsevier         Page 35 of 38
+References
+
+ [1] S. Lawrence, Free online availability substantially increases a paper's impact, Nature 411 (2001) 521. doi:10.1038/35079151.
+ [2] J. S. G. Chu, J. A. Evans, Slowed canonical progress in large fields of science, Proceedings of the National Academy of Sciences 118 (2021)
+
+      e2021636118. doi:10.1073/pnas.2021636118.
+ [3] M. Park, E. Leahey, R. J. Funk, Papers and patents are becoming less disruptive over time, Nature 613 (2023) 138­144. doi:10.1038/
+
+      s41586-022-05543-x.
+ [4] C. Lok, Literature mining: Speed reading, Nature 463 (2010) 416­418. doi:10.1038/463416a.
+ [5] R. W. Palmatier, M. B. Houston, J. Hulland, Review articles: purpose, process, and structure, Journal of the Academy of Marketing Science
+
+      46 (2018) 1­5. doi:10.1007/s11747-017-0563-4.
+ [6] R. J. Torraco, Writing integrative literature reviews: Using the past and present to explore the future, Human Resource Development Review
+
+      15 (2016) 404­428. doi:10.1177/1534484316671606.
+ [7] J. Paul, A. R. Criado, The art of writing literature review: What do we know and what do we need to know?, International Business Review
+
+      29 (2020) 101717. doi:https://doi.org/10.1016/j.ibusrev.2020.101717.
+ [8] R. J. Torraco, Writing integrative literature reviews: Guidelines and examples, Human Resource Development Review 4 (2005) 356­367.
+
+      doi:10.1177/1534484305278283.
+ [9] B. V. Wee, D. Banister, How to write a literature review paper?, Transport Reviews 36 (2016) 278­288. doi:10.1080/01441647.2015.
+
+      1065456.
+[10] T. Brown, B. Mann, N. Ryder, M. Subbiah, J. D. Kaplan, P. Dhariwal, A. Neelakantan, P. Shyam, G. Sastry, A. Askell, S. Agarwal, A. Herbert-
+
+      Voss, G. Krueger, T. Henighan, R. Child, A. Ramesh, D. Ziegler, J. Wu, C. Winter, C. Hesse, M. Chen, E. Sigler, M. Litwin, S. Gray, B. Chess,
+      J. Clark, C. Berner, S. McCandlish, A. Radford, I. Sutskever, D. Amodei, Language models are few-shot learners, in: Advances in Neural
+      Information Processing Systems, volume 33, 2020, pp. 1877­1901. URL: https://proceedings.neurips.cc/paper_files/paper/
+      2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf.
+[11] S. Wu, X. Ma, D. Luo, L. Li, X. Shi, X. Chang, X. Lin, R. Luo, C. Pei, C. Du, Z.-J. Zhao, J. Gong, Automated literature research and review
+      generation method based on large language models, National Science Review (2025). doi:10.1093/nsr/nwaf169.
+[12] Y. Lai, Y. Wu, Y. Wang, W. Hu, C. Zheng, Instruct large language models to generate scientific literature survey step by step, in: Natural
+      Language Processing and Chinese Computing, Singapore, 2025, pp. 484­496. doi:10.1007/978-981-97-9443-0_43.
+[13] Y. Wang, Q. Guo, W. Yao, H. Zhang, X. Zhang, Z. Wu, M. Zhang, X. Dai, M. Zhang, Q. Wen, W. Ye, S. Zhang,
+      Y. Zhang, AutoSurvey: Large language models can automatically write surveys, in: Advances in Neural Information Process-
+      ing Systems, volume 37, 2024, pp. 115119­115145. URL: https://proceedings.neurips.cc/paper_files/paper/2024/file/
+      d07a9fc7da2e2ec0574c38d5f504d105-Paper-Conference.pdf. doi:10.52202/079017-3655.
+[14] X. Liang, J. Yang, Y. Wang, C. Tang, Z. Zheng, S. Song, Z. Lin, Y. Yang, S. Niu, H. Wang, B. Tang, F. Xiong, K. Mao, Z. li, Surveyx:
+      Academic survey automation via large language models, 2025. URL: https://arxiv.org/abs/2502.14776. arXiv:2502.14776.
+[15] G. Izacard, P. Lewis, M. Lomeli, L. Hosseini, F. Petroni, T. Schick, J. Dwivedi-Yu, A. Joulin, S. Riedel, E. Grave, Atlas: Few-shot learning
+      with retrieval augmented language models, 2022. URL: https://arxiv.org/abs/2208.03299. arXiv:2208.03299.
+[16] S. Borgeaud, A. Mensch, J. Hoffmann, T. Cai, E. Rutherford, K. Millican, G. B. Van Den Driessche, J.-B. Lespiau, B. Damoc, A. Clark,
+      D. De Las Casas, A. Guy, J. Menick, R. Ring, T. Hennigan, S. Huang, L. Maggiore, C. Jones, A. Cassirer, A. Brock, M. Paganini, G. Irving,
+      O. Vinyals, S. Osindero, K. Simonyan, J. Rae, E. Elsen, L. Sifre, Improving language models by retrieving from trillions of tokens, in:
+      Proceedings of the 39th International Conference on Machine Learning, volume 162 of Proceedings of Machine Learning Research, 2022,
+      pp. 2206­2240. URL: https://proceedings.mlr.press/v162/borgeaud22a.html.
+[17] Y. Gao, Y. Xiong, X. Gao, K. Jia, J. Pan, Y. Bi, Y. Dai, J. Sun, M. Wang, H. Wang, Retrieval-augmented generation for large language models:
+      A survey, 2024. URL: https://arxiv.org/abs/2312.10997. arXiv:2312.10997.
+[18] Z. Jiang, F. Xu, L. Gao, Z. Sun, Q. Liu, J. Dwivedi-Yu, Y. Yang, J. Callan, G. Neubig, Active retrieval augmented generation, in: Proceedings
+      of the 2023 Conference on Empirical Methods in Natural Language Processing, Singapore, 2023, pp. 7969­7992. doi:10.18653/v1/2023.
+      emnlp-main.495.
+[19] T. Bao, M. T. Nayeem, D. Rafiei, C. Zhang, SurveyGen: Quality-aware scientific survey generation with large language models, in:
+      Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing, 2025, pp. 2712­2736. doi:10.18653/v1/2025.
+      emnlp-main.136.
+[20] X. Yan, S. Feng, J. Yuan, R. Xia, B. Wang, B. Zhang, L. Bai, Surveyforge: On the outline heuristics, memory-driven generation, and multi-
+      dimensional evaluation for automated survey writing, 2025. URL: https://arxiv.org/abs/2503.04629. arXiv:2503.04629.
+[21] X. Tang, X. Duan, Z. Cai, Large language models for automated literature review: An evaluation of reference generation, abstract writing, and
+      review composition, in: Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing, Suzhou, China, 2025,
+      pp. 1602­1617. doi:10.18653/v1/2025.emnlp-main.83.
+[22] J. Paul, A. R. Criado, The art of writing literature review: What do we know and what do we need to know?, International Business Review
+      29 (2020) 101717. doi:https://doi.org/10.1016/j.ibusrev.2020.101717.
+[23] I. Kanellos, T. Vergoulis, D. Sacharidis, T. Dalamagas, Y. Vassiliou, Impact-based ranking of scientific publications: A survey and experimental
+      evaluation, IEEE Transactions on Knowledge and Data Engineering 33 (2021) 1567­1584. doi:10.1109/TKDE.2019.2941206.
+[24] R. Jha, C. Finegan-Dollak, B. King, R. Coke, D. Radev, Content models for survey generation: A factoid-based evaluation, in: Proceedings
+      of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language
+      Processing (Volume 1: Long Papers), Beijing, China, 2015, pp. 441­450. doi:10.3115/v1/P15-1043.
+[25] Y. Hu, X. Wan, Automatic generation of related work sections in scientific papers: An optimization approach, in: Proceedings of the
+      2014 Conference on Empirical Methods in Natural Language Processing (EMNLP), Doha, Qatar, 2014, pp. 1624­1633. doi:10.3115/v1/
+      D14-1170.
+[26] T. Kasanishi, M. Isonuma, J. Mori, I. Sakata, SciReviewGen: A large-scale dataset for automatic literature review generation, in: Findings of the
+      Association for Computational Linguistics: ACL 2023, Toronto, Canada, 2023, pp. 6695­6715. doi:10.18653/v1/2023.findings-acl.
+      418.
+
+[27] OpenAI, DeepResearch, https://openai.com/index/introducing-deep-research/, 2025. Accessed: 2025-07-07.
+[28] ScholarAI, Scholarai, https://scholarai.io/, 2025. Accessed: 2025-07-07.
+[29] Z. Wen, J. Cao, Z. Wang, B. Guo, R. Yang, S. Liu, Interactivesurvey: An llm-based personalized and interactive survey paper generation
+
+      system, 2025. URL: https://arxiv.org/abs/2504.08762. arXiv:2504.08762.
+[30] R. Fok, A. Siu, D. S. Weld, Toward living narrative reviews: An empirical study of the processes and challenges in updating survey articles
+
+      in computing research, in: Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems, 2025, pp. 1­10.
+[31] R. Qiu, S. Chen, Y. Su, P.-Y. Yen, H.-W. Shen, Completing a systematic review in hours instead of months with interactive ai agents, 2025.
+
+      URL: https://arxiv.org/abs/2504.14822. arXiv:2504.14822.
+[32] M.-A. Nguye, M.-D. Nguyen, H. L. N. T., K. H. Dang, N. T. Dong, D. D. Le, Surveyg: A multi-agent llm framework with hierarchical citation
+
+      graph for automated survey generation, 2025. URL: https://arxiv.org/abs/2510.07733. arXiv:2510.07733.
+[33] A. Asai, J. He, R. Shao, W. Shi, A. Singh, J. C. Chang, K. Lo, L. Soldaini, S. Feldman, M. D'Arcy, et al., Synthesizing scientific literature
+
+      with retrieval-augmented language models, Nature (2026) 1­7.
+[34] A. Singh, J. C. Chang, D. Haddad, A. Naik, J. D. Hwang, R. Kinney, D. S. Weld, D. Downey, S. Feldman, Ai2 scholar qa: Organized literature
+
+      synthesis with attribution, in: Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 3: System
+      Demonstrations), 2025, pp. 513­523.
+[35] Y. Weng, M. Zhu, G. Bao, H. Zhang, J. Wang, Y. Zhang, L. Yang, Cycleresearcher: Improving automated research via automated review, in:
+      International Conference on Learning Representations, volume 2025, 2025, pp. 3669­3709.
+[36] T. Guo, X. Chen, Y. Wang, R. Chang, S. Pei, N. V. Chawla, O. Wiest, X. Zhang, Large language model based multi-agents: a survey of
+      progress and challenges, in: Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence, IJCAI '24, 2024, pp.
+      8048 ­ 8057. doi:10.24963/ijcai.2024/890.
+[37] K. Zhang, Z. Yang, T. Baar, Multi-Agent Reinforcement Learning: A Selective Overview of Theories and Algorithms, Cham, 2021, pp.
+      321­384. doi:10.1007/978-3-030-60990-0_12.
+[38] A. Zhao, D. Huang, Q. Xu, M. Lin, Y.-J. Liu, G. Huang, Expel: Llm agents are experiential learners, Proceedings of the AAAI Conference
+      on Artificial Intelligence 38 (2024) 19632­19642. doi:10.1609/aaai.v38i17.29936.
+[39] S. Saadaoui, E. Alonso, Coordinated llm multi-agent systems for collaborative question-answer generation, Knowledge-Based Systems 330
+      (2025) 114627. doi:https://doi.org/10.1016/j.knosys.2025.114627.
+[40] J. Li, Y. Lai, W. Li, J. Ren, M. Zhang, X. Kang, S. Wang, P. Li, Y.-Q. Zhang, W. Ma, Y. Liu, Agent hospital: A simulacrum of hospital with
+      evolvable medical agents, 2025. URL: https://arxiv.org/abs/2405.02957. arXiv:2405.02957.
+[41] G. Wang, Y. Xie, Y. Jiang, A. Mandlekar, C. Xiao, Y. Zhu, L. Fan, A. Anandkumar, Voyager: An open-ended embodied agent with large
+      language models, 2023. URL: https://arxiv.org/abs/2305.16291. arXiv:2305.16291.
+[42] Q. Han, Z. Yang, H. Lin, T. Qin, A plug-and-play knowledge-enhanced module for medical reports generation, Knowledge-Based Systems
+      309 (2025) 112805. doi:https://doi.org/10.1016/j.knosys.2024.112805.
+[43] M. A. Islam, M. E. Ali, M. R. Parvez, MapCoder: Multi-agent code generation for competitive problem solving, in: Proceedings of the
+      62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Bangkok, Thailand, 2024, pp. 4912­4944.
+      doi:10.18653/v1/2024.acl-long.269.
+[44] S. Hong, M. Zhuge, J. Chen, X. Zheng, Y. Cheng, C. Zhang, J. Wang, Z. Wang, S. K. S. Yau, Z. Lin, et al., Metagpt: Meta programming for
+      a multi-agent collaborative framework, arXiv preprint arXiv:2308.00352 (2023).
+[45] C. Gao, X. Lan, Z. Lu, J. Mao, J. Piao, H. Wang, D. Jin, Y. Li, S3: Social-network simulation system with large language model-empowered
+      agents, 2025. URL: https://arxiv.org/abs/2307.14984. arXiv:2307.14984.
+[46] F. Huot, R. K. Amplayo, J. Palomaki, A. S. Jakobovits, E. Clark, M. Lapata, Agents' room: Narrative generation through multi-step
+      collaboration, 2025. URL: https://arxiv.org/abs/2410.02603. arXiv:2410.02603.
+[47] Q. Wang, S. Ni, H. Liu, S. Lu, G. Chen, X. Feng, C. Wei, Q. Qu, H. Alinejad-Rokny, Y. Lin, M. Yang, Autopatent: A multi-agent framework
+      for automatic patent generation, 2024. URL: https://arxiv.org/abs/2412.09796. arXiv:2412.09796.
+[48] Y. Shao, Y. Jiang, T. Kanell, P. Xu, O. Khattab, M. Lam, Assisting in writing Wikipedia-like articles from scratch with large language models,
+      in: Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language
+      Technologies (Volume 1: Long Papers), Mexico City, Mexico, 2024, pp. 6252­6278. doi:10.18653/v1/2024.naacl-long.347.
+[49] M. D'Arcy, T. Hope, L. Birnbaum, D. Downey, Marg: Multi-agent review generation for scientific papers, 2024. URL: https://arxiv.org/
+      abs/2401.04259. arXiv:2401.04259.
+[50] H. Xia, H. Peng, Y. Qi, B. Xu, J. Li, H. Lei, X. Wang, Storywriter: A multi-agent framework for long story generation, in: Proceedings
+      of the 34th ACM International Conference on Information and Knowledge Management, New York, NY, USA, 2025, p. 6559­6563.
+      doi:10.1145/3746252.3761616.
+[51] D. Yang, L. Zeng, J. Rao, Y. Zhang, Knowing you don't know: Learning when to continue search in multi-round rag through self-practicing, in:
+      Proceedings of the 48th International ACM SIGIR Conference on Research and Development in Information Retrieval, 2025, pp. 1305­1315.
+[52] G. Dong, J. Jin, X. Li, Y. Zhu, Z. Dou, J.-R. Wen, Rag-critic: Leveraging automated critic-guided agentic workflow for retrieval augmented
+      generation, in: Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 2025, pp.
+      3551­3578.
+[53] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, I. Polosukhin, Attention is all you need, Advances in
+      neural information processing systems 30 (2017).
+[54] X. Shi, Q. Kou, Y. Li, N. Tang, J. Xie, L. Yu, S. Wang, H. Zhou, Scisage: A multi-agent framework for high-quality scientific survey generation,
+      2025. URL: https://arxiv.org/abs/2506.12689. arXiv:2506.12689.
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 37 of 38
+[55] J. B. McQueen, Some methods of classification and analysis of multivariate observations, in: Proc. of 5th Berkeley Symposium on Math.
+      Stat. and Prob., 1967, pp. 281­297.
+
+[56] N. Donthu, S. Kumar, D. Mukherjee, N. Pandey, W. M. Lim, How to conduct a bibliometric analysis: An overview and guidelines, Journal
+      of Business Research 133 (2021) 285­296. URL: https://www.sciencedirect.com/science/article/pii/S0148296321003155.
+      doi:https://doi.org/10.1016/j.jbusres.2021.04.070.
+
+[57] D. Hicks, P. Wouters, L. Waltman, S. De Rijcke, I. Rafols, Bibliometrics: the leiden manifesto for research metrics, Nature 520 (2015)
+      429­431. doi:https://doi.org/10.1038/520429a.
+
+[58] J. Niu, Z. Liu, Z. Gu, B. Wang, L. Ouyang, Z. Zhao, T. Chu, T. He, F. Wu, Q. Zhang, Z. Jin, G. Liang, R. Zhang, W. Zhang, Y. Qu, Z. Ren, Y. Sun,
+      Y. Zheng, D. Ma, Z. Tang, B. Niu, Z. Miao, H. Dong, S. Qian, J. Zhang, J. Chen, F. Wang, X. Zhao, L. Wei, W. Li, S. Wang, R. Xu, Y. Cao,
+      L. Chen, Q. Wu, H. Gu, L. Lu, K. Wang, D. Lin, G. Shen, X. Zhou, L. Zhang, Y. Zang, X. Dong, J. Wang, B. Zhang, L. Bai, P. Chu, W. Li,
+      J. Wu, L. Wu, Z. Li, G. Wang, Z. Tu, C. Xu, K. Chen, Y. Qiao, B. Zhou, D. Lin, W. Zhang, C. He, Mineru2.5: A decoupled vision-language
+      model for efficient high-resolution document parsing, 2025. URL: https://arxiv.org/abs/2509.22186. arXiv:2509.22186.
+
+[59] M. Zhu, Y. Weng, L. Yang, Y. Zhang, DeepReview: Improving LLM-based paper review with human-like deep thinking process, in:
+      Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 2025, pp. 29330­29355.
+      doi:10.18653/v1/2025.acl-long.1420.
+
+[60] C.-Y. Lin, Rouge: A package for automatic evaluation of summaries, in: Text summarization branches out, 2004, pp. 74­81.
+[61] T. H. Nguyen, N. H. Luong, Diverse and high-quality text generation assisted by large language models, Knowledge-Based Systems (2025)
+
+      114954. doi:https://doi.org/10.1016/j.knosys.2025.114954.
+[62] Z. Qi, R. Xu, Z. Guo, C. Wang, H. Zhang, W. Xu, 2: Evaluating long-context & long-form retrieval-augmented generation with
+
+      key point recall, in: Findings of the Association for Computational Linguistics: EMNLP 2024, Miami, Florida, USA, 2024, pp. 4852­4872.
+      doi:10.18653/v1/2024.findings-emnlp.279.
+[63] N. Donthu, S. Kumar, D. Mukherjee, N. Pandey, W. M. Lim, How to conduct a bibliometric analysis: An overview and guidelines, Journal of
+      Business Research 133 (2021) 285­296. doi:https://doi.org/10.1016/j.jbusres.2021.04.070.
+[64] E. A. Corrêa Jr., F. N. Silva, L. da F. Costa, D. R. Amancio, Patterns of authors contribution in scientific manuscripts, Journal of Informetrics
+      11 (2017) 498­510. doi:https://doi.org/10.1016/j.joi.2017.03.003.
+[65] A. Y. Gasparyan, L. Ayvazyan, H. Blackmore, G. D. Kitas, Writing a narrative biomedical review: considerations for authors, peer reviewers,
+      and editors, Rheumatology international 31 (2011) 1409­1417.
+[66] L. B. Sollaci, M. G. Pereira, The introduction, methods, results, and discussion (imrad) structure: a fifty-year survey, Journal of the medical
+      library association 92 (2004) 364. doi:10.1007/s00296-011-1999-3.
+[67] P. Kumar, Improving imrad for writing research articles in social, and health sciences, International Research Journal of Economics and
+      Management Studies IRJEMS 2 (2023). doi:10.56472/25835238/IRJEMS-V2I1P107.
+[68] N. A. Peppas, Y. Huang, M. Torres-Lugo, J. Ward, J. Zhang, Physicochemical foundations and structural design of hydrogels in medicine and
+      biology, Annual review of biomedical engineering 2 (2000) 9­29.
+[69] Y. Liu, J. Cao, C. Liu, K. Ding, L. Jin, Datasets for large language models: A comprehensive survey, Artificial Intelligence Review 58 (2025)
+      403. doi:10.1007/s10462-025-11403-7.
+[70] J. Wu, S. Yang, R. Zhan, Y. Yuan, L. S. Chao, D. F. Wong, A survey on llm-generated text detection: Necessity, methods, and future directions,
+      Computational Linguistics 51 (2025) 275­338. doi:10.1162/coli_a_00549.
+[71] Z. Zhao, W. Fan, J. Li, Y. Liu, X. Mei, Y. Wang, Z. Wen, F. Wang, X. Zhao, J. Tang, Q. Li, Recommender systems in the era of large language
+      models (llms), IEEE Transactions on Knowledge and Data Engineering 36 (2024) 6889­6907. doi:10.1109/TKDE.2024.3392335.
+[72] C. Xu, J. McAuley, A survey on model compression and acceleration for pretrained language models, in: Proceedings of the AAAI Conference
+      on Artificial Intelligence, volume 37, 2023, pp. 10566­10575.
+[73] Y. Zhu, H. Yuan, S. Wang, J. Liu, W. Liu, C. Deng, H. Chen, Z. Liu, Z. Dou, J.-R. Wen, Large language models for information retrieval: A
+      survey, ACM Trans. Inf. Syst. 44 (2025). doi:10.1145/3748304.
+[74] X. Hou, Y. Zhao, Y. Liu, Z. Yang, K. Wang, L. Li, X. Luo, D. Lo, J. Grundy, H. Wang, Large language models for software engineering: A
+      systematic literature review, ACM Transactions on Software Engineering and Methodology 33 (2024). doi:10.1145/3695988.
+[75] Y. Zhu, X. Wang, J. Chen, S. Qiao, Y. Ou, Y. Yao, S. Deng, H. Chen, N. Zhang, Llms for knowledge graph construction and reasoning: Recent
+      capabilities and future opportunities, World Wide Web 27 (2024) 58. doi:10.1007/s11280-024-01297-w.
+[76] A. C. M. Brito, M. C. F. Oliveira, O. N. Oliveira Jr, F. N. Silva, D. R. Amancio, Network analysis and natural language processing to obtain a
+      landscape of the scientific literature on materials applications, ACS Applied Materials & Interfaces 15 (2023) 27437­27446.
+[77] J. C. Silva, R. P. Gouveia, K. M. Zielinski, M. C. F. Oliveira, D. R. Amancio, O. M. Bruno, O. N. Oliveira Jr, Ai-assisted tools for scientific
+      review writing: Opportunities and cautions, ACS Applied Materials & Interfaces 17 (2025) 47795­47805.
+[78] X. Zhang, J. Cao, C. You, D. Ding, Why prompt design matters and works: A complexity analysis of prompt search space in LLMs, in:
+      Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Vienna, Austria, 2025,
+      pp. 32525­32555. doi:10.18653/v1/2025.acl-long.1562.
+[79] S. Atreja, J. Ashkinaze, L. Li, J. Mendelsohn, L. Hemphill, What's in a prompt?: A large-scale experiment to assess the impact of prompt
+      design on the compliance and accuracy of llm-generated text annotations, Proceedings of the International AAAI Conference on Web and
+      Social Media 19 (2025) 122­145. URL: http://dx.doi.org/10.1609/icwsm.v19i1.35807. doi:10.1609/icwsm.v19i1.35807.
+
+T. Bao et al.: Preprint submitted to Elsevier  Page 38 of 38
+

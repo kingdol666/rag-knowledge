@@ -1,0 +1,204 @@
+{
+ "qid": "QK02",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "stratum": "single",
+ "field": "genomics",
+ "gold_docs": [
+  "1602.01876"
+ ],
+ "started": "2026-10-12T05:11:20.918050+00:00",
+ "candidate_stage": {
+  "n_fused": 12,
+  "fusion_trace": {
+   "agreed": 17,
+   "vector_only_pool": 40,
+   "catalog_only_pool": 77,
+   "vector_only_taken": 8,
+   "catalog_only_taken": 4,
+   "fused_before_cap": 29,
+   "fused_after_cap": 12,
+   "candidate_cap": 12
+  },
+  "vector_trace": {
+   "per_lib_hits": {
+    "计算机与人工智能": 30,
+    "自然科学与地球科学": 30,
+    "生命科学与医学": 30,
+    "工程与能源": 16,
+    "经济与社会": 9
+   },
+   "raw_hits": 115,
+   "doc_level": 57,
+   "seconds": 2.2
+  },
+  "catalog_trace": {
+   "per_lib_docs": {
+    "计算机与人工智能": 131,
+    "自然科学与地球科学": 75,
+    "生命科学与医学": 53,
+    "工程与能源": 39,
+    "经济与社会": 24
+   },
+   "catalog_size": 322,
+   "catalog_overlap_gt0": 94,
+   "seconds": 1.4
+  },
+  "fetch_errors": [],
+  "candidate_order": [
+   "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+   "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+   "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+   "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+   "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+   "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+   "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+   "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+   "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md",
+   "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+   "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+   "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md"
+  ]
+ },
+ "gold_matchable": true,
+ "gold_parts_in_corpus": 2,
+ "gold_doc_paths": [
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md"
+ ],
+ "judge": {
+  "status": "ok",
+  "real_engine": true,
+  "criterion": "evidence",
+  "threshold": 0.5,
+  "candidate_count": 104,
+  "scored_count": 104,
+  "survivor_count": 56,
+  "docs_with_yes": 12,
+  "evidence_pack_chars": 4000,
+  "fetch_errors": [],
+  "errors": [],
+  "seconds": 15.2
+ },
+ "judge_survivors": [
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+  "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+  "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+  "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+  "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+  "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md"
+ ],
+ "arms": {
+  "C-nogate": {
+   "n_docs": 12,
+   "docs": [
+    "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+    "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+    "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+    "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+    "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+    "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md",
+    "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient. The retrieved chunks from \"Primer on the Gene Ontology\" contain only the title, author affiliations, and reference list — the body text that would name the three ontologies subdividing the Gene Ontology is not present. The other retrieved documents (on indexing papers and spatial transcriptomics) are unrelated to the question.\n\nSources retrieved: `genomics__1602.01876__primer-on-the-gene-ontology.md.md` (parts 1–2), `databases__2009.10669__there-is-no-such-thing-as-an-index...` (parts 1–3), `genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md.md` (part 1).",
+   "answer_error": null,
+   "answer_latency_s": 4.7,
+   "tokens": {
+    "input": 1144,
+    "output": 162,
+    "cache_read": 48256,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.035224399999999996,
+   "model": null,
+   "grade": 0,
+   "verdict": "refusal",
+   "rationale": "The question is answerable (the three GO ontologies are well-established), but the answer refused on insufficient evidence rather than supplying Molecular Function, Biological Process, and Cellular Component.",
+   "grade_latency_s": 4.5
+  },
+  "C-judge": {
+   "n_docs": 12,
+   "docs": [
+    "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+    "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+    "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+    "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+    "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+    "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md",
+    "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient — the retrieved chunks do not contain the answer.\n\nThe Gene Ontology primer chunks I retrieved contain only the title, author affiliations, and the start of the reference list (Ashburner et al. 2000, Friedmann 2004, Carbon et al. 2009, Rhee et al. 2008). The body sections that would list GO's constituent ontologies (Molecular Function, Biological Process, Cellular Component) were not retrieved. The other chunks (Dittrich et al. on indexing, SpaceTx on spatial transcriptomics) are unrelated.\n\nSources used: `genomics__1602.01876__primer-on-the-gene-ontology.md` (parts 1/2 and 2/2); `databases__2009.10669__there-is-no-such-thing-as-an-index...` (parts 1–3/4); `genomics__2301.08436__spacetx-a-roadmap...` (part 1/2) — none of which state the three ontologies.",
+   "answer_error": null,
+   "answer_latency_s": 9.4,
+   "tokens": {
+    "input": 56,
+    "output": 220,
+    "cache_read": 49344,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.0307316,
+   "model": null,
+   "grade": 0,
+   "verdict": "refusal",
+   "rationale": "The question is answerable (Molecular Function, Biological Process, Cellular Component), but the answer declined for lack of retrieved evidence.",
+   "grade_latency_s": 6.3
+  },
+  "C-judge-seg": {
+   "n_docs": 12,
+   "docs": [
+    "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+    "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+    "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+    "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+    "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+    "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md",
+    "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md"
+   ],
+   "gold_rank": 1,
+   "gold_survived": true,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient to answer this question.\n\nThe retrieved chunks come from a document on autonomous reaction network exploration in heterogeneous catalysis (chemistry__2109.05887, part 2 of 8) and discuss chemical reaction networks, catalyst optimization, and network inheritance. They contain nothing about the Gene Ontology or any ontologies subdividing it.\n\nSource consulted: `自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md`\n\nI cannot answer from prior knowledge, so I am stopping here.",
+   "answer_error": null,
+   "answer_latency_s": 6.0,
+   "tokens": {
+    "input": 786,
+    "output": 121,
+    "cache_read": 48256,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.0320414,
+   "model": null,
+   "grade": 0,
+   "verdict": "refusal",
+   "rationale": "The question is answerable from general knowledge (Molecular Function, Biological Process, Cellular Component), but the answer refused solely due to a retrieval failure, earning 0 under the rubric.",
+   "grade_latency_s": 9.2
+  }
+ },
+ "wall_clock_s": 63.7
+}

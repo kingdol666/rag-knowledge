@@ -1,0 +1,111 @@
+%% QDCVR platform — Knowledge-Based Systems submission (elsarticle)
+%% v2 restructure 2026-10-12: content-retrieval-based KB *management system* framing.
+%% Compile: pdflatex main2 && bibtex main2 && pdflatex main2 && pdflatex main2
+%% AUTHOR ACTION: replace author placeholders, ORCID, and funding fields.
+% review copy: double line spacing, to measure the journal's page cap
+\documentclass[preprint,12pt]{elsarticle}
+\usepackage{setspace}
+\doublespacing
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{xurl}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\yes}{\checkmark}
+\newcommand{\no}{--}
+
+\graphicspath{{figs/}}
+\setlength{\emergencystretch}{1.5em}
+
+%% Float placement: the paper carries nine figures and twenty-one table
+%% environments (five in the appendix: one per-question rank table and four
+%% supplementary tables), so the
+%% default fractions defer most of them past the references. Allow denser
+%% float pages to keep each float near the text that discusses it.
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.12}
+\renewcommand{\floatpagefraction}{0.8}
+
+\journal{Knowledge-Based Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Design of a content-retrieval-based knowledge-base management system
+for trustworthy enterprise document intelligence}
+
+\author[inst1]{Author Name\corref{cor1}}
+\ead{author@example.com}
+\author[inst1]{Co-author Name}
+\cortext[cor1]{Corresponding author.}
+\affiliation[inst1]{organization={Affiliation Department, University,
+City, Country}, city={City}, country={Country}}
+
+\begin{abstract}
+Enterprises accumulate regulations, failure analyses and operational lessons
+as unstructured documents, and answering one engineering question requires
+locating, reading and citing the right one. Retrieval-augmented generation
+addresses the locating step, but its ranking signal measures topic relatedness
+rather than evidence presence. QDCVR is a self-hosted
+knowledge-base system governing content across all three
+actions. Six subsystems---quality-gated parsing and ingestion, content-routed
+organization, life-cycle management with three-source consistency audits, a
+document graph, an operational-knowledge store with credibility tiers, and
+multi-lane content-verified retrieval---expose 95 Model Context Protocol tools
+over one storage layer, each terminating at an explicit contract. We evaluate it on a deployed industrial corpus, a
+322-document organization campaign, a 100-paper acquisition campaign and a
+cross-lingual corpus. Twenty-one of 100 submitted
+papers never became retrievable; the accounting gap is reported, not hidden. The gate exposes a
+same-domain score-inflation failure consistent with LLM-judge
+miscalibration: non-gold scores are indistinguishable from gold
+(Mann--Whitney $p = 0.26$), judged re-ranking lowers Hit@5 from 0.94 to 0.44,
+while reusing the same verdicts as a filter restores 0.94 (sign test
+$p = 0.008$). Component ablations return a largely null result: on nine of ten
+questions both arms received identical evidence, so verification's measured
+value here is fail-closed provenance rather than ranking, and the losses sit
+in the reading layer. Functional campaigns confirm ingestion,
+deduplication, organization and abstention end to end; experience distillation
+is reported as case evidence. Engine
+choice moves cost by one to two orders of magnitude. Verifier calibration is
+the open problem, and honesty needs an enforcement layer.
+\end{abstract}
+
+\begin{keyword}
+Knowledge base management \sep Document ingestion \sep Content verification \sep
+Knowledge organization \sep Retrieval-augmented generation \sep
+Model Context Protocol
+\end{keyword}
+
+\end{frontmatter}
+
+%% ============================================================ body (v2 order)
+\input{n1_intro}
+\input{n2_related}
+\input{n3_overview}
+\input{n4_acquisition}
+\input{n5_organization}
+\input{n6_retrieval}
+\input{n7_implementation}
+\input{n8a_eval}
+\input{n8b_eval}
+\input{n8c_eval}
+\input{n9_discussion}
+\input{n10_threats}
+\input{n11_conclusion}
+\input{n_back}
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs,refs_new_verified}
+
+\end{document}

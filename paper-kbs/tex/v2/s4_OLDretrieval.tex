@@ -1,0 +1,161 @@
+\section{Multi-lane verified retrieval}
+\label{sec:lanes}
+
+All answering agents reach the platform through one chat endpoint. The
+server-side \emph{lane policy} inspects the request (pinned libraries,
+prompt suffixes, engine) and attaches the corresponding tool whitelist and
+instructions; a librarian-lane agent, for example, is denied the vector and
+two-stage tools at the protocol level, so the lane is a property of the
+enforcement layer, not of prompt discipline. Fig.~\ref{fig:lanes} summarizes
+the three lanes.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig2_lanes}
+\caption{The three retrieval lanes. Every lane ends at the same
+content-verification gate and the same honesty contract: zero verified
+evidence escalates (Lane A$\to$B) or terminates in an explicit not-found
+report.}
+\label{fig:lanes}
+\end{figure}
+
+\subsection{Why three lanes --- and when to use which}
+\label{sec:lanechoice}
+The three lanes are not three implementations of one idea; they occupy three
+points on a latency/coverage frontier (Table~\ref{tab:lanes}). The Hybrid lane
+is the fastest and the most auditable --- it moves orchestration server-side
+and ships its audit trail in one response --- and is the interactive default.
+The Librarian lane is the one that must not miss a document: it spends its
+twelve-call budget on catalog navigation and buys exhaustive coverage with
+explicit blind-spot disclosure. The Search lane sits between them as the
+latency-tuned interactive path for pinned libraries.
+
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{The three lanes as operating points. Measured figures are the
+round-1 agentic runs of Section~\ref{sec:agentic}. All three share one
+verification gate and one honesty contract; they differ only in retrieval
+affordance and budget.}
+\label{tab:lanes}
+\begin{tabular}{p{1.85cm}p{3.05cm}p{2.15cm}p{2.25cm}p{3.15cm}}
+\toprule
+Lane & Optimises for & Tool budget & Measured (round 1) & Use when \\
+\midrule
+A. Search & latency on pinned libraries & 20-turn cap & 6--8 turns; 70--165\,s & interactive default; single-library questions \\
+B. Librarian & exhaustive recall across all libraries & hard 12-call budget & 5--6 turns; 54--91\,s & must-not-miss; enumeration questions; no library pinned \\
+C. Hybrid & single-call server-side orchestration & exactly 1 call & 3--5 turns; 36--70\,s & fastest grounded answer; latency-critical \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two honest caveats accompany this table. First, in the measurements of
+Section~\ref{sec:agentic} the Search lane does not occupy a \emph{distinct}
+operating point --- the Hybrid lane is faster and the Librarian lane is more
+exhaustive --- so a two-lane deployment (Hybrid plus Librarian) is defensible
+today, with the Search lane retained as the pinned-library interactive
+default; query-shape auto-selection is future work
+(Section~\ref{sec:threats}). Second, and more importantly, the three lanes
+differ only in retrieval affordance and budget: they share one gate, one
+fail-closed contract, and one abstention semantics. The trust model is a
+property of the platform, not of the lane.
+
+\subsection{Lane A: Search --- vector fast lane with a verification gate}
+Lane A optimizes for latency on pinned libraries. Phase A0 rewrites the
+query into (subject, attribute, constraints) form, splits multi-entity and
+comparison questions into parallel sub-queries, and routes incident-style
+queries to the experience store (Section~\ref{sec:system}) first. Phase A1
+issues one wide dense query
+(top-30, threshold 0.35, cross-library balancing), deduplicates by document,
+and \emph{keeps all candidate documents rather than truncating to the top
+chunks}. Phase A2 submits citation-only references (library id + document
+path) to the verification gate in batches of at most six; the server fetches the
+full text itself, so the agent never fabricates content when arguing for a
+document. A document with vector score 0.95 that the judge rejects is
+dropped; a document at 0.40 with one \emph{yes} verdict survives. Phase A3
+returns the judge's evidence pack (the only full-content channel in this
+lane) and the agent composes an answer whose citations carry confidence
+levels (P0 direct evidence, P1 partial, P2 weak).
+
+\subsection{Lane B: Librarian --- hierarchical navigation under a budget}
+Lane B is for exhaustive recall across all libraries and for queries whose
+vocabulary may not match the corpus. It walks a fixed spine with a hard
+budget of twelve tool calls: L0 reads the library catalog (ids, names,
+descriptions, counts) and prunes shelves (libraries) by the rewritten
+query; L1 lists
+each surviving shelf's documents with descriptions; L2 routes by query
+shape --- literal/enumeration questions (``which documents mention X'') go
+to a machine-side scanner ($\approx$0.5\,s per document, no LLM turns),
+semantic questions go to judging; L3 judges in batches of at most six
+references (larger batches historically triggered transport timeouts and
+fail-closed batch loss); L4 reads only survivors (bounded to 2\,000
+characters, starting at the judge-reported evidence line); L5 emits a
+five-part report (search paths, answer, sources, confidence, blind spots).
+Two rules are absolute: catalog descriptions never prune documents by
+themselves, and an exhausted budget terminates in blind-spot disclosure,
+not in a guessed answer.
+
+\subsection{Lane C: Hybrid --- server-side orchestration in one call}
+Agentic latency is dominated by LLM turns, not by tools (Section
+\ref{sec:composition}); Lane C spends exactly one call by moving the entire
+pipeline into the server. A single \texttt{kb\_hybrid\_search} call executes
+P1 (a parallel block: vector channel, top-30 at threshold 0.35, and catalog
+keyword channel); P3 merges candidates by (library, document) with
+agreed-by-both
+documents first, capped at twelve; P4 judges every candidate with the
+verification gate in batches of six (criterion \emph{evidence}, threshold
+0.5); P4b
+applies a document-level relative cut --- keep scores $\geq \mathit{best} -
+0.15$ with a top-5 floor, plus a cross-domain anchor guard that prevents an
+inflated out-of-domain score from setting the cut line; and P5 reads the
+top five documents in full ($\leq$2\,000 characters each). The response
+carries the complete audit trail (per-lane candidates, merge counts, judge
+statistics, cut decisions, read contents), so a one-call lane is still an
+inspectable lane.
+
+\subsection{The verification gate}
+\label{sec:gate}
+The gate is a locally hosted evidence-classification model (the Laya
+judging service \cite{laya}) invoked through a
+\texttt{kb\_laya\_judge} tool. Its contract: given the
+query and a batch of document references, fetch each document server-side,
+segment it, and score \emph{does this text contain direct evidence that
+answers the query} under one of three criteria --- \emph{evidence}
+(specific substantiation; mere topic match is insufficient),
+\emph{instance} (contains at least one member of the requested class;
+routed automatically for enumeration questions), or \emph{auto}. Scores
+live in $[0,1]$ with an acceptance threshold of 0.5 (0.3 for enumeration).
+All operating constants in this section --- thresholds, the six-reference
+judge batch, the hybrid candidate cap of twelve, and the 0.15 relative-cut
+margin with its top-5 floor --- are the platform's shipped production
+defaults, fixed during earlier deployments on a different corpus, and were
+not tuned on the evaluation questions of Section~\ref{sec:setup}. At the
+protocol layer the platform documents scores as a 0--8 rubric (topic 0--3,
+scenario 0--3, evidence 0--2; $\geq$6 answers directly, 5 escalates to the
+librarian lane, $\leq$4 drops); the $[0,1]$ score is the machine-readable
+projection of that rubric, and the rubric is the human-auditable contract
+published to platform clients. The projection can saturate --- the logged
+maximum score is 1.0000 --- one more reason thresholds carry no
+discriminating power between golds and same-domain confusers. The judge
+model itself is a locally
+fine-tuned evidence classifier (checkpoint reference released with the
+platform artifacts); it is deterministic in our replays --- repeat calls
+with identical inputs reproduced identical orderings
+(Section~\ref{sec:retrieval}) --- and it is a \emph{single} checkpoint:
+every verifier finding in this paper inherits that choice, which
+Section~\ref{sec:threats} treats as an explicit scope limit.
+Fail-closed semantics apply to every
+failure mode: fetch errors, engine errors, and timeouts count as
+rejection. Survivors are aggregated into an evidence pack with
+per-passage provenance.
+
+\subsection{Honest abstention}
+If a lane ends with zero verified documents, Lane A escalates once to Lane
+B; if Lane B also exhausts its budget without a survivor, the answer is the
+not-found report: what was searched (libraries, document counts), what the
+query was routed as, and which topics sit outside the corpus. Because
+abstention is a terminal state in the lane contract --- enforced by the
+server-side policy rather than advised in a prompt --- it can be evaluated
+like any other outcome, which Section~\ref{sec:agentic} does.
+

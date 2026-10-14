@@ -1,0 +1,232 @@
+{
+ "qid": "QK09",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "stratum": "unanswerable",
+ "field": "clinical-medicine",
+ "gold_docs": [],
+ "started": "2026-10-12T05:17:50.300679+00:00",
+ "candidate_stage": {
+  "n_fused": 12,
+  "fusion_trace": {
+   "agreed": 53,
+   "vector_only_pool": 4,
+   "catalog_only_pool": 249,
+   "vector_only_taken": 4,
+   "catalog_only_taken": 4,
+   "fused_before_cap": 61,
+   "fused_after_cap": 12,
+   "candidate_cap": 12
+  },
+  "vector_trace": {
+   "per_lib_hits": {
+    "计算机与人工智能": 30,
+    "自然科学与地球科学": 30,
+    "生命科学与医学": 30,
+    "工程与能源": 30,
+    "经济与社会": 30
+   },
+   "raw_hits": 150,
+   "doc_level": 57,
+   "seconds": 0.4
+  },
+  "catalog_trace": {
+   "per_lib_docs": {
+    "计算机与人工智能": 131,
+    "自然科学与地球科学": 75,
+    "生命科学与医学": 53,
+    "工程与能源": 39,
+    "经济与社会": 24
+   },
+   "catalog_size": 322,
+   "catalog_overlap_gt0": 302,
+   "seconds": 1.4
+  },
+  "fetch_errors": [],
+  "candidate_order": [
+   "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+   "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+   "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+   "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+   "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 6 of 8).md",
+   "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md",
+   "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md",
+   "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 3 of 3).md",
+   "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+   "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md"
+  ]
+ },
+ "gold_matchable": false,
+ "gold_parts_in_corpus": 0,
+ "gold_doc_paths": [],
+ "judge": {
+  "status": "ok",
+  "real_engine": true,
+  "criterion": "evidence",
+  "threshold": 0.5,
+  "candidate_count": 127,
+  "scored_count": 127,
+  "survivor_count": 7,
+  "docs_with_yes": 4,
+  "evidence_pack_chars": 4000,
+  "fetch_errors": [],
+  "errors": [],
+  "seconds": 16.2
+ },
+ "judge_survivors": [
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+  "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+  "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md"
+ ],
+ "arms": {
+  "C-nogate": {
+   "n_docs": 12,
+   "docs": [
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+    "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+    "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+    "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 6 of 8).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md",
+    "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md",
+    "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 3 of 3).md",
+    "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+    "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md"
+   ],
+   "gold_rank": null,
+   "gold_survived": null,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient to answer this question. The retrieved chunks discuss clinician evaluation frameworks for LLM outputs, spatial transcriptomics benchmarking, dialogue summarization, and electronic health record modeling — none address metformin dosing in cats. The closest clinical content is a cardiology abstract about eplerenone in myocardial infarction patients, which is unrelated. No source among the retrieved material (including `clinical-medicine__2212.13138`, `genomics__2301.08436`, `nlp__2310.10981`, and `clinical-medicine__2201.03675`) contains veterinary pharmacology information. Per the output contract, I will not fall back on prior knowledge.\n\n**Sources consulted (none relevant):**\n- clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md (parts 2/8, 7/8)\n- genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md.md (part 1/2)\n- nlp__2310.10981__instructive-dialogue-summarization-with-quer (parts 1/4, 4/4)\n- clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1/3)",
+   "answer_error": null,
+   "answer_latency_s": 7.6,
+   "tokens": {
+    "input": 999,
+    "output": 276,
+    "cache_read": 48256,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.0371994,
+   "model": null,
+   "grade": 5,
+   "verdict": "correct",
+   "rationale": "The answer correctly reports insufficient evidence, gives no dosage number, and explicitly declines to fall back on prior knowledge, matching the gold behavior.",
+   "grade_latency_s": 3.7
+  },
+  "C-judge": {
+   "n_docs": 4,
+   "docs": [
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+    "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+    "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md"
+   ],
+   "gold_rank": null,
+   "gold_survived": null,
+   "evidence_chars": 2806,
+   "answer": "The retrieved evidence does not contain the answer. The chunks returned cover clinician evaluation frameworks for LLMs, an eplerenone heart-failure trial abstract, continuous-time probabilistic models for EHR data, and clinical drug representations for mortality prediction — none of which discuss metformin or feline diabetes.\n\nSources retrieved (none relevant to the question):\n- clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md (parts 2/8, 7/8)\n- clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-longitudinal-electronic-health-records (part 1/3)\n- clinical-medicine__2110.08918__using-clinical-drug-representations-for-improving-mortality-and-length-of-stay-predictions.md.md (part 1/2)\n\nEvidence is insufficient; I am not answering from prior knowledge.",
+   "answer_error": null,
+   "answer_latency_s": 6.7,
+   "tokens": {
+    "input": 607,
+    "output": 187,
+    "cache_read": 48320,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.032603200000000006,
+   "model": null,
+   "grade": 5,
+   "verdict": "correct",
+   "rationale": "The answer correctly reports not-found, gives no dosage number, and explicitly declines to use prior knowledge, matching both gold points for this unanswerable item.",
+   "grade_latency_s": 2.5,
+   "original_failure": {
+    "answer_error": null,
+    "grade": null,
+    "verdict": "error",
+    "rationale": "HTTPError: HTTP Error 401: Unauthorized"
+   },
+   "repaired": "2026-10-12T05:28:46.824079+00:00"
+  },
+  "C-judge-seg": {
+   "n_docs": 4,
+   "docs": [
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+    "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+    "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md"
+   ],
+   "gold_rank": null,
+   "gold_survived": null,
+   "evidence_chars": 4000,
+   "answer": "The evidence is insufficient to answer this question.\n\nThe two retrieved chunks are unrelated to feline metformin dosing. The first (`生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md`, part 1 of 2) concerns using molecular drug representations from MIMIC-III prescription records to predict ICU length-of-stay and mortality in human patients. The second (`生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md`) is about continuous-time probabilistic models for composing inference over time-stamped variables. Neither mentions metformin, cats, or veterinary dosing. I have no evidence here to state a recommended daily dosage, and I will not supply one from prior knowledge.",
+   "answer_error": null,
+   "answer_latency_s": 4.7,
+   "tokens": {
+    "input": 1026,
+    "output": 168,
+    "cache_read": 48256,
+    "cache_creation": 0
+   },
+   "total_cost_usd": 0.034724000000000005,
+   "model": null,
+   "grade": 5,
+   "verdict": "correct",
+   "rationale": "The answer correctly reports the evidence as insufficient/not-found and explicitly declines to give any dosage figure, matching the gold behavior.",
+   "grade_latency_s": 3.9,
+   "original_failure": {
+    "answer_error": "HTTPError: HTTP Error 401: Unauthorized",
+    "grade": null,
+    "verdict": "error",
+    "rationale": "HTTPError: HTTP Error 401: Unauthorized"
+   },
+   "repaired": "2026-10-12T05:28:55.360410+00:00"
+  }
+ },
+ "wall_clock_s": 327.8,
+ "summary": {
+  "qid": "QK09",
+  "stratum": "unanswerable",
+  "gold_matchable": false,
+  "n_candidates": 12,
+  "n_kept": 7,
+  "judge_status": "ok",
+  "judge_real_engine": true,
+  "judge_scored": 127,
+  "gold_parts_in_corpus": 0,
+  "arms": {
+   "C-nogate": {
+    "n_docs": 12,
+    "gold_rank": null,
+    "gold_survived": null,
+    "chars": 4000,
+    "grade": 5,
+    "verdict": "correct",
+    "latency_s": 7.6,
+    "cost_usd": 0.0371994
+   },
+   "C-judge": {
+    "n_docs": 4,
+    "gold_rank": null,
+    "gold_survived": null,
+    "chars": 2806,
+    "grade": 5,
+    "verdict": "correct",
+    "latency_s": 6.7,
+    "cost_usd": 0.032603200000000006
+   },
+   "C-judge-seg": {
+    "n_docs": 4,
+    "gold_rank": null,
+    "gold_survived": null,
+    "chars": 4000,
+    "grade": 5,
+    "verdict": "correct",
+    "latency_s": 4.7,
+    "cost_usd": 0.034724000000000005
+   }
+  }
+ }
+}

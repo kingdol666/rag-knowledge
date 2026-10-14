@@ -1,0 +1,89 @@
+\section{System overview and design principles}
+\label{sec:system}
+
+QDCVR (v2.3) is a self-hosted knowledge-base management system for converting
+heterogeneous documents into searchable, governable collections. A Python
+parsing service, a TypeScript web application and an MCP tool server share
+local storage and retrieval engines \cite{mcp}.
+
+\subsection{Design principles: three enforceable contracts}
+\label{sec:req}
+\label{sec:principles}
+
+Each contract names the mechanism that enforces it and the check that detects
+a violation; enforcement is server-side throughout, so no contract depends on
+an agent choosing to honour it.
+
+\begin{description}
+\item[Content governs placement.] \emph{Mechanism:} an ingest agent reads the
+parsed content together with the library catalogue, assigns a parent or
+sub-library, and raises an error when no scope applies. \emph{Check:}
+descriptions and tags are re-read against the body, and three-source
+consistency is verified after every lifecycle operation
+(Sections~\ref{sec:acquisition} and~\ref{sec:organization}).
+\item[Content governs admission.] \emph{Mechanism:} one lane-independent
+judging tool returning a verdict with provenance, and lane policies that make
+rank position advisory rather than authoritative. \emph{Check:} the gate fails
+closed on missing text, tool errors and invalid verdicts, and the ablation of
+Section~\ref{sec:e8} measures what removing it changes
+(Sections~\ref{sec:lanes} and~\ref{sec:gate}).
+\item[Absence is reported.] \emph{Mechanism:} an answer-layer contract in the
+chat endpoint, not a similarity threshold. \emph{Check:} out-of-corpus probes
+and unanswerable questions are graded as abstentions (Section~\ref{sec:e5}).
+\end{description}
+
+Four deployment requirements constrain all three contracts: expose failures
+when parsing heterogeneous documents; keep document files and library records
+consistent; require content evidence before a retrieved item supports an
+answer; and remain operable on one workstation. Enforcement covers parse,
+metadata and index post-conditions, the gate, and the lane tool policies.
+
+\subsection{Architecture and subsystems}
+\label{sec:architecture}
+
+Fig.~\ref{fig:arch} shows the acquisition and query paths. Ingestion parses and
+quality-checks documents; an agent uses the parsed content and library
+catalogue to select a parent or sub-library; save and index operations then
+update records and search indices. At query time, the chat endpoint supplies a
+lane-specific tool policy, and the agent retrieves candidates and invokes the
+gate before the answer layer returns cited evidence or not-found. The MCP
+server exposes 95 registered tools. The three contracts of
+Section~\ref{sec:principles} sit at different points along this path:
+placement during ingestion, admission at the gate, the abstention report in
+the answer layer.
+
+The management path covers acquisition (Section~\ref{sec:acquisition}),
+content-routed organization and lifecycle checks
+(Section~\ref{sec:organization}), and the tool and runtime layer
+(Section~\ref{sec:implementation}). The chat
+endpoint defines pinned-search and all-library librarian policies. Hybrid is
+a composed retrieval configuration, not a third built-in server policy; it
+combines vector and catalog calls under an explicit directive. The document
+graph supports navigation, not evidence, and the experience store uses the
+same catalog and gate but was not evaluated at scale.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig1_architecture}
+\caption{QDCVR architecture. Ingestion parses and quality-checks documents,
+and content-based library attribution precedes storage and indexing
+(\textbf{C1}, content governs placement). At query time, the chat endpoint
+applies a lane-specific tool policy; candidate retrieval is followed by
+server-side content verification (\textbf{C2}, content governs admission),
+after which the system returns cited evidence or an explicit not-found
+response (\textbf{C3}, absence is reported). Authoritative records are
+distinct from retrieval indices.}
+\label{fig:arch}
+\end{figure*}
+
+\subsection{Data model and object lifecycle}
+\label{sec:datamodel}
+\label{sec:lifecycle}
+
+Documents are stored as Markdown with extracted images. Three sources describe
+library state: document files, the \texttt{.tree-fs.json} registry and each
+library's \texttt{.knowledge-base.yml}. Ingestion proceeds through raw,
+parsed, stored and indexed states, and is complete only after a content-derived
+probe retrieves the document. Indexing is explicit and asynchronous; task
+identifiers support polling, while post-operation audits detect stale indices
+or disagreement among the three sources.

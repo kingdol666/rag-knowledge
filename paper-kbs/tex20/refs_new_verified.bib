@@ -1,0 +1,122 @@
+% refs_new_verified.bib — 2026-10-12 新检索/核验的参考文献（23 条）
+% 核验方式：每条的 DOI 经 Crossref 内容协商（https://api.crossref.org/works/<DOI>/transform/application/x-bibtex
+% 与 query.bibliographic）解析，title / container-title / year / volume / issue / pages / publisher 逐字取自 Crossref 记录。
+% 无一条 DOI、页码或年份为推断值。
+% 排除项：① Ontolingua Server (Farquhar et al., IJHCS 1997, 10.1006/ijhc.1997.0141) 解析成功但 Crossref 记录无标题（front matter）→ 排除；
+%          ② Broder "On the resemblance and containment of documents" (10.1109/sequen.1997.666900) 标题匹配但 Crossref 无 issued 年份 → 排除（topic 4 由 manku-near-dup-2007 单独支撑）；
+%          ③ 备用第三条溯源引用：Buneman/Khanna/Tan "Why and Where: A Characterization of Data Provenance" (ICDT 2001, 10.1007/3-540-44503-x_20, pp. 316-330) 亦已核验。
+% 备注：Crossref 记录 RAGAS 标题为 "RAGAs"（与 ACL/arXiv 渲染 "RAGAS" 大小写不同），此处从 Crossref；
+%       mosqueira-rey-hitl-2022 的 Crossref issued 年份为 2022（vol 56, iss 4 印刷为 2023），此处从 Crossref。
+
+@article{hoffart-yago2-kb-2013,
+  author={Hoffart, Johannes and Suchanek, Fabian M. and Berberich, Klaus and Weikum, Gerhard},
+  title={{YAGO2}: A spatially and temporally enhanced knowledge base from {Wikipedia}},
+  journal={Artificial Intelligence}, volume={194}, pages={28--61}, year={2013},
+  doi={10.1016/j.artint.2012.06.001}, publisher={Elsevier}}
+@inproceedings{auer-dbpedia-kb-2007,
+  author={Auer, S{\"o}ren and Bizer, Christian and Kobilarov, Georgi and Lehmann, Jens and Cyganiak, Richard and Ives, Zachary},
+  title={{DBpedia}: A Nucleus for a Web of Open Data},
+  booktitle={The Semantic Web (ISWC/ASWC 2007), Lecture Notes in Computer Science},
+  pages={722--735}, year={2007}, doi={10.1007/978-3-540-76298-0_52}, publisher={Springer}}
+@article{tyrvaainen-ecm-2006,
+  author={Tyrv{\"a}inen, Pasi and P{\"a}iv{\"a}rinta, Tero and Salminen, Airi and Iivari, Juhani},
+  title={Characterizing the evolving research on enterprise content management},
+  journal={European Journal of Information Systems}, volume={15}, number={6}, pages={627--634},
+  year={2006}, doi={10.1057/palgrave.ejis.3000648}}
+@inproceedings{paivarinta-ecm-2005,
+  author={P{\"a}iv{\"a}rinta, Tero and Munkvold, Bj{\o}rn Erik},
+  title={Enterprise Content Management: An Integrated Perspective on Information Management},
+  booktitle={Proc. 38th Annual Hawaii International Conference on System Sciences (HICSS)},
+  pages={96--96}, year={2005}, doi={10.1109/hicss.2005.244}, publisher={IEEE}}
+@inproceedings{zhong-publaynet-layout-2019,
+  author={Zhong, Xu and Tang, Jianbin and Jimeno Yepes, Antonio},
+  title={{PubLayNet}: Largest Dataset Ever for Document Layout Analysis},
+  booktitle={2019 International Conference on Document Analysis and Recognition (ICDAR)},
+  pages={1015--1022}, year={2019}, doi={10.1109/icdar.2019.00166}, publisher={IEEE}}
+@inproceedings{huang-layoutlmv3-docai-2022,
+  author={Huang, Yupan and Lv, Tengchao and Cui, Lei and Lu, Yutong and Wei, Furu},
+  title={{LayoutLMv3}: Pre-training for Document {AI} with Unified Text and Image Masking},
+  booktitle={Proc. 30th ACM International Conference on Multimedia (MM '22)},
+  pages={4083--4091}, year={2022}, doi={10.1145/3503161.3548112}, publisher={ACM}}
+@inproceedings{manku-near-dup-2007,
+  author={Manku, Gurmeet Singh and Jain, Arvind and Das Sarma, Anish},
+  title={Detecting near-duplicates for web crawling},
+  booktitle={Proc. 16th International Conference on World Wide Web (WWW '07)},
+  pages={141--150}, year={2007}, doi={10.1145/1242572.1242592}, publisher={ACM}}
+@inproceedings{missier-prov-2013,
+  author={Missier, Paolo and Belhajjame, Khalid and Cheney, James},
+  title={The {W3C} {PROV} family of specifications for modelling provenance metadata},
+  booktitle={Proc. 16th International Conference on Extending Database Technology (EDBT/ICDT '13)},
+  pages={773--776}, year={2013}, doi={10.1145/2452376.2452478}, publisher={ACM}}
+@article{cheney-provenance-2009,
+  author={Cheney, James and Chiticariu, Laura and Tan, Wang-Chiew},
+  title={Provenance in Databases: Why, How, and Where},
+  journal={Foundations and Trends in Databases}, volume={1}, number={4}, pages={379--474},
+  year={2009}, doi={10.1561/1900000006}}
+@article{wang-kg-embedding-2017,
+  author={Wang, Quan and Mao, Zhendong and Wang, Bin and Guo, Li},
+  title={Knowledge Graph Embedding: A Survey of Approaches and Applications},
+  journal={IEEE Transactions on Knowledge and Data Engineering}, volume={29}, number={12},
+  pages={2724--2743}, year={2017}, doi={10.1109/tkde.2017.2754499}}
+@article{ji-kg-survey-2022,
+  author={Ji, Shaoxiong and Pan, Shirui and Cambria, Erik and Marttinen, Pekka and Yu, Philip S.},
+  title={A Survey on Knowledge Graphs: Representation, Acquisition, and Applications},
+  journal={IEEE Transactions on Neural Networks and Learning Systems}, volume={33}, number={2},
+  pages={494--514}, year={2022}, doi={10.1109/tnnls.2021.3070843}}
+@article{nonaka-seci-1994,
+  author={Nonaka, Ikujiro}, title={A Dynamic Theory of Organizational Knowledge Creation},
+  journal={Organization Science}, volume={5}, number={1}, pages={14--37}, year={1994},
+  doi={10.1287/orsc.5.1.14}}
+@article{nonaka-seci-ba-2000,
+  author={Nonaka, Ikujiro and Toyama, Ryoko and Konno, Noboru},
+  title={{SECI}, {Ba} and Leadership: a Unified Model of Dynamic Knowledge Creation},
+  journal={Long Range Planning}, volume={33}, number={1}, pages={5--34}, year={2000},
+  doi={10.1016/s0024-6301(99)00115-6}}
+@article{jarvelin-cumulated-gain-2002,
+  author={J{\"a}rvelin, Kalervo and Kek{\"a}l{\"a}inen, Jaana},
+  title={Cumulated gain-based evaluation of {IR} techniques},
+  journal={ACM Transactions on Information Systems}, volume={20}, number={4}, pages={422--446},
+  year={2002}, doi={10.1145/582415.582418}}
+@inproceedings{craswell-msmarco-2021,
+  author={Craswell, Nick and Mitra, Bhaskar and Yilmaz, Emine and Campos, Daniel and Lin, Jimmy},
+  title={{MS MARCO}: Benchmarking Ranking Models in the Large-Data Regime},
+  booktitle={Proc. 44th International ACM SIGIR Conference (SIGIR '21)},
+  pages={1566--1576}, year={2021}, doi={10.1145/3404835.3462804}, publisher={ACM}}
+@inproceedings{es-ragas-2024,
+  author={Es, Shahul and James, Jithin and Espinosa Anke, Luis and Schockaert, Steven},
+  title={{RAGAs}: Automated Evaluation of Retrieval Augmented Generation},
+  booktitle={Proc. 18th Conference of the European Chapter of the ACL: System Demonstrations},
+  pages={150--158}, year={2024}, doi={10.18653/v1/2024.eacl-demo.16}, publisher={ACL}}
+@inproceedings{saad-falcon-ares-2024,
+  author={Saad-Falcon, Jon and Khattab, Omar and Potts, Christopher and Zaharia, Matei},
+  title={{ARES}: An Automated Evaluation Framework for Retrieval-Augmented Generation Systems},
+  booktitle={Proc. 2024 Conference of the North American Chapter of the ACL: Human Language Technologies (Vol. 1: Long Papers)},
+  pages={338--354}, year={2024}, doi={10.18653/v1/2024.naacl-long.20}, publisher={ACL}}
+@article{park-metadata-quality-2009,
+  author={Park, Jung-Ran},
+  title={Metadata Quality in Digital Repositories: A Survey of the Current State of the Art},
+  journal={Cataloging \& Classification Quarterly}, volume={47}, number={3-4}, pages={213--228},
+  year={2009}, doi={10.1080/01639370902737240}}
+@article{golder-tagging-2006,
+  author={Golder, Scott A. and Huberman, Bernardo A.},
+  title={Usage patterns of collaborative tagging systems},
+  journal={Journal of Information Science}, volume={32}, number={2}, pages={198--208},
+  year={2006}, doi={10.1177/0165551506062337}}
+@article{mosqueira-rey-hitl-2022,
+  author={Mosqueira-Rey, Eduardo and Hern{\'a}ndez-Pereira, Elena and Alonso-R{\'i}os, David and Bobes-Bascar{\'a}n, Jos{\'e} and Fern{\'a}ndez-Leal, {\'A}ngel},
+  title={Human-in-the-loop machine learning: a state of the art},
+  journal={Artificial Intelligence Review}, volume={56}, number={4}, pages={3005--3054},
+  year={2022}, doi={10.1007/s10462-022-10246-w}}
+@article{barredo-arrieta-xai-2020,
+  author={Barredo Arrieta, Alejandro and D{\'i}az-Rodr{\'i}guez, Natalia and Del Ser, Javier and Bennetot, Adrien and Tabik, Siham and Barbado, Alberto and Garcia, Salvador and Gil-Lopez, Sergio and Molina, Daniel and Benjamins, Richard and Chatila, Raja and Herrera, Francisco},
+  title={Explainable Artificial Intelligence ({XAI}): Concepts, taxonomies, opportunities and challenges toward responsible {AI}},
+  journal={Information Fusion}, volume={58}, pages={82--115}, year={2020},
+  doi={10.1016/j.inffus.2019.12.012}}
+@inproceedings{xu-spfresh-2023,
+  author={Xu, Yuming and Liang, Hengyu and Li, Jin and Xu, Shuotao and Chen, Qi and Zhang, Qianxi and Li, Cheng and Yang, Ziyue and Yang, Fan and Yang, Yuqing and Cheng, Peng and Yang, Mao},
+  title={{SPFresh}: Incremental In-Place Update for Billion-Scale Vector Search},
+  booktitle={Proc. 29th Symposium on Operating Systems Principles (SOSP '23)},
+  pages={545--561}, year={2023}, doi={10.1145/3600006.3613166}, publisher={ACM}}
+% NOTE: a Malkov & Yashunin HNSW entry was removed from this file on
+% 2026-10-12: it duplicated the refs.bib entry `hnsw` (same paper, same DOI
+% 10.1109/TPAMI.2018.2889473), and `hnsw` is the key actually cited.

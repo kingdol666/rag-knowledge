@@ -1,0 +1,32 @@
+\section{Implementation}
+\label{sec:impl}
+
+This section answers RQ1 in engineering terms: it reports the components and
+mechanisms that make the contracts of
+Sections~\ref{sec:system}--\ref{sec:lanes} enforceable in a running
+deployment rather than aspirational.
+
+The backend is Python 3.12/FastAPI; storage engines are ChromaDB (per-KB
+HNSW \cite{hnsw} collections, cosine space) and Neo4j 5.20; embeddings are BGE-M3
+\cite{bge-m3} (1024-d, normalized, batch 32, lazy-loaded singleton with an
+LRU encode cache); parsing uses MinerU \cite{mineru} with a local OCR
+engine; lexical indexing uses jieba tokenization \cite{jieba}. The MCP
+server exposes 97 tools over SSE and stdio transports \cite{mcp}; the
+judging model runs as a resident worker with a machine-level file lock, an
+LRU verdict cache, and explicit CUDA-cache release between workloads. The
+worker matters in production: a cold judge load costs 10--12\,s per batch,
+the resident worker 1--2\,s; and when judge and bulk-embedding workloads
+ran interleaved without cache cleanup, one end-to-end run degraded from 68\,s
+to 27 minutes under the Windows WDDM display-page manager (internal
+profiling; released operations log). The
+web tier is Nuxt 3 with a chat endpoint that adapts 14 agent harnesses to a
+uniform message stream; the lane policy whitelists 21 read-only MCP tools
+per retrieval turn and denies 40+ harness-internal tools (file editors,
+web search, sub-agents) which, when left enabled in our profiling, added
+14--170\,s of detour behavior per run (per-run logs in the released
+artifact). An experience subsystem versions operational
+lessons as retrievable documents (higher threshold, 0.55) and supports a
+rules-based rolling summary triggered every fifth ingestion. The full
+system, including the experiment harness of Section~\ref{sec:setup}, is
+open source.\footnote{\url{https://github.com/kingdol666/rag-knowledge}}
+
