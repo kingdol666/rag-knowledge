@@ -49,7 +49,7 @@ SOURCE_TEX = [
     "highlights.tex",
 ]
 SOURCE_BIB = ["refs.bib", "refs_new_verified.bib"]
-SOURCE_BBL = ["qdcvr_kbs.bbl"]
+SOURCE_BBL = ["main_20p.bbl"]
 
 
 def highlights() -> list[str]:
@@ -131,11 +131,32 @@ def main() -> int:
 
     write_docx(items, PKG / "highlights.docx")
 
+    (PKG / "README-submission.md").write_text(
+        "# KBS submission package\n\n"
+        "Generated from the canonical source `paper-kbs/tex/journal_20p/`. This is a flattened LaTeX source package for Editorial Manager; the local 20-page PDF is a review/layout preview, not evidence that the journal's preferred double-spaced manuscript length is met.\n\n"
+        f"- manuscript source: `{MAIN}` plus {len([n for n in copied if n.endswith('.tex')])-1} included TeX files\n"
+        f"- bibliography: {', '.join(f'`{n}`' for n in SOURCE_BIB)} plus generated `{SOURCE_BBL[0]}`\n"
+        f"- figures used by the manuscript: {', '.join(f'`{f.name}`' for f in figs)}\n"
+        "- highlights: `highlights.docx` and `highlights.tex` (verify identical wording before upload)\n"
+        "- supplementary material: upload `paper-kbs/supplementary/supplementary-material.pdf` as a separate supplementary item\n"
+        "- Declaration of Interests: complete Elsevier's declarations tool and upload its generated Word document separately\n\n"
+        "## Author confirmation required before submission\n\n"
+        "1. Replace author names/order, corresponding-author email, affiliation and city/country in `main_20p.tex`.\n"
+        "2. Replace Author 1/Author 2 in CRediT with accurate names and roles.\n"
+        "3. Confirm the no-funding statement and acknowledgements.\n"
+        "4. Confirm the exact generative-AI services/tools used and revise the declaration accordingly; do not infer these names from repository state.\n"
+        "5. Supply the separate Declaration of Interests Word file from Elsevier's tool.\n"
+        "6. Confirm the CIKM demo author metadata and publication details when available.\n"
+        "7. Upload the supplementary PDF separately and verify it reflects the current manuscript.\n"
+        "8. Decide whether to submit the current two-column preview or a double-spaced review-layout source; KBS permits double-column LaTeX but describes the 20-page double-spaced length as preferred.\n",
+        encoding="utf-8",
+    )
     print(f"\npackage: {len(copied)} sources/bib/bbl + {len(figs)} figures")
     for f in figs:
         print(f"  fig: {f.name}")
     if missing:
         print("\nMISSING (fix before upload): " + ", ".join(missing), file=sys.stderr)
+        return 2
     return 0
 
 

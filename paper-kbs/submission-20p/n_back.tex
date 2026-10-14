@@ -1,0 +1,86 @@
+%% n_back.tex — back matter, included by main_20p.tex after n11_conclusion.tex
+%% and before the bibliography. This file is the single source of truth for
+%% every declaration; n11_conclusion.tex carries the Conclusion and nothing else.
+%%
+%% Section order follows the KBS Guide for Authors: CRediT, competing interest,
+%% funding, ethics, data availability and acknowledgements after the
+%% Conclusion; the appendix follows them; the mandated generative-AI
+%% declaration is placed last so that it sits before the reference list, which
+%% is where the guide requires it.
+%%
+%% AUTHOR ACTION: replace the CRediT names, confirm the funding wording, and
+%% adjust or remove the acknowledgements.
+
+\section*{CRediT authorship contribution statement}
+\textbf{Author 1:} Conceptualization, Methodology, Software, Investigation,
+Data curation, Writing -- original draft. \textbf{Author 2:} Validation,
+Writing -- review \& editing, Supervision. %% AUTHOR ACTION: adjust.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests
+or personal relationships that could have appeared to influence the work
+reported in this paper.
+
+\section*{Funding}
+This research did not receive any specific grant from funding agencies in
+the public, commercial, or not-for-profit sectors. %% AUTHOR ACTION
+
+\section*{Ethics statement}
+This article does not report studies involving human participants, human
+data, or animals.
+
+\section*{Data availability}
+The platform source code, campaign logs and scripts, gold question sets,
+replays and per-run JSON records cited in this paper are available at
+\url{https://github.com/kingdol666/rag-knowledge} (benchmark suite:
+\texttt{benchmark-suite/}; paper artifacts:
+\texttt{paper-kbs/}). The evaluation inventory is indexed in
+\path{TEST-RESULTS/ARTIFACTS.md}. The current end-to-end grid is under
+\path{benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/}; grades under the original question annotations are retained in
+\path{benchmark-suite/results/exp_r2_grade_original_revised.json}; corrected
+semantic annotations and their post-hoc regrade are in
+\path{benchmark-suite/data/papers/qa_questions_e5_corrected.json} and
+\path{benchmark-suite/results/exp_r2_grade_corrected.json}. The deterministic
+grader is \path{benchmark-suite/scripts/107_exp_grade.py}; derived statistics
+for latency and cost are in \path{paper-kbs/tex/journal_20p/e5_numbers.json}. Superseded
+campaigns are retained in the archive tarballs under
+\path{benchmark-suite/results/archive-superseded/} and
+\path{review/archive-superseded/}, with per-path manifests. Supplementary
+material accompanies the manuscript as
+\path{paper-kbs/supplementary/supplementary-material.pdf}; it contains the
+campaign inventory, functional checks, concurrency results and per-question
+rank tables. The deployed industrial corpus cannot be redistributed for
+contractual reasons.
+
+\section*{Acknowledgments}
+The authors thank the maintainers of the open-source components the platform
+builds on. %% AUTHOR ACTION: adjust or remove.
+
+\appendix
+\setcounter{table}{0}
+\section{Per-question tool-layer results}
+\label{app:perq}
+Table~\ref{tab:appendixranks} breaks the tool-layer comparison down to
+individual questions: the best gold rank each configuration reached in its
+top-5 window. The table localizes each aggregate retrieval metric. For the
+industrial same-pool replay, judge-score re-ranking misses eight golds that
+remain in the fusion order; the derived survivor replay restores those ranks
+for scored candidates but inherits Q16's upstream miss. The Q14 candidate
+without a recorded judge score remains unclassified. This is the decomposition
+in Figure~\ref{fig:marginvariants}(b), with one query shown in detail in
+Figure~\ref{fig:anatomy}.
+
+\input{tab_appendix_ranks}
+
+\input{n_appendix_tables}
+
+%% AUTHOR ACTION: name the exact tool/service(s) and version(s) used, per
+%% Elsevier's policy on generative AI disclosure, before submission.
+\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
+During the preparation of this work the authors used LLM-based coding
+agents to assist with experiment execution, data tabulation, figure
+preparation, and manuscript drafting. After using this tool/service, the
+authors reviewed and edited the content as needed and take full
+responsibility for the content of the published article. All experimental
+numbers originate from logged runs of the deployed system on the authors'
+machine.

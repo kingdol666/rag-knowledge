@@ -7,8 +7,8 @@ run it cites:
 
   benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/track_*.json
       -> latency / cost / tool counts, recomputed here per arm
-  benchmark-suite/results/exp_r2_grade.json  (scripts/107_exp_grade.py)
-      -> deterministic grounded / keyword / citation counts per arm
+  benchmark-suite/results/exp_r2_grade_corrected.json
+      -> deterministic gold-ID / keyword / citation-marker counts per arm
 
 House style is imported from paper-kbs/figures/figures.py (Arial, 8 pt floor,
 pinned page size, overflow + page-size asserts) rather than re-implemented.
@@ -23,7 +23,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parents[1]          # figures <- paper-kbs <- repo root
 RUN = REPO / "benchmark-suite/results/runs/run-20261013T094350Z-5f9faac"
-GRADE = REPO / "benchmark-suite/results/exp_r2_grade.json"
+GRADE = REPO / "benchmark-suite/results/exp_r2_grade_corrected.json"
 
 sys.path.insert(0, str(HERE))
 import figures as F  # noqa: E402  (house style + save()/guard helpers)
@@ -39,9 +39,9 @@ C = F.C
 plt = F.plt
 
 ARMS = ["a2", "b", "c"]
-LABELS = {"a2": "Platform\n(profile tools only)",
-          "b": "Bare agent\n(file tools)",
-          "c": "Dense\ndiscovery"}
+# single-line tick labels: the two-line forms collided at print width; the
+# caption and Table tab:e5-arms carry the full arm definitions.
+LABELS = {"a2": "Platform", "b": "Bare agent", "c": "Dense"}
 COLS = {"a2": C["blue"], "b": C["green"], "c": C["orange"]}
 
 # ---------------------------------------------------------------- load + check
@@ -73,9 +73,11 @@ fig, (a1, a2) = plt.subplots(1, 2, figsize=(F.W_FULL, 2.42),
                              gridspec_kw={"width_ratios": [1.12, 1]},
                              layout="constrained")
 
-metrics = [("grounded", "gold_hit"), ("key facts", "kw_ok"),
-           ("citation", "cited")]
-shade = {"grounded": 1.0, "key facts": 0.62, "citation": 0.32}
+metrics = [("gold-ID coverage", "gold_hit"),
+           ("strict keyword coverage", "kw_ok"),
+           ("citation-marker hits", "cited")]
+shade = {"gold-ID coverage": 1.0, "strict keyword coverage": 0.62,
+         "citation-marker hits": 0.32}
 w = 0.26
 for k, (mname, key) in enumerate(metrics):
     for i, t in enumerate(ARMS):
@@ -98,7 +100,7 @@ a1.legend(handles=[F.Patch(fc=C["dgrey"], alpha=shade[m], ec="white",
           borderpad=0.0, labelspacing=0.25)
 a1.tick_params(length=2, pad=1.5)
 F.hide_top_right(a1, left=True)
-a1.set_title("(a) Same corpus, same questions, same model", loc="left")
+a1.set_title("(a) Coverage checks", loc="left")
 
 # ------------------------------------------------------------------- panel (b)
 for i, t in enumerate(ARMS):
@@ -109,7 +111,7 @@ for i, t in enumerate(ARMS):
     mx, my = st.mean(xs), st.mean(ys)
     a2.scatter([mx], [my], s=86, marker="X", color=COLS[t], zorder=5,
                edgecolors="white", linewidths=0.6)
-    a2.annotate(f"mean ${my:.2f} / {mx:.0f}s", (mx, my),
+    a2.annotate(f"${my:.2f} / {mx:.0f}s", (mx, my),
                 textcoords="offset points",
                 xytext={0: (7, -2), 1: (8, 5), 2: (7, 6)}[i],
                 ha="left", color=COLS[t])
@@ -126,7 +128,7 @@ a2.legend(handles=[F.Patch(fc=COLS[t], label=LABELS[t].replace("\n", " "))
           borderpad=0.0, labelspacing=0.25)
 a2.tick_params(length=2, pad=1.5)
 F.hide_top_right(a2, left=True)
-a2.set_title("(b) What the arm split costs", loc="left")
+a2.set_title("(b) Time and cost", loc="left")
 
 F.save(fig, "fig11_three_arms")
 for ext in ("pdf", "png"):
@@ -139,8 +141,10 @@ for t in ARMS:
     lat = [c["lat"] for c in cells[t]]
     cost = [c["cost"] for c in cells[t]]
     tl = [c["tools"] for c in cells[t]]
-    print(f"  {t:>2}: grounded {graded[t]['gold_hit']}/10  key {graded[t]['kw_ok']}/10"
-          f"  cited {graded[t]['cited']}/10  chunk {graded[t]['cited_chunk']}"
+    print(f"  {t:>2}: gold-ID {graded[t]['gold_hit']}/10"
+          f"  strict-key {graded[t]['kw_ok']}/10"
+          f"  alias-key {graded[t].get('kw_alias_ok', graded[t]['kw_ok'])}/10"
+          f"  markers {graded[t]['cited']}/10  chunks {graded[t]['cited_chunk']}"
           f"  lat {st.mean(lat):.1f}s ({min(lat):.1f}-{max(lat):.1f})"
           f"  ${st.mean(cost):.3f} (sum ${sum(cost):.2f})"
           f"  tools {st.mean(tl):.1f} ({min(tl)}-{max(tl)})")

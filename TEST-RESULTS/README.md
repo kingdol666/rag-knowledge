@@ -12,7 +12,7 @@
 | 代码版本 | `5f9faac`（branch `feat/soul-persona-system`），prompt `v4-neutral`，config `9fb259c0cf2b6dea` |
 | 题集 | `benchmark-suite/data/papers/qa_questions.json`，BQ01–BQ10（论文专用题集） |
 | 单元数 | 30（3 条检索臂 × 10 题），**0 哨兵 / 0 错误 / 0 空洞** |
-| 花费 | **$17.03**（真实 API 消耗），平均 33.1 s/单元 |
+| 花费 | **$17.25**（真实 API 消耗；`run_manifest.json: total_cost_usd` = 17.2454，与逐单元求和一致），平均 33.1 s/单元 |
 | 执行方式 | 真实 harness：每单元一次 `POST /api/claude/chat`，返回真实 `sessionId` / `num_turns` / `total_cost_usd` |
 
 **三条臂只差"给什么检索工具"，不差提示词、不差模型：**
@@ -28,8 +28,9 @@
 | 指标 | A 平台 | B 裸 agent | C 稠密 |
 |---|---|---|---|
 | grounded（严格 arXiv-id 接地） | **10/10** | **10/10** | **10/10** |
-| keyword-verified（≥60% 金标事实） | **10/10** | 9/10 | 9/10 |
-| cited（part/section/table 标记） | **9/10** | 7/10 | **2/10** |
+| strict keywords（全部金标关键词，修正标注） | 9/10 | 9/10 | 9/10 |
+| alias-aware keywords（声明别名） | **10/10** | **10/10** | **10/10** |
+| cited（part/section/table 标记，含罗马节号） | **9/10** | 7/10 | **2/10** |
 | 平均延迟 | 52.6 s | 22.2 s | 24.5 s |
 | 平均成本 | $0.7110 | $0.4867 | $0.5269 |
 | 平均工具调用 | 6.0 | 6.4 | 3.7 |
@@ -40,8 +41,13 @@
 
 平台臂**既最慢也最贵**（10 题里 9 题比裸 agent 贵，配对 t = +4.84，df 9）——这是设计代价，如实写。
 
-两次未满分都是**词形假阴性**（答案实质正确）：`b/BQ09` 少 `dynamic`、`c/BQ10` 把
-`immune evasion` 说成 immune exhaustion / reduced antigen presentation。
+strict keywords 三处未满分都是**词形假阴性**（答案实质正确）：`a2/BQ06` 答的是
+saturation *specific humidity* 而金标写 vapor pressure、`b/BQ09` 用缩写 MLP、`c/BQ10`
+把 `immune evasion` 说成 immune exhaustion / reduced antigen presentation；
+修正概念标注并声明别名后三臂均为 10/10。注意 BQ06 的**原始金标与源论文不符**
+（原始标注把"降水效率"当主控因子，源论文的稳健结论是热力学项）——原始标注下
+a2 strict 为 10/9/9（对错金标得分），修正后三臂 9/9/9；两套 grade 文件
+（`exp_r2_grade_original_revised.json` / `exp_r2_grade_corrected.json`）都保留。
 
 ## 3. 稳定性套件（27/27）
 
@@ -56,8 +62,12 @@
 python TEST-RESULTS/verify.py          # 独立复算：grounded / keyword / cited / 延迟 / 成本
 ```
 
-它只用标准库，自己重新实现三个指标，直接读原始 `track_*.json` 和论文里的 `\NUM*` 宏，
-逐项打印"观测 vs 论文"。**2026-10-13 实测：PASS（15/15 项全部重算一致）。**
+它只用标准库，自己重新实现指标，直接读原始 `track_*.json`，对照
+`paper-kbs/tex/journal_20p/n8c_eval.tex`（Table tab:e5-arms）的论文数字——
+grounded 10/10/10、strict keywords 9/10×3、cited 9/7/2、chunk 5/0/7、
+延迟 52.6/22.2/24.5 s、成本 $0.711/$0.487/$0.527——逐项打印"观测 vs 论文"。
+cited 的标记正则与 grade JSON 里记录的定义逐字一致（含罗马数字节号 §III-C）。
+**2026-10-15 实测：PASS（30 格全部重算一致 + manifest 总成本对账）。**
 
 项目自己的对账链（更全，含语料/闸门/表1）：
 

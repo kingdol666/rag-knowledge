@@ -1,0 +1,131 @@
+%% QDCVR platform — Knowledge-Based Systems submission (elsarticle)
+%% v2 restructure 2026-10-12: content-retrieval-based KB *management system* framing.
+%% 20-page pass 2026-10-13: back matter (n_back) included; figures restored.
+%% Compile: pdflatex main_20p && bibtex main_20p && pdflatex main_20p && pdflatex main_20p
+%% AUTHOR ACTION: replace author placeholders, ORCID, and funding fields.
+% journal-style camera-ready preview (generated from the submission sources)
+\documentclass[final,5p,times,twocolumn]{elsarticle}
+\usepackage{stfloats}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{xurl}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\yes}{\checkmark}
+\newcommand{\no}{--}
+
+\setlength{\emergencystretch}{1.5em}
+
+%% Float placement: the paper carries nine figures and twelve table
+%% environments (seven in the body, five in the appendix: one per-question rank
+%% table and four supplementary tables), so the
+%% default fractions defer most of them past the references. Allow denser
+%% float pages to keep each float near the text that discusses it.
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dbltopfraction}{0.90}
+\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{3}
+
+%% Tighten the vertical glue around floats. With nine figures and twelve
+%% tables the elsarticle defaults spend roughly three inches of column
+%% height on separation alone, which the 20-page budget cannot afford.
+%% Values are about half the class defaults and remain within normal
+%% typographic practice for a two-column layout.
+\setlength{\floatsep}{7pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
+\setlength{\intextsep}{7pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{7pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{9pt plus 2pt minus 2pt}
+
+\journal{Knowledge-Based Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{QDCVR: Content-Governed Acquisition, Verified Retrieval and Reported
+Absence in a Deployed Knowledge-Base System}
+
+\author[inst1]{Author Name\corref{cor1}}
+\ead{author@example.com}
+\author[inst1]{Co-author Name}
+\cortext[cor1]{Corresponding author.}
+\affiliation[inst1]{organization={Affiliation Department, University,
+City, Country}, city={City}, country={Country}}
+
+\begin{abstract}
+Enterprise document systems must locate source material, determine whether
+its content supports an answer, and communicate when a completed search finds
+no support. Retrieval-augmented generation improves discovery, but topical
+similarity alone cannot establish evidentiary support. We present QDCVR, a
+self-hosted knowledge-base system that links content-informed acquisition and
+organization with an invoked server-side evidence-checking tool and an answer workflow
+instructed to report absence; these mechanisms operate at different layers
+rather than as three uniform server-enforced guarantees.
+We evaluate the deployed system on three bounded corpora. In a post-hoc replay
+of identical industrial candidate pools, judge-score re-ranking yields Hit@5
+0.44, while a derived replay that preserves fusion order among scored survivors
+yields 0.94, matching fusion-only. All 191 recorded segment scores exceed the
+0.5 threshold, and one fused candidate has no recorded score; this comparison
+warns against using this checkpoint as a ranker but does not demonstrate a
+threshold-filter benefit. In a 30-cell end-to-end comparison, all answers
+contain a gold document identifier. Strict keyword coverage is 9/10 in each
+arm; the misses are word-form mismatches, and alias-aware coverage is 10/10.
+A mis-specified gold key was corrected during revision and both grades are
+retained. Recognized citation-marker hits are
+9/10, 7/10 and 2/10 for platform, file and dense arms. These are provenance
+and lexical-marker checks, not semantic faithfulness measures. An eighteen-arm
+battery observed no fabricated citations; selected catalog-truncation paths
+were repaired and retested. The findings support a bounded deployment account,
+not universal retrieval superiority or a guarantee of answer correctness.
+\end{abstract}
+
+\begin{keyword}
+Knowledge base management \sep Document ingestion \sep Content verification \sep
+Knowledge organization \sep Retrieval-augmented generation \sep
+Model Context Protocol
+\end{keyword}
+
+\end{frontmatter}
+
+%% ============================================================ body (v2 order)
+\input{n1_intro}
+\input{n2_related}
+\input{n3_overview}
+\input{n4_acquisition}
+\input{n5_organization}
+\input{n6_retrieval}
+\input{n7_implementation}
+\input{n8a_eval}
+\input{n8b_eval}
+\input{n8c_eval}
+\input{n9_discussion}
+\input{n10_threats}
+\input{n11_conclusion}
+\input{n_back}
+
+{\footnotesize
+%% References follow elsarticle-num. A 2pt item separation (the class default
+%% is larger) keeps the 55-entry list inside the page budget without changing
+%% the type size.
+\setlength{\bibsep}{0.5pt plus 0.2ex}
+\bibliographystyle{elsarticle-num}
+\bibliography{refs,refs_new_verified}
+}
+
+\end{document}

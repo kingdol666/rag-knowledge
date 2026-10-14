@@ -24,16 +24,14 @@ RESULTS = SUITE / "results"
 QFILE = SUITE / "data" / "papers" / "qa_questions_r2.json"
 TRACKS = ["a", "a2", "b", "c"]  # a2 = leakage-free platform arm (2026-09-30 rerun)
 
-# 引用标记（论文 Metrics 原文：cited = part/section/table markers present）
-# 2026-10-13 固化：此前该数字只由 main.tex 注释里一段临时正则手算，仓库无脚本可复算。
-# 实测校准（run-20260930T150453Z-3ec2174，论文 \NUMciteA/B/C = 9/6/1）：
-#   本定义 a2=9 · b=6 · c=1 —— 与论文三个宏逐一吻合；
-#   稠密 chunk 引用（`chunk_index N` / `chunk N`）另计为 cited_chunk：
-#   a2=6 · b=1 · c=7，即稠密轨的 chunk 引用不计入论文 cited 数字。
+# Citation-marker presence is a lexical proxy, not citation correctness.
+# Accept numeric and Roman-numeral section locators, including subsections
+# (e.g. §III-C); reject ordinary prose such as "sections for Europe".
 CITE_PART = r"\bparts?\s+\d+\s+of\s+\d+"
+_CITE_NUMBER = r"(?:\d+(?:\.\d+)*(?:-[A-Z0-9]+)?|[IVXLCDM]+(?:-[A-Z0-9]+)?)"
 CITE_STRUCT = (r"\b(?:section|sections|table|tables|appendix|appendices)\s+"
-               r"(?:\d+(?:\.\d+)*|[A-Z](?:\.\d+)*)")
-CITE_SECT = r"§\s*\d+(?:\.\d+)*"
+               + _CITE_NUMBER + r"\b")
+CITE_SECT = r"§\s*" + _CITE_NUMBER + r"\b"
 CITE_CHUNK = r"\bchunk[_ ]?(?:index|id)?\s*\d+"
 CITE_DEF = ("part/section/table markers present: " + CITE_PART + " | " +
             CITE_STRUCT + " | " + CITE_SECT)
@@ -41,6 +39,30 @@ CITE_DEF_DENSE = ("dense chunk references (reported separately, NOT counted in "
                   "the paper's cited numbers): " + CITE_CHUNK)
 RX_CITE = re.compile(f"(?:{CITE_PART}|{CITE_STRUCT}|{CITE_SECT})", re.I)
 RX_CITE_DENSE = re.compile(CITE_CHUNK, re.I)
+
+# Explicit lexical aliases for known acronym/concept variants. The original
+# strict keyword result is retained alongside this revised coverage check.
+KW_ALIASES = {
+    "BQ09": {"multilayer perceptron": (r"\bmlp(?:-slam)?\b",)},
+    "BQ10": {"immune evasion": (
+        r"\bimmune[- ]resistant\b",
+        r"\bimmune checkpoint (?:evasion|resistance|regulation)\b",
+        r"\breduced antigen presentation\b",
+    )},
+}
+
+def merge_declared_aliases(question: dict) -> dict[str, tuple[str, ...]]:
+    """Merge per-question aliases with the stable script defaults."""
+    aliases = dict(KW_ALIASES.get(question.get("qid", ""), {}))
+    declared = question.get("gold_keyword_aliases") or {}
+    if isinstance(declared, dict):
+        items = declared.items()
+    else:
+        items = zip(question.get("gold_keywords", []), declared)
+    for keyword, forms in items:
+        aliases[keyword.lower()] = tuple(
+            re.escape(str(form).lower()) for form in forms)
+    return aliases
 
 
 def cite_markers(answer: str) -> tuple[bool, bool, list[str]]:
@@ -50,16 +72,19 @@ def cite_markers(answer: str) -> tuple[bool, bool, list[str]]:
     return bool(hits), bool(RX_CITE_DENSE.search(ans)), hits
 
 
-def kw_hit(answer: str, kws: list[str]) -> list[str]:
+def kw_hit(answer: str, kws: list[str], qid: str = "", aliases: bool = False,
+           alias_map: dict[str, tuple[str, ...]] | None = None) -> list[str]:
     low = answer.lower()
     hits = []
+    alias_map = alias_map or (KW_ALIASES.get(qid, {}) if aliases else {})
     for k in kws:
         core = re.escape(k.lower())
-        # 纯数字词允许序数后缀(95 ≡ 95th), 数量词义不变
+        # Pure numeric terms allow ordinal suffixes (95 == 95th).
         if k.isdigit():
             core += r"(?:st|nd|rd|th)?"
         pat = r"(?<![a-z0-9])" + core + r"(?![a-z0-9])"
-        if re.search(pat, low):
+        if re.search(pat, low) or any(re.search(alias, low)
+                                      for alias in alias_map.get(k.lower(), ())):
             hits.append(k)
     return hits
 
@@ -89,8 +114,11 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", default="", help="run 目录（名/相对/绝对路径，默认最新）")
     ap.add_argument("--qfile", default="",
-                    help="题集 JSON（默认 qa_questions_r2.json；BQ 题集传 "
-                         "data/papers/qa_questions.json）")
+                    help="question set JSON (default qa_questions_r2.json)")
+    ap.add_argument("--grade-out", default="",
+                    help="grade JSON output path (default results/exp_r2_grade.json)")
+    ap.add_argument("--report-out", default="",
+                    help="report Markdown output path (default results/R2-EXP-3TRACK-REPORT.md)")
     args = ap.parse_args()
     run_dir = resolve_run(args.run)
     qfile = SUITE / args.qfile if args.qfile else QFILE
@@ -112,14 +140,22 @@ def main() -> int:
             "\n" + "\n".join(r.get("texts_full") or [])
         blob = str(r.get("answer") or "") + "\n" + trace
         gold_hit = bool(gid and (gid in blob or gid_alt in blob))
-        kws = kw_hit(str(r.get("answer") or ""), q.get("gold_keywords", []))
+        kws_strict = kw_hit(str(r.get("answer") or ""), q.get("gold_keywords", []),
+                            qid=r.get("qid", ""), aliases=False)
+        alias_map = merge_declared_aliases(q)
+        kws_alias = kw_hit(str(r.get("answer") or ""), q.get("gold_keywords", []),
+                           qid=r.get("qid", ""), aliases=True,
+                           alias_map=alias_map)
         need = max(1, -(-len(q.get("gold_keywords", [])) * 3 // 5))
-        kw_ok = len(kws) >= need
+        kw_ok = len(kws_strict) >= need
+        kw_alias_ok = len(kws_alias) >= need
         cited, cited_chunk, cmarkers = cite_markers(r.get("answer"))
         rows.append({"qid": r.get("qid"), "track": r.get("track"),
                      "gold": gid, "gold_hit": gold_hit,
-                     "kw": kws, "kw_ok": kw_ok,
+                     "kw": kws_strict, "kw_alias": kws_alias,
+                     "kw_ok": kw_ok, "kw_alias_ok": kw_alias_ok,
                      "pass": bool(gold_hit and kw_ok),
+                     "pass_alias": bool(gold_hit and kw_alias_ok),
                      "cited": cited, "cited_chunk": cited_chunk,
                      "cite_markers": cmarkers,
                      "is_error": r.get("is_error"),
@@ -140,67 +176,76 @@ def main() -> int:
             "n": len(tr),
             "gold_hit": sum(r["gold_hit"] for r in tr),
             "kw_ok": sum(r["kw_ok"] for r in tr),
+            "kw_alias_ok": sum(r["kw_alias_ok"] for r in tr),
             "pass": sum(r["pass"] for r in tr),
+            "pass_alias": sum(r["pass_alias"] for r in tr),
             "pass_rate": round(sum(r["pass"] for r in tr) / len(tr), 3),
+            "pass_alias_rate": round(sum(r["pass_alias"] for r in tr) / len(tr), 3),
             "cited": sum(r["cited"] for r in tr),
             "cited_chunk": sum(r["cited_chunk"] for r in tr),
-            "avg_latency_s": round(sum(lat) / len(tr), 1),
+            "avg_latency_s": round(sum(lat) / len(lat), 1),
             "avg_tools": round(sum(r["tools"] or 0 for r in tr) / len(tr), 1),
             "avg_cost_usd": round(sum(r["cost_usd"] or 0 for r in tr) /
                                   len(tr), 4),
             "tokens_out_total": sum(r["tokens_out"] or 0 for r in tr),
         }
 
-    out = {"run_dir": run_dir.name, "grades": grades, "rows": rows,
+    grade_out = Path(args.grade_out) if args.grade_out else RESULTS / "exp_r2_grade.json"
+    report_out = Path(args.report_out) if args.report_out else RESULTS / "R2-EXP-3TRACK-REPORT.md"
+    grade_out.parent.mkdir(parents=True, exist_ok=True)
+    report_out.parent.mkdir(parents=True, exist_ok=True)
+    out = {"run_dir": run_dir.name, "question_file": qname,
+           "grades": grades, "rows": rows,
            "citation_definition": CITE_DEF,
-           "citation_definition_dense": CITE_DEF_DENSE}
-    (RESULTS / "exp_r2_grade.json").write_text(
-        json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+           "citation_definition_dense": CITE_DEF_DENSE,
+           "keyword_alias_policy": KW_ALIASES}
+    grade_out.write_text(json.dumps(out, ensure_ascii=False, indent=1),
+                         encoding="utf-8")
 
-    lines = ["# 三模式检索实验报告 (Three-Track Experiment)", "",
-             f"Run: `{run_dir.name}` · 题集: `{qname}` · "
-             f"语料: 平台五门类库 = corpus_md 100 篇 = Corpus-Chunks800", "",
-             "## 分轨结果", "",
-             "| 轨 | 模式 | pass | gold 命中 | 关键词核验 | 引用命中 (part/section/table) | 平均时延 s | 平均工具数 | 平均成本 $ |",
-             "|---|---|---|---|---|---|---:|---:|---:|"]
-    tname = {"a": "A 平台 KB(QDCVR 工具面)", "a2": "A2 平台 KB(仅KB工具,无文件工具)",
-             "b": "B 裸 Agent(文件工具)",
-             "c": "C Dense-RAG(Chunks800)"}
+    lines = ["# Three-Track Experiment (deterministic regrade)", "",
+             f"Run: `{run_dir.name}` · question set: `{qname}` · 100-paper corpus", "",
+             "## Arm-level results", "",
+             "| Arm | Gold-ID coverage | Strict keyword | Alias-aware keyword | Strict pass | Alias-aware pass | Citation markers | Chunk markers | Mean wall s | Mean cost USD |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for t in TRACKS:
         g = grades.get(t)
         if not g:
             continue
-        lines.append(f"| {t.upper()} | {tname[t]} | {g['pass']}/{g['n']} | "
-                     f"{g['gold_hit']}/{g['n']} | {g['kw_ok']}/{g['n']} | "
-                     f"{g['cited']}/{g['n']} (chunk {g['cited_chunk']}) | "
-                     f"{g['avg_latency_s']} | {g['avg_tools']} | "
-                     f"{g['avg_cost_usd']} |")
-    lines += ["", "## 逐题判分", "",
-              "| QID | 轨 | gold | 关键词命中 | 引用标记 | pass | 时延 s | 工具数 |",
-              "|---|---|---|---|---|---|---:|---:|"]
+        lines.append(f"| {t.upper()} | {g['gold_hit']}/{g['n']} | "
+                     f"{g['kw_ok']}/{g['n']} | {g['kw_alias_ok']}/{g['n']} | "
+                     f"{g['pass']}/{g['n']} | {g['pass_alias']}/{g['n']} | "
+                     f"{g['cited']}/{g['n']} | {g['cited_chunk']}/{g['n']} | "
+                     f"{g['avg_latency_s']} | {g['avg_cost_usd']:.4f} |")
+    lines += ["", "## Per-question grades", "",
+              "| QID | Arm | Gold-ID | Strict keywords | Alias-aware keywords | Citation marker | Strict pass | Alias-aware pass | Wall s | Tools |",
+              "|---|---|---|---:|---:|---|---|---|---:|---:|"]
     for r in rows:
+        kws = gold.get(r["qid"], {}).get("gold_keywords", [])
         lines.append(f"| {r['qid']} | {str(r['track']).upper()} | "
-                     f"{'✓' if r['gold_hit'] else '✗'} | "
-                     f"{len(r['kw'])}/{len(gold.get(r['qid'], {}).get('gold_keywords', []))}"
-                     f"{' (' + ','.join(r['kw']) + ')' if r['kw'] else ''} | "
-                     f"{'✓' if r['cited'] else '✗'}"
+                     f"{'yes' if r['gold_hit'] else 'no'} | "
+                     f"{len(r['kw'])}/{len(kws)} | {len(r['kw_alias'])}/{len(kws)} | "
+                     f"{'yes' if r['cited'] else 'no'}"
                      f"{' (' + ', '.join(r['cite_markers'][:3]) + ')' if r['cite_markers'] else ''} | "
-                     f"{'✅' if r['pass'] else '❌'} | {r['latency_s']} | "
-                     f"{r['tools']} |")
-    lines += ["", "## 判分说明", "",
-              "- pass = 金标论文可追溯(答案/工具轨迹含金标 id) 且 答案含 ≥60% 金标关键词(词边界匹配)。",
-              "- C 轨金标证据依赖提示词要求的 chunk 文件名引用; 拒答(insufficient evidence)计为未通过。",
-              "- `引用命中` = 论文 Metrics 的 cited 口径（part k of N / section|table|appendix 编号 / §n）;",
-              "  括号内 `chunk n` 为稠密轨按提示词要求的 chunk 引用，**不计入**论文 cited 数字，仅作附注。",
-              f"  cited 正则: `{CITE_DEF}`",
-              f"  附注 chunk 正则: `{CITE_DEF_DENSE}`",
-              "- 判分完全确定性(词边界/标记正则), 不经 LLM; 逐题 trace 见 run 目录 track_*.json。",
-              "", "逐字答案与监控表见 run 目录 `SUMMARY.md`。"]
-    (RESULTS / "R2-EXP-3TRACK-REPORT.md").write_text(
-        "\n".join(lines), encoding="utf-8")
+                     f"{'yes' if r['pass'] else 'no'} | "
+                     f"{'yes' if r['pass_alias'] else 'no'} | "
+                     f"{r['latency_s']} | {r['tools']} |")
+    lines += ["", "## Scoring definitions", "",
+              "- Gold-ID coverage means the gold identifier occurs in the answer or recorded retrieval trace; it is provenance/document contact, not semantic grounding.",
+              "- Strict keyword coverage uses the original exact lexical keywords and the 60% threshold.",
+              "- Alias-aware keyword coverage additionally accepts the explicit aliases defined for BQ09 and BQ10; it remains lexical coverage, not a factuality score.",
+              "- Citation-marker hits are syntactic locator-pattern matches. They do not test whether a locator resolves or supports an answer claim.",
+              "- Chunk identifiers are counted separately and are not document citation markers.",
+              f"  Citation regex: `{CITE_DEF}`",
+              f"  Chunk regex: `{CITE_DEF_DENSE}`",
+              "- This report regrades immutable saved answers and traces; raw run records are unchanged.",
+              "", "Verbatim answers and run monitoring are in `SUMMARY.md`."]
+
+    report_out.write_text("\n".join(lines), encoding="utf-8")
     print(f"[grade] " + " | ".join(
-        f"{t.upper()} {g['pass']}/{g['n']}" for t, g in grades.items()))
-    print(f"[report] → {RESULTS / 'R2-EXP-3TRACK-REPORT.md'}")
+        f"{t.upper()} strict {g['pass']}/{g['n']} alias {g['pass_alias']}/{g['n']}"
+        for t, g in grades.items()))
+    print(f"[grade json] → {grade_out}")
+    print(f"[report] → {report_out}")
     return 0
 
 

@@ -24,33 +24,34 @@ density~\cite{manku-near-dup-2007}; sixteen gold questions and four
 out-of-corpus probes ran against it. (ii)~\emph{arXiv corpus}: 100 submitted
 papers spanning about 25 domains, 79 retrievable at evaluation time and routed
 by content into five domain libraries holding 322 stored parts; ten gold
-questions (BQ01--BQ10) target books the papers reference, keyed by arXiv
-identifier, and the live environment held 19 libraries.
-(iii)~\emph{Cross-lingual ingestion corpus}: 400 Wikipedia pages per
-language (English, Chinese,
+questions (BQ01--BQ10) target papers referenced by those papers, keyed by arXiv
+identifier, and the live environment held 19 libraries. (iii)~\emph{Cross-lingual
+ingestion corpus}: 400 Wikipedia pages per language (English, Chinese,
 Japanese), 40 extractive cloze queries each with verbatim in-page answers;
 ingestion only, no retrieval-quality numbers reported.
 
 \textbf{Questions and gold annotations.} The sixteen industrial questions were
-authored, not sampled from logs---a circularity we state rather than hide; each
-identifies one or two gold documents by a unique filename fragment and one to
-three fact markers. Q16 names the event \texttt{heatdecay092}, a token also in
-its gold filename, so a filename-ranking retriever could match it without
-reading content; we report the weakness. On the arXiv corpus a question passes
-only if the gold identifier is traceable in the answer or tool trajectory and
-at least 60\% of gold keywords occur at word boundaries, a deterministic test
-with no language model in the loop.
+authored, not sampled from logs; each identifies one or two gold documents by
+a unique filename fragment and one to three fact markers. Q16 includes a token
+also present in its gold filename, so a filename-ranking retriever could match
+it without reading content. We retain this limitation. The arXiv answer grader
+checks gold-ID presence in the answer or trace plus a word-boundary keyword
+coverage rule; it does not assess semantic support. Citation markers are
+counted separately by a deterministic pattern and do not assess source
+resolution or claim-to-source entailment.
 
 \textbf{Metric families.} Retrieval uses Hit@5, Recall@5 and MRR@5, following
 passage-ranking conventions~\cite{craswell-msmarco-2021};
 nDCG@5~\cite{jarvelin-cumulated-gain-2002} was computed only inside one
-exploratory arm we do not report. Grounding and key-fact verification are
-deterministic string tests---does the answer cite the gold document, do at
-least 60\% of gold key facts occur at word boundaries, are part, section and
-table citation markers present---mechanical checks, not model-based
-faithfulness estimates such as RAGAS~\cite{es-ragas-2024} or
-ARES~\cite{saad-falcon-ares-2024}. The third family covers wall-clock time,
-agent turns, tool calls, monetary cost and the correctness of refused answers.
+exploratory arm we do not report. The end-to-end "gold-hit" measure checks
+whether the answer or recorded retrieval trace contains the gold identifier;
+keyword coverage is a deterministic lexical proxy. Citation counts record
+whether the answer contains a part, section or table marker under the stated
+pattern. These checks support traceability and marker-presence claims, not
+semantic faithfulness or claim-to-source support, for which model-based
+measures such as RAGAS~\cite{es-ragas-2024} or ARES~\cite{saad-falcon-ares-2024}
+are designed. The third metric family covers wall-clock time, agent turns,
+tool calls, cost and whether refusals were appropriate.
 
 \textbf{Controls.} Deterministic lanes were re-run and compared field by field,
 latency excluded; model-driven lanes were repeated at fixed model version and
@@ -122,7 +123,8 @@ judging through sub-library addresses all returned correct results, and a
 parent catalog lists its sub-libraries as container entries carrying the
 sub-library's own description---the one-call view ladder navigation reads.
 
-Growing from 50 to 100 papers (163 to 322 documents) cost no retrieval
+Growing from 50 to 100 papers (322 stored documents at the final audit)
+cost no retrieval
 quality: dense top-1 hits went from 48/50 to 49/50 and MRR from 0.98 to 1.00,
 a 2 percentage point gain recorded as ``held (within $\pm$5\,pp)''. In the 16
 lifecycle scenarios, run against two disposable test libraries, create, move,

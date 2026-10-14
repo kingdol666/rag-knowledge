@@ -1,0 +1,148 @@
+\section{Evaluation}
+\label{sec:eval}
+
+We evaluate the deployed system on three corpora differing in origin, language
+and scale, using three metric families. E1--E2
+(Sections~\ref{sec:e1}--\ref{sec:e2}) cover the stages that precede a
+question: acquisition and parsing, then organization, three-source consistency
+and management operations. E3--E8 (Sections~\ref{sec:e3}--\ref{sec:e8}) cover
+what happens once a question is asked: the operational-knowledge store,
+retrieval quality and the role of the verdict, agent behavior with abstention
+and cost and the deployment re-run, verifier failure, non-functional behavior,
+and the gate and search-scope ablations. Numbers are reported against the
+corpus that produced them, never merged; the campaign inventory and
+per-question tool-layer results are supplementary material.
+
+\subsection{Experimental setup}
+\label{sec:eval-setup}
+
+\textbf{Corpora.} (i)~\emph{Deployed industrial corpus}: five knowledge bases
+in a live deployment hold 42 documents, one containing twenty near-duplicate
+equipment-telemetry reports sharing prefixes, vocabulary and structure---a
+deliberate stressor for near-duplicate detection and confuser
+density~\cite{manku-near-dup-2007}; sixteen gold questions and four
+out-of-corpus probes ran against it. (ii)~\emph{arXiv corpus}: 100 submitted
+papers spanning about 25 domains, 79 retrievable at evaluation time and routed
+by content into five domain libraries holding 322 stored parts; ten gold
+questions (BQ01--BQ10) target papers referenced by those papers, keyed by arXiv
+identifier, and the live environment held 19 libraries. (iii)~\emph{Cross-lingual
+ingestion corpus}: 400 Wikipedia pages per language (English, Chinese,
+Japanese), 40 extractive cloze queries each with verbatim in-page answers;
+ingestion only, no retrieval-quality numbers reported.
+
+\textbf{Questions and gold annotations.} The sixteen industrial questions were
+authored, not sampled from logs; each identifies one or two gold documents by
+a unique filename fragment and one to three fact markers. Q16 includes a token
+also present in its gold filename, so a filename-ranking retriever could match
+it without reading content. We retain this limitation. The arXiv answer grader
+checks gold-ID presence in the answer or trace plus a word-boundary keyword
+coverage rule; it does not assess semantic support. Citation markers are
+counted separately by a deterministic pattern and do not assess source
+resolution or claim-to-source entailment.
+
+\textbf{Metric families.} Retrieval uses Hit@5, Recall@5 and MRR@5, following
+passage-ranking conventions~\cite{craswell-msmarco-2021};
+nDCG@5~\cite{jarvelin-cumulated-gain-2002} was computed only inside one
+exploratory arm we do not report. The end-to-end "gold-hit" measure checks
+whether the answer or recorded retrieval trace contains the gold identifier;
+keyword coverage is a deterministic lexical proxy. Citation counts record
+whether the answer contains a part, section or table marker under the stated
+pattern. These checks support traceability and marker-presence claims, not
+semantic faithfulness or claim-to-source support, for which model-based
+measures such as RAGAS~\cite{es-ragas-2024} or ARES~\cite{saad-falcon-ares-2024}
+are designed. The third metric family covers wall-clock time, agent turns,
+tool calls, cost and whether refusals were appropriate.
+
+\textbf{Controls.} Deterministic lanes were re-run and compared field by field,
+latency excluded; model-driven lanes were repeated at fixed model version and
+reported as means with observed spread; the fixed retry policy (one retry for
+an empty zero-turn response or transient gateway timeout) fired twice,
+succeeding both times. Before measurement we repaired two corpus-integrity
+faults via the platform's own operations (Section~\ref{sec:e7}). The tool-layer
+retrieval lanes, grading rule, audits, duplicate adjudication and cross-lingual
+ingestion pipeline are deterministic; agent lanes and text-derived results are
+not, and carry their repetition spread.
+
+\subsection{E1: Acquisition and parsing}
+\label{sec:e1}
+
+The 100 submitted papers were parsed and content-routed into five domain
+libraries, producing 322 stored parts after the 30{,}000-character split. The
+submission funnel---91 in the ingest state file, 79 retrievable at evaluation
+time, 21 never retrievable---is in the campaign inventory; reported failure
+modes are formula-dense scans and one tool-layer crash during batch parsing,
+restarted from a checkpoint. Neither attempts against failed papers nor
+per-paper parse status is recorded, so reconciliation rests on surviving
+artifacts~\cite{missier-prov-2013}. The audit: nine per-paper ingest checks
+100/100; no true duplicate among 35 near-duplicate pairs; 165 descriptions
+upgraded; content and storage audits 322/322 and 33/33; 15/15 regression
+probes; a 4{,}528-chunk dense replica index (values script-asserted from saved
+artifacts).
+
+The cross-lingual benchmark ran twice over 400 pages per language and
+reproduced round~1 bit-for-bit, with ingestion success 1.0; storage
+completeness and self-retrieval Hit@1 are in
+Table~\ref{tab:acq-crosslang}. Its English membership accuracy of 0.875 is an
+organization defect---the page stored in the wrong library roughly one time in
+eight---not a parsing defect.
+
+A 50-paper, 26-domain campaign parsed and verified 50/50 papers in
+1{,}115.5\,s (8.3--48.4\,s per paper), produced 202 tags, batch-indexed 50
+documents and reported \texttt{all\_probes\_ok}; 41 of 50 carried
+\texttt{tag\_ok:false} although \texttt{verify\_ok} passed 50/50, so
+tag-quality failures never blocked ingestion. Its 30{,}000-character tier
+turned 50 papers into 165 documents (nine whole, 156 parts), passed storage
+50/50 and the description-and-tag check 165/165, stored 3{,}798{,}446
+characters and parsed in 2{,}672\,s; one stage re-ran on inbox ordering, and
+more than 800 extracted images were not uploaded. Descriptions and tags are
+checked against content before storage~\cite{park-metadata-quality-2009}.
+
+
+\subsection{E2: Organization, consistency, and management operations}
+\label{sec:e2}
+
+
+Organizational correctness is three-source consistency: disk files, the tree
+index and per-library metadata must agree on document existence, location and
+indexed content. Under that definition we found one real defect in a
+disposable test library: after a rename the vector index kept the old name's
+chunks---count 18 where 9 were expected, a duplicate search matching the
+document against its own former path at 0.9738 similarity, a vector probe
+returning every chunk twice at identical scores. Only an explicit force
+re-index removed them, restoring the count to 9. The failure is invisible from
+the metadata alone.
+
+The full reorganization campaign ran over the 322-document arXiv corpus and
+passed every check in the campaign audit; its 35 near-duplicate candidate
+groups (similarities 0.90--0.975), each adjacent parts of one paper, held zero
+true duplicates, and no document was deleted. The spot check sampled 33 of the
+322 documents. Sub-library splitting and hierarchy creation were executed
+later on a disposable three-level fixture (2026-10-13): creation with a parent
+reference, a parent$\to$sub-library document move, and listing, reading and
+judging through sub-library addresses all returned correct results, and a
+parent catalog lists its sub-libraries as container entries carrying the
+sub-library's own description---the one-call view ladder navigation reads.
+
+Growing from 50 to 100 papers (322 stored documents at the final audit)
+cost no retrieval
+quality: dense top-1 hits went from 48/50 to 49/50 and MRR from 0.98 to 1.00,
+a 2 percentage point gain recorded as ``held (within $\pm$5\,pp)''. In the 16
+lifecycle scenarios, run against two disposable test libraries, create, move,
+delete and forced re-index each behaved as specified
+(Table~\ref{tab:org-ops}). Two failure modes: the task-status tool reports
+\texttt{running} after \texttt{finished\_at} is written, as in the
+reorganization graph build, and the update check timed out after 30\,s
+(\texttt{ragctl version -{}-json timed out after 30s}, success false) while
+every other probe passed; the project-status tool silently ignores its version
+flag. Merge and split were never exercised under controlled conditions and we
+claim nothing about them; the ingest tools were covered in E1.
+
+The live tag registry held 316 tags; the tag-quality check passed 165 documents
+with zero failures in 47.6\,s. Orphan tags accumulate (test tags, section
+titles); the registry offers a dry-run detector and a cleanup, and in one case
+test-library tags leaked into the production registry---the failure mode
+vocabulary-based organization is prone to~\cite{golder-tagging-2006}. The
+document graph is navigation, never evidence: writing one document's four tag
+edges moved the edge count from 4{,}675 to 4{,}679, against 658 nodes, 333
+documents and 316 tags; the 165-document corpus graph has 335 nodes and
+1{,}671 edges.

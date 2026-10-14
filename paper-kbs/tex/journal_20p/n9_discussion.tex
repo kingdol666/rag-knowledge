@@ -1,66 +1,57 @@
 \section{Discussion and lessons learned}
 \label{sec:discussion}
 
-The evaluation distinguishes document discovery from evidence-supported
-answering. The retrieval-only matrix shows that document-level recall alone
-does not account for answer-layer behavior: the same retrieved document can
-support a citation, an explicit partial answer, or an honest refusal,
-depending on the evidence available to the agent. A knowledge-base system
-should therefore expose both retrieval outcomes and the evidence path that
-produced an answer. The three contracts of Section~\ref{sec:system} name that
-path, and the lessons below follow it from ingest to answer.
+The evaluation separates document discovery from answer construction. On the
+tested sets, retrieval-only recall does not by itself determine whether an
+agent returns an addressable source, an explicit partial answer or a refusal.
+The useful design lesson is to expose the retrieval trace and the evidence
+returned to the answering step, while distinguishing a completed search with
+no support from a search that did not complete.
 
-Verdict placement is the first lesson. On identical candidate pools the same
-judge scores hold fusion-quality retrieval when they act as an
-admission filter (Hit@5 0.94) and lose the gold when they order the list
-(0.44), because same-domain near-misses inflate the scores until the ordering
-carries almost no gold information; a second, generic verifier fails the same
-way, so replacing the checkpoint is not the repair. What the gate buys, on the
-measured corpora, is fail-closed provenance rather than ranking power: every
-returned document was fetched and judged, and the verdict travels with the
-evidence. That provenance is inspectable precisely because the verifier sits
-server-side, outside any single generation loop.
+The first implication concerns verifier placement. On identical logged pools,
+re-ranking by the judge lowers Hit@5 from 0.94 under fusion-only to 0.44, while
+a derived replay that keeps the fusion order among scored survivors returns
+the fusion-only metrics. Because all 191 recorded scores exceed 0.5 and Q14
+has one fused candidate without a recorded score, this does not demonstrate
+threshold-filter benefit. It shows that the tested judge scores were a poor
+sorting signal on this confuser-heavy corpus. The second verifier replay and
+the second corpus do not establish universal calibration; the strongest
+supported claim is that ranking by this checkpoint should not replace fusion
+order under the tested conditions.
 
-Abstention is the second lesson. A similarity score retrieves topically
-related material even when no document answers the query, so refusal has to
-be enforced in the reading and answer layers, where the system can state
-what it searched and where its coverage ends. The adversarial battery
-recorded no fabricated citations across eighteen final arms, but its
-single-run design and one body-level partial answer limit that result, and
-a binary found/refused gate cannot represent an answer that cites applied
-evidence while disclosing that a dedicated tutorial is absent.
+The second implication concerns abstention. Similarity can retrieve related
+material without answering a query. In this system, the answer workflow
+instructs the agent to report the searched scope and say not-found when its
+completed evidence review finds no support. The adversarial battery observed
+no fabricated citations in eighteen final arms, but one partial answer fell
+outside the binary grading scheme and each arm has a single final observation.
+Timeouts, unavailable tools and incomplete searches must be reported as
+execution failures, not conflated with semantic absence.
 
-Tool transport is the third lesson: the oversized-catalog incident
-reproduced a false refusal in which the document was present but the agent
-received only a truncated preview, and server-side budgets, grouped catalog
-views and pagination repaired the tested path on rerun --- evidence for
-that boundary, not a guarantee for every model host or larger catalog.
+The third implication concerns transport. A reproduced oversized-catalog
+response hid entries from the agent and led to a false refusal. Server-side
+budgets, grouped views and pagination repaired the selected tested paths on
+rerun. This supports the narrower point that transport limits can affect
+retrieval outcomes; it is not a guarantee for every host or larger catalog.
 
-The five questions of Section~\ref{sec:rq} therefore close as follows. RQ1:
-the contracts bind where their checks are server-side mechanisms; the stale
-index of Section~\ref{sec:e2} was caught by the three-source audit, while the
-truncated catalog of Section~\ref{sec:sysarms} showed that an enforcement
-layer has transport limits of its own, closed by budget-guarded pagination.
-RQ2: the acquisition gates and content routing behaved as specified on
-deployed collections, though 21 of 100 submitted papers
-never became retrievable and routing is demonstrated as coverage, not
-accuracy. RQ3: at this scale the lanes separate on checkability, citation
-discipline and cost, not on document recall. RQ4: content verification earns
-its keep as an admission filter with fail-closed provenance, fails as a
-re-ranker under same-domain confuser density, and survives no checkpoint
-substitution; its calibration remains untested. RQ5: abstention is enforced
-at the answer layer, latency is turn-dominated, and the delivery surface
-moves cost by an order of magnitude, with tool-output budgets a constraint
-on the enforcement layer itself.
+The five research questions close at different evidence levels. RQ1 is partly
+answered: the system combines server-side parse/index checks and an invoked
+content gate with agent procedures for placement and answer reporting. RQ2 is
+answered as an operational observation, bounded by 21 papers that never became
+retrievable and the absence of independent placement ground truth. RQ3 reports
+tool-layer recall separately from end-to-end source-marker checks; it does not
+claim similar recall in every interface or isolate the gate's causal effect.
+RQ4 identifies a same-pool ranking failure for one checkpoint; it does not
+validate threshold discrimination. RQ5 documents observed abstentions,
+turn-dominated latency and a transport failure/recovery, with no broad
+reliability or user-utility estimate.
 
-More broadly, parsers, registries, indices and answer agents should expose
-post-conditions checkable independently of a success envelope; catalogs and
-graphs aid navigation but do not substitute for content-level evidence,
-consistent with provenance and auditability principles in data systems
-\cite{missier-prov-2013,cheney-provenance-2009} and with the fallibility of
-learned judges \cite{zheng-llmjudge,panickssery-selfpref}. The evidence
-remains bounded by the tested corpora, developer-authored questions, one
-workstation and few end-to-end runs; larger independently curated
-collections, repeated agent trials, operator studies of not-found reports
-and crash-recovery tests are needed before generalizing these contracts to
-broader deployment settings.
+More broadly, parsers, registries, indices and answer workflows benefit from
+post-conditions that can be checked independently of success messages.
+Catalogues and graphs support navigation but are not themselves evidence, in
+keeping with provenance and auditability work in data systems
+\cite{missier-prov-2013,cheney-provenance-2009}. The results remain bounded by
+the tested corpora, developer-authored questions, one workstation and few
+end-to-end observations. Larger independent question sets, repeated agent
+trials, claim-level support assessments, operator studies of not-found
+reports and crash-recovery tests are needed before stronger deployment claims.

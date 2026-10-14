@@ -1,0 +1,108 @@
+\section{Related work}
+\label{sec:related}
+
+\subsection{Knowledge management and document acquisition}
+Public knowledge bases organize facts under explicit ontologies
+\citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}, whereas enterprise content
+management emphasizes governance over organizational documents
+\citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006}. Research on organizational
+knowledge explains how tacit experience becomes shareable
+\citep{nonaka-seci-1994,nonaka-seci-ba-2000}; adjacent work studies metadata
+quality, tagging, human review and auditability
+\citep{park-metadata-quality-2009,golder-tagging-2006,mosqueira-rey-hitl-2022,barredo-arrieta-xai-2020}. These strands motivate reliable placement
+and governance, but do not by themselves connect those controls to evidence-
+checked answers. Document-AI methods, including layout-aware analysis and
+MinerU, recover text and structure from complex documents
+\citep{zhong-publaynet-layout-2019,huang-layoutlmv3-docai-2022,mineru}. Near-
+duplicate detection and provenance provide complementary safeguards during
+ingestion \citep{manku-near-dup-2007,missier-prov-2013,cheney-provenance-2009}.
+QDCVR treats acquisition quality and traceable indexing as prerequisites for
+reliable retrieval rather than as preprocessing assumptions.
+
+\subsection{Retrieval, organization and agentic search}
+RAG grounds generated responses in retrieved passages \citep{rag-lewis}; dense
+retrievers learn shared query--passage representations \citep{dpr}, while BM25
+remains a strong lexical baseline \citep{bm25}. Hybrid retrieval combines
+sparse and dense signals, including reciprocal-rank fusion
+\citep{rrf-cormack}; embedding models such as BGE-M3 support multilingual and
+multi-granularity search \citep{bge-m3}. Graph-based systems organize and
+retrieve structured relationships: GraphRAG adds entity-relation graphs and
+community summaries \citep{graphrag}, LightRAG uses dual-level retrieval
+\citep{lightrag}, and RAPTOR builds hierarchical document representations
+\citep{raptor}. QDCVR uses a narrower document--library--tag graph for
+navigation and candidate expansion; the graph does not establish answer
+evidence on its own.
+
+Tool-using agents extend retrieval through iterative interaction
+\citep{react-yao,toolformer}. MCP standardizes access to tool servers
+\citep{mcp}, while Modular RAG and agentic-retrieval surveys describe
+reconfigurable retrieval pipelines and their efficiency challenges
+\citep{modular-rag,singh-agentic-rag}. DeepRead demonstrates structure-aware
+navigation for agentic search \citep{deepread}; QDCVR similarly exposes a
+catalog-first librarian lane, alongside dense and hybrid alternatives, under
+explicit call and tool policies.
+
+\subsection{Verification, correction and abstention}
+Self-RAG and CRAG integrate evidence assessment or retrieval correction into
+generation \citep{selfrag,crag}; FLARE triggers retrieval during generation
+\citep{flare}. Other work studies selective prediction under domain shift,
+ontology-grounded retrieval and citation verification
+\citep{kamath,cyberbot,liu-verifiability,gao-citations}. QDCVR externalizes
+verification as a reusable server-side operation: the gate fetches document
+text, judges evidence and returns provenance to the answer layer. This design
+makes the verifier inspectable, but not infallible.
+
+The LLM-as-a-judge literature documents preference bias, imperfect agreement,
+listwise instability and self-preference \citep{zheng-llmjudge,sun-urara,panickssery-selfpref}; verifier gaming is an additional concern
+\citep{lightman-verify}. These findings motivate separating evidence
+verification from rank ordering and testing abstention at the answer layer.
+
+\subsection{Research gap}
+\label{sec:gap}
+
+Table~\ref{tab:positioning} compares representative strands rather than every
+system in the literature. Prior work already studies selective question
+answering, citation verifiability and retrieval correction; the distinction
+here is not that abstention or evidence checks are absent from prior research.
+Instead, QDCVR examines how acquisition checks, content-informed placement,
+retrieval and answer-time evidence inspection interact in one deployed
+knowledge-base workflow, and reports where implementation and transport
+boundaries constrain that workflow. The table therefore motivates an
+integration question, not a universal claim that earlier systems lack reusable
+verification or inspectable evidence.
+
+The study treats three design commitments as questions to test: whether
+content-informed placement and lifecycle checks expose collection state;
+whether a retrieved document should be re-ranked by a verifier or retain its
+fusion order; and whether agent workflows can report absence while separating
+completed negative searches from execution failures. Its contribution is a
+bounded deployment account and a same-pool diagnostic of verifier placement,
+not a new ranking algorithm or a claim that the underlying retrieval problem
+is solved.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\caption{Positioning. Each strand addresses part of the path from stored
+document to answer. QDCVR studies a deployed workflow combining content-informed
+acquisition and placement, server-side checks when invoked, and answer-layer
+reporting; the evaluation measures selected components and boundaries in
+Section~\ref{sec:eval}.}
+\label{tab:positioning}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.145\textwidth}>{\raggedright\arraybackslash}p{0.285\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}@{}}
+\toprule
+Strand & Representative work & What it optimizes & What it leaves to the deployment\\
+\midrule
+Knowledge management & Public knowledge bases \citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}; enterprise content management \citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006} & An explicit ontology, or governance over a curated collection & Whether an answer drawn from that collection is supported by the text it cites\\
+Document AI & Layout-aware extraction \citep{zhong-publaynet-layout-2019,huang-layoutlmv3-docai-2022}; MinerU \citep{mineru} & Recovery of text, tables and formulas from difficult layouts & Whether what was recovered is complete enough to index, and where it is then stored\\
+Retrieval & Dense \citep{dpr}, lexical \citep{bm25} and hybrid ranking \citep{rrf-cormack,bge-m3} & Rank quality over a corpus that is assumed indexed & Whether a top-ranked candidate contains evidence for the claim it is used to support\\
+Graph-structured organization & GraphRAG \citep{graphrag}, LightRAG \citep{lightrag}, RAPTOR \citep{raptor} & Multi-hop and hierarchical relationships between documents & Evidentiary status: a graph edge is a navigation fact, not evidence\\
+Self-reflective generation & Self-RAG \citep{selfrag}, CRAG \citep{crag}, FLARE \citep{flare}; judge-based verification \citep{zheng-llmjudge,lightman-verify} & Evidence assessment or retrieval correction in generation workflows & How verification and abstention interact with knowledge-base acquisition and organization in a deployed workflow\\
+Agentic tool use & ReAct \citep{react-yao}, MCP \citep{mcp}, DeepRead \citep{deepread} & Access to retrieval tools behind a stable interface & Whether configured retrieval budgets and failure states are exposed and checked in a particular deployment\\
+\midrule
+QDCVR (this work) & Sections~\ref{sec:system}--\ref{sec:lanes} & A deployed integration of content-informed placement, indexed-state checks, an invoked server-side evidence gate and agent answer reporting & Claims beyond the measured corpora and configurations, bounded in Section~\ref{sec:threats}\\
+\bottomrule
+\end{tabular}
+\end{table*}

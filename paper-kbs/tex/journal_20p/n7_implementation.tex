@@ -15,11 +15,12 @@ receive read-oriented tool sets; administrative writes remain separate, and
 long-running parse, re-index and graph operations return pollable task
 identifiers.
 
-The chat endpoint adapts multiple agent harnesses to the same lane interface.
-The server selects a supported harness and permission mode, applies a timeout,
-and can execute synchronously or register an asynchronous task. Lane policies
-combine tool allow-lists, deny-lists and call budgets---server-side controls
-rather than prompt-only instructions.
+The chat endpoint adapts multiple agent harnesses to the lane interface. The
+server selects a harness and permission mode, enforces configured tool
+allow/deny lists, applies endpoint timeouts and turn limits, and may register an
+asynchronous task. Lane-specific retrieval sequences and call budgets are
+workflow instructions; the endpoint does not enforce a separate per-lane call
+quota.
 
 \subsection{Runtime and deployment}
 \label{sec:impl-runtime}

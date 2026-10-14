@@ -6,37 +6,41 @@ heterogeneous documents into searchable, governable collections. A Python
 parsing service, a TypeScript web application and an MCP tool server share
 local storage and retrieval engines \cite{mcp}.
 
-\subsection{Design principles: three enforceable contracts}
+\subsection{Design principles: three contracts and enforcement layers}
 \label{sec:req}
 \label{sec:principles}
 
-Each contract names the mechanism that enforces it and the check that detects
-a violation; enforcement is server-side throughout, so no contract depends on
-an agent choosing to honour it.
+The three contracts are implemented at different layers. Some checks are
+mechanically enforced by server-side tools; placement and answer abstention
+also depend on the calling workflow. We therefore distinguish the mechanism
+that executes each step from the audit or evaluation that checks its outcome.
 
 \begin{description}
-\item[Content governs placement.] \emph{Mechanism:} an ingest agent reads the
-parsed content together with the library catalogue, assigns a parent or
-sub-library, and raises an error when no scope applies. \emph{Check:}
-descriptions and tags are re-read against the body, and three-source
-consistency is verified after every lifecycle operation
-(Sections~\ref{sec:acquisition} and~\ref{sec:organization}).
-\item[Content governs admission.] \emph{Mechanism:} one lane-independent
-judging tool returning a verdict with provenance, and lane policies that make
-rank position advisory rather than authoritative. \emph{Check:} the gate fails
-closed on missing text, tool errors and invalid verdicts, and the ablation of
-Section~\ref{sec:e8} measures what removing it changes
+\item[Content informs placement.] \emph{Mechanism:} an ingest agent reads the
+parsed content together with the library catalogue and selects a parent or
+sub-library; storage APIs validate identifiers and required fields, not the
+semantic correctness of that choice. \emph{Check:} descriptions and tags are
+re-read against the body, and three-source consistency is checked after
+lifecycle operations (Sections~\ref{sec:acquisition} and~\ref{sec:organization}).
+\item[Content informs admission.] \emph{Mechanism:} when invoked, the server-side
+Laya judging tool fetches or accepts document text, scores its segments, and
+returns survivors with provenance; lane workflows are instructed to treat rank
+as advisory. \emph{Check:} failed fetches or scores are not admitted, and the
+ablation in Section~\ref{sec:e8} tests a bounded frozen-pool contrast
 (Sections~\ref{sec:lanes} and~\ref{sec:gate}).
-\item[Absence is reported.] \emph{Mechanism:} an answer-layer contract in the
-chat endpoint, not a similarity threshold. \emph{Check:} out-of-corpus probes
-and unanswerable questions are graded as abstentions (Section~\ref{sec:e5}).
+\item[Absence is reported.] \emph{Mechanism:} the answer workflow instructs the
+agent to report not-found when completed retrieval provides no supporting
+evidence and to state its searched scope. This is not a server-side semantic
+classifier. \emph{Check:} out-of-corpus probes and unanswerable questions were
+observed as abstentions in the reported trials (Section~\ref{sec:e5}).
 \end{description}
 
-Four deployment requirements constrain all three contracts: expose failures
-when parsing heterogeneous documents; keep document files and library records
-consistent; require content evidence before a retrieved item supports an
-answer; and remain operable on one workstation. Enforcement covers parse,
-metadata and index post-conditions, the gate, and the lane tool policies.
+Four deployment requirements constrain the contracts: expose parsing failures;
+keep document files and library records consistent; require content evidence
+before a retrieved item is used to support an answer; and remain operable on
+one workstation. Server-side checks cover parse, metadata and index
+post-conditions, the invoked evidence gate, and endpoint tool policies. They do
+not mechanically establish semantic placement accuracy or answer faithfulness.
 
 \subsection{Architecture and subsystems}
 \label{sec:architecture}
@@ -65,14 +69,14 @@ same catalog and gate but was not evaluated at scale.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{fig1_architecture}
-\caption{QDCVR architecture. Ingestion parses and quality-checks documents,
-and content-based library attribution precedes storage and indexing
-(\textbf{C1}, content governs placement). At query time, the chat endpoint
-applies a lane-specific tool policy; candidate retrieval is followed by
-server-side content verification (\textbf{C2}, content governs admission),
-after which the system returns cited evidence or an explicit not-found
-response (\textbf{C3}, absence is reported). Authoritative records are
-distinct from retrieval indices.}
+\caption{QDCVR architecture and three design commitments. During ingestion, an
+agent uses document content and the catalogue to choose a library; server-side
+storage and consistency checks verify structural state (C1). At query time,
+the endpoint applies a tool policy and the agent may invoke the server-side
+Laya evidence tool, which returns scored survivors with provenance (C2). The
+answer workflow is instructed to report not-found after a completed search
+finds no support (C3). These commitments span distinct enforcement layers;
+the evaluation measures selected mechanisms and observed outcomes.}
 \label{fig:arch}
 \end{figure*}
 

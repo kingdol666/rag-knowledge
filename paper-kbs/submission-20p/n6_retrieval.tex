@@ -1,0 +1,89 @@
+\section{Content-verified retrieval}
+\label{sec:retrieval}
+\label{sec:lanes}
+
+Search, Librarian and Hybrid lanes use different retrieval affordances but
+share a server-side content-verification tool when the calling workflow invokes
+it. The tool fetches referenced document text, segments it and applies a local,
+query-conditioned Laya verdict on a 0--1 scale---the model card's typed
+binary-output field (\texttt{noul}), the calibrated probability that a
+segment answers the posed evidence question; segments meeting the configured
+threshold (0.5 by default) are returned as survivors with provenance. A scored segment below the
+threshold is not admitted, but tool or fetch failures are reported separately
+and a partially completed call may still return successfully scored survivors.
+
+\subsection{Gate contract and retrieval lanes}
+\label{sec:trace}
+\label{sec:gate}
+\label{sec:gate-primitive}
+\label{sec:twostage}
+
+The chat endpoint supplies two built-in policies. Lane A uses a wide dense search
+(top 30, cosine threshold 0.35) within a pinned library and may escalate once
+to the catalog ladder when no verified evidence survives. Lane B follows catalog descriptions, then
+uses a deterministic scanner for literal or enumeration questions and the judge
+for semantic questions. Endpoint-level timeouts and turn limits bound execution;
+the lane call budgets and six-reference batching below are workflow instructions,
+not independent server-enforced quotas. Exhaustion is intended to produce a
+scope and blind-spot report. Lane C is a composed configuration used in
+evaluation, not a third built-in server policy: it appends a hybrid directive
+to the chat prompt that can call vector and catalog tools, merge up to twelve
+candidates, judge them in batches of six, and return up to five survivors with
+bounded evidence. Table~\ref{tab:lanes} and Fig.~\ref{fig:lanes} summarize the
+policies and answer workflow.
+
+The gate is the local Laya evidence classifier \cite{laya}, exposed as
+\texttt{kb\_laya\_judge}. In reference mode, the server fetches each document,
+judges its segments and returns provenance with a bounded evidence pack. The
+verdict controls admission, not truth; the verifier remains subject to
+calibration and transport limitations.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\caption{Retrieval lanes as operating policies over a shared candidate and verification tool layer. Budgets describe the configured interface; latency and effectiveness are evaluated separately in Section~\ref{sec:eval}.}
+\label{tab:lanes}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Lane & Retrieval affordance & Budget type & Intended terminal report \\
+\midrule
+Search & Pinned-library dense search & Endpoint turn limit & Answer or report not-found \\
+Librarian & Catalog navigation and query-shaped scan/judging & Workflow call budget & Scope and blind spots \\
+Hybrid & Agent-composed vector and catalog calls & Evaluation-specific candidate cap & Survivors for answer workflow \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The two-stage tool builds a candidate pool with lexical search and optional
+graph expansion, then applies dense ranking. It does not call the
+content gate; a ranked chunk is not admissible evidence until verified, and a
+similarity threshold is not an abstention mechanism. The 13 October catalog
+incident showed that oversized tool returns can conceal documents before
+reasoning begins. The tested repair adds a server-side character budget,
+grouped views and pagination; its behavior is reported in the Evaluation
+section.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig2_lanes}
+\caption{The three retrieval workflows can invoke the same content-verification
+tool by different routes: a pinned wide dense search that may escalate once
+to the catalog ladder when no survivors remain, a catalog ladder that selects a literal scanner or the judge,
+and an agent-composed vector-and-catalog configuration capped at twelve
+candidates in this evaluation. When invoked, the gate reads fetched text and
+returns scored survivors with provenance; zero survivors or an exhausted
+workflow budget is intended to elicit an explicit not-found report. Endpoint
+tool and turn controls are server-side; the lane-level call sequence and
+budgets are workflow instructions.}
+\label{fig:lanes}
+\end{figure*}
+
+\subsection{Honest abstention}
+A candidate list may contain high-similarity but unsupported documents. The
+answer workflow instructs the agent to report not-found when its completed
+evidence review finds no support, including the searched scope and known blind
+spots, rather than falling back to parametric knowledge. This behavior was
+observed in the reported trials; it is not a server-side semantic-classifier
+guarantee. Timeouts, unavailable tools and incomplete searches are execution
+failures, not evidence of semantic absence (Section~\ref{sec:eval}).

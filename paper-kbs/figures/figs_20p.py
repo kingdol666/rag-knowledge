@@ -322,14 +322,16 @@ def fig3():
     a2.yaxis.set_minor_formatter(mticker.NullFormatter())
     a2.set_xticks(x)
     a2.set_xticklabels(labels, rotation=32, ha="right", rotation_mode="anchor")
-    a2.set_ylabel("Latency (s, log)")
+    a2.set_ylabel("Latency (log scale)")
     a2.set_ylim(0.0005, 6.0)
     for xi, v in zip(x, lats):
-        lbl = f"{v * 1000:.0f}" if v < 0.5 else f"{v:.1f}"
+        # every bar is labelled in milliseconds -- a seconds label on the
+        # slowest bar next to millisecond siblings read as a 0.5-vs-62 gap.
+        lbl = f"{v * 1000:.0f}"
         a2.text(xi, v * 1.45, lbl, ha="center", color="#333333")
     a2.tick_params(length=2, pad=1.5)
     hide_top_right(a2, left=True)
-    a2.set_title("(b) Latency per call (ms/s)", loc="left")
+    a2.set_title("(b) Latency per call (ms)", loc="left")
 
     figmod.OUT = TARGET
     save(fig, "fig3_retrieval")

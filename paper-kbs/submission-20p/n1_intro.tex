@@ -1,0 +1,93 @@
+\section{Introduction}
+\label{sec:intro}
+
+Enterprises record regulations, failure analyses and operational lessons in
+unstructured documents. Answering a question such as \emph{why did edge
+delamination appear in a photovoltaic inspection?} requires finding the report
+that records the decision, reading its evidence and citing it accurately.
+Retrieval-augmented generation (RAG) addresses document discovery by embedding
+queries and passages in a shared vector space \cite{rag-lewis,dpr}; agentic
+systems extend this process by letting a language model call retrieval tools
+\cite{mcp,singh-agentic-rag}. Yet semantic similarity measures topical
+relatedness, not whether a passage contains evidence for the requested claim
+\cite{siren,gao-ragsurvey}.
+
+The relevant capabilities are usually treated separately. Retrieval asks
+whether a relevant passage enters a ranked list. Knowledge management governs
+how documents are organized and maintained. Document AI recovers text, tables
+and formulas from complex layouts \cite{mineru}. In deployed systems, these
+operations form one dependency chain: parsing errors affect indexing, placement
+limits what retrieval can see, and ranking alone cannot establish whether a
+candidate supports an answer. No single stage owns the property the user
+actually needs---that the sentence being cited is supported by the document
+being cited---and so no stage is accountable for it.
+
+This paper presents QDCVR (Query-Driven Content-Verified Retrieval), a
+self-hosted knowledge-base management system that treats content as the
+shared object across acquisition, organization and question answering. It
+organizes the workflow around three design contracts:
+
+\begin{enumerate}
+\item \emph{Content informs placement.} An ingest agent uses the parsed body
+to choose a library and derive descriptions or tags; server-side checks
+validate storage state and consistency, not semantic routing accuracy.
+\item \emph{Content informs admission.} When the retrieval workflow invokes
+the server-side Laya tool, it fetches and scores candidate segments and returns
+survivors with provenance; the score is an admission signal, not truth.
+\item \emph{Absence is reported.} The answer workflow instructs the agent to
+report the searched scope when a completed evidence review finds no support.
+Tool failures and incomplete searches are execution failures, not evidence of
+semantic absence.
+\end{enumerate}
+
+The deployed platform integrates document parsing, content-informed
+organization, lifecycle management, operational experiences, multi-lane
+retrieval and a Model Context Protocol (MCP) server with 95 registered tools
+\cite{mcp}. It runs locally and exposes retrieval functions to several agent
+harnesses. Untested functions are identified rather than inferred from their
+implementation.
+
+\noindent\textbf{Contributions.}
+\begin{enumerate}
+\item A knowledge-base architecture and workflow linking quality-gated
+acquisition, content-informed placement, three-source consistency checks and
+an invoked server-side evidence-admission tool
+(Sections~\ref{sec:system}--\ref{sec:implementation}).
+\item A three-lane retrieval design separating candidate discovery from
+content inspection. A post-hoc replay on identical industrial candidate pools
+shows that judge-score re-ranking lowers Hit@5; a derived survivor replay
+retains fusion order and matches fusion-only because the recorded scores exceed
+the configured threshold (Sections~\ref{sec:lanes} and~\ref{sec:e4}).
+\item A deployment evaluation across three corpora reporting failures and
+measurement limits alongside successful checks, including unretrievable
+papers with incomplete attribution, a reproduced catalog-transport failure,
+and small-sample ablations without a detected end-to-end quality gain
+(Section~\ref{sec:eval}).
+\end{enumerate}
+
+A CIKM~2026 demonstration introduced the organization and retrieval layers
+\cite{qdcvr-demo}. The journal extension adds acquisition and lifecycle
+measurements, the operational-knowledge case study, and the verifier-placement
+and transport-failure analyses. The architecture and retrieval interface build
+on the demo; the contribution claimed here is the additional evidence and
+failure analysis, not a wholly new system.
+
+\subsection{Research questions and reading guide}
+\label{sec:rq}
+
+Five questions structure the design-to-evidence sequence: how content
+commitments are implemented and checked across retrieval workflows and agent
+interfaces (RQ1); how parsing checks, content-informed routing and lifecycle
+audits behave in deployed collections (RQ2); how the tested retrieval
+configurations compare on document recall, evidence markers and cost (RQ3);
+what failure modes appear when the verifier orders candidates or is applied
+under confuser density (RQ4); and what abstention, latency, cost and
+execution-reliability observations arise in end-to-end trials (RQ5).
+
+Section~\ref{sec:related} positions the work; Sections~\ref{sec:system}--
+\ref{sec:organization} describe the architecture and management functions;
+Section~\ref{sec:lanes} specifies retrieval and verification;
+Section~\ref{sec:implementation} covers deployment and enforcement; and
+Section~\ref{sec:eval} evaluates the system, followed by implications,
+limitations and conclusions in
+Sections~\ref{sec:discussion}--\ref{sec:conclusion}.

@@ -1,0 +1,93 @@
+\section{System overview and design principles}
+\label{sec:system}
+
+QDCVR (v2.3) is a self-hosted knowledge-base management system for converting
+heterogeneous documents into searchable, governable collections. A Python
+parsing service, a TypeScript web application and an MCP tool server share
+local storage and retrieval engines \cite{mcp}.
+
+\subsection{Design principles: three contracts and enforcement layers}
+\label{sec:req}
+\label{sec:principles}
+
+The three contracts are implemented at different layers. Some checks are
+mechanically enforced by server-side tools; placement and answer abstention
+also depend on the calling workflow. We therefore distinguish the mechanism
+that executes each step from the audit or evaluation that checks its outcome.
+
+\begin{description}
+\item[Content informs placement.] \emph{Mechanism:} an ingest agent reads the
+parsed content together with the library catalogue and selects a parent or
+sub-library; storage APIs validate identifiers and required fields, not the
+semantic correctness of that choice. \emph{Check:} descriptions and tags are
+re-read against the body, and three-source consistency is checked after
+lifecycle operations (Sections~\ref{sec:acquisition} and~\ref{sec:organization}).
+\item[Content informs admission.] \emph{Mechanism:} when invoked, the server-side
+Laya judging tool fetches or accepts document text, scores its segments, and
+returns survivors with provenance; lane workflows are instructed to treat rank
+as advisory. \emph{Check:} failed fetches or scores are not admitted, and the
+ablation in Section~\ref{sec:e8} tests a bounded frozen-pool contrast
+(Sections~\ref{sec:lanes} and~\ref{sec:gate}).
+\item[Absence is reported.] \emph{Mechanism:} the answer workflow instructs the
+agent to report not-found when completed retrieval provides no supporting
+evidence and to state its searched scope. This is not a server-side semantic
+classifier. \emph{Check:} out-of-corpus probes and unanswerable questions were
+observed as abstentions in the reported trials (Section~\ref{sec:e5}).
+\end{description}
+
+Four deployment requirements constrain the contracts: expose parsing failures;
+keep document files and library records consistent; require content evidence
+before a retrieved item is used to support an answer; and remain operable on
+one workstation. Server-side checks cover parse, metadata and index
+post-conditions, the invoked evidence gate, and endpoint tool policies. They do
+not mechanically establish semantic placement accuracy or answer faithfulness.
+
+\subsection{Architecture and subsystems}
+\label{sec:architecture}
+
+Fig.~\ref{fig:arch} shows the acquisition and query paths. Ingestion parses and
+quality-checks documents; an agent uses the parsed content and library
+catalogue to select a parent or sub-library; save and index operations then
+update records and search indices. At query time, the chat endpoint supplies a
+lane-specific tool policy, and the agent retrieves candidates and invokes the
+gate before the answer layer returns cited evidence or not-found. The MCP
+server exposes 95 registered tools. The three contracts of
+Section~\ref{sec:principles} sit at different points along this path:
+placement during ingestion, admission at the gate, the abstention report in
+the answer layer.
+
+The management path covers acquisition (Section~\ref{sec:acquisition}),
+content-routed organization and lifecycle checks
+(Section~\ref{sec:organization}), and the tool and runtime layer
+(Section~\ref{sec:implementation}). The chat
+endpoint defines pinned-search and all-library librarian policies. Hybrid is
+a composed retrieval configuration, not a third built-in server policy; it
+combines vector and catalog calls under an explicit directive. The document
+graph supports navigation, not evidence, and the experience store uses the
+same catalog and gate but was not evaluated at scale.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig1_architecture}
+\caption{QDCVR architecture and three design commitments. During ingestion, an
+agent uses document content and the catalogue to choose a library; server-side
+storage and consistency checks verify structural state (C1). At query time,
+the endpoint applies a tool policy and the agent may invoke the server-side
+Laya evidence tool, which returns scored survivors with provenance (C2). The
+answer workflow is instructed to report not-found after a completed search
+finds no support (C3). These commitments span distinct enforcement layers;
+the evaluation measures selected mechanisms and observed outcomes.}
+\label{fig:arch}
+\end{figure*}
+
+\subsection{Data model and object lifecycle}
+\label{sec:datamodel}
+\label{sec:lifecycle}
+
+Documents are stored as Markdown with extracted images. Three sources describe
+library state: document files, the \texttt{.tree-fs.json} registry and each
+library's \texttt{.knowledge-base.yml}. Ingestion proceeds through raw,
+parsed, stored and indexed states, and is complete only after a content-derived
+probe retrieves the document. Indexing is explicit and asynchronous; task
+identifiers support polling, while post-operation audits detect stale indices
+or disagreement among the three sources.

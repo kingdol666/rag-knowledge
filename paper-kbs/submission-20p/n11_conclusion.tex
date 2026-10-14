@@ -1,0 +1,43 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+QDCVR studies a knowledge-base workflow in which content informs placement,
+a server-side Laya tool checks candidate text when invoked, and an answer
+workflow is instructed to report not-found after a completed search finds no
+support. These are mechanisms at different layers, not three equivalent
+server-enforced guarantees. Storage and consistency checks are mechanically
+performed; semantic placement remains an ingest-agent decision; the answer
+layer's abstention behavior is evaluated from observed trials rather than
+certified by a server-side semantic classifier.
+
+The evaluation supports a bounded set of findings. On the industrial corpus,
+lexical retrieval reaches Hit@5 1.00. Replaying the same recorded candidate
+pools shows that judge-score re-ranking falls to Hit@5 0.44, whereas the
+fusion-order replay among recorded survivors matches fusion-only at 0.94. All
+191 recorded scores exceed the 0.5 threshold, and one additional fusion
+candidate has no recorded score; the comparison therefore diagnoses a harmful
+ordering role, not a benefit from threshold filtering. In the end-to-end
+grid, all 30 answer texts contain a gold document identifier. Strict keyword
+coverage is 9/10 in each arm---the misses are word-form mismatches---and
+alias-aware coverage is 10/10 in each arm; the BQ06 gold key was corrected to
+the source paper's reading, and both grades are retained.
+Recognized citation-marker hits are 9/10, 7/10 and 2/10 for platform, file
+and dense arms. These measures capture identifier presence and lexical/marker
+coverage, not semantic support. Acquisition left
+21 of 100 submissions unretrievable without a complete failure inventory, and
+a selected oversized-catalog path was repaired and retested after a false
+refusal.
+
+The contribution is an auditable deployment account and a diagnostic warning
+against using this verifier checkpoint as a ranker under the tested conditions,
+not a claim of universal retrieval or answer-quality superiority. Next steps
+include independently curated questions, repeated agent trials, claim-level
+evidence-support evaluation, explicit execution-failure states for incomplete
+searches, transport stress tests and operator studies of not-found reports.
+
+%% The back matter — CRediT, competing interest, funding, ethics statement,
+%% data availability, acknowledgements, appendix and the mandated generative-AI
+%% declaration — lives in n_back.tex, which main_20p.tex inputs immediately
+%% after this file. Keeping it there gives every declaration one source of
+%% truth and puts the AI declaration last before the reference list, as the
+%% KBS guide requires.

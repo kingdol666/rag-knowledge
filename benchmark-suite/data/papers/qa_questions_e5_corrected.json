@@ -1,0 +1,153 @@
+{
+  "version": "2026-10-14 corrected evaluation annotations",
+  "description": "Corrected semantic keyword annotations for the saved 30-cell E5 run. Raw answers and the original qa_questions.json remain unchanged.",
+  "questions": [
+    {
+      "qid": "BQ01",
+      "field": "artificial-intelligence",
+      "arxiv_id": "1706.03762",
+      "paper": "Attention Is All You Need",
+      "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+      "expected": "Scaled dot-product attention with multi-head projection; parallel computation and global dependencies without recurrence.",
+      "gold_keywords": [
+        "scaled dot-product",
+        "multi-head",
+        "recurrence"
+      ]
+    },
+    {
+      "qid": "BQ02",
+      "field": "quantum-physics",
+      "arxiv_id": "1801.00862",
+      "paper": "Quantum Computing in the NISQ era and beyond",
+      "question": "What defines NISQ technology and what is its central limitation?",
+      "expected": "Noisy Intermediate-Scale Quantum devices without quantum error correction; noise limits circuit depth.",
+      "gold_keywords": [
+        "noisy intermediate-scale",
+        "error correction"
+      ]
+    },
+    {
+      "qid": "BQ03",
+      "field": "clinical-medicine",
+      "arxiv_id": "2212.13138",
+      "paper": "Large Language Models Encode Clinical Knowledge",
+      "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+      "expected": "MultiMedQA combines seven medical QA datasets; Flan-PaLM reached 67.6% on MedQA, surpassing prior models.",
+      "gold_keywords": [
+        "multimedqa",
+        "67.6"
+      ]
+    },
+    {
+      "qid": "BQ04",
+      "field": "genomics",
+      "arxiv_id": "1602.01876",
+      "paper": "Primer on the Gene Ontology",
+      "question": "Which three independent ontologies subdivide the Gene Ontology?",
+      "expected": "Molecular Function, Biological Process, and Cellular Component.",
+      "gold_keywords": [
+        "molecular function",
+        "biological process",
+        "cellular component"
+      ]
+    },
+    {
+      "qid": "BQ05",
+      "field": "economics",
+      "arxiv_id": "1512.08067",
+      "paper": "Unified Growth Theory Contradicted by the Economic Growth in Europe",
+      "question": "Why does historical European economic growth contradict Unified Growth Theory?",
+      "expected": "The source reports hyperbolic European growth without the predicted stagnation-to-growth transition; this conflicts with the theory's staged escape narrative.",
+      "gold_keywords": [
+        "unified growth theory"
+      ]
+    },
+    {
+      "qid": "BQ06",
+      "field": "climate-science",
+      "arxiv_id": "1503.07557",
+      "paper": "Precipitation extremes under climate change",
+      "question": "Which physical contributions govern the response of precipitation extremes to climate change, and which contribution is robust in the general case?",
+      "expected": "Thermodynamic moisture/saturation-vapor-pressure changes are robust and often near Clausius-Clapeyron scaling; dynamics and precipitation efficiency also matter in particular regimes, so the review does not identify one universal dominant factor.",
+      "gold_keywords": [
+        "thermodynamic",
+        "saturation vapor pressure"
+      ],
+      "gold_keyword_aliases": {
+        "thermodynamic": [
+          "thermodynamics",
+          "热力学"
+        ],
+        "saturation vapor pressure": [
+          "saturation specific humidity",
+          "clausius-clapeyron",
+          "clausius–clapeyron",
+          "饱和水汽压",
+          "饱和比湿"
+        ]
+      }
+    },
+    {
+      "qid": "BQ07",
+      "field": "nlp",
+      "arxiv_id": "2608.05850",
+      "paper": "MameLoshnLM: Yiddish Language Model and Evaluation Benchmark",
+      "question": "What is MameLoshnLM and what parameter scale does it have?",
+      "expected": "The first open-source 8B-parameter Yiddish language model with an evaluation benchmark.",
+      "gold_keywords": [
+        "yiddish",
+        "8b"
+      ]
+    },
+    {
+      "qid": "BQ08",
+      "field": "materials",
+      "arxiv_id": "2408.09942",
+      "paper": "Oxygen redox in battery cathodes: A brief overview",
+      "question": "How does oxygen redox contribute to the capacity of battery cathodes?",
+      "expected": "Lattice oxygen participation enables extra capacity beyond transition-metal redox in Li-rich cathodes.",
+      "gold_keywords": [
+        "oxygen redox",
+        "cathode"
+      ]
+    },
+    {
+      "qid": "BQ09",
+      "field": "robotics",
+      "arxiv_id": "2410.10669",
+      "paper": "MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping",
+      "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+      "expected": "Dynamic objects degrade V-SLAM; an MLP (multilayer perceptron) filters dynamic features for robust localization.",
+      "gold_keywords": [
+        "dynamic",
+        "multilayer perceptron"
+      ],
+      "gold_keyword_aliases": {
+        "multilayer perceptron": [
+          "mlp",
+          "mlp-slam"
+        ]
+      }
+    },
+    {
+      "qid": "BQ10",
+      "field": "immunology",
+      "arxiv_id": "2604.01385",
+      "paper": "Strategies for tumor elimination and control under immune evasion and chemotherapy resistance",
+      "question": "What strategies for tumor control emerge under immune evasion and chemotherapy resistance?",
+      "expected": "Evolutionary/ecological dynamics inform combination, phenotype-guided, sequential and adaptive treatment strategies under immune resistance/evasion and chemotherapy resistance.",
+      "gold_keywords": [
+        "immune evasion",
+        "chemotherapy"
+      ],
+      "gold_keyword_aliases": {
+        "immune evasion": [
+          "immune-resistant",
+          "immune checkpoint regulation",
+          "reduced antigen presentation"
+        ]
+      }
+    }
+  ]
+}
