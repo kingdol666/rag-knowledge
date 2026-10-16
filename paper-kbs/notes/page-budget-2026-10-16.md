@@ -8,7 +8,7 @@ manuscript pages** (including tables and figures)". Two builds were measured.
 | build | source | class options | pages | notes |
 |---|---|---|---|---|
 | camera-ready preview (layout of record) | `paper-kbs/tex/journal_20p/main_20p.tex` | `[final,5p,times,twocolumn]` | **20** | all `_postcheck.ps1` gates pass: 0 overfull, 0 undefined, every float cited, figures ≥ 7 pt effective |
-| review format (Elsevier double-spaced) | `paper-kbs/tex/journal_20p/main_20p_review.tex` | `[review,12pt]` | **69** | 0 errors; 2 "Overfull \hbox" warnings from two full-width tables that were tuned for the 501 pt two-column measure (legible, documented in the file header) |
+| review format (Elsevier double-spaced) | `paper-kbs/tex/journal_20p/main_20p_review.tex` | `[review,12pt]` | **68** | 0 errors; 2 "Overfull \hbox" warnings from two full-width tables that were tuned for the 501 pt two-column measure (legible, documented in the file header). The build measured 68-69 pages across the revision passes; the final committed build is 68 |
 
 Rebuild commands:
 
