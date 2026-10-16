@@ -64,10 +64,12 @@ Table~\ref{tab:positioning} compares representative strands rather than every
 system in the literature. Prior work already studies selective question
 answering, citation verifiability and retrieval correction; the distinction
 here is not that abstention or evidence checks are absent from prior research.
-Instead, QDCVR examines how acquisition checks, content-informed placement,
-retrieval and answer-time evidence inspection interact in one deployed
-knowledge-base workflow, and reports where implementation and transport
-boundaries constrain that workflow. The table therefore motivates an
+The gap this study addresses is one of integration and of role separation
+rather than of missing capabilities: QDCVR examines how acquisition checks,
+content-informed placement, retrieval and answer-time evidence inspection
+interact in one deployed knowledge-base workflow, reports where implementation
+and transport boundaries constrain that workflow, and measures separately the
+two roles a verifier can play. The table therefore motivates an
 integration question, not a universal claim that earlier systems lack reusable
 verification or inspectable evidence.
 
@@ -76,9 +78,11 @@ content-informed placement and lifecycle checks expose collection state;
 whether a retrieved document should be re-ranked by a verifier or retain its
 fusion order; and whether agent workflows can report absence while separating
 completed negative searches from execution failures. Its contribution is a
-bounded deployment account and a same-pool diagnostic of verifier placement,
-not a new ranking algorithm or a claim that the underlying retrieval problem
-is solved.
+same-pool diagnostic of verifier placement---showing that ordering by the
+verifier score, not threshold filtering, is where the measurable loss
+sits---together with a bounded deployment account of the surrounding
+workflow. It proposes no new ranking algorithm and does not claim that the
+underlying retrieval problem is solved.
 
 \begin{table*}[t]
 \centering

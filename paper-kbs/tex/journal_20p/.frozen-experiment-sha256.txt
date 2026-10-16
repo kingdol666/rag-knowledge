@@ -1,3 +1,28 @@
-f27d61a88444d14237be0ae78c36561b95efe9a37962b7bcac355d4fedaac8b9 *n8a_eval.tex
-232f50b990757590ab68d5ab7d15b7ed8170883beee355a9b39b166a2d4574fd *n8b_eval.tex
-7f3be8bebf30637498b91440b09f2bc0c449ca04960221785fc7f5ca9f829159 *n8c_eval.tex
+# Experimental freeze manifest — paper-kbs KBS submission (journal_20p)
+#
+# Purpose: the manuscript freezes its experimental text and its evaluation
+# annotations so that every reported grade can be re-derived from the exact
+# files named here. Verify from the repository root:
+#
+#   cd paper-kbs/tex/journal_20p && sha256sum -c .frozen-experiment-sha256.txt
+#
+# --- manuscript evaluation text (frozen 2026-10-16) ---
+# The evaluation text was re-frozen on 2026-10-16 after the assessment-driven
+# revision (review/KBS-PAPER-ASSESSMENT-2026-10-16.md): prose references and
+# paragraph compression only. A numeric-token audit against the previous
+# revision found no added, removed or altered value in these three files.
+# previous pre-revision hash of n8a_eval.tex (2026-10-13), recorded for audit:
+#   f27d61a88444d14237be0ae78c36561b95efe9a37962b7bcac355d4fedaac8b9
+d261fbd4962c451cf1fa2e5f771ec95329f2672bac2f5d5ba5c4eb6f5b6b2c92 *n8a_eval.tex
+4235fa6a11167436e5459584090ff80e04d26f14663f7ff0e5b2c9704e6094f0 *n8b_eval.tex
+6af15c75f1f046c52f51f8443ebd8de6b6234e28d9ea86dfcd419c6a1fd57357 *n8c_eval.tex
+#
+# --- evaluation annotations and grader (frozen 2026-10-16) ---
+# corrected E5 semantic annotations, version string
+# "2026-10-14 corrected evaluation annotations"; frozen before submission so
+# the 9/9/9-vs-10/9/9 two-grade disclosure of Section 8.7/Tab. 5 cannot drift.
+86b07a9370984d426c4aec757d8fc223cf804171ce9221b033f7c84fc0e62ece *../../../benchmark-suite/data/papers/qa_questions_e5_corrected.json
+# pre-correction question set (retained for the disclosed original grade).
+72b9c2d26026b43f989c74ddb0a97896f73000584506451e870f325552150f15 *../../../benchmark-suite/data/papers/qa_questions.json
+# deterministic grader behind every gold-ID / keyword / marker column.
+d06c8affe17e84e0917cbd60940343024fd4aff2938ee3beb1aba72db2055df7 *../../../benchmark-suite/scripts/107_exp_grade.py

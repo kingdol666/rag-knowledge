@@ -1,39 +1,44 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-QDCVR studies a knowledge-base workflow in which content informs placement,
-a server-side Laya tool checks candidate text when invoked, and an answer
-workflow is instructed to report not-found after a completed search finds no
-support. These are mechanisms at different layers, not three equivalent
-server-enforced guarantees. Storage and consistency checks are mechanically
-performed; semantic placement remains an ingest-agent decision; the answer
-layer's abstention behavior is evaluated from observed trials rather than
-certified by a server-side semantic classifier.
+The central finding is a placement result for content verifiers. Replaying
+the same recorded candidate pools of the industrial corpus shows that
+ordering candidates by the judge score lowers Hit@5 from 0.94 under
+fusion-only to 0.44, whereas retaining fusion order among the recorded
+survivors matches fusion-only at 0.94; all 191 recorded scores exceed the 0.5
+threshold, and one additional fusion candidate has no recorded score, so the
+comparison diagnoses a harmful ordering role rather than a benefit from
+threshold filtering. An independent NLI checkpoint fails the same way on the
+same pools. The lesson travels beyond this checkpoint: a verifier score that
+is acceptable as an admission filter should not be assumed usable as a
+ranker, and the two roles must be tested separately.
 
-The evaluation supports a bounded set of findings. On the industrial corpus,
-lexical retrieval reaches Hit@5 1.00. Replaying the same recorded candidate
-pools shows that judge-score re-ranking falls to Hit@5 0.44, whereas the
-fusion-order replay among recorded survivors matches fusion-only at 0.94. All
-191 recorded scores exceed the 0.5 threshold, and one additional fusion
-candidate has no recorded score; the comparison therefore diagnoses a harmful
-ordering role, not a benefit from threshold filtering. In the end-to-end
-grid, all 30 answer texts contain a gold document identifier. Strict keyword
-coverage is 9/10 in each arm---the misses are word-form mismatches---and
-alias-aware coverage is 10/10 in each arm; the BQ06 gold key was corrected to
-the source paper's reading, and both grades are retained.
-Recognized citation-marker hits are 9/10, 7/10 and 2/10 for platform, file
-and dense arms. These measures capture identifier presence and lexical/marker
-coverage, not semantic support. Acquisition left
-21 of 100 submissions unretrievable without a complete failure inventory, and
-a selected oversized-catalog path was repaired and retested after a false
-refusal.
+QDCVR implements the surrounding workflow as three
+contracts---content informs placement, content informs admission, absence is
+reported---which we treat as hypotheses at different layers, not as three
+equivalent server-enforced guarantees. Storage and consistency checks are
+mechanically performed; semantic placement remains an ingest-agent decision;
+the answer layer's abstention behavior is evaluated from observed trials
+rather than certified by a server-side semantic classifier. On the industrial
+corpus, lexical retrieval reaches Hit@5 1.00, so recall is not the
+contribution here. In the end-to-end grid, all 30 answer texts contain a gold
+document identifier; strict keyword coverage is 9/10 in each arm---the misses
+are word-form mismatches---and alias-aware coverage is 10/10 in each arm; the
+BQ06 gold key was corrected to the source paper's reading, and both grades are
+retained. Recognized citation-marker hits are 9/10, 7/10 and 2/10 for the
+platform, file and dense arms. These measures capture identifier presence and
+lexical/marker coverage, not semantic support. Acquisition left 21 of 100
+submissions unretrievable without a complete failure inventory, and a selected
+oversized-catalog path was repaired and retested after a false refusal.
 
-The contribution is an auditable deployment account and a diagnostic warning
-against using this verifier checkpoint as a ranker under the tested conditions,
-not a claim of universal retrieval or answer-quality superiority. Next steps
-include independently curated questions, repeated agent trials, claim-level
-evidence-support evaluation, explicit execution-failure states for incomplete
-searches, transport stress tests and operator studies of not-found reports.
+The contribution is a same-pool diagnostic of verifier placement and an
+auditable deployment account, not a claim of universal retrieval or
+answer-quality superiority: the results remain bounded by one workstation,
+one verifier checkpoint and developer-authored questions. Next steps include independently curated
+questions, repeated agent trials, claim-level evidence-support evaluation, a
+confuser-density-controlled verifier evaluation, explicit execution-failure
+states for incomplete searches, transport stress tests and operator studies
+of not-found reports.
 
 %% The back matter — CRediT, competing interest, funding, ethics statement,
 %% data availability, acknowledgements, appendix and the mandated generative-AI

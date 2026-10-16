@@ -236,9 +236,9 @@ server-side character budgets, pagination and grouped catalog views. The
 131-document shelf was represented by a 571-character grouping view; the
 previously failing query was rerun through the same public API and passed the
 campaign's answer gate (53.5\,s, nine turns). Two further live queries
-exercised pagination and an unsupported cooking question. The transformer
-answer included a source path (98.5\,s, nine turns), and the cooking query
-returned a not-found response after a catalog scan (39.9\,s, five turns).
+exercised pagination and an unsupported cooking question, returning a sourced
+answer (98.5\,s, nine turns) and a not-found report after a catalog scan
+(39.9\,s, five turns).
 These selected reruns show the tested paths completed after the repair; they do
 not establish general transport reliability or semantic faithfulness.
 
@@ -392,15 +392,15 @@ the role of the induced ordering differs.}
 
 \subsection{E7: Non-functional behaviour}
 \label{sec:e7}
-The 27-cell stability campaign completed without answer errors in the tested
-workload (three tasks $\times$ three retrieval modes $\times$ three rounds;
-\path{review/stability-multiround-20261013/results}); wall-clock spread was
-14.9--182.0\,s and answers stayed on the same evidence. A separate concurrency
+The 27-cell stability campaign completed without answer errors (three tasks
+$\times$ three retrieval modes $\times$ three rounds;
+\path{review/stability-multiround-20261013/results}), with wall-clock spread
+14.9--182.0\,s and answers staying on the same evidence. A concurrency
 sweep on the same instance (90/180/270 requests at 5/15/30 clients, zero
 reported errors; supplementary material) recorded \emph{p50} rising from 5.2
-to 1577\,ms, with 159 of 270 vector-only requests completing within 30\,s.
-A later cache repair lowered the 30-client read-ladder \emph{p50} from 1577
-to 65.8\,ms and repeated-query \emph{p50} from 3743 to 2.1\,ms; distinct
+to 1577\,ms, with 159 of 270 vector-only requests completing within 30\,s. A
+later cache repair lowered the 30-client read-ladder \emph{p50} from 1577 to
+65.8\,ms and repeated-query \emph{p50} from 3743 to 2.1\,ms; distinct
 queries remained near 4--5 requests per second under a process-wide lock.
 These are single-instance capacity observations, not validated throughput.
 Concurrent write phases reported no lost updates, but raw counts and
@@ -458,12 +458,13 @@ consequence of scope choice under the tested filename convention; they do not
 independently measure the accuracy of the ingest agent's placement decision.
 All 322 stored parts carry an acquisition prefix
 (\texttt{\{domain\}\_\_\{arxiv\_id\}\_\_\{slug\}}), so name-based routing
-cannot serve as independent placement ground truth.
+cannot serve as independent placement ground truth; the membership
+measurement of Section~\ref{sec:e1} is the only placement-correctness figure
+in this paper that avoids this confound, and it comes from the cross-lingual
+corpus rather than from this one.
 
 Both ablations are single-corpus, single-engine, ten-question diagnostics, not
-effect-size estimates for the three-contract system. The gate ablation was
-reconstructed around a frozen shared candidate set because the documented
-configuration switch was absent from the shipped tool layer. Its control is
-fusion-ordered; only this within-run contrast is interpretable. Two of the
-thirty cells were rerun after authentication failures and are retained in the
-campaign records.
+effect-size estimates for the three-contract system; the gate ablation's
+control is fusion-ordered, so only its within-run contrast is interpretable.
+Two of the thirty cells were rerun after authentication failures and are
+retained in the campaign records.

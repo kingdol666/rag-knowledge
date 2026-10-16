@@ -81,10 +81,13 @@ artifacts).
 
 The cross-lingual benchmark ran twice over 400 pages per language and
 reproduced round~1 bit-for-bit, with ingestion success 1.0; storage
-completeness and self-retrieval Hit@1 are in
-Table~\ref{tab:acq-crosslang}. Its English membership accuracy of 0.875 is an
-organization defect---the page stored in the wrong library roughly one time in
-eight---not a parsing defect.
+completeness, self-retrieval Hit@1 and the membership figures are in
+Table~S2. Its English membership accuracy of 0.875 is an organization
+defect---the page stored in the wrong library roughly one time in eight---not
+a parsing defect. Membership is scored against the benchmark's source
+category labels rather than against any naming convention derived by the
+ingest agent, so it is the one placement-correctness measurement in this
+paper that does not depend on filename cues.
 
 A 50-paper, 26-domain campaign parsed and verified 50/50 papers in
 1{,}115.5\,s (8.3--48.4\,s per paper), produced 202 tags, batch-indexed 50
@@ -129,7 +132,7 @@ quality: dense top-1 hits went from 48/50 to 49/50 and MRR from 0.98 to 1.00,
 a 2 percentage point gain recorded as ``held (within $\pm$5\,pp)''. In the 16
 lifecycle scenarios, run against two disposable test libraries, create, move,
 delete and forced re-index each behaved as specified
-(Table~\ref{tab:org-ops}). Two failure modes: the task-status tool reports
+(Table~S5). Two failure modes: the task-status tool reports
 \texttt{running} after \texttt{finished\_at} is written, as in the
 reorganization graph build, and the update check timed out after 30\,s
 (\texttt{ragctl version -{}-json timed out after 30s}, success false) while

@@ -10,10 +10,13 @@ local storage and retrieval engines \cite{mcp}.
 \label{sec:req}
 \label{sec:principles}
 
-The three contracts are implemented at different layers. Some checks are
-mechanically enforced by server-side tools; placement and answer abstention
-also depend on the calling workflow. We therefore distinguish the mechanism
-that executes each step from the audit or evaluation that checks its outcome.
+The three contracts are hypotheses about where content should govern the
+workflow, implemented at different layers: some checks are mechanically
+enforced by server-side tools, whereas placement and answer abstention also
+depend on the calling workflow, which is where the hypotheses are weakest. We
+therefore distinguish the mechanism that executes each step from the audit or
+evaluation that checks its outcome, and Section~\ref{sec:eval} reports the
+evidence level each check reaches.
 
 \begin{description}
 \item[Content informs placement.] \emph{Mechanism:} an ingest agent reads the
@@ -41,6 +44,12 @@ before a retrieved item is used to support an answer; and remain operable on
 one workstation. Server-side checks cover parse, metadata and index
 post-conditions, the invoked evidence gate, and endpoint tool policies. They do
 not mechanically establish semantic placement accuracy or answer faithfulness.
+Read as hypotheses, C1 is supported by these mechanical checks together with
+one membership measurement that does not use the ingest naming convention
+(Section~\ref{sec:e1}); C2's filtering role was not exercised on the
+industrial corpus, and its ordering role failed there
+(Sections~\ref{sec:e4}--\ref{sec:e8}); C3 is answer-layer behavior observed in
+trials, not a server-side classifier (Section~\ref{sec:e5}).
 
 \subsection{Architecture and subsystems}
 \label{sec:architecture}

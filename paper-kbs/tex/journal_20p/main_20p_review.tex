@@ -1,0 +1,144 @@
+%% main_20p_review.tex — Elsevier review-format variant of main_20p.tex.
+%% Purpose: measure the manuscript under the journal's double-spaced,
+%% single-column review layout (KBS: 'preferably no more than 20 double
+%% line-spaced manuscript pages including tables and figures').
+%% Body content is identical to main_20p.tex apart from the class options and
+%% the table-scaling hook below; the two-column preview remains the layout of
+%% record (main_20p.tex).
+%% Compile: pdflatex -jobname=main_20p_review main_20p_review.tex
+%%          && bibtex main_20p_review && pdflatex ... (twice)
+%% AUTHOR ACTION: replace author placeholders, ORCID, and funding fields.
+%% Section-level structure and content follow main_20p.tex, including the
+%% AUTHOR ACTION notes there and in n_back.tex.
+\documentclass[review,12pt]{elsarticle}
+\usepackage{stfloats}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{xurl}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\yes}{\checkmark}
+\newcommand{\no}{--}
+
+\graphicspath{{figs/}}
+
+%% Review-layout note: the body sources are tuned for the two-column build, so
+%% the two full-width float tables (Tab. 2's lane table and Tab. 3's block (b))
+%% exceed the single-column text block at 12pt and raise two "Overfull \hbox"
+%% warnings in this layout. They remain legible and the build has no errors;
+%% see paper-kbs/notes/page-budget-2026-10-16.md.
+\setlength{\emergencystretch}{1.5em}
+
+%% Float placement: the paper carries nine figures and seven body table
+%% environments (the five appendix tables moved to the supplementary material
+%% on 2026-10-16; see n_back.tex and the supplement's Part D), so the
+%% default fractions defer most of them past the references. Allow denser
+%% float pages to keep each float near the text that discusses it.
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dbltopfraction}{0.90}
+\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{3}
+
+%% Tighten the vertical glue around floats. With nine figures and twelve
+%% tables the elsarticle defaults spend roughly three inches of column
+%% height on separation alone, which the 20-page budget cannot afford.
+%% Values are about half the class defaults and remain within normal
+%% typographic practice for a two-column layout.
+\setlength{\floatsep}{7pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
+\setlength{\intextsep}{7pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{7pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{9pt plus 2pt minus 2pt}
+
+\journal{Knowledge-Based Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{QDCVR: Content-Governed Acquisition, Verified Retrieval and Reported
+Absence in a Deployed Knowledge-Base System}
+
+\author[inst1]{Author Name\corref{cor1}}
+\ead{author@example.com}
+\author[inst1]{Co-author Name}
+\cortext[cor1]{Corresponding author.}
+\affiliation[inst1]{organization={Affiliation Department, University,
+City, Country}, city={City}, country={Country}}
+
+\begin{abstract}
+Retrieval-augmented generation improves discovery, but topical similarity
+cannot establish evidentiary support: enterprise knowledge-base workflows
+rarely own the property that a cited sentence is supported by the cited
+document. We present QDCVR, a self-hosted knowledge-base system that organizes
+acquisition, admission and abstention around content; its three design
+contracts are stated as hypotheses tested at the layer each occupies, not as
+uniform server-enforced guarantees.
+The central finding separates the verifier's roles. On identical logged
+candidate pools of a 42-document industrial corpus, ordering by the
+content-verifier score lowers Hit@5 from 0.94 to 0.44, while retaining fusion
+order among recorded survivors matches fusion-only at 0.94; all 191 recorded
+scores exceed the 0.5 threshold, and one fused candidate has none. The loss is
+attributable to the induced ordering, not to filtering, and an independent NLI
+checkpoint fails the same way. A verifier score that survives an admission
+filter is not thereby usable as a ranker.
+In a 30-cell end-to-end comparison, all answers contain a gold document
+identifier. Strict keyword coverage is 9/10 per arm, the misses word-form
+mismatches; alias-aware coverage is 10/10; a mis-specified gold key was
+corrected during revision and both grades retained. Citation-marker hits are
+9/10, 7/10 and 2/10 for platform, file and dense arms; these are provenance
+and lexical-marker checks, not semantic faithfulness measures. An eighteen-arm
+battery observed no fabricated citations, and a reproduced catalog-truncation
+failure was repaired and retested. The findings support a bounded deployment
+account, not universal retrieval or answer-quality superiority.
+\end{abstract}
+
+\begin{keyword}
+Knowledge base management \sep Document ingestion \sep Content verification \sep
+Knowledge organization \sep Retrieval-augmented generation \sep
+Model Context Protocol
+\end{keyword}
+
+\end{frontmatter}
+
+%% ============================================================ body (v2 order)
+\input{n1_intro}
+\input{n2_related}
+\input{n3_overview}
+\input{n4_acquisition}
+\input{n5_organization}
+\input{n6_retrieval}
+\input{n7_implementation}
+\input{n8a_eval}
+\input{n8b_eval}
+\input{n8c_eval}
+\input{n9_discussion}
+\input{n10_threats}
+\input{n11_conclusion}
+\input{n_back}
+
+{\footnotesize
+%% References follow elsarticle-num. A 2pt item separation (the class default
+%% is larger) keeps the 55-entry list inside the page budget without changing
+%% the type size.
+\setlength{\bibsep}{0.5pt plus 0.2ex}
+\bibliographystyle{elsarticle-num}
+\bibliography{refs,refs_new_verified}
+}
+
+\end{document}

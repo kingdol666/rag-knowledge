@@ -33,24 +33,37 @@ data, or animals.
 The platform source code, campaign logs and scripts, gold question sets,
 replays and per-run JSON records cited in this paper are available at
 \url{https://github.com/kingdol666/rag-knowledge} (benchmark suite:
-\texttt{benchmark-suite/}; paper artifacts:
-\texttt{paper-kbs/}). The evaluation inventory is indexed in
-\path{TEST-RESULTS/ARTIFACTS.md}. The current end-to-end grid is under
-\path{benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/}; grades under the original question annotations are retained in
-\path{benchmark-suite/results/exp_r2_grade_original_revised.json}; corrected
-semantic annotations and their post-hoc regrade are in
-\path{benchmark-suite/data/papers/qa_questions_e5_corrected.json} and
-\path{benchmark-suite/results/exp_r2_grade_corrected.json}. The deterministic
-grader is \path{benchmark-suite/scripts/107_exp_grade.py}; derived statistics
-for latency and cost are in \path{paper-kbs/tex/journal_20p/e5_numbers.json}. Superseded
-campaigns are retained in the archive tarballs under
-\path{benchmark-suite/results/archive-superseded/} and
-\path{review/archive-superseded/}, with per-path manifests. Supplementary
-material accompanies the manuscript as
-\path{paper-kbs/supplementary/supplementary-material.pdf}; it contains the
-campaign inventory, functional checks, concurrency results and per-question
-rank tables. The deployed industrial corpus cannot be redistributed for
-contractual reasons.
+\texttt{benchmark-suite/}; paper artifacts: \texttt{paper-kbs/}). The
+evaluation inventory is indexed in \path{TEST-RESULTS/ARTIFACTS.md}. Within
+\texttt{benchmark-suite/}: the end-to-end grid of Section~\ref{sec:e5} is
+\path{results/runs/run-20261013T094350Z-5f9faac/}; original-annotation grades
+are in \path{results/exp_r2_grade_original_revised.json}; corrected
+annotations and their regrade are in
+\path{data/papers/qa_questions_e5_corrected.json} and
+\path{results/exp_r2_grade_corrected.json}; the grader is
+\path{scripts/107_exp_grade.py}; and superseded campaigns stay in
+\path{results/archive-superseded/}. Derived latency and cost statistics are in
+\path{paper-kbs/tex/journal_20p/e5_numbers.json}. The corrected annotation set
+is frozen for this submission (version ``2026-10-14 corrected evaluation
+annotations'', frozen 2026-10-16, SHA-256
+\texttt{86b07a9370984d42\ldots e62ece}), and the annotations, the
+pre-correction question set and the grader are pinned together in
+\path{paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt} so every
+reported grade can be re-derived exactly. The supplementary material
+(\path{paper-kbs/supplementary/supplementary-material.pdf}) carries the
+campaign inventory and the appendix tables S1--S5 that
+\ref{app:perq} cites. The deployed industrial corpus cannot be
+redistributed for contractual reasons, but the headline ordering comparison
+does not depend on its text: the judge-ordering row recomputes from the
+released per-candidate scores in
+\path{paper-kbs/experiments/results/exp1_retrieval.json}, the released gold
+annotations and the grader, and the fusion lists behind the derived rows are
+released for the anatomy query of Fig.~\ref{fig:anatomy} and retained per
+question in the campaign records. An end-to-end re-run would additionally
+require a substitute corpus, whose construction recipe---42 documents, one
+twenty-document near-duplicate family sharing prefixes, vocabulary and
+structure---is documented with an illustrative synthetic sample
+(\path{paper-kbs/notes/industrial-corpus-substitute-recipe-2026-10-16.md}).
 
 \section*{Acknowledgments}
 The authors thank the maintainers of the open-source components the platform
@@ -58,29 +71,37 @@ builds on. %% AUTHOR ACTION: adjust or remove.
 
 \appendix
 \setcounter{table}{0}
-\section{Per-question tool-layer results}
+\section{Supplementary tables}
 \label{app:perq}
-Table~\ref{tab:appendixranks} breaks the tool-layer comparison down to
-individual questions: the best gold rank each configuration reached in its
-top-5 window. The table localizes each aggregate retrieval metric. For the
+
+Five tables are carried in the supplementary material
+(\path{paper-kbs/supplementary/supplementary-material.pdf}) rather than in
+this build, each beside the campaign that produced it: Table~S1, the stores
+and fields read by the three-source consistency checks of
+Section~\ref{sec:e2}; Table~S2, the cross-lingual ingestion result of
+Section~\ref{sec:e1}, both rounds bit-for-bit identical; Table~S3, the sixteen
+gold-annotated questions behind every retrieval number in
+Section~\ref{sec:e4}, with their design intent; Table~S4, the per-question
+best-gold-rank grid that decomposes Figure~\ref{fig:marginvariants}(b); and
+Table~S5, the lifecycle-operation outcomes of Section~\ref{sec:e2}, one
+operation per row, including the two that failed.
+The per-question grid localizes the aggregate retrieval metrics: for the
 industrial same-pool replay, judge-score re-ranking misses eight golds that
-remain in the fusion order; the derived survivor replay restores those ranks
-for scored candidates but inherits Q16's upstream miss. The Q14 candidate
-without a recorded judge score remains unclassified. This is the decomposition
-in Figure~\ref{fig:marginvariants}(b), with one query shown in detail in
-Figure~\ref{fig:anatomy}.
+remain in the fusion order, while the derived survivor replay restores those
+ranks for scored candidates but inherits Q16's upstream miss; the Q14
+candidate without a recorded judge score remains unclassified. The LaTeX
+sources of all five tables are archived in the repository under
+\path{paper-kbs/tex/journal_20p/_appendix-archived/}.
 
-\input{tab_appendix_ranks}
-
-\input{n_appendix_tables}
-
-%% AUTHOR ACTION: name the exact tool/service(s) and version(s) used, per
-%% Elsevier's policy on generative AI disclosure, before submission.
+%% AUTHOR ACTION: confirm the service names (and add versions if the editors
+%% ask) before submission. The two agent CLIs named here are the harnesses the
+%% authors used on this project; repository state is not otherwise a source for
+%% this declaration.
 \section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
-During the preparation of this work the authors used LLM-based coding
-agents to assist with experiment execution, data tabulation, figure
-preparation, and manuscript drafting. After using this tool/service, the
-authors reviewed and edited the content as needed and take full
-responsibility for the content of the published article. All experimental
+During the preparation of this work the authors used the Anthropic Claude
+Code and ZCode command-line coding agents in order to assist with experiment
+execution, data tabulation, figure preparation and manuscript drafting. After
+using these tools, the authors reviewed and edited the content as needed and
+take full responsibility for the content of the publication. All experimental
 numbers originate from logged runs of the deployed system on the authors'
 machine.

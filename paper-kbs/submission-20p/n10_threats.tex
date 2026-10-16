@@ -30,7 +30,10 @@ semantic claim support, and aliases are reported as a separate regrade. The
 BQ06 gold key was corrected to the source paper's thermodynamic reading after
 inspection, and declared aliases cover known word-form variants (BQ09's
 abbreviation, BQ10's phrasing); the pre-correction question set and its grade
-(strict 10/9/9) are retained alongside the corrected regrade (strict 9/9/9). The
+(strict 10/9/9) are retained alongside the corrected regrade (strict 9/9/9), and
+both sets are frozen for this submission in
+\path{paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt}, so the
+two-grade disclosure cannot drift after review. The
 MCP lifecycle script passed its 16 direct assertions and the stdio protocol
 test passed, but the lifecycle script is not pytest-collection-safe because it
 calls \texttt{sys.exit} at module import.

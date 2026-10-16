@@ -19,7 +19,10 @@ reports `null`, `NOT measured`, or a failed check, that is reproduced as such.
 **Scope.** All results come from a single deployed instance on the authors' machine,
 driven through the official harness API and the project's own MCP tool layer. The
 counts of test cells are given per campaign so the reader can judge the weight of each
-result. Section C states the limitations that apply across all of the evidence.
+result. Section C states the limitations that apply across all of the evidence. Part D
+carries the five appendix tables (S1-S5) that the manuscript cites: they moved here from
+the manuscript appendix in the 2026-10-16 revision, and the manuscript's Data-availability
+statement points at this document for them.
 
 ---
 
@@ -223,7 +226,7 @@ chunk window because the answer sentence sits in a continuation paragraph cut by
 
 **Artifacts.** `benchmark-suite/results/BENCHMARK-30000chunk-20260918.md`;
 `paper-kbs/notes/functional-test-evidence-2026-10-12.md`;
-`paper-kbs/tex/journal/n8a_eval.tex`.
+`paper-kbs/tex/journal_20p/n8a_eval.tex`.
 
 ### A.6 Three-hundred-and-twenty-two-document reorganisation campaign
 
@@ -261,7 +264,7 @@ same fixed set improved to 49/50 = 98% with MRR 1.00. The newly ingested 50 pape
 **Artifacts.** `paper-kbs/notes/functional-test-evidence-2026-10-12.md` (the campaign's
 per-check counts and its two honesty notes);
 `benchmark-suite/results/R2-SCALING-20260921.md` (the before/after scaling comparison);
-`paper-kbs/tex/journal/n8a_eval.tex`.
+`paper-kbs/tex/journal_20p/n8a_eval.tex`.
 
 ### A.7 Cross-lingual ingestion campaign
 
@@ -273,6 +276,7 @@ Membership and ingestion success are computed over all 400 pages per language; s
 completeness and self-retrieval Hit@1 use a 40-page or 40-query sample per language.
 
 **Headline result.** Round 2 reproduced round 1 bit-for-bit, so one column is shown.
+This table is **Table S2** of the manuscript appendix (Part D).
 
 | Language | Ingestion success | KB membership accuracy | Storage completeness | Self-retrieval Hit@1 |
 |---|---:|---:|---:|---:|
@@ -282,11 +286,15 @@ completeness and self-retrieval Hit@1 use a 40-page or 40-query sample per langu
 
 The English membership figure of 0.875 is the weakest cross-lingual number reported, and
 it is an organisation defect rather than a parsing defect: the page was stored, but in
-the wrong library roughly one time in eight.
+the wrong library roughly one time in eight. Membership is scored against the benchmark's
+source category labels, not against any naming convention derived by the ingest agent, so
+it is the one placement-correctness measurement in the manuscript that does not depend on
+filename cues.
 
-**Artifacts.** `paper-kbs/tex/journal/n_appendix_tables.tex` (Table `tab:acq-crosslang`);
-`paper-kbs/tex/journal/n8a_eval.tex`;
-`paper-kbs/tex/journal/n4_acquisition.tex`. The underlying run outputs are retained under
+**Artifacts.** `paper-kbs/tex/journal_20p/_appendix-archived/n_appendix_tables.tex`
+(Table S2; manuscript source before the 2026-10-16 revision);
+`paper-kbs/tex/journal_20p/n8a_eval.tex`;
+`paper-kbs/tex/journal_20p/n4_acquisition.tex`. The underlying run outputs are retained under
 `benchmark-web/benchmark/results/benchmark/`, which lives in the web-repository checkout
 and not in this repository; the numbers above are therefore taken from the manuscript
 table that reports them.
@@ -1006,8 +1014,7 @@ reportable ten-question aggregate);
 ### B.15 The sixteen-question gold set
 
 **What was tested.** This entry documents the question set that is the denominator of every
-retrieval table in Part B and of the appendix table `tab:questions` in
-`paper-kbs/tex/n_appendix_tables.tex`.
+retrieval table in Part B and of **Table S3** of the manuscript appendix (Part D).
 
 **Scale.** Sixteen questions, `Q1`-`Q16`, defined once in
 `paper-kbs/experiments/kbcommon.py` (the `QUESTIONS` list, lines 195-292). Each entry carries
@@ -1021,7 +1028,7 @@ rows over a 42-document corpus (`corpus_docs`), and
 **Headline result (provenance).** The questions are **author-written**, in Chinese, over the
 five production knowledge bases, for a PV-module manufacturing and process-engineering
 domain; they are **not drawn from any public benchmark**. Their design intents, as recorded
-in `tab:questions`, span multi-gold questions (Q1), incident-to-root-cause questions (Q2),
+in **Table S3** (Part D), span multi-gold questions (Q1), incident-to-root-cause questions (Q2),
 mechanism questions (Q3), cross-material questions (Q4), synonym gaps (Q5), numeric
 exactness (Q6), confuser density among near-duplicate documents (Q7), plain factual recall
 (Q8, Q12), the PV operations family (Q9-Q11), and the telemetry cluster (Q13-Q16). The gold
@@ -1036,11 +1043,12 @@ list; the stale comment is reported here as it stands.
 **Artifacts.** `paper-kbs/experiments/kbcommon.py` (the definitions);
 `paper-kbs/experiments/results/exp1_retrieval.json`;
 `paper-kbs/experiments/results/exp5_judge_filter.json`;
-`paper-kbs/tex/n_appendix_tables.tex` (the rendered table `tab:questions`).
+`paper-kbs/tex/journal_20p/_appendix-archived/n_appendix_tables.tex`
+(Table S3; manuscript source before the 2026-10-16 revision).
 
 ### B.16 Per-question rank table and its generator
 
-**What was tested.** The provenance of the appendix table `tab:appendixranks`, the
+**What was tested.** The provenance of **Table S4** of the manuscript appendix (Part D), the
 per-question best-gold-rank grid for all nine retrieval pipelines.
 
 **Scale.** One generated table: 16 question rows x 9 method columns (BM25, Dense, RRF, Graph,
@@ -1055,13 +1063,14 @@ window, or `--` where the gold document was not in that window.
 (`filter_only`, `rrf_fuse`) replayed over the same logged pools. Question order comes from
 `QUESTIONS` in `paper-kbs/experiments/kbcommon.py`, and the script asserts the input shapes
 it depends on: 7 x 16 rows in the first file and 16 rows in the second. Its output is written
-to `paper-kbs/tex/tab_appendix_ranks.tex`, marked `Auto-generated ... do not edit`.
+to `paper-kbs/tex/journal_20p/_appendix-archived/tab_appendix_ranks.tex`, marked
+`Auto-generated ... do not edit`, and is reproduced as Table S4 in Part D.
 
 **Artifacts.** `paper-kbs/experiments/derive_appendix.py`;
 `paper-kbs/experiments/kbcommon.py`;
 `paper-kbs/experiments/results/exp1_retrieval.json`;
 `paper-kbs/experiments/results/exp5_judge_filter.json`;
-`paper-kbs/tex/tab_appendix_ranks.tex`
+`paper-kbs/tex/journal_20p/_appendix-archived/tab_appendix_ranks.tex`
 
 ---
 
@@ -1147,3 +1156,113 @@ library partitioning bought nothing measurable on the
 retrieval path although a routing mistake was fatal, and neither NLI replay improved on
 the platform gate. Those results are reported here at the scale at which they were
 measured.
+
+---
+
+## Part D. Manuscript appendix tables (S1-S5)
+
+These five tables are cited from the manuscript's appendix
+(`paper-kbs/tex/journal_20p/n_back.tex`) as Tables S1-S5. They were part of the
+manuscript appendix until the 2026-10-16 revision moved them here; their LaTeX
+sources are archived at
+`paper-kbs/tex/journal_20p/_appendix-archived/n_appendix_tables.tex` (S1, S2, S3,
+S5) and `paper-kbs/tex/journal_20p/_appendix-archived/tab_appendix_ranks.tex`
+(S4). Every value is copied from those sources.
+
+### Table S1. Stores and their principal contents
+
+Field names are the ones used by the implementation and by the audit tools
+(three-source consistency checks of the manuscript's Section 8.3).
+
+| Store | Contents |
+|---|---|
+| Tree registry (`.tree-fs.json`) | version, root identifier and name, timestamps, node counter and aggregate statistics; per node: identifier, name, type, parent, path, children, metadata map, timestamps. Authoritative structure of the collection. |
+| Library metadata (`.knowledge-base.yml`) | library identifier, name, description, timestamps, per-library configuration; per document: path, name, description, tags, content hash, file size, vector-index metadata. The retrieval index read by catalog search. |
+| Document files | Markdown body per document or per split part, plus an image directory for figures extracted during parsing. |
+| Vector store | one collection per library (cosine space, 1024-dimensional embeddings, HNSW index), holding segment embeddings of 500 characters with 50-character overlap. |
+| Graph store | nodes for documents, libraries, tags, folders and entities; edges for membership, tagging, relatedness, identity and containment. |
+| Task and session databases | pollable task records for parsing, indexing, graph builds and distillation; chat sessions; distillation signals. |
+
+### Table S2. Cross-lingual ingestion
+
+The manuscript cites the cross-lingual table as **Table S2**; it is the table in
+Section A.7 above (400 Wikipedia pages per language, first round; the second
+round reproduced these values bit-for-bit, so one column is shown).
+
+### Table S3. Gold-annotated questions over the five production knowledge bases
+
+"Gold" lists unique filename fragments of the ground-truth documents. All
+sixteen serve the tool-layer experiment (manuscript Section 8.5); Q2, Q4, Q6 and
+Q7 also served the archived lane grid of Section 8.6.
+
+| # | Question (abridged, translated) | Gold document(s) | Design intent |
+|---|---|---|---|
+| Q1 | EVA encapsulation film lamination: how to set the temperature, pressure and time window; how to control cure degree | EVA process essentials; EVA hydro-thermal aging mechanism | multi-gold |
+| Q2 | EL inspection shows edge delamination: root cause and corrective actions | EL-2025-0317 delamination RCA report | incident to RCA |
+| Q3 | Why does humid aging of EVA generate acetic acid and corrode ribbons; moisture transport mechanism | EVA hydro-thermal aging mechanism | mechanism |
+| Q4 | Moisture-barrier behavior of POE encapsulant; lamination differences vs. EVA | POE process essentials | cross-material |
+| Q5 | Summer power drop at a PV plant: systematic troubleshooting order | Power-drop troubleshooting manual; O&M lessons | synonym gap ("drop" vs. "plunge") |
+| Q6 | Trigger condition, nominal value and tolerance of the line-1027 part weight alarm | Watch-clause document (31.35 g ± 0.05 g, 5 min) | numeric exactness |
+| Q7 | Melt temperature fell 206 to 180 °C on extruder line 1: final root-cause verdict | TC0 dead-loop RCA revision (among 20 telemetry dups) | confuser density |
+| Q8 | PET biaxial stretching process flow and critical temperature ranges | PET process regulation | plain factual |
+| Q9 | Frequent inverter alarm trips: handling steps | Inverter alarm handling manual | PV O&M family |
+| Q10 | Hot-spot acceptance criteria and disposal | Hot-spot detection and disposal procedure | PV O&M family |
+| Q11 | String mismatch causes; IV-curve diagnosis | String mismatch analysis method | PV O&M family |
+| Q12 | PP cast-film extrusion parameters; chill-roll temperature | PP cast film process regulation | plain factual |
+| Q13 | Weight closed-loop run1: staircase excitation design | Weight optimization staircase record | telemetry cluster |
+| Q14 | FT full-function regression after P0 optimization | FT regression test record | telemetry cluster |
+| Q15 | Multimodal diagnosis: fusing scalar, vector and image signals | Three-modality closed-loop record | telemetry cluster |
+| Q16 | Post-compensation recovery verification of the heatdecay092 event | heatdecay092 compensation verification (among 3 near-dup incident docs) | confuser density |
+
+### Table S4. Per-question best gold rank (top-5 window)
+
+Best gold rank for the seven tool-layer pipelines (logged runs) and the two
+derived configurations (offline replay of the same logged QDCVR-Hybrid pools).
+Fusion = fusion-only (no judge); Hybrid = the shipped QDCVR-Hybrid judged
+ordering; Filter = judge-as-filter. `--` = gold absent from the top-5 window.
+Generated by `paper-kbs/experiments/derive_appendix.py`; question texts in
+Table S3.
+
+| Q | BM25 | Dense | RRF | Graph | 2-stage | Fusion | Hybrid | Filter | RRF-fuse |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 1 | 1 | 1 | 1 | 1 | 1 | 4 | 1 | 1 |
+| 2 | 1 | 1 | 1 | -- | 1 | 1 | -- | 1 | 1 |
+| 3 | 1 | 1 | 1 | -- | 1 | 1 | 1 | 1 | 1 |
+| 4 | 1 | 1 | 1 | -- | 1 | 1 | -- | 1 | 1 |
+| 5 | 1 | 1 | 1 | 1 | 1 | 1 | -- | 1 | 2 |
+| 6 | 1 | 1 | 1 | 1 | 1 | 1 | -- | 1 | -- |
+| 7 | 3 | 5 | 3 | -- | 3 | 5 | 3 | 5 | 3 |
+| 8 | 1 | 1 | 1 | 1 | 1 | 1 | -- | 1 | 2 |
+| 9 | 1 | 1 | 1 | 1 | 1 | 1 | -- | 1 | 3 |
+| 10 | 1 | 1 | 1 | 1 | 1 | 1 | 3 | 1 | 1 |
+| 11 | 1 | 2 | 1 | 1 | 1 | 2 | -- | 2 | 5 |
+| 12 | 1 | 1 | 1 | 1 | 1 | 1 | -- | 1 | 3 |
+| 13 | 1 | 1 | 1 | -- | 1 | 1 | 2 | 1 | 1 |
+| 14 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+| 15 | 1 | 1 | 1 | -- | 1 | 1 | 5 | 1 | 2 |
+| 16 | 1 | -- | 2 | -- | 2 | -- | -- | -- | -- |
+
+### Table S5. Lifecycle operations exercised on disposable test libraries
+
+Merge and split were analysed but never executed.
+
+| Operation | Observed outcome |
+|---|---|
+| Create | Pass, document indexed and retrievable |
+| Rename | Pass, stale chunks remained until forced re-index (18 recorded, 9 expected) |
+| Move | Pass, source 1 to 0 to 1, target 0 to 1 to 0 |
+| Delete | Pass, batch delete 1/1; both test libraries removed |
+| Re-index | Automatic and batch paths did not purge; pass with `force=true` (18 to 9) |
+| Merge, split | Not evaluated |
+| Task status | Fail, reports `running` after `finished_at` is set |
+| Update check | Fail, `ragctl version` timed out after 30 s |
+
+### Freeze manifest for the manuscript's evaluation
+
+From the 2026-10-16 revision, the corrected E5 annotations, the pre-correction
+question set and the deterministic grader are pinned together with the
+manuscript's evaluation text in
+`paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt`, so the two-grade
+disclosure of the manuscript's Section 8.7 cannot drift after review. Verify
+with `sha256sum -c paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt`
+from the repository root.

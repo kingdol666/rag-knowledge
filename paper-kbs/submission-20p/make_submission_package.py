@@ -44,8 +44,6 @@ SOURCE_TEX = [
     "n10_threats.tex",
     "n11_conclusion.tex",
     "n_back.tex",
-    "n_appendix_tables.tex",
-    "tab_appendix_ranks.tex",
     "highlights.tex",
 ]
 SOURCE_BIB = ["refs.bib", "refs_new_verified.bib"]
@@ -138,17 +136,19 @@ def main() -> int:
         f"- bibliography: {', '.join(f'`{n}`' for n in SOURCE_BIB)} plus generated `{SOURCE_BBL[0]}`\n"
         f"- figures used by the manuscript: {', '.join(f'`{f.name}`' for f in figs)}\n"
         "- highlights: `highlights.docx` and `highlights.tex` (verify identical wording before upload)\n"
-        "- supplementary material: upload `paper-kbs/supplementary/supplementary-material.pdf` as a separate supplementary item\n"
-        "- Declaration of Interests: complete Elsevier's declarations tool and upload its generated Word document separately\n\n"
+        "- supplementary material: upload `paper-kbs/supplementary/supplementary-material.pdf` as a separate supplementary item (Part D of that document carries Tables S1-S5, the five appendix tables the manuscript cites; they moved out of the manuscript on 2026-10-16)\n"
+        "- Declaration of Interests: complete Elsevier's declarations tool and upload its generated Word document separately\n"
+        "- evaluation freeze: the corrected annotations, the pre-correction question set and the grader are pinned in `paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt` (verify with `sha256sum -c` from the repository root)\n"
+        "- page budget: measurements for both layouts (20-page camera-ready preview; 68-page double-spaced review format) and the compression plan are in `paper-kbs/notes/page-budget-2026-10-16.md`\n\n"
         "## Author confirmation required before submission\n\n"
         "1. Replace author names/order, corresponding-author email, affiliation and city/country in `main_20p.tex`.\n"
         "2. Replace Author 1/Author 2 in CRediT with accurate names and roles.\n"
         "3. Confirm the no-funding statement and acknowledgements.\n"
-        "4. Confirm the exact generative-AI services/tools used and revise the declaration accordingly; do not infer these names from repository state.\n"
+        "4. Confirm the generative-AI declaration: it now names the two agent CLIs used on this project (\"Anthropic Claude Code and ZCode command-line coding agents\"); add versions only if the editors ask.\n"
         "5. Supply the separate Declaration of Interests Word file from Elsevier's tool.\n"
         "6. Confirm the CIKM demo author metadata and publication details when available.\n"
         "7. Upload the supplementary PDF separately and verify it reflects the current manuscript.\n"
-        "8. Decide whether to submit the current two-column preview or a double-spaced review-layout source; KBS permits double-column LaTeX but describes the 20-page double-spaced length as preferred.\n",
+        "8. Choose the manuscript layout: the two-column preview (`main_20p.tex`, 20 pages) or the double-spaced review source (`main_20p_review.tex`, 68 pages); KBS permits double-column LaTeX but describes 20 double-spaced pages as preferred (see the page-budget note).\n",
         encoding="utf-8",
     )
     print(f"\npackage: {len(copied)} sources/bib/bbl + {len(figs)} figures")
