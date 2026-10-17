@@ -7,14 +7,15 @@
 #   sha256sum -c .frozen-experiment-sha256.txt
 #
 # --- manuscript evaluation text (frozen 2026-10-17) ---
-# Re-frozen after the knowledge-base-management restructure (2026-10-17):
-# section framing, the per-question answer-quality table and prose
-# compression. A numeric-token audit against the previous revision found no
-# value added, removed or altered outside the new table's own cells and their
-# column totals, which are recomputed from the grade artifact named below.
+# Re-frozen after the 2026-10-17 experimental revision: the common-substrate
+# replication, the paired-agreement analysis (gold ID 30/30, alias 28/30,
+# strict 25/30, marker presence 18/30) and the resulting claim rewrite that
+# treats strict and marker counts as substrate-bound. The paired counts are
+# recomputed by paper-kbs/experiments/e5_replication_agreement.py from the two
+# deterministic grade artifacts named in supplementary A.19.
 78249feb79e8feab9a23bf3e752075248b4bbbb400ef250065f1f531a7855514 *n8a_eval.tex
-6f5961c4e712218a7ec87c4526c30d3c83b8dc0331c7c2c8e1259ea7c8dba815 *n8b_eval.tex
-0f9b6246cdf900e5a33d5069900d776446a03ceed31038471abb695aaf653858 *n8c_eval.tex
+db2281731beb83ce7c9f2c1fe44be335913604c6e093c07a17d617e1f919ff63 *n8b_eval.tex
+9fdb70cc4733972b01f239973498660513d4c4d990847af3b3876a5a8db414f8 *n8c_eval.tex
 #
 # --- evaluation annotations and grader (frozen 2026-10-16) ---
 # corrected E5 semantic annotations, version string

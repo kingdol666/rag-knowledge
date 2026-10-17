@@ -4,20 +4,22 @@
 \noindent\textbf{Corpus and scale.} The results cover bounded demonstration and public
 collections and a small arXiv-based corpus. Retrieval-only modes searched live
 libraries, whereas lexical and dense baselines used a corpus index; these are
-not identical retrieval substrates. The three answer arms also differ in
-substrate (default library scope, exported file tree, 800-character mirror), so
-the 30-cell grid compares interface plus substrate, and its marker differences
-cannot be attributed to the interface alone. The three-source consistency
+not identical retrieval substrates. The three answer arms of the original
+grid also differ in substrate (default library scope, exported file tree,
+800-character mirror), so that grid compares interface plus substrate; the
+30-cell replication pins every arm to the same five libraries, and the marker
+differences do not survive it. The three-source consistency
 check is a 33-document sample, one tenth of the 322-document corpus, not a full
 audit. Findings should not be generalized to larger or differently organized
 collections without replication.
 
 \noindent\textbf{Question construction and denominators.} Questions and gold
-annotations were developer-authored. The three-arm grid of
-Section~\ref{sec:e5} is ten questions of one question family on one model,
-run once per arm: the citation and latency separations hold cell by cell,
-but the grid cannot resolve differences smaller than that, and its
-grounding reading is at ceiling for all three arms. Two grid answers contain
+annotations were developer-authored. The two three-arm grids of
+Section~\ref{sec:e5} are ten questions of one question family on one model,
+each run once per arm: the platform arm's latency separation holds in both,
+but the citation separation does not survive the common substrate, and the
+grids cannot resolve differences smaller than one cell. The grounding reading
+is at ceiling in both. Two answers in the original grid contain
 an evidence-insufficiency qualifier; the grader's
 \texttt{insufficient\_evidence} flag is a substring test that also fires when
 the phrase appears inside a fully answering text, so we read those two flags
@@ -35,9 +37,9 @@ semantic claim support; gold-ID presence is checked in the answer or the
 recorded trace, and keyword coverage passes at $\lceil 3n/5\rceil$ of the
 annotated terms, so a missing term can still pass. Aliases are reported as a
 separate regrade. The 30-cell grid and its controlled replication are each one run
-per arm on one model, recorded as claude-opus-4-8[1m]; strict counts differ
-between the two grids by up to two cells. Three cells of the original grid
-departed from the stated contract (Section~ef{sec:e5}), and one platform
+per arm on one model, recorded as claude-opus-4-8[1m]; the paired analysis in
+Section~\ref{sec:e5} bounds the stable reads. Three cells of the original grid
+departed from the stated contract (Section~\ref{sec:e5}), and one platform
 answer in the replication contains a short Chinese phrase. The archived pools store the survivors of each judged pool rather
 than the dropped list, so the filter role cannot be re-derived beyond the
 recorded scores. The BQ06 gold key was corrected to the source paper's

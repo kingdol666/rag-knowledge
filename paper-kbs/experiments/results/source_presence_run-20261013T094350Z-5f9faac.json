@@ -1,0 +1,440 @@
+{
+ "run": "benchmark-suite/results/runs/run-20261013T094350Z-5f9faac",
+ "cells": 30,
+ "all_matched_keywords_present": 29,
+ "per_arm": {
+  "P": {
+   "cells": 10,
+   "with_matches": 9,
+   "all_present": 9
+  },
+  "F": {
+   "cells": 10,
+   "with_matches": 10,
+   "all_present": 10
+  },
+  "D": {
+   "cells": 10,
+   "with_matches": 10,
+   "all_present": 10
+  }
+ },
+ "cell_records": [
+  {
+   "qid": "BQ01",
+   "arm": "P",
+   "matched": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "present": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ02",
+   "arm": "P",
+   "matched": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "present": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ03",
+   "arm": "P",
+   "matched": [
+    "multimedqa",
+    "67.6"
+   ],
+   "present": [
+    "multimedqa",
+    "67.6"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ04",
+   "arm": "P",
+   "matched": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "present": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ05",
+   "arm": "P",
+   "matched": [
+    "unified growth theory"
+   ],
+   "present": [
+    "unified growth theory"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ06",
+   "arm": "P",
+   "matched": [],
+   "present": [],
+   "missing_from_gold": [],
+   "ok": false
+  },
+  {
+   "qid": "BQ07",
+   "arm": "P",
+   "matched": [
+    "yiddish",
+    "8b"
+   ],
+   "present": [
+    "yiddish",
+    "8b"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ08",
+   "arm": "P",
+   "matched": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "present": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ09",
+   "arm": "P",
+   "matched": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "present": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ10",
+   "arm": "P",
+   "matched": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "present": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ01",
+   "arm": "F",
+   "matched": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "present": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ02",
+   "arm": "F",
+   "matched": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "present": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ03",
+   "arm": "F",
+   "matched": [
+    "multimedqa",
+    "67.6"
+   ],
+   "present": [
+    "multimedqa",
+    "67.6"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ04",
+   "arm": "F",
+   "matched": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "present": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ05",
+   "arm": "F",
+   "matched": [
+    "unified growth theory"
+   ],
+   "present": [
+    "unified growth theory"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ06",
+   "arm": "F",
+   "matched": [
+    "thermodynamic",
+    "saturation vapor pressure"
+   ],
+   "present": [
+    "thermodynamic",
+    "saturation vapor pressure"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ07",
+   "arm": "F",
+   "matched": [
+    "yiddish",
+    "8b"
+   ],
+   "present": [
+    "yiddish",
+    "8b"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ08",
+   "arm": "F",
+   "matched": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "present": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ09",
+   "arm": "F",
+   "matched": [
+    "dynamic"
+   ],
+   "present": [
+    "dynamic"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ10",
+   "arm": "F",
+   "matched": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "present": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ01",
+   "arm": "D",
+   "matched": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "present": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ02",
+   "arm": "D",
+   "matched": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "present": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ03",
+   "arm": "D",
+   "matched": [
+    "multimedqa",
+    "67.6"
+   ],
+   "present": [
+    "multimedqa",
+    "67.6"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ04",
+   "arm": "D",
+   "matched": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "present": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ05",
+   "arm": "D",
+   "matched": [
+    "unified growth theory"
+   ],
+   "present": [
+    "unified growth theory"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ06",
+   "arm": "D",
+   "matched": [
+    "thermodynamic",
+    "saturation vapor pressure"
+   ],
+   "present": [
+    "thermodynamic",
+    "saturation vapor pressure"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ07",
+   "arm": "D",
+   "matched": [
+    "yiddish",
+    "8b"
+   ],
+   "present": [
+    "yiddish",
+    "8b"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ08",
+   "arm": "D",
+   "matched": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "present": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ09",
+   "arm": "D",
+   "matched": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "present": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  },
+  {
+   "qid": "BQ10",
+   "arm": "D",
+   "matched": [
+    "chemotherapy"
+   ],
+   "present": [
+    "chemotherapy"
+   ],
+   "missing_from_gold": [],
+   "ok": true
+  }
+ ]
+}

@@ -1359,6 +1359,17 @@ Merge and split were analysed but never executed.
 | BQ10 | F | yes | yes | yes | 8 |
 | BQ10 | P | yes | yes | yes | 5 |
 
+**Paired agreement.** The grids are paired by question and arm (30 cells). For each binary check the table gives the paired counts, raw agreement and an exact two-sided McNemar test over the discordant pairs; McNemar asks whether the direction of disagreement is symmetric, not which grid is correct. Marker presence means at least one recognized document-style marker; marker counts differ in 24 of 30 cells, so only presence is compared.
+
+| Measure | Paired counts (both / orig. / repl. / neither) | Agree | p (exact) |
+|---|---:|---:|---:|
+| Gold ID | 30 / 0 / 0 / 0 | 30/30 | — |
+| Alias | 28 / 2 / 0 / 0 | 28/30 | 0.500 |
+| Strict | 22 / 5 / 0 / 3 | 25/30 | 0.0625 |
+| Marker | 18 / 0 / 9 / 3 | 18/30 | 0.0039 |
+
+All five strict disagreements favour the original grid and all nine marker disagreements favour the common substrate; alias coverage loses BQ08 in the P and F arms in the replication. The script `paper-kbs/experiments/e5_replication_agreement.py` recomputes these counts and writes `paper-kbs/experiments/results/e5_replication_agreement.json`.
+
 **Arm means.** Wall clock and cost: P 37.7 s / $0.672; F 15.2 s / $0.377; D 19.6 s / $0.524. These are single-run means.
 
 **Artifacts.** `benchmark-suite/results/runs/rerun5-20261017/` (per-cell records); `benchmark-suite/results/exp_rerun5_grade.json` (grades); `benchmark-suite/experiments/chat_tracks.py` (`RAG_BENCH_PIN_KB`, `RAG_BENCH_CORPUS_DIR`).
@@ -1396,12 +1407,26 @@ Across all 30 cells, 29 satisfy the check; the remaining cell (BQ06 in arm P) ma
 
 **Artifacts.** `benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/track_*.json` (answers); `benchmark-suite/data/papers/qa_questions_e5_corrected.json` (keywords); `benchmark-suite/data/corpus_md/*.md` (gold documents).
 
+### Table S8. Source-presence audit of the replication grid (30 answer cells)
+
+Same check as Table S7, run on `rerun5-20261017`. Every strict keyword matched by an answer occurs in the cited gold document in all 30 cells, including the BQ08 cells whose alias coverage fails.
+
+| Arm | Cells with at least one matched keyword | Cells where every matched keyword occurs in the cited gold document |
+|---|---:|---:|
+| P (platform) | 10 | 10 |
+| F (file tools) | 10 | 10 |
+| D (dense) | 10 | 10 |
+
+Across all 30 cells, 30 satisfy the check.
+
+**Artifacts.** `benchmark-suite/results/runs/rerun5-20261017/track_*.json` (answers); `benchmark-suite/data/papers/qa_questions_e5_corrected.json` (keywords); `benchmark-suite/data/corpus_md/*.md` (gold documents); `paper-kbs/experiments/source_presence_audit.py`.
+
 ### Freeze manifest for the manuscript's evaluation
 
-From the 2026-10-16 revision, the corrected E5 annotations, the pre-correction
+From the 2026-10-17 revision, the corrected E5 annotations, the pre-correction
 question set and the deterministic grader are pinned together with the
 manuscript's evaluation text in
 `paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt`, so the two-grade
-disclosure of the manuscript's Section 8.7 cannot drift after review. Verify
+disclosure of the manuscript's Section 8.6 cannot drift after review. Verify
 with `sha256sum -c paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt`
 from the repository root.

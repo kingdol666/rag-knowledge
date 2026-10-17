@@ -529,13 +529,14 @@ def fig_lanes():
 
     heads = ["Lane A: Search", "Lane B: Librarian", "Lane C: Hybrid"]
     for x, h in zip(CXS, heads):
-        box(ax, x, 3.24, COLW, 0.24, h, fc="#E8F5F1", ec=C["green"],
+        box(ax, x, 3.20, COLW, 0.24, h, fc="#E8F5F1", ec=C["green"],
             style="round,pad=0.0")
-    # fan-out from the query box
+    # fan-out from the query box; the arrows stop on the header top edges
+    # (3.20 + 0.24 + 0.005) so no shaft crosses a title glyph
     ax.plot([2.69, 2.69], [3.58, 3.50], color="#555555", lw=0.8, zorder=2)
     ax.plot([CTR[0], CTR[2]], [3.50, 3.50], color="#555555", lw=0.8, zorder=2)
     for c in CTR:
-        arrow(ax, c, 3.50, c, 3.26, lw=0.8)
+        arrow(ax, c, 3.50, c, 3.44 + 0.005, lw=0.8)
 
     a_steps = [
         "A0  Query rewrite\nsubject \u00d7 attribute \u00d7\n"
@@ -1064,7 +1065,9 @@ def fig_anatomy():
     for ax, order, title, xright in panels:
         pos = {p: i + 1 for i, p in enumerate(order)}
         ax.axhspan(0.5, 5.5, color="#EDF6EA", zorder=0)
-        ax.text(-0.36, 5.05, "top-5 read window", color=C["green"],
+        # ylim top extends past the band so the band label owns a strip no
+        # candidate line enters (ranks start at y=1)
+        ax.text(-0.36, 0.15, "top-5 read window", color=C["green"],
                 va="center", zorder=4,
                 bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.8))
         for p in fusion:
@@ -1074,13 +1077,11 @@ def fig_anatomy():
                     marker="o", ms=ms[k], mfc=col[k], mec="white", mew=0.4,
                     solid_capstyle="round")
         ax.set_xlim(-0.55, 1.62)
-        ax.set_ylim(12.8, 0.3)
+        ax.set_ylim(12.8, -0.2)
         ax.set_xticks([0, 1])
         ax.set_xticklabels(["fusion rank", xright])
-        ax.tick_params(length=0, pad=1.5)
         ax.set_yticks(range(1, 13))
-        for sp in ax.spines.values():
-            sp.set_visible(False)
+        origin_axes(ax, minor=False)
         ax.set_title(title, loc="left")
     axes[0].set_yticklabels([str(i) for i in range(1, 13)])
     axes[0].set_ylabel("rank", labelpad=1)

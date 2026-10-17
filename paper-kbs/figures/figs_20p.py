@@ -207,8 +207,9 @@ def fig2():
     qx, qw = 2.63, 1.70
     qc = qx + qw / 2                       # 3.48 -- the column centre of the page
 
-    # query
-    step(ax, qx, 3.10, qw, 0.36, "User query", "natural language",
+    # query sits 0.03 higher than it needs so the fan-out arrows keep a
+    # visible shaft before they stop on the band top edges (3.04 + 0.005)
+    step(ax, qx, 3.13, qw, 0.36, "User query", "natural language",
          GREY_FC, GREY_EC)
 
     lanes = [
@@ -237,7 +238,9 @@ def fig2():
             step(ax, x + 0.09, y - bh, 2.02, bh, h1, h2, fc, ec)
             if i:
                 arrow(ax, x + 1.10, y + gap, x + 1.10, y + 0.005)
-        arrow(ax, qc, 3.10, x + 1.10, 2.76)
+        # stop on the band top edge: an endpoint inside the band drives the
+        # shaft through the title row (the "Lane B — Librarian" collision)
+        arrow(ax, qc, 3.13, x + 1.10, 3.04 + 0.005)
 
     # gate
     step(ax, qx, 0.62, qw, 0.40, "Content-verification gate",

@@ -70,30 +70,36 @@ stored parts): P and D search the vector collections and F reads the same
 parts in full (\path{rerun5-20261017}). In that grid gold-identifier
 coverage is again 10/10 in every arm, but strict coverage is 7/10, 7/10 and
 8/10, alias-aware coverage 9/10, 9/10 and 10/10, and citation-marker hits
-9/10 in every arm. The marker contrast therefore belongs to the chunk-replica
-substrate rather than to citation quality, and strict counts move by up to two
-cells between grids. We report provenance and alias-aware coverage as the
-stable measures and treat strict and marker counts as substrate-bound; answer
-quality here means provenance and lexical coverage, not semantic faithfulness.
+9/10 in every arm. Across the 30 paired cells the two grids agree on gold ID
+in 30, alias coverage in 28, strict coverage in 25 and marker presence in 18;
+all five strict disagreements favour the original grid and all nine marker
+disagreements the common substrate (exact McNemar $p=0.0625$ and
+$p=0.0039$). The marker contrast therefore tracks the substrate, not citation
+quality; strict counts are not exchangeable between grids. We report
+provenance and alias-aware coverage as the more stable measures and treat
+strict and marker counts as substrate-bound; answer quality here means
+provenance and lexical coverage, not semantic faithfulness.
 
 \textbf{Per-question reading.}
 In the original grid nine platform and seven file-tool answers carry a
 document-style marker, while the dense arm produces eight with none; in the
 replication the dense arm reads the same libraries and every arm gives nine. BQ05 carries no marker in any grid because it cites by title, a
-form the deterministic pattern does not count. The strict misses differ between grids: BQ06 in
-both (a Chinese answer that the declared aliases cover), BQ09 and BQ10 in the
-original grid, and BQ08 and BQ09 in the replication. Figure~\ref{fig:threearms}
+form the deterministic pattern does not count. The strict misses differ between grids: the
+original misses BQ06 in P (a Chinese answer that the declared aliases cover),
+BQ09 in F and BQ10 in D; the replication misses BQ06 in all three arms, BQ08
+and BQ09 in P and F, and BQ10 in D. Alias-aware coverage loses BQ08 in P and F
+in the replication. Figure~\ref{fig:threearms}
 shows the original grid's aggregate. Under the
 pre-correction BQ06 key the platform arm scored 10/10 strict against a
-mis-specified gold, and both grades are retained. A source-presence audit of
-the original grid found that in 29 of the 30 cells every strict keyword an
-answer matched also occurs in the cited gold document; the exception is BQ06
-in arm~P, which matched none. This is traceability, not entailment
-(supplementary Table~S7). The original grid also departed from the stated
-contract in three cells: the BQ06 platform answer is not in English, the BQ10
-file-tool answer ran to 13 turns, and three platform cells invoked a host
-shell outside the knowledge-base tool surface; the replication stayed within
-the turn cap but one platform answer contains a short Chinese phrase
+mis-specified gold, and both grades are retained. A source-presence audit
+found that in 29 of the original grid's 30 cells every strict keyword an
+answer matched also occurs in the cited gold document (BQ06/P matched none),
+and in all 30 replication cells; this is traceability, not entailment
+(supplementary Tables~S7 and S8). The original grid also departed from the
+stated contract in three cells: the BQ06 platform answer is not in English,
+the BQ10 file-tool answer ran to 13 turns, and three platform cells invoked a
+host shell outside the knowledge-base tool surface; the replication stayed
+within the turn cap but one platform answer contains a short Chinese phrase
 (Section~\ref{sec:threats}).
 
 \begin{figure}[t]
@@ -221,12 +227,11 @@ reported ``tools unavailable, nothing fabricated'' and were re-run.
 \textbf{A second-corpus replication of the honesty contracts.} The same
 contracts carry to the arXiv grid: every gold was present in the substrate its
 arm searched, all 30 cells answer, and no answerable question is falsely
-refused. An archived contrast over unverified three-chunk lists opened with an
-evidence-insufficiency qualifier on most answerable questions even where its
-list contained the gold; it also differs in prompt and granularity, so the
-contrast is across delivery configurations, not an attribution to the gate. Platform answers cost \$0.79 each against
-\$0.05--0.08 for baseline generation. Per-arm timings and outcomes for the
-three-question campaign are in the supplementary material.
+refused. An archived contrast over unverified three-chunk lists qualified most
+answerable questions even where its list contained the gold; it differs in
+prompt and granularity, so the contrast is across delivery configurations, not
+an attribution to the gate. Platform answers cost \$0.79 each against
+\$0.05--0.08 for baseline generation; per-arm records are in the supplement.
 
 \subsection{E6: When the verifier fails}
 \label{sec:e6}
@@ -281,14 +286,14 @@ Replacing the judge checkpoint is not the repair.
 \textbf{What the failure tracks.}
 None of these alternatives reaches the verdict's quality, ruling out the
 checkpoint as sole cause; the second corpus shows the same gate losing
-nothing there (Section~\ref{sec:e4}), so the collapse tracks confuser
-density within one domain. That probe moved domain, language and corpus size
+no gold from the top five there (Section~\ref{sec:e4}), so the collapse tracks
+confuser density within one domain. That probe moved domain, language and corpus size
 together with the confuser clusters --- an association confounded by design,
 not an elimination
 \cite{zheng-llmjudge,panickssery-selfpref,lightman-verify,yin-knowwhat}.
 The verdict is not usable as a ranker on these pools. As a filter, the
-recorded scores show only the narrow margin reported in Section~
-ef{sec:e4},
+recorded scores show only the narrow margin reported in
+Section~\ref{sec:e4},
 and no answer-level test of a higher cut has been run.
 
 

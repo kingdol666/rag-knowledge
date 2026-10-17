@@ -176,21 +176,17 @@ the original order (Hit@5 0.94), the judge-score reranker changes that order
 (Hit@5 0.44), and the derived filter replay retains survivors in fusion order
 (Hit@5 0.94). The filter replay matches fusion-only on Hit@5, Recall@5 and MRR;
 it does not show a retrieval benefit from thresholding. All 191 recorded
-segment scores exceed 0.5 (minimum 0.589), while Q14 has 12 fused candidates
-but only 11 recorded survivors; the available logs do not identify why the
-remaining candidate lacks a score. We therefore conclude only that, among the
-recorded scored candidates, the threshold rejected none and the judge-induced
-ordering lost gold documents. On the eight questions where the derived filter
-and reranker differ, restoring fusion order recovers Hit@5 on all eight and
-loses none (exact binomial sign test, two-sided $p=0.008$); Q7 moves the gold
-from rank three to five, while four other questions move upward. The evidence
-warns against using these verifier scores as a ranker on this confuser-heavy
-corpus; it does not establish that the verdicts reliably identify evidence or
-that filtering improves on fusion-only (Figure~\ref{fig:marginvariants}(b)).
-The post-hoc comparison uses one checkpoint and sixteen questions; broader
-calibration and replications remain necessary. Judging twelve candidates took
-542\,ms per hybrid call versus 62\,ms for fusion-only, an observed difference
-that also includes the judging call.
+segment scores exceed 0.5 (minimum 0.589); Q14 has one fused candidate without
+a recorded score, whose status is unknown. We therefore conclude only that,
+among the recorded scored candidates, the threshold rejected none and the
+judge-induced ordering lost gold documents. On the eight questions where the
+derived filter and reranker differ, restoring fusion order recovers Hit@5 on
+all eight and loses none (exact binomial sign test, two-sided $p=0.008$); Q7
+moves the gold from rank three to five, while four other questions move
+upward. The evidence warns against using these verifier scores as a ranker on
+this confuser-heavy corpus; it does not establish that the verdicts reliably
+identify evidence or that filtering improves on fusion-only
+(Figure~\ref{fig:marginvariants}(b)).
 
 \textbf{A second corpus does not reproduce the Hit@5 collapse, but the ranking
 effect is still visible.} Over ten
@@ -253,17 +249,13 @@ to Hit@5 0.5 (MRR 0.189) while judge-as-filter and fusion-only hold at
 ground while the configuration that keeps fusion order does not: the weakness
 is the induced ordering, not the verdicts.
 
-\textbf{End to end, the modes differ in source-address markers.} Ten fixed
-questions ran through three modes sharing one harness, model, neutral task and
-output contract, but with different retrieval interfaces: platform KB tools,
-file tools over the exported papers, and dense retrieval over an 800-character
-replica index (4{,}528 chunks). All 30 answer texts name the gold document ID,
-which is a provenance check rather than semantic grounding. Recognized
-document-style citation markers appear in 9/10, 7/10 and 2/10 answers
-respectively; seven dense answers also name chunks, reported separately.
-The marker counts do not test whether citations resolve or support claims.
-Other limitations include tool-availability aborts, a word-boundary false
-negative, two platform retries and uncontrolled cache state.
+\textbf{End to end, the answer grid of Section~\ref{sec:e5} carries this
+comparison.} Its original 30 cells name the gold document in every answer,
+with recognized document-style markers in 9/10, 7/10 and 2/10 answers for P, F
+and D; its common-substrate replication gives 9/9/9, so the marker ordering is
+substrate-bound (Section~\ref{sec:e5}). Marker counts do not test whether
+citations resolve or support claims; per-cell records and the replication are
+in the supplementary material.
 
 
 E4 establishes a bounded ordering result: on the logged industrial pools,
