@@ -37,14 +37,18 @@ ingestion only, no retrieval-quality numbers reported.
 authored, not sampled from logs; each identifies one or two gold documents by
 a unique filename fragment and one to three fact markers. Q16 includes a token
 also present in its gold filename, so a filename-ranking retriever could match
-it without reading content. We retain this limitation. The arXiv answer grader
+it without reading content; we retain this limitation and report a sensitivity
+check in Section~\ref{sec:e4}. The arXiv answer grader
 checks gold-ID presence in the answer or trace plus a word-boundary keyword
-coverage rule; it does not assess semantic support. Citation markers are
-counted separately by a deterministic pattern and do not assess source
-resolution or claim-to-source entailment.
+rule that counts a cell as covered when it matches at least $\lceil 3n/5\rceil$
+of the $n$ annotated terms; it does not assess semantic support. Citation
+markers are counted separately by a deterministic pattern and do not assess
+source resolution or claim-to-source entailment.
 
 \textbf{Metric families.} Retrieval uses Hit@5, Recall@5 and MRR@5, following
-passage-ranking conventions~\cite{craswell-msmarco-2021};
+passage-ranking conventions~\cite{craswell-msmarco-2021}; Hit@5 and Recall@5
+are document-level over the top five returned documents, and MRR@5 is $1/r$
+for the first gold at rank $r\le 5$ and zero otherwise.
 nDCG@5~\cite{jarvelin-cumulated-gain-2002} was computed only inside one
 exploratory arm we do not report. The end-to-end "gold-hit" measure checks
 whether the answer or recorded retrieval trace contains the gold identifier;
@@ -56,9 +60,13 @@ measures such as RAGAS~\cite{es-ragas-2024} or ARES~\cite{saad-falcon-ares-2024}
 are designed. The third metric family covers wall-clock time, agent turns,
 tool calls, cost and whether refusals were appropriate.
 
-\textbf{Controls.} Deterministic lanes were re-run and compared field by field,
-latency excluded; model-driven lanes were repeated at fixed model version and
-reported as means with observed spread; the fixed retry policy (one retry for
+\textbf{Controls.} The deterministic retrieval lanes were re-run and compared
+field by field, latency excluded; the 27-cell stability suite
+(Section~\ref{sec:e7}) and the eighteen-arm honesty battery
+(Section~\ref{sec:sysarms}) carry repeats, whereas the 30-cell answer grid of
+Section~\ref{sec:e5} is a single run per arm on one model, recorded in the run
+timeline as claude-opus-4-8[1m], and is reported as such. The fixed retry
+policy (one retry for
 an empty zero-turn response or transient gateway timeout) fired twice,
 succeeding both times. Before measurement we repaired two corpus-integrity
 faults through the platform's own operations: one document missing from its
@@ -66,7 +74,7 @@ vector collection was re-indexed, and one library whose collection had been
 lost was rebuilt, the same failure class that Section~\ref{sec:e2} measures. The tool-layer
 retrieval lanes, grading rule, audits, duplicate adjudication and cross-lingual
 ingestion pipeline are deterministic; agent lanes and text-derived results are
-not, and carry their repetition spread.
+not.
 
 \begin{table*}[t]
 \centering
@@ -82,7 +90,7 @@ stated scale, not that the function is exhaustively verified.}
 \toprule
 Function & Test and scale & Observed outcome & Where\\
 \midrule
-Parse and ingest & 100-paper campaign; nine per-paper checks & 100/100 checks; 91 names in the state file, 79 retrievable at evaluation, 21 unattributable & E1\\
+Parse and ingest & 100-paper campaign; nine checks per paper & nine checks per paper, all pass; 91 names in the state file, 79 retrievable at evaluation, 21 unattributable (twelve recorded plus nine unrecorded) & E1\\
 Parse quality & 50-paper, 26-domain campaign & 50/50 parsed and verified, all probes ok; 202 tags; 41 tag flags negative without blocking ingestion & E1\\
 Structural split & 50 papers at the 30{,}000-character tier & 165 documents (9 whole, 156 parts) in 2{,}672\,s; storage 50/50; descriptions and tags 165/165 & E1\\
 Near-duplicate review & 322-document corpus, 0.90 threshold & 35 candidate groups (0.90--0.975), zero true duplicates, nothing deleted & E2\\
@@ -101,10 +109,12 @@ Experience store & One small knowledge base; one end-to-end scenario & 13 candid
 
 The 100 submitted papers were parsed and content-routed into five domain
 libraries, producing 322 stored parts after the 30{,}000-character split. The
-submission funnel is incomplete: 91 names appear in the ingest state file, 79
-papers were retrievable at evaluation and 21 never became retrievable, and
-neither attempts against failed papers nor per-paper parse status is recorded,
-so the missing 21 cannot be attributed to parsing alone
+submission funnel does not reconcile on its face: 91 names appear in the ingest
+state file and 79 papers were retrievable at evaluation, so twelve recorded
+papers never became retrievable, and nine submitted papers never entered the
+state file. The 21 unretrievable papers are the sum of those twelve and nine,
+and neither attempts against failed papers nor per-paper parse status is
+recorded, so the 21 cannot be attributed to parsing alone
 \cite{missier-prov-2013}. Reported failure modes are formula-dense scans and
 one tool-layer crash during batch parsing, restarted from a checkpoint.
 Table~\ref{tab:kb-checks} lists every functional check with its scale and
@@ -120,10 +130,10 @@ category labels rather than against any naming convention derived by the
 ingest agent, so it is the one placement-correctness measurement in this
 paper that does not depend on filename cues.
 
-A second 50-paper, 26-domain campaign exercised the same path at a finer
-split. It parsed and verified every paper, indexed them in batch, reported all
-probes ok, and left 41 of 50 documents with a negative tag flag although
-verification passed for all, so tag-quality failures never blocked ingestion.
+A second 50-paper, 26-domain campaign parsed and verified every paper, indexed
+them in batch, reported all probes ok, and left 41 of 50 documents with a
+negative tag flag even though verification passed, so tag-quality failures
+never blocked ingestion.
 One stage re-ran on inbox ordering, and more than 800 extracted images were
 not uploaded. Descriptions and tags are checked against content before
 storage~\cite{park-metadata-quality-2009}.
@@ -143,9 +153,10 @@ returning every chunk twice at identical scores. Only an explicit force
 re-index removed them, restoring the count to 9. The failure is invisible from
 the metadata alone.
 
-The full reorganization campaign over the 322-document corpus passed every
-audit check; its duplicate review held no true duplicate and deleted nothing,
-and the spot check sampled 33 documents. Sub-library splitting and hierarchy
+The reorganization campaign over the 322-document corpus passed its content
+check on all 322 documents and its three-source consistency check on a
+33-document sample, one tenth of the corpus; the duplicate review held no true
+duplicate and deleted nothing. Sub-library splitting and hierarchy
 creation ran on a disposable three-level fixture: creation with a parent
 reference, a parent-to-sub-library move, and listing, reading and judging
 through sub-library addresses all returned correct results. A parent catalog

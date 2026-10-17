@@ -25,11 +25,11 @@
 \caption{Answer quality per question and per interface (30 answer cells from
 \protect\path{run-20261013T094350Z-5f9faac}). Every answer passes the gold-ID
 check, so coverage is 10/10 in each arm and the column is not repeated. Each
-arm column gives strict keyword coverage (\yes, \no, or -- where the
-pre-correction BQ06 key specifies no strict term), alias-aware coverage, and
-the number of recognized citation markers (m). Markers count document-style
-syntax such as section or table locators; they do not establish that a cited
-section exists or supports the sentence citing it.}
+arm column gives strict keyword coverage (\yes\ or $\times$), alias-aware coverage,
+and the number of recognized citation markers (m). Strict coverage is a
+majority rule on the annotated terms, not an all-terms rule. Markers count
+document-style syntax such as section or table locators; they do not establish
+that a cited section exists or supports the sentence citing it.}
 \label{tab:e5-answers}
 \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.335\textwidth}l*{9}{c}@{}}
 \toprule
@@ -42,11 +42,11 @@ BQ02 & NISQ definition and its central limitation & 1801.00862 & \yes & \yes & 4
 BQ03 & MultiMedQA and Flan-PaLM on MedQA & 2212.13138 & \yes & \yes & 4 & \yes & \yes & 1 & \yes & \yes & 1\\
 BQ04 & Three ontologies subdividing the Gene Ontology & 1602.01876 & \yes & \yes & 1 & \yes & \yes & 1 & \yes & \yes & 0\\
 BQ05 & European growth versus Unified Growth Theory & 1512.08067 & \yes & \yes & 0 & \yes & \yes & 0 & \yes & \yes & 0\\
-BQ06 & Contributions governing precipitation extremes & 1503.07557 & -- & \yes & 6 & \yes & \yes & 4 & \yes & \yes & 0\\
+BQ06 & Contributions governing precipitation extremes & 1503.07557 & $\times$ & \yes & 6 & \yes & \yes & 4 & \yes & \yes & 0\\
 BQ07 & MameLoshnLM and its parameter scale & 2608.05850 & \yes & \yes & 1 & \yes & \yes & 2 & \yes & \yes & 0\\
 BQ08 & Oxygen redox and cathode capacity & 2408.09942 & \yes & \yes & 2 & \yes & \yes & 0 & \yes & \yes & 0\\
-BQ09 & Visual SLAM in dynamic scenes (MLP-SLAM) & 2410.10669 & \yes & \yes & 2 & \no & \yes & 6 & \yes & \yes & 0\\
-BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes & \yes & 6 & \no & \yes & 0\\
+BQ09 & Visual SLAM in dynamic scenes (MLP-SLAM) & 2410.10669 & \yes & \yes & 2 & $\times$ & \yes & 6 & \yes & \yes & 0\\
+BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes & \yes & 6 & $\times$ & \yes & 0\\
 \midrule
  & \emph{All ten questions} & & 9 & 10 & 29 & 9 & 10 & 23 & 9 & 10 & 6\\
 \bottomrule
@@ -55,47 +55,49 @@ BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes
 
 \textbf{Answers locate the right document in all 30 cells; citation syntax is
 where the interfaces diverge.}
-Three arms answered ten gold questions over the five academic libraries of the
-evaluation corpus (79 retrievable papers) through the public chat API, on one
-model, one shared task/output contract and one 12-turn limit. Arm~P (platform)
-carries the knowledge-base read tools and no file tools; arm~F (bare agent),
-plain file tools over the corpus and no index; arm~D (dense discovery), a
-single vector operation over the mirror index. Every answer names its gold
-document, and alias-aware keyword coverage is 10/10 in every arm, so the
-provenance check is at ceiling on this set. The arms separate on two syntax
-measures: strict keyword coverage is 9/10 in each arm, and recognized
-citation-marker hits are 9/10, 7/10 and 2/10 for P, F and D.
+Three arms answered ten gold questions through the public chat API on one model
+(recorded in the run timeline as claude-opus-4-8[1m]) under one task contract
+and a 12-turn limit. The arms differ in interface and substrate: arm~P used the
+knowledge-base tools with the endpoint's default library scope; arm~F scanned
+the exported file tree; arm~D used one vector operation over the
+800-character mirror index, which contains BQ03's gold although that paper is
+absent from the 79-paper library of Table~\ref{tab:retrieval}(b). Every answer
+names its gold document, and alias-aware keyword coverage is 10/10 in every
+arm, so the provenance check is at ceiling on this set. The arms separate on
+two syntax measures: strict keyword coverage is 9/10 in each arm, and
+recognized citation-marker hits are 9/10, 7/10 and 2/10 for P, F and D.
 Table~\ref{tab:e5-answers} gives the per-question cells,
-Figure~\ref{fig:threearms} the aggregate. The protocol holds the task and
-output constraints fixed while varying the available retrieval interface; it
-does not isolate the verifier from the rest of the platform tool surface.
+Figure~\ref{fig:threearms} the aggregate. Answer quality here means provenance,
+lexical coverage and marker syntax, not semantic faithfulness.
 
 \textbf{Per-question reading.}
 The marker column, not the gold-identifier column, separates the arms. Nine
 platform answers and seven file-tool answers carry at least one document-style
-locator. The dense arm produces eight answers with no marker at all and seven
-that name chunk identifiers instead, of which two also carry a
-document-style marker. BQ05 carries no marker in any arm, because its answer
-cites by title rather than by section, and the deterministic pattern does not
-count that form. The strict misses are word-form differences that the declared
-aliases cover: BQ09's abbreviation for the multilayer perceptron in arm~F, and
-BQ10's immune-resistance phrasing in arm~D. Under the pre-correction BQ06 key
-arm~P scored 10/10 strict against a mis-specified gold; the corrected key
-specifies no strict term for that question and is scored as not applicable,
-and both grades are retained. These checks do not establish semantic
-faithfulness or claim-to-source support. The platform's addressable document
-paths remain a useful auditability affordance, but this three-interface
-comparison does not attribute the marker counts to verification alone.
+locator. The dense arm produces eight answers with no document-style marker and
+seven that name chunk identifiers instead, of which two also carry one. BQ05
+carries no marker in any arm because it cites by title, a form the
+deterministic pattern does not count. The strict misses are three, and not all
+are word-form variants: the platform answer to BQ06 is written in Chinese and
+misses both English terms (the declared aliases include Chinese forms, which is
+why alias-aware coverage passes), the file-tool answer to BQ09 omits the MLP
+abbreviation, and the dense answer to BQ10 uses a different immune-resistance
+wording. Under the pre-correction BQ06 key the platform arm scored 10/10 strict
+against a mis-specified gold, and both grades are retained. These checks do not
+establish semantic faithfulness or claim-to-source support. Three cells also
+departed from the stated contract: the BQ06 platform answer is not in English,
+the BQ10 file-tool answer ran to 13 turns against the 12-turn limit, and three
+platform cells invoked a host shell outside the knowledge-base tool surface
+(Section~\ref{sec:threats}).
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig11_three_arms}
 \caption{Answer checks for the same ten questions and the same model, with the
-retrieval interface varied (30 cells,
+retrieval interface and its substrate varied (30 cells,
 \protect\path{run-20261013T094350Z-5f9faac}). Gold-identifier coverage is at
-ceiling in all three arms; strict keyword coverage separates the arms only
-through two word-form misses, alias-aware coverage is 10/10 everywhere, and
-recognized citation markers fall from nine to seven to two answers. The
+ceiling in all three arms; strict keyword coverage shows three misses (one
+language mismatch, two word-form), alias-aware coverage is 10/10 everywhere,
+and recognized citation markers fall from nine to seven to two answers. The
 marker pattern counts document-style syntax; it does not verify citation
 resolution or claim support. Wall-clock and cost figures for these cells are
 reported in the text and in the supplementary material.}
@@ -106,13 +108,14 @@ reported in the text and in the supplementary material.}
 Arm~P averaged 52.6\,s and \$0.711 per question, against 22.2\,s/\$0.487 for
 F and 24.5\,s/\$0.527 for D. These are single-run means: the platform arm is
 slower and dearer in this run, and we report that as an observation about this
-implementation rather than an efficiency result. Per-cell times, tool counts
-and costs are in the supplementary material.
-
-\textbf{File tools in this setup.}
-Arm~F answered the same questions by scanning the exported file tree without
-an index, which shows that direct scanning is viable at this corpus size; it
-does not establish behavior on the live 322-document collection.
+implementation rather than an efficiency result. Arm~F answered the same
+questions by scanning the exported file tree without an index, which shows
+direct scanning is viable at this corpus size but does not establish behavior
+on the live 322-document collection. An archived sixteen-cell lane grid
+recorded sub-second machine-side retrieval against a 36--91\,s end-to-end wall
+clock, consistent with model turns dominating latency
+\cite{singh-agentic-rag}; per-cell times, tool counts and costs are in the
+supplementary material.
 
 \textbf{Abstention is a property of the reading-and-answering layer, not of
 a threshold.}
@@ -146,47 +149,31 @@ agent behavior, not a server-side guarantee.}
 \label{fig:ood}
 \end{figure}
 
-\textbf{Latency composition.}
-An archived sixteen-cell lane grid on this corpus recorded sub-second
-machine-side retrieval and verification against a 36--91\,s end-to-end wall
-clock, consistent with model turns accounting for most of the observed
-latency \cite{singh-agentic-rag}. The grid is in the supplementary material
-and does not isolate turn count causally.
-
 \textbf{Engines and channels.}
 Across a separate 18-run task set, every run contained a gold-ID hit and no
-manually identified fabricated citation, at a measured \$0.03--1.8 per run
-depending on the delivery surface. In the archived channel replay, two
+manually identified fabricated citation. In the archived channel replay, two
 channels each passed 8/9 gates and shared one false refusal after a 300\,s
-vector-search stall, which is an execution failure rather than evidence of
-absence; the model-free channel returned the gold in all 12 retrieval cells
-and tests retrieval only. Per-run records are in the supplementary material,
-and these are observations across engines and channels, not a one-factor
-estimate.
+vector-search stall, an execution failure rather than evidence of absence.
+Per-run records are in the supplementary material, and these are observations
+across engines and channels, not a one-factor estimate.
 
 \subsection{E5b: Deployment-layer system arms through the public API (2026-10-12 campaign)}
 \label{sec:sysarms}
-E1--E5 exercise the platform from the operator side; invoked as an external
-caller would, does the system still deliver the same contracts? Three questions (an English methodology question on the computer-science
-shelf, a Chinese clinical question on the life-sciences shelf, and one
-out-of-corpus probe) crossed three system arms through the external chat API:
-arm~A pinned the target shelf, arm~B left the library unpinned, and arm~C pinned
-the shelf with a hybrid-retrieval directive. A refusal-first rule was applied
-after generation: an in-corpus refusal failed the campaign's answer gate. An
+E1--E5 exercise the platform from the operator side. Invoked as an external
+caller, does it deliver the same contracts? Three questions (an English
+methodology question, a Chinese clinical question and an out-of-corpus probe)
+crossed three system arms through the external chat API: arm~A pinned the
+target shelf, arm~B left the library unpinned, and arm~C pinned it with a
+hybrid-retrieval directive. An in-corpus refusal fails the answer gate; an
 earlier marker-only gate had counted refusals that repeated question keywords,
-so the grading rule was corrected before the reported tally.
+so the rule was corrected before the reported tally.
 
-Table~\ref{tab:sysarms} reports one streaming-channel campaign and its
-non-streaming replication. Arms A and C returned answer texts containing the
-gold identifiers for both in-corpus questions; all three arms produced
-not-found reports for the out-of-corpus probe in the final run. The cited
-pipeline and cohort details are examples of retrieved content, not a separate
-claim-level faithfulness evaluation. Mean observed cost per question was
-\$0.182 (A), \$0.300 (B) and \$0.219 (C). A same-question retrieval-only
-comparison returned the gold in 6/6 mode-arm and baseline cells; this is a
-small document-recall observation. Relative to the earlier 2026-09-26 runs,
-the librarian and hybrid workflows were faster after the scanner and judge
-rework, but those historical runs are not a controlled latency comparison.
+One streaming campaign and its non-streaming replication were run; per-arm
+records are in the supplementary material. Arms A and C returned answers
+containing the gold identifiers for both in-corpus questions, and all three
+arms reported not-found for the out-of-corpus probe. Mean cost was \$0.182
+(A), \$0.300 (B) and \$0.219 (C); a retrieval-only comparison returned the
+gold in 6/6 cells.
 
 The campaign also surfaced a transport failure: arm~B falsely refused the
 computer-science question in three independent trials (two false refusals and
@@ -210,72 +197,30 @@ answer (98.5\,s, nine turns) and a not-found report after a catalog scan
 These selected reruns show the tested paths completed after the repair; they do
 not establish general transport reliability or semantic faithfulness.
 
-\textbf{An adversarial honesty battery (2026-10-13).} The abstention claim
-was stressed on purpose: eighteen arms --- three lanes $\times$ six
-questions through the public API; per-arm records are archived in
-\path{benchmark-suite/results/archive-superseded/}\path{superseded-20261013-batch2.tar.gz}
-(member \path{chatmodes-refusal-20261013T030034Z-5f9faac}) --- against
-ground truth machine-verified
-\emph{before} the run. One question has its gold in the library; the five
-verified-absent ones comprise two cooking questions, a same-word
-different-sense trap (power-transformer selection against a shelf whose
-\emph{transformer} documents are all the neural architecture), a fine-tuning
-topic whose only library neighbours are near-misses, and a fabricated
-protocol name. The in-corpus question draws verbatim
-citations from all three lanes; all five verified-absent questions return
+\textbf{An adversarial honesty battery (2026-10-13).} Eighteen arms (three
+lanes $\times$ six questions through the public API; archived per-arm records)
+were scored against ground truth verified \emph{before} the run. One question
+has its gold in the library; the five verified-absent ones are two cooking
+questions, a same-word different-sense trap, a fine-tuning topic whose
+neighbours are near-misses, and a fabricated protocol name. All five return
 explicit not-found reports listing the scanned scope and their nearest
-near-misses; zero of the eighteen answers fabricate a citation.
-Refusal latency scales with ambiguity (35.8\,s for a clean
-out-of-domain question against 217.4\,s for the in-domain-absent one). The
-battery also separates lanes where more than one honest behaviour exists: on
-the fine-tuning question the librarian lane refuses after judging six
-near-miss documents (61 judged segments, none on-topic), while the hybrid
-lane's vector arm recalls a body-level applied-usage document, the
-configured use appearing literally in a
-speech-representation paper, and answers with the coverage boundary stated
-inside the answer (\emph{no tutorial or primary paper exists here;
-an applied configuration does}). Both behaviours are honest; a binary
-found/refused gate cannot score the second, a grading limitation. Two arms
-hitting an intermittent tool-mounting race reported ``tools
-unavailable, nothing fabricated'' and were re-run --- fail-closed behaviour
-counted as measurement-validity handling, not as a retrieval outcome.
+near-misses, and zero of the eighteen answers fabricate a citation. On the
+fine-tuning question the librarian lane refuses after judging six near-miss
+documents, while the hybrid lane returns a body-level applied-usage document
+and states the coverage boundary inside the answer; both are honest, and a
+binary gate cannot score the second. Two arms that hit a tool-mounting race
+reported ``tools unavailable, nothing fabricated'' and were re-run.
 
 \textbf{A second-corpus replication of the honesty contracts.} The same
-contracts carry to the arXiv corpus through the grid above: every gold was
-verified present beforehand, all 30 cells answer, and no answerable question
-is falsely refused (an earlier two-track replication of the same comparison
-is archived as superseded). Its archived contrast arm --- the same neutral
-prompt over unverified three-chunk lists from BM25, dense and RRF, at gold
-recall 1.0 in the retrieval layer --- opened with an
-evidence-insufficiency qualifier on six, six and four of the eight
-answerable questions even where its own list contained the gold; the
-baseline arm differs from the platform arm in prompt and evidence
-granularity as well as in verification, so the contrast is an observation
-across delivery configurations, not an attribution to the gate alone. Cost
-separated as elsewhere in this section: \$0.79 per platform question in that
-replication against \$0.05--0.08 per baseline generation.
-
-
-
-
-
-\begin{table*}[t]
-\caption{Deployment-layer system arms, 2026-10-12 campaign (streaming
-channel; wall-clock seconds; the independent non-streaming replication
-returns the same 8/9 gates). cm1/cm2 are in-corpus (gold present), cm3 is
-out-of-corpus.}
-\label{tab:sysarms}
-\small
-\begin{tabular}{@{}llll@{}}
-\toprule
-Arm & cm1 (EN, CS shelf) & cm2 (ZH, life shelf) & cm3 (out-of-corpus)\\
-\midrule
-A pinned vector & 55.7\,s \yes & 48.8\,s \yes & 36.4\,s abstain \yes\\
-B all-KB librarian & 353.5\,s $\times$ & 43.2\,s \yes & 29.9\,s abstain \yes\\
-C hybrid & 43.1\,s \yes & 45.6\,s \yes & 65.0\,s abstain \yes\\
-\bottomrule
-\end{tabular}
-\end{table*}
+contracts carry to the arXiv grid: every gold was present in the substrate its
+arm searched, all 30 cells answer, and no answerable question is falsely
+refused. An archived contrast over unverified three-chunk lists opened with an
+evidence-insufficiency qualifier on most answerable questions even where its
+own list contained the gold; it also differs in prompt and evidence
+granularity, so the contrast is an observation across delivery configurations,
+not an attribution to the gate. Platform answers cost \$0.79 each against
+\$0.05--0.08 for baseline generation. Per-arm timings and outcomes for the
+three-question campaign are in the supplementary material.
 
 \subsection{E6: When the verifier fails}
 \label{sec:e6}
@@ -313,10 +258,9 @@ jitter is for legibility.}
 \textbf{The verdict is a model \cite{laya}, and a second model fails the
 same way.}
 The same 191 logged (query, candidate) pairs, replayed rather than
-re-retrieved, went through a generic natural-language-inference
-checkpoint: 330M parameters, one question-as-context template, premises
-truncated to roughly the first 1{,}600 characters, 59 of the 191 pairs hitting
-the cap (\path{paper-kbs/experiments/results/exp7_second_signal.json}). It
+re-retrieved, went through a 330M-parameter natural-language-inference
+checkpoint with premises truncated to 1{,}600 characters (59 of 191 pairs at
+the cap) (\path{paper-kbs/experiments/results/exp7_second_signal.json}). It
 scores below the verdict (Hit@5 0.3125, MRR 0.1375) with inverted
 separation, gold median 0.0113 against non-gold 0.05285 ($p = 0.120$).
 Truncation is not the cause --- six of the ten golds that fit the context
@@ -337,7 +281,10 @@ density within one domain. That probe moved domain, language and corpus size
 together with the confuser clusters --- an association confounded by design,
 not an elimination
 \cite{zheng-llmjudge,panickssery-selfpref,lightman-verify,yin-knowwhat}.
-The verdict earns its place as a filter and loses it as a ranker.
+The verdict is not usable as a ranker on these pools. Whether it earns its
+place as a filter is untested: at the 0.5 threshold it admitted every recorded
+candidate, so the corpus provides no contrast between admitted and rejected
+evidence.
 
 
 
@@ -364,9 +311,11 @@ The 27-cell stability campaign completed without answer errors (three tasks
 $\times$ three retrieval modes $\times$ three rounds;
 \path{review/stability-multiround-20261013/results}), with wall-clock spread
 14.9--182.0\,s and answers staying on the same evidence. A concurrency
-sweep on the same instance (90/180/270 requests at 5/15/30 clients, zero
-reported errors; supplementary material) recorded \emph{p50} rising from 5.2
-to 1577\,ms, with 159 of 270 vector-only requests completing within 30\,s. A
+sweep on the same instance (90/180/270 requests at 5/15/30 clients;
+supplementary material) recorded \emph{p50} rising from 5.2
+to 1577\,ms, with 159 of 270 vector-only requests completing within 30\,s and
+the remaining 111 (41\%) hitting the client timeout; the sweep reports no HTTP
+errors and the timeouts are a capacity limit, not a correctness failure. A
 later cache repair lowered the 30-client read-ladder \emph{p50} from 1577 to
 65.8\,ms and repeated-query \emph{p50} from 3743 to 2.1\,ms; distinct
 queries remained near 4--5 requests per second under a process-wide lock.
@@ -429,8 +378,7 @@ measurement of Section~\ref{sec:e1} is the only placement-correctness figure
 in this paper that avoids this confound, and it comes from the cross-lingual
 corpus rather than from this one.
 
-Both ablations are single-corpus, single-engine, ten-question diagnostics, not
-effect-size estimates for the three-contract system; the gate ablation's
-control is fusion-ordered, so only its within-run contrast is interpretable.
-Two of the thirty cells were rerun after authentication failures and are
-retained in the campaign records.
+Both ablations are single-corpus, single-engine, ten-question diagnostics; the
+gate ablation's control is fusion-ordered, so only its within-run contrast is
+interpretable. Two of thirty cells were rerun after authentication failures
+and are retained in the campaign records.

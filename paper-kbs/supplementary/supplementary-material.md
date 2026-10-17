@@ -307,7 +307,8 @@ disposable libraries that were created for the test and deleted afterwards.
 
 **Scale.** 16 skills, 109 real tool calls. Two test libraries
 (`E2E-SkillTest-1457` = `95f4e9a1-b24d-43c1-b94d-04c55d90b5d1`, `E2E-SkillTest-Dst-1457`
-= `c2e2bf92-db86-48f5-96f8-7ac9b9931f67`), 94 registered tools verified. Pre-existing
+= `c2e2bf92-db86-48f5-96f8-7ac9b9931f67`), 94 registered tools verified on that
+date (the current server registers 95; one tool was added afterwards). Pre-existing
 libraries were read-only and the final listing showed the original 10 libraries
 unchanged.
 
@@ -599,7 +600,7 @@ and that file carries the three absent-tier agent probes of B.7, not the cost ta
 
 ### A.17 The 30-cell answer grid: wall clock, tools and cost per cell
 
-**What was tested.** The per-cell time, tool count and metered cost of the three-arm answer grid whose quality results the manuscript reports as Table 6 (gold-ID presence, strict keyword coverage, alias-aware coverage and citation-marker counts). The manuscript reports the quality cells and one sentence of arm means; the per-cell records live here.
+**What was tested.** The per-cell time, tool count and metered cost of the three-arm answer grid whose quality results the manuscript reports as Table 7 (gold-ID presence, strict keyword coverage, alias-aware coverage and citation-marker counts). The manuscript reports the quality cells and one sentence of arm means; the per-cell records live here.
 
 **Scale.** 30 cells: ten questions (BQ01-BQ10) x three arms (P = platform read tools, F = file tools over the exported tree, D = dense index over the 800-character mirror).
 
@@ -638,7 +639,21 @@ and that file carries the three absent-tier agent probes of B.7, not the cost ta
 | BQ09 | D (dense) | 23.3 | 3 | 0.516 |
 | BQ10 | D (dense) | 21.3 | 4 | 0.503 |
 
-**Artifacts.** `benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/track_*.json` (one file per cell; `latency_s`, `tool_call_count`, `total_cost_usd`); arm aggregates recomputed here. The manuscript's Table 6 is graded from the same run by `benchmark-suite/results/exp_r2_grade_corrected.json`.
+**Artifacts.** `benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/track_*.json` (one file per cell; `latency_s`, `tool_call_count`, `total_cost_usd`); arm aggregates recomputed here. The manuscript's Table 7 is graded from the same run by `benchmark-suite/results/exp_r2_grade_corrected.json`.
+
+### A.18 Deployment-layer system arms (three questions, 2026-10-12)
+
+**What was tested.** Whether the public chat API delivers the same contracts when invoked as an external caller would. Three questions (an English methodology question, a Chinese clinical question, one out-of-corpus probe) crossed three arms: A pinned the target shelf, B left the library unpinned, C pinned it with a hybrid directive.
+
+**Scale.** Nine cells in the streaming channel, replicated in a non-streaming channel; both channels returned 8 of 9 gates. Wall-clock seconds are shown; a passing in-corpus cell returned the gold identifier, and an out-of-corpus cell passes by abstaining.
+
+| Arm | cm1 (EN, CS shelf) | cm2 (ZH, life shelf) | cm3 (out-of-corpus) |
+|---|---|---|---|
+| A pinned vector | 55.7 s, pass | 48.8 s, pass | 36.4 s, abstain |
+| B all-KB librarian | 353.5 s, fail | 43.2 s, pass | 29.9 s, abstain |
+| C hybrid | 43.1 s, pass | 45.6 s, pass | 65.0 s, abstain |
+
+**Artifacts.** `review/retrieval-e2e-20261012/` and the campaign records cited in the manuscript's Section 8.7; arm B's failure is the oversized-catalog transport failure analyzed there.
 
 ### A.16 Failure-mode catalogue
 
@@ -745,9 +760,9 @@ artifact's justification for not adopting the leave-one-out threshold.
 
 **Artifact.** `paper-kbs/experiments/results/exp6_loo_margin.json`
 
-### B.4 Same nine configurations on the paraphrase grid (16 paraphrases)
+### B.4 Same nine configurations on the paraphrase grid (16 questions, one paraphrase each)
 
-Each question was re-asked with 16 paraphrases.
+Each of the 16 questions was re-asked once in different words.
 
 | Configuration | hit@5 | recall@5 | MRR |
 |---|---:|---:|---:|

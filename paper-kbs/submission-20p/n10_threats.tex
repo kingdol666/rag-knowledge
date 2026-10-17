@@ -4,8 +4,13 @@
 \noindent\textbf{Corpus and scale.} The results cover bounded deployed
 collections and a small arXiv-based corpus. Retrieval-only modes searched live
 libraries, whereas lexical and dense baselines used a corpus index; these are
-not identical retrieval substrates. Findings should not be generalized to
-larger or differently organized collections without replication.
+not identical retrieval substrates. The three answer arms also differ in
+substrate (default library scope, exported file tree, 800-character mirror), so
+the 30-cell grid compares interface plus substrate, and its marker differences
+cannot be attributed to the interface alone. The three-source consistency
+check is a 33-document sample, one tenth of the 322-document corpus, not a full
+audit. Findings should not be generalized to larger or differently organized
+collections without replication.
 
 \noindent\textbf{Question construction and denominators.} Questions and gold
 annotations were developer-authored. The three-arm grid of
@@ -26,21 +31,35 @@ checks were manually audited, and the binary gate required reclassification
 of one body-level partial answer. Retrieval-only elapsed time is not directly
 comparable to end-to-end agent latency. The E5 grader is deterministic but
 lexical: its gold-ID, keyword and citation-marker checks do not establish
-semantic claim support, and aliases are reported as a separate regrade. The
-BQ06 gold key was corrected to the source paper's thermodynamic reading after
-inspection, and declared aliases cover known word-form variants (BQ09's
-abbreviation, BQ10's phrasing); the pre-correction question set and its grade
-(strict 10/9/9) are retained alongside the corrected regrade (strict 9/9/9), and
-both sets are frozen for this submission in
+semantic claim support; gold-ID presence is checked in the answer or the
+recorded trace, and keyword coverage passes at $\lceil 3n/5\rceil$ of the
+annotated terms, so a missing term can still pass. Aliases are reported as a
+separate regrade. The 30-cell grid is one run per arm on one model, recorded
+as claude-opus-4-8[1m], and three cells departed from the stated contract: the
+BQ06 platform answer is in Chinese, the BQ10 file-tool answer ran to 13 turns,
+and three platform cells invoked a host shell outside the knowledge-base tool
+surface. The archived pools store the survivors of each judged pool rather
+than the dropped list, so the filter role cannot be re-derived beyond the
+recorded scores. The BQ06 gold key was corrected to the source paper's
+thermodynamic reading after inspection, and declared aliases cover known
+word-form variants and Chinese renderings; the pre-correction question set and
+its grade (strict 10/9/9) are retained alongside the corrected regrade (strict
+9/9/9), and both sets are frozen for this submission in
 \path{paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt}, so the
 two-grade disclosure cannot drift after review. The
 MCP lifecycle script passed its 16 direct assertions and the stdio protocol
 test passed, but the lifecycle script is not pytest-collection-safe because it
 calls \texttt{sys.exit} at module import.
 
+{% keep the closing paragraph off a one-line orphan at a column foot;
+% the blank line must sit inside this group so \par sees the penalty
+\clubpenalty=10000
 \noindent\textbf{Scope.} Tests ran on a single local workstation and one
 verifier checkpoint. They do not establish generalization across model hosts,
 large-scale corpora, independently authored questions, operator adoption,
 adversarial access or crash-mid-write recovery. The pagination repair was
 verified on selected catalog and query cases; broader transport boundary
 testing remains necessary.
+
+}
+

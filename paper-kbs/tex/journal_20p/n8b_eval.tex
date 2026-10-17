@@ -22,32 +22,37 @@ and \path{experience_draft_approve} could not run; the heuristic extraction
 path had run only in dry-run mode, returning a dump the quality gate would
 reject. One scenario and thirteen candidates cannot support an effectiveness
 claim; scheduled distillation, review and approval at scale, application
-feedback and credibility decay went unexercised. What the measurements show is
-narrower and sufficient for the design argument: an operational lesson can
-travel the document path, with its tier attached---and nothing more.
+feedback and credibility decay went unexercised. What they show is narrower:
+an operational lesson can travel the document path with its tier attached.
 
 \subsection{E4: Retrieval quality and the role of the verdict}
 \label{sec:e4}
 \label{sec:eval-retrieval}
 
-Nine configurations, defined here so the table reads on its own. Seven were
-measured through their own tool-layer entry points: \emph{BM25} via the
-keyword search tool; \emph{Dense} via \texttt{kb\_search\_vector} with
-BGE-M3 \cite{bge-m3}; \emph{RRF} as reciprocal-rank fusion at $k=60$ of the
-two \cite{rrf-cormack}; \emph{Graph} via \texttt{kb\_graph\_search}, a
-keyword match over node names, paths and tags in the document graph;
-\emph{Two-stage} via
+Nine configurations, defined here so the table reads on its own. Five were
+measured through their own tool-layer entry points: \emph{Dense} via
+\texttt{kb\_search\_vector} with BGE-M3 \cite{bge-m3}; \emph{Graph} via
+\texttt{kb\_graph\_search}, a keyword match over node names, paths and tags in
+the document graph; \emph{Two-stage} via
 \texttt{kb\_search\_two\_stage} (Section~\ref{sec:twostage}); and the hybrid
 rows via \texttt{kb\_hybrid\_search}, an earlier server-side single-call
 composition of the vector, catalog and judging tools, with the gate off
-(\emph{Fusion-only}) and on (\emph{QDCVR-Hybrid}); that wrapper is no longer
-registered in the current tool layer, whose hybrid lane is the composed chat
-configuration of Section~\ref{sec:twostage}. Two rows are derived offline by replaying the judged hybrid
-run's logged twelve-candidate pools and verdict scores:
+(\emph{Fusion-only}) and on (\emph{QDCVR-Hybrid}). \emph{BM25} runs in process
+over the fetched full texts (jieba tokenizer, $k_1=1.5$, $b=0.75$), and
+\emph{RRF} fuses that ranking with the dense one at $k=60$
+\cite{rrf-cormack}; neither is the platform's keyword tool, so the millisecond
+latencies are in-process measurements rather than a server round trip. The
+evaluated hybrid wrapper is no longer registered in the current tool layer,
+whose hybrid lane is the composed chat configuration of
+Section~\ref{sec:twostage}, so the negative ordering result below is bounded
+to that retired wrapper. Two further rows are derived offline by replaying the
+judged hybrid run's logged twelve-candidate pools and verdict scores:
 \emph{Judge-as-filter} keeps survivors in fusion order and \emph{RRF-fuse}
 fuses the fusion ranking with the judge-score ranking at $k=60$. All three
 see the same candidates and scores, so the comparison is an attribution,
-not a benchmark.
+not a benchmark. Because every logged candidate survived the deployed 0.5
+threshold, the filter replay is identical to fusion order by construction and
+does not test filtering.
 
 \begin{table*}[t]
 \centering
@@ -105,11 +110,10 @@ answer, so their latencies carry no token cost. With sixteen questions the
 Wilson 95\% intervals on the headline proportions are wide (judged hybrid
 $[0.23, 0.67]$; judge-as-filter $[0.72, 0.99]$; BM25 and RRF
 $[0.81, 1.00]$), so the decomposition below, not the point estimates, is
-the claim. A released-log six-method ablation was a smoke check at $n = 2$ and an early
-eleven-library snapshot; re-run at scale on 2026-10-13 over ten questions (the
-runner's two built-in questions plus eight corpus golds, every gold verified to
-exist in both the live library and the corpus index the baselines search), it
-crossed the three chat-endpoint lanes (modes~A--C of
+the claim. An earlier six-method ablation was a smoke check at $n = 2$; the
+scaled re-run on 2026-10-13 used ten questions (two built-in plus eight corpus
+golds, each verified in both substrates), crossed with the three chat-endpoint
+lanes (modes~A--C of
 Table~\ref{tab:e4-matrix}) with BM25, dense and RRF ranking, pure retrieval,
 no generation
 (\path{benchmark-suite/results/}
@@ -154,15 +158,17 @@ RRF (BM25$\|$Dense)           & 10/10 & $<$0.05\,s & --- \\
 \end{table}
 
 \textbf{On this corpus, lexical retrieval is strong.} BM25 \cite{bm25}
-hits Hit@5 1.00 at about a millisecond per call, reciprocal-rank fusion
-\cite{rrf-cormack} matches it, and the two-stage BM25+graph-then-dense
+hits Hit@5 1.00 at about a millisecond per in-process call, reciprocal-rank
+fusion \cite{rrf-cormack} matches it, and the two-stage BM25+graph-then-dense
 pipeline reaches Recall@5 0.97 (Table~\ref{tab:retrieval}). Dense
 retrieval with BGE-M3 \cite{bge-m3} misses one question (Q16), where four
 near-duplicate sibling reports crowd the top-5 --- a confuser-density
 failure, not a vocabulary one; graph search \cite{graphrag}, limited to
 node-name and tag matching, is the weakest standalone signal. Nothing here
 is a retrieval advance: three configurations tie at Hit@5 1.00, and the one
-using only words leads on MRR.
+using only words leads on MRR. Q16 carries a filename token that also appears
+in its gold path; excluding it leaves BM25 at 1.00 over the remaining fifteen
+questions, so the tie does not depend on that leak.
 
 \textbf{The measured result concerns ordering, not threshold-filter efficacy.}
 Three configurations use the same logged candidate pools: fusion-only keeps
@@ -186,15 +192,20 @@ calibration and replications remain necessary. Judging twelve candidates took
 542\,ms per hybrid call versus 62\,ms for fusion-only, an observed difference
 that also includes the judging call.
 
-\textbf{A second corpus does not reproduce the ranking collapse.} Over ten
+\textbf{A second corpus does not reproduce the Hit@5 collapse, but the ranking
+effect is still visible.} Over ten
 questions on the 79 retrievable papers of the 100-paper arXiv ingestion
 (8{,}031 chunks logged; block~(b) of Table~\ref{tab:retrieval}), seven of
 eight configurations reach Hit@5 0.90; graph search reaches 0.20. BQ03's
 gold paper was not retrievable, so the observed denominator is 0.90 over all
-ten questions and 1.00 over the nine with available gold. The judged collapse
-is not observed in this small second-corpus sample. The graph result is also
-configuration-specific: the bulk import bypassed the tagging path, limiting
-what its node-name/path matching could retrieve.
+ten questions and 1.00 over the nine with available gold. The judged ordering
+keeps all nine golds inside the top five, but it demotes four of them from
+rank one to rank two, and its MRR falls from 0.90 to 0.70 while the filter and
+fusion rows stay at 0.90 (\texttt{exp10\_papers\_toollayer.json}). The
+threshold-crossing harm therefore does not reproduce on this smaller,
+less confuser-dense sample, while the ordering effect does. The graph result
+is also configuration-specific: the bulk import bypassed the tagging path,
+limiting what its node-name/path matching could retrieve.
 
 \textbf{Thresholds and margins.} All 191 judged candidates from the
 sixteen hybrid runs passed the deployed absolute threshold of 0.5 (lowest
@@ -210,6 +221,23 @@ reaches 1.00 (\texttt{exp6\_loo\_margin.json};
 Figure~\ref{fig:marginvariants}(a) plots the sweep). Both constants are
 replay parameters of this diagnostic; the calibration that would justify any
 cut for deployment has not been run.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.78\textwidth]{fig6_margin_variants}
+\caption{Two replays over the logged hybrid runs of this subsection; both
+reuse recorded candidate pools and verdict scores rather than retrieving
+again. (a)~A relative-margin replay: keep the top five plus every candidate
+within $m$ of the pool's best score, $m$ swept 0.0--0.3; the solid curve
+counts gold instances kept of the 17 that entered a pool, the grey curve the
+mean candidates returned of the twelve submitted; dashed rules mark $m=0.15$
+(16 of 17 golds kept) and $m=0.20$ (all 17). (b)~The verdict's four roles,
+scored on identical candidates and identical verdict scores: fusion order,
+verdict as re-ranker, verdict as filter, and rank fusion. Only the role
+differs, which makes the panel an attribution rather than a benchmark; the
+re-ranking role is the one that loses the gold.}
+\label{fig:marginvariants}
+\end{figure*}
 
 \textbf{Rephrasing shows where the fragility sits.} On sixteen paraphrase
 questions (\texttt{exp6\_paraphrase.json}) the judged configuration falls
@@ -257,19 +285,3 @@ Table~\ref{tab:retrieval}.}
 \label{fig:retrieval}
 \end{figure}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.78\textwidth]{fig6_margin_variants}
-\caption{Two replays over the logged hybrid runs of this subsection; both
-reuse recorded candidate pools and verdict scores rather than retrieving
-again. (a)~A relative-margin replay: keep the top five plus every candidate
-within $m$ of the pool's best score, $m$ swept 0.0--0.3; the solid curve
-counts gold instances kept of the 17 that entered a pool, the grey curve the
-mean candidates returned of the twelve submitted; dashed rules mark $m=0.15$
-(16 of 17 golds kept) and $m=0.20$ (all 17). (b)~The verdict's four roles,
-scored on identical candidates and identical verdict scores: fusion order,
-verdict as re-ranker, verdict as filter, and rank fusion. Only the role
-differs, which makes the panel an attribution rather than a benchmark; the
-re-ranking role is the one that loses the gold.}
-\label{fig:marginvariants}
-\end{figure*}
