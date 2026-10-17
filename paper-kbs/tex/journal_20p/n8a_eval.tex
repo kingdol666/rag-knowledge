@@ -65,7 +65,8 @@ field by field, latency excluded; the 27-cell stability suite
 (Section~\ref{sec:e7}) and the eighteen-arm honesty battery
 (Section~\ref{sec:sysarms}) carry repeats, whereas the 30-cell answer grid of
 Section~\ref{sec:e5} is a single run per arm on one model, recorded in the run
-timeline as claude-opus-4-8[1m], and is reported as such. The fixed retry
+timeline as claude-opus-4-8[1m] with seed~0 and harness prompt v4-neutral, and
+is reported as such. The fixed retry
 policy (one retry for
 an empty zero-turn response or transient gateway timeout) fired twice,
 succeeding both times. Before measurement we repaired two corpus-integrity
@@ -164,7 +165,8 @@ lists its sub-libraries as container entries carrying their own descriptions,
 the one-call view that ladder navigation reads.
 
 Growing from 50 to 100 papers cost no retrieval quality: dense top-1 hits moved
-from 48/50 to 49/50 and MRR from 0.98 to 1.00, recorded as held within
+from 48/50 to 49/50 and MRR from 0.98 to 1.00, recorded as a post hoc
+held-within-5-pp band
 $\pm$5\,pp. In the 16 lifecycle scenarios, create, move, delete and forced
 re-index behaved as specified (Table~S5). Two failures remain: the task-status
 tool reports \texttt{running} after \texttt{finished\_at} is written, and the

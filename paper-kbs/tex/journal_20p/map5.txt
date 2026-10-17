@@ -477,19 +477,19 @@ sition and parsing, organization and three-source consistency,             Contr
 and the operational-experience store. Sections 8.5–8.10 cover           compared field by field, latency excluded; the 27-cell stability
 the query path: retrieval quality (Section 8.5), answer quality         suite (Section 8.9) and the eighteen-arm honesty battery (Sec-
 per question and abstention (Section 8.6, the paper’s end-to-end        tion 8.7) carry repeats, whereas the 30-cell answer grid of Sec-
-evidence), a deployment-layer replication through the public            tion 8.6 is a single run per arm on one model, recorded in the run
-API (Section 8.7), verifier failure (Section 8.8), non-functional       timeline as claude-opus-4-8[1m], and is reported as such. The
-behavior (Section 8.9) and the gate and search-scope ablations          fixed retry policy (one retry for an empty zero-turn response or
-(Section 8.10). Numbers are reported against the corpus that            transient gateway timeout) fired twice, succeeding both times.
-produced them, never merged; the campaign inventory and per-            Before measurement we repaired two corpus-integrity faults
-question tool-layer results are supplementary material.                 through the platform’s own operations: one document missing
-                                                                        from its vector collection was re-indexed, and one library whose
-                                                                        collection had been lost was rebuilt, the same failure class that
+evidence), a deployment-layer replication through the public            tion 8.6 is a single run per arm on one model, recorded in the
+API (Section 8.7), verifier failure (Section 8.8), non-functional       run timeline as claude-opus-4-8[1m] with seed 0 and harness
+behavior (Section 8.9) and the gate and search-scope ablations          prompt v4-neutral, and is reported as such. The fixed retry pol-
+(Section 8.10). Numbers are reported against the corpus that            icy (one retry for an empty zero-turn response or transient gate-
+produced them, never merged; the campaign inventory and per-            way timeout) fired twice, succeeding both times. Before mea-
+question tool-layer results are supplementary material.                 surement we repaired two corpus-integrity faults through the
+                                                                        platform’s own operations: one document missing from its vec-
+                                                                        tor collection was re-indexed, and one library whose collection
 8.1. Experimental setup
-                                                                        Section 8.3 measures. The tool-layer retrieval lanes, grading
-   Corpora. (i) Deployed industrial corpus: five knowledge              rule, audits, duplicate adjudication and cross-lingual ingestion
-bases in a live deployment hold 42 documents, one contain-              pipeline are deterministic; agent lanes and text-derived results
-ing twenty near-duplicate equipment-telemetry reports shar-             are not.
+                                                                        had been lost was rebuilt, the same failure class that Section 8.3
+   Corpora. (i) Deployed industrial corpus: five knowledge              measures. The tool-layer retrieval lanes, grading rule, audits,
+bases in a live deployment hold 42 documents, one contain-              duplicate adjudication and cross-lingual ingestion pipeline are
+ing twenty near-duplicate equipment-telemetry reports shar-             deterministic; agent lanes and text-derived results are not.
 ing prefixes, vocabulary and structure—a deliberate stressor
 for near-duplicate detection and confuser density [21]; sixteen         8.2. E1: Acquisition and parsing
 gold questions and four out-of-corpus probes ran against it.               The 100 submitted papers were parsed and content-routed
@@ -544,48 +544,70 @@ defect. Membership is scored against the benchmark’s source                   
 category labels rather than against any naming convention de-                  navigation reads.
 rived by the ingest agent, so it is the one placement-correctness                 Growing from 50 to 100 papers cost no retrieval quality:
 measurement in this paper that does not depend on filename                     dense top-1 hits moved from 48/50 to 49/50 and MRR from
-cues.                                                                          0.98 to 1.00, recorded as held within ±5 pp. In the 16 lifecy-
-   A second 50-paper, 26-domain campaign parsed and verified                   cle scenarios, create, move, delete and forced re-index behaved
-every paper, indexed them in batch, reported all probes ok, and                as specified (Table S5). Two failures remain: the task-status
-left 41 of 50 documents with a negative tag flag even though                   tool reports running after finished_at is written, and the up-
-verification passed, so tag-quality failures never blocked inges-              date check timed out after 30 s while every other probe passed.
-tion. One stage re-ran on inbox ordering, and more than 800                    Merge and split were never exercised under controlled condi-
-extracted images were not uploaded. Descriptions and tags are                  tions, so we claim nothing about them.
-checked against content before storage [15].                                      The live tag registry held 316 tags; the tag-quality check
-                                                                               passed 165 documents with zero failures in 47.6 s, and orphan
-8.3. E2: Organization, consistency, and management opera-                      tags accumulate (test tags, section titles), for which a dry-run
-     tions                                                                     detector exists. In one case test-library tags leaked into the
-   Organizational correctness is three-source consistency: disk                production registry, the failure mode vocabulary-based orga-
-files, the tree index and per-library metadata must agree on doc-              nization is prone to [16]. The document graph is navigation,
-ument existence, location and indexed content. Under that defi-                never evidence: four tag edges on one document moved the
-nition we found one real defect in a disposable test library: after            edge count from 4,675 to 4,679.
+cues.                                                                          0.98 to 1.00, recorded as a post hoc held-within-5-pp band
+   A second 50-paper, 26-domain campaign parsed and verified                   ±5 pp. In the 16 lifecycle scenarios, create, move, delete
+every paper, indexed them in batch, reported all probes ok, and                and forced re-index behaved as specified (Table S5). Two
+left 41 of 50 documents with a negative tag flag even though                   failures remain: the task-status tool reports running after
+verification passed, so tag-quality failures never blocked inges-              finished_at is written, and the update check timed out af-
+tion. One stage re-ran on inbox ordering, and more than 800                    ter 30 s while every other probe passed. Merge and split were
+extracted images were not uploaded. Descriptions and tags are                  never exercised under controlled conditions, so we claim noth-
+checked against content before storage [15].                                   ing about them.
+                                                                                  The live tag registry held 316 tags; the tag-quality check
+8.3. E2: Organization, consistency, and management opera-                      passed 165 documents with zero failures in 47.6 s, and orphan
+     tions                                                                     tags accumulate (test tags, section titles), for which a dry-run
+   Organizational correctness is three-source consistency: disk                detector exists. In one case test-library tags leaked into the
+files, the tree index and per-library metadata must agree on doc-              production registry, the failure mode vocabulary-based orga-
+ument existence, location and indexed content. Under that defi-                nization is prone to [16]. The document graph is navigation,
+nition we found one real defect in a disposable test library: after            never evidence: four tag edges on one document moved the
                                                                            9
-8.4. E3: Operational knowledge and automated distillation                   filter [0.72, 0.99]; BM25 and RRF [0.81, 1.00]), so the decom-
-   The experience store holds operational lessons as first-                 position below, not the point estimates, is the claim. An earlier
-class retrievable documents—addressed, indexed and searched                 six-method ablation was a smoke check at n = 2; the scaled re-
-as an ordinary document, with a credibility tier deciding                   run on 2026-10-13 used ten questions (two built-in plus eight
-whether it may be shown at all (Section 5.2). Three case                    corpus golds, each verified in both substrates), crossed with
-measurements exist: an extraction campaign over one small                   the three chat-endpoint lanes (modes A–C of Table 6) with
-knowledge base produced thirteen candidate drafts (archived                 BM25, dense and RRF ranking, pure retrieval, no generation
-e x p e r i e n c e _ s m o k e . j s o n in the 2026-10-13 batch           (benchmark-suite/results/ runs/run-20261013T0352
-tarball; extract_candidates 13, drafts_created 13);                         50Z-5f9faac/retmatrix.json, archived as a superseded
-one end-to-end scenario was sedimented into one experience                  campaign in superseded-20261013-batch2.tar.gz; Ta-
-(exp-d6f4d47ae3d6) that a later global experience search re-                ble 6). Document-level recall: mode A 10/10 (mean 19.8 s),
-turned first, at local similarity 0.711 (archived scenario A6               mode B 7/10 (14.0 s), mode C 9/10 (33.1 s); BM25, dense and
-of the 2026-10-12 full-test campaign); and the draft-approval               RRF 10/10 at ≤0.1 s, so on this question set finding the gold
-path was never exercised, because the draft pool was empty                  document is not where the lanes earn their cost, and Section 8.6
-(count 0) and experience_draft_read and experience                          measures what they add. The three mode-B misses are lane-
-_draft_approve could not run; the heuristic extraction path                 diagnostic (an early-exit misfire onto a same-topic distractor
-had run only in dry-run mode, returning a dump the quality gate             family; two description-overlap blind spots: a chunked-window
-would reject. One scenario and thirteen candidates cannot sup-              and a multiple-competing-documents question), and the hybrid
-port an effectiveness claim; scheduled distillation, review and             lane recovers two through its vector arm while adding one fail-
-approval at scale, application feedback and credibility decay               closed judge loss of its own (the QK01 gold’s segments dis-
-went unexercised. What they show is narrower: an operational                carded). The dense baseline’s first pass searched an empty de-
-lesson can travel the document path with its tier attached.                 fault library (zero documents on all ten questions); the released
+edge count from 4,675 to 4,679.                                             With sixteen questions the Wilson 95% intervals on the head-
+                                                                            line proportions are wide (judged hybrid [0.23, 0.67]; judge-as-
+8.4. E3: Operational knowledge and automated distillation                   filter [0.72, 0.99]; BM25 and RRF [0.81, 1.00]), so the decom-
+                                                                            position below, not the point estimates, is the claim. An earlier
+   The experience store holds operational lessons as first-
+                                                                            six-method ablation was a smoke check at n = 2; the scaled re-
+class retrievable documents—addressed, indexed and searched
+                                                                            run on 2026-10-13 used ten questions (two built-in plus eight
+as an ordinary document, with a credibility tier deciding
+                                                                            corpus golds, each verified in both substrates), crossed with
+whether it may be shown at all (Section 5.2). Three case
+                                                                            the three chat-endpoint lanes (modes A–C of Table 6) with
+measurements exist: an extraction campaign over one small
+                                                                            BM25, dense and RRF ranking, pure retrieval, no generation
+knowledge base produced thirteen candidate drafts (archived
+                                                                            (benchmark-suite/results/ runs/run-20261013T0352
+e x p e r i e n c e _ s m o k e . j s o n in the 2026-10-13 batch
+                                                                            50Z-5f9faac/retmatrix.json, archived as a superseded
+tarball; extract_candidates 13, drafts_created 13);
+                                                                            campaign in superseded-20261013-batch2.tar.gz; Ta-
+one end-to-end scenario was sedimented into one experience
+                                                                            ble 6). Document-level recall: mode A 10/10 (mean 19.8 s),
+(exp-d6f4d47ae3d6) that a later global experience search re-
+                                                                            mode B 7/10 (14.0 s), mode C 9/10 (33.1 s); BM25, dense and
+turned first, at local similarity 0.711 (archived scenario A6
+                                                                            RRF 10/10 at ≤0.1 s, so on this question set finding the gold
+of the 2026-10-12 full-test campaign); and the draft-approval
+                                                                            document is not where the lanes earn their cost, and Section 8.6
+path was never exercised, because the draft pool was empty
+                                                                            measures what they add. The three mode-B misses are lane-
+(count 0) and experience_draft_read and experience
+                                                                            diagnostic (an early-exit misfire onto a same-topic distractor
+_draft_approve could not run; the heuristic extraction path
+                                                                            family; two description-overlap blind spots: a chunked-window
+had run only in dry-run mode, returning a dump the quality gate
+                                                                            and a multiple-competing-documents question), and the hybrid
+would reject. One scenario and thirteen candidates cannot sup-
+                                                                            lane recovers two through its vector arm while adding one fail-
+port an effectiveness claim; scheduled distillation, review and
+                                                                            closed judge loss of its own (the QK01 gold’s segments dis-
+approval at scale, application feedback and credibility decay
+                                                                            carded). The dense baseline’s first pass searched an empty de-
+went unexercised. What they show is narrower: an operational
+                                                                            fault library (zero documents on all ten questions); the released
+lesson can travel the document path with its tier attached.
                                                                             row is a cross-library re-run, the default since removed from the
                                                                             runner.
-8.5. E4: Retrieval quality and the role of the verdict
-                                                                                On this corpus, lexical retrieval is strong. BM25 [24]
+8.5. E4: Retrieval quality and the role of the verdict                          On this corpus, lexical retrieval is strong. BM25 [24]
    Nine configurations, defined here so the table reads on its              hits Hit@5 1.00 at about a millisecond per in-process call,
 own. Five were measured through their own tool-layer entry                  reciprocal-rank fusion [25] matches it, and the two-stage
 points: Dense via kb_search_vector with BGE-M3 [26];                        BM25+graph-then-dense pipeline reaches Recall@5 0.97 (Ta-
@@ -616,8 +638,6 @@ annotated questions of the deployed industrial corpus (42 doc-              docu
 uments; paper-kbs/experiments/results/exp1_retrie                           and reranker differ, restoring fusion order recovers Hit@5 on
 val.json, exp5_judge_filter.json). The tool-layer arms                      all eight and loses none (exact binomial sign test, two-sided
 retrieve and never answer, so their latencies carry no token cost.          p = 0.008); Q7 moves the gold from rank three to five, while
-With sixteen questions the Wilson 95% intervals on the head-                four other questions move upward. The evidence warns against
-line proportions are wide (judged hybrid [0.23, 0.67]; judge-as-            using these verifier scores as a ranker on this confuser-heavy
                                                                        10
 Table 5: Tool-layer retrieval on the 42-document deployed industrial corpus (mean over 16 gold-annotated questions; top-5 document lists;
 latency per call, warmed). The paraphrase column re-asks those sixteen questions in different words (paper-kbs/experiments/results/exp
@@ -644,25 +664,27 @@ executes once either way.
 (b) Second corpus: 79 retrievable arXiv papers of the 100 submitted, ten questions
 Configuration BM25 Dense RRF Graph Two-stage Fusion-only QDCVR-Hybrid Judge-as-filter
 Hit@5          0.90 0.90 0.90 0.20   0.90       0.90        0.90          0.90
-Table 6: Six-method retrieval matrix, ten questions, pure retrieval.              two, and its MRR falls from 0.90 to 0.70 while the filter and
-Gold recall is document-level (the gold appears anywhere in the re-               fusion rows stay at 0.90 (exp10_papers_toollayer.json).
-turned set); every gold was verified to exist in both substrates (live            The threshold-crossing harm therefore does not reproduce on
+Table 6: Six-method retrieval matrix, ten questions, pure retrieval.              able gold. The judged ordering keeps all nine golds inside the
+Gold recall is document-level (the gold appears anywhere in the re-               top five, but it demotes four of them from rank one to rank
+turned set); every gold was verified to exist in both substrates (live            two, and its MRR falls from 0.90 to 0.70 while the filter and
 library for the modes, corpus index for the baselines). Latency is mean
-                                                                                  this smaller, less confuser-dense sample, while the ordering ef-
+                                                                                  fusion rows stay at 0.90 (exp10_papers_toollayer.json).
 wall clock per question.
-                                                                                  fect does. The graph result is also configuration-specific: the
-                                                                                  bulk import bypassed the tagging path, limiting what its node-
+                                                                                  The threshold-crossing harm therefore does not reproduce on
+                                                                                  this smaller, less confuser-dense sample, while the ordering ef-
      Method                           Gold recall   Mean latency   Range
-                                                                                  name/path matching could retrieve.
-     Mode A (pinned dense + judge)      10/10          19.8 s      18–24 s
-     Mode B (ladder)                     7/10         14.0 s        5–20 s            Thresholds and margins. All 191 judged candidates from
-     Mode C (hybrid)                     9/10         33.1 s       26–44 s        the sixteen hybrid runs passed the deployed absolute threshold
-     BM25 (corpus index)                10/10         <0.05 s         —           of 0.5 (lowest logged score 0.589), so at the threshold layer the
+                                                                                  fect does. The graph result is also configuration-specific: the
+     Mode A (pinned dense + judge)      10/10          19.8 s      18–24 s        bulk import bypassed the tagging path, limiting what its node-
+     Mode B (ladder)                     7/10         14.0 s        5–20 s
+     Mode C (hybrid)                     9/10         33.1 s       26–44 s        name/path matching could retrieve.
+     BM25 (corpus index)                10/10         <0.05 s         —               Thresholds and margins. All 191 judged candidates from
      Dense (cross-library)              10/10          0.1 s          —
-                                                                                  gate filtered nothing on this corpus (exp1_retrieval.json).
+                                                                                  the sixteen hybrid runs passed the deployed absolute threshold
      RRF (BM25∥Dense)                   10/10         <0.05 s         —
-                                                                                  The margin sweep is a separate diagnostic replay, not the de-
-                                                                                  ployed control: it re-reads the logged pools and keeps the top
+                                                                                  of 0.5 (lowest logged score 0.589), so at the threshold layer the
+                                                                                  gate filtered nothing on this corpus (exp1_retrieval.json).
+four other questions move upward. The evidence warns against                      The margin sweep is a separate diagnostic replay, not the de-
+using these verifier scores as a ranker on this confuser-heavy                    ployed control: it re-reads the logged pools and keeps the top
 corpus; it does not establish that the verdicts reliably identify                 five candidates plus every candidate whose score lies within a
 evidence or that filtering improves on fusion-only (Figure 3(b)).                 relative margin m of the pool’s best score. m = 0.15 keeps
 The post-hoc comparison uses one checkpoint and sixteen ques-                     16 of the 17 in-pool golds (Q11’s gold sits deeper than 0.15
@@ -677,8 +699,6 @@ chunks logged; block (b) of Table 5), seven of eight configu-                   
 rations reach Hit@5 0.90; graph search reaches 0.20. BQ03’s                       configuration falls to Hit@5 0.5 (MRR 0.189) while judge-as-
 gold paper was not retrievable, so the observed denominator is                    filter and fusion-only hold at 0.9375 (MRR 0.833) and dense
 0.90 over all ten questions and 1.00 over the nine with avail-                    retrieval stays at 0.9375; BM25 falls from 1.00 to 0.875 (MRR
-able gold. The judged ordering keeps all nine golds inside the                    0.958 to 0.755). Under rewording both the lexical baseline and
-top five, but it demotes four of them from rank one to rank                       the judged re-ranking lose ground while the configuration that
                                                                              11
                                   (a) cut-margin replay                                                                       (b) verdict roles, same pools
 
@@ -715,57 +735,55 @@ m = 0.15 (16 of 17 golds kept) and m = 0.20 (all 17). (b) The verdict’s four r
 fusion order, verdict as re-ranker, verdict as filter, and rank fusion. Only the role differs, which makes the panel an attribution rather than a
 benchmark; the re-ranking role is the one that loses the gold.
 
-refuses to let the verdict order the list does not — the gate’s                                                                                      Hit@5       Recall@5              MRR
-weakness is the ordering it induces, not the verdicts it returns.
-   End to end, the modes differ in source-address markers.
+0.958 to 0.755). Under rewording both the lexical baseline and                                                                                       Hit@5       Recall@5              MRR
+the judged re-ranking lose ground while the configuration that
+refuses to let the verdict order the list does not — the gate’s
                                                                                          Score (16 questions)
 
 
 
 
                                                                                                                                                                                          fusion
-Ten fixed questions ran through three modes sharing one har-                                                      1.00
-ness, model, neutral task and output contract, but with dif-
-ferent retrieval interfaces: platform KB tools, file tools over                                                   0.75
+weakness is the ordering it induces, not the verdicts it returns.                                                 1.00
+   End to end, the modes differ in source-address markers.
+Ten fixed questions ran through three modes sharing one har-                                                      0.75
                                                                                                                                                                                                   verdict
-the exported papers, and dense retrieval over an 800-character
-                                                                                                                  0.50
+ness, model, neutral task and output contract, but with dif-
+ferent retrieval interfaces: platform KB tools, file tools over                                                   0.50
+the exported papers, and dense retrieval over an 800-character                                                    0.25
 replica index (4,528 chunks). All 30 answer texts name the
-gold document ID, which is a provenance check rather than se-                                                     0.25
-mantic grounding. Recognized document-style citation mark-
-ers appear in 9/10, 7/10 and 2/10 answers respectively; seven                                                     0.00
+gold document ID, which is a provenance check rather than se-                                                     0.00
                                                                                                                                    25        n se     RR
                                                                                                                                                            F       p   h
                                                                                                                                                                            2- s
                                                                                                                                                                                   tg      ion V R- H
-dense answers also name chunks, reported separately. The                                                                      BM        De                     Gra                     Fus     C
-                                                                                                                                                                                            QD
-marker counts do not test whether citations resolve or sup-
-port claims. Other limitations include tool-availability aborts,
+mantic grounding. Recognized document-style citation mark-                                                                    BM        De                     Gra                     Fus     C
+ers appear in 9/10, 7/10 and 2/10 answers respectively; seven                                                                                                                               QD
+dense answers also name chunks, reported separately. The
                                                                                       Figure 4: Tool-layer retrieval over the 42-document industrial corpus
-a word-boundary false negative, two platform retries and un-                          (16 gold questions, top-5 document lists). BM25 reaches Hit@5 1.00.
-controlled cache state.                                                               On the same logged hybrid pools, verdict-score re-ranking reaches
-   E4 establishes a bounded ordering result: on the logged in-                        Hit@5 0.44, while a derived replay that retains fusion order among
-dustrial pools, judge-score re-ranking lowered Hit@5, while re-                       recorded survivors reaches 0.94, matching fusion-only. The derived
-taining fusion order among recorded survivors matched fusion-                         comparison diagnoses the effect of ordering; because the 0.5 threshold
-only. This does not establish a benefit from threshold filtering                      rejects none of the 191 recorded scores, it does not measure filtering
-or claim-level citation support. BM25 reaches Hit@5 1.00 on                           benefit. Latency per call is in Table 5.
-the same industrial set (Figure 4), so retrieval recall is not a
-demonstrated contribution here. The deployment-path question                          with the endpoint’s default library scope; arm F scanned the ex-
-is whether source identifiers, evidence traces and answer work-                       ported file tree; arm D used one vector operation over the 800-
-flows improve auditability; the E5 marker checks only partly                          character mirror index, which contains BQ03’s gold although
-address that question, and the verifier failure analysis does not                     that paper is absent from the 79-paper library of Table 5(b).
-establish calibration.                                                                Every answer names its gold document, and alias-aware key-
-                                                                                      word coverage is 10/10 in every arm, so the provenance check
+marker counts do not test whether citations resolve or sup-
+                                                                                      (16 gold questions, top-5 document lists). BM25 reaches Hit@5 1.00.
+port claims. Other limitations include tool-availability aborts,                      On the same logged hybrid pools, verdict-score re-ranking reaches
+a word-boundary false negative, two platform retries and un-                          Hit@5 0.44, while a derived replay that retains fusion order among
+controlled cache state.                                                               recorded survivors reaches 0.94, matching fusion-only. The derived
+   E4 establishes a bounded ordering result: on the logged in-                        comparison diagnoses the effect of ordering; because the 0.5 threshold
+dustrial pools, judge-score re-ranking lowered Hit@5, while re-                       rejects none of the 191 recorded scores, it does not measure filtering
+taining fusion order among recorded survivors matched fusion-                         benefit. Latency per call is in Table 5.
+only. This does not establish a benefit from threshold filtering
+or claim-level citation support. BM25 reaches Hit@5 1.00 on                           interface and substrate: arm P used the knowledge-base tools
+the same industrial set (Figure 4), so retrieval recall is not a                      with the endpoint’s default library scope; arm F scanned the ex-
+demonstrated contribution here. The deployment-path question                          ported file tree; arm D used one vector operation over the 800-
+is whether source identifiers, evidence traces and answer work-                       character mirror index, which contains BQ03’s gold although
+flows improve auditability; the E5 marker checks only partly                          that paper is absent from the 79-paper library of Table 5(b).
+address that question, and the verifier failure analysis does not                     Every answer names its gold document, and alias-aware key-
+establish calibration.                                                                word coverage is 10/10 in every arm, so the provenance check
                                                                                       is at ceiling on this set. The arms separate on two syntax mea-
-8.6. E5: Answer quality, abstention and cost
-                                                                                      sures: strict keyword coverage is 9/10 in each arm, and recog-
+8.6. E5: Answer quality, abstention and cost                                          sures: strict keyword coverage is 9/10 in each arm, and recog-
    Answers locate the right document in all 30 cells; cita-                           nized citation-marker hits are 9/10, 7/10 and 2/10 for P, F and
 tion syntax is where the interfaces diverge. Three arms an-                           D. Table 7 gives the per-question cells, Figure 5 the aggregate.
 swered ten gold questions through the public chat API on one                          Answer quality here means provenance, lexical coverage and
 model (recorded in the run timeline as claude-opus-4-8[1m])                           marker syntax, not semantic faithfulness.
 under one task contract and a 12-turn limit. The arms differ in                          Per-question reading. The marker column, not the gold-
-interface and substrate: arm P used the knowledge-base tools                          identifier column, separates the arms. Nine platform an-
                                                                            12
 Table 7: Answer quality per question and per interface (30 answer cells from run-20261013T094350Z-5f9faac). Every answer passes
 the gold-ID check, so coverage is 10/10 in each arm and the column is not repeated. Each arm column gives strict keyword coverage (✓ or
@@ -788,41 +806,42 @@ the sentence citing it.
                            All ten questions                                                                  9 10    29   9 10        23      9 10        6
 
 
-swers and seven file-tool answers carry at least one document-                                                         gold-ID        keywords             markers
-style locator. The dense arm produces eight answers with no
-document-style marker and seven that name chunk identifiers                                              10                      10                            10
+identifier column, separates the arms. Nine platform an-                                                               gold-ID        keywords             markers
+swers and seven file-tool answers carry at least one document-
+style locator. The dense arm produces eight answers with no                                              10                      10                            10
                                                                                                     10
-instead, of which two also carry one. BQ05 carries no marker                                                      9   9                    9                          9
+document-style marker and seven that name chunk identifiers                                                       9   9                    9                          9
                                                                                 questions (of 10)
 
 
 
 
-in any arm because it cites by title, a form the deterministic                                       8
+instead, of which two also carry one. BQ05 carries no marker                                         8
                                                                                                                                                    7
-pattern does not count. The strict misses are three, and not
-all are word-form variants: the platform answer to BQ06 is                                           6
-written in Chinese and misses both English terms (the declared                                       4
-aliases include Chinese forms, which is why alias-aware cover-
+in any arm because it cites by title, a form the deterministic
+pattern does not count. The strict misses are three, and not                                         6
+all are word-form variants: the platform answer to BQ06 is                                           4
+written in Chinese and misses both English terms (the declared
                                                                                                                                                                             2
-age passes), the file-tool answer to BQ09 omits the MLP abbre-                                       2
-viation, and the dense answer to BQ10 uses a different immune-
-resistance wording. Under the pre-correction BQ06 key the                                            0
+aliases include Chinese forms, which is why alias-aware cover-                                       2
+age passes), the file-tool answer to BQ09 omits the MLP abbre-
+viation, and the dense answer to BQ10 uses a different immune-                                       0
                                                                                                           Platform                   Bare agent                     Dense
-platform arm scored 10/10 strict against a mis-specified gold,
-and both grades are retained. These checks do not establish se-                 Figure 5: Answer checks for the same ten questions and the same
-mantic faithfulness or claim-to-source support. Three cells also                model, with the retrieval interface and its substrate varied (30 cells,
-departed from the stated contract: the BQ06 platform answer is                  run- 20261013T094350Z- 5f9faac). Gold-identifier coverage
-not in English, the BQ10 file-tool answer ran to 13 turns against               is at ceiling in all three arms; strict keyword coverage shows three
+resistance wording. Under the pre-correction BQ06 key the
+platform arm scored 10/10 strict against a mis-specified gold,                  Figure 5: Answer checks for the same ten questions and the same
+and both grades are retained. These checks do not establish se-                 model, with the retrieval interface and its substrate varied (30 cells,
+mantic faithfulness or claim-to-source support. Three cells also                run- 20261013T094350Z- 5f9faac). Gold-identifier coverage
+departed from the stated contract: the BQ06 platform answer is                  is at ceiling in all three arms; strict keyword coverage shows three
                                                                                 misses (one language mismatch, two word-form), alias-aware cover-
-the 12-turn limit, and three platform cells invoked a host shell
+not in English, the BQ10 file-tool answer ran to 13 turns against
                                                                                 age is 10/10 everywhere, and recognized citation markers fall from
-outside the knowledge-base tool surface (Section 10).
+the 12-turn limit, and three platform cells invoked a host shell
                                                                                 nine to seven to two answers. The marker pattern counts document-
-   Wall clock and cost. Arm P averaged 52.6 s and $0.711 per                    style syntax; it does not verify citation resolution or claim support.
-question, against 22.2 s/$0.487 for F and 24.5 s/$0.527 for D.                  Wall-clock and cost figures for these cells are reported in the text and
-These are single-run means: the platform arm is slower and                      in the supplementary material.
-dearer in this run, and we report that as an observation about
+outside the knowledge-base tool surface (Section 10).                           style syntax; it does not verify citation resolution or claim support.
+   Wall clock and cost. Arm P averaged 52.6 s and $0.711 per                    Wall-clock and cost figures for these cells are reported in the text and
+question, against 22.2 s/$0.487 for F and 24.5 s/$0.527 for D.                  in the supplementary material.
+These are single-run means: the platform arm is slower and
+dearer in this run, and we report that as an observation about                  each enumerating the scope it searched (five libraries, 42 docu-
 this implementation rather than an efficiency result. Arm F an-                 ments of the industrial corpus). The retrieval tools themselves
 swered the same questions by scanning the exported file tree                    never abstain: six graded probes (paper-kbs/experiments
 without an index, which shows direct scanning is viable at                      /results/exp8_graded_probes.json; n = 6; three par-
@@ -837,7 +856,6 @@ layer, not of a threshold. Three out-of-corpus questions pro-                   
 duced three explicit not-found reports (47.9, 73.3 and 113.5 s                  every run contained a gold-ID hit and no manually identified
 wall clock; turns not recorded for this probe family; paper-k                   fabricated citation. In the archived channel replay, two channels
 bs/experiments/results/exp8b_absent_agent.json),                                each passed 8/9 gates and shared one false refusal after a 300 s
-each enumerating the scope it searched (five libraries, 42 docu-                vector-search stall, an execution failure rather than evidence of
                                                                            13
                                 kept by judge (of 12)                           layer that honesty requires has transport constraints of its own
                                 chunks above 0.35                               (Section 9).
@@ -874,13 +892,13 @@ pleted absent queries returned natural-language not-found reports and           
 no fabricated citation was observed. The latter is an observation of in-        explicit not-found reports listing the scanned scope and their
 structed agent behavior, not a server-side guarantee.                           nearest near-misses, and zero of the eighteen answers fabricate
                                                                                 a citation. On the fine-tuning question the librarian lane refuses
-absence. Per-run records are in the supplementary material, and                 after judging six near-miss documents, while the hybrid lane re-
-these are observations across engines and channels, not a one-                  turns a body-level applied-usage document and states the cov-
-factor estimate.                                                                erage boundary inside the answer; both are honest, and a binary
-                                                                                gate cannot score the second. Two arms that hit a tool-mounting
-8.7. E5b: Deployment-layer system arms through the public                       race reported “tools unavailable, nothing fabricated” and were
-     API (2026-10-12 campaign)                                                  re-run.
-                                                                                   A second-corpus replication of the honesty contracts.
+vector-search stall, an execution failure rather than evidence of               after judging six near-miss documents, while the hybrid lane re-
+absence. Per-run records are in the supplementary material, and                 turns a body-level applied-usage document and states the cov-
+these are observations across engines and channels, not a one-                  erage boundary inside the answer; both are honest, and a binary
+factor estimate.                                                                gate cannot score the second. Two arms that hit a tool-mounting
+                                                                                race reported “tools unavailable, nothing fabricated” and were
+8.7. E5b: Deployment-layer system arms through the public                       re-run.
+     API (2026-10-12 campaign)                                                     A second-corpus replication of the honesty contracts.
    E1–E5 exercise the platform from the operator side. Invoked                  The same contracts carry to the arXiv grid: every gold was
 as an external caller, does it deliver the same contracts? Three                present in the substrate its arm searched, all 30 cells an-
 questions (an English methodology question, a Chinese clini-                    swer, and no answerable question is falsely refused. An
