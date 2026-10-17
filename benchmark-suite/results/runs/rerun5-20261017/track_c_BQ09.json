@@ -1,0 +1,150 @@
+{
+ "answer": "MLP-SLAM addresses the degradation of visual SLAM in dynamic environments: V-SLAM achieves high precision where few objects move, but its performance declines in scenes with numerous movable objects such as pedestrians, cars, and buses, because most SLAM systems (including ORB-SLAM2/3, LSD-SLAM, DSO) rely on a static-world assumption. Its approach is a real-time stereo SLAM system built on ORB-SLAM2 with an extra dynamic/static discriminator module in which a Multilayer Perceptron assigns a label to each feature point to separate dynamic from static points — the paper claims this is the first use of an MLP as a dynamic/static feature discriminator in SLAM. After ORB feature extraction, object detection/tracking on the left image, and coarse pose estimation, the MLP classifies feature points inside potential-dynamic-object bounding boxes, while features outside the boxes plus those classified static are combined into the static set used for fine camera-pose estimation. This is motivated against DynaSLAM, which discards all features within semantic masks of potential moving objects (losing valid points such as stationary parked cars) and is slow due to MaskRCNN. An ablation shows the MLP-only module beats object-tracking-only and the combination is best, and the system reports the highest average precision and fastest speed on KITTI Odometry and KITTI360. The other four libraries returned no relevant evidence.\n\nSources used:\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` — chunks 1, 3, 5, 9, 24, 37, 39, 43, 55\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md` — chunks 19, 21, 22",
+ "is_error": false,
+ "latency_s": 22.6,
+ "sdk_duration_ms": 19021,
+ "num_turns": 8,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM visual SLAM dynamic environments moving objects problem method",
+    "kb_id": "计算机与人工智能"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM visual SLAM dynamic environments moving objects problem method",
+    "kb_id": "自然科学与地球科学"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM visual SLAM dynamic environments moving objects problem method",
+    "kb_id": "生命科学与医学"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM visual SLAM dynamic environments moving objects problem method",
+    "kb_id": "工程与能源"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM visual SLAM dynamic environments moving objects problem method",
+    "kb_id": "经济与社会"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP model dynamic feature point classification stereo visual SLAM architecture training KITTI tracking ORB-SLAM2",
+    "kb_id": "计算机与人工智能"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP dynamic static feature discriminator input feature vector training coarse estimation dynamic feature points object t",
+    "kb_id": "计算机与人工智能"
+   }
+  }
+ ],
+ "tool_call_count": 7,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 82729,
+  "output": 3096,
+  "cache_read": 225280,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.60484,
+ "timeline": [
+  {
+   "t": 3.58,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 7.43,
+   "event": "text",
+   "detail": "275"
+  },
+  {
+   "t": 7.73,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 7.93,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.17,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.41,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.62,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 12.72,
+   "event": "text",
+   "detail": "202"
+  },
+  {
+   "t": 13.04,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 15.98,
+   "event": "text",
+   "detail": "111"
+  },
+  {
+   "t": 16.27,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 22.54,
+   "event": "text",
+   "detail": "1714"
+  },
+  {
+   "t": 22.55,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "Retrieval plan: I'll run one dense vector search per library (计算机与人工智能, 自然科学与地球科学, 生命科学与医学, 工程与能源, 经济与社会) with a query about MLP-SLAM and visual SLAM in dynamic environments (top_k 10, score_threshold 0), then merge results by score and answer only from the retrieved chunks.",
+  "The 计算机与人工智能 library returned the MLP-SLAM paper. I'll rephrase and search again within that library to retrieve the method details (how the MLP classifies dynamic vs. static features) before answering.",
+  "I have the core method chunks; one more focused query to capture the MLP discriminator's inputs/role precisely.",
+  "MLP-SLAM addresses the degradation of visual SLAM in dynamic environments: V-SLAM achieves high precision where few objects move, but its performance declines in scenes with numerous movable objects such as pedestrians, cars, and buses, because most SLAM systems (including ORB-SLAM2/3, LSD-SLAM, DSO) rely on a static-world assumption. Its approach is a real-time stereo SLAM system built on ORB-SLAM2 with an extra dynamic/static discriminator module in which a Multilayer Perceptron assigns a label to each feature point to separate dynamic from static points — the paper claims this is the first use of an MLP as a dynamic/static feature discriminator in SLAM. After ORB feature extraction, object detection/tracking on the left image, and coarse pose estimation, the MLP classifies feature points inside potential-dynamic-object bounding boxes, while features outside the boxes plus those classified static are combined into the static set used for fine camera-pose estimation. This is motivated against DynaSLAM, which discards all features within semantic masks of potential moving objects (losing valid points such as stationary parked cars) and is slow due to MaskRCNN. An ablation shows the MLP-only module beats object-tracking-only and the combination is best, and the system reports the highest average precision and fastest speed on KITTI Odometry and KITTI360. The other four libraries returned no relevant evidence.\n\nSources used:\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` — chunks 1, 3, 5, 9, 24, 37, 39, 43, 55\n- `计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md` — chunks 19, 21, 22"
+ ],
+ "track": "c",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ09",
+ "via": "chat",
+ "git_commit": "cda1654",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

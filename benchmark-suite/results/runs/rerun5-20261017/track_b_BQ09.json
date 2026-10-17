@@ -1,0 +1,94 @@
+{
+ "answer": "MLP-SLAM addresses the degradation of visual SLAM accuracy in dynamic environments — scenes with pedestrians, cars, and buses — where static-world assumptions (as in ORB-SLAM2/ORB-SLAM3) fail, and where existing remedies either rely on hand-tuned geometric thresholds that lack generality or discard all features inside semantic bounding boxes (as DynaSLAM does), misclassifying static points such as parked cars and losing useful information. Its solution is an MLP-based dynamic/static feature-point discriminator that uses complete geometric information — image intensity error, epipolar error, and re-projection error — as its three-dimensional input, avoiding manual parameter tuning; this is claimed as the first machine-learning method for this discrimination task in SLAM. The system is a real-time stereo SLAM built on ORB-SLAM2: YOLOv7 and Deep SORT detect/track objects in the left image, a Depth Filter Module removes background static features inside boxes, a coarse pose is estimated from features outside boxes plus DFM-filtered points, the MLP labels remaining in-box points as static or dynamic, and a fine pose is obtained by minimizing re-projection error over all static points. The paper also contributes a public dataset of over 50,000 labeled feature points for directly evaluating such classifiers, since prior evaluation was only indirect via SLAM metrics like ATE and was noisy due to RANSAC randomness. Reported results: the MLP discriminator (87.71% accuracy, 87.64 F1) outperformed SVM and PointSLOT/CFP-SLAM-like methods, and the full system achieved the lowest average ATE on KITTI Odometry (1.48) and KITTI360 (3.42) with the fastest speed (62.81 ms/frame) among compared dynamic SLAM systems.\n\nSources: `计算机与人工智能\\robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` (Abstract, §I–V) and `... (part 2 of 2).md` (§V-C–VI, Tables II–VI).",
+ "is_error": false,
+ "latency_s": 11.3,
+ "sdk_duration_ms": 8671,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md",
+    "path": "D:\\tmp\\rerun-parts"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MLP-SLAM",
+    "path": "D:\\tmp\\rerun-parts"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\tmp\\rerun-parts\\计算机与人工智能\\robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\tmp\\rerun-parts\\计算机与人工智能\\robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 52570,
+  "output": 1083,
+  "cache_read": 64896,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.32337499999999997,
+ "timeline": [
+  {
+   "t": 2.73,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.79,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 4.95,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 6.58,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 6.74,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 11.32,
+   "event": "text",
+   "detail": "1906"
+  },
+  {
+   "t": 11.33,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "MLP-SLAM addresses the degradation of visual SLAM accuracy in dynamic environments — scenes with pedestrians, cars, and buses — where static-world assumptions (as in ORB-SLAM2/ORB-SLAM3) fail, and where existing remedies either rely on hand-tuned geometric thresholds that lack generality or discard all features inside semantic bounding boxes (as DynaSLAM does), misclassifying static points such as parked cars and losing useful information. Its solution is an MLP-based dynamic/static feature-point discriminator that uses complete geometric information — image intensity error, epipolar error, and re-projection error — as its three-dimensional input, avoiding manual parameter tuning; this is claimed as the first machine-learning method for this discrimination task in SLAM. The system is a real-time stereo SLAM built on ORB-SLAM2: YOLOv7 and Deep SORT detect/track objects in the left image, a Depth Filter Module removes background static features inside boxes, a coarse pose is estimated from features outside boxes plus DFM-filtered points, the MLP labels remaining in-box points as static or dynamic, and a fine pose is obtained by minimizing re-projection error over all static points. The paper also contributes a public dataset of over 50,000 labeled feature points for directly evaluating such classifiers, since prior evaluation was only indirect via SLAM metrics like ATE and was noisy due to RANSAC randomness. Reported results: the MLP discriminator (87.71% accuracy, 87.64 F1) outperformed SVM and PointSLOT/CFP-SLAM-like methods, and the full system achieved the lowest average ATE on KITTI Odometry (1.48) and KITTI360 (3.42) with the fastest speed (62.81 ms/frame) among compared dynamic SLAM systems.\n\nSources: `计算机与人工智能\\robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md` (Abstract, §I–V) and `... (part 2 of 2).md` (§V-C–VI, Tables II–VI)."
+ ],
+ "track": "b",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\tmp\\rerun-parts",
+ "max_turns": 12,
+ "qid": "BQ09",
+ "via": "chat",
+ "git_commit": "cda1654",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

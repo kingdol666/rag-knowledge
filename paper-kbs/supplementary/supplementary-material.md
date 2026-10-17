@@ -1317,6 +1317,52 @@ Merge and split were analysed but never executed.
 | Update check | Fail, `ragctl version` timed out after 30 s |
 
 
+
+### A.19 Controlled replication on a common substrate (2026-10-17)
+
+**What was tested.** The 30-cell answer grid was repeated with every arm pinned to the same five domain libraries (322 stored parts), to separate interface effects from substrate effects. The platform and dense arms query the libraries' vector collections (500-character segments); the file arm reads the same parts in full.
+
+**Scale.** Ten questions (BQ01-BQ10) x three arms x one run per arm = 30 cells. Same model as the original grid (recorded as claude-opus-4-8[1m]), seed 0, 12-turn configuration; run `benchmark-suite/results/runs/rerun5-20261017`.
+
+**Headline result.** Gold-identifier coverage 10/10 in every arm; strict keyword coverage 7/7/8; alias-aware coverage 9/9/10; answers with at least one document-style citation marker 9/9/9. The original grid's marker ordering (9/7/2) does not reproduce; see the manuscript's Section 8.6.
+
+| Q | Arm | Gold-ID | Strict | Alias | Markers |
+|---|---|---|---|---|---|
+| BQ01 | D | yes | yes | yes | 2 |
+| BQ01 | F | yes | yes | yes | 10 |
+| BQ01 | P | yes | yes | yes | 3 |
+| BQ02 | D | yes | yes | yes | 2 |
+| BQ02 | F | yes | yes | yes | 4 |
+| BQ02 | P | yes | yes | yes | 2 |
+| BQ03 | D | yes | yes | yes | 2 |
+| BQ03 | F | yes | yes | yes | 8 |
+| BQ03 | P | yes | yes | yes | 7 |
+| BQ04 | D | yes | yes | yes | 1 |
+| BQ04 | F | yes | yes | yes | 1 |
+| BQ04 | P | yes | yes | yes | 1 |
+| BQ05 | D | yes | yes | yes | 0 |
+| BQ05 | F | yes | yes | yes | 0 |
+| BQ05 | P | yes | yes | yes | 0 |
+| BQ06 | D | yes | no | yes | 2 |
+| BQ06 | F | yes | no | yes | 5 |
+| BQ06 | P | yes | no | yes | 1 |
+| BQ07 | D | yes | yes | yes | 1 |
+| BQ07 | F | yes | yes | yes | 2 |
+| BQ07 | P | yes | yes | yes | 2 |
+| BQ08 | D | yes | yes | yes | 2 |
+| BQ08 | F | yes | no | no | 6 |
+| BQ08 | P | yes | no | no | 4 |
+| BQ09 | D | yes | yes | yes | 2 |
+| BQ09 | F | yes | no | yes | 5 |
+| BQ09 | P | yes | no | yes | 4 |
+| BQ10 | D | yes | no | yes | 3 |
+| BQ10 | F | yes | yes | yes | 8 |
+| BQ10 | P | yes | yes | yes | 5 |
+
+**Arm means.** Wall clock and cost: P 37.7 s / $0.672; F 15.2 s / $0.377; D 19.6 s / $0.524. These are single-run means.
+
+**Artifacts.** `benchmark-suite/results/runs/rerun5-20261017/` (per-cell records); `benchmark-suite/results/exp_rerun5_grade.json` (grades); `benchmark-suite/experiments/chat_tracks.py` (`RAG_BENCH_PIN_KB`, `RAG_BENCH_CORPUS_DIR`).
+
 ### Table S6. Verdict-score threshold sweep (16 hybrid runs, 191 recorded scores)
 
 Each row re-reads the recorded per-candidate scores and counts survivors at that cut. Gold means the candidate document is an in-pool gold (17 instances); one Q14 candidate has no recorded score and is not counted. This is a score-level sweep: it shows where the verifier would begin to filter, and it does not measure answer quality at a higher cut.

@@ -1,58 +1,59 @@
-# 三模式检索实验报告 (Three-Track Experiment)
+# Three-Track Experiment (deterministic regrade)
 
-Run: `run-20261013T094350Z-5f9faac` · 题集: `qa_questions.json` · 语料: 平台五门类库 = corpus_md 100 篇 = Corpus-Chunks800
+Run: `rerun5-20261017` · question set: `qa_questions_e5_corrected.json` · 100-paper corpus
 
-## 分轨结果
+## Arm-level results
 
-| 轨 | 模式 | pass | gold 命中 | 关键词核验 | 引用命中 (part/section/table) | 平均时延 s | 平均工具数 | 平均成本 $ |
-|---|---|---|---|---|---|---:|---:|---:|
-| A2 | A2 平台 KB(仅KB工具,无文件工具) | 10/10 | 10/10 | 10/10 | 9/10 (chunk 5) | 52.6 | 6.0 | 0.711 |
-| B | B 裸 Agent(文件工具) | 9/10 | 10/10 | 9/10 | 7/10 (chunk 0) | 22.2 | 6.4 | 0.4867 |
-| C | C Dense-RAG(Chunks800) | 9/10 | 10/10 | 9/10 | 2/10 (chunk 7) | 24.5 | 3.7 | 0.5269 |
+| Arm | Gold-ID coverage | Strict keyword | Alias-aware keyword | Strict pass | Alias-aware pass | Citation markers | Chunk markers | Mean wall s | Mean cost USD |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| A2 | 10/10 | 7/10 | 9/10 | 7/10 | 9/10 | 9/10 | 8/10 | 37.7 | 0.6721 |
+| B | 10/10 | 7/10 | 9/10 | 7/10 | 9/10 | 9/10 | 0/10 | 15.2 | 0.3767 |
+| C | 10/10 | 8/10 | 10/10 | 8/10 | 10/10 | 9/10 | 8/10 | 19.6 | 0.5236 |
 
-## 逐题判分
+## Per-question grades
 
-| QID | 轨 | gold | 关键词命中 | 引用标记 | pass | 时延 s | 工具数 |
-|---|---|---|---|---|---|---:|---:|
-| BQ01 | A2 | ✓ | 3/3 (scaled dot-product,multi-head,recurrence) | ✓ (Table 1, part 1 of 2, §2) | ✅ | 55.5 | 5 |
-| BQ02 | A2 | ✓ | 2/2 (noisy intermediate-scale,error correction) | ✓ (part 1 of 3, part 1 of 4, §4.1) | ✅ | 35.8 | 5 |
-| BQ03 | A2 | ✓ | 2/2 (multimedqa,67.6) | ✓ (Section 3.1.1, Table 4, part 1 of 8) | ✅ | 75.3 | 10 |
-| BQ04 | A2 | ✓ | 3/3 (molecular function,biological process,cellular component) | ✓ (part 1 of 2, section c) | ✅ | 25.6 | 4 |
-| BQ05 | A2 | ✓ | 1/1 (unified growth theory) | ✗ | ✅ | 35.6 | 5 |
-| BQ06 | A2 | ✓ | 1/1 (precipitation efficiency) | ✓ (part 1 of 3, part 2 of 3, §3) | ✅ | 97.4 | 10 |
-| BQ07 | A2 | ✓ | 2/2 (yiddish,8b) | ✓ (part 1 of 4) | ✅ | 25.3 | 3 |
-| BQ08 | A2 | ✓ | 2/2 (oxygen redox,cathode) | ✓ (part 1 of 2, part 2 of 2) | ✅ | 77.0 | 6 |
-| BQ09 | A2 | ✓ | 2/2 (dynamic,multilayer perceptron) | ✓ (part 1 of 2, part 2 of 2) | ✅ | 43.9 | 5 |
-| BQ10 | A2 | ✓ | 2/2 (immune evasion,chemotherapy) | ✓ (part 1 of 3, part 2 of 3, part 3 of 3) | ✅ | 54.7 | 7 |
-| BQ01 | B | ✓ | 3/3 (scaled dot-product,multi-head,recurrence) | ✗ | ✅ | 24.9 | 6 |
-| BQ02 | B | ✓ | 2/2 (noisy intermediate-scale,error correction) | ✓ (§4.1, §4.2, §6.4) | ✅ | 24.2 | 7 |
-| BQ03 | B | ✓ | 2/2 (multimedqa,67.6) | ✓ (Table 4) | ✅ | 20.3 | 8 |
-| BQ04 | B | ✓ | 3/3 (molecular function,biological process,cellular component) | ✓ (Section 2) | ✅ | 12.0 | 5 |
-| BQ05 | B | ✓ | 1/1 (unified growth theory) | ✓ (sections f) | ✅ | 19.6 | 4 |
-| BQ06 | B | ✓ | 1/1 (precipitation efficiency) | ✓ (§2, §3, §4.1) | ✅ | 29.9 | 10 |
-| BQ07 | B | ✓ | 2/2 (yiddish,8b) | ✓ (Section 1, Section 4) | ✅ | 11.6 | 4 |
-| BQ08 | B | ✓ | 2/2 (oxygen redox,cathode) | ✗ | ✅ | 20.2 | 4 |
-| BQ09 | B | ✓ | 1/2 (dynamic) | ✗ | ❌ | 20.4 | 4 |
-| BQ10 | B | ✓ | 2/2 (immune evasion,chemotherapy) | ✓ (Table 2, §1, §3.1) | ✅ | 38.6 | 12 |
-| BQ01 | C | ✓ | 3/3 (scaled dot-product,multi-head,recurrence) | ✓ (Table 1, §3.2, §3.2.1) | ✅ | 34.1 | 5 |
-| BQ02 | C | ✓ | 2/2 (noisy intermediate-scale,error correction) | ✗ | ✅ | 21.4 | 2 |
-| BQ03 | C | ✓ | 2/2 (multimedqa,67.6) | ✓ (Table 4) | ✅ | 18.6 | 2 |
-| BQ04 | C | ✓ | 3/3 (molecular function,biological process,cellular component) | ✗ | ✅ | 17.0 | 2 |
-| BQ05 | C | ✓ | 1/1 (unified growth theory) | ✗ | ✅ | 30.0 | 4 |
-| BQ06 | C | ✓ | 1/1 (precipitation efficiency) | ✗ | ✅ | 48.6 | 11 |
-| BQ07 | C | ✓ | 2/2 (yiddish,8b) | ✗ | ✅ | 11.2 | 2 |
-| BQ08 | C | ✓ | 2/2 (oxygen redox,cathode) | ✗ | ✅ | 19.7 | 2 |
-| BQ09 | C | ✓ | 2/2 (dynamic,multilayer perceptron) | ✗ | ✅ | 23.3 | 3 |
-| BQ10 | C | ✓ | 1/2 (chemotherapy) | ✗ | ❌ | 21.3 | 4 |
+| QID | Arm | Gold-ID | Strict keywords | Alias-aware keywords | Citation marker | Strict pass | Alias-aware pass | Wall s | Tools |
+|---|---|---|---:|---:|---|---|---|---:|---:|
+| BQ01 | A2 | yes | 3/3 | 3/3 | yes (Table 1, part 1 of 2, part 2 of 2) | yes | yes | 42.5 | 8 |
+| BQ02 | A2 | yes | 2/2 | 2/2 | yes (part 1 of 3, part 1 of 4) | yes | yes | 48.8 | 8 |
+| BQ03 | A2 | yes | 2/2 | 2/2 | yes (Table 1, Table 4, part 1 of 8) | yes | yes | 37.7 | 8 |
+| BQ04 | A2 | yes | 3/3 | 3/3 | yes (part 1 of 2) | yes | yes | 32.7 | 8 |
+| BQ05 | A2 | yes | 1/1 | 1/1 | no | yes | yes | 19.8 | 7 |
+| BQ06 | A2 | yes | 1/2 | 2/2 | yes (part 1 of 3) | no | yes | 42.3 | 7 |
+| BQ07 | A2 | yes | 2/2 | 2/2 | yes (Section 5, part 1 of 4) | yes | yes | 40.7 | 9 |
+| BQ08 | A2 | yes | 1/2 | 1/2 | yes (Section 4, Tables 1, part 1 of 2) | no | no | 40.7 | 9 |
+| BQ09 | A2 | yes | 1/2 | 2/2 | yes (Sections I, Tables II, part 1 of 2) | no | yes | 25.0 | 8 |
+| BQ10 | A2 | yes | 2/2 | 2/2 | yes (Section 3.3, Sections 3.1, part 1 of 3) | yes | yes | 46.7 | 10 |
+| BQ01 | B | yes | 3/3 | 3/3 | yes (Section 1, Section 3.2, Section 3.2.1) | yes | yes | 21.0 | 8 |
+| BQ02 | B | yes | 2/2 | 2/2 | yes (part 1 of 3, part 2 of 3, §4.1) | yes | yes | 12.5 | 6 |
+| BQ03 | B | yes | 2/2 | 2/2 | yes (Table 1, Table 4, Table 6) | yes | yes | 11.5 | 5 |
+| BQ04 | B | yes | 3/3 | 3/3 | yes (part 1 of 2) | yes | yes | 11.4 | 5 |
+| BQ05 | B | yes | 1/1 | 1/1 | no | yes | yes | 16.9 | 4 |
+| BQ06 | B | yes | 1/2 | 2/2 | yes (part 1 of 3, part 2 of 3, §3) | no | yes | 14.6 | 7 |
+| BQ07 | B | yes | 2/2 | 2/2 | yes (Section 5, part 1 of 4) | yes | yes | 12.6 | 6 |
+| BQ08 | B | yes | 1/2 | 1/2 | yes (part 1 of 2, part 2 of 2, §1) | no | no | 13.2 | 4 |
+| BQ09 | B | yes | 1/2 | 2/2 | yes (Tables II, part 1 of 2, part 2 of 2) | no | yes | 11.3 | 4 |
+| BQ10 | B | yes | 2/2 | 2/2 | yes (Table 2, part 1 of 3, part 2 of 3) | yes | yes | 27.1 | 10 |
+| BQ01 | C | yes | 3/3 | 3/3 | yes (part 1 of 2, part 2 of 2) | yes | yes | 22.8 | 6 |
+| BQ02 | C | yes | 2/2 | 2/2 | yes (part 1 of 3, part 1 of 4) | yes | yes | 16.6 | 5 |
+| BQ03 | C | yes | 2/2 | 2/2 | yes (part 1 of 8, part 2 of 8) | yes | yes | 17.2 | 5 |
+| BQ04 | C | yes | 3/3 | 3/3 | yes (part 1 of 2) | yes | yes | 13.8 | 5 |
+| BQ05 | C | yes | 1/1 | 1/1 | no | yes | yes | 19.6 | 5 |
+| BQ06 | C | yes | 1/2 | 2/2 | yes (part 1 of 3, part 2 of 3) | no | yes | 17.0 | 5 |
+| BQ07 | C | yes | 2/2 | 2/2 | yes (part 1 of 4) | yes | yes | 16.4 | 5 |
+| BQ08 | C | yes | 2/2 | 2/2 | yes (part 1 of 2, part 2 of 2) | yes | yes | 25.0 | 7 |
+| BQ09 | C | yes | 2/2 | 2/2 | yes (part 1 of 2, part 2 of 2) | yes | yes | 22.6 | 7 |
+| BQ10 | C | yes | 1/2 | 2/2 | yes (part 1 of 3, part 2 of 3, part 3 of 3) | no | yes | 25.2 | 8 |
 
-## 判分说明
+## Scoring definitions
 
-- pass = 金标论文可追溯(答案/工具轨迹含金标 id) 且 答案含 ≥60% 金标关键词(词边界匹配)。
-- C 轨金标证据依赖提示词要求的 chunk 文件名引用; 拒答(insufficient evidence)计为未通过。
-- `引用命中` = 论文 Metrics 的 cited 口径（part k of N / section|table|appendix 编号 / §n）;
-  括号内 `chunk n` 为稠密轨按提示词要求的 chunk 引用，**不计入**论文 cited 数字，仅作附注。
-  cited 正则: `part/section/table markers present: \bparts?\s+\d+\s+of\s+\d+ | \b(?:section|sections|table|tables|appendix|appendices)\s+(?:\d+(?:\.\d+)*|[A-Z](?:\.\d+)*) | §\s*\d+(?:\.\d+)*`
-  附注 chunk 正则: `dense chunk references (reported separately, NOT counted in the paper's cited numbers): \bchunk[_ ]?(?:index|id)?\s*\d+`
-- 判分完全确定性(词边界/标记正则), 不经 LLM; 逐题 trace 见 run 目录 track_*.json。
+- Gold-ID coverage means the gold identifier occurs in the answer or recorded retrieval trace; it is provenance/document contact, not semantic grounding.
+- Strict keyword coverage uses the original exact lexical keywords and the 60% threshold.
+- Alias-aware keyword coverage additionally accepts the explicit aliases defined for BQ09 and BQ10; it remains lexical coverage, not a factuality score.
+- Citation-marker hits are syntactic locator-pattern matches. They do not test whether a locator resolves or supports an answer claim.
+- Chunk identifiers are counted separately and are not document citation markers.
+  Citation regex: `part/section/table markers present: \bparts?\s+\d+\s+of\s+\d+ | \b(?:section|sections|table|tables|appendix|appendices)\s+(?:\d+(?:\.\d+)*(?:-[A-Z0-9]+)?|[IVXLCDM]+(?:-[A-Z0-9]+)?)\b | §\s*(?:\d+(?:\.\d+)*(?:-[A-Z0-9]+)?|[IVXLCDM]+(?:-[A-Z0-9]+)?)\b`
+  Chunk regex: `dense chunk references (reported separately, NOT counted in the paper's cited numbers): \bchunk[_ ]?(?:index|id)?\s*\d+`
+- This report regrades immutable saved answers and traces; raw run records are unchanged.
 
-逐字答案与监控表见 run 目录 `SUMMARY.md`。
+Verbatim answers and run monitoring are in `SUMMARY.md`.

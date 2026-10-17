@@ -1,0 +1,176 @@
+{
+ "answer": "MameLoshnLM (stylized MAMELOSHNLM, from Yiddish \"mame-loshn,\" mother tongue) is the first open-source large language model built specifically for Yiddish, created by continued pretraining of Llama 3.1 8B on Oytser, a new Yiddish pretraining corpus, and released together with Kashes, a multi-task Yiddish evaluation benchmark. Its parameter scale is 8B parameters, matching its Llama 3.1 8B base model. The retrieved paper reports that it outperforms open baselines of similar scale (e.g., Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B), achieving the best average Kashes score (62.6). Searches in the other four permitted libraries returned no relevant matches, so all support comes from the single document below.\n\nSources used:\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — chunk 2 (Abstract), chunk 10 (Introduction), chunk 53 (Section 5), and full `kb_doc_read` (145 lines); kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`.",
+ "is_error": false,
+ "latency_s": 40.7,
+ "sdk_duration_ms": 37302,
+ "num_turns": 10,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM Yiddish language model parameter scale",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM Yiddish language model parameter scale",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM Yiddish language model parameter scale",
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM Yiddish language model parameter scale",
+    "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM Yiddish language model parameter scale",
+    "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "What is MameLoshnLM and what parameter scale does it have?"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+   }
+  }
+ ],
+ "tool_call_count": 9,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 87206,
+  "output": 3981,
+  "cache_read": 299648,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.686612,
+ "timeline": [
+  {
+   "t": 3.46,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 7.04,
+   "event": "text",
+   "detail": "254"
+  },
+  {
+   "t": 7.04,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 10.42,
+   "event": "text",
+   "detail": "79"
+  },
+  {
+   "t": 10.69,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 10.97,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 11.25,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 11.52,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 11.77,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 16.25,
+   "event": "text",
+   "detail": "295"
+  },
+  {
+   "t": 17.09,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 17.39,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 35.65,
+   "event": "text",
+   "detail": "134"
+  },
+  {
+   "t": 36.0,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 40.72,
+   "event": "text",
+   "detail": "974"
+  },
+  {
+   "t": 40.73,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll first resolve the five allowed library IDs with `kb_list(lightweight=true)`, then run one `kb_search_vector` per library (query: \"MameLoshnLM\" plus \"language model parameter scale\") and merge the hits by score before reading the surviving documents.",
+  "Libraries resolved. Now one vector search per allowed library, merged by score.",
+  "The top candidate is clearly in 计算机与人工智能: a paper titled \"MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\" (scores ~0.70; other libraries max ~0.50 with unrelated content). I'll verify its actual content with the Laya judge (reference mode, all four parts) and read part 1 directly.",
+  "Direct verification succeeded on part 1. I'll read the remaining lines of that file to capture the model section (Section 5) verbatim.",
+  "MameLoshnLM (stylized MAMELOSHNLM, from Yiddish \"mame-loshn,\" mother tongue) is the first open-source large language model built specifically for Yiddish, created by continued pretraining of Llama 3.1 8B on Oytser, a new Yiddish pretraining corpus, and released together with Kashes, a multi-task Yiddish evaluation benchmark. Its parameter scale is 8B parameters, matching its Llama 3.1 8B base model. The retrieved paper reports that it outperforms open baselines of similar scale (e.g., Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B), achieving the best average Kashes score (62.6). Searches in the other four permitted libraries returned no relevant matches, so all support comes from the single document below.\n\nSources used:\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — chunk 2 (Abstract), chunk 10 (Introduction), chunk 53 (Section 5), and full `kb_doc_read` (145 lines); kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`."
+ ],
+ "track": "a2",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ07",
+ "via": "chat",
+ "git_commit": "cda1654",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

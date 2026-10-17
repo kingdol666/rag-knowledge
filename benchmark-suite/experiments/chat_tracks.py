@@ -125,6 +125,30 @@ AFF_VECTOR = (
 )
 
 
+# Controlled reruns can pin every arm to one library so the three interfaces
+# share a substrate; unset means the historical all-library scope.
+_PIN_KB = [x.strip() for x in os.environ.get("RAG_BENCH_PIN_KB", "").split(",") if x.strip()]
+if _PIN_KB:
+    AFF_PLATFORM += (
+        " Restrict every search to these libraries: " + ", ".join(_PIN_KB) +
+        ". Resolve their ids with kb_list, then call kb_search_vector once for "
+        "EACH of them (pass kb_id per call) and merge the candidates by score; "
+        "do not search or read other libraries."
+    )
+    _libs = ", ".join(_PIN_KB)
+    AFF_VECTOR = (
+        "You have exactly one tool: dense vector search kb_search_vector over "
+        f"these libraries: {_libs}. Call it once per library (top_k 10, "
+        "score_threshold 0) and merge the results by score before answering. "
+        "You may rephrase and search again, but you must answer ONLY from the "
+        "retrieved text. Do not use any other tool."
+    )
+_CORPUS_OVERRIDE = os.environ.get("RAG_BENCH_CORPUS_DIR", "").strip()
+if _CORPUS_OVERRIDE:
+    AFF_BARE = AFF_BARE.replace("100 research-paper markdown files",
+                                "322 markdown files (parts of 100 papers)")
+
+
 def _kb_read_tools(*names: str) -> list:
     """Read-side kb tools, listed under both MCP registration namespaces."""
     out = []
@@ -153,7 +177,7 @@ TRACKS = {
           "affordance": AFF_PLATFORM_FILES, "prompt_version": PROMPT_VERSION},
     "a2": {"cwd": str(REPO), "allowed_tools": A2_TOOLS,
            "affordance": AFF_PLATFORM, "prompt_version": PROMPT_VERSION},
-    "b": {"cwd": str(CORPUS_DIR), "allowed_tools": ["Read", "Grep", "Glob"],
+    "b": {"cwd": _CORPUS_OVERRIDE or str(CORPUS_DIR), "allowed_tools": ["Read", "Grep", "Glob"],
           "affordance": AFF_BARE, "prompt_version": PROMPT_VERSION},
     "c": {"cwd": str(REPO), "allowed_tools": C_VECTOR_TOOLS,
           "affordance": AFF_VECTOR, "prompt_version": PROMPT_VERSION},

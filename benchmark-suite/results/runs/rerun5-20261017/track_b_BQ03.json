@@ -1,0 +1,107 @@
+{
+ "answer": "MultiMedQA is the benchmark introduced in \"Large Language Models Encode Clinical Knowledge,\" comprising seven medical question-answering datasets: six existing ones — MedQA, MedMCQA, PubMedQA, LiveQA, MedicationQA, and MMLU clinical topics — plus the newly introduced HealthSearchQA, a set of 3,375 commonly searched consumer health questions (part 1 of 8, Introduction and §3.1.1, including Table 1). Its questions span medical exams, medical research, and consumer queries, in multiple-choice and long-form formats. On the MedQA (USMLE) benchmark, Flan-PaLM 540B reached 67.6% accuracy, which the paper describes as more than 17% above the prior state of the art (part 1 of 8, contributions; part 2 of 8, §4.1 and Table 4). This result combined prompting strategies: few-shot prompting alone gave 60.3%, and adding self-consistency prompting raised it to 67.6% (part 2 of 8, Table 7). Table 4 compares this against PubMedGPT (50.3%), DRAGON (47.5%), BioLinkBERT (45.1%), Galactica (44.4%), PubMedBERT (38.1%), and GPT-Neo (33.3%) (part 2 of 8). Notably, chain-of-thought prompting did not improve over standard few-shot on MedQA (60.3% for both) (part 2 of 8, Table 6).\n\nSources: 生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md; same file (part 2 of 8).md.",
+ "is_error": false,
+ "latency_s": 11.5,
+ "sdk_duration_ms": 8797,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MultiMedQA",
+    "path": "D:\\tmp\\rerun-parts"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MultiMedQA|MedQA|Flan-PaLM",
+    "path": "D:\\tmp\\rerun-parts\\生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of "
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MultiMedQA|MedQA|Flan-PaLM",
+    "path": "D:\\tmp\\rerun-parts\\生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of "
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MultiMedQA|MedQA|Flan-PaLM",
+    "path": "D:\\tmp\\rerun-parts\\生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of "
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 46332,
+  "output": 1466,
+  "cache_read": 62848,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.30075700000000005,
+ "timeline": [
+  {
+   "t": 2.78,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.49,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 4.64,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 6.52,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 6.88,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 7.27,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 11.45,
+   "event": "text",
+   "detail": "1317"
+  },
+  {
+   "t": 11.46,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "MultiMedQA is the benchmark introduced in \"Large Language Models Encode Clinical Knowledge,\" comprising seven medical question-answering datasets: six existing ones — MedQA, MedMCQA, PubMedQA, LiveQA, MedicationQA, and MMLU clinical topics — plus the newly introduced HealthSearchQA, a set of 3,375 commonly searched consumer health questions (part 1 of 8, Introduction and §3.1.1, including Table 1). Its questions span medical exams, medical research, and consumer queries, in multiple-choice and long-form formats. On the MedQA (USMLE) benchmark, Flan-PaLM 540B reached 67.6% accuracy, which the paper describes as more than 17% above the prior state of the art (part 1 of 8, contributions; part 2 of 8, §4.1 and Table 4). This result combined prompting strategies: few-shot prompting alone gave 60.3%, and adding self-consistency prompting raised it to 67.6% (part 2 of 8, Table 7). Table 4 compares this against PubMedGPT (50.3%), DRAGON (47.5%), BioLinkBERT (45.1%), Galactica (44.4%), PubMedBERT (38.1%), and GPT-Neo (33.3%) (part 2 of 8). Notably, chain-of-thought prompting did not improve over standard few-shot on MedQA (60.3% for both) (part 2 of 8, Table 6).\n\nSources: 生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md; same file (part 2 of 8).md."
+ ],
+ "track": "b",
+ "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\tmp\\rerun-parts",
+ "max_turns": 12,
+ "qid": "BQ03",
+ "via": "chat",
+ "git_commit": "cda1654",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

@@ -1,0 +1,114 @@
+{
+ "answer": "**Answer:** MameLoshnLM (stylized MAMELOSHNLM) is described in the retrieved paper as the first open-source large language model for Yiddish, named after the Yiddish term \"Mame-Loshn\" (\"mother tongue\"). It was produced by continued pretraining of **Llama-3.1-8B** on a Yiddish corpus using a causal language-modeling objective, and the paper explicitly calls it \"an open-source **8B-parameter** LM for Yiddish.\" Its parameter scale is therefore **8 billion parameters** (inherited from the Llama-3.1-8B base model). The paper also introduces two supporting resources: Oytser (a Yiddish pretraining corpus) and Kashes (a Yiddish evaluation benchmark). The other four libraries (自然科学与地球科学, 生命科学与医学, 工程与能源, 经济与社会) returned no relevant matches.\n\n**Sources used:**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — chunk_index 10 (\"open-source 8B-parameter LM for Yiddish\"), chunk_index 53 (first open-source LLM for Yiddish; naming), chunk_index 54 (continued pretraining of Llama-3.1-8B) — kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`",
+ "is_error": false,
+ "latency_s": 16.4,
+ "sdk_duration_ms": 13072,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM language model parameter scale",
+    "kb_id": "计算机与人工智能"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM language model parameter scale",
+    "kb_id": "自然科学与地球科学"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM language model parameter scale",
+    "kb_id": "生命科学与医学"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM language model parameter scale",
+    "kb_id": "工程与能源"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM language model parameter scale",
+    "kb_id": "经济与社会"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 79999,
+  "output": 2116,
+  "cache_read": 65792,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.486912,
+ "timeline": [
+  {
+   "t": 3.38,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 7.85,
+   "event": "text",
+   "detail": "269"
+  },
+  {
+   "t": 8.06,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.31,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.54,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.76,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 9.01,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 16.41,
+   "event": "text",
+   "detail": "1078"
+  },
+  {
+   "t": 16.42,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "Retrieval plan: I'll run dense vector search (`kb_search_vector`, top_k=10, score_threshold=0) for \"MameLoshnLM parameter scale\" across all five libraries — 计算机与人工智能, 自然科学与地球科学, 生命科学与医学, 工程与能源, 经济与社会 — then merge hits by score and answer only from the retrieved chunks.",
+  "**Answer:** MameLoshnLM (stylized MAMELOSHNLM) is described in the retrieved paper as the first open-source large language model for Yiddish, named after the Yiddish term \"Mame-Loshn\" (\"mother tongue\"). It was produced by continued pretraining of **Llama-3.1-8B** on a Yiddish corpus using a causal language-modeling objective, and the paper explicitly calls it \"an open-source **8B-parameter** LM for Yiddish.\" Its parameter scale is therefore **8 billion parameters** (inherited from the Llama-3.1-8B base model). The paper also introduces two supporting resources: Oytser (a Yiddish pretraining corpus) and Kashes (a Yiddish evaluation benchmark). The other four libraries (自然科学与地球科学, 生命科学与医学, 工程与能源, 经济与社会) returned no relevant matches.\n\n**Sources used:**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — chunk_index 10 (\"open-source 8B-parameter LM for Yiddish\"), chunk_index 53 (first open-source LLM for Yiddish; naming), chunk_index 54 (continued pretraining of Llama-3.1-8B) — kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`"
+ ],
+ "track": "c",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ07",
+ "via": "chat",
+ "git_commit": "cda1654",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

@@ -1,0 +1,118 @@
+{
+ "answer": "NISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined in this paper for the era of quantum computers with \"50 to a few hundred\" qubits — \"intermediate scale\" meaning beyond brute-force classical simulation, and \"noisy\" meaning imperfect control over those qubits. Its central limitation is that gate noise limits the size of quantum circuits that can be executed reliably: with two-qubit gate error rates above ~0.1%, \"we don't expect to be able to execute a circuit that contains many more than about 1000 gates… because the noise will overwhelm the signal,\" and that \"imposes a ceiling on the computational power of NISQ technology.\" NISQ devices are also defined as operating without quantum error correction, since its overhead is too high in the near term. The paper adds that because of this imperfect performance it may be hard even to validate that a NISQ computer is giving the right answer.\n\nSources: `自然科学与地球科学\\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md` (abstract, §4.1–4.2) and `…(part 2 of 3).md` (§6.4).",
+ "is_error": false,
+ "latency_s": 12.5,
+ "sdk_duration_ms": 9764,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ",
+    "path": "D:\\tmp\\rerun-parts"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "noisy intermediate-scale quantum",
+    "path": "D:\\tmp\\rerun-parts"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ|noisy intermediate|intermediate-scale",
+    "path": "D:\\tmp\\rerun-parts\\自然科学与地球科学\\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3)."
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ|noisy intermediate|limitation|noise",
+    "path": "D:\\tmp\\rerun-parts\\自然科学与地球科学\\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3)."
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\tmp\\rerun-parts\\自然科学与地球科学\\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3)."
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\tmp\\rerun-parts\\自然科学与地球科学\\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3)."
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 44656,
+  "output": 1388,
+  "cache_read": 99840,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.308896,
+ "timeline": [
+  {
+   "t": 2.79,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.47,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 4.77,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 6.87,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 7.28,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 9.01,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 9.23,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 12.47,
+   "event": "text",
+   "detail": "1081"
+  },
+  {
+   "t": 12.48,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "NISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined in this paper for the era of quantum computers with \"50 to a few hundred\" qubits — \"intermediate scale\" meaning beyond brute-force classical simulation, and \"noisy\" meaning imperfect control over those qubits. Its central limitation is that gate noise limits the size of quantum circuits that can be executed reliably: with two-qubit gate error rates above ~0.1%, \"we don't expect to be able to execute a circuit that contains many more than about 1000 gates… because the noise will overwhelm the signal,\" and that \"imposes a ceiling on the computational power of NISQ technology.\" NISQ devices are also defined as operating without quantum error correction, since its overhead is too high in the near term. The paper adds that because of this imperfect performance it may be hard even to validate that a NISQ computer is giving the right answer.\n\nSources: `自然科学与地球科学\\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md` (abstract, §4.1–4.2) and `…(part 2 of 3).md` (§6.4)."
+ ],
+ "track": "b",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\tmp\\rerun-parts",
+ "max_turns": 12,
+ "qid": "BQ02",
+ "via": "chat",
+ "git_commit": "cda1654",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

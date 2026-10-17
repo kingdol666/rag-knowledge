@@ -22,8 +22,10 @@
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3pt}
-\caption{Answer quality per question and per interface (30 answer cells from
-\protect\path{run-20261013T094350Z-5f9faac}). Every answer passes the gold-ID
+\caption{Answer quality per question and per interface in the original grid
+(30 answer cells from \protect\path{run-20261013T094350Z-5f9faac}); the
+controlled replication on a common substrate is reported in the text and adds
+no column. Every answer passes the gold-ID
 check, so coverage is 10/10 in each arm and the column is not repeated. Each
 arm column gives strict keyword coverage (\yes\ or $\times$), alias-aware coverage,
 and the number of recognized citation markers (m). Strict coverage is a
@@ -53,56 +55,57 @@ BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes
 \end{tabular}
 \end{table*}
 
-\textbf{Answers locate the right document in all 30 cells; citation syntax is
-where the interfaces diverge.}
+\textbf{Answers locate the right document in all 30 cells of both grids;
+keyword and marker counts depend on the substrate.}
 Three arms answered ten gold questions through the public chat API on one model
-(recorded in the run timeline as claude-opus-4-8[1m]) under one task contract
-and a 12-turn limit. The arms differ in interface and substrate: arm~P used the
-knowledge-base tools with the endpoint's default library scope; arm~F scanned
-the exported file tree; arm~D used one vector operation over the
-800-character mirror index, which contains BQ03's gold although that paper is
-absent from the 79-paper library of Table~\ref{tab:retrieval}(b). Every answer
-names its gold document, and alias-aware keyword coverage is 10/10 in every
-arm, so the provenance check is at ceiling on this set. The arms separate on
-two syntax measures: strict keyword coverage is 9/10 in each arm, and
-recognized citation-marker hits are 9/10, 7/10 and 2/10 for P, F and D.
-Table~\ref{tab:e5-answers} gives the per-question cells,
-Figure~\ref{fig:threearms} the aggregate. Answer quality here means provenance,
-lexical coverage and marker syntax, not semantic faithfulness.
+(recorded in the run timeline as claude-opus-4-8[1m]) under one task contract.
+In the original grid (Table~\ref{tab:e5-answers},
+\path{run-20261013T094350Z-5f9faac}), every answer names its gold document,
+alias-aware keyword coverage is 10/10 in every arm, strict keyword coverage is
+9/10, and recognized citation-marker hits are 9/10, 7/10 and 2/10 for P, F and
+D. Those arms differed in substrate: P used the default all-library scope, F
+the exported file tree, and D an 800-character chunk replica. A controlled
+replication then pinned all three arms to the same five domain libraries (322
+stored parts): P and D search the vector collections and F reads the same
+parts in full (\path{rerun5-20261017}). In that grid gold-identifier
+coverage is again 10/10 in every arm, but strict coverage is 7/10, 7/10 and
+8/10, alias-aware coverage 9/10, 9/10 and 10/10, and citation-marker hits
+9/10 in every arm. The marker contrast therefore belongs to the chunk-replica
+substrate rather than to citation quality, and strict counts move by up to two
+cells between grids. We report provenance and alias-aware coverage as the
+stable measures and treat strict and marker counts as substrate-bound; answer
+quality here means provenance and lexical coverage, not semantic faithfulness.
 
 \textbf{Per-question reading.}
-The marker column, not the gold-identifier column, separates the arms. Nine
-platform answers and seven file-tool answers carry at least one document-style
-locator. The dense arm produces eight answers with no document-style marker and
-seven that name chunk identifiers instead, of which two also carry one. BQ05
-carries no marker in any arm because it cites by title, a form the
-deterministic pattern does not count. The strict misses are three, and not all
-are word-form variants: the platform answer to BQ06 is written in Chinese and
-misses both English terms (the declared aliases include Chinese forms, which is
-why alias-aware coverage passes), the file-tool answer to BQ09 omits the MLP
-abbreviation, and the dense answer to BQ10 uses a different immune-resistance
-wording. Under the pre-correction BQ06 key the platform arm scored 10/10 strict
-against a mis-specified gold, and both grades are retained. A source-presence
-audit found that in 29 of the 30 cells every strict keyword an answer matched
-also occurs in the cited gold document; the exception is BQ06 in arm~P, which
-matched none. This is traceability, not entailment (supplementary
-Table~S7). These checks do not
-establish semantic faithfulness or claim-to-source support. Three cells also
-departed from the stated contract: the BQ06 platform answer is not in English,
-the BQ10 file-tool answer ran to 13 turns against the 12-turn limit, and three
-platform cells invoked a host shell outside the knowledge-base tool surface
+In the original grid nine platform and seven file-tool answers carry a
+document-style marker, while the dense arm produces eight with none; in the
+replication the dense arm reads the same libraries and every arm gives nine. BQ05 carries no marker in any grid because it cites by title, a
+form the deterministic pattern does not count. The strict misses differ between grids: BQ06 in
+both (a Chinese answer that the declared aliases cover), BQ09 and BQ10 in the
+original grid, and BQ08 and BQ09 in the replication. Figure~\ref{fig:threearms}
+shows the original grid's aggregate. Under the
+pre-correction BQ06 key the platform arm scored 10/10 strict against a
+mis-specified gold, and both grades are retained. A source-presence audit of
+the original grid found that in 29 of the 30 cells every strict keyword an
+answer matched also occurs in the cited gold document; the exception is BQ06
+in arm~P, which matched none. This is traceability, not entailment
+(supplementary Table~S7). The original grid also departed from the stated
+contract in three cells: the BQ06 platform answer is not in English, the BQ10
+file-tool answer ran to 13 turns, and three platform cells invoked a host
+shell outside the knowledge-base tool surface; the replication stayed within
+the turn cap but one platform answer contains a short Chinese phrase
 (Section~\ref{sec:threats}).
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig11_three_arms}
-\caption{Answer checks for the same ten questions and the same model, with the
-retrieval interface and its substrate varied (30 cells,
+\caption{Answer checks for the original grid (30 cells,
 \protect\path{run-20261013T094350Z-5f9faac}). Gold-identifier coverage is at
-ceiling in all three arms; strict keyword coverage shows three misses (one
-language mismatch, two word-form), alias-aware coverage is 10/10 everywhere,
-and recognized citation markers fall from nine to seven to two answers. The
-marker pattern counts document-style syntax; it does not verify citation
+ceiling in all three arms; strict keyword coverage shows three misses, and
+recognized citation markers fall from nine to seven to two answers. On a
+common substrate the replication gives nine marker-bearing answers in every
+arm, so this contrast is substrate-bound. The marker pattern counts
+document-style syntax; it does not verify citation
 resolution or claim support. Wall-clock and cost figures for these cells are
 reported in the text and in the supplementary material.}
 \label{fig:threearms}

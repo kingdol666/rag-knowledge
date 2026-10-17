@@ -34,11 +34,11 @@ lexical: its gold-ID, keyword and citation-marker checks do not establish
 semantic claim support; gold-ID presence is checked in the answer or the
 recorded trace, and keyword coverage passes at $\lceil 3n/5\rceil$ of the
 annotated terms, so a missing term can still pass. Aliases are reported as a
-separate regrade. The 30-cell grid is one run per arm on one model, recorded
-as claude-opus-4-8[1m], and three cells departed from the stated contract: the
-BQ06 platform answer is in Chinese, the BQ10 file-tool answer ran to 13 turns,
-and three platform cells invoked a host shell outside the knowledge-base tool
-surface. The archived pools store the survivors of each judged pool rather
+separate regrade. The 30-cell grid and its controlled replication are each one run
+per arm on one model, recorded as claude-opus-4-8[1m]; strict counts differ
+between the two grids by up to two cells. Three cells of the original grid
+departed from the stated contract (Section~ef{sec:e5}), and one platform
+answer in the replication contains a short Chinese phrase. The archived pools store the survivors of each judged pool rather
 than the dropped list, so the filter role cannot be re-derived beyond the
 recorded scores. The BQ06 gold key was corrected to the source paper's
 thermodynamic reading after inspection, and declared aliases cover known

@@ -1,0 +1,163 @@
+{
+ "answer": "**Answer**\n\nNISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined by John Preskill to name the near-term era of quantum computing defined by devices of roughly 50 to a few hundred qubits — \"intermediate scale\" because that size is beyond brute-force simulation by today's most powerful classical supercomputers yet far short of fault-tolerant machines. The \"noisy\" qualifier emphasizes imperfect control over those qubits (restrictive qubit topologies, short coherence times, imperfect gates), which \"will place serious limitations on what quantum devices can achieve in the near term.\" Its central limitation is therefore noise-induced circuit-depth collapse: noise in quantum gates limits the size of circuits that can be executed reliably, and circuits larger than about 1000 fundamental two-qubit operations will have the noise overwhelm the signal, which \"imposes a ceiling on the computational power of NISQ technology.\" Because the available hardware qubits are insufficient to implement quantum error correction, NISQ-era work instead pursues quantum error mitigation to extract usable results from noisy raw outputs. Other libraries searched (计算机与人工智能, 生命科学与医学, 工程与能源, 经济与社会) returned no relevant evidence, only incidental \"noise\"/\"intermediate\" term matches.\n\n**Sources used**\n- 自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md — chunks 1, 35, 36, 41; Laya-verified segments 0000–0010 (survivor scores up to 0.853)\n- 自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md — chunk 6\n- 自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md — chunk 1",
+ "is_error": false,
+ "latency_s": 48.8,
+ "sdk_duration_ms": 45641,
+ "num_turns": 9,
+ "tool_calls": [
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noisy intermediate-scale quantum technology definition central limitation",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noisy intermediate-scale quantum technology definition central limitation",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noisy intermediate-scale quantum technology definition central limitation",
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noisy intermediate-scale quantum technology definition central limitation",
+    "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noisy intermediate-scale quantum technology definition central limitation",
+    "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "What defines NISQ technology and what is its central limitation?"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "What defines NISQ technology and what is its central limitation?"
+   }
+  }
+ ],
+ "tool_call_count": 8,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 84972,
+  "output": 3578,
+  "cache_read": 297728,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.6644049999999999,
+ "timeline": [
+  {
+   "t": 3.22,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 5.69,
+   "event": "text",
+   "detail": "308"
+  },
+  {
+   "t": 5.76,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 8.21,
+   "event": "text",
+   "detail": "146"
+  },
+  {
+   "t": 8.49,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.71,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 8.93,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 9.17,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 9.38,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 13.04,
+   "event": "text",
+   "detail": "279"
+  },
+  {
+   "t": 13.83,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 29.0,
+   "event": "text",
+   "detail": "169"
+  },
+  {
+   "t": 29.42,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 48.81,
+   "event": "text",
+   "detail": "1716"
+  },
+  {
+   "t": 48.83,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "Retrieval plan: I will resolve the five permitted library IDs with `kb_list`, then run one `kb_search_vector` query per library on \"NISQ technology definition central limitation noisy intermediate-scale quantum,\" merge the hits by score, and verify the winning segments with `kb_laya_judge` before answering.",
+  "Five permitted library IDs resolved. Now running one vector search per library (NISQ definition + central limitation), then I will merge by score.",
+  "Only the 自然科学与地球科学 library returned strong, on-topic hits (top score 0.706 on the Preskill NISQ paper); the other four libraries produced only incidental \"noise\"/\"intermediate\" matches at ~0.41–0.48. Verifying the three quantum documents' content with the judge before answering.",
+  "The judge payload was too large with full segment text; re-running in compact mode (references only, no per-segment text) on the primary source, then the secondary ones.",
+  "**Answer**\n\nNISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined by John Preskill to name the near-term era of quantum computing defined by devices of roughly 50 to a few hundred qubits — \"intermediate scale\" because that size is beyond brute-force simulation by today's most powerful classical supercomputers yet far short of fault-tolerant machines. The \"noisy\" qualifier emphasizes imperfect control over those qubits (restrictive qubit topologies, short coherence times, imperfect gates), which \"will place serious limitations on what quantum devices can achieve in the near term.\" Its central limitation is therefore noise-induced circuit-depth collapse: noise in quantum gates limits the size of circuits that can be executed reliably, and circuits larger than about 1000 fundamental two-qubit operations will have the noise overwhelm the signal, which \"imposes a ceiling on the computational power of NISQ technology.\" Because the available hardware qubits are insufficient to implement quantum error correction, NISQ-era work instead pursues quantum error mitigation to extract usable results from noisy raw outputs. Other libraries searched (计算机与人工智能, 生命科学与医学, 工程与能源, 经济与社会) returned no relevant evidence, only incidental \"noise\"/\"intermediate\" term matches.\n\n**Sources used**\n- 自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md — chunks 1, 35, 36, 41; Laya-verified segments 0000–0010 (survivor scores up to 0.853)\n- 自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md — chunk 6\n- 自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md — chunk 1"
+ ],
+ "track": "a2",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ02",
+ "via": "chat",
+ "git_commit": "cda1654",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}
