@@ -89,9 +89,9 @@ documents by content rather than filename, and keeps files, registry and
 metadata consistent through rename, move, delete and re-index. Retrieval is one
 module: three lanes share an invoked server-side content verifier, and an
 answer workflow is instructed to report absence.
-We evaluate the deployed system on three corpora. Our evaluation
-method combines functional audits, per-question answer checks, abstention
-probes and same-pool replays.
+We evaluate the system on three corpora, one an industrial demonstration
+instance. Our evaluation method combines functional audits, per-question
+answer checks, abstention probes and same-pool replays.
 On ten arXiv
 questions crossed with three retrieval interfaces (30 answer cells), every
 answer names its gold document, strict keyword coverage is 9/10 per interface
@@ -100,8 +100,8 @@ and alias-aware coverage 10/10, and recognized citation-marker hits are 9/10,
 complete failure inventory, and a reproduced catalog-transport failure was
 repaired. In a same-pool replay on an industrial corpus, ordering
 by the verifier score reduces Hit@5 from 0.94 to 0.44 while fusion order
-restores 0.94; the scores are not usable as a ranker, and the 0.5 threshold
-admitted every candidate, so filtering is untested. Wall-clock and cost disfavor the
+restores 0.94; the scores are not usable as a ranker, and the 0.5 cut filtered
+nothing. Wall-clock and cost disfavor the
 platform arm. The findings indicate a bounded deployment account,
 not universal retrieval superiority.
 \end{abstract}

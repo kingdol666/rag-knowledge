@@ -82,7 +82,11 @@ misses both English terms (the declared aliases include Chinese forms, which is
 why alias-aware coverage passes), the file-tool answer to BQ09 omits the MLP
 abbreviation, and the dense answer to BQ10 uses a different immune-resistance
 wording. Under the pre-correction BQ06 key the platform arm scored 10/10 strict
-against a mis-specified gold, and both grades are retained. These checks do not
+against a mis-specified gold, and both grades are retained. A source-presence
+audit found that in 29 of the 30 cells every strict keyword an answer matched
+also occurs in the cited gold document; the exception is BQ06 in arm~P, which
+matched none. This is traceability, not entailment (supplementary
+Table~S7). These checks do not
 establish semantic faithfulness or claim-to-source support. Three cells also
 departed from the stated contract: the BQ06 platform answer is not in English,
 the BQ10 file-tool answer ran to 13 turns against the 12-turn limit, and three
@@ -216,9 +220,8 @@ contracts carry to the arXiv grid: every gold was present in the substrate its
 arm searched, all 30 cells answer, and no answerable question is falsely
 refused. An archived contrast over unverified three-chunk lists opened with an
 evidence-insufficiency qualifier on most answerable questions even where its
-own list contained the gold; it also differs in prompt and evidence
-granularity, so the contrast is an observation across delivery configurations,
-not an attribution to the gate. Platform answers cost \$0.79 each against
+list contained the gold; it also differs in prompt and granularity, so the
+contrast is across delivery configurations, not an attribution to the gate. Platform answers cost \$0.79 each against
 \$0.05--0.08 for baseline generation. Per-arm timings and outcomes for the
 three-question campaign are in the supplementary material.
 
@@ -263,10 +266,9 @@ checkpoint with premises truncated to 1{,}600 characters (59 of 191 pairs at
 the cap) (\path{paper-kbs/experiments/results/exp7_second_signal.json}). It
 scores below the verdict (Hit@5 0.3125, MRR 0.1375) with inverted
 separation, gold median 0.0113 against non-gold 0.05285 ($p = 0.120$).
-Truncation is not the cause --- six of the ten golds that fit the context
-window whole still score below 0.01 --- nor domain: unrelated topics still
-score corpus documents up to 0.9973, so an NLI threshold would abstain on
-nothing either. A span-level replay inverts harder: over the 191 pairs and
+Truncation is not the cause (six of ten context-fitting golds still score
+below 0.01), nor domain: unrelated topics score corpus documents up to
+0.9973, so an NLI threshold would abstain on nothing. A span-level replay inverts harder: over the 191 pairs and
 3{,}489 span inferences at roughly 320 characters per span
 (\path{paper-kbs/experiments/results/exp9_span_nli.json}), max-pooling
 gives 0.4728 for gold against 0.91855 for non-gold ($p = 0.0074$), Hit@5
@@ -281,10 +283,10 @@ density within one domain. That probe moved domain, language and corpus size
 together with the confuser clusters --- an association confounded by design,
 not an elimination
 \cite{zheng-llmjudge,panickssery-selfpref,lightman-verify,yin-knowwhat}.
-The verdict is not usable as a ranker on these pools. Whether it earns its
-place as a filter is untested: at the 0.5 threshold it admitted every recorded
-candidate, so the corpus provides no contrast between admitted and rejected
-evidence.
+The verdict is not usable as a ranker on these pools. As a filter, the
+recorded scores show only the narrow margin reported in Section~
+ef{sec:e4},
+and no answer-level test of a higher cut has been run.
 
 
 
@@ -347,8 +349,8 @@ gold-answerable questions in all three arms, and on nine of ten questions
 the gated arms received exactly the ungated arm's documents.
 In this reconstructed setup, all returned scored survivors carry judge
 provenance; that is an interface property, not evidence that the judge improved
-answer quality. The candidate set and evidence budget were held fixed by
-construction, but downstream LLM grades varied in both directions (QK01
+answer quality. The candidate set and budget were held fixed, but downstream
+LLM grades varied in both directions (QK01
 $0\to5$ and QK03 $3\to0$ under the same twelve-document, 4{,}000-character
 pack; sign test $p=1.0$, $n=10$). The only document-level pack shortened by
 the gate was QK09 (12 to 4 documents), without changing its grade. The
@@ -380,5 +382,4 @@ corpus rather than from this one.
 
 Both ablations are single-corpus, single-engine, ten-question diagnostics; the
 gate ablation's control is fusion-ordered, so only its within-run contrast is
-interpretable. Two of thirty cells were rerun after authentication failures
-and are retained in the campaign records.
+interpretable. Two of thirty cells were rerun after authentication failures.

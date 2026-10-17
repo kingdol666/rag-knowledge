@@ -18,7 +18,7 @@ evidence for the requested claim \cite{siren,gao-ragsurvey}.
 The relevant capabilities are usually treated separately. Retrieval asks
 whether a relevant passage enters a ranked list. Knowledge management governs
 how documents are organized and maintained. Document AI recovers text, tables
-and formulas from complex layouts \cite{mineru}. In deployed systems, these
+and formulas from complex layouts \cite{mineru}. In operational systems, these
 operations form one dependency chain: parsing errors affect indexing, placement
 limits what retrieval can see, and ranking alone cannot establish whether a
 candidate supports an answer. A knowledge-base management system has to own
@@ -44,7 +44,7 @@ Tool failures and incomplete searches are execution failures, not evidence of
 semantic absence.
 \end{enumerate}
 
-The deployed platform integrates document parsing, content-informed
+The platform integrates document parsing, content-informed
 organization, lifecycle management, operational experiences, multi-lane
 retrieval and a Model Context Protocol (MCP) server with 95 registered tools
 \cite{mcp}. It runs locally and exposes retrieval functions to several agent
@@ -53,7 +53,7 @@ implementation.
 
 \noindent\textbf{Contributions.}
 \begin{enumerate}
-\item A deployed knowledge-base management system that links quality-gated
+\item A self-hosted knowledge-base management system that links quality-gated
 acquisition, content-informed placement, three-source consistency and lifecycle
 operations, with an invoked server-side evidence gate on the query path. The
 management layer is described function by function, from parse admission to
@@ -66,7 +66,7 @@ Table~\ref{tab:e5-answers}).
 \item A same-pool diagnostic that separates verifier \emph{ordering} from
 verifier \emph{filtering}. Ordering candidates by the verifier score lowers
 Hit@5 from 0.94 to 0.44, while retaining fusion order among recorded survivors
-restores 0.94; all 191 recorded scores exceed the deployed threshold, so the
+restores 0.94; all 191 recorded scores exceed the configured threshold, so the
 loss is attributable to the induced ordering, not to filtering. A verifier
 score that survives an admission filter is therefore not thereby usable as a
 ranker (Sections~\ref{sec:lanes} and~\ref{sec:e4}--\ref{sec:e6}).
@@ -84,7 +84,7 @@ failure analysis, not a wholly new system.
 
 Five questions structure the design-to-evidence sequence, ordered by the
 weight of the answer rather than by the pipeline: how the management layer
-behaves on deployed collections, covering parsing, admission, placement and
+behaves on demonstration and public collections, covering parsing, admission, placement and
 lifecycle (RQ1); what answer quality the end-to-end workflow reaches on a fixed
 question set, measured per question and per interface (RQ2); how the tested
 retrieval configurations compare on document recall and evidence markers

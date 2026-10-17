@@ -16,7 +16,7 @@ Nothing is rounded, re-derived, or "improved". Where an artifact is internally
 inconsistent, the inconsistency is stated rather than resolved. Where the artifact
 reports `null`, `NOT measured`, or a failed check, that is reproduced as such.
 
-**Scope.** All results come from a single deployed instance on the authors' machine,
+**Scope.** All results come from a single self-hosted instance on the authors' machine,
 driven through the official harness API and the project's own MCP tool layer. The
 counts of test cells are given per campaign so the reader can judge the weight of each
 result. Section C states the limitations that apply across all of the evidence. Part D
@@ -1085,7 +1085,7 @@ rows over a 42-document corpus (`corpus_docs`), and
 `paper-kbs/experiments/results/exp5_judge_filter.json` holds 16 rows keyed `Q1`-`Q16`.
 
 **Headline result (provenance).** The questions are **author-written**, in Chinese, over the
-five production knowledge bases, for a PV-module manufacturing and process-engineering
+five demonstration knowledge bases, for a PV-module manufacturing and process-engineering
 domain; they are **not drawn from any public benchmark**. Their design intents, as recorded
 in **Table S3** (Part D), span multi-gold questions (Q1), incident-to-root-cause questions (Q2),
 mechanism questions (Q3), cross-material questions (Q4), synonym gaps (Q5), numeric
@@ -1136,7 +1136,7 @@ to `paper-kbs/tex/journal_20p/_appendix-archived/tab_appendix_ranks.tex`, marked
 ## Part C. Limitations of this evidence
 
 **One deployment, one machine.** Every campaign in this document was run against a single
-deployed instance on the authors' machine, with the tool layer, the parsers, the graph
+self-hosted instance on the authors' machine, with the tool layer, the parsers, the graph
 store and the vector store all local. Nothing here establishes behaviour under a different
 hardware profile, a different index size, a shared deployment, or multi-tenant load. The
 concurrency numbers in A.3 in particular are properties of one host: the retrieval ceiling
@@ -1248,7 +1248,7 @@ The manuscript cites the cross-lingual table as **Table S2**; it is the table in
 Section A.7 above (400 Wikipedia pages per language, first round; the second
 round reproduced these values bit-for-bit, so one column is shown).
 
-### Table S3. Gold-annotated questions over the five production knowledge bases
+### Table S3. Gold-annotated questions over the five demonstration knowledge bases
 
 "Gold" lists unique filename fragments of the ground-truth documents. All
 sixteen serve the tool-layer experiment (manuscript Section 8.5); Q2, Q4, Q6 and
@@ -1315,6 +1315,40 @@ Merge and split were analysed but never executed.
 | Merge, split | Not evaluated |
 | Task status | Fail, reports `running` after `finished_at` is set |
 | Update check | Fail, `ragctl version` timed out after 30 s |
+
+
+### Table S6. Verdict-score threshold sweep (16 hybrid runs, 191 recorded scores)
+
+Each row re-reads the recorded per-candidate scores and counts survivors at that cut. Gold means the candidate document is an in-pool gold (17 instances); one Q14 candidate has no recorded score and is not counted. This is a score-level sweep: it shows where the verifier would begin to filter, and it does not measure answer quality at a higher cut.
+
+| Cut | Survivors (of 191) | Survivors (%) | Golds kept (of 17) | Non-golds kept (%) |
+|---:|---:|---:|---:|---:|
+| 0.50 | 191 | 100.0 | 17 | 100.0 |
+| 0.60 | 189 | 99.0 | 17 | 98.9 |
+| 0.65 | 185 | 96.9 | 17 | 96.6 |
+| 0.70 | 182 | 95.3 | 17 | 94.8 |
+| 0.75 | 169 | 88.5 | 16 | 87.9 |
+| 0.80 | 151 | 79.1 | 16 | 77.6 |
+| 0.85 | 114 | 59.7 | 13 | 58.0 |
+| 0.88 | 77 | 40.3 | 7 | 40.2 |
+| 0.90 | 49 | 25.7 | 4 | 25.9 |
+| 0.92 | 29 | 15.2 | 2 | 15.5 |
+
+**Artifacts.** `paper-kbs/experiments/results/exp1_retrieval.json` (`judge_scores.all` on the sixteen `qdcvr_hybrid` rows) and `paper-kbs/experiments/kbcommon.py` (`QUESTIONS` for the gold substrings).
+
+### Table S7. Source-presence audit of matched facts (30 answer cells)
+
+For every cell, each annotated strict keyword that the answer matched was looked up in the cited gold document. The check tests whether the fact an answer states is lexically traceable to the document it cites; it is not entailment.
+
+| Arm | Cells with at least one matched keyword | Cells where every matched keyword occurs in the cited gold document |
+|---|---:|---:|
+| P (platform) | 9 | 9 |
+| F (file tools) | 10 | 10 |
+| D (dense) | 10 | 10 |
+
+Across all 30 cells, 29 satisfy the check; the remaining cell (BQ06 in arm P) matched no keyword because its answer is in Chinese.
+
+**Artifacts.** `benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/track_*.json` (answers); `benchmark-suite/data/papers/qa_questions_e5_corrected.json` (keywords); `benchmark-suite/data/corpus_md/*.md` (gold documents).
 
 ### Freeze manifest for the manuscript's evaluation
 

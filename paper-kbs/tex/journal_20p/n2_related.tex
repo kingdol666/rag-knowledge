@@ -67,7 +67,7 @@ here is not that abstention or evidence checks are absent from prior research.
 The gap this study addresses is one of integration and of role separation
 rather than of missing capabilities: QDCVR examines how acquisition checks,
 content-informed placement, retrieval and answer-time evidence inspection
-interact in one deployed knowledge-base workflow, reports where implementation
+interact in one knowledge-base workflow, reports where implementation
 and transport boundaries constrain that workflow, and measures separately the
 two roles a verifier can play. The table therefore motivates an
 integration question, not a universal claim that earlier systems lack reusable
@@ -91,7 +91,7 @@ solved.
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.18}
 \caption{Positioning. Each strand addresses part of the path from stored
-document to answer. QDCVR studies a deployed workflow combining content-informed
+document to answer. QDCVR studies a knowledge-base workflow combining content-informed
 acquisition and placement, server-side checks when invoked, and answer-layer
 reporting; the evaluation measures selected components and boundaries in
 Section~\ref{sec:eval}.}
@@ -104,10 +104,10 @@ Knowledge management & Public knowledge bases \citep{auer-dbpedia-kb-2007,hoffar
 Document AI & Layout-aware extraction \citep{zhong-publaynet-layout-2019,huang-layoutlmv3-docai-2022}; MinerU \citep{mineru} & Recovery of text, tables and formulas from difficult layouts & Whether what was recovered is complete enough to index, and where it is then stored\\
 Retrieval & Dense \citep{dpr}, lexical \citep{bm25} and hybrid ranking \citep{rrf-cormack,bge-m3} & Rank quality over a corpus that is assumed indexed & Whether a top-ranked candidate contains evidence for the claim it is used to support\\
 Graph-structured organization & GraphRAG \citep{graphrag}, LightRAG \citep{lightrag}, RAPTOR \citep{raptor} & Multi-hop and hierarchical relationships between documents & Evidentiary status: a graph edge is a navigation fact, not evidence\\
-Self-reflective generation & Self-RAG \citep{selfrag}, CRAG \citep{crag}, FLARE \citep{flare}; judge-based verification \citep{zheng-llmjudge,lightman-verify} & Evidence assessment or retrieval correction in generation workflows & How verification and abstention interact with knowledge-base acquisition and organization in a deployed workflow\\
+Self-reflective generation & Self-RAG \citep{selfrag}, CRAG \citep{crag}, FLARE \citep{flare}; judge-based verification \citep{zheng-llmjudge,lightman-verify} & Evidence assessment or retrieval correction in generation workflows & How verification and abstention interact with knowledge-base acquisition and organization in a knowledge-base workflow\\
 Agentic tool use & ReAct \citep{react-yao}, MCP \citep{mcp}, DeepRead \citep{deepread} & Access to retrieval tools behind a stable interface & Whether configured retrieval budgets and failure states are exposed and checked in a particular deployment\\
 \midrule
-QDCVR (this work) & Sections~\ref{sec:system}--\ref{sec:lanes} & A deployed integration of content-informed placement, indexed-state checks, an invoked server-side evidence gate and agent answer reporting & Claims beyond the measured corpora and configurations, bounded in Section~\ref{sec:threats}\\
+QDCVR (this work) & Sections~\ref{sec:system}--\ref{sec:lanes} & An integration of content-informed placement, indexed-state checks, an invoked server-side evidence gate and agent answer reporting & Claims beyond the measured corpora and configurations, bounded in Section~\ref{sec:threats}\\
 \bottomrule
 \end{tabular}
 \end{table*}

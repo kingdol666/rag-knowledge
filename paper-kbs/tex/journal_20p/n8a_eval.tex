@@ -1,7 +1,7 @@
 \section{Evaluation}
 \label{sec:eval}
 
-We evaluate the deployed system on three corpora differing in origin, language
+We evaluate the system on three corpora differing in origin, language
 and scale, and we separate two questions: whether the management layer keeps
 its collections in a usable state, and what the answers built on those
 collections are worth. Sections~\ref{sec:e1}--\ref{sec:e3} cover the
@@ -19,8 +19,9 @@ inventory and per-question tool-layer results are supplementary material.
 \subsection{Experimental setup}
 \label{sec:eval-setup}
 
-\textbf{Corpora.} (i)~\emph{Deployed industrial corpus}: five knowledge bases
-in a live deployment hold 42 documents, one containing twenty near-duplicate
+\textbf{Corpora.} (i)~\emph{Industrial demonstration corpus}: five libraries
+hold 42 documents prepared as a demonstration instance, not customer data; one
+library contains twenty near-duplicate
 equipment-telemetry reports sharing prefixes, vocabulary and structure---a
 deliberate stressor for near-duplicate detection and confuser
 density~\cite{manku-near-dup-2007}; sixteen gold questions and four
@@ -28,7 +29,7 @@ out-of-corpus probes ran against it. (ii)~\emph{arXiv corpus}: 100 submitted
 papers spanning about 25 domains, 79 retrievable at evaluation time and routed
 by content into five domain libraries holding 322 stored parts; ten gold
 questions (BQ01--BQ10) target papers referenced by those papers, keyed by arXiv
-identifier, and the live environment held 19 libraries. (iii)~\emph{Cross-lingual
+identifier, and the running instance held 19 libraries. (iii)~\emph{Cross-lingual
 ingestion corpus}: 400 Wikipedia pages per language (English, Chinese,
 Japanese), 40 extractive cloze queries each with verbatim in-page answers;
 ingestion only, no retrieval-quality numbers reported.
@@ -126,10 +127,9 @@ reproduced round~1 bit-for-bit, with ingestion success 1.0; storage
 completeness, self-retrieval Hit@1 and the membership figures are in
 Table~S2. Its English membership accuracy of 0.875 is an organization
 defect---the page stored in the wrong library roughly one time in eight---not
-a parsing defect. Membership is scored against the benchmark's source
-category labels rather than against any naming convention derived by the
-ingest agent, so it is the one placement-correctness measurement in this
-paper that does not depend on filename cues.
+a parsing defect. Membership is scored against the benchmark's source category labels, not a
+naming convention derived by the ingest agent, so it is the one
+filename-independent placement measurement in this paper.
 
 A second 50-paper, 26-domain campaign parsed and verified every paper, indexed
 them in batch, reported all probes ok, and left 41 of 50 documents with a
@@ -174,10 +174,10 @@ update check timed out after 30\,s while every other probe passed. Merge and
 split were never exercised under controlled conditions, so we claim nothing
 about them.
 
-The live tag registry held 316 tags; the tag-quality check passed 165
+The tag registry held 316 tags; the tag-quality check passed 165
 documents with zero failures in 47.6\,s, and orphan tags accumulate (test tags,
 section titles), for which a dry-run detector exists. In one case test-library
-tags leaked into the production registry, the failure mode vocabulary-based
+tags leaked into the main registry, the failure mode vocabulary-based
 organization is prone to~\cite{golder-tagging-2006}. The document graph is
 navigation, never evidence: four tag edges on one document moved the edge count
 from 4{,}675 to 4{,}679.

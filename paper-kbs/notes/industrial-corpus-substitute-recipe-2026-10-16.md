@@ -1,8 +1,9 @@
 # Industrial-corpus substitute recipe (2026-10-16)
 
 Companion note for the KBS submission (`paper-kbs/tex/journal_20p/`). The
-deployed industrial corpus used for Table 2 / Tab. 5 cannot be redistributed
-for contractual reasons. This note records what can be released, what a
+industrial demonstration corpus used for Table 2 / Tab. 7 is a demonstration
+instance prepared for this study, not customer data. It is not included in the
+public repository. This note records what is released, what a
 substitute corpus must reproduce for the reported effects to be re-testable,
 and a small illustrative synthetic sample. Nothing here recovers the original
 corpus text; the recipe is a construction plan for an independent analogue.
@@ -53,7 +54,7 @@ headline number, needs none of that.
 The published claim that needs a corpus is the *ordering* effect under
 confuser density, so a substitute needs the confuser structure, not the
 content. Construction parameters, taken from the manuscript's own description
-of the deployed corpus:
+of the demonstration corpus:
 
 1. **Scale.** 42 documents across five libraries; one library holds the
    confuser family of 20 equipment-telemetry reports.
@@ -135,7 +136,7 @@ candidate list moves the gold out of the top-5 read window.
 
 ## 4. Limits of this recipe
 
-- It reproduces *structure*, not the deployed numbers; agreement with the
+- It reproduces *structure*, not the published numbers; agreement with the
   published Hit@5 values is not implied.
 - The original candidate pools, per-candidate scores and gold labels are the
   release of record for the published numbers; this recipe only enables an

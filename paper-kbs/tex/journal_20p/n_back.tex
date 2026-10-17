@@ -52,9 +52,11 @@ pre-correction question set and the grader are pinned together in
 reported grade can be re-derived exactly. The supplementary material
 (\path{paper-kbs/supplementary/supplementary-material.pdf}) carries the
 campaign inventory and the appendix tables S1--S5 that
-\ref{app:perq} cites. The deployed industrial corpus cannot be
-redistributed for contractual reasons, but the headline ordering comparison
-does not depend on its text: the judge-ordering row recomputes from the
+\ref{app:perq} cites. The 42-document industrial corpus is a demonstration
+instance prepared for this study and is not customer data; it is not included
+in the public repository, but the demonstration documents are available from
+the authors on request. The headline ordering comparison does not depend on
+its text: the judge-ordering row recomputes from the
 released per-candidate scores in
 \path{paper-kbs/experiments/results/exp1_retrieval.json}, the released gold
 annotations and the grader, and the fusion lists behind the derived rows are
@@ -76,20 +78,14 @@ builds on. %% AUTHOR ACTION: adjust or remove.
 
 Five tables are carried in the supplementary material
 (\path{paper-kbs/supplementary/supplementary-material.pdf}) rather than in
-this build, each beside the campaign that produced it: Table~S1, the stores
-and fields read by the three-source consistency checks of
-Section~\ref{sec:e2}; Table~S2, the cross-lingual ingestion result of
-Section~\ref{sec:e1}, both rounds bit-for-bit identical; Table~S3, the sixteen
-gold-annotated questions behind every retrieval number in
-Section~\ref{sec:e4}, with their design intent; Table~S4, the per-question
-best-gold-rank grid that decomposes Figure~\ref{fig:marginvariants}(b); and
-Table~S5, the lifecycle-operation outcomes of Section~\ref{sec:e2}, one
-operation per row, including the two that failed.
-The per-question grid localizes the aggregate retrieval metrics: for the
-industrial same-pool replay, judge-score re-ranking misses eight golds that
-remain in the fusion order, while the derived survivor replay restores those
-ranks for scored candidates but inherits Q16's upstream miss; the Q14
-candidate without a recorded judge score remains unclassified. The LaTeX
+this build: Table~S1, the stores read by the three-source checks; S2, the
+cross-lingual ingestion result; S3, the sixteen gold questions with their
+design intent; S4, the per-question best-gold-rank grid; and S5, the
+lifecycle-operation outcomes, including the two that failed.
+The per-question grid localizes the aggregate metrics: judge-score re-ranking
+misses eight golds that remain in the fusion order, the derived survivor
+replay restores those ranks but inherits Q16's upstream miss, and the Q14
+candidate without a recorded score remains unclassified. The LaTeX
 sources of all five tables are archived in the repository under
 \path{paper-kbs/tex/journal_20p/_appendix-archived/}.
 
@@ -103,5 +99,5 @@ Code and ZCode command-line coding agents in order to assist with experiment
 execution, data tabulation, figure preparation and manuscript drafting. After
 using these tools, the authors reviewed and edited the content as needed and
 take full responsibility for the content of the publication. All experimental
-numbers originate from logged runs of the deployed system on the authors'
+numbers originate from logged runs of the system on the authors'
 machine.

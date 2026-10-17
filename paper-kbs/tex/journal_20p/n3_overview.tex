@@ -71,6 +71,20 @@ Section~\ref{sec:principles} sit at different points along this path:
 placement during ingestion, admission at the gate, the abstention report in
 the answer layer.
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig1_architecture}
+\caption{QDCVR architecture and three design commitments. During ingestion, an
+agent uses document content and the catalogue to choose a library; server-side
+storage and consistency checks verify structural state (C1). At query time,
+the endpoint applies a tool policy and the agent may invoke the server-side
+Laya evidence tool, which returns scored survivors with provenance (C2). The
+answer workflow is instructed to report not-found after a completed search
+finds no support (C3). These commitments span distinct enforcement layers;
+the evaluation measures selected mechanisms and observed outcomes.}
+\label{fig:arch}
+\end{figure*}
+
 The management path covers acquisition (Section~\ref{sec:acquisition}),
 content-routed organization and lifecycle checks
 (Section~\ref{sec:organization}), and the tool and runtime layer
@@ -107,20 +121,6 @@ Experience & extract, approve, tier, search & approval state and credibility tie
 \bottomrule
 \end{tabular}
 \end{table*}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{fig1_architecture}
-\caption{QDCVR architecture and three design commitments. During ingestion, an
-agent uses document content and the catalogue to choose a library; server-side
-storage and consistency checks verify structural state (C1). At query time,
-the endpoint applies a tool policy and the agent may invoke the server-side
-Laya evidence tool, which returns scored survivors with provenance (C2). The
-answer workflow is instructed to report not-found after a completed search
-finds no support (C3). These commitments span distinct enforcement layers;
-the evaluation measures selected mechanisms and observed outcomes.}
-\label{fig:arch}
-\end{figure*}
 
 \subsection{Data model and object lifecycle}
 \label{sec:datamodel}

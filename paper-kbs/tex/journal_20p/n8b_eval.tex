@@ -50,7 +50,7 @@ judged hybrid run's logged twelve-candidate pools and verdict scores:
 \emph{Judge-as-filter} keeps survivors in fusion order and \emph{RRF-fuse}
 fuses the fusion ranking with the judge-score ranking at $k=60$. All three
 see the same candidates and scores, so the comparison is an attribution,
-not a benchmark. Because every logged candidate survived the deployed 0.5
+not a benchmark. Because every logged candidate survived the configured 0.5
 threshold, the filter replay is identical to fusion order by construction and
 does not test filtering.
 
@@ -58,7 +58,7 @@ does not test filtering.
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
-\caption{Tool-layer retrieval on the 42-document deployed industrial corpus
+\caption{Tool-layer retrieval on the 42-document industrial demonstration corpus
 (mean over 16 gold-annotated questions; top-5 document lists; latency per
 call, warmed). The paraphrase column re-asks those sixteen questions in
 different words (\protect\path{paper-kbs/experiments/results/exp6_paraphrase.json});
@@ -103,7 +103,7 @@ Hit@5 & 0.90 & 0.90 & 0.90 & 0.20 & 0.90 & 0.90 & 0.90 & 0.90 \\
 \end{table*}
 
 Table~\ref{tab:retrieval} compares the nine configurations on the sixteen
-gold-annotated questions of the deployed industrial corpus (42 documents;
+gold-annotated questions of the industrial demonstration corpus (42 documents;
 \path{paper-kbs/experiments/results/exp1_retrieval.json},
 \texttt{exp5\_judge\_filter.json}). The tool-layer arms retrieve and never
 answer, so their latencies carry no token cost. With sixteen questions the
@@ -208,10 +208,16 @@ is also configuration-specific: the bulk import bypassed the tagging path,
 limiting what its node-name/path matching could retrieve.
 
 \textbf{Thresholds and margins.} All 191 judged candidates from the
-sixteen hybrid runs passed the deployed absolute threshold of 0.5 (lowest
+sixteen hybrid runs passed the configured absolute threshold of 0.5 (lowest
 logged score 0.589), so at the threshold layer the gate filtered nothing on
-this corpus (\texttt{exp1\_retrieval.json}). The margin sweep is a separate
-diagnostic replay, not the deployed control: it re-reads the logged pools
+this corpus (\texttt{exp1\_retrieval.json}). A sweep of the recorded scores
+locates where filtering would begin to discriminate: cuts up to 0.70 keep
+every in-pool gold and about 95\% of non-golds; 0.80 keeps 16 of 17 golds
+while removing 21\% of non-golds; 0.85 keeps 13 of 17 and removes 40\%; at
+0.88 the two retention rates converge (7 of 17 golds, 40\% of non-golds). The
+signal is narrow and starts above the configured cut, and no answer-level test
+of a higher cut was run (supplementary Table~S6). The margin sweep is a
+separate diagnostic replay, not the configured control: it re-reads the logged pools
 and keeps the top five candidates plus every candidate whose score lies
 within a relative margin $m$ of the pool's best score. $m=0.15$ keeps 16 of
 the 17 in-pool golds (Q11's gold sits deeper than 0.15 below its pool's
@@ -243,10 +249,9 @@ re-ranking role is the one that loses the gold.}
 questions (\texttt{exp6\_paraphrase.json}) the judged configuration falls
 to Hit@5 0.5 (MRR 0.189) while judge-as-filter and fusion-only hold at
 0.9375 (MRR 0.833) and dense retrieval stays at 0.9375; BM25 falls from
-1.00 to 0.875 (MRR 0.958 to 0.755). Under rewording both the lexical
-baseline and the judged re-ranking lose ground while the configuration that
-refuses to let the verdict order the list does not --- the gate's weakness
-is the ordering it induces, not the verdicts it returns.
+1.00 to 0.875 (MRR 0.958 to 0.755). Under rewording both the lexical baseline and the judged re-ranking lose
+ground while the configuration that keeps fusion order does not: the weakness
+is the induced ordering, not the verdicts.
 
 \textbf{End to end, the modes differ in source-address markers.} Ten fixed
 questions ran through three modes sharing one harness, model, neutral task and

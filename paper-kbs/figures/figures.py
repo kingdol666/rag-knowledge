@@ -623,7 +623,7 @@ def fig_retrieval():
                color=RAMP[k], edgecolor="white", linewidth=0.4)
     ax.set_xticks(x)
     ax.set_xticklabels(["BM25", "Dense", "RRF", "Graph", "2-stg", "Fusion",
-                        "QDCVR-H"], rotation=24, ha="right",
+                        "QDCVR-H"], rotation=35, ha="right",
                        rotation_mode="anchor")
     ax.set_ylabel("Score (16 questions)")
     ax.set_ylim(0, 1.55)
