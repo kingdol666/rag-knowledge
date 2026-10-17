@@ -75,6 +75,40 @@ combines vector and catalog calls under an explicit directive. The document
 graph supports navigation, not evidence, and the experience store uses the
 same catalog and gate but was not evaluated at scale.
 
+The management layer is organized as five function groups, each paired with a
+server-side check rather than an operator convention. Acquisition submits a
+file, parses it, reports a quality verdict, splits it when it exceeds the
+reading ceiling, stores it and indexes it. Organization creates libraries and
+sub-libraries, places documents by content, derives descriptions and tags, and
+reviews duplicate candidates. Lifecycle operations move, rename, delete and
+re-index documents, then audit the resulting state. The query path selects a
+lane, retrieves candidates and invokes the verification gate. An operational
+experience store keeps reviewed lessons beside the documents.
+Table~\ref{tab:functions} maps each group to its checks and to the evaluation
+that exercises it.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Management functions, the server-side check attached to each, and the
+evaluation that exercises it. The check column states what the platform
+verifies mechanically; semantic choices such as where a document belongs
+remain workflow decisions and are measured, not enforced.}
+\label{tab:functions}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.37\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.11\textwidth}@{}}
+\toprule
+Group & Operations & Server-side check & Evidence\\
+\midrule
+Acquisition & submit, parse (MinerU), quality gate, near-duplicate flag, structural split, store, index & task state, OCR/binary/heading checks, content fingerprint, split invariance, post-index probe & E1\\
+Organization & create library or sub-library, content-informed placement, descriptions and tags, duplicate review & identifier and required-field validation, description/tag re-read against the body, three-source consistency & E1--E2\\
+Lifecycle & move, rename, delete, force re-index, graph build & post-operation audit of registry, library metadata and vector chunks & E2\\
+Query & lane selection, vector, keyword, catalog and two-stage search, gate invocation & tool allow/deny lists, timeouts and turn limits, provenance on returned survivors & E4--E8\\
+Experience & extract, approve, tier, search & approval state and credibility tier before display & E3\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{fig1_architecture}

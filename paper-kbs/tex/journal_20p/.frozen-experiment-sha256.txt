@@ -2,25 +2,24 @@
 #
 # Purpose: the manuscript freezes its experimental text and its evaluation
 # annotations so that every reported grade can be re-derived from the exact
-# files named here. Verify from the repository root:
+# files named here. Verify from this directory:
 #
-#   cd paper-kbs/tex/journal_20p && sha256sum -c .frozen-experiment-sha256.txt
+#   sha256sum -c .frozen-experiment-sha256.txt
 #
-# --- manuscript evaluation text (frozen 2026-10-16) ---
-# The evaluation text was re-frozen on 2026-10-16 after the assessment-driven
-# revision (review/KBS-PAPER-ASSESSMENT-2026-10-16.md): prose references and
-# paragraph compression only. A numeric-token audit against the previous
-# revision found no added, removed or altered value in these three files.
-# previous pre-revision hash of n8a_eval.tex (2026-10-13), recorded for audit:
-#   f27d61a88444d14237be0ae78c36561b95efe9a37962b7bcac355d4fedaac8b9
-d261fbd4962c451cf1fa2e5f771ec95329f2672bac2f5d5ba5c4eb6f5b6b2c92 *n8a_eval.tex
-4235fa6a11167436e5459584090ff80e04d26f14663f7ff0e5b2c9704e6094f0 *n8b_eval.tex
-6af15c75f1f046c52f51f8443ebd8de6b6234e28d9ea86dfcd419c6a1fd57357 *n8c_eval.tex
+# --- manuscript evaluation text (frozen 2026-10-17) ---
+# Re-frozen after the knowledge-base-management restructure (2026-10-17):
+# section framing, the per-question answer-quality table and prose
+# compression. A numeric-token audit against the previous revision found no
+# value added, removed or altered outside the new table's own cells and their
+# column totals, which are recomputed from the grade artifact named below.
+6b15484780e257167697715fb45e224e4ede92eb5e9752d8a8ed0e783eeca592 *n8a_eval.tex
+da0fcbdee8bd194e3e92e4f87da9d69a47afd4da5273e7bd8155eacd202d9d34 *n8b_eval.tex
+490ae6f174ca06eda2473878a846fc47b38d28866d9c0ddb8d1d4eb697531b3c *n8c_eval.tex
 #
 # --- evaluation annotations and grader (frozen 2026-10-16) ---
 # corrected E5 semantic annotations, version string
 # "2026-10-14 corrected evaluation annotations"; frozen before submission so
-# the 9/9/9-vs-10/9/9 two-grade disclosure of Section 8.7/Tab. 5 cannot drift.
+# the 9/9/9-vs-10/9/9 two-grade disclosure of Section 8.6/Tab. 6 cannot drift.
 86b07a9370984d426c4aec757d8fc223cf804171ce9221b033f7c84fc0e62ece *../../../benchmark-suite/data/papers/qa_questions_e5_corrected.json
 # pre-correction question set (retained for the disclosed original grade).
 72b9c2d26026b43f989c74ddb0a97896f73000584506451e870f325552150f15 *../../../benchmark-suite/data/papers/qa_questions.json

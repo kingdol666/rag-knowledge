@@ -149,7 +149,7 @@ def fig1():
 
     ret = [
         ("Clients and harnesses", "shared chat interface"),
-        ("MCP + lane policy", "95 tools, eight groups"),
+        ("MCP + lane policy", "95 tools, twelve groups"),
         ("Candidate retrieval", "search · librarian · hybrid"),
         ("Content-verification gate (C2)", "reads fetched text · fail-closed"),
         ("Answer or not-found (C3)", "cited evidence · searched scope"),
@@ -213,19 +213,21 @@ def fig2():
 
     lanes = [
         (0.05, "Lane A — Search", RET_FC, RET_EC, [
-            ("A0 Rewrite", "subject · attribute · constraints"),
-            ("A1 Wide dense net", "top-30, threshold 0.35"),
-            ("A2 Judge", "batches of 6, server-fetched"),
+            ("1  Rewrite", "subject · attribute · constraints"),
+            ("2  Wide dense net", "top-30, threshold 0.35"),
+            ("3  Judge", "batches of 6, server-fetched"),
         ]),
         (2.38, "Lane B — Librarian", ACQ_FC, ACQ_EC, [
-            ("B0 Catalog ladder", "root, sub-KBs, budgeted pages"),
-            ("B1 Query-shape routing", "literal: scanner; semantic: judge"),
-            ("B2 Judge", "batches of 6, fail-closed"),
+            ("1  Catalog ladder", "root, sub-KBs, budgeted pages"),
+            ("2  Query-shape routing", "literal: scanner; semantic: judge"),
+            ("3  Judge", "batches of 6, fail-closed"),
         ]),
         (4.71, "Lane C — Hybrid", STORE_FC, STORE_EC, [
-            ("C1 One server call", "vector top-30 + catalog"),
-            ("C2 Merge and cap", "agreed-by-both first; cap 12"),
-            ("C3 Judge + cut", "best − 0.15; top-5 floor"),
+            # lane steps are numbered, not lettered: C1-C3 are the
+            # manuscript's design-contract IDs and must stay unambiguous.
+            ("1  Server call", "vector top-30 + catalog"),
+            ("2  Merge and cap", "agreed-by-both first; cap 12"),
+            ("3  Judge and cut", "best − 0.15; top-5 floor"),
         ]),
     ]
     for x, title, fc, ec, steps in lanes:
@@ -405,6 +407,7 @@ if __name__ == "__main__":
     TARGET.mkdir(parents=True, exist_ok=True)
     fig1()
     fig2()
-    fig3()
-    fig10()
+    # fig3_retrieval moved to figures.py:fig_retrieval (single effectiveness
+    # panel at column width) on 2026-10-16; fig10_mode_matrix was dropped from
+    # the manuscript because Table tab:e4-matrix carries the same six methods.
     print(f"wrote to {TARGET}")

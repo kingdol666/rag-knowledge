@@ -1,24 +1,32 @@
 \section{Discussion and lessons learned}
 \label{sec:discussion}
 
-The first implication concerns verifier placement, and it is the paper's main
-design lesson: separating a content verifier's filtering role from its
+The first implication concerns what the answers are worth. On the fixed
+question set the workflow locates the right document in all 30 cells, and what
+separates the interfaces is the citation syntax the answers carry, not whether
+they found the source. That sets the practical lesson for a management system:
+it should be judged on the answers it produces and on the trace those answers
+leave. Retrieval recall alone is a weak criterion here, because every lexical
+baseline reaches it on the same corpus.
+
+The second implication concerns verifier placement, and it is the paper's main
+mechanical finding: separating a content verifier's filtering role from its
 ordering role is what allows the failure to be located. On identical logged
-pools, re-ranking by the judge lowers Hit@5 from 0.94 under fusion-only to
-0.44, while a derived replay that keeps the fusion order among scored
-survivors returns the fusion-only metrics; rephrased questions separate the
-roles further, with the judged configuration falling to 0.5 while both
-fusion-order variants hold at 0.9375. Because all 191 recorded scores exceed
-the 0.5 threshold and one Q14 fused candidate has no recorded score, the
-comparison diagnoses the induced ordering, not a threshold-filter benefit. A
-second checkpoint and its span-level variant fail the same way on the same
-pools, and the second corpus does not reproduce the collapse, so the strongest
-supported claim is that ranking by these checkpoints should not replace fusion
-order under the tested confuser density; whether confuser density itself is
-the cause remains an association, because the probe moved domain, language and
+pools, re-ranking by the verdict lowers Hit@5 from 0.94 under fusion-only to
+0.44. A derived replay that keeps the fusion order among scored survivors
+returns the fusion-only metrics, and rephrased questions separate the roles
+further: the judged configuration falls to 0.5 while both fusion-order
+variants hold at 0.9375. Because all 191 recorded scores exceed the 0.5
+threshold and one Q14 fused candidate has no recorded score, the comparison
+diagnoses the induced ordering, not a threshold-filter benefit. A second
+checkpoint and its span-level variant fail the same way on the same pools. The
+second corpus does not reproduce the collapse, so the strongest supported
+claim is that ranking by these checkpoints should not replace fusion order
+under the tested confuser density; whether confuser density itself is the
+cause remains an association, because the probe moved domain, language and
 corpus size together.
 
-The second implication concerns abstention. Similarity can retrieve related
+The third implication concerns abstention. Similarity can retrieve related
 material without answering a query. In this system, the answer workflow
 instructs the agent to report the searched scope and say not-found when its
 completed evidence review finds no support; the retrieval threshold never
@@ -29,33 +37,28 @@ binary grading scheme and each arm has a single final observation. Timeouts,
 unavailable tools and incomplete searches must be reported as execution
 failures, not conflated with semantic absence.
 
-The third implication concerns transport. A reproduced oversized-catalog
+The fourth implication concerns transport. A reproduced oversized-catalog
 response hid entries from the agent and led to a false refusal. Server-side
 budgets, grouped views and pagination repaired the selected tested paths on
 rerun. This supports the narrower point that transport limits can affect
 retrieval outcomes, and that the enforcement layer honesty requires has
 limits of its own; it is not a guarantee for every host or larger catalog.
 
-Together the three implications separate document discovery from answer
-construction: on the tested sets, retrieval-only recall does not by itself
-determine whether an agent returns an addressable source, an explicit partial
-answer or a refusal. The useful design lesson is to expose the retrieval trace
-and the evidence returned to the answering step, while distinguishing a
-completed search with no support from a search that did not complete.
-
 The five research questions close at different evidence levels. RQ1 is
-answered within one corpus, one checkpoint and one question family: on
-identical logged pools the tested answer is to keep fusion order, and the
-comparison does not validate threshold discrimination. RQ2 is partly answered:
-the system combines server-side parse/index checks and an invoked content gate
-with agent procedures for placement and answer reporting. RQ3 is answered as
-an operational observation, bounded by 21 papers that never became retrievable
-and by the use of a filename-independent membership measurement rather than a
-per-document adjudication of placement. RQ4 reports tool-layer recall
-separately from end-to-end source-marker checks; it does not claim similar
-recall in every interface or isolate the gate's causal effect. RQ5 documents
-observed abstentions, turn-dominated latency and a transport
-failure/recovery, with no broad reliability or user-utility estimate.
+answered as an operational observation of the management layer, bounded by 21
+papers that never became retrievable and by the use of a filename-independent
+membership measurement rather than a per-document adjudication of placement.
+RQ2 is answered for one corpus, one model and one question family: every
+answer names its gold document, alias-aware coverage is complete, and citation
+syntax separates the interfaces; the checks are lexical and do not establish
+semantic support. RQ3 reports tool-layer recall separately from end-to-end
+source-marker checks; it does not claim similar recall in every interface or
+isolate the gate's causal effect. RQ4 is answered within one corpus, one
+checkpoint and one question family: on identical logged pools the tested
+answer is to keep fusion order, and the comparison does not validate threshold
+discrimination. RQ5 documents observed abstentions, turn-dominated latency and
+a transport failure/recovery, with no broad reliability or user-utility
+estimate.
 
 More broadly, parsers, registries, indices and answer workflows benefit from
 post-conditions that can be checked independently of success messages.

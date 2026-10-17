@@ -2,16 +2,18 @@
 \label{sec:eval}
 
 We evaluate the deployed system on three corpora differing in origin, language
-and scale, using three metric families. E1--E2
-(Sections~\ref{sec:e1}--\ref{sec:e2}) cover the stages that precede a
-question: acquisition and parsing, then organization, three-source consistency
-and management operations. E3--E8 (Sections~\ref{sec:e3}--\ref{sec:e8}) cover
-what happens once a question is asked: the operational-knowledge store,
-retrieval quality and the role of the verdict, agent behavior with abstention
-and cost and the deployment re-run, verifier failure, non-functional behavior,
-and the gate and search-scope ablations. Numbers are reported against the
-corpus that produced them, never merged; the campaign inventory and
-per-question tool-layer results are supplementary material.
+and scale, and we separate two questions: whether the management layer keeps
+its collections in a usable state, and what the answers built on those
+collections are worth. Sections~\ref{sec:e1}--\ref{sec:e3} cover the
+management layer: acquisition and parsing, organization and three-source
+consistency, and the operational-experience store. Sections
+\ref{sec:e4}--\ref{sec:e8} cover the query path: retrieval quality
+(Section~\ref{sec:e4}), answer quality per question and abstention
+(Section~\ref{sec:e5}, the paper's end-to-end evidence), verifier failure
+(Section~\ref{sec:e6}), non-functional behavior (Section~\ref{sec:e7}) and
+the gate and search-scope ablations (Section~\ref{sec:e8}). Numbers are
+reported against the corpus that produced them, never merged; the campaign
+inventory and per-question tool-layer results are supplementary material.
 
 \subsection{Experimental setup}
 \label{sec:eval-setup}

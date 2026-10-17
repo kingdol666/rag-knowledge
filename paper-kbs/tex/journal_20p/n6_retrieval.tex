@@ -2,6 +2,9 @@
 \label{sec:retrieval}
 \label{sec:lanes}
 
+Retrieval is the query module of the management system: it reads the
+libraries, catalog and indices that acquisition and organization maintain, and
+it returns either evidence for an answer or an explicit absence report.
 Search, Librarian and Hybrid lanes use different retrieval affordances but
 share a server-side content-verification tool when the calling workflow invokes
 it. The tool fetches referenced document text, segments it and applies a local,

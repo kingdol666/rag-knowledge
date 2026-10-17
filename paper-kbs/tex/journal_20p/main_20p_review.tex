@@ -32,15 +32,17 @@
 \graphicspath{{figs/}}
 
 %% Review-layout note: the body sources are tuned for the two-column build, so
-%% the two full-width float tables (Tab. 2's lane table and Tab. 3's block (b))
-%% exceed the single-column text block at 12pt and raise two "Overfull \hbox"
-%% warnings in this layout. They remain legible and the build has no errors;
-%% see paper-kbs/notes/page-budget-2026-10-16.md.
+%% the full-width float tables (the lane table, the management-functions table,
+%% the per-question answer-quality table and Table 3's block (b)) exceed the
+%% single-column text block at 12pt and raise "Overfull \hbox" warnings in this
+%% layout. They remain legible and the build has no errors; see
+%% paper-kbs/notes/page-budget-2026-10-16.md.
 \setlength{\emergencystretch}{1.5em}
 
-%% Float placement: the paper carries nine figures and seven body table
-%% environments (the five appendix tables moved to the supplementary material
-%% on 2026-10-16; see n_back.tex and the supplement's Part D), so the
+%% Float placement: the paper carries eight figures and seven body table
+%% environments (Figure 10 was removed on 2026-10-17 because Table 5 carries
+%% the same six methods; the five appendix tables moved to the supplementary
+%% material on 2026-10-16), so the
 %% default fractions defer most of them past the references. Allow denser
 %% float pages to keep each float near the text that discusses it.
 \renewcommand{\topfraction}{0.90}

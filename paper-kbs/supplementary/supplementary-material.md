@@ -591,10 +591,54 @@ for the lexical and vector baselines, at zero token cost.
 (channel 2); `benchmark-suite/results/runs/run-20261012T062847Z-5f9faac/RETRIEVAL-COMPARE.md`
 (channel 3, the pure-retrieval matrix);
 `paper-kbs/notes/functional-test-evidence-2026-10-12.md` (reproduces the three-engine row
-and cites the summary's line range); `paper-kbs/tex/n8c_eval.tex` (the table `tab:e5-cost`
-itself). The cost rows are **not** carried by any `exp8b*` artifact: the `paper-kbs/experiments/results/exp8b*.json`
+and cites the summary's line range); `paper-kbs/supplementary/supplementary-material.md` (this table; the
+manuscript no longer carries it). The cost rows are **not** carried by any `exp8b*` artifact: the `paper-kbs/experiments/results/exp8b*.json`
 glob resolves to exactly one file, `paper-kbs/experiments/results/exp8b_absent_agent.json`,
 and that file carries the three absent-tier agent probes of B.7, not the cost table.
+
+
+### A.17 The 30-cell answer grid: wall clock, tools and cost per cell
+
+**What was tested.** The per-cell time, tool count and metered cost of the three-arm answer grid whose quality results the manuscript reports as Table 6 (gold-ID presence, strict keyword coverage, alias-aware coverage and citation-marker counts). The manuscript reports the quality cells and one sentence of arm means; the per-cell records live here.
+
+**Scale.** 30 cells: ten questions (BQ01-BQ10) x three arms (P = platform read tools, F = file tools over the exported tree, D = dense index over the 800-character mirror).
+
+**Headline result.** Arm means: P 52.6 s / 6.0 tools / $0.711; F 22.2 s / 6.4 tools / $0.487; D 24.5 s / 3.7 tools / $0.527. The platform arm is the slowest and most expensive in this single run; the manuscript reports this as an observation about this implementation, not an efficiency result.
+
+| Q | arm | wall (s) | tools | cost (USD) |
+|---|---|---:|---:|---:|
+| BQ01 | P (platform) | 55.5 | 5 | 0.772 |
+| BQ02 | P (platform) | 35.8 | 5 | 0.595 |
+| BQ03 | P (platform) | 75.3 | 10 | 0.782 |
+| BQ04 | P (platform) | 25.6 | 4 | 0.511 |
+| BQ05 | P (platform) | 35.6 | 5 | 0.638 |
+| BQ06 | P (platform) | 97.4 | 10 | 1.032 |
+| BQ07 | P (platform) | 25.3 | 3 | 0.487 |
+| BQ08 | P (platform) | 77.0 | 6 | 0.836 |
+| BQ09 | P (platform) | 43.9 | 5 | 0.729 |
+| BQ10 | P (platform) | 54.7 | 7 | 0.728 |
+| BQ01 | F (file tools) | 24.9 | 6 | 0.420 |
+| BQ02 | F (file tools) | 24.2 | 7 | 0.492 |
+| BQ03 | F (file tools) | 20.3 | 8 | 0.487 |
+| BQ04 | F (file tools) | 12.0 | 5 | 0.375 |
+| BQ05 | F (file tools) | 19.6 | 4 | 0.439 |
+| BQ06 | F (file tools) | 29.9 | 10 | 0.641 |
+| BQ07 | F (file tools) | 11.6 | 4 | 0.377 |
+| BQ08 | F (file tools) | 20.2 | 4 | 0.444 |
+| BQ09 | F (file tools) | 20.4 | 4 | 0.418 |
+| BQ10 | F (file tools) | 38.6 | 12 | 0.773 |
+| BQ01 | D (dense) | 34.1 | 5 | 0.610 |
+| BQ02 | D (dense) | 21.4 | 2 | 0.483 |
+| BQ03 | D (dense) | 18.6 | 2 | 0.454 |
+| BQ04 | D (dense) | 17.0 | 2 | 0.442 |
+| BQ05 | D (dense) | 30.0 | 4 | 0.581 |
+| BQ06 | D (dense) | 48.6 | 11 | 0.801 |
+| BQ07 | D (dense) | 11.2 | 2 | 0.412 |
+| BQ08 | D (dense) | 19.7 | 2 | 0.468 |
+| BQ09 | D (dense) | 23.3 | 3 | 0.516 |
+| BQ10 | D (dense) | 21.3 | 4 | 0.503 |
+
+**Artifacts.** `benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/track_*.json` (one file per cell; `latency_s`, `tool_call_count`, `total_cost_usd`); arm aggregates recomputed here. The manuscript's Table 6 is graded from the same run by `benchmark-suite/results/exp_r2_grade_corrected.json`.
 
 ### A.16 Failure-mode catalogue
 

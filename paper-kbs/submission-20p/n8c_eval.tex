@@ -5,12 +5,12 @@
 % floats and numbers retained). Round 2 2026-10-12: E6 prose tightened;
 % floats and numbers untouched.
 
-\subsection{E5: End-to-end agent behavior, abstention, and cost}
+\subsection{E5: Answer quality, abstention and cost}
 \label{sec:e5}
 \label{sec:agentic}\label{sec:abstention}\label{sec:composition}\label{sec:eval-agent}
 %% The four labels above are compatibility aliases: n2_related.tex:110,122,139
 %% and n6_retrieval.tex:38,53-54 were written against the pre-restructure label
-%% set. They all resolve to this subsection (agent behaviour, abstention,
+%% set. They all resolve to this subsection (answer quality, abstention,
 %% latency composition).
 %% Artifact shorthand used throughout this subsection: every path below is
 %% relative to the repository root. Campaigns that were current when they were
@@ -18,99 +18,101 @@
 %% availability (n_back.tex) and in TEST-RESULTS/ARTIFACTS.md; the
 %% 30-cell grid of this subsection is current and unarchived.
 
-\begin{table}[!t]
+\begin{table*}[t]
 \centering
-\setlength{\tabcolsep}{2pt}
-\caption{E5 three-arm grid (ten questions per arm). Gold-ID is answer/trace
-presence; strict (corrected annotations) and alias-aware keyword columns are
-lexical coverage; marker counts are syntax hits, not semantic correctness.
-Values are P/F/D.}
-\label{tab:e5-arms}
-\scriptsize
-\begin{tabular}{lrrr}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Answer quality per question and per interface (30 answer cells from
+\protect\path{run-20261013T094350Z-5f9faac}). Every answer names its gold
+document, so gold-ID coverage is 10/10 in each arm and is not repeated. Each
+arm column gives strict keyword coverage (\yes, \no, or -- where the
+pre-correction BQ06 key specifies no strict term), alias-aware coverage, and
+the number of recognized citation markers (m). Markers count document-style
+syntax such as section or table locators; they do not establish that a cited
+section exists or supports the sentence citing it.}
+\label{tab:e5-answers}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.335\textwidth}l*{9}{c}@{}}
 \toprule
-Metric & Platform & File tools & Dense \\
+ & & & \multicolumn{3}{c}{Platform (P)} & \multicolumn{3}{c}{File tools (F)} & \multicolumn{3}{c}{Dense (D)}\\
+\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-12}
+Q & Question (abridged) & Gold & s & a & m & s & a & m & s & a & m\\
 \midrule
-Gold-ID coverage & 10/10 & 10/10 & 10/10 \\
-Strict keywords & 9/10 & 9/10 & 9/10 \\
-Corrected-alias keywords & 10/10 & 10/10 & 10/10 \\
-Citation-marker hits & 9/10 & 7/10 & 2/10 \\
-Chunk identifiers & 5 & 0 & 7 \\
-Mean wall (s) & 52.6 & 22.2 & 24.5 \\
-Mean cost (USD) & 0.711 & 0.487 & 0.527 \\
-Mean tools / turns & 6.0 / 7.0 & 6.4 / 7.4 & 3.7 / 4.7 \\
+BQ01 & Transformer attention; why recurrence is replaced & 1706.03762 & \yes & \yes & 6 & \yes & \yes & 0 & \yes & \yes & 5\\
+BQ02 & NISQ definition and its central limitation & 1801.00862 & \yes & \yes & 4 & \yes & \yes & 3 & \yes & \yes & 0\\
+BQ03 & MultiMedQA and Flan-PaLM on MedQA & 2212.13138 & \yes & \yes & 4 & \yes & \yes & 1 & \yes & \yes & 1\\
+BQ04 & Three ontologies subdividing the Gene Ontology & 1602.01876 & \yes & \yes & 1 & \yes & \yes & 1 & \yes & \yes & 0\\
+BQ05 & European growth versus Unified Growth Theory & 1512.08067 & \yes & \yes & 0 & \yes & \yes & 0 & \yes & \yes & 0\\
+BQ06 & Contributions governing precipitation extremes & 1503.07557 & -- & \yes & 6 & \yes & \yes & 4 & \yes & \yes & 0\\
+BQ07 & MameLoshnLM and its parameter scale & 2608.05850 & \yes & \yes & 1 & \yes & \yes & 2 & \yes & \yes & 0\\
+BQ08 & Oxygen redox and cathode capacity & 2408.09942 & \yes & \yes & 2 & \yes & \yes & 0 & \yes & \yes & 0\\
+BQ09 & Visual SLAM in dynamic scenes (MLP-SLAM) & 2410.10669 & \yes & \yes & 2 & \no & \yes & 6 & \yes & \yes & 0\\
+BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes & \yes & 6 & \no & \yes & 0\\
+\midrule
+ & \emph{All ten questions} & & 9 & 10 & 29 & 9 & 10 & 23 & 9 & 10 & 6\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\textbf{The three-arm grid on one corpus.}
-Three arms answered ten gold questions over the five academic libraries of
-the evaluation corpus (79 retrievable papers) through the public chat API,
-on one model, one shared task/output contract and one 12-turn limit
-(\path{benchmark-suite/results/runs/}
-\path{run-20261013T094350Z-5f9faac}, graded by
-\path{benchmark-suite/scripts/107_exp_grade.py};
-Table~\ref{tab:e5-arms}, Figure~\ref{fig:threearms}). Arm~P (platform)
+\textbf{Answers locate the right document in all 30 cells; citation syntax is
+where the interfaces diverge.}
+Three arms answered ten gold questions over the five academic libraries of the
+evaluation corpus (79 retrievable papers) through the public chat API, on one
+model, one shared task/output contract and one 12-turn limit. Arm~P (platform)
 carries the knowledge-base read tools and no file tools; arm~F (bare agent),
 plain file tools over the corpus and no index; arm~D (dense discovery), a
-single vector operation over the mirror index. The protocol holds the task and
+single vector operation over the mirror index. Every answer names its gold
+document, and alias-aware keyword coverage is 10/10 in every arm, so the
+provenance check is at ceiling on this set. The arms separate on two syntax
+measures: strict keyword coverage is 9/10 in each arm, and recognized
+citation-marker hits are 9/10, 7/10 and 2/10 for P, F and D.
+Table~\ref{tab:e5-answers} gives the per-question cells,
+Figure~\ref{fig:threearms} the aggregate. The protocol holds the task and
 output constraints fixed while varying the available retrieval interface; it
 does not isolate the verifier from the rest of the platform tool surface.
-\begin{figure*}[!htbp]
+
+\textbf{Per-question reading.}
+The marker column, not the gold-identifier column, separates the arms. Nine
+platform answers and seven file-tool answers carry at least one document-style
+locator. The dense arm produces eight answers with no marker at all and seven
+that name chunk identifiers instead, of which two also carry a
+document-style marker. BQ05 carries no marker in any arm, because its answer
+cites by title rather than by section, and the deterministic pattern does not
+count that form. The strict misses are word-form differences that the declared
+aliases cover: BQ09's abbreviation for the multilayer perceptron in arm~F, and
+BQ10's immune-resistance phrasing in arm~D. Under the pre-correction BQ06 key
+arm~P scored 10/10 strict against a mis-specified gold; the corrected key
+specifies no strict term for that question and is scored as not applicable,
+and both grades are retained. These checks do not establish semantic
+faithfulness or claim-to-source support. The platform's addressable document
+paths remain a useful auditability affordance, but this three-interface
+comparison does not attribute the marker counts to verification alone.
+
+\begin{figure}[t]
 \centering
-\includegraphics[width=0.78\textwidth]{fig11_three_arms}
-\caption{Same corpus, same ten questions, same model and shared task/output
-contract; the arms differ in retrieval interface (30 cells,
-\protect\path{benchmark-suite/results/runs/run-20261013T094350Z-5f9faac}).
-(a)~All answer texts contain the gold document ID, a provenance check rather
-than semantic grounding. Strict keyword coverage is 9/10 in each arm; with
-corrected aliases it is 10/10 in each arm. Recognized citation-marker hits
-are 9/10, 7/10 and 2/10; the marker pattern does not verify citation
-resolution or claim support. (b)~Wall time against metered cost per question
-shows observed arm means; the platform arm is slower and dearer in this single
-run.}
+\includegraphics[width=\columnwidth]{fig11_three_arms}
+\caption{Answer checks for the same ten questions and the same model, with the
+retrieval interface varied (30 cells,
+\protect\path{run-20261013T094350Z-5f9faac}). Gold-identifier coverage is at
+ceiling in all three arms; strict keyword coverage separates the arms only
+through two word-form misses, alias-aware coverage is 10/10 everywhere, and
+recognized citation markers fall from nine to seven to two answers. The
+marker pattern counts document-style syntax; it does not verify citation
+resolution or claim support. Wall-clock and cost figures for these cells are
+reported in the text and in the supplementary material.}
 \label{fig:threearms}
-\end{figure*}
+\end{figure}
 
-\textbf{Gold-ID coverage is ceiling-level; answer checks remain lexical.}
-All 30 answers contain the gold document identifier, and all arms pass the
-trace-based gold-ID coverage check. The arms differ in keyword coverage under the strict rubric (9/10 each)
-and in citation-marker hits (9/10, 7/10 and 2/10 for P, F and D). With
-explicit aliases for the BQ06 thermodynamic wording, BQ09's MLP abbreviation
-and BQ10's immune-resistance terminology, alias-aware lexical coverage is
-10/10 in each arm. The strict columns grade the corrected annotations; under
-the pre-correction BQ06 key arm~P scored 10/10 strict against a mis-specified
-gold, and both grades are retained. These lexical checks do not establish semantic
-faithfulness or claim-to-source support. The dense answers contain seven
-chunk identifiers, but only two also contain a recognized document-style
-marker. The revised marker pattern no longer counts BQ05's prose phrase
-``sections for'', which an earlier pattern misread as a section locator, while
-it recognizes BQ09's Roman-numeral section locators; three bare-agent answers
-(BQ01, BQ05, BQ08) contain no recognized document-style marker. The measured
-contrast
-therefore concerns source-ID presence and marker syntax, not verified citation
-correctness. The platform's addressable document paths remain a useful
-auditability affordance, but causal attribution to verification alone is not
-supported by this three-interface comparison.
+\textbf{Wall clock and cost.}
+Arm~P averaged 52.6\,s and \$0.711 per question, against 22.2\,s/\$0.487 for
+F and 24.5\,s/\$0.527 for D. These are single-run means: the platform arm is
+slower and dearer in this run, and we report that as an observation about this
+implementation rather than an efficiency result. Per-cell times, tool counts
+and costs are in the supplementary material.
 
-\textbf{Observed time and cost.}
-Arm~P averages 52.6\,s and \$0.711 per question, versus 22.2\,s/\$0.487
-for F and 24.5\,s/\$0.527 for D. Paired by question, P is slower in all
-ten cells than each comparator (mean differences: +30.4\,s vs F and
-+28.1\,s vs D); paired cost differences are +\$0.224 vs F and +\$0.184
-vs D. These are descriptive, single-run comparisons. They are consistent
-with extra tool turns in the platform arm, but the study does not isolate
-turn count as the cause of the cost difference.
-
-\textbf{File tools are a viable small-corpus alternative in this setup.}
-Arm~F used plain \texttt{Read}/\texttt{Grep} over the exported 100-paper
-file tree (the five platform libraries expose 79 retrievable papers)
-without an index. This observation shows that direct scanning can answer
-these questions on this corpus; it does not establish performance on the
-larger live collection of 322 stored documents across five libraries. The
-platform arm produced more recognized document-style citation markers in
-this run. This syntax count is a proxy; it does not establish claim support or
-a general advantage over file search.
+\textbf{File tools in this setup.}
+Arm~F answered the same questions by scanning the exported file tree without
+an index, which shows that direct scanning is viable at this corpus size; it
+does not establish behavior on the live 322-document collection.
 
 \textbf{Abstention is a property of the reading-and-answering layer, not of
 a threshold.}
@@ -144,54 +146,23 @@ agent behavior, not a server-side guarantee.}
 \label{fig:ood}
 \end{figure}
 
-\textbf{Where the time goes.}
-An archived sixteen-cell lane grid on this corpus (three workflows $\times$
-four questions $\times$ two rounds) recorded sub-second machine-side
-retrieval and verification for its twelve gold-ID-hit cells against a 36--91\,s
-end-to-end wall clock. Tool-call timing suggests model turns account for much
-of the observed latency, consistent with agentic retrieval analyses
-\cite{singh-agentic-rag}; this grid does not isolate turn count causally.
-Repeated answers were similar, but wall time varied: Search-Q2 took 70\,s over
-6 turns in round 1 and 165\,s over 11 turns in round 2; Librarian-Q4 took
-84\,s over 6 turns and 92\,s over 11.
+\textbf{Latency composition.}
+An archived sixteen-cell lane grid on this corpus recorded sub-second
+machine-side retrieval and verification against a 36--91\,s end-to-end wall
+clock, consistent with model turns accounting for most of the observed
+latency \cite{singh-agentic-rag}. The grid is in the supplementary material
+and does not isolate turn count causally.
 
-\begin{table*}[!htbp]
-\centering
-\small
-\setlength{\tabcolsep}{4pt}
-\caption{Three engines and delivery surfaces, from separate archived task and
-gate campaigns. The 18-run engine set records gold-ID trace hits and manually
-checked fabricated citations; the 9-run channel figures use the refusal-first
-gate described in Section~\ref{sec:sysarms}. The stored table predates that
-gate correction. Costs are per run in USD as metered by the harness or API.}
-\label{tab:e5-cost}
-\footnotesize
-\begin{tabular}{p{4.4cm}rrrp{2.4cm}}
-\toprule
-Engine or channel (surface) & Runs & Wall (s) & Turns & Cost per run \\
-\midrule
-Agent surface (\texttt{/api/kb/agent/chat}) & 7 & 50.5--175.9 & 2--9 & \$0.9--1.8 \\
-Claude harness (\texttt{engine=claude}) & 6 & 23.2--52.4 & 5--8 & \$0.11--0.36 \\
-OMP harness (\texttt{engine=omp}) & 5 & 33.5--171.4 & 2--9 & \$0.03--0.07 \\
-\midrule
-\multicolumn{5}{l}{\emph{Timed gate campaign, the same three modes (9 runs each):}}\\
-Channel 1 (streaming harness, \texttt{engine=claude}; 8/9 gates) & 9 & 29.9--353.5 & 5--8 & \$0.12--0.25 \\
-Channel 2 (non-streaming chat API; 8/9 gates) & 9 & 25.7--100.0 & 4--11 & \$0.10--\$0.43 \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\textbf{Engines and delivery channels.}
-In a separate 18-run task set, all runs contained a gold-ID hit and no
-manually identified fabricated citation; measured cost ranged from
-\$0.03--0.07 per run on the cheapest harness to \$0.9--1.8 on the agent
-surface (Table~\ref{tab:e5-cost}). These are observations across engines,
-not a one-factor estimate of engine effects. In the archived delivery-channel
-replay, two channels each passed 8/9 gates and shared one false refusal after a
-300.0\,s vector-search stall (353.5\,s wall). This was incomplete execution,
-not a completed negative search, and is not evidence of absence. The model-free
-channel returned the gold in all 12 retrieval method--question cells in
-10.2--37.3\,s; it does not test answer faithfulness.
+\textbf{Engines and channels.}
+Across a separate 18-run task set, every run contained a gold-ID hit and no
+manually identified fabricated citation, at a measured \$0.03--1.8 per run
+depending on the delivery surface. In the archived channel replay, two
+channels each passed 8/9 gates and shared one false refusal after a 300\,s
+vector-search stall, which is an execution failure rather than evidence of
+absence; the model-free channel returned the gold in all 12 retrieval cells
+and tests retrieval only. Per-run records are in the supplementary material,
+and these are observations across engines and channels, not a one-factor
+estimate.
 
 \subsection{E5b: Deployment-layer system arms through the public API (2026-10-12 campaign)}
 \label{sec:sysarms}
@@ -217,18 +188,15 @@ small document-recall observation. Relative to the earlier 2026-09-26 runs,
 the librarian and hybrid workflows were faster after the scanner and judge
 rework, but those historical runs are not a controlled latency comparison.
 
-The campaign also surfaced a new failure mode: arm~B falsely refused the
-computer-science question in three independent trials (two false refusals of
-353.5\,s and 41.4\,s, one 600\,s hang). Transcript forensics locate
-the mechanism: the 131-document shelf catalog returned by the librarian's
-listing tool measures 74.9\,KB, exceeding the agent engine's tool-output
-budget; the engine persists the full payload and passes only a 2\,KB preview
-into context, so the model never saw the gold entry. Shelves of 53 and 75
-documents (33.1\,KB and 46.7\,KB) stay under the budget and succeed, and a
-scripted librarian---a lexical scan over the same catalog outside the
-engine's budget---answers the same question in 25.0\,s/10.2\,s with both gold
-hits. The failure is a transport limit, not a ranking error: the enforcement
-layer that honesty requires has transport constraints of its own
+The campaign also surfaced a transport failure: arm~B falsely refused the
+computer-science question in three independent trials (two false refusals and
+one hang). The 131-document shelf catalog returned by the librarian's listing
+tool measures 74.9\,KB, above the agent engine's tool-output budget, so only a
+2\,KB preview reached the model and it never saw the gold entry. Shelves of 53
+and 75 documents stay under the budget and succeed, and a scripted lexical
+scan over the same catalog answers the question in 25.0\,s and 10.2\,s with
+both gold hits. The failure is a transport limit, not a ranking error: the
+enforcement layer that honesty requires has transport constraints of its own
 (Section~\ref{sec:discussion}).
 
 \textbf{The repair and re-verification.} A 2026-10-13 change added
@@ -405,9 +373,7 @@ queries remained near 4--5 requests per second under a process-wide lock.
 These are single-instance capacity observations, not validated throughput.
 Concurrent write phases reported no lost updates, but raw counts and
 crash-recovery tests are unavailable, so durability under interruption is not
-claimed. Delivery-surface cost ranged from \$0.03--0.07 per run on the
-cheapest harness to \$0.9--1.8 on the agent surface, with \$0.18--0.30 on the
-industrial arms (Table~\ref{tab:e5-cost}).
+claimed.
 
 
 \subsection{E8: Ablations of the verification gate and the search scope}

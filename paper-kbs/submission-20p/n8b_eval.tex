@@ -124,7 +124,7 @@ no generation
 \path{runs/run-20261013T035250Z-5f9faac/retmatrix.json}, archived as a
 superseded campaign in
 \path{superseded-20261013-batch2.tar.gz};
-Table~\ref{tab:e4-matrix} and Figure~\ref{fig:modematrix}). Document-level
+Table~\ref{tab:e4-matrix}). Document-level
 recall: mode~A 10/10 (mean 19.8\,s), mode~B 7/10 (14.0\,s), mode~C 9/10
 (33.1\,s); BM25, dense and RRF 10/10 at $\leq$0.1\,s, so on this question set
 finding the gold document is not where the lanes earn their cost, and
@@ -256,40 +256,28 @@ failure analysis does not establish calibration.
 \includegraphics[width=\columnwidth]{fig3_retrieval}
 \caption{Tool-layer retrieval over the 42-document industrial corpus (16
 gold questions, top-5 document lists). BM25 reaches Hit@5 1.00. On the same
-logged hybrid pools, judge-score re-ranking reaches 0.44; a derived replay that
-retains fusion order among recorded survivors reaches 0.94, matching
-fusion-only. The derived comparison diagnoses the effect of ordering; because
-the 0.5 threshold rejects none of the 191 recorded scores, it does not measure
-filtering benefit.}
+logged hybrid pools, verdict-score re-ranking reaches Hit@5 0.44, while a
+derived replay that retains fusion order among recorded survivors reaches
+0.94, matching fusion-only. The derived comparison diagnoses the effect of
+ordering; because the 0.5 threshold rejects none of the 191 recorded scores,
+it does not measure filtering benefit. Latency per call is in
+Table~\ref{tab:retrieval}.}
 \label{fig:retrieval}
 \end{figure}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.86\textwidth]{fig10_mode_matrix}
-\caption{The ten-question, six-method pure-retrieval matrix of
-Table~\ref{tab:e4-matrix}. (a)~Document-level gold recall: lexical and
-dense baselines reach 10/10, while the tested tool-layer modes reach
-10/10, 9/10 and 7/10. These results are specific to the question set and
-retrieval substrates described in the text. (b)~Mean wall clock per question;
-the tool workflows incur more latency than the local baseline indexes.}
-\label{fig:modematrix}
-\end{figure*}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.78\textwidth]{fig6_margin_variants}
 \caption{Two replays over the logged hybrid runs of this subsection; both
 reuse recorded candidate pools and verdict scores rather than retrieving
-again. (a)~A relative-margin replay over the logged hybrid pools of this
-subsection: keep the top five plus every candidate within $m$ of the pool's
-best score, $m$ swept 0.0--0.3; the solid curve counts gold instances kept
-of the 17 that entered a pool, the twin curve the mean candidates returned
-of the twelve submitted; dashed rules mark $m=0.15$ (16 of 17 golds kept)
-and $m=0.20$ (all 17). (b)~The verdict's
-four roles, scored on identical candidates and identical verdict scores:
-fusion order, verdict as re-ranker, verdict as filter, and rank fusion. Only
-the role differs, which makes the panel an attribution rather than a
-benchmark; the re-ranking role is the one that loses the gold.}
+again. (a)~A relative-margin replay: keep the top five plus every candidate
+within $m$ of the pool's best score, $m$ swept 0.0--0.3; the solid curve
+counts gold instances kept of the 17 that entered a pool, the grey curve the
+mean candidates returned of the twelve submitted; dashed rules mark $m=0.15$
+(16 of 17 golds kept) and $m=0.20$ (all 17). (b)~The verdict's four roles,
+scored on identical candidates and identical verdict scores: fusion order,
+verdict as re-ranker, verdict as filter, and rank fusion. Only the role
+differs, which makes the panel an attribution rather than a benchmark; the
+re-ranking role is the one that loses the gold.}
 \label{fig:marginvariants}
 \end{figure*}

@@ -1,40 +1,42 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-The central finding is a placement result for content verifiers. Replaying
-the same recorded candidate pools of the industrial corpus shows that
-ordering candidates by the judge score lowers Hit@5 from 0.94 under
-fusion-only to 0.44, whereas retaining fusion order among the recorded
-survivors matches fusion-only at 0.94; all 191 recorded scores exceed the 0.5
-threshold, and one additional fusion candidate has no recorded score, so the
-comparison diagnoses a harmful ordering role rather than a benefit from
-threshold filtering. An independent NLI checkpoint fails the same way on the
-same pools. The lesson travels beyond this checkpoint: a verifier score that
-is acceptable as an admission filter should not be assumed usable as a
-ranker, and the two roles must be tested separately.
+QDCVR is a knowledge-base management system, and the evaluation is organized
+around that claim. The management layer parses and admits documents through
+gates that fail visibly, places them by content, keeps document files, the
+tree registry and library metadata consistent, and audits rename, move, delete
+and re-index operations. On the deployed collections these checks hold in
+place: 322 stored parts pass storage and content audits, the 50-paper campaign
+parses 50/50, and sub-library creation and moves behave as specified. The same
+layer also records its failures. Twenty-one of 100 submissions never became
+retrievable and the surviving artifacts cannot attribute them, and one
+oversized-catalog response hid entries from the agent and produced a false
+refusal until a character budget and pagination repaired the tested paths.
 
-QDCVR implements the surrounding workflow as three
-contracts---content informs placement, content informs admission, absence is
-reported---which we treat as hypotheses at different layers, not as three
-equivalent server-enforced guarantees. Storage and consistency checks are
-mechanically performed; semantic placement remains an ingest-agent decision;
-the answer layer's abstention behavior is evaluated from observed trials
-rather than certified by a server-side semantic classifier. On the industrial
-corpus, lexical retrieval reaches Hit@5 1.00, so recall is not the
-contribution here. In the end-to-end grid, all 30 answer texts contain a gold
-document identifier; strict keyword coverage is 9/10 in each arm---the misses
-are word-form mismatches---and alias-aware coverage is 10/10 in each arm; the
-BQ06 gold key was corrected to the source paper's reading, and both grades are
-retained. Recognized citation-marker hits are 9/10, 7/10 and 2/10 for the
-platform, file and dense arms. These measures capture identifier presence and
-lexical/marker coverage, not semantic support. Acquisition left 21 of 100
-submissions unretrievable without a complete failure inventory, and a selected
-oversized-catalog path was repaired and retested after a false refusal.
+The answer-level evaluation gives the system's end-to-end reading. Across ten
+questions and three retrieval interfaces (30 answer cells), every answer names
+its gold document; strict keyword coverage is 9/10 per interface, alias-aware
+coverage is 10/10, and recognized citation-marker hits are 9/10, 7/10 and
+2/10. These measures capture identifier presence and lexical or marker
+coverage, not semantic support, and the interfaces do not differ in whether
+they find the source. An eighteen-arm honesty battery observed no fabricated
+citations, and verified-absent questions returned explicit not-found reports;
+that behavior is instructed at the answer layer, not enforced by a classifier.
 
-The contribution is a same-pool diagnostic of verifier placement and an
-auditable deployment account, not a claim of universal retrieval or
-answer-quality superiority: the results remain bounded by one workstation,
-one verifier checkpoint and developer-authored questions. Next steps include independently curated
+The retrieval diagnostic bounds what the verifier can be used for. On
+identical logged pools, ordering candidates by the verdict lowers Hit@5 from
+0.94 to 0.44, while retaining fusion order among recorded survivors restores
+0.94; all 191 recorded scores exceed the 0.5 threshold, and one additional
+fusion candidate has no recorded score. The comparison therefore diagnoses a
+harmful ordering role, not a benefit from threshold filtering. A verifier
+score that is acceptable as an admission filter should not be assumed usable
+as a ranker.
+
+The contribution is a knowledge-base management workflow, a per-question
+account of the answers it produces, and a same-pool diagnostic of verifier
+placement, not a claim of universal retrieval or answer-quality superiority.
+The results remain bounded by one workstation, one verifier checkpoint and
+developer-authored questions. Next steps include independently curated
 questions, repeated agent trials, claim-level evidence-support evaluation, a
 confuser-density-controlled verifier evaluation, explicit execution-failure
 states for incomplete searches, transport stress tests and operator studies

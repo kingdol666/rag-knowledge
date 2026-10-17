@@ -4,7 +4,7 @@ Generated from the canonical source `paper-kbs/tex/journal_20p/`. This is a flat
 
 - manuscript source: `main_20p.tex` plus 15 included TeX files
 - bibliography: `refs.bib`, `refs_new_verified.bib` plus generated `main_20p.bbl`
-- figures used by the manuscript: `fig1_architecture.pdf`, `fig2_lanes.pdf`, `fig3_retrieval.pdf`, `fig10_mode_matrix.pdf`, `fig6_margin_variants.pdf`, `fig11_three_arms.pdf`, `fig7_ood.pdf`, `fig4_inflation.pdf`, `fig8_anatomy.pdf`
+- figures used by the manuscript: `fig1_architecture.pdf`, `fig2_lanes.pdf`, `fig3_retrieval.pdf`, `fig6_margin_variants.pdf`, `fig11_three_arms.pdf`, `fig7_ood.pdf`, `fig4_inflation.pdf`, `fig8_anatomy.pdf`
 - highlights: `highlights.docx` and `highlights.tex` (verify identical wording before upload)
 - supplementary material: upload `paper-kbs/supplementary/supplementary-material.pdf` as a separate supplementary item (Part D of that document carries Tables S1-S5, the five appendix tables the manuscript cites; they moved out of the manuscript on 2026-10-16)
 - Declaration of Interests: complete Elsevier's declarations tool and upload its generated Word document separately

@@ -8,6 +8,16 @@ Office files and scans to MinerU through an asynchronous parsing service
 and OCR, layout and formula-extraction failures remain visible rather than
 being stored as empty documents.
 
+An ingest follows a fixed sequence of observable stages: submit, parse, quality
+verdict, duplicate decision, split, storage, indexing and a retrieval probe.
+Each stage leaves a record that the next stage reads and the audit can revisit:
+a parse task identifier, a quality report, a content fingerprint, a split
+manifest, a storage record and a probe result. A document counts as ingested
+only when a content-derived query retrieves it; an HTTP success from the save
+call is not treated as success. The same path accepts scanned pages, Office
+files and plain text, and a failure at one stage never silently promotes the
+document to the next.
+
 \subsection{Quality gates and ingest lifecycle}
 
 Before storage, duplicate detection checks exact content fingerprints and

@@ -88,12 +88,26 @@ C = {"blue": "#0072B2", "orange": "#E69F00", "green": "#009E73",
      "yellow": "#F0E442", "black": "#000000", "grey": "#8C8C8C",
      "lgrey": "#E8E8E8", "dgrey": "#555555"}
 
+# ---------------------------------------------------------------------------
+# Shared data-figure grammar (SCI style)
+# ---------------------------------------------------------------------------
+# Colour encodes a role, never a method's identity, and the same role keeps the
+# same colour in every figure: the system's promoted behaviour is blue, a
+# failure is vermillion, a baseline or context series is grey. Metric triples use
+# one hue as a light-to-dark ramp so that a legend can be read without a colour
+# key. Bars carry direct value labels and no frame; there is no top/right spine
+# and no grid, because every plotted value is labelled or countable.
+SEM = {"system": C["blue"], "failure": C["verm"], "recovered": C["green"],
+       "baseline": "#B8B8B8", "secondary": C["orange"], "context": "#D9D9D9"}
+RAMP = ["#A6CEE3", "#4A90C2", "#08519C"]      # light -> dark for metric triples
+
 HERE = Path(__file__).resolve().parent
 RESULTS = HERE.parent / "experiments" / "results"
 OUT = HERE
 
 # placed widths (inches), taken from the \includegraphics calls in paper-kbs/tex
 W_FULL = 5.38            # 13.67 cm  (\textwidth)
+W_COL = 3.50             #  8.89 cm  (\columnwidth)
 W_HALF = 2.69            #  6.83 cm  (0.5\textwidth)
 W_OOD = 3.34             #  8.47 cm  (0.62\textwidth)
 
@@ -573,58 +587,40 @@ def fig_retrieval():
     s = summary["summary"]
     order = ["bm25", "dense", "rrf", "graph", "twostage", "fusion_only", "qdcvr_hybrid"]
     # short tick labels: the method names live in the caption instead
-    labels = ["BM25", "Dense", "RRF", "Graph", "2-stg", "Fusion", "QDCVR-H"]
-    colors = [C["grey"], C["sky"], C["blue"], C["pink"], C["yellow"],
-              C["orange"], C["green"]]
+    labels = ["BM25", "Dense", "RRF", "Graph", "2-stage", "Fusion", "QDCVR-H"]
 
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(W_FULL, 2.45),
-                                 gridspec_kw={"width_ratios": [1.55, 1]},
-                                 layout="constrained")
-    x = range(len(order))
+    # Effectiveness only, drawn at the column width the manuscript places it
+    # at. Latency is reported in the table and the text; a second panel
+    # repeating it would weight the platform's weakest property as heavily as
+    # the retrieval quality it is meant to support.
+    fig, ax = plt.subplots(figsize=(W_COL, 2.15), layout="constrained")
+    x = list(range(len(order)))
     w = 0.26
     for k, (metric, mname) in enumerate([("hit@5", "Hit@5"),
                                          ("recall@5", "Recall@5"),
                                          ("mrr", "MRR")]):
         vals = [s[m][metric] for m in order]
-        a1.bar([i + (k - 1) * w for i in x], vals, width=w, label=mname,
-               color=[C["blue"], C["sky"], C["green"]][k], edgecolor="white",
-               linewidth=0.4)
-    a1.set_xticks(list(x))
-    # 7 method names at 8 pt collide in a 3 in panel (the 6 pt original fitted
-    # only because it was 25% smaller): rotated instead of thinned out so every
-    # bar keeps its method label.
-    a1.set_xticklabels(labels, rotation=32, ha="right", rotation_mode="anchor")
-    a1.set_ylabel("Score (mean over 16 questions)")
-    a1.set_ylim(0, 1.34)
-    a1.set_yticks([0.0, 0.25, 0.5, 0.75, 1.0])
-    a1.legend(frameon=False, loc="upper left", ncol=3,
-              columnspacing=0.8, handlelength=1.0, handletextpad=0.4,
-              borderaxespad=0.1, borderpad=0.0)
-    hide_top_right(a1, left=True)
-    a1.tick_params(length=2, pad=1.5)
-
-    lats = [max(s[m]["latency_mean"], 0.001) for m in order]
-    a2.bar(list(x), lats, color=colors, edgecolor="white", linewidth=0.4)
-    a2.set_yscale("log")
-    # The decade labels are written as plain decimals ("0.001", "0.1", "1"):
-    # the 10^k mathtext form renders the exponent at 0.7 x the base size, i.e.
-    # a 5.6 pt superscript in the PDF, which is exactly what the Elsevier
-    # audit rejects.  The 10^-1 ... 10^-4 minor labels are dropped for the same
-    # reason plus a layout one: constrained_layout reserves no room for minor
-    # tick labels (Axis.get_tightbbox walks major ticks only).
-    a2.yaxis.set_major_formatter(mticker.FuncFormatter(lambda v, _: f"{v:g}"))
-    a2.yaxis.set_minor_formatter(mticker.NullFormatter())
-    a2.set_xticks(list(x))
-    a2.set_xticklabels(labels, rotation=32, ha="right", rotation_mode="anchor")
-    a2.set_ylabel("Latency (s, log)")
-    a2.tick_params(length=2, pad=1.5)
-    for xi, v in zip(x, lats):
-        lbl = f"{v*1000:.0f}" if v < 0.5 else f"{v:.1f}"
-        a2.text(xi, v * 1.45, lbl, ha="center", color="#333333")
-    a2.set_ylim(0.0005, 6.0)
-    hide_top_right(a2, left=True)
-    a1.set_title("(a) Effectiveness", loc="left")
-    a2.set_title("(b) Latency (ms/s, 42 docs, 5 KBs)", loc="left")
+        ax.bar([i + (k - 1) * w for i in x], vals, width=w, label=mname,
+               color=RAMP[k], edgecolor="white", linewidth=0.4)
+    ax.set_xticks(x)
+    ax.set_xticklabels(["BM25", "Dense", "RRF", "Graph", "2-stg", "Fusion",
+                        "QDCVR-H"], rotation=24, ha="right",
+                       rotation_mode="anchor")
+    ax.set_ylabel("Score (16 questions)")
+    ax.set_ylim(0, 1.32)
+    ax.set_yticks([0.0, 0.25, 0.5, 0.75, 1.0])
+    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.04),
+              ncol=3, columnspacing=0.7, handlelength=1.0,
+              handletextpad=0.35, borderaxespad=0.1, borderpad=0.0)
+    hide_top_right(ax, left=True)
+    ax.tick_params(length=2, pad=1.5)
+    # mark the two configurations the paper's argument turns on
+    ax.annotate("fusion", xy=(5, s["fusion_only"]["hit@5"]),
+                xytext=(5, s["fusion_only"]["hit@5"] + 0.19), ha="center",
+                color=C["dgrey"])
+    ax.annotate("verdict", xy=(6, s["qdcvr_hybrid"]["hit@5"]),
+                xytext=(6, s["qdcvr_hybrid"]["hit@5"] + 0.19), ha="center",
+                color=SEM["failure"])
     save(fig, "fig3_retrieval")
 
 
@@ -646,8 +642,8 @@ def fig_inflation():
     rng = np.random.default_rng(7)
     fig, ax = plt.subplots(figsize=(W_HALF, 2.05), layout="constrained")
     for i, (vals, col, name) in enumerate([
-            (gold_scores, C["green"], "Gold"),
-            (nongold_scores, C["verm"], "Non-gold")]):
+            (gold_scores, SEM["system"], "Gold"),
+            (nongold_scores, SEM["baseline"], "Non-gold")]):
         xs = rng.normal(i, 0.055, size=len(vals))
         ax.scatter(xs, vals, s=6, color=col, alpha=0.65, edgecolors="none",
                    label=name, zorder=3)
@@ -657,7 +653,8 @@ def fig_inflation():
     ax.text(1.44, 0.492, "accept 0.5", color=C["dgrey"], ha="right",
             va="top", zorder=5)
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(["Gold docs", "Non-gold\nsurvivors"])
+    ax.set_xticklabels([f"Gold docs\n(n = {len(gold_scores)})",
+                        f"Non-gold\n(n = {len(nongold_scores)})"])
     ax.set_ylabel("Laya evidence score")
     ax.set_yticks([0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
     ax.set_ylim(0.42, 1.05)
@@ -668,10 +665,12 @@ def fig_inflation():
     ax.tick_params(length=2, pad=1.5)
     med_n = float(np.median(nongold_scores))
     med_g = float(np.median(gold_scores))
-    ax.annotate(f"{med_g:.2f}", (0.24, med_g), fontsize=_FS, color=C["green"],
+    ax.annotate(f"{med_g:.2f}", (0.24, med_g), fontsize=_FS, color=SEM["system"],
                 va="center", ha="left")
-    ax.annotate(f"{med_n:.2f}", (1.24, med_n), fontsize=_FS, color=C["verm"],
-                va="center", ha="left")
+    ax.annotate(f"{med_n:.2f}", (1.24, med_n), fontsize=_FS,
+                color=C["dgrey"], va="center", ha="left")
+    ax.annotate("Mann-Whitney $p$ = 0.26", (0.5, 0.435), ha="center",
+                va="center", color=C["dgrey"])
     save(fig, "fig4_inflation")
 
 
@@ -780,25 +779,25 @@ def fig_margin_variants():
                                  gridspec_kw={"width_ratios": [1.10, 1]},
                                  layout="constrained")
     ax = a1
-    ax.plot(margins, golds, "-o", color=C["blue"], lw=1.0, ms=2.6,
+    ax.plot(margins, golds, "-o", color=SEM["system"], lw=1.0, ms=2.6,
             label="golds kept (of 17)")
     ax.set_xlabel("cut margin (best $-$ m)")
-    ax.set_ylabel("golds kept", color=C["blue"])
+    ax.set_ylabel("golds kept", color=SEM["system"])
     ax.set_ylim(6, 18.6)
     ax.set_yticks([8, 10, 12, 14, 16])
     ax.set_xticks([0.0, 0.1, 0.2, 0.3])
     ax.tick_params(length=2, pad=1.0)
     ax2 = ax.twinx()
-    ax2.plot(margins, kept, "-s", color=C["verm"], lw=1.0, ms=2.4,
+    ax2.plot(margins, kept, "-s", color=C["dgrey"], lw=1.0, ms=2.4,
              label="mean kept set")
-    ax2.set_ylabel("mean kept (of 12)", color=C["verm"])
+    ax2.set_ylabel("mean kept (of 12)", color=C["dgrey"])
     ax2.set_ylim(6, 12.6)
     ax2.set_yticks([7, 9, 11])
     ax2.tick_params(length=2, pad=1.0)
     ax.axvline(0.15, color=C["dgrey"], lw=0.6, ls="--")
     ax.text(0.155, 6.5, "0.15", color=C["dgrey"], va="bottom", ha="left")
-    ax.axvline(0.20, color=C["green"], lw=0.6, ls="--")
-    ax.text(0.205, 6.5, "0.20", color=C["green"], va="bottom", ha="left")
+    ax.axvline(0.20, color=SEM["system"], lw=0.6, ls="--")
+    ax.text(0.205, 6.5, "0.20", color=SEM["system"], va="bottom", ha="left")
     ax.spines["top"].set_visible(False)
     ax2.spines["top"].set_visible(False)
     ax.set_title("(a) cut-margin replay", loc="left")
@@ -807,9 +806,12 @@ def fig_margin_variants():
     names = ["Fusion", "Judged", "Filter", "RRF"]
     vals = [0.94, e5["judged"]["hit@5"], e5["filter_only"]["hit@5"],
             e5["rrf_fuse"]["hit@5"]]
-    cols = [C["orange"], C["verm"], C["green"], C["grey"]]
+    cols = [SEM["baseline"], SEM["failure"], SEM["system"], SEM["context"]]
     ax.bar(range(4), vals, color=cols, edgecolor="white", linewidth=0.4,
            width=0.62)
+    # No reference line here: two bars sit exactly on the fusion value, so a
+    # dashed line would print through their own labels. The caption carries the
+    # comparison.
     for i, v in enumerate(vals):
         ax.text(i, v + 0.03, f"{v:.2f}", ha="center")
     ax.set_xticks(range(4))
@@ -819,7 +821,7 @@ def fig_margin_variants():
     ax.set_yticks([0.0, 0.5, 1.0])
     ax.tick_params(length=2, pad=1.5)
     hide_top_right(ax, left=True)
-    ax.set_title("(b) three verdict roles", loc="left")
+    ax.set_title("(b) verdict roles, same pools", loc="left")
     save(fig, "fig6_margin_variants")
 
 
@@ -836,12 +838,14 @@ def fig_ood_kbs():
     x = range(len(pr))
     w = 0.36
     fig, ax = plt.subplots(figsize=(W_OOD, 2.05), layout="constrained")
-    ax.bar([i - w / 2 for i in x], kept, width=w, color=C["verm"],
+    ax.bar([i - w / 2 for i in x], kept, width=w, color=SEM["failure"],
            label="kept by judge (of 12)", edgecolor="white", linewidth=0.3)
-    ax.bar([i + w / 2 for i in x], over, width=w, color=C["sky"],
+    ax.bar([i + w / 2 for i in x], over, width=w, color=SEM["baseline"],
            label="chunks above 0.35", edgecolor="white", linewidth=0.3)
     for xi, v in zip(x, kept):
         ax.text(xi - w / 2, v + 0.45, str(v), ha="center")
+    for xi, v in zip(x, over):
+        ax.text(xi + w / 2, v + 0.45, str(v), ha="center")
     ax.set_xticks(list(x))
     ax.set_xticklabels(topics)
     ax.set_ylabel("count")

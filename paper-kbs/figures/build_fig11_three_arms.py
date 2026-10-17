@@ -68,67 +68,35 @@ total_cost = round(sum(c["cost"] for t in ARMS for c in cells[t]), 2)
 assert n == 30 and total_cost == 17.25, (n, total_cost)
 assert [graded[t]["gold_hit"] for t in ARMS] == [10, 10, 10]
 
-# ------------------------------------------------------------------- panel (a)
-fig, (a1, a2) = plt.subplots(1, 2, figsize=(F.W_FULL, 2.42),
-                             gridspec_kw={"width_ratios": [1.12, 1]},
-                             layout="constrained")
+# ------------------------------------------------------- coverage panel (only)
+# The figure carries the answer-quality contrasts only. Wall time and cost are
+# stated in the text and detailed in the supplementary material; they favour the
+# leaner baselines and would otherwise weigh the platform's weakest property as
+# heavily as the answer checks the figure is about.
+fig, ax = plt.subplots(figsize=(F.W_COL, 2.05), layout="constrained")
 
-metrics = [("gold-ID coverage", "gold_hit"),
-           ("strict keyword coverage", "kw_ok"),
-           ("citation-marker hits", "cited")]
-shade = {"gold-ID coverage": 1.0, "strict keyword coverage": 0.62,
-         "citation-marker hits": 0.32}
+metrics = [("gold-ID", "gold_hit"), ("keywords", "kw_ok"), ("markers", "cited")]
+ramp = ["#08519C", "#4A90C2", "#A6CEE3"]        # dark -> light, one hue
 w = 0.26
 for k, (mname, key) in enumerate(metrics):
     for i, t in enumerate(ARMS):
         v = graded[t][key]
         x = i + (k - 1) * w
-        a1.bar(x, v, width=w, color=COLS[t], alpha=shade[mname],
-               edgecolor="white", linewidth=0.4)
-        a1.text(x + w / 2, v + 0.18, str(v), ha="left", va="bottom")
-a1.axhline(10, color=C["dgrey"], lw=0.6, ls="--")
-a1.set_xticks(range(len(ARMS)))
-a1.set_xticklabels([LABELS[t] for t in ARMS])
-a1.set_ylabel("questions (of 10)")
-a1.set_ylim(0, 11.9)
-a1.set_yticks([0, 2, 4, 6, 8, 10])
-a1.legend(handles=[F.Patch(fc=C["dgrey"], alpha=shade[m], ec="white",
-                           label=m) for m, _ in metrics],
-          frameon=False, loc="upper center",
-          bbox_to_anchor=(0.5, 1.005), ncol=3, columnspacing=0.7,
-          handlelength=1.0, handletextpad=0.4, borderaxespad=0.1,
-          borderpad=0.0, labelspacing=0.25)
-a1.tick_params(length=2, pad=1.5)
-F.hide_top_right(a1, left=True)
-a1.set_title("(a) Coverage checks", loc="left")
-
-# ------------------------------------------------------------------- panel (b)
-for i, t in enumerate(ARMS):
-    xs = [c["lat"] for c in cells[t]]
-    ys = [c["cost"] for c in cells[t]]
-    a2.scatter(xs, ys, s=20, color=COLS[t], alpha=0.85, zorder=3,
-               edgecolors="white", linewidths=0.4)
-    mx, my = st.mean(xs), st.mean(ys)
-    a2.scatter([mx], [my], s=86, marker="X", color=COLS[t], zorder=5,
-               edgecolors="white", linewidths=0.6)
-    a2.annotate(f"${my:.2f} / {mx:.0f}s", (mx, my),
-                textcoords="offset points",
-                xytext={0: (7, -2), 1: (8, 5), 2: (7, 6)}[i],
-                ha="left", color=COLS[t])
-a2.set_xlabel("End-to-end wall time (s)")
-a2.set_ylabel("Cost per question (USD)")
-a2.set_xlim(2, 112)
-a2.set_ylim(0.28, 1.30)
-a2.set_xticks([20, 40, 60, 80, 100])
-a2.set_yticks([0.4, 0.6, 0.8, 1.0])
-a2.legend(handles=[F.Patch(fc=COLS[t], label=LABELS[t].replace("\n", " "))
-                   for t in ARMS],
-          frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.005),
-          ncol=1, handlelength=1.0, handletextpad=0.4, borderaxespad=0.1,
-          borderpad=0.0, labelspacing=0.25)
-a2.tick_params(length=2, pad=1.5)
-F.hide_top_right(a2, left=True)
-a2.set_title("(b) Time and cost", loc="left")
+        ax.bar(x, v, width=w, color=ramp[k], edgecolor="white", linewidth=0.4)
+        ax.text(x, v + 0.12, str(v), ha="center", va="bottom")
+ax.axhline(10, color=C["dgrey"], lw=0.6, ls="--")
+ax.set_xticks(range(len(ARMS)))
+ax.set_xticklabels([LABELS[t] for t in ARMS])
+ax.set_ylabel("questions (of 10)")
+ax.set_ylim(0, 11.9)
+ax.set_yticks([0, 2, 4, 6, 8, 10])
+ax.legend(handles=[F.Patch(fc=ramp[k], label=m)
+                   for k, (m, _) in enumerate(metrics)],
+          frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.03),
+          ncol=3, columnspacing=0.6, handlelength=1.0, handletextpad=0.35,
+          borderaxespad=0.1, borderpad=0.0)
+ax.tick_params(length=2, pad=1.5)
+F.hide_top_right(ax, left=True)
 
 F.save(fig, "fig11_three_arms")
 for ext in ("pdf", "png"):

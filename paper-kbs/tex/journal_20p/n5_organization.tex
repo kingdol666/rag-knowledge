@@ -19,6 +19,16 @@ Duplicate detection reports candidate pairs for review; deletion is not
 automatic because adjacent parts may be similar while containing distinct
 source sections.
 
+The layer's operations are library and sub-library creation, placement,
+description and tag edits, move, rename, delete, duplicate review and forced
+re-index. Each writes the document files and both registries, so the audit can
+compare the three sources afterwards. The catalog lists libraries, their
+descriptions, sub-library containers and document descriptions, which lets a
+reader or an agent decide where to look before opening a body. Placement is
+the one operation whose semantic choice is not mechanical: the ingest agent
+selects the library from the parsed content, and the platform checks the
+consequences rather than the choice.
+
 Sub-libraries are first-class tree nodes with their own descriptions and
 indices. Index writes resolve the document's owning library; searching a parent
 library traverses its descendants' collections. This supports hierarchical

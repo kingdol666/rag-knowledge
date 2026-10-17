@@ -8,7 +8,7 @@ manuscript pages** (including tables and figures)". Two builds were measured.
 | build | source | class options | pages | notes |
 |---|---|---|---|---|
 | camera-ready preview (layout of record) | `paper-kbs/tex/journal_20p/main_20p.tex` | `[final,5p,times,twocolumn]` | **20** | all `_postcheck.ps1` gates pass: 0 overfull, 0 undefined, every float cited, figures ≥ 7 pt effective |
-| review format (Elsevier double-spaced) | `paper-kbs/tex/journal_20p/main_20p_review.tex` | `[review,12pt]` | **68** | 0 errors; 2 "Overfull \hbox" warnings from two full-width tables that were tuned for the 501 pt two-column measure (legible, documented in the file header). The build measured 68-69 pages across the revision passes; the final committed build is 68 |
+| review format (Elsevier double-spaced) | `paper-kbs/tex/journal_20p/main_20p_review.tex` | `[review,12pt]` | **68** | 0 errors; 6 "Overfull \hbox" warnings: four are the wide float tables tuned for the two-column measure (the lane table, the management-functions table, the answer-quality table and Table 3's block (b)), and two are sub-12 pt line overflows from the same tables. They remain legible and the build has no errors; see the file header |
 
 Rebuild commands:
 
@@ -24,13 +24,13 @@ pdflatex -jobname=main_20p_review main_20p_review.tex   # twice
 
 ## Measured content
 
-- words: **14{,}062** total, **11{,}834** excluding the reference list
-  (`pdftotext` on `main_20p.pdf`); the review build gives 13{,}921 / 11{,}201
-  (line-break hyphenation differences only)
+- words: **14{,}361** total, **12{,}892** excluding the reference list
+  (`pdftotext` on `main_20p.pdf`, after the 2026-10-17 restructure)
 - references: 54 entries (`refs.bib` 35 + `refs_new_verified.bib` 19)
-- floats: 9 figures, 7 body tables; 5 further tables moved to the supplement on
-  2026-10-16 (Part D, Tables S1-S5)
-- abstract 241 words; highlights 5 × ≤ 85 characters
+- floats: 8 figures, 7 body tables; 5 further tables moved to the supplement on
+  2026-10-16 (Part D, Tables S1-S5); Figure 10 was removed on 2026-10-17
+  because Table 5 carries the same six methods
+- abstract 235 words; highlights 5 × ≤ 85 characters
 
 ## What the numbers mean
 
