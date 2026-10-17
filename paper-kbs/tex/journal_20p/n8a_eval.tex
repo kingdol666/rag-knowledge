@@ -9,9 +9,10 @@ management layer: acquisition and parsing, organization and three-source
 consistency, and the operational-experience store. Sections
 \ref{sec:e4}--\ref{sec:e8} cover the query path: retrieval quality
 (Section~\ref{sec:e4}), answer quality per question and abstention
-(Section~\ref{sec:e5}, the paper's end-to-end evidence), verifier failure
-(Section~\ref{sec:e6}), non-functional behavior (Section~\ref{sec:e7}) and
-the gate and search-scope ablations (Section~\ref{sec:e8}). Numbers are
+(Section~\ref{sec:e5}, the paper's end-to-end evidence), a deployment-layer
+replication through the public API (Section~\ref{sec:sysarms}), verifier
+failure (Section~\ref{sec:e6}), non-functional behavior (Section~\ref{sec:e7})
+and the gate and search-scope ablations (Section~\ref{sec:e8}). Numbers are
 reported against the corpus that produced them, never merged; the campaign
 inventory and per-question tool-layer results are supplementary material.
 
@@ -60,26 +61,54 @@ latency excluded; model-driven lanes were repeated at fixed model version and
 reported as means with observed spread; the fixed retry policy (one retry for
 an empty zero-turn response or transient gateway timeout) fired twice,
 succeeding both times. Before measurement we repaired two corpus-integrity
-faults via the platform's own operations (Section~\ref{sec:e7}). The tool-layer
+faults through the platform's own operations: one document missing from its
+vector collection was re-indexed, and one library whose collection had been
+lost was rebuilt, the same failure class that Section~\ref{sec:e2} measures. The tool-layer
 retrieval lanes, grading rule, audits, duplicate adjudication and cross-lingual
 ingestion pipeline are deterministic; agent lanes and text-derived results are
 not, and carry their repetition spread.
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Functional checks on the management layer. Each row names the
+function, the test and its scale, the observed outcome, and the subsection
+that reports it. The numbers are those of the cited campaigns; none is
+re-estimated. A passing check means the stated property was observed on the
+stated scale, not that the function is exhaustively verified.}
+\label{tab:kb-checks}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.115\textwidth}>{\raggedright\arraybackslash}p{0.265\textwidth}>{\raggedright\arraybackslash}p{0.39\textwidth}>{\raggedright\arraybackslash}p{0.10\textwidth}@{}}
+\toprule
+Function & Test and scale & Observed outcome & Where\\
+\midrule
+Parse and ingest & 100-paper campaign; nine per-paper checks & 100/100 checks; 91 names in the state file, 79 retrievable at evaluation, 21 unattributable & E1\\
+Parse quality & 50-paper, 26-domain campaign & 50/50 parsed and verified, all probes ok; 202 tags; 41 tag flags negative without blocking ingestion & E1\\
+Structural split & 50 papers at the 30{,}000-character tier & 165 documents (9 whole, 156 parts) in 2{,}672\,s; storage 50/50; descriptions and tags 165/165 & E1\\
+Near-duplicate review & 322-document corpus, 0.90 threshold & 35 candidate groups (0.90--0.975), zero true duplicates, nothing deleted & E2\\
+Content placement & 100 papers into five libraries; 400 pages per language & 322 stored parts; membership 0.875 (en) and 1.0 (zh, ja) & E1--E2\\
+Three-source consistency & Full corpus and 33-document spot check & 322/322 content and 33/33 storage; one rename defect (18 vs 9 chunks) until force re-index & E2\\
+Lifecycle operations & 16 scenarios on two disposable libraries & create, move, delete and forced re-index pass; two failures (task status, update check) & E2\\
+Sub-library hierarchy & Three-level disposable fixture & create, parent-to-child move, listing, reading and judging all pass & E2\\
+Tags and graph & 316-tag registry; 658-node graph & 165 documents pass the tag check in 47.6\,s; four tag edges on one document move 4{,}675 to 4{,}679 & E2\\
+Experience store & One small knowledge base; one end-to-end scenario & 13 candidate drafts; one lesson retrieved first at 0.711; approval path unexercised & E3\\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 \subsection{E1: Acquisition and parsing}
 \label{sec:e1}
 
 The 100 submitted papers were parsed and content-routed into five domain
 libraries, producing 322 stored parts after the 30{,}000-character split. The
-submission funnel---91 in the ingest state file, 79 retrievable at evaluation
-time, 21 never retrievable---is in the campaign inventory; reported failure
-modes are formula-dense scans and one tool-layer crash during batch parsing,
-restarted from a checkpoint. Neither attempts against failed papers nor
-per-paper parse status is recorded, so reconciliation rests on surviving
-artifacts~\cite{missier-prov-2013}. The audit: nine per-paper ingest checks
-100/100; no true duplicate among 35 near-duplicate pairs; 165 descriptions
-upgraded; content and storage audits 322/322 and 33/33; 15/15 regression
-probes; a 4{,}528-chunk dense replica index (values script-asserted from saved
-artifacts).
+submission funnel is incomplete: 91 names appear in the ingest state file, 79
+papers were retrievable at evaluation and 21 never became retrievable, and
+neither attempts against failed papers nor per-paper parse status is recorded,
+so the missing 21 cannot be attributed to parsing alone
+\cite{missier-prov-2013}. Reported failure modes are formula-dense scans and
+one tool-layer crash during batch parsing, restarted from a checkpoint.
+Table~\ref{tab:kb-checks} lists every functional check with its scale and
+outcome.
 
 The cross-lingual benchmark ran twice over 400 pages per language and
 reproduced round~1 bit-for-bit, with ingestion success 1.0; storage
@@ -91,16 +120,13 @@ category labels rather than against any naming convention derived by the
 ingest agent, so it is the one placement-correctness measurement in this
 paper that does not depend on filename cues.
 
-A 50-paper, 26-domain campaign parsed and verified 50/50 papers in
-1{,}115.5\,s (8.3--48.4\,s per paper), produced 202 tags, batch-indexed 50
-documents and reported \texttt{all\_probes\_ok}; 41 of 50 carried
-\texttt{tag\_ok:false} although \texttt{verify\_ok} passed 50/50, so
-tag-quality failures never blocked ingestion. Its 30{,}000-character tier
-turned 50 papers into 165 documents (nine whole, 156 parts), passed storage
-50/50 and the description-and-tag check 165/165, stored 3{,}798{,}446
-characters and parsed in 2{,}672\,s; one stage re-ran on inbox ordering, and
-more than 800 extracted images were not uploaded. Descriptions and tags are
-checked against content before storage~\cite{park-metadata-quality-2009}.
+A second 50-paper, 26-domain campaign exercised the same path at a finer
+split. It parsed and verified every paper, indexed them in batch, reported all
+probes ok, and left 41 of 50 documents with a negative tag flag although
+verification passed for all, so tag-quality failures never blocked ingestion.
+One stage re-ran on inbox ordering, and more than 800 extracted images were
+not uploaded. Descriptions and tags are checked against content before
+storage~\cite{park-metadata-quality-2009}.
 
 
 \subsection{E2: Organization, consistency, and management operations}
@@ -117,37 +143,28 @@ returning every chunk twice at identical scores. Only an explicit force
 re-index removed them, restoring the count to 9. The failure is invisible from
 the metadata alone.
 
-The full reorganization campaign ran over the 322-document arXiv corpus and
-passed every check in the campaign audit; its 35 near-duplicate candidate
-groups (similarities 0.90--0.975), each adjacent parts of one paper, held zero
-true duplicates, and no document was deleted. The spot check sampled 33 of the
-322 documents. Sub-library splitting and hierarchy creation were executed
-later on a disposable three-level fixture (2026-10-13): creation with a parent
-reference, a parent$\to$sub-library document move, and listing, reading and
-judging through sub-library addresses all returned correct results, and a
-parent catalog lists its sub-libraries as container entries carrying the
-sub-library's own description---the one-call view ladder navigation reads.
+The full reorganization campaign over the 322-document corpus passed every
+audit check; its duplicate review held no true duplicate and deleted nothing,
+and the spot check sampled 33 documents. Sub-library splitting and hierarchy
+creation ran on a disposable three-level fixture: creation with a parent
+reference, a parent-to-sub-library move, and listing, reading and judging
+through sub-library addresses all returned correct results. A parent catalog
+lists its sub-libraries as container entries carrying their own descriptions,
+the one-call view that ladder navigation reads.
 
-Growing from 50 to 100 papers (322 stored documents at the final audit)
-cost no retrieval
-quality: dense top-1 hits went from 48/50 to 49/50 and MRR from 0.98 to 1.00,
-a 2 percentage point gain recorded as ``held (within $\pm$5\,pp)''. In the 16
-lifecycle scenarios, run against two disposable test libraries, create, move,
-delete and forced re-index each behaved as specified
-(Table~S5). Two failure modes: the task-status tool reports
-\texttt{running} after \texttt{finished\_at} is written, as in the
-reorganization graph build, and the update check timed out after 30\,s
-(\texttt{ragctl version -{}-json timed out after 30s}, success false) while
-every other probe passed; the project-status tool silently ignores its version
-flag. Merge and split were never exercised under controlled conditions and we
-claim nothing about them; the ingest tools were covered in E1.
+Growing from 50 to 100 papers cost no retrieval quality: dense top-1 hits moved
+from 48/50 to 49/50 and MRR from 0.98 to 1.00, recorded as held within
+$\pm$5\,pp. In the 16 lifecycle scenarios, create, move, delete and forced
+re-index behaved as specified (Table~S5). Two failures remain: the task-status
+tool reports \texttt{running} after \texttt{finished\_at} is written, and the
+update check timed out after 30\,s while every other probe passed. Merge and
+split were never exercised under controlled conditions, so we claim nothing
+about them.
 
-The live tag registry held 316 tags; the tag-quality check passed 165 documents
-with zero failures in 47.6\,s. Orphan tags accumulate (test tags, section
-titles); the registry offers a dry-run detector and a cleanup, and in one case
-test-library tags leaked into the production registry---the failure mode
-vocabulary-based organization is prone to~\cite{golder-tagging-2006}. The
-document graph is navigation, never evidence: writing one document's four tag
-edges moved the edge count from 4{,}675 to 4{,}679, against 658 nodes, 333
-documents and 316 tags; the 165-document corpus graph has 335 nodes and
-1{,}671 edges.
+The live tag registry held 316 tags; the tag-quality check passed 165
+documents with zero failures in 47.6\,s, and orphan tags accumulate (test tags,
+section titles), for which a dry-run detector exists. In one case test-library
+tags leaked into the production registry, the failure mode vocabulary-based
+organization is prone to~\cite{golder-tagging-2006}. The document graph is
+navigation, never evidence: four tag edges on one document moved the edge count
+from 4{,}675 to 4{,}679.

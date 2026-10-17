@@ -15,6 +15,30 @@ threshold (0.5 by default) are returned as survivors with provenance. A scored s
 threshold is not admitted, but tool or fetch failures are reported separately
 and a partially completed call may still return successfully scored survivors.
 
+A lane invocation runs the same five steps and differs in the tools it calls.
+\begin{enumerate}
+\item \emph{Rewrite.} The agent decomposes the question into a subject, an
+attribute and any constraint (Lane A), or classifies it as literal or
+enumerative for the scanner and semantic for the judge (Lane B).
+\item \emph{Gather.} The lane collects candidates: dense top-30 above cosine
+0.35 inside a pinned library (A); catalog pages followed by the scanner or the
+judge (B); one server call that merges vector top-30 with catalog results (C).
+\item \emph{Merge and cap.} Candidates are deduplicated by library and
+document, ordered with documents returned by both sources first, and capped at
+twelve candidates.
+\item \emph{Judge.} The gate fetches each candidate's text, splits it into
+segments and scores every segment against the posed evidence question. Scored
+survivors carry provenance; a fetch or tool failure is reported separately from
+a low score.
+\item \emph{Cut and read.} The answer step reads the first five survivors in
+full. The shipped configuration orders them by verdict score; the filter replay
+of Section~\ref{sec:e4} keeps the fusion order instead, and the relative margin
+is evaluated there as a diagnostic rather than as a deployed control.
+\end{enumerate}
+Exhausting a lane's call budget is intended to produce a scope and blind-spot
+report. The endpoint enforces timeouts and turn limits; the per-lane budgets
+are workflow instructions, not server quotas.
+
 \subsection{Gate contract and retrieval lanes}
 \label{sec:trace}
 \label{sec:gate}

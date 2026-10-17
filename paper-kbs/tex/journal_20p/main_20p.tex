@@ -87,20 +87,23 @@ knowledge-base management system that treats content as the shared object
 across acquisition, organization and question answering. Its management layer
 parses and gates documents, splits long files at structural boundaries, places
 documents by content rather than filename, and keeps files, registry and
-metadata consistent through rename, move, delete and re-index. Retrieval is
-one module of this system: three lanes share an invoked server-side content
-verifier, and an answer workflow is instructed to report absence.
-We evaluate the deployed system on three bounded corpora. On ten arXiv
+metadata consistent through rename, move, delete and re-index. Retrieval is one
+module: three lanes share an invoked server-side content verifier, and an
+answer workflow is instructed to report absence.
+We evaluate the deployed system on three bounded corpora with a method that
+combines functional audits, per-question answer checks, abstention probes and
+same-pool replays.
+On ten arXiv
 questions crossed with three retrieval interfaces (30 answer cells), every
 answer names its gold document, strict keyword coverage is 9/10 per interface
 and alias-aware coverage 10/10, and recognized citation-marker hits are 9/10,
 7/10 and 2/10. Acquisition left 21 of 100 submissions unretrievable without a
 complete failure inventory, and a reproduced catalog-transport failure was
 repaired and retested. In a same-pool replay on an industrial corpus, ordering
-candidates by the verifier score lowers Hit@5 from 0.94 to 0.44 while fusion
+candidates by the verifier score reduces Hit@5 from 0.94 to 0.44 while fusion
 order restores 0.94, so the verifier serves as an admission filter, not a
 ranker. Wall-clock and cost figures do not favor the platform arm. The findings
-support a bounded deployment account, not universal retrieval superiority.
+indicate a bounded deployment account, not universal retrieval superiority.
 \end{abstract}
 
 \begin{keyword}

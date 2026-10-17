@@ -298,6 +298,25 @@ def hide_top_right(ax, left=False):
         ax.spines[sp].set_visible(False)
 
 
+def origin_axes(ax, minor=True):
+    """Origin-style data frame: all four spines, inward major and minor ticks.
+
+    Origin's default 2D graph has a closed box and ticks that point into the
+    plotting area on every side; labels stay on the left and bottom. The KBS
+    artwork rule is unaffected because no text size changes.
+    """
+    for sp in ax.spines.values():
+        sp.set_visible(True)
+        sp.set_linewidth(0.8)
+        sp.set_color("#222222")
+    ax.tick_params(axis="both", which="major", direction="in", top=True,
+                   right=True, length=3.0, width=0.8, pad=2.0)
+    if minor:
+        ax.minorticks_on()
+        ax.tick_params(axis="both", which="minor", direction="in", top=True,
+                       right=True, length=1.6, width=0.6)
+
+
 # ===========================================================================
 # Fig 1 —platform architecture (full width, 13.67 cm = 5.38 in)
 # ---------------------------------------------------------------------------
@@ -607,13 +626,12 @@ def fig_retrieval():
                         "QDCVR-H"], rotation=24, ha="right",
                        rotation_mode="anchor")
     ax.set_ylabel("Score (16 questions)")
-    ax.set_ylim(0, 1.32)
+    ax.set_ylim(0, 1.55)
     ax.set_yticks([0.0, 0.25, 0.5, 0.75, 1.0])
-    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.04),
+    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.0),
               ncol=3, columnspacing=0.7, handlelength=1.0,
-              handletextpad=0.35, borderaxespad=0.1, borderpad=0.0)
-    hide_top_right(ax, left=True)
-    ax.tick_params(length=2, pad=1.5)
+              handletextpad=0.35, borderaxespad=0.25, borderpad=0.0)
+    origin_axes(ax)
     # mark the two configurations the paper's argument turns on
     ax.annotate("fusion", xy=(5, s["fusion_only"]["hit@5"]),
                 xytext=(5, s["fusion_only"]["hit@5"] + 0.19), ha="center",
@@ -650,27 +668,29 @@ def fig_inflation():
         ax.hlines(np.median(vals), i - 0.22, i + 0.22, color=col, lw=1.4,
                   zorder=4)
     ax.axhline(0.5, color=C["dgrey"], lw=0.8, ls="--")
-    ax.text(1.44, 0.492, "accept 0.5", color=C["dgrey"], ha="right",
-            va="top", zorder=5)
+    ax.text(1.80, 0.508, "accept 0.5", color=C["dgrey"], ha="right",
+            va="bottom", zorder=5)
     ax.set_xticks([0, 1])
     ax.set_xticklabels([f"Gold docs\n(n = {len(gold_scores)})",
                         f"Non-gold\n(n = {len(nongold_scores)})"])
     ax.set_ylabel("Laya evidence score")
     ax.set_yticks([0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
     ax.set_ylim(0.42, 1.05)
-    ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(0.0, 1.0),
+    # A closed Origin frame clips anything drawn past the axes: reserve the
+    # right margin for the two median labels and the threshold annotation.
+    ax.set_xlim(-0.45, 1.85)
+    ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(0.02, 0.99),
               markerscale=0.9, handletextpad=0.4, borderaxespad=0.15,
               borderpad=0.0, labelspacing=0.2)
-    hide_top_right(ax)
-    ax.tick_params(length=2, pad=1.5)
+    origin_axes(ax)
     med_n = float(np.median(nongold_scores))
     med_g = float(np.median(gold_scores))
     ax.annotate(f"{med_g:.2f}", (0.24, med_g), fontsize=_FS, color=SEM["system"],
                 va="center", ha="left")
     ax.annotate(f"{med_n:.2f}", (1.24, med_n), fontsize=_FS,
                 color=C["dgrey"], va="center", ha="left")
-    ax.annotate("Mann-Whitney $p$ = 0.26", (0.5, 0.435), ha="center",
-                va="center", color=C["dgrey"])
+    ax.annotate("Mann-Whitney $p$ = 0.26", (0.5, 0.458), ha="center",
+                va="bottom", color=C["dgrey"])
     save(fig, "fig4_inflation")
 
 
@@ -798,8 +818,19 @@ def fig_margin_variants():
     ax.text(0.155, 6.5, "0.15", color=C["dgrey"], va="bottom", ha="left")
     ax.axvline(0.20, color=SEM["system"], lw=0.6, ls="--")
     ax.text(0.205, 6.5, "0.20", color=SEM["system"], va="bottom", ha="left")
-    ax.spines["top"].set_visible(False)
-    ax2.spines["top"].set_visible(False)
+    # Origin-style frame on both the left axis and its twin.
+    for a in (ax, ax2):
+        for sp in a.spines.values():
+            sp.set_visible(True)
+            sp.set_linewidth(0.8)
+            sp.set_color("#222222")
+    ax.tick_params(axis="both", direction="in", top=True, right=False,
+                   length=3.0, width=0.8, pad=2.0)
+    ax2.tick_params(axis="both", direction="in", right=True, left=False,
+                    top=False, bottom=False, length=3.0, width=0.8, pad=2.0)
+    ax.minorticks_on()
+    ax.tick_params(which="minor", direction="in", top=True, right=False,
+                   length=1.6, width=0.6)
     ax.set_title("(a) cut-margin replay", loc="left")
 
     ax = a2
@@ -819,8 +850,7 @@ def fig_margin_variants():
     ax.set_ylabel("Hit@5")
     ax.set_ylim(0, 1.24)
     ax.set_yticks([0.0, 0.5, 1.0])
-    ax.tick_params(length=2, pad=1.5)
-    hide_top_right(ax, left=True)
+    origin_axes(ax)
     ax.set_title("(b) verdict roles, same pools", loc="left")
     save(fig, "fig6_margin_variants")
 
@@ -854,8 +884,7 @@ def fig_ood_kbs():
     ax.legend(frameon=False, loc="upper center", ncol=1,
               handlelength=1.0, handletextpad=0.4, borderaxespad=0.1,
               borderpad=0.0, labelspacing=0.25)
-    ax.tick_params(length=2, pad=1.5)
-    hide_top_right(ax, left=True)
+    origin_axes(ax)
     save(fig, "fig7_ood")
 
 

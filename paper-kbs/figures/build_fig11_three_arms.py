@@ -88,15 +88,15 @@ ax.axhline(10, color=C["dgrey"], lw=0.6, ls="--")
 ax.set_xticks(range(len(ARMS)))
 ax.set_xticklabels([LABELS[t] for t in ARMS])
 ax.set_ylabel("questions (of 10)")
-ax.set_ylim(0, 11.9)
+ax.set_ylim(0, 13.4)
 ax.set_yticks([0, 2, 4, 6, 8, 10])
 ax.legend(handles=[F.Patch(fc=ramp[k], label=m)
                    for k, (m, _) in enumerate(metrics)],
-          frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.03),
+          frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.0),
           ncol=3, columnspacing=0.6, handlelength=1.0, handletextpad=0.35,
-          borderaxespad=0.1, borderpad=0.0)
+          borderaxespad=0.25, borderpad=0.0)
 ax.tick_params(length=2, pad=1.5)
-F.hide_top_right(ax, left=True)
+F.origin_axes(ax)
 
 F.save(fig, "fig11_three_arms")
 for ext in ("pdf", "png"):

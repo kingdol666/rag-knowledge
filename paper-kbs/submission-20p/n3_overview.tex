@@ -4,7 +4,13 @@
 QDCVR (v2.3) is a self-hosted knowledge-base management system for converting
 heterogeneous documents into searchable, governable collections. A Python
 parsing service, a TypeScript web application and an MCP tool server share
-local storage and retrieval engines \cite{mcp}.
+local storage and retrieval engines \cite{mcp}. The design follows from the
+dependency chain of Section~\ref{sec:intro}. Content decides where a document
+is filed and whether a candidate is admitted; state is kept auditable through
+three mutually checkable sources, namely the document files, the tree registry
+and the per-library metadata; and completion is established by a retrieval
+probe rather than by a success message. Each decision sits at the layer that
+can enforce it, and the evaluation measures it at that layer.
 
 \subsection{Design principles: three contracts and enforcement layers}
 \label{sec:req}
@@ -75,17 +81,10 @@ combines vector and catalog calls under an explicit directive. The document
 graph supports navigation, not evidence, and the experience store uses the
 same catalog and gate but was not evaluated at scale.
 
-The management layer is organized as five function groups, each paired with a
-server-side check rather than an operator convention. Acquisition submits a
-file, parses it, reports a quality verdict, splits it when it exceeds the
-reading ceiling, stores it and indexes it. Organization creates libraries and
-sub-libraries, places documents by content, derives descriptions and tags, and
-reviews duplicate candidates. Lifecycle operations move, rename, delete and
-re-index documents, then audit the resulting state. The query path selects a
-lane, retrieves candidates and invokes the verification gate. An operational
-experience store keeps reviewed lessons beside the documents.
-Table~\ref{tab:functions} maps each group to its checks and to the evaluation
-that exercises it.
+Five function groups cover acquisition, organization, lifecycle, query and
+operational experience. Each is paired with a server-side check rather than an
+operator convention, and Table~\ref{tab:functions} maps every group to its
+checks and to the evaluation that exercises it.
 
 \begin{table*}[t]
 \centering

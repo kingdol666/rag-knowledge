@@ -227,7 +227,7 @@ def fig2():
             # manuscript's design-contract IDs and must stay unambiguous.
             ("1  Server call", "vector top-30 + catalog"),
             ("2  Merge and cap", "agreed-by-both first; cap 12"),
-            ("3  Judge and cut", "best − 0.15; top-5 floor"),
+            ("3  Judge and cut", "0.5 threshold; top-5 read"),
         ]),
     ]
     for x, title, fc, ec, steps in lanes:

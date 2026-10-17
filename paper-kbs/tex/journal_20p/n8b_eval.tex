@@ -11,24 +11,18 @@ documents---addressed, indexed and searched as an ordinary document, with a
 credibility tier deciding whether it may be shown at all
 (Section~\ref{sec:org-experience}). Three case measurements exist: an
 extraction campaign over one small knowledge base produced thirteen
-candidate drafts
-(archived member \path{experience_smoke.json} of
-\path{benchmark-suite/results/archive-superseded/}\path{superseded-20261013-batch2.tar.gz}:
-\texttt{extract\_candidates}~13, \texttt{drafts\_created}~13); one
-end-to-end scenario was sedimented into one experience
+candidate drafts (archived \path{experience_smoke.json} in the 2026-10-13
+batch tarball; \texttt{extract\_candidates}~13, \texttt{drafts\_created}~13);
+one end-to-end scenario was sedimented into one experience
 (\texttt{exp-d6f4d47ae3d6}) that a later global experience search returned
-first, at local similarity 0.711 (archived member \path{fulltest-20261012}
-of \path{review/archive-superseded/}\path{review-superseded-20261013.tar.gz},
-scenario A6); and the draft-approval path was never exercised---the draft pool was
-empty (\texttt{count}~0), so \path{experience_draft_read} and
-\path{experience_draft_approve} could not run
-(archived member \path{SKILL-E2E-REPORT.md} of the same batch tarball,
-lines~27 and~103),
-the heuristic extraction path having run only in dry-run mode, returning a
-dump the quality gate would reject (line~100). One scenario and thirteen
-candidates cannot support an effectiveness claim;
-scheduled distillation, review and approval at scale, application feedback
-and credibility decay went unexercised. What the measurements show is
+first, at local similarity 0.711 (archived scenario A6 of the 2026-10-12
+full-test campaign); and the draft-approval path was never exercised, because
+the draft pool was empty (\texttt{count}~0) and \path{experience_draft_read}
+and \path{experience_draft_approve} could not run; the heuristic extraction
+path had run only in dry-run mode, returning a dump the quality gate would
+reject. One scenario and thirteen candidates cannot support an effectiveness
+claim; scheduled distillation, review and approval at scale, application
+feedback and credibility decay went unexercised. What the measurements show is
 narrower and sufficient for the design argument: an operational lesson can
 travel the document path, with its tier attached---and nothing more.
 
@@ -111,14 +105,12 @@ answer, so their latencies carry no token cost. With sixteen questions the
 Wilson 95\% intervals on the headline proportions are wide (judged hybrid
 $[0.23, 0.67]$; judge-as-filter $[0.72, 0.99]$; BM25 and RRF
 $[0.81, 1.00]$), so the decomposition below, not the point estimates, is
-the claim. A released-log six-method ablation was a smoke check at
-$n = 2$ and an eleven-library snapshot (2026-09-26/27, mode~C not
-contract-matched), re-run at scale on
-2026-10-13: ten questions --- the runner's two built-in questions plus the
-eight remaining corpus golds, every gold verified before the run to exist in
-both the live library and the corpus index the baselines search --- crossed
-with the three chat-endpoint lanes (modes~A--C of
-Table~\ref{tab:e4-matrix}) and BM25, dense and RRF ranking, pure retrieval,
+the claim. A released-log six-method ablation was a smoke check at $n = 2$ and an early
+eleven-library snapshot; re-run at scale on 2026-10-13 over ten questions (the
+runner's two built-in questions plus eight corpus golds, every gold verified to
+exist in both the live library and the corpus index the baselines search), it
+crossed the three chat-endpoint lanes (modes~A--C of
+Table~\ref{tab:e4-matrix}) with BM25, dense and RRF ranking, pure retrieval,
 no generation
 (\path{benchmark-suite/results/}
 \path{runs/run-20261013T035250Z-5f9faac/retmatrix.json}, archived as a
