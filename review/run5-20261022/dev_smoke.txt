@@ -1,0 +1,24 @@
+[PASS] BE /health -- status=200
+[PASS] BE /meditation/harnesses (>=14) -- status=200 count=15
+       harnesses available=12/15, with-hint=3
+[PASS] BE /meditation/status -- status=200
+[PASS] BE /meditation/harness-status -- status=200
+[PASS] BE /meditation/models -- status=200
+[PASS] BE /config -- status=200
+[PASS] BE /graph/stats -- status=200
+[PASS] BE /search/stats -- status=200
+[PASS] BE /experience/health -- status=200
+[PASS] BE /soul/list -- status=200
+[PASS] BE /search/debug-paths -- status=200
+[PASS] BE POST /search/vector -- status=200
+[PASS] WEB page home -- status=200
+[PASS] WEB page chat-page -- status=200
+[PASS] WEB page hub-page -- status=200
+[PASS] WEB /api/harnesses (>=14) -- status=200 count=15
+[PASS] WEB /api/harnesses/claude/models -- status=200
+[PASS] WEB /api/harnesses/mock/diagnostics -- status=200
+[PASS] WEB /api/harnesses/codex/diagnostics -- status=200
+[PASS] WEB /api/harnesses/dsh/diagnostics -- status=200
+[PASS] WEB chat SSE mock (events + result)
+
+==== smoke summary: 21 passed, 0 failed ====
