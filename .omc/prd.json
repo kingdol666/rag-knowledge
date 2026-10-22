@@ -8,66 +8,72 @@
       "id": "US-401",
       "title": "系统设计符合性复核",
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "acceptanceCriteria": [
         "对照设计承诺（三服务拓扑/五层存储/95 工具面/分层检索契约）逐项给出符合/偏差结论",
         "偏差如有，逐条列证据与影响"
-      ]
+      ],
+      "evidence": "报告§1 逐项符合；偏差=启动路径运维态劣化（当轮修复）"
     },
     {
       "id": "US-402",
       "title": "实验结果与复现性复跑",
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "acceptanceCriteria": [
         "TEST-RESULTS/verify.py 复跑 PASS（论文主张可复算）",
         "158 检索回归探针复跑 15/15（Run4 修复后稳定性）",
         "冻结 manifest 对账漂移未扩大"
-      ]
+      ],
+      "evidence": "verify.py PASS + 158脚本 15/15（排障后）+ manifest 3 既知漂移未扩大"
     },
     {
       "id": "US-403",
       "title": "全功能+对外API+harness 执行检查",
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "acceptanceCriteria": [
         "dev_smoke 全过（harness diagnostics: mock/claude/codex/dsh + chat SSE + 平台端点）",
         "对外 chat API（claude 车道）真跑出答案；MCP 95 工具面 tools/list 正常",
         "agent/chat API 或等价 harness 执行路径至少一次真实执行证据"
-      ]
+      ],
+      "evidence": "dev_smoke 21/21 + agent/chat 真执行35s列全21库 + 图书管理员金标命中零越车道 + 管理冒烟7/7（rename卫生持续有效）"
     },
     {
       "id": "US-404",
       "title": "启动验证",
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "acceptanceCriteria": [
         "三服务进程/端口活体核验（web 6789 / backend 8771 / kb-mcp 8000）",
         "kb-mcp stdio 冷启动路径验证（每次 McpClient spawn 即冷启动证据）",
         "受控重启演练：backend+web 按 SOP 拉起后全部端点+一次 KB 查询复验通过"
-      ]
+      ],
+      "evidence": "受控重启演练实战化：双实例+过期loop令牌双层根因修复，服务全绿"
     },
     {
       "id": "US-405",
       "title": "知识库管理与检索简洁测试",
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "acceptanceCriteria": [
         "一次性库管理冒烟（创建→入文→索引→改名卫生→向量检索→清理零残留）全过",
         "图书管理员逐级车道 ≥1 题真跑金标命中",
         "向量车道 15/15 探针（US-402 共用）作为跨库检索证据"
-      ]
+      ],
+      "evidence": "管理冒烟7/7 + 图书管理员1题金标 + 向量车道15/15跨5库"
     },
     {
       "id": "US-406",
       "title": "最新系统提交推送",
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "acceptanceCriteria": [
         "提交内容清点：rename 修复、Run4/5 演示与验收工件、skill 修订、论文工作区、benchmark 再生产物；skills-archive 归档一并入库",
         "提交前回归绿（validate_skills + dev_smoke）；分逻辑提交（fix / test-artifacts / workspace）",
         "push 至 origin/feat/soul-persona-system 成功且 push 后 git status 干净、远端哈希一致"
-      ]
+      ],
+      "evidence": "6 commits 推送至 origin/feat/soul-persona-system（41044dd..8ecea8e），树净、远端同步；reviewer APPROVE"
     }
   ]
 }

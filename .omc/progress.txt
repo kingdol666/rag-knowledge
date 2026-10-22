@@ -40,3 +40,10 @@ Task: design review + skills/API verification + non-paper test-result cleanup + 
 - Nine-grid run chatmodes-20261021T075009Z-run4: 9/9 http200 0 errors, gates 8/9 (C-cm2 false positive on "无法压缩特征空间" while gold hit), $2.86 total.
 - Librarian 3/3 (LIB3 offline re-judge, lexicon widened with no-content/no-recipe family).
 - Reviewer (general-purpose, fresh): 7/7 PASS, VERDICT APPROVE (REVIEW.md); 3 nits applied. Regression: dev_smoke 21/21 + validate PASS (also re-run by reviewer). Deslop pending at approval time -> executed post-approval on update.patch.ts + probe scripts.
+
+## Run 5 (2026-10-22 night): conformance + reproducibility + full-function/API/harness + startup drill + COMMIT&PUSH
+- Incident double-root: (1) stale dual-instance services (anaconda backend held 8771 with chroma HNSW segment mismatch since ~14:15; kb-mcp likewise) -> SOP kill-all, venv backend first, then kb-mcp; (2) storage/loop-auth.json token EXPIRED and lib.auth_token() prefers it over .env -> all lib-based probes 401 -> "knowledge base not found" -> 0/15. login_refresh() healed; 158 script then 15/15 golds rank-1.
+- OPS RED LINE: after any backend restart, refresh loop-auth.json (login_refresh) or set RAG_BENCH_TOKEN, else lib-based probes fail wholesale (probe-layer false alarm, service fine).
+- Full-function: dev_smoke 21/21; MCP tools/list 95; chat API librarian lane gold hit 47.8s zero off-lane; agent/chat (web 6789 NOT backend!) native harness 35s lists 21 KBs; mgmt smoke 7/7 incl. rename hygiene (run-4 fix holds).
+- verify.py PASS; manifest 3 pre-existing drifts unexpanded.
+- Pushed 6 commits: 41044dd fix(rename hygiene), 57b4fb3 fix(platform skill-audit+mock+dev_smoke+kb-mcp), d0d291f paper workspace, f7de88e test(runs1-5 evidence+skills-archive), 2335060 test(run5 probe endpoint fix), 8ecea8e dev_smoke artifact. Reviewer APPROVE 6/6.
