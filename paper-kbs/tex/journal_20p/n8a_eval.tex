@@ -14,7 +14,10 @@ replication through the public API (Section~\ref{sec:sysarms}), verifier
 failure (Section~\ref{sec:e6}), non-functional behavior (Section~\ref{sec:e7})
 and the gate and search-scope ablations (Section~\ref{sec:e8}). Numbers are
 reported against the corpus that produced them, never merged; the campaign
-inventory and per-question tool-layer results are supplementary material.
+inventory is supplementary. Table~\ref{tab:kb-checks} maps each management
+function to its test and observed outcome; Table~\ref{tab:retrieval} reports
+retrieval quality and Table~\ref{tab:e5-answers} the per-question answer
+checks.
 
 \subsection{Experimental setup}
 \label{sec:eval-setup}
@@ -26,10 +29,10 @@ equipment-telemetry reports sharing prefixes, vocabulary and structure---a
 deliberate stressor for near-duplicate detection and confuser
 density~\cite{manku-near-dup-2007}; sixteen gold questions and four
 out-of-corpus probes ran against it. (ii)~\emph{arXiv corpus}: 100 submitted
-papers spanning about 25 domains, 79 retrievable at evaluation time and routed
-by content into five domain libraries holding 322 stored parts; ten gold
-questions (BQ01--BQ10) target papers referenced by those papers, keyed by arXiv
-identifier, and the running instance held 19 libraries. (iii)~\emph{Cross-lingual
+papers spanning about 25 domains, content-routed into five libraries holding
+322 stored parts after the 30{,}000-character split; at the 2026-10-13 snapshot
+79 papers were retrievable and 21 were not. Ten gold questions (BQ01--BQ10) target papers referenced by those
+papers, keyed by arXiv identifier; the running instance then held 19 libraries. (iii)~\emph{Cross-lingual
 ingestion corpus}: 400 Wikipedia pages per language (English, Chinese,
 Japanese), 40 extractive cloze queries each with verbatim in-page answers;
 ingestion only, no retrieval-quality numbers reported.
@@ -92,15 +95,15 @@ stated scale, not that the function is exhaustively verified.}
 \toprule
 Function & Test and scale & Observed outcome & Where\\
 \midrule
-Parse and ingest & 100-paper campaign; nine checks per paper & nine checks per paper, all pass; 91 names in the state file, 79 retrievable at evaluation, 21 unattributable (twelve recorded plus nine unrecorded) & E1\\
+Parse and ingest & 100-paper campaign; state-file reconciliation & 91 names in the state file; 79 retrievable at the 2026-10-13 snapshot and 21 not (twelve recorded, nine unrecorded); no per-paper parse status & E1\\
 Parse quality & 50-paper, 26-domain campaign & 50/50 parsed and verified, all probes ok; 202 tags; 41 tag flags negative without blocking ingestion & E1\\
-Structural split & 50 papers at the 30{,}000-character tier & 165 documents (9 whole, 156 parts) in 2{,}672\,s; storage 50/50; descriptions and tags 165/165 & E1\\
-Near-duplicate review & 322-document corpus, 0.90 threshold & 35 candidate groups (0.90--0.975), zero true duplicates, nothing deleted & E2\\
-Content placement & 100 papers into five libraries; 400 pages per language & 322 stored parts; membership 0.875 (en) and 1.0 (zh, ja) & E1--E2\\
-Three-source consistency & Full corpus and 33-document spot check & 322/322 content and 33/33 storage; one rename defect (18 vs 9 chunks) until force re-index & E2\\
+Structural split & 50 papers at the 30{,}000-character tier & 165 stored parts (9 whole papers, 156 split parts) in 2{,}672\,s; storage 50/50; descriptions and tags 165/165 & E1\\
+Near-duplicate review & 322-part corpus, 0.90 threshold & 35 candidate groups (0.90--0.975), zero true duplicates, nothing deleted & E2\\
+Content placement & 100 papers into five libraries; 400 pages per language & 322 stored parts (100-paper corpus); membership 0.875 (en) and 1.0 (zh, ja) (cross-lingual corpus) & E1--E2\\
+Content audit and three-source consistency & 322-part content audit; 33-part storage sample & 322/322 content; 33/33 storage; one rename defect (18 vs 9 chunks) until force re-index & E2\\
 Lifecycle operations & 16 scenarios on two disposable libraries & create, move, delete and forced re-index pass; two failures (task status, update check) & E2\\
 Sub-library hierarchy & Three-level disposable fixture & create, parent-to-child move, listing, reading and judging all pass & E2\\
-Tags and graph & 316-tag registry; 658-node graph & 165 documents pass the tag check in 47.6\,s; four tag edges on one document move 4{,}675 to 4{,}679 & E2\\
+Tags and graph & 316-tag registry; 658-node graph & 165 stored parts pass the tag check in 47.6\,s; four tag edges on one document move 4{,}675 to 4{,}679 & E2\\
 Experience store & One small knowledge base; one end-to-end scenario & 13 candidate drafts; one lesson retrieved first at 0.711; approval path unexercised & E3\\
 \bottomrule
 \end{tabular}
@@ -109,10 +112,10 @@ Experience store & One small knowledge base; one end-to-end scenario & 13 candid
 \subsection{E1: Acquisition and parsing}
 \label{sec:e1}
 
-The 100 submitted papers were parsed and content-routed into five domain
-libraries, producing 322 stored parts after the 30{,}000-character split. The
-submission funnel does not reconcile on its face: 91 names appear in the ingest
-state file and 79 papers were retrievable at evaluation, so twelve recorded
+The 100 submitted papers were content-routed into five domain libraries,
+producing 322 stored parts after the 30{,}000-character split. Storage and
+retrievability diverge: at the 2026-10-13 evaluation snapshot, 91 names appear
+in the ingest state file and 79 papers were retrievable, so twelve recorded
 papers never became retrievable, and nine submitted papers never entered the
 state file. The 21 unretrievable papers are the sum of those twelve and nine,
 and neither attempts against failed papers nor per-paper parse status is
@@ -154,9 +157,9 @@ returning every chunk twice at identical scores. Only an explicit force
 re-index removed them, restoring the count to 9. The failure is invisible from
 the metadata alone.
 
-The reorganization campaign over the 322-document corpus passed its content
-check on all 322 documents and its three-source consistency check on a
-33-document sample, one tenth of the corpus; the duplicate review held no true
+The reorganization campaign over the 322-part corpus passed its content
+check on all 322 stored parts and its three-source consistency check on a
+33-part sample, one tenth of the corpus; the duplicate review held no true
 duplicate and deleted nothing. Sub-library splitting and hierarchy
 creation ran on a disposable three-level fixture: creation with a parent
 reference, a parent-to-sub-library move, and listing, reading and judging
@@ -175,7 +178,7 @@ split were never exercised under controlled conditions, so we claim nothing
 about them.
 
 The tag registry held 316 tags; the tag-quality check passed 165
-documents with zero failures in 47.6\,s, and orphan tags accumulate (test tags,
+stored parts with zero failures in 47.6\,s, and orphan tags accumulate (test tags,
 section titles), for which a dry-run detector exists. In one case test-library
 tags leaked into the main registry, the failure mode vocabulary-based
 organization is prone to~\cite{golder-tagging-2006}. The document graph is

@@ -3,9 +3,10 @@
 
 The first implication concerns what the answers are worth. On the fixed
 question set the workflow locates the right document in all 30 cells of both
-grids, and alias-aware keyword coverage stays at 9-10/10. Citation-marker and
-strict-keyword counts are not stable across substrates: the original marker
-ordering, 9/7/2, becomes 9/9/9 when every arm reads the same libraries. Across
+grids, and alias-aware keyword coverage stays at 9-10/10. Marker-bearing and
+strict-keyword counts are not stable across substrates: the number of
+marker-bearing answers, 9/7/2, becomes 9/9/9 when every arm reads the same
+libraries. Across
 paired cells, all five strict disagreements and all nine marker disagreements
 run in one direction, so the change is a substrate effect rather than run
 noise. The practical lesson is therefore narrower: judge the workflow on
@@ -14,8 +15,8 @@ keyword comparison. Retrieval recall alone is a weak criterion here, because eve
 lexical baseline reaches it on the same corpus.
 
 The second implication concerns verifier placement, and it is the paper's main
-mechanical finding: separating a content verifier's filtering role from its
-ordering role is what allows the failure to be located. On identical logged
+mechanical finding: holding the pool and scores fixed while the filter removes
+none of them locates the ordering failure. On identical logged
 pools, re-ranking by the verdict lowers Hit@5 from 0.94 under fusion-only to
 0.44. A derived replay that keeps the fusion order among scored survivors
 returns the fusion-only metrics, and rephrased questions separate the roles

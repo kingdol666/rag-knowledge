@@ -64,13 +64,14 @@ reported per question: gold-identifier
 presence, strict and alias-aware keyword coverage, recognized citation markers,
 and abstention on verified-absent questions (Section~\ref{sec:e5},
 Table~\ref{tab:e5-answers}).
-\item A same-pool diagnostic that separates verifier \emph{ordering} from
-verifier \emph{filtering}. Ordering candidates by the verifier score lowers
-Hit@5 from 0.94 to 0.44, while retaining fusion order among recorded survivors
-restores 0.94; all 191 recorded scores exceed the configured threshold, so the
-loss is attributable to the induced ordering, not to filtering. A verifier
-score that survives an admission filter is therefore not thereby usable as a
-ranker (Sections~\ref{sec:lanes} and~\ref{sec:e4}--\ref{sec:e6}).
+\item A same-pool diagnostic that isolates the verifier's \emph{ordering}
+effect. Ordering candidates by the verifier score
+lowers Hit@5 from 0.94 to 0.44, while retaining fusion order among recorded
+survivors restores 0.94; all 191 recorded scores exceed the configured 0.5
+threshold, so the filter removed none of them and the loss is attributable to
+the induced ordering in this run, not to threshold filtering. A verifier score
+that survives an admission filter is therefore not thereby usable as a ranker
+(Sections~\ref{sec:lanes} and~\ref{sec:e4}--\ref{sec:e6}).
 \end{enumerate}
 
 A CIKM~2026 demonstration introduced the organization and retrieval layers

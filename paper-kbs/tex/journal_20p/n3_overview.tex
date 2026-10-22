@@ -50,10 +50,12 @@ before a retrieved item is used to support an answer; and remain operable on
 one workstation. Server-side checks cover parse, metadata and index
 post-conditions, the invoked evidence gate, and endpoint tool policies. They do
 not mechanically establish semantic placement accuracy or answer faithfulness.
-Read as hypotheses, C1 is supported by these mechanical checks together with
-one membership measurement that does not use the ingest naming convention
-(Section~\ref{sec:e1}); C2's filtering role was not exercised on the
-industrial corpus, and its ordering role failed there
+Read as hypotheses, C1 is partly supported: the mechanical checks validate
+storage and consistency, and the cross-lingual membership measurement (0.875
+English, 1.0 Chinese and Japanese) shows mostly correct placement outcomes
+without the ingest naming convention, but it does not isolate the
+content-informed mechanism (Section~\ref{sec:e1}); C2's filtering role was not
+exercised on the industrial corpus, and its ordering role failed there
 (Sections~\ref{sec:e4}--\ref{sec:e8}); C3 is answer-layer behavior observed in
 trials, not a server-side classifier (Section~\ref{sec:e5}).
 

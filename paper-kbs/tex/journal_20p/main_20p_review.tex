@@ -73,8 +73,8 @@
 
 \begin{frontmatter}
 
-\title{QDCVR: Content-Governed Acquisition, Verified Retrieval and Reported
-Absence in a Deployed Knowledge-Base System}
+\title{QDCVR: A content-governed knowledge-base management system with
+verified retrieval and reported absence}
 
 \author[inst1]{Author Name\corref{cor1}}
 \ead{author@example.com}
@@ -84,30 +84,31 @@ Absence in a Deployed Knowledge-Base System}
 City, Country}, city={City}, country={Country}}
 
 \begin{abstract}
-Retrieval-augmented generation improves discovery, but topical similarity
-cannot establish evidentiary support: enterprise knowledge-base workflows
-rarely own the property that a cited sentence is supported by the cited
-document. We present QDCVR, a self-hosted knowledge-base system that organizes
-acquisition, admission and abstention around content; its three design
-contracts are stated as hypotheses tested at the layer each occupies, not as
-uniform server-enforced guarantees.
-The central finding separates the verifier's roles. On identical logged
-candidate pools of a 42-document industrial corpus, ordering by the
-content-verifier score lowers Hit@5 from 0.94 to 0.44, while retaining fusion
-order among recorded survivors matches fusion-only at 0.94; all 191 recorded
-scores exceed the 0.5 threshold, and one fused candidate has none. The loss is
-attributable to the induced ordering, not to filtering, and an independent NLI
-checkpoint fails the same way. A verifier score that survives an admission
-filter is not thereby usable as a ranker.
-In a 30-cell end-to-end comparison, all answers contain a gold document
-identifier. Strict keyword coverage is 9/10 per arm, the misses word-form
-mismatches; alias-aware coverage is 10/10; a mis-specified gold key was
-corrected during revision and both grades retained. Citation-marker hits are
-9/10, 7/10 and 2/10 for platform, file and dense arms; these are provenance
-and lexical-marker checks, not semantic faithfulness measures. An eighteen-arm
-battery observed no fabricated citations, and a reproduced catalog-truncation
-failure was repaired and retested. The findings support a bounded deployment
-account, not universal retrieval or answer-quality superiority.
+Document collections need more than a retriever: documents must be
+parsed and admitted, organized so that they can be found, and used to answer
+questions whose cited evidence can be traced. We present QDCVR, a self-hosted
+knowledge-base management system that treats content as the shared object
+across acquisition, organization and question answering. Its management layer
+parses and gates documents, splits long files, places
+documents by content rather than filename, and keeps files, registry and
+metadata consistent through rename, move, delete and re-index. Retrieval is one
+module: three lanes share an invoked server-side content verifier, and an
+answer workflow is instructed to report absence.
+We evaluate the system on three corpora, one an industrial demonstration
+instance. Our evaluation method combines functional audits, per-question
+answer checks, abstention probes and same-pool replays.
+On ten arXiv
+questions crossed with three retrieval interfaces in two 30-cell grids, every
+answer names its gold document and alias-aware coverage is 9-10/10; the
+controlled common-substrate replication shows that strict keyword coverage and
+marker-bearing counts are substrate-bound, not interface-specific. At the evaluation snapshot, 21 of 100 submissions were
+unretrievable without a complete failure inventory, and a reproduced
+catalog-transport failure was repaired. In a same-pool replay on an industrial corpus, ordering
+by the verifier score reduces Hit@5 from 0.94 to 0.44 while fusion order
+restores 0.94; the scores are not usable as a ranker, and the 0.5 cut filtered
+nothing. Wall-clock and cost disfavor the
+platform arm. The findings indicate a bounded deployment account,
+not universal retrieval superiority.
 \end{abstract}
 
 \begin{keyword}

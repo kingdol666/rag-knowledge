@@ -16,6 +16,11 @@ Nothing is rounded, re-derived, or "improved". Where an artifact is internally
 inconsistent, the inconsistency is stated rather than resolved. Where the artifact
 reports `null`, `NOT measured`, or a failed check, that is reproduced as such.
 
+**Naming key.** P/F/D are the three answer interfaces (run tracks a2/b/c); R1--R3 are
+the retrieval lanes of the manuscript's E4; S1--S3 are the deployment arms of E5b.
+Archived campaign tables that predate this key retain their original A/B/C labels; they
+are not the P/F/D answer arms.
+
 **Scope.** All results come from a single self-hosted instance on the authors' machine,
 driven through the official harness API and the project's own MCP tool layer. The
 counts of test cells are given per campaign so the reader can judge the weight of each
@@ -74,13 +79,13 @@ pre-check that was killed at 30 s, so production calls need an explicit timeout.
 
 **Artifact.** `review/fulltest-20261012/SUMMARY.md`
 
-### A.2 Three-mode stability suite, 27 runs (2026-09-30)
+### A.2 Archived three-lane stability suite, 27 runs (2026-09-30)
 
 **What was tested.** Three retrieval behaviours (vector-first, catalogue-first, hybrid)
 crossed with three question types and repeated over three rounds, through the chat API
 in its default non-streaming mode.
 
-**Scale.** 3 tasks x 3 modes x 3 rounds = 27 runs. The three tasks were: a question whose
+**Scale.** 3 tasks x 3 stability lanes x 3 rounds = 27 runs. The three tasks were: a question whose
 answer is fully in the corpus (attention formula), a question the corpus verifiably does
 not cover (seismic-wave classification), and a question about something that plainly
 does not exist (a pickles recipe).
@@ -123,6 +128,11 @@ on the model route used) and not in tool execution; tool-side execution was with
 **Artifact.** `review/stability-multiround-20260930/REPORT.md` and the 27 run files
 `review/stability-multiround-20260930/results/r{1,2,3}_{attention,seismology,pickles}_{A,B,C}.json`;
 runner `review/stability-multiround-20260930/run_stability.py`.
+
+**Current rerun.** The manuscript's Section 8.7 reports the 2026-10-13 rerun of the same
+design (`review/stability-multiround-20261013/results`): 27/27 HTTP 200, 27/27
+lane-compliant, wall-clock 14.9--182.0 s. Its per-cell times differ from the archived
+2026-09-30 table above; the success pattern is the same. The two tables are not pooled.
 
 ### A.3 Concurrency and load campaign (2026-09-23)
 
@@ -228,34 +238,34 @@ chunk window because the answer sentence sits in a continuation paragraph cut by
 `paper-kbs/notes/functional-test-evidence-2026-10-12.md`;
 `paper-kbs/tex/journal_20p/n8a_eval.tex`.
 
-### A.6 Three-hundred-and-twenty-two-document reorganisation campaign
+### A.6 Three-hundred-and-twenty-two-part reorganisation campaign
 
 **What was tested.** The full reorganisation workflow over the combined arXiv corpus:
-per-document content audit, description upgrade, tag de-duplication, batch re-indexing,
+per-part content audit, description upgrade, tag de-duplication, batch re-indexing,
 near-duplicate adjudication, three-source consistency and retrieval regression.
 
-**Scale.** 322 documents across five libraries; 165 descriptions upgraded; 35
+**Scale.** 322 stored parts across five libraries; 165 descriptions upgraded; 35
 near-duplicate candidate groups.
 
 **Headline result.**
 
-- 322/322 metadata checks passed; the per-document content audit assertion passed 322/322.
+- 322/322 metadata checks passed; the per-part content audit assertion passed 322/322.
 - 165/165 descriptions were upgraded from the earlier "title; excerpt" form to the
   four-element two-layer form, with 165 OK / 0 bad on read-back.
 - Tag de-duplication: 4/4 duplicate tag sets resolved.
-- All 322 documents were batch-indexed with `force`.
+- All 322 stored parts were batch-indexed with `force`.
 - 15/15 retrieval regression probes passed after reorganisation, i.e. zero degradation.
 - 35 near-duplicate candidate groups (similarities 0.90-0.975) were adjudicated to
   **zero true duplicates**: every group was a set of adjacent parts of the same paper.
-  No document was deleted.
+  No stored part was deleted.
 
 Two honesty notes are recorded with the campaign. The three-source consistency spot check
-sampled 33 of the 322 documents, so it is a sample and not a full pass. Sub-library
+sampled 33 of the 322 stored parts, so it is a sample and not a full pass. Sub-library
 splitting and hierarchy creation were analysed but deliberately not executed pending user
 confirmation, so this campaign is **not** evidence for hierarchical restructuring.
 
 A scaling comparison ran alongside it. Against a fixed 50-question set over the first
-corpus, doubling the corpus from 50 to 100 papers (163 to 322 stored documents) left
+corpus, doubling the corpus from 50 to 100 papers (163 to 322 stored parts) left
 retrieval precision unchanged: pass rate 48/50 = 96%, MRR 0.98 and top-1 similarity 0.759
 were identical before and after. After the description upgrade and forced re-index, the
 same fixed set improved to 49/50 = 98% with MRR 1.00. The newly ingested 50 papers were
@@ -602,7 +612,7 @@ and that file carries the three absent-tier agent probes of B.7, not the cost ta
 
 **What was tested.** The per-cell time, tool count and metered cost of the three-arm answer grid whose quality results the manuscript reports as Table 7 (gold-ID presence, strict keyword coverage, alias-aware coverage and citation-marker counts). The manuscript reports the quality cells and one sentence of arm means; the per-cell records live here.
 
-**Scale.** 30 cells: ten questions (BQ01-BQ10) x three arms (P = platform read tools, F = file tools over the exported tree, D = dense index over the 800-character mirror).
+**Scale.** 30 cells: ten questions (BQ01-BQ10) x three arms (P = platform read tools, F = file tools over the exported tree, D = dense index over the 800-character mirror; the archived run tracks are a2, b and c respectively).
 
 **Headline result.** Arm means: P 52.6 s / 6.0 tools / $0.711; F 22.2 s / 6.4 tools / $0.487; D 24.5 s / 3.7 tools / $0.527. The platform arm is the slowest and most expensive in this single run; the manuscript reports this as an observation about this implementation, not an efficiency result.
 
@@ -643,17 +653,17 @@ and that file carries the three absent-tier agent probes of B.7, not the cost ta
 
 ### A.18 Deployment-layer system arms (three questions, 2026-10-12)
 
-**What was tested.** Whether the public chat API delivers the same contracts when invoked as an external caller would. Three questions (an English methodology question, a Chinese clinical question, one out-of-corpus probe) crossed three arms: A pinned the target shelf, B left the library unpinned, C pinned it with a hybrid directive.
+**What was tested.** Whether the public chat API delivers the same contracts when invoked as an external caller would. Three questions (an English methodology question, a Chinese clinical question, one out-of-corpus probe) crossed three deployment arms: S1 pinned the target shelf, S2 left the library unpinned, S3 pinned it with a hybrid directive.
 
 **Scale.** Nine cells in the streaming channel, replicated in a non-streaming channel; both channels returned 8 of 9 gates. Wall-clock seconds are shown; a passing in-corpus cell returned the gold identifier, and an out-of-corpus cell passes by abstaining.
 
 | Arm | cm1 (EN, CS shelf) | cm2 (ZH, life shelf) | cm3 (out-of-corpus) |
 |---|---|---|---|
-| A pinned vector | 55.7 s, pass | 48.8 s, pass | 36.4 s, abstain |
-| B all-KB librarian | 353.5 s, fail | 43.2 s, pass | 29.9 s, abstain |
-| C hybrid | 43.1 s, pass | 45.6 s, pass | 65.0 s, abstain |
+| S1 pinned vector | 55.7 s, pass | 48.8 s, pass | 36.4 s, abstain |
+| S2 all-KB librarian | 353.5 s, fail | 43.2 s, pass | 29.9 s, abstain |
+| S3 hybrid | 43.1 s, pass | 45.6 s, pass | 65.0 s, abstain |
 
-**Artifacts.** `review/retrieval-e2e-20261012/` and the campaign records cited in the manuscript's Section 8.7; arm B's failure is the oversized-catalog transport failure analyzed there.
+**Artifacts.** `review/retrieval-e2e-20261012/` and the campaign records cited in the manuscript's Section 8.7; S2's failure is the oversized-catalog transport failure analyzed there.
 
 ### A.16 Failure-mode catalogue
 
@@ -797,7 +807,9 @@ hit@5.
 | judged | 0.9 |
 | filter_only | 0.9 |
 
-`BQ03` was missed by **every** configuration. Per-question latency in seconds: BQ01
+`BQ03` was not returned by **any** configuration in this 79-paper derived corpus;
+its gold is present in the five-library answer substrate of A.19, which is a
+different snapshot, and the two grids are not pooled. Per-question latency in seconds: BQ01
 2.253, BQ02 0.621, BQ03 0.233, BQ04 0.187, BQ05 0.242, BQ06 0.185, BQ07 0.171, BQ08
 0.178, BQ09 0.192, BQ10 0.206; candidate counts were 10-12 and kept counts 5-11.
 
@@ -1176,7 +1188,7 @@ the nine-paper difference between submission and the recorded list is unexplaine
 five-track matrix (B.12) has no IR metrics at all: P@5, R@10, nDCG@10 and MRR are marked
 NOT measured in its own report. The skill-catalogue count is inconsistent across artifacts
 19 against 20, tools 94 against 95, and this document reports both rather than choosing.
-The 322-document reorganisation campaign's three-source check is a 33-document sample,
+The 322-part reorganisation campaign's three-source check is a 33-part sample,
 not a full pass.
 
 **Features with no test evidence at all.** The following capabilities have **no** test
@@ -1191,7 +1203,7 @@ evidence in this project, and this document reports none:
 - **Experience decay and meditation.** The decay cycle, the meditation induction, and the
   `apply_decay` path were never exercised end to end. The sixteen-skill campaign (A.8)
   created experiences and read the dashboard; it did not run review, apply, review-driven
-  decay, or meditation. The 50-paper and 322-document campaigns mention automatic
+  decay, or meditation. The 50-paper and 322-part campaigns mention automatic
   meditation only as an unrelated background process.
 - **Crash durability.** The stress campaign (A.3) measured throughput, latency, rate
   limiting and one soak window; it did not kill the process mid-write and verify
@@ -1320,13 +1332,13 @@ Merge and split were analysed but never executed.
 
 ### A.19 Controlled replication on a common substrate (2026-10-17)
 
-**What was tested.** The 30-cell answer grid was repeated with every arm pinned to the same five domain libraries (322 stored parts), to separate interface effects from substrate effects. The platform and dense arms query the libraries' vector collections (500-character segments); the file arm reads the same parts in full.
+**What was tested.** The 30-cell answer grid was repeated with every arm pinned to the same five domain libraries (322 stored parts), to separate interface effects from substrate effects. The platform and dense arms query the libraries' vector collections (500-character segments); the file arm reads the same parts in full. P, F and D are the run tracks a2, b and c.
 
 **Scale.** Ten questions (BQ01-BQ10) x three arms x one run per arm = 30 cells. Same model as the original grid (recorded as claude-opus-4-8[1m]), seed 0, 12-turn configuration; run `benchmark-suite/results/runs/rerun5-20261017`.
 
-**Headline result.** Gold-identifier coverage 10/10 in every arm; strict keyword coverage 7/7/8; alias-aware coverage 9/9/10; answers with at least one document-style citation marker 9/9/9. The original grid's marker ordering (9/7/2) does not reproduce; see the manuscript's Section 8.6.
+**Headline result.** Gold-identifier coverage 10/10 in every arm; strict keyword coverage 7/7/8; alias-aware coverage 9/9/10; answers with at least one document-style citation marker 9/9/9. The original grid's marker-bearing count (9/7/2) does not reproduce; see the manuscript's Section 8.6.
 
-| Q | Arm | Gold-ID | Strict | Alias | Markers |
+| Q | Arm | Gold-ID | Strict | Alias | Markers (count) |
 |---|---|---|---|---|---|
 | BQ01 | D | yes | yes | yes | 2 |
 | BQ01 | F | yes | yes | yes | 10 |
@@ -1358,6 +1370,12 @@ Merge and split were analysed but never executed.
 | BQ10 | D | yes | no | yes | 3 |
 | BQ10 | F | yes | yes | yes | 8 |
 | BQ10 | P | yes | yes | yes | 5 |
+
+The manuscript's 9/10 per arm is the number of answers with at least one marker;
+the Markers column above is the count within an answer, so its column sum is not
+the 9/10 figure. BQ03's gold is present in this five-library substrate and is
+retrieved in every arm; the separate 79-paper derived corpus in B.5 is a different
+snapshot and did not return it.
 
 **Paired agreement.** The grids are paired by question and arm (30 cells). For each binary check the table gives the paired counts, raw agreement and an exact two-sided McNemar test over the discordant pairs; McNemar asks whether the direction of disagreement is symmetric, not which grid is correct. Marker presence means at least one recognized document-style marker; marker counts differ in 24 of 30 cells, so only presence is compared.
 

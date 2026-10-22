@@ -10,7 +10,7 @@
 %%   3. n_back.tex: confirm the generative-AI declaration (service names are
 %%      filled; versions only if the editors ask).
 %% The camera-ready preview is 20 pages; the double-spaced review-format
-%% variant is main_20p_review.tex (68 pages) — see
+%% variant is main_20p_review.tex (69 pages) — see
 %% paper-kbs/notes/page-budget-2026-10-16.md for both measurements.
 % journal-style camera-ready preview (generated from the submission sources)
 \documentclass[final,5p,times,twocolumn]{elsarticle}
@@ -96,10 +96,10 @@ answer checks, abstention probes and same-pool replays.
 On ten arXiv
 questions crossed with three retrieval interfaces in two 30-cell grids, every
 answer names its gold document and alias-aware coverage is 9-10/10; the
-controlled common-substrate replication shows that strict keyword and marker
-counts are substrate-bound, not interface-specific. Acquisition left 21 of 100 submissions unretrievable without a
-complete failure inventory, and a reproduced catalog-transport failure was
-repaired. In a same-pool replay on an industrial corpus, ordering
+controlled common-substrate replication shows that strict keyword coverage and
+marker-bearing counts are substrate-bound, not interface-specific. At the evaluation snapshot, 21 of 100 submissions were
+unretrievable without a complete failure inventory, and a reproduced
+catalog-transport failure was repaired. In a same-pool replay on an industrial corpus, ordering
 by the verifier score reduces Hit@5 from 0.94 to 0.44 while fusion order
 restores 0.94; the scores are not usable as a ranker, and the 0.5 cut filtered
 nothing. Wall-clock and cost disfavor the
@@ -132,10 +132,10 @@ Model Context Protocol
 \input{n_back}
 
 {\footnotesize
-%% References follow elsarticle-num. A 2pt item separation (the class default
-%% is larger) keeps the 55-entry list inside the page budget without changing
-%% the type size.
-\setlength{\bibsep}{0.5pt plus 0.2ex}
+%% References follow elsarticle-num. A tight item separation and leading keep
+%% the 55-entry list inside the 20-page budget at the same type size.
+\setlength{\bibsep}{0pt plus 0.1ex}
+\setlength{\baselineskip}{8.5pt}
 \bibliographystyle{elsarticle-num}
 \bibliography{refs,refs_new_verified}
 }

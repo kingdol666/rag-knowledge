@@ -112,8 +112,8 @@ $[0.23, 0.67]$; judge-as-filter $[0.72, 0.99]$; BM25 and RRF
 $[0.81, 1.00]$), so the decomposition below, not the point estimates, is
 the claim. An earlier six-method ablation was a smoke check at $n = 2$; the
 scaled re-run on 2026-10-13 used ten questions (two built-in plus eight corpus
-golds, each verified in both substrates), crossed with the three chat-endpoint
-lanes (modes~A--C of
+golds, each verified in both substrates), crossed with the three retrieval
+lanes (R1--R3 of
 Table~\ref{tab:e4-matrix}) with BM25, dense and RRF ranking, pure retrieval,
 no generation
 (\path{benchmark-suite/results/}
@@ -121,7 +121,7 @@ no generation
 superseded campaign in
 \path{superseded-20261013-batch2.tar.gz};
 Table~\ref{tab:e4-matrix}). Document-level
-recall: mode~A 10/10 (mean 19.8\,s), mode~B 7/10 (14.0\,s), mode~C 9/10
+recall: lane~R1 10/10 (mean 19.8\,s), lane~R2 7/10 (14.0\,s), lane~R3 9/10
 (33.1\,s); BM25, dense and RRF 10/10 at $\leq$0.1\,s, so on this question set
 finding the gold document is not where the lanes earn their cost, and
 Section~\ref{sec:e5} measures what they add. The three mode-B misses are
@@ -137,8 +137,8 @@ runner.
 \begin{table}[t]
 \caption{Six-method retrieval matrix, ten questions, pure retrieval.
 Gold recall is document-level (the gold appears anywhere in the returned
-set); every gold was verified to exist in both substrates
-(live library for the modes, corpus index for the baselines).
+set); every gold in this matrix was verified to exist in both substrates
+(live library for the retrieval lanes, corpus index for the baselines).
 Latency is mean wall clock per question.}
 \label{tab:e4-matrix}
 \centering\footnotesize
@@ -147,9 +147,9 @@ Latency is mean wall clock per question.}
 \toprule
 Method & Gold recall & Mean latency & Range \\
 \midrule
-Mode A (pinned dense + judge) & 10/10 & 19.8\,s & 18--24\,s \\
-Mode B (ladder)               & 7/10  & 14.0\,s & 5--20\,s \\
-Mode C (hybrid)               & 9/10  & 33.1\,s & 26--44\,s \\
+R1 (pinned dense + judge) & 10/10 & 19.8\,s & 18--24\,s \\
+R2 (ladder)               & 7/10  & 14.0\,s & 5--20\,s \\
+R3 (hybrid)               & 9/10  & 33.1\,s & 26--44\,s \\
 BM25 (corpus index)           & 10/10 & $<$0.05\,s & --- \\
 Dense (cross-library)         & 10/10 & 0.1\,s  & --- \\
 RRF (BM25$\|$Dense)           & 10/10 & $<$0.05\,s & --- \\
@@ -193,11 +193,14 @@ effect is still visible.} Over ten
 questions on the 79 retrievable papers of the 100-paper arXiv ingestion
 (8{,}031 chunks logged; block~(b) of Table~\ref{tab:retrieval}), seven of
 eight configurations reach Hit@5 0.90; graph search reaches 0.20. BQ03's
-gold paper was not retrievable, so the observed denominator is 0.90 over all
-ten questions and 1.00 over the nine with available gold. The judged ordering
-keeps all nine golds inside the top five, but it demotes four of them from
-rank one to rank two, and its MRR falls from 0.90 to 0.70 while the filter and
-fusion rows stay at 0.90 (\texttt{exp10\_papers\_toollayer.json}). The
+gold document was not returned by any configuration in this 79-paper derived
+corpus, so the denominator is 0.90 over all ten questions and 1.00 over the
+nine with a retrieved gold; the document is present in the five-library answer
+substrate of Section~\ref{sec:e5}, a different snapshot, and the two grids are
+not pooled. The judged ordering keeps all nine retrieved golds inside the top
+five, but it demotes four of them from rank one to rank two, and its MRR over
+all ten questions falls from 0.90 to 0.70 while the filter and fusion rows stay
+at 0.90 (\texttt{exp10\_papers\_toollayer.json}). The
 threshold-crossing harm therefore does not reproduce on this smaller,
 less confuser-dense sample, while the ordering effect does. The graph result
 is also configuration-specific: the bulk import bypassed the tagging path,
@@ -252,8 +255,8 @@ is the induced ordering, not the verdicts.
 \textbf{End to end, the answer grid of Section~\ref{sec:e5} carries this
 comparison.} Its original 30 cells name the gold document in every answer,
 with recognized document-style markers in 9/10, 7/10 and 2/10 answers for P, F
-and D; its common-substrate replication gives 9/9/9, so the marker ordering is
-substrate-bound (Section~\ref{sec:e5}). Marker counts do not test whether
+and D; its common-substrate replication gives 9/9/9 marker-bearing answers, so
+this ordering is substrate-bound (Section~\ref{sec:e5}). Marker counts do not test whether
 citations resolve or support claims; per-cell records and the replication are
 in the supplementary material.
 
