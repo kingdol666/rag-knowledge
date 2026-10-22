@@ -1,0 +1,31 @@
+{
+ "mode": "A",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 200.5,
+ "duration_ms": 198933,
+ "turns": 7,
+ "cost_usd": 0.24278992,
+ "session_id": "b90e7b03-f45c-4b0a-adbd-59e7de59534c",
+ "answer_chars": 3298,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**Conclusion: The knowledge base contains no evidence for a \"Herbert-Moulton collider benchmark\" or any method for quantifying detector drift in particle-physics experiments — the premise cannot be substantiated from the corpus, and it is not found in KB (honest not-found).**\n\n**What I searched**\n\n| Search | Scope | Result |\n|---|---|---|\n| `kb_search_two_stage` \"Herbert-Moulton collider benchmark detector drift\" (slim, top_k=10) | Pinned KB `b1199132…` = **计算机与人工智能** (131 docs) | 20 stage-1 candidates, 5 stage-2 hits — all off-topic (SLAM/robotics, bitvector query optimization, BERT, Yiddish ",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

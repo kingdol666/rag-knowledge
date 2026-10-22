@@ -1,0 +1,356 @@
+{
+  "timestamp_utc": "2026-10-21T03:07:38.677759+00:00",
+  "parent_kb": "ZZ-Cap-Parent-20261021-110738",
+  "child_kb": "ZZ-Cap-Child-20261021-110738",
+  "doc": "cap-fixture-20261021-110738.md",
+  "token": "CAPTOKEN-20261021-110738",
+  "steps": [
+    {
+      "step": "kb_project_status",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "summary": "backend UP(:8771) · web UP(:6789) · neo4j UP(:7687) · mineru up",
+        "ready": true
+      }
+    },
+    {
+      "step": "fs_get_tree",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "type": "dict",
+        "head": "{'tree': [{'id': 'b1199132-e4d4-4305-8c2e-82dc1753b0ba', 'name': '计算机与人工智能', 'type': 'folder', 'parentId': None, 'path': '计算机与人工智能', 'description': 'Computer science and AI: algorithms, NLP/LLM, visio"
+      }
+    },
+    {
+      "step": "kb_create_parent",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "kb_id": "a9b64c7a-b36e-42a9-a25b-536d4f6f80a8"
+      }
+    },
+    {
+      "step": "kb_create_child_with_parent",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "kb_id": "8681ff86-6947-4023-b955-57e5fccdad63",
+        "parentId": "a9b64c7a-b36e-42a9-a25b-536d4f6f80a8"
+      }
+    },
+    {
+      "step": "kb_list_shows_tree",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "parent_present": true,
+        "child_present": true
+      }
+    },
+    {
+      "step": "kb_doc_create",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "path": "ZZ-Cap-Parent-20261021-110738\\ZZ-Cap-Child-20261021-110738\\cap-fixture-20261021-110738.md"
+      }
+    },
+    {
+      "step": "doc_visible_in_catalog",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "step": "kb_index_document",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "total_chunks": 1
+      }
+    },
+    {
+      "step": "kb_doc_update_meta",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "response": {
+          "success": true,
+          "document": {
+            "id": "e17db59e-0d1f-4f7a-800b-197ad349bbae",
+            "name": "cap-fixture-20261021-110738.md",
+            "parentId": "8681ff86-6947-4023-b955-57e5fccdad63",
+            "path": "ZZ-Cap-Parent-20261021-110738\\ZZ-Cap-Child-20261021-110738\\cap-fixture-20261021-110738.md",
+            "fileType": "md",
+            "fileSize": 452,
+            "mimeType": "text/markdown",
+            "type": "file",
+            "status": "completed",
+            "metadata": {},
+            "description": "Updated description mentioning CAPTOKEN-20261021-110738 and sampling hardware.",
+            "createdAt": "2026-10-21T03:07:44.619Z",
+            "updatedAt": "2026-10-21T03:07:46.155Z"
+          }
+        }
+      }
+    },
+    {
+      "step": "kb_doc_update_content",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "auto_reindex": true
+      }
+    },
+    {
+      "step": "kb_doc_update_tags",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "response": {
+          "success": true,
+          "kb_id": "8681ff86-6947-4023-b955-57e5fccdad63",
+          "kb_path": "ZZ-Cap-Parent-20261021-110738\\ZZ-Cap-Child-20261021-110738",
+          "docPath": "ZZ-Cap-Parent-20261021-110738/ZZ-Cap-Child-20261021-110738/cap-fixture-20261021-110738.md",
+          "tags": [
+            "cap-tag-20261021-110738",
+            "capability-probe"
+          ],
+          "_note": "Tags updated. Graph reindex triggered in background."
+        }
+      }
+    },
+    {
+      "step": "kb_doc_get_by_tag",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "found": true
+      }
+    },
+    {
+      "step": "vector_child_direct",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "hits": 2,
+        "top_score": 0.7347396612167358
+      }
+    },
+    {
+      "step": "vector_parent_recursive",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "hits": 2,
+        "note": "parent search must traverse child collection"
+      }
+    },
+    {
+      "step": "two_stage_parent",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "token_found": true,
+        "note": "known 20261013 inconsistency: two_stage on parent previously returned 0"
+      }
+    },
+    {
+      "step": "keyword_metadata_scan",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "matched": true
+      }
+    },
+    {
+      "step": "laya_judge_reference_mode",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "status": "ok",
+        "real_engine": true,
+        "scored": 1,
+        "survivors": 1,
+        "top_score": 0.8838
+      }
+    },
+    {
+      "step": "vector_negative_control",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "hits": 0
+      }
+    },
+    {
+      "step": "kb_find_duplicates",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "groups": 0,
+        "head": "{\"success\": true, \"kb_id\": \"a9b64c7a-b36e-42a9-a25b-536d4f6f80a8\", \"docs_scanned\": 0, \"exact_duplicates\": 0, \"near_duplicates\": 0, \"total_duplicate_groups\": 0, \"duplicate_groups\": [], \"hint\": \"No dupl"
+      }
+    },
+    {
+      "step": "kb_doc_move_with_hygiene",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "hygiene": {
+          "sourceKb": "8681ff86-6947-4023-b955-57e5fccdad63",
+          "oldPath": "ZZ-Cap-Parent-20261021-110738\\ZZ-Cap-Child-20261021-110738\\cap-fixture-20261021-110738.md",
+          "vectors": {
+            "success": true,
+            "kb_id": "8681ff86-6947-4023-b955-57e5fccdad63",
+            "doc_path": "ZZ-Cap-Parent-20261021-110738\\ZZ-Cap-Child-20261021-110738\\cap-fixture-20261021-110738.md",
+            "cleaned": 1
+          },
+          "graph": {
+            "success": true,
+            "doc_path": "ZZ-Cap-Parent-20261021-110738\\ZZ-Cap-Child-20261021-110738\\cap-fixture-20261021-110738.md",
+            "nodes_deleted": 0
+          },
+          "newPath": "ZZ-Cap-Parent-20261021-110738\\cap-fixture-20261021-110738.md",
+          "reindexed": {
+            "success": true,
+            "vector_index": {
+              "collection": "kb_a9b64c7a-b36e-42a9-a25b-536d4f6f80a8",
+              "chunk_id_prefix": "ZZ-Cap-Parent-20261021-110738/cap-fixture-20261021-110738.md__chunk_",
+              "total_chunks": 2,
+              "embedding_model": "bge-m3",
+              "indexed_at": "2026-10-21T03:07:58.489745+00:00",
+              "graph_doc_id": "doc::ZZ-Cap-Parent-20261021-110738/cap-fixture-20261021-110738.md"
+            },
+            "graph_index": {},
+            "graph_stats": {}
+          }
+        },
+        "new_path": "ZZ-Cap-Parent-20261021-110738\\cap-fixture-20261021-110738.md",
+        "note": "move endpoint must delete old chunks + re-index at new path"
+      }
+    },
+    {
+      "step": "moved_doc_visible_in_parent",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "entries": [
+          "ZZ-Cap-Child-20261021-110738",
+          "cap-fixture-20261021-110738.md"
+        ]
+      }
+    },
+    {
+      "step": "post_move_vector_clean",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "verdict": "clean_immediately",
+        "new_path_hits": 2,
+        "stale_child_path_hits": 0,
+        "hit_paths": [
+          "ZZ-Cap-Parent-20261021-110738/cap-fixture-20261021-110738.md"
+        ]
+      }
+    },
+    {
+      "step": "catalog_grouped_view",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "chars": 246,
+        "note": "budget-guard grouped catalog view"
+      }
+    },
+    {
+      "step": "kb_graph_build_task",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "task": "done",
+        "result_head": "{\"success\": true, \"result\": {\"success\": true, \"kb_id\": \"a9b64c7a-b36e-42a9-a25b-536d4f6f80a8\", \"kb_path\": \"ZZ-Cap-Parent-20261021-110738\", \"docs_processed\": 1, \"docs_skipped\": 0, \"total_relations\": 3, \"sub_kb_count\": 1, \"sub_kbs\": [{\"kb_id\": \"8681ff8"
+      }
+    },
+    {
+      "step": "kb_graph_document",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"graph\": {\"doc_path\": \"ZZ-Cap-Parent-20261021-110738/cap-fixture-20261021-110738.md\", \"graph_doc_id\": \"doc::ZZ-Cap-Parent-20261021-110738/cap-fixture-20261021-110738.md\", \"document\": {\"graph_doc_id\": \"doc::ZZ-Cap-Parent-20261021-110"
+      }
+    },
+    {
+      "step": "experience_create",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "id": "exp-ccdbfcb25d45"
+      }
+    },
+    {
+      "step": "experience_search_global",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "found": true
+      }
+    },
+    {
+      "step": "kb_reindex_force",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "task": "done",
+        "verification": "{\"success\": true, \"total_docs\": 1, \"total_chunks\": 2, \"total_relations\": 0, \"errors\": [], \"_verify\": \"ok\"}"
+      }
+    },
+    {
+      "step": "experience_delete",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "id": "exp-ccdbfcb25d45"
+      }
+    },
+    {
+      "step": "kb_doc_delete",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "path": "ZZ-Cap-Parent-20261021-110738\\cap-fixture-20261021-110738.md"
+      }
+    },
+    {
+      "step": "kb_delete_child",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "kb_id": "8681ff86-6947-4023-b955-57e5fccdad63"
+      }
+    },
+    {
+      "step": "kb_delete_parent",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "kb_id": "a9b64c7a-b36e-42a9-a25b-536d4f6f80a8"
+      }
+    },
+    {
+      "step": "cleanup_verified",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "parent_gone": true,
+        "child_gone": true,
+        "kb_count": 21
+      }
+    }
+  ],
+  "pass": true
+}

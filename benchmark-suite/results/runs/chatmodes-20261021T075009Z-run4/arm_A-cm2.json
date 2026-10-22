@@ -1,0 +1,34 @@
+{
+ "mode": "A",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 208.2,
+ "duration_ms": 206823,
+ "turns": 6,
+ "cost_usd": 0.23579429999999998,
+ "session_id": "b2fbacd4-0e2b-4e1d-92d0-1e9eaaed080b",
+ "answer_chars": 1346,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：** 在该库中，唯一直接对口的文献是 Nwosu 等人的《Predicting Stroke from Electronic Health Records》（arXiv:1904.11280）。该文给出的核心答案是：**高血压、糖尿病、心脏病是文献公认的卒中主要风险因素**；但在该电子健康记录（EHR）数据上，PCA 分析表明 10 个患者属性彼此**并不高度相关**，所以不能对特征空间做压缩，全部特征都必须保留；在此前提下，神经网络（MLP）的预测准确率最高，为 **75.02%**，决策树为 74.31%、随机森林为 74.53%，三者性能相近（P0 直接证据）。\n\n**数据与特征（P0）**\n- 数据集：McKinsey 医疗黑客松发布、Kaggle 公开的 EHR 数据，共 **29,072 名患者、12 个属性**；剔除患者ID后，共 10 个输入变量：性别、年龄、高血压（0/1）、心脏病（0/1）、婚姻状况、职业类型、居住类型（城/乡）、平均血糖水平、BMI、吸烟状态；响应变量为是否发生卒中（0/1）。\n- 类不平衡极严重：卒中 **548** 例 vs 非卒中 **28,524** 例；用随机降采样构造 548+548=1096 的平衡集，按 70/30 划分训练/测试，重复 1000 次实验。\n\n**风险因素影响分析（P0）**\n- 文献综述部分指出，已有",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": true
+  }
+ }
+}

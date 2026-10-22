@@ -1,0 +1,34 @@
+{
+ "mode": "A",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 163.3,
+ "duration_ms": 160355,
+ "turns": 4,
+ "cost_usd": 0.39618809999999993,
+ "session_id": "bb543e6f-5734-4408-82e9-96bca850f97b",
+ "answer_chars": 1849,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": true,
+ "gate_passed": false,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**InstructDS 通过一套“以摘要为锚”的三步合成流程，从现有的对话—摘要数据对中自动生成查询—对话—摘要（QDS）三元组，并且只靠约 1.3 个新三元组/对话就显著提升了查询式对话摘要质量。** 该方法的思路受 Self-Instruct 启发，目的是解决指令式对话摘要中监督数据稀缺的问题。\n\n### 三步合成流程（论文 §3.2）\n\n**① 查询生成（Query Generation）**\n“为了覆盖多种潜在查询，我们利用大语言模型的问句生成能力生成多个候选查询。具体来说，我们使用 Flan-T5-XL……对于每个实例，我们使用表 7 中的模板生成 5 个候选查询。”关键在于**以参考摘要作为锚点**（“summary-anchored”），并不以对话本身作为锚点。\n\n**② 查询过滤（Query Filtering）**\n- **基于文本的过滤**：把 Flan-T5-XL 用作文本二分类器，判断查询问题是否**可回答**（以抑制幻觉）。“该过滤过程剔除了约 **45%** 的生成查询，这些查询很可能无法回答。”\n- **基于语义的过滤**：用归一化 BERTScore 测量语义相似度，相似度 > 0.65 时只保留第一个查询。“基于语义的过滤过程又剔除了 **50%** 的查询。”\n\n**③ 基于查询的摘要生成（Query-guided Summary Genera",
+ "gate": {
+  "passed": false,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": false
+  }
+ }
+}

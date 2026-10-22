@@ -1,0 +1,34 @@
+{
+ "mode": "C",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 130.0,
+ "duration_ms": 128507,
+ "turns": 5,
+ "cost_usd": 0.17671258,
+ "session_id": "31097470-fbe8-4f98-b674-f348ad6d5383",
+ "answer_chars": 1896,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：InstructDS 不在“对话→摘要”上直接合成指令数据，而是以已有摘要为锚（summary-anchored），把问答式（dialogue-summary pair）数据三步合成成「查询-对话-摘要」(QDS) 三元组——先让 LLM 从完整摘要生成多条候选查询，再经可回答性+语义去重两道过滤，最后用「查询+完整摘要」生成查询式摘要。**\n\n## 三步合成流水线（论文 §3.2）\n\n**① Query Generation（摘要锚定的查询生成）**\n利用 Flan-T5-XL（文中称 model X，训练时见过 Quoref / MC-TACO / CosmosQA 等问答生成数据）的提问能力，**对每条摘要生成 5 条候选查询**，以保证查询多样性。关键设计是查询从**已在手的人工摘要**出发，而非从对话中凭空抽取——这样查询天然有答案、不依赖新标注。\n\n**② Filtering and Postprocessing（两道过滤，保有效性与多样性）**\n- **文本过滤（可回答性）**：用 model X 作二分类器判定查询能否被无幻觉地回答（如 \"What will…\"/\"How would…\" 类查询被剔除），**约淘汰 45%** 的生成查询。\n- **语义过滤（去冗余）**：用归一化 BERTScore 度量同一对话下查询间的相似度，**>0.65 即视为重",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": true
+  }
+ }
+}

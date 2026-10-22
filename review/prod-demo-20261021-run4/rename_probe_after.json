@@ -1,0 +1,93 @@
+{
+  "phase": "after",
+  "timestamp_utc": "2026-10-21T07:28:49.722365+00:00",
+  "kb": "ZZ-RenFix-after-20261021-152849",
+  "token": "RENFIX-after-20261021-152849",
+  "stages": [
+    {
+      "stage": "index_at_A",
+      "path_a": "ZZ-RenFix-after-20261021-152849\\renfix-a-20261021-152849.md",
+      "hits": [
+        {
+          "doc_path": "ZZ-RenFix-after-20261021-152849/renfix-a-20261021-152849.md",
+          "score": 0.7484,
+          "has_token": true
+        }
+      ]
+    },
+    {
+      "stage": "after_rename",
+      "rename_ok": true,
+      "index_hygiene": {
+        "oldPath": "ZZ-RenFix-after-20261021-152849\\renfix-a-20261021-152849.md",
+        "newPath": "ZZ-RenFix-after-20261021-152849\\renfix-b-20261021-152849.md",
+        "vectors": {
+          "success": true,
+          "kb_id": "169f0179-1b52-48bc-a896-9123f16d3339",
+          "doc_path": "ZZ-RenFix-after-20261021-152849\\renfix-a-20261021-152849.md",
+          "cleaned": 1
+        },
+        "graph": {
+          "success": true,
+          "doc_path": "ZZ-RenFix-after-20261021-152849\\renfix-a-20261021-152849.md",
+          "nodes_deleted": 0
+        },
+        "reindexed": {
+          "success": true,
+          "vector_index": {
+            "collection": "kb_169f0179-1b52-48bc-a896-9123f16d3339",
+            "chunk_id_prefix": "ZZ-RenFix-after-20261021-152849/renfix-b-20261021-152849.md__chunk_",
+            "total_chunks": 1,
+            "embedding_model": "bge-m3",
+            "indexed_at": "2026-10-21T07:28:57.128629+00:00",
+            "graph_doc_id": "doc::ZZ-RenFix-after-20261021-152849/renfix-b-20261021-152849.md"
+          },
+          "graph_index": {},
+          "graph_stats": {}
+        }
+      },
+      "new_label_hits": 1,
+      "old_label_hits": 0,
+      "hits": [
+        {
+          "doc_path": "ZZ-RenFix-after-20261021-152849/renfix-b-20261021-152849.md",
+          "score": 0.782,
+          "has_token": true
+        }
+      ]
+    },
+    {
+      "stage": "registry_sanity",
+      "old_path_readable": false,
+      "new_path_readable": true
+    },
+    {
+      "stage": "after_force_reindex",
+      "task_status": "done",
+      "task_result": "{\"success\": true, \"total_docs\": 1, \"total_chunks\": 1, \"total_relations\": 0, \"errors\": [], \"_verify\": \"ok\"}",
+      "new_label_hits": 1,
+      "old_label_hits": 0,
+      "hits": [
+        {
+          "doc_path": "ZZ-RenFix-after-20261021-152849/renfix-b-20261021-152849.md",
+          "score": 0.8072,
+          "has_token": true
+        }
+      ]
+    },
+    {
+      "stage": "desc_only_update",
+      "update_ok": true,
+      "labels_unchanged": true,
+      "hits": 1
+    },
+    {
+      "stage": "cleanup",
+      "kb_delete_ok": true,
+      "residual": false
+    }
+  ],
+  "verdict_inline_hygiene": true,
+  "verdict_reindex_repairs": true,
+  "final_content_readable": true
+}

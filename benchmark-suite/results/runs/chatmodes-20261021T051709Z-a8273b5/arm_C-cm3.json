@@ -1,0 +1,31 @@
+{
+ "mode": "C",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 181.0,
+ "duration_ms": 179504,
+ "turns": 7,
+ "cost_usd": 0.28694378,
+ "session_id": "faa3310a-30b5-40b9-bf48-7cf7236a2af5",
+ "answer_chars": 1576,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：本知识库中没有关于 “Herbert-Moulton collider benchmark” 的任何内容，因此无法说明它如何量化探测器漂移；该检索结果为零命中，而且这个基准的名称本身在库中无法核实（库内既无该基准，也无任何对撞机探测器漂移或刻度漂移的方法学文献）。**\n\n### 已执行的检索（均为 MCP 只读工具）\n\n**主库 `计算机与人工智能`（b1199132…，131 篇）**\n- `kb_search_two_stage(\"detector drift particle physics collider benchmark\")` → stage1 候选 20 / stage2 命中 5，最高向量分 0.547；命中的文档全部是 GPT-3 少样本学习（测试集污染分析）、BERT 微调、语音韵律边界检测、MLP-SLAM 等，与粒子物理无关。\n- 另用 `kb_search_vector(\"Herbert-Moulton collider benchmark\")` 检索 → 最高分 0.499（BERT fine-tuning 段落）；另用 `kb_search_vector(\"particle physics detector calibration drift collider experiment\")` 检索 → 最高分 0.517（MLP-SLAM 实验",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

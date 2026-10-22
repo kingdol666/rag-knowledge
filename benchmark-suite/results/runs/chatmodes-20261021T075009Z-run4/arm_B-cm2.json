@@ -1,0 +1,32 @@
+{
+ "mode": "B",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 242.5,
+ "duration_ms": 241132,
+ "turns": 6,
+ "cost_usd": 0.3330648,
+ "session_id": "e71fd266-4f62-434d-8032-b1fde42ce068",
+ "answer_chars": 1462,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：知识库中有一篇直接命中的文献可以回答这个问题：基于 EHR 数据的卒中预测应当使用全部 10 个患者属性进行建模，因为特征之间并不高度相关，强行用 PCA 降维会损失信息；在因素影响方面，年龄与婚姻状态对主成分贡献最大，居住类型几乎零贡献，而三类经典分类器的基准准确率仅在 74.31%–75.02% 之间（神经网络最优）。**\n\n**出处**：生命科学与医学库（`b28f0a25-1e1d-40ad-96b8-61bd2b093a28`）→《Predicting Stroke from Electronic Health Records》（arXiv 1904.11280；Nwosu, Dev, Bhardwaj, Veeravalli, Deepu John）。**可信度 P0（强）**：描述层的表述与问题精确匹配，Laya 证据门控的 8/8 个段落全部存活，最高分 0.9303。\n\n**数据与字段**\n- 数据来自 McKinsey & Company 医疗黑客松数据集（Kaggle 公开），共 29,072 条记录、12 个属性。\n- 10 个输入变量为性别、年龄、高血压(0/1)、心脏病(0/1)、婚姻状态、职业类型、居住类型（城乡）、平均血糖水平、BMI 和吸烟状态；目标变量是二值指标“是否发生卒中”。\n\n**关键风险因素及其影响**\n- 文献综述确立的三大主",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": true
+  }
+ }
+}

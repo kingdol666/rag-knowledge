@@ -1,0 +1,42 @@
+# Ralph progress — 2026-10-21
+
+Task: design review + skills/API verification + non-paper test-result cleanup + benchmark pipeline review + acceptance definition.
+
+## Iteration 1
+
+- Created task-specific PRD at .omc/prd.json (US-001..US-006).
+- Environment facts: services already running (web 6789, backend 8771, kb-mcp 8000); MCP tools/list = 95 (matches paper); harness API ingest/retrieval/abstention test PASS earlier this session (claude 12/12, omp functional).
+- Learnings carried in: paper keep-list must include run_dir targets of committed grade JSONs (exp_rerun5_grade.json -> rerun5-20261017); frozen manifest must pass after cleanup; only untracked files may be deleted.
+
+## Iteration 1 completion
+
+- US-001..US-005 verified with fresh evidence (see review/acceptance-20261021/ACCEPTANCE.md).
+- Fixes applied: web/server/engines/mock-engine.ts (+subtype:'success'), scripts/dev_smoke.py (stream:true, timeout=90). dev_smoke 19/21 -> 21/21; mock non-stream success=false -> true (hot-reload verified).
+- Cleanup: untracked 59 -> 5; harness test dirs + non-cited rerun rounds + temp/debug/LaTeX byproducts deleted; 4 audit workspaces quarantined to review/archive-superseded/review-audits-20261015-18.tar.gz (+MANIFEST). 31/31 paper-cited artifacts intact; no new frozen-manifest drift.
+- Pre-existing finding for the author: frozen manifest drifts on n8a/n8b/n8c_eval.tex (freeze 10-17 20:53 < commit a8273b5 23:14 < worktree edits 10-18). Re-freeze or revert before submission.
+- Reviewer: general-purpose agent, 9/9 checklist PASS, VERDICT: APPROVE (review/acceptance-20261021/REVIEW.md).
+- Deslop: no-change verdict on 4-line changed-code surface; post-deslop regression: validate PASS, manifest unchanged (3 OK / 3 pre-existing FAIL), dev_smoke rerun.
+- Probe v1: 31/33 (2 fails = probe defects: delete used pre-move path; post-move single-shot at 2s caught transient).
+- Probe v2 (fixed instrumentation + settle window): 33/33 PASS. Move hygiene = clean_immediately (new-path 2 hits, stale 0). Laya reference mode: real_engine, survivor score 0.8838. two_stage on parent WORKS (20261013 suspicion did not reproduce). Parent-recursive vector confirmed.
+- CAPABILITY.md written: management 12/12 groups, retrieval six-stage layering, gaps G-A..G-P.
+- Reviewer (general-purpose, fresh context): 5/5 checklist PASS, VERDICT APPROVE (review/kb-capability-20261021/REVIEW.md). Its note fixed: matrix row 7 chunk count clarified (1 initial -> 2 steady state).
+- Deslop: finally-block simplified (uses tracked exp_id/new_path directly); syntax re-validated.
+- Regression: dev_smoke 21/21 PASS; validate_skills PASS.
+
+## Run 3 (2026-10-21): full-function production demo
+- Management full test rerun: 29/29 PASS (fs_get_children kwarg fixed; rename label defect converted to documented-confirmation step).
+- Parse chain: PASS (MinerU real PDF -> save_parsed task_id mode -> 6 chunks -> retrieval 0.656). G-P closed.
+- chatmodes: 9/9 runs http200, 0 errors; gates 8/9 (A x cm1 = refusal-heuristic false positive, answer substantive with gold hit).
+- Librarian deep test: 3/3 PASS after offline re-judge (probe lexicon missed NOT_FOUND/没有任何); full ladders, no off-lane tools; LIB3 refusal follows budget rule with blind-spot statement.
+- New confirmed defect: rename -> vector doc_path labels stay stale even after force reindex (provenance cites unresolvable path). Root-cause hint: rename endpoint does not update vector_index.chunk_id_prefix.
+- PROD-DEMO.md sections 1-6 written.
+- Reviewer (general-purpose): 6/6 PASS, VERDICT APPROVE (REVIEW.md). Regression: dev_smoke 21/21 + validate PASS. Deslop: no-change on 3 probe scripts + report.
+
+## Run 4 (2026-10-21 afternoon): fresh full-function demo + rename fix + drift repair
+- Live surface: tools/list 95 (kb 42/exp 26/soul 20), 21 KBs / 433 docs, three service processes pinned by cmdline.
+- US-306 FIX: web/server/api/kb/documents/update.patch.ts now mirrors move hygiene (delete old vectors+graph node, reindex new path; gated on actual path change; index_hygiene receipt). Probes before2/after: new labels 0/1 -> 1/0. CORRECTION of run 3: "force reindex does not repair labels" was a 30s vector search-cache artifact (vector_service.py _SEARCH_CACHE_TTL=30, no invalidation on index writes); cache-proof re-measure shows reindex repairs. True defect window: rename -> next reindex.
+- NEW finding: live regression probes 13/15 (gold 2604.01385 + 2207.08146 out of top-40; chunk counts/paths identical pre/post repair -> stale embeddings). kb_reindex(force) on 2 libs healed to 15/15 (golds rank=1). Run 3's "15/15 fresh same-day" reclassified as artifact-reading.
+- Management 28/28 (fix-assertion rename steps; one probe filter false-positive fixed then rerun green); parse chain PASS (MinerU->save_parsed->6 chunks->retrieval->cleanup).
+- Nine-grid run chatmodes-20261021T075009Z-run4: 9/9 http200 0 errors, gates 8/9 (C-cm2 false positive on "无法压缩特征空间" while gold hit), $2.86 total.
+- Librarian 3/3 (LIB3 offline re-judge, lexicon widened with no-content/no-recipe family).
+- Reviewer (general-purpose, fresh): 7/7 PASS, VERDICT APPROVE (REVIEW.md); 3 nits applied. Regression: dev_smoke 21/21 + validate PASS (also re-run by reviewer). Deslop pending at approval time -> executed post-approval on update.patch.ts + probe scripts.

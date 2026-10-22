@@ -1,0 +1,237 @@
+{
+  "timestamp_utc": "2026-10-21T05:42:50.516166+00:00",
+  "lane": "librarian (kbEnhanced=true, kbIds=[])",
+  "runs": [
+    {
+      "qid": "LIB1-lookup",
+      "expect": "found",
+      "verdict": "PASS-gold",
+      "wall_s": 147.2,
+      "duration_ms": 146387,
+      "num_turns": 9,
+      "cost_usd": 0.3564763,
+      "tool_trajectory": [
+        {
+          "name": "mcp__kb-mcp__kb_list",
+          "args": {
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "view": "groups"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_laya_judge",
+          "args": {
+            "query": "How does InstructDS generate high-quality query-based dialogue summaries? Query-based instruction tuning data ",
+            "documents": "[{\"kb_id\":\"b1199132-e4d4-4305-8c2e-82dc1753b0ba\",\"doc_path\":\"计算机与人工智能\\\\nlp__2310.10981__instructive-dialogue-s"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_doc_read",
+          "args": {
+            "max_chars": "24000"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_doc_read",
+          "args": {
+            "max_chars": "24000"
+          }
+        }
+      ],
+      "tool_counts": {
+        "kb_list": 1,
+        "kb_get_documents": 4,
+        "kb_laya_judge": 1,
+        "kb_doc_read": 2
+      },
+      "ladder_summary": "L:kb_list -> L:descriptions -> L:judge -> L:read",
+      "answer": "**InstructDS 的高质量 query 型摘要来自一条三步合成的「摘要锚定」数据管线：先从参考摘要反向生成候选 query，再用文本+语义双重过滤保证 query 可答且不重复，最后用 query 与完整摘要生成 query 型摘要；配合长度感知增强训练后，3B 模型在四个数据集上超过 175B ChatGPT。**\n\n一、三步合成（QDS 三元组）\n\n1. **摘要锚定 query 生成**：以参考摘要（而非对话）为锚，用 Flan-T5-XL 的 question-generation 能力，每个实例生成 **5 个候选 query**。以摘要为锚是关键——摘要本身是对话的浓缩结构化版本，从中提问比从冗长对话中提问稳定得多。\n2. **Query 过滤**（两步）：\n   - *文本过滤*：用模型 X 作二分类器判定可答性，剔除如 \"What will…\"、\"How would…\" 这类\"不产生幻觉就无法确答\"的 query，**约淘汰 45%**。\n   - *语义过滤*：用归一化 BERTScore，相似度 **>0.65** 只保留第一个，剔除同义重复（如 \"What does Edward think about/of Bella?\"），**再淘汰约 50%**。\n3. **基于 query 的摘要生成**：以 query + 完整摘要为输入生成 query 型摘要。论文明确指出\"从对话直接生成 query 型摘要对模型 X 较难，而从浓缩摘要生成更容易、质量更有保证\"。\n\n二、质量证据与训练\n\n- 平均每对 dialogue-summary 产出 **1.3 个 QDS 三元组**；专家标注 100 条，\"Both unique and correct\" 由未过滤的 **45% 提升到 75%**，可答性 76%→94%，多样性 63%→90%。\n- 训练以 Flan-T5-XL 为底座，LoRA 仅 **37.7M 可训练参数**；三类指令混合（通用摘要 / query 摘要 / 长度感知增强，后者追加 \"The generated summary should be around {summary length} words long.\"），每数据集采样 5k 三元组，共 **100k** 样本，三数据集统一训练。\n\n三、效果\n\n- SAMSum：InstructDS R-1 **55.3**、R-L 46.7、BERTScore 55.5（超过 175B GPT-3-finetune 的 53.4）；给出参考长度后 R-1 升至 **58.4**（同条件下 ChatGPT 仅 40.8）。\n- DialogSum R-1 **47.8**；TODSum R-1 **89.3**（ChatGPT 73.1）。\n- DREAM 阅读理解：合成 QDS 使准确率从 56.4 → **59.1**；三元组数量增加可把准确率从 54 提升到 58+。\n- 消融显示合成 QDS 主要提升\"对话理解与推理能力\"（可迁移到 DREAM），长度增强负责可控性；TODSum 因摘要模板化而对 QDS 收益不敏感。\n\n**出处（同源 KB：计算机与人工智能）**\n- `nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md` — 摘要、方法 3.2 三步合成、过滤比例、Table 2/3\n- 同文件 `(part 2 of 4).md` — 消融、人工/ChatGPT 四维主观评价、结论\n- `(part 3 of 4).md`、`(part 4 of 4).md` — 附录（ROUGE 实现、模板与示例）\n\n可信度：**P0（强）** — 原始论文全文分段收录，方法与数字均逐字可核。盲区：知识库中仅有该论文本身，无第三方复现或后续工作对比。",
+      "answer_chars": 1654
+    },
+    {
+      "qid": "LIB2-enumerative",
+      "expect": "found",
+      "verdict": "PASS-gold",
+      "wall_s": 171.2,
+      "duration_ms": 170301,
+      "num_turns": 11,
+      "cost_usd": 0.43665519999999997,
+      "tool_trajectory": [
+        {
+          "name": "mcp__kb-mcp__kb_list",
+          "args": {
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+            "view": "groups"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+            "lightweight": "True",
+            "view": "docs"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "view": "groups"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+            "lightweight": "True",
+            "view": "docs"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "lightweight": "True",
+            "view": "docs"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+            "lightweight": "True",
+            "view": "docs"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_laya_judge",
+          "args": {
+            "documents": "[{\"kb_id\":\"1e6199ea-f380-44e2-94fc-d431f0f9bb6b\",\"doc_path\":\"自然科学与地球科学\\\\climate-science__1503.07557__precipita",
+            "query": "papers that study precipitation extremes under climate change"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_doc_read",
+          "args": {
+            "max_chars": "9000"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_doc_read",
+          "args": {
+            "max_chars": "7000"
+          }
+        }
+      ],
+      "tool_counts": {
+        "kb_list": 1,
+        "kb_get_documents": 6,
+        "kb_laya_judge": 1,
+        "kb_doc_read": 2
+      },
+      "ladder_summary": "L:kb_list -> L:descriptions -> L:judge -> L:read",
+      "answer": "**结论：知识库中只有 2 篇论文直接研究气候变化下的降水极端事件（均位于「自然科学与地球科学 / climate-science」库，共 12 篇气候文献），另有 1 篇相关但不涉及气候变化。**\n\n**1. O'Gorman, P.A. — *Precipitation extremes under climate change* (arXiv 1503.07557，3 个分片)** — **P0 强**（标题即主题，正文逐段核验）\n- 核心发现：观测与气候模式一致显示**极端降水随变暖增强**；但\"当对流重要时敏感性仍不确定，且热带可能高于热带外\"。\n- 关键数字：热带（30S–30N）敏感性 **9% K⁻¹（90% 置信区间 6–14% K⁻¹）**，热带外 **4% K⁻¹（2–5% K⁻¹）**。\n- 物理分解（式1：P ≃ −ε·ω·S）：**热力贡献稳健且理解充分**（Clausius–Clapeyron 标度 6–7% K⁻¹），**微物理与动力贡献理论仍在发展中**。\n- 特殊类型：地形降水极端在**背风坡的增幅大于迎风坡**；降雪极端在约 **−2 °C（液态水当量）/ −4 °C（雪深）** 的最适温度附近出现。开放问题：中尺度对流组织、持续时间依赖、热带敏感性的约束。\n\n**2. Rampal, Gibson, Sherpa 等（NIWA/UNSW）— *On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates* (arXiv 2409.13934，3 个分片)** — **P0 强**\n- 以 CCAM 为真值，评估 GAN vs 确定性 CNN 在**更暖气候下对极端降水降尺度的外推能力**（新西兰）。\n- 关键数字：CCAM 的 99.5 分位增湿为 **5.8%/°C**，99.9 分位为 **7.2%/°C**；**历史期训练的 GAN 捕捉约 77%** 的 99.5 分位增湿，**未来期+历史期训练的 GAN 捕捉约 97%**；**确定性基线仅捕捉 63–65%（低估至少 35%）**。\n- 结论：确定性回归\"即便在未来气候上训练也低估极端降水增幅\"；GAN 在 **95 分位以上**才明显优于基线，且不损失均值表现——差异来自对抗损失（adversarial loss）。\n\n**相关但严格说不属\"气候变化下\"（P2，仅供参考）**\n- Muhammad, Lubis, Setiawan — *Impacts of the MJO on Precipitation Extremes in Indonesia* (2007.10574)：MJO 活跃相位使印尼西部/中部极端降水概率最多升 **70%**（抑制相位降 40%），东部升/降 **50%/40%**；归因于水平水汽通量辐合——属季节内变率调制，非温室变暖情景。\n\n**盲区声明**：已扫过 21 个库的目录层（其中挑出气候库 8 个分组全部文档描述，并抽查了「计算机与人工智能/statistics」组与 demo 杂项库），未见其他降水极端-气候变化文献；同类邻近但主题不符的还有 GPC/m 全球降水气候态数据集（2409.09639），未计入。",
+      "answer_chars": 1432
+    },
+    {
+      "qid": "LIB3-absent",
+      "expect": "refusal",
+      "verdict": "PASS-honest-refusal (re-judged offline: original probe lexicon missed NOT_FOUND/没有任何 forms; answer verbatim shows explicit not-found with full scope + blind-spot statement)",
+      "wall_s": 83.8,
+      "duration_ms": 83009,
+      "num_turns": 8,
+      "cost_usd": 0.1630453,
+      "tool_trajectory": [
+        {
+          "name": "mcp__kb-mcp__kb_list",
+          "args": {
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "801c7549-103b-489f-9d7d-4864580d99be",
+            "lightweight": "True"
+          }
+        },
+        {
+          "name": "mcp__kb-mcp__kb_get_documents",
+          "args": {
+            "kb_id": "a0db9ea9-5e1e-4c38-87ee-65f631335eb6",
+            "lightweight": "True"
+          }
+        }
+      ],
+      "tool_counts": {
+        "kb_list": 1,
+        "kb_get_documents": 6
+      },
+      "ladder_summary": "L:kb_list -> L:descriptions",
+      "answer": "**知识库中没有任何 Sichuan pickled vegetable (泡菜) recipe、salt-ratio 或 fermentation-day content——因此我无法从 21 个 KB 中的任何一个给出这份 recipe。** 我不会凭记忆补写，因为我被要求以检索到的证据为依据作答。\n\n**已执行的检索（描述层核查，catalog → 文档描述）**\n\n- `kb_list(lightweight=true)` → 21 个 KB，共 388 个文档。这些检索架的描述完全覆盖计算机科学/AI（131）、自然科学/地球科学（75）、生命科学与医学（53）、工程与能源（39）、经济与社会（24）、工业诊断/经验（aw-industrial，53）以及 AI 基础设施——没有与烹饪、食品科学或传统食谱相关的内容。\n- 对通用/未描述架子的抽查文档描述核查（根据规则，这些不能提前退出）：\n  - `demo-qa-20260927`（“random real-world content”）— 5 个文档：great-wall.md、voyager-1.md、photosynthesis.md、attention-is-all-you-need.md、retmodes-knowledge-card.md → 没有食品相关内容。\n  - `e2e-demo-0923-022632` — 3 个文档：平台架构总览.md、global-rag-benchmark.md、AgentWorkShop 集成指南.md → 没有食品相关内容。\n  - `soul-demo-qa`、`soul-cs-library` — 每个各有 4 个 SOUL persona 文件（soul-definition/values/thinking-style/memory-conventions）→ 没有食品相关内容。\n  - `ZZ跨库复现库`、`ZZ跨库复现库2` — 各 1 个 `repro.md` → 没有食品相关内容。\n- 其他架子的目录描述（文学小说 *Pride and Prejudice*、飞控试验报告、引线键合工艺、E2E/repro 测试架子）同样不覆盖该领域。\n\n**结论：NOT_FOUND（该领域不在知识库中）。** 这不是部分扫描后的结论——目录层再加上一次完整的描述层核查（包括强制抽查的通用架子），已经排除了所有可能的检索架；因此我按规则停止了逐层深入，而不是逐个读取文档正文。\n\n**盲点 / 限制：** 该知识库是一个技术论文 + 工业工程 + Persona 语料库，没有收录烹饪或烹饪史来源。如果你需要 Sichuan 泡菜盐比和发酵时长，请把这些源文档（食谱或发酵工艺文献）入库到知识库中，然后我会重新检索，并附上逐字引用的数字和溯源信息。",
+      "answer_chars": 1197,
+      "rejudge_note": "probe lexicon gap fixed in librarian_probe.py; answer untouched"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "phase": "before2",
+  "timestamp_utc": "2026-10-21T07:27:11.111232+00:00",
+  "kb": "ZZ-RenFix-before2-20261021-152711",
+  "token": "RENFIX-before2-20261021-152711",
+  "stages": [
+    {
+      "stage": "index_at_A",
+      "path_a": "ZZ-RenFix-before2-20261021-152711\\renfix-a-20261021-152711.md",
+      "hits": [
+        {
+          "doc_path": "ZZ-RenFix-before2-20261021-152711/renfix-a-20261021-152711.md",
+          "score": 0.756,
+          "has_token": true
+        }
+      ]
+    },
+    {
+      "stage": "after_rename",
+      "rename_ok": true,
+      "new_label_hits": 0,
+      "old_label_hits": 1,
+      "hits": [
+        {
+          "doc_path": "ZZ-RenFix-before2-20261021-152711/renfix-a-20261021-152711.md",
+          "score": 0.7886,
+          "has_token": true
+        }
+      ]
+    },
+    {
+      "stage": "registry_sanity",
+      "old_path_readable": false,
+      "new_path_readable": true
+    },
+    {
+      "stage": "after_force_reindex",
+      "task_status": "done",
+      "task_result": "{\"success\": true, \"total_docs\": 1, \"total_chunks\": 1, \"total_relations\": 0, \"errors\": [], \"_verify\": \"ok\"}",
+      "new_label_hits": 1,
+      "old_label_hits": 0,
+      "hits": [
+        {
+          "doc_path": "ZZ-RenFix-before2-20261021-152711/renfix-b-20261021-152711.md",
+          "score": 0.8223,
+          "has_token": true
+        }
+      ]
+    },
+    {
+      "stage": "desc_only_update",
+      "update_ok": true,
+      "labels_unchanged": true,
+      "hits": 1
+    },
+    {
+      "stage": "cleanup",
+      "kb_delete_ok": true,
+      "residual": false
+    }
+  ],
+  "verdict_inline_hygiene": false,
+  "verdict_reindex_repairs": true,
+  "final_content_readable": true
+}

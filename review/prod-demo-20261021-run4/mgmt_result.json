@@ -1,0 +1,239 @@
+{
+  "timestamp_utc": "2026-10-21T07:35:36.192533+00:00",
+  "kb": "ZZ-Mgmt-Full-20261021-153536",
+  "token": "MGMT-20261021-153536",
+  "steps": [
+    {
+      "step": "kb_create",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "kb_id": "3ea04dd5-4371-4c01-909e-e73beee6e9f1"
+      }
+    },
+    {
+      "step": "kb_update_description",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "response": "{'success': True, 'knowledgeBase': {'id': '3ea04dd5-4371-4c01-909e-e73beee6e9f1', 'description': 'updated desc MGMT-20261021-153536', 'parentId': None"
+      }
+    },
+    {
+      "step": "fs_upload_file",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "path": "ZZ-Mgmt-Full-20261021-153536\\upload-src.md"
+      }
+    },
+    {
+      "step": "fs_get_children",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "found": true
+      }
+    },
+    {
+      "step": "kb_doc_create",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "path": "ZZ-Mgmt-Full-20261021-153536\\mgmt-fixture-20261021-153536.md"
+      }
+    },
+    {
+      "step": "rename_inline_hygiene",
+      "ok": true,
+      "note": "run-4 fix: labels switch without manual reindex",
+      "detail": {
+        "hygiene_receipt": "{\"oldPath\": \"ZZ-Mgmt-Full-20261021-153536\\\\mgmt-fixture-20261021-153536.md\", \"newPath\": \"ZZ-Mgmt-Full-20261021-153536\\\\mgmt-fixture-renamed-20261021-153536.md\", \"vectors\": {\"success\": true, \"kb_id\": \"3ea04dd5-4371-4c01-909e-e73beee6e9f1\", \"doc_path\": \"ZZ-Mgmt-Full-20261021-153536\\\\mgmt-fixture-20261",
+        "receipt_ok": true,
+        "new_path_hits": 1,
+        "old_path_hits": 0,
+        "read_by_new_path": true
+      }
+    },
+    {
+      "step": "rename_stable_after_force_reindex",
+      "ok": true,
+      "note": "old-path filter matches the pre-rename filename exactly",
+      "detail": {
+        "task": "done",
+        "labels": [
+          "ZZ-Mgmt-Full-20261021-153536/mgmt-fixture-renamed-20261021-153536.md",
+          "ZZ-Mgmt-Full-20261021-153536/upload-src.md"
+        ],
+        "new_path_hits": 1,
+        "old_path_hits": 0
+      }
+    },
+    {
+      "step": "kb_batch_index",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "docs": 2
+      }
+    },
+    {
+      "step": "kb_doc_batch_delete",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "deleted": [
+          "ZZ-Mgmt-Full-20261021-153536\\batch-1-20261021-153536.md",
+          "ZZ-Mgmt-Full-20261021-153536\\batch-2-20261021-153536.md"
+        ]
+      }
+    },
+    {
+      "step": "kb_tags_list",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"tags\": [\"Toolformer\", \"\\u5de5\\u5177\\u8c03\\u7528\", \"function calling\", \"\\u81ea\\u76d1\\u7763\\u5b66\\u4e60\", \"API\\u8c03\\u7528\", \"Reflexi"
+      }
+    },
+    {
+      "step": "kb_tags_cleanup_dry_run",
+      "ok": true,
+      "note": "dry run must not delete anything",
+      "detail": {
+        "head": "{\"success\": true, \"dry_run\": true, \"total_tags\": 800, \"checked\": 800, \"referenced\": 517, \"orphan\": 283, \"orphan_tags\": [{\"tag\": \"Toolformer\", \"refs\": 0, \"reason\": \"unreferenced\"}, {\"tag\": \"工具调用\", \"ref"
+      }
+    },
+    {
+      "step": "kb_graph_build",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "status": "done"
+      }
+    },
+    {
+      "step": "kb_graph_stats",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"stats\": {\"node_count\": 921, \"edge_count\": 5582, \"doc_count\": 435, \"kb_count\": 20, \"tag_count\": 466, \"relation_by_reason\": {\"shared_tag\": 2787"
+      }
+    },
+    {
+      "step": "kb_graph_kb_overview",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"overview\": {\"kb_id\": \"3ea04dd5-4371-4c01-909e-e73beee6e9f1\", \"doc_count\": 2, \"sub_kbs\": [], \"tag_distribution\": [], \"related_kbs\": [], \"top_d"
+      }
+    },
+    {
+      "step": "kb_graph_document_related",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"related\": [{\"graph_doc_id\": \"doc::ZZ-Mgmt-Full-20261021-153536/upload-src.md\", \"path\": \"ZZ-Mgmt-Full-20261021-153536/upload-src.md\", \"name\": "
+      }
+    },
+    {
+      "step": "kb_graph_central_documents",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"documents\": [{\"gid\": \"doc::ZZ-Mgmt-Full-20261021-153536/upload-src.md\", \"name\": \"upload-src.md\", \"path\": \"ZZ-Mgmt-Full-20261021-153536/upload"
+      }
+    },
+    {
+      "step": "kb_graph_cross_kb_documents",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"documents\": [{\"graph_doc_id\": \"doc::玄鸟演示库-125906/玄鸟-9飞控系统第三阶段试验报告.md\", \"path\": \"玄鸟演示库-125906/玄鸟-9飞控系统第三阶段试验报告.md\", \"name\": \"玄鸟-9飞控系统第三阶段试验报告."
+      }
+    },
+    {
+      "step": "kb_graph_document_paths",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"result\": {\"doc_a\": \"mgmt-fixture-renamed-20261021-153536.md\", \"doc_b\": \"mgmt-fixture-renamed-20261021-153536.md\", \"paths\": [], \"path_count\": "
+      }
+    },
+    {
+      "step": "kb_search_stats",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"stats\": {\"kb_id\": \"3ea04dd5-4371-4c01-909e-e73beee6e9f1\", \"collection\": \"kb_3ea04dd5-4371-4c01-909e-e73beee6e9f1\", \"chunk_count\": 2}}"
+      }
+    },
+    {
+      "step": "experience_create",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "id": "exp-2b018e18da41"
+      }
+    },
+    {
+      "step": "experience_list",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "step": "experience_read",
+      "ok": true,
+      "note": "",
+      "detail": {}
+    },
+    {
+      "step": "experience_summary",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"summary\": {\"total\": 1, \"by_category\": {\"tip\": 1}, \"by_severity\": {\"normal\": 1}, \"total_applied\": 0, \"avg_rating\": 0.0, \"unrated_count\": 1, \"r"
+      }
+    },
+    {
+      "step": "experience_check_stale",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "{\"success\": true, \"kb_id\": \"3ea04dd5-4371-4c01-909e-e73beee6e9f1\", \"total\": 1, \"fresh\": 1, \"stale\": 0, \"orphan\": 0, \"stale_experiences\": [], \"orphan_experiences"
+      }
+    },
+    {
+      "step": "experience_delete",
+      "ok": true,
+      "note": "",
+      "detail": {}
+    },
+    {
+      "step": "soul_list",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "head": "[{\"kb_id\": \"aa0fec78-6639-41f7-9fd9-65e0e8fc1a45\", \"name\": \"soul-e2e-tester-024115\", \"summary\": \"研究型 AI 人格,身份为严谨的领域研究者与知识策展人,专长通用领域知识检索、证据溯源与知识策展。思维结构"
+      }
+    },
+    {
+      "step": "kb_delete",
+      "ok": true,
+      "note": "",
+      "detail": {}
+    },
+    {
+      "step": "cleanup_verified",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "kb_count": 21
+      }
+    }
+  ],
+  "pass": true
+}

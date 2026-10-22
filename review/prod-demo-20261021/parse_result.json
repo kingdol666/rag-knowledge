@@ -1,0 +1,75 @@
+{
+  "timestamp_utc": "2026-10-21T05:22:55.516512+00:00",
+  "kb": "ZZ-Parse-Test-20261021-132255",
+  "pdf": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\.bench_backup_20260917\\data\\en\\wind-energy.pdf",
+  "steps": [
+    {
+      "step": "kb_create",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "kb_id": "df331e00-6b7d-461b-9cff-956592a14777"
+      }
+    },
+    {
+      "step": "parse_doc_submitted",
+      "ok": true,
+      "note": "MinerU spawns on demand; cold start 1-2 min",
+      "detail": {
+        "task_id": "706b9ce37c1f",
+        "head": "{\"success\": true, \"status\": \"running\", \"message\": \"parsing task is running; call parse_task_status to get the result\", \"task_id\": \"706b9ce37c1f\", \"kind\": \"parse_doc\", \"file_path\": \"D:\\\\codes\\\\ClaudeGP"
+      }
+    },
+    {
+      "step": "parse_finished",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "status": "done",
+        "error": "None"
+      }
+    },
+    {
+      "step": "kb_doc_save_parsed",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "path": "ZZ-Parse-Test-20261021-132255\\wind-energy.md",
+        "head": "{\"success\": true, \"savedCount\": 1, \"files\": [{\"id\": \"ce04f531-160a-4767-b599-274a4fc6a88e\", \"name\": \"wind-energy.md\", \"parentId\": \"df331e00-6b7d-461b-9cff-956592a14777\", \"path\": \"ZZ-Parse-Test-2026102"
+      }
+    },
+    {
+      "step": "kb_index_document",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "total_chunks": 6
+      }
+    },
+    {
+      "step": "retrieval_after_parse",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "hits": 3,
+        "top_score": 0.6560172438621521,
+        "head": "## Wind Energy: From Kinetic Energy to the Grid\n\nWind turbines convert the kinetic energy of moving air into electricity. The theoretical maximum effi"
+      }
+    },
+    {
+      "step": "doc_read_markdown",
+      "ok": true,
+      "note": "",
+      "detail": {
+        "chars": 733
+      }
+    },
+    {
+      "step": "cleanup",
+      "ok": true,
+      "note": "",
+      "detail": {}
+    }
+  ],
+  "pass": true
+}

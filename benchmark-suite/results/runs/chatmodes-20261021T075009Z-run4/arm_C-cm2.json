@@ -1,0 +1,34 @@
+{
+ "mode": "C",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 222.4,
+ "duration_ms": 220696,
+ "turns": 9,
+ "cost_usd": 0.6809896400000001,
+ "session_id": "d292758d-1e60-4c1b-bf37-726dbf85ed20",
+ "answer_chars": 1783,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": true,
+ "gate_passed": false,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：** 在本库中，与该问题直接对应的核心文献只有一篇，即 Nwosu 等人的《Predicting Stroke from Electronic Health Records》。该文基于 29,072 条 EHR 记录，用 PCA 分析风险因素之间的相关性，并以神经网络模型取得最佳指标（75.02%，决策树 74.31%、随机森林 74.53%）；由于 10 个患者属性彼此相关性低，无法压缩特征空间，必须全部输入模型。\n\n### 一、关键风险因素（来自文献的直接证据，可信级别 P0）\n- **公认的主要危险因素**：作者引证此前的研究，“Studies in healthcare like [6]-[8] have identified **high blood pressure, diabetes and heart disease** as major risk factors responsible for stroke attack in an individual.”\n- **EHR 中实际使用的 10 个输入属性**（来自 McKinsey/Kaggle healthcare hackathon 数据集，29,072 例）：性别、年龄、高血压（二元）、心脏病（二元）、婚姻状况、职业类型、居住地（城镇、乡村）、**平均血糖水平**、**BMI**、**吸烟状态**",
+ "gate": {
+  "passed": false,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": false
+  }
+ }
+}

@@ -1,0 +1,160 @@
+{
+ "rows": [
+  {
+   "mode": "A",
+   "qid": "cm1",
+   "expect": "found",
+   "http": 200,
+   "success": true,
+   "wall_s": 182.9,
+   "turns": 4,
+   "cost_usd": 0.21181670000000002,
+   "session_id": "9a3b9e1c-547a-48de-9c3e-be47934b6ee1",
+   "answer_chars": 1707,
+   "answer_markers_hit": [
+    "instructds"
+   ],
+   "refusal": false,
+   "gate_passed": true,
+   "error": ""
+  },
+  {
+   "mode": "A",
+   "qid": "cm2",
+   "expect": "found",
+   "http": 200,
+   "success": true,
+   "wall_s": 208.2,
+   "turns": 6,
+   "cost_usd": 0.23579429999999998,
+   "session_id": "b2fbacd4-0e2b-4e1d-92d0-1e9eaaed080b",
+   "answer_chars": 1346,
+   "answer_markers_hit": [
+    "stroke"
+   ],
+   "refusal": false,
+   "gate_passed": true,
+   "error": ""
+  },
+  {
+   "mode": "A",
+   "qid": "cm3",
+   "expect": "refusal",
+   "http": 200,
+   "success": true,
+   "wall_s": 217.7,
+   "turns": 7,
+   "cost_usd": 0.2634894,
+   "session_id": "e19de410-24a1-4ec6-b427-fb0fc5b7a1ec",
+   "answer_chars": 1288,
+   "answer_markers_hit": [],
+   "refusal": true,
+   "gate_passed": true,
+   "error": ""
+  },
+  {
+   "mode": "B",
+   "qid": "cm1",
+   "expect": "found",
+   "http": 200,
+   "success": true,
+   "wall_s": 335.1,
+   "turns": 11,
+   "cost_usd": 0.49817140000000004,
+   "session_id": "0d522d7b-7b1c-4b12-a24e-29114478289a",
+   "answer_chars": 1563,
+   "answer_markers_hit": [
+    "instructds"
+   ],
+   "refusal": false,
+   "gate_passed": true,
+   "error": ""
+  },
+  {
+   "mode": "B",
+   "qid": "cm2",
+   "expect": "found",
+   "http": 200,
+   "success": true,
+   "wall_s": 242.5,
+   "turns": 6,
+   "cost_usd": 0.3330648,
+   "session_id": "e71fd266-4f62-434d-8032-b1fde42ce068",
+   "answer_chars": 1462,
+   "answer_markers_hit": [
+    "stroke"
+   ],
+   "refusal": false,
+   "gate_passed": true,
+   "error": ""
+  },
+  {
+   "mode": "B",
+   "qid": "cm3",
+   "expect": "refusal",
+   "http": 200,
+   "success": true,
+   "wall_s": 172.0,
+   "turns": 8,
+   "cost_usd": 0.29026209999999997,
+   "session_id": "8b701a3b-9b41-452d-b4ed-a19cdd0ce016",
+   "answer_chars": 1330,
+   "answer_markers_hit": [],
+   "refusal": true,
+   "gate_passed": true,
+   "error": ""
+  },
+  {
+   "mode": "C",
+   "qid": "cm1",
+   "expect": "found",
+   "http": 200,
+   "success": true,
+   "wall_s": 104.0,
+   "turns": 4,
+   "cost_usd": 0.19043204,
+   "session_id": "787f4b5f-b97b-4ded-b0b5-ad59d4223219",
+   "answer_chars": 1479,
+   "answer_markers_hit": [
+    "instructds"
+   ],
+   "refusal": false,
+   "gate_passed": true,
+   "error": ""
+  },
+  {
+   "mode": "C",
+   "qid": "cm2",
+   "expect": "found",
+   "http": 200,
+   "success": true,
+   "wall_s": 222.4,
+   "turns": 9,
+   "cost_usd": 0.6809896400000001,
+   "session_id": "d292758d-1e60-4c1b-bf37-726dbf85ed20",
+   "answer_chars": 1783,
+   "answer_markers_hit": [
+    "stroke"
+   ],
+   "refusal": true,
+   "gate_passed": false,
+   "error": ""
+  },
+  {
+   "mode": "C",
+   "qid": "cm3",
+   "expect": "refusal",
+   "http": 200,
+   "success": true,
+   "wall_s": 100.5,
+   "turns": 6,
+   "cost_usd": 0.15303424000000002,
+   "session_id": "3164e637-ca9f-4c59-a996-4a4c46c12c3a",
+   "answer_chars": 1786,
+   "answer_markers_hit": [],
+   "refusal": true,
+   "gate_passed": true,
+   "error": ""
+  }
+ ]
+}

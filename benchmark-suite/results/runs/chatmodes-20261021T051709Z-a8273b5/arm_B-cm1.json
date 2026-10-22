@@ -1,0 +1,32 @@
+{
+ "mode": "B",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 188.6,
+ "duration_ms": 186978,
+ "turns": 7,
+ "cost_usd": 0.29930703999999997,
+ "session_id": "2a43bcc4-5b1e-4dd6-abe7-49928ca0db0b",
+ "answer_chars": 1832,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**InstructDS 生成高质量 query 型对话摘要数据的关键在于三步合成流程：以已有摘要为锚点生成查询、用文本与语义双重过滤提质、再由摘要而非对话生成基于查询的摘要，三步合起来把三元组质量从 45% 提升到 75%。**\n\n## 三步合成流水线（论文 §3.2）\n\n1. **摘要锚定查询生成（summary-anchored query generation）**\n   用 **Flan-T5-XL**（论文称 model X，训练过 Quoref、MC-TACO、CosmosQA 等问答生成数据）针对每条已有的「对话–摘要」对生成 **5 个候选查询**。模板为：\"Generate an answerable and specific question based on the following context. Context: ${Summary}\"——锚定在**完整摘要**而非原始对话上，避免从冗长噪声对话里硬挖问题。\n\n2. **查询过滤与后处理（query filtering）——质量提升的核心**\n   - **文本过滤**：用 model X 作二元分类器判断可答性，模板：\"Is the question fully answerable from the context without any guessing, yes or no?\"。典型剔除如 \"",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": true
+  }
+ }
+}

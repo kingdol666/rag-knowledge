@@ -1,0 +1,75 @@
+{
+  "timestamp_utc": "2026-10-22T14:53:30.822027+00:00",
+  "sections": {
+    "agent_chat": {
+      "wall_s": 0.0,
+      "harness_ran": false,
+      "kb_named": false,
+      "shape_head": "{\"http_error\": 404, \"body\": \"{\\\"detail\\\":\\\"Not Found\\\"}\"}"
+    },
+    "mgmt_smoke": {
+      "steps": [
+        {
+          "step": "kb_create",
+          "ok": true,
+          "detail": null
+        },
+        {
+          "step": "kb_doc_create",
+          "ok": true,
+          "detail": null
+        },
+        {
+          "step": "vector_search_hit",
+          "ok": true,
+          "detail": {
+            "top": 0.6831
+          }
+        },
+        {
+          "step": "rename_inline_hygiene",
+          "ok": true,
+          "detail": {
+            "new": 1,
+            "old": 0
+          }
+        },
+        {
+          "step": "batch_index_delete",
+          "ok": true,
+          "detail": null
+        },
+        {
+          "step": "tags_dry_run",
+          "ok": true,
+          "detail": null
+        },
+        {
+          "step": "cleanup_zero_residual",
+          "ok": true,
+          "detail": null
+        }
+      ],
+      "pass": true
+    },
+    "librarian": {
+      "wall_s": 47.8,
+      "tools": [
+        "mcp__kb-mcp__kb_list",
+        "mcp__kb-mcp__kb_get_documents",
+        "mcp__kb-mcp__kb_get_documents",
+        "mcp__kb-mcp__kb_get_documents",
+        "mcp__kb-mcp__kb_get_documents",
+        "mcp__kb-mcp__kb_get_documents",
+        "mcp__kb-mcp__kb_get_documents",
+        "mcp__kb-mcp__kb_laya_judge",
+        "mcp__kb-mcp__kb_doc_read",
+        "mcp__kb-mcp__kb_doc_read"
+      ],
+      "gold_hit": true,
+      "lane_discipline": true,
+      "answer_chars": 1214,
+      "answer_head": "**结论：InstructDS 采用「以参考摘要为锚（summary-anchored）」三步 LLM 合成管线批量生成 query-dialogue-summary（QDS）三元组，再用 Flan-T5-XL 做多用途指令微调，从而产出高质量、贴合用户查询的对话摘要。**\n\n**三步合成（§3.2）**\n1. **摘要锚定查询生成**：对每个 dialogue-summary 对，用 Flan-T5-XL（文中称 model X，已受 Quoref/CosmosQA 等问答生成训练）以*完整摘要*为条件生成 **5 个候选 query**。选摘要而非对话作锚点，因为摘要更凝练、结构化，生成质"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+ "mode": "C",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 167.0,
+ "duration_ms": 165497,
+ "turns": 7,
+ "cost_usd": 0.35204917999999996,
+ "session_id": "6997cec1-08ab-44aa-bc3c-521f48c4c662",
+ "answer_chars": 1918,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：** 在库内检索到的文献中，唯一直接回答该问题的是 Nwosu et al.《Predicting Stroke from Electronic Health Records》（arXiv 1904.11280）：该研究用 EHR 的 10 个患者属性预测卒中，三种分类器中多层感知机（神经网络）表现最好，1000 次重复实验平均准确率为 **75.02%**，随机森林为 **74.53%**，决策树为 **74.31%**；三个模型性能显著重叠（[P0 直接证据]）。\n\n**1. 研究设置（引文）**\n- 数据：McKinsey 通过 Kaggle 发布的 EHR 数据集，**29072 条记录、12 个属性**；删除患者 ID 后，剩 **10 个输入特征**，外加 1 个二值卒中标签。\n- 类别极度不平衡：**“Out of 29072 medical records, only 548 records belong to patients who suffered from stroke”**（仅 1.9%）。因此该研究采用随机下采样得到 **548+548=1096** 的平衡集，按 70/30 划分，以准确率作为评价指标。\n\n**2. 关键风险因素及影响**\n- 文献综述确定的**主要风险因素**：**高血压、糖尿病、心脏病**（“Studies in heal",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": true
+  }
+ }
+}

@@ -1,0 +1,31 @@
+{
+ "mode": "C",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 100.5,
+ "duration_ms": 99141,
+ "turns": 6,
+ "cost_usd": 0.15303424000000002,
+ "session_id": "3164e637-ca9f-4c59-a996-4a4c46c12c3a",
+ "answer_chars": 1786,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**该库中不存在关于 “Herbert-Moulton collider benchmark” 的任何内容 —— 未找到相关证据，且该名称在库内无任何字面或语义匹配；无法据此回答其如何量化粒子物理实验中的探测器漂移。**\n\n## 检索事实\n\n**检索库**：`计算机与人工智能`（kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`），共 **131 篇文档 / 9 个主题分组**。\n\n**已执行的三次检索及命中情况**：\n\n| 检索 | 参数 | 命中 | 结果性质 |\n|---|---|---|---|\n| `kb_search_two_stage` | query=\"Herbert-Moulton collider benchmark detector drift\"，top_k=20 | 20 条候选（stage2 返回 5） | 全部为**关键词/图谱噪声**：MCGS-SLAM 多相机建图、Bitvector 查询优化、精神分裂神经网络综述等，无一条涉及对撞机 |\n| `kb_search_vector` | query=\"collider detector drift calibration benchmark particle physics\"，top_k=20 | 20 条 | 最高分仅 **0.539**（Vision-Flan ",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

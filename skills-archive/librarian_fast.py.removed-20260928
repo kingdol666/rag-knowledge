@@ -1,0 +1,561 @@
+#!/usr/bin/env python3
+"""librarian_fast — 逐级检索(Lane B)单命令快速路径. [REMOVED 2026-09-28 — archived copy]
+
+把 SKILL 的 L0→L6 编排固化为一次调用: 目录分类 → 描述清单 → 目录信号(修正分词)
+→ 并行读取(stdio 流水线) → Laya 逐段判卷(yes 全收, fail-closed) → 零信号文档头部
+内容探查补召 → retain_docs 保留视图 + 分数降序轮转证据包。全程 trace.jsonl 可审计。
+
+契约说明: 判卷层与 complete_recall/jev_filter 逐字节一致(同一 run_manifest);
+所有 ≥threshold 幸存段全部落盘(survivors_summary/scores), 保留视图只决定"谁进
+最终证据包", 逐出文档带分数在 evicted 里可查 — 引擎判决仍是最终裁决, 无剪枝。
+
+用法(在仓库根目录):
+  backend/.venv/Scripts/python.exe \
+    .claude/skills/knowledgebase-librarian/scripts/librarian_fast.py \
+    --query "问题..." [--shelves 书架1,书架2] [--budget 35] \
+    [--outdir 输出目录] [--json]
+
+不指定 --shelves 时按 classify_kbs 自动保留 relevant+possible 书架(complete 模式)。
+stdout 输出紧凑摘要(人类可读); --json 时输出完整结果 JSON。
+
+=== ARCHIVE NOTE (2026-09-28) ===
+This end-to-end script was removed from the knowledgebase-librarian skill because
+it let harnesses shortcut the skill contract: the agent never executed L0-L6 via
+MCP tools, and the script self-fetched the MCP auth token from .env /
+storage/loop-auth.json (token scraping = governance bypass). The live skill now
+mandates step-by-step MCP tool execution with kb_laya_judge as the judging
+surface. This file is a byte-archive of the removed implementation; the
+equivalent seven-layer logic also survives in review/librarian-opt-20260928/.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+import threading
+import time
+from concurrent.futures import Future, ThreadPoolExecutor
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+
+def _repo_root() -> Path:
+    for cand in SCRIPT_DIR.parents:
+        if (cand / "kb-mcp").is_dir() and (cand / "backend").is_dir():
+            return cand
+    return SCRIPT_DIR.parents[3]
+
+
+REPO = _repo_root()
+sys.path.insert(0, str(SCRIPT_DIR))
+
+import complete_recall as cr  # noqa: E402
+import jev_filter  # noqa: E402
+
+
+def _ensure_laya_env() -> None:
+    """Re-exec under backend/.venv (Laya + GPU torch) unless already there."""
+    laya_py = REPO / "backend" / ".venv" / "Scripts" / "python.exe"
+    if not laya_py.exists():
+        laya_py = REPO / "backend" / ".venv" / "bin" / "python"
+    if not laya_py.exists():
+        return
+    resolved = laya_py.resolve()
+    if Path(sys.executable).resolve() == resolved:
+        return
+    ret = subprocess.run([str(resolved), str(Path(__file__).resolve()), *sys.argv[1:]],
+                         shell=False)
+    sys.exit(ret.returncode)
+
+
+def _auth_token() -> str:
+    if os.environ.get("MCP_AUTH_TOKEN"):
+        return os.environ["MCP_AUTH_TOKEN"]
+    for rel in ("storage/loop-auth.json",):
+        p = REPO / rel
+        if p.exists():
+            try:
+                tok = json.loads(p.read_text(encoding="utf-8")).get("token", "")
+                if tok:
+                    return tok
+            except Exception:
+                pass
+    env = REPO / ".env"
+    if env.exists():
+        for line in env.read_text(encoding="utf-8").splitlines():
+            if line.startswith("MCP_AUTH_TOKEN="):
+                return line.split("=", 1)[1].strip()
+    return ""
+
+
+class TraceLog:
+    def __init__(self, path: Path):
+        self.path = path
+        self._lock = threading.Lock()
+        self.t0 = time.perf_counter()
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+    def event(self, tier: str, event: str, **kw) -> None:
+        rec = {"t": round(time.perf_counter() - self.t0, 3), "tier": tier, "event": event}
+        rec.update({k: (v if isinstance(v, (int, float, bool, list)) else str(v)[:220])
+                    for k, v in kw.items()})
+        with self._lock:
+            with self.path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+
+class PipelinedMcp:
+    """单 stdio 连接上的并发 MCP 客户端(服务端为 asyncio FastMCP, 按 id 分发)。"""
+
+    def __init__(self) -> None:
+        env = dict(os.environ)
+        env.setdefault("PYTHONUTF8", "1")
+        env.setdefault("MCP_AUTH_TOKEN", _auth_token())
+        self.proc = subprocess.Popen(
+            ["uv", "run", "--directory", "kb-mcp", "python", "server.py"],
+            cwd=str(REPO), env=env,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL, text=True, encoding="utf-8", bufsize=1)
+        self._futures: dict[int, Future] = {}
+        self._lock = threading.Lock()
+        self._wlock = threading.Lock()
+        self._id = 0
+        self._reader = threading.Thread(target=self._read_loop, daemon=True)
+        self._reader.start()
+        self._initialize()
+
+    def _read_loop(self) -> None:
+        for raw in self.proc.stdout:
+            line = raw.strip()
+            if not line:
+                continue
+            try:
+                msg = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            mid = msg.get("id")
+            if mid is None:
+                continue
+            with self._lock:
+                fut = self._futures.pop(mid, None)
+            if fut is None:
+                continue
+            if "error" in msg:
+                fut.set_exception(RuntimeError(f"MCP error: {msg['error']}"))
+            else:
+                fut.set_result(msg["result"])
+
+    def _send(self, obj: dict) -> None:
+        with self._wlock:
+            self.proc.stdin.write(json.dumps(obj, ensure_ascii=False) + "\n")
+            self.proc.stdin.flush()
+
+    def _initialize(self) -> None:
+        with self._lock:
+            self._id += 1
+            mid = self._id
+        fut = Future()
+        with self._lock:
+            self._futures[mid] = fut
+        self._send({"jsonrpc": "2.0", "id": mid, "method": "initialize",
+                    "params": {"protocolVersion": "2024-11-05", "capabilities": {},
+                               "clientInfo": {"name": "librarian-fast", "version": "1.0"}}})
+        fut.result(timeout=120)
+        self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
+
+    def call(self, name: str, arguments: dict | None = None, timeout: float = 300.0) -> dict:
+        with self._lock:
+            self._id += 1
+            mid = self._id
+            fut = Future()
+            self._futures[mid] = fut
+        self._send({"jsonrpc": "2.0", "id": mid, "method": "tools/call",
+                    "params": {"name": name, "arguments": arguments or {}}})
+        result = fut.result(timeout=timeout)
+        if result.get("isError"):
+            raise RuntimeError(f"tool {name} error: {json.dumps(result)[:300]}")
+        for block in result.get("content", []):
+            if block.get("type") == "text":
+                try:
+                    return json.loads(block["text"])
+                except json.JSONDecodeError:
+                    return {"raw": block["text"]}
+        return {}
+
+    def close(self) -> None:
+        try:
+            self.proc.stdin.close()
+            self.proc.terminate()
+            self.proc.wait(timeout=10)
+        except Exception:
+            self.proc.kill()
+
+
+def _terms_opt(value: str) -> set:
+    """目录重叠分词: 拆连字符/下划线复合词 + CJK 二元组(修 2011.07200 类漏配)。"""
+    text = str(value or "").lower()
+    latin: set = set()
+    for run in re.findall(r"[a-z0-9][a-z0-9_.\-]{1,}", text):
+        for part in re.split(r"[_.\-]+", run):
+            part = part.strip(".'")
+            if len(part) >= 2 and part not in cr._STOP:
+                latin.add(part)
+    cjk: set = set()
+    for run in re.findall(r"[\u4e00-\u9fff]{2,}", text):
+        if len(run) <= 3:
+            cjk.add(run)
+        else:
+            cjk.update(run[i:i + 2] for i in range(len(run) - 1))
+    return latin | cjk
+
+
+def run_fast(query: str, shelves: list[str] | None, outdir: Path, *,
+             budget: int = 35, head_budget: int = 20, peek_cap: int = 48,
+             read_window: int = 8, retain_margin: float = 0.05,
+             top_k_floor: int = 3, max_kept: int = 18,
+             pack_chars: int = 40_000, max_doc_chars: int = 20_000) -> dict:
+    outdir.mkdir(parents=True, exist_ok=True)
+    tr = TraceLog(outdir / "trace.jsonl")
+    tr.event("L0", "start", query=query, shelves=shelves or "(auto: relevant+possible)")
+    t: dict[str, float] = {"L0": 0.0, "L2": 0.0, "L3": 0.0, "L4": 0.0,
+                           "L5": 0.0, "L5b": 0.0, "L6": 0.0}
+
+    def key_of(d: dict) -> tuple[str, str]:
+        return (str(d.get("kb_id")), str(d.get("doc_path")))
+
+    docs_all: list[dict] = []
+    chosen: list[dict] = []
+    read_docs: list[dict] = []
+    peek_docs: list[dict] = []
+    promoted: list[dict] = []
+    read_plan: list[tuple[dict, str, str]] = []
+    peek_stats = {"peeked": 0, "promoted": 0, "promote_cut": None}
+    mc = PipelinedMcp()
+    try:
+        t["L0"] = time.perf_counter()
+        kbs = mc.call("kb_list", {"lightweight": True}, timeout=120).get("catalog") or []
+        classified = cr.classify_kbs(query, kbs)
+        for k in classified:
+            tr.event("L0", "kb_classified", kb=str(k.get("name")),
+                     status=k.get("catalog_status"), overlap=k.get("query_overlap"))
+        if shelves:
+            chosen = [k for k in classified if str(k.get("name")) in set(shelves)]
+        else:
+            chosen = [k for k in classified
+                      if k.get("catalog_status") in {"relevant", "possible"}]
+        t["L0"] = time.perf_counter() - t["L0"]
+        tr.event("L0", "done", seconds=round(t["L0"], 2),
+                 chosen=[str(k.get("name")) for k in chosen])
+
+        t["L2"] = time.perf_counter()
+        for k in chosen:
+            kb_id = k.get("kb_id") or k.get("name")
+            rows = mc.call("kb_get_documents", {"lightweight": True, "kb_id": kb_id},
+                           timeout=180).get("catalog") or []
+            for d in rows:
+                docs_all.append({**d, "kb_id": kb_id, "kb_name": k.get("name")})
+            tr.event("L2", "shelf_docs", kb=str(k.get("name")), docs=len(rows))
+        t["L2"] = time.perf_counter() - t["L2"]
+        tr.event("L2", "done", seconds=round(t["L2"], 2), docs=len(docs_all))
+
+        t["L3"] = time.perf_counter()
+        qterms = _terms_opt(query)
+        sibs: dict[str, list[str]] = {}
+        for d in docs_all:
+            sibs.setdefault(str(d.get("kb_id")), []).append(str(d.get("description") or ""))
+        for d in docs_all:
+            blob = f"{d.get('name', '')} {d.get('description', '')}"
+            d["overlap"] = len(qterms & _terms_opt(blob)) if qterms else 0
+            trusted, reasons = cr._metadata_trust(str(d.get("description") or ""),
+                                                  sibs[str(d.get("kb_id"))])
+            d["description_trust"] = "trusted" if trusted else "untrusted"
+            d["trust_reasons"] = reasons
+        overlaps = sorted((d for d in docs_all if d["overlap"] > 0), key=lambda x: -x["overlap"])
+        for d in overlaps:
+            if len([1 for _, _, kind in read_plan if kind == "full"]) >= budget:
+                break
+            read_plan.append((d, f"overlap={d['overlap']}", "full"))
+        picked = {key_of(d) for d, _, _ in read_plan}
+        stems: set = set()
+        for d, _, kind in read_plan:
+            if kind == "full":
+                m = re.search(r"^(.*) \(part \d+ of \d+\)",
+                              str(d.get("doc_path") or "").replace("\\", "/"))
+                if m:
+                    stems.add(m.group(1))
+        for d in docs_all:
+            m = re.search(r"^(.*) \(part \d+ of \d+\)",
+                          str(d.get("doc_path") or "").replace("\\", "/"))
+            if m and m.group(1) in stems and key_of(d) not in picked:
+                if len([1 for _, _, kind in read_plan if kind == "full"]) >= budget:
+                    break
+                read_plan.append((d, "stem_completion", "full"))
+                picked.add(key_of(d))
+        heads = 0
+        for d in docs_all:
+            if d["description_trust"] == "untrusted" and key_of(d) not in picked:
+                if heads >= head_budget:
+                    break
+                read_plan.append((d, "untrusted_head", "head"))
+                picked.add(key_of(d))
+                heads += 1
+        t["L3"] = time.perf_counter() - t["L3"]
+        for d, reason, kind in read_plan:
+            tr.event("L3", "read_planned", doc=str(d.get("doc_path")), reason=reason, kind=kind)
+        tr.event("L3", "done", seconds=round(t["L3"], 2), planned=len(read_plan),
+                 zero_signal_unscanned=len(docs_all) - len(read_plan))
+
+        t["L4"] = time.perf_counter()
+
+        def do_read(item: tuple[dict, str, str]) -> dict:
+            d, reason, kind = item
+            t0 = time.perf_counter()
+            r = mc.call("kb_doc_read", {"kb_id": d["kb_id"], "doc_path": d["doc_path"],
+                                        "max_chars": max_doc_chars if kind == "full" else 600},
+                        timeout=180)
+            lat = time.perf_counter() - t0
+            content = str(r.get("content") or "")
+            tr.event("L4", "doc_read", doc=str(d.get("doc_path")), kind=kind,
+                     reason=reason, chars=len(content), latency_s=round(lat, 3),
+                     truncated=bool(r.get("truncated")))
+            return {**d, "content": content, "truncated": bool(r.get("truncated")),
+                    "read_kind": kind, "read_reason": reason, "read_s": round(lat, 3)}
+
+        with ThreadPoolExecutor(max_workers=read_window) as pool:
+            read_docs = list(pool.map(do_read, read_plan))
+        t["L4"] = time.perf_counter() - t["L4"]
+        tr.event("L4", "done", seconds=round(t["L4"], 2), reads=len(read_docs),
+                 chars=sum(len(d["content"]) for d in read_docs))
+
+        unseen = [d for d in docs_all if key_of(d) not in picked][:peek_cap]
+        if unseen:
+            t0 = time.perf_counter()
+            with ThreadPoolExecutor(max_workers=read_window) as pool:
+                peek_docs = list(pool.map(
+                    lambda d: {**d, "content": str(mc.call(
+                        "kb_doc_read", {"kb_id": d["kb_id"], "doc_path": d["doc_path"],
+                                        "max_chars": 600}, timeout=180).get("content") or ""),
+                        "read_kind": "peek_head", "read_reason": "zero_signal_peek"}, unseen))
+            t["L5b"] = time.perf_counter() - t0
+            peek_stats["peeked"] = len(peek_docs)
+            tr.event("L5b", "heads_read", seconds=round(t["L5b"], 2), heads=len(peek_docs))
+    finally:
+        mc.close()
+
+    def judge(docs: list[dict], tag: str) -> dict:
+        manifest = {"query": query, "engine": "laya", "threshold": 0.5,
+                    "max_segment_chars": 3000, "max_evidence_chars": pack_chars,
+                    "knowledge_bases": [{"kb_id": k.get("kb_id") or k.get("name"),
+                                         "name": k.get("name"),
+                                         "description": k.get("description") or ""}
+                                        for k in chosen],
+                    "documents": docs}
+        run = cr.run_manifest(manifest)
+        jev = run["jev"]
+        tr.event(tag, "judging_instruction", criterion=jev.get("criterion"),
+                 instruction=jev_filter._laya_instruction(query, jev.get("criterion") or "evidence"),
+                 threshold=jev.get("threshold"), model=str(jev.get("model")))
+        for rec in jev.get("scores") or []:
+            tr.event(tag, "segment_verdict", candidate_id=rec.get("candidate_id"),
+                     doc=str(rec.get("doc_path")), score=rec.get("score"), kept=rec.get("kept"))
+        tr.event(tag, "done", candidates=jev.get("candidate_count"),
+                 scored=jev.get("scored_count"), survivors=len(jev.get("survivors") or []),
+                 real_engine=jev.get("real_engine"))
+        return run
+
+    t["L5"] = time.perf_counter()
+    run1 = judge(read_docs, "L5")
+    jev1 = run1["jev"]
+    t["L5"] = time.perf_counter() - t["L5"]
+    tr.event("L5", "phase_done", seconds=round(t["L5"], 2))
+
+    jev2 = None
+    if peek_docs:
+        t0 = time.perf_counter()
+        best1 = max((s.get("score") or 0.0) for s in (jev1.get("survivors") or [])) \
+            if jev1.get("survivors") else 0.0
+        promote_cut = max(0.5, round(best1 - retain_margin, 4))
+        peek_stats["promote_cut"] = promote_cut
+        crit = jev1.get("criterion") or jev_filter.criterion_for(query)
+        passed: list[tuple[float, dict]] = []
+        for d in peek_docs:
+            segs = cr.segment_document(d, max_chars=3000)
+            head_best = None
+            for s in segs:
+                try:
+                    sc, _meta = jev_filter.laya_score(query, s["text"], crit)
+                except Exception as exc:  # noqa: BLE001 — fail-closed
+                    tr.event("L5b", "peek_score_error", doc=str(d.get("doc_path")),
+                             error=str(exc))
+                    break
+                head_best = sc if head_best is None else max(head_best, sc)
+                if sc >= promote_cut:
+                    break
+            ok = head_best is not None and head_best >= promote_cut
+            tr.event("L5b", "peek_verdict", doc=str(d.get("doc_path")),
+                     head_best=head_best, promote_cut=promote_cut, promoted=ok)
+            if ok:
+                passed.append((head_best, d))
+        passed.sort(key=lambda x: -(x[0] or 0.0))
+        promoted = [d for _sc, d in passed[:6]]
+        for sc, d in passed:
+            if all(d is not p for p in promoted):
+                tr.event("L5b", "peek_promote_deferred", doc=str(d.get("doc_path")),
+                         head_best=sc, reason="promote_cap_6")
+        peek_stats["promoted"] = len(promoted)
+        if promoted:
+            mc = PipelinedMcp()
+            try:
+                with ThreadPoolExecutor(max_workers=read_window) as pool:
+                    promoted = list(pool.map(
+                        lambda d: {**d, "content": str(mc.call(
+                            "kb_doc_read", {"kb_id": d["kb_id"], "doc_path": d["doc_path"],
+                                            "max_chars": max_doc_chars},
+                            timeout=180).get("content") or ""),
+                            "read_kind": "full", "read_reason": "head_promoted"},
+                        promoted))
+            finally:
+                mc.close()
+            tr.event("L5b", "promoted_full_reads", docs=len(promoted))
+            t1 = time.perf_counter()
+            run2 = judge(promoted, "L5b")
+            jev2 = run2["jev"]
+            t["L5b"] = round(t["L5b"] + (time.perf_counter() - t1), 2)
+        tr.event("L5b", "phase_done", promoted=len(promoted), promote_cut=promote_cut)
+
+    t["L6"] = time.perf_counter()
+    survivors = list(jev1.get("survivors") or [])
+    score_rows = list(jev1.get("scores") or [])
+    if jev2 is not None:
+        survivors += list(jev2.get("survivors") or [])
+        score_rows += list(jev2.get("scores") or [])
+    real_engine = bool(jev1.get("real_engine")) and bool((jev2 or {}).get("real_engine", True))
+
+    doc_best: dict[tuple[str, str], dict] = {}
+    doc_segs: dict[tuple[str, str], int] = {}
+    for s in survivors:
+        k = (str(s.get("kb_id") or ""), str(s.get("doc_path") or ""))
+        sc = s.get("score")
+        doc_segs[k] = doc_segs.get(k, 0) + 1
+        if isinstance(sc, (int, float)):
+            best = doc_best.get(k)
+            if best is None or sc > best["score"]:
+                doc_best[k] = {"score": float(sc)}
+    overlap_of = {key_of(d): d.get("overlap", 0) for d in docs_all}
+    agreed = {k for k, ov in overlap_of.items() if ov >= 3} & set(doc_best)
+    ret = cr.retain_docs(doc_best, threshold=0.5, relative_margin=retain_margin,
+                         top_k_floor=top_k_floor, agreed_keys=agreed, max_kept=max_kept)
+    kept_keys = set(ret["kept_keys"])
+    for k in sorted(doc_best, key=lambda x: -(doc_best[x]["score"])):
+        tr.event("L6", "doc_retention", doc=k[1], best_score=doc_best[k]["score"],
+                 segments=doc_segs.get(k, 0), kept=k in kept_keys,
+                 signal=("agreement+content" if k in agreed else "content"))
+    by_doc: dict[tuple[str, str], list[dict]] = {}
+    for s in sorted(survivors, key=lambda s: -(s.get("score") or 0.0)):
+        k = (str(s.get("kb_id") or ""), str(s.get("doc_path") or ""))
+        if k in kept_keys:
+            by_doc.setdefault(k, []).append(s)
+    doc_order = sorted(by_doc, key=lambda k: -(doc_best.get(k, {}).get("score") or 0.0))
+    chunks: list[str] = []
+    used, pack_rows = 0, []
+    seen_fp: set = set()
+    round_idx = 0
+    while True:
+        added = False
+        for k in doc_order:
+            segs = by_doc.get(k) or []
+            if round_idx >= len(segs):
+                continue
+            s = segs[round_idx]
+            fp = str(s.get("text") or "")[:400]
+            if fp in seen_fp:
+                continue
+            seen_fp.add(fp)
+            src = str(s.get("doc_path") or s.get("candidate_id"))
+            sec = str(s.get("section_path") or "")
+            block = f"[{src + (' · ' + sec if sec else '')}]\n{str(s.get('text') or '').strip()}".strip()
+            if used + len(block) > pack_chars:
+                continue
+            chunks.append(("\n\n" if chunks else "") + block)
+            used += len(block)
+            pack_rows.append({"doc_path": src, "score": s.get("score"),
+                              "candidate_id": s.get("candidate_id")})
+            added = True
+        if not added:
+            break
+        round_idx += 1
+    t["L6"] = time.perf_counter() - t["L6"]
+    tr.event("L6", "done", seconds=round(t["L6"], 2), kept_docs=len(kept_keys),
+             pack_blocks=len(pack_rows), pack_chars=used)
+
+    evicted = [{"doc_path": k[1], "best_score": doc_best[k]["score"],
+                "segments": doc_segs.get(k, 0)}
+               for k in doc_best if k not in kept_keys]
+    result = {
+        "query": query, "shelves": shelves,
+        "chosen_shelves": [str(k.get("name")) for k in chosen],
+        "real_engine": real_engine, "status": jev1.get("status"),
+        "criterion": jev1.get("criterion"), "threshold": jev1.get("threshold"),
+        "phase_s": {k: round(v, 2) for k, v in t.items()},
+        "tier_counts": {"docs_listed": len(docs_all), "read_planned": len(read_plan),
+                        "docs_read": len(read_docs),
+                        "peeked_docs": peek_stats["peeked"],
+                        "promoted_docs": peek_stats["promoted"],
+                        "candidates": jev1.get("candidate_count"),
+                        "scored": jev1.get("scored_count") + ((jev2 or {}).get("scored_count") or 0),
+                        "survivors_all_yes": len(survivors),
+                        "retained_docs": len(kept_keys),
+                        "evicted_docs": len(evicted),
+                        "pack_blocks": len(pack_rows), "pack_chars": used},
+        "retention": ret, "evicted": evicted,
+        "promote_cut": peek_stats["promote_cut"],
+        "evidence_pack": "\n\n".join(chunks),
+        "pack_rows": pack_rows,
+        "survivors_summary": [{"doc_path": s.get("doc_path"), "score": s.get("score"),
+                               "candidate_id": s.get("candidate_id")} for s in survivors],
+    }
+    (outdir / "result.json").write_text(
+        json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
+    (outdir / "evidence_pack.txt").write_text(result["evidence_pack"], encoding="utf-8")
+    return result
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Librarian lane fast path (one command)")
+    ap.add_argument("--query", required=True)
+    ap.add_argument("--shelves", default="", help="逗号分隔书架名; 缺省=自动 relevant+possible")
+    ap.add_argument("--outdir", default="")
+    ap.add_argument("--budget", type=int, default=35)
+    ap.add_argument("--pack-chars", type=int, default=40_000)
+    ap.add_argument("--json", action="store_true", help="stdout 输出完整 JSON")
+    args = ap.parse_args()
+    _ensure_laya_env()
+
+    t0 = time.time()
+    shelves = [s.strip() for s in args.shelves.split(",") if s.strip()] or None
+    outdir = Path(args.outdir) if args.outdir else \
+        REPO / "review" / ("librarian-fast-" + time.strftime("%Y%m%d-%H%M%S"))
+    r = run_fast(args.query, shelves, outdir,
+                 budget=args.budget, pack_chars=args.pack_chars)
+    r["wall_s"] = round(time.time() - t0, 1)
+    tc = r["tier_counts"]
+    if args.json:
+        print(json.dumps(r, ensure_ascii=False, indent=1))
+        return 0
+    print(f"[librarian-fast] {r['wall_s']}s · shelves={r['chosen_shelves']}")
+    print(f"  tiers: listed {tc['docs_listed']} → planned {tc['read_planned']} → "
+          f"read {tc['docs_read']} (+peek {tc['peeked_docs']}, promoted {tc['promoted_docs']}) → "
+          f"judged {tc['scored']} segs → yes {tc['survivors_all_yes']} → "
+          f"retained {tc['retained_docs']} → pack {tc['pack_blocks']} blocks/{tc['pack_chars']}ch")
+    print(f"  engine real={r['real_engine']} criterion={r['criterion']} "
+          f"threshold={r['threshold']} · trace={outdir / 'trace.jsonl'}")
+    print(f"  evidence_pack → {outdir / 'evidence_pack.txt'}")
+    return 0 if r["real_engine"] else 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,21 @@
+{
+  "finding": "Live retrieval regression degraded 15/15 (2026-10-13, paper_report.json regression block) to 13/15 on 2026-10-21 15:35 fresh re-run of benchmark-suite/scripts/158_a_retrieval_regression.py. Healed to 15/15 the same day by the system's own kb_reindex(force=true).",
+  "failed_probes_before_repair": [
+    {"library": "生命科学与医学", "gold": "2604.01385", "symptom": "gold absent from top-40 even under a near-verbatim query"},
+    {"library": "工程与能源", "gold": "2207.08146", "symptom": "same"}
+  ],
+  "evidence_timeline": [
+    "2026-10-13 20:42: paper_report.json regression block records probes_pass 15/15",
+    "2026-10-14..20: heavy audit/test activity (git log, review/ workspaces); chroma_db segment files written in this window",
+    "2026-10-21 15:35: fresh probe re-run 13/15 (this run, run 4); run-3's same-morning '15/15' claim could not have been a fresh pass at 15:35 state and is reclassified as an artifact-reading, not a fresh re-run",
+    "2026-10-21 ~15:43: kb_reindex(force=true) on the two libraries: 53 docs/2879 chunks 55s + 39 docs/2164 chunks 40s, both _verify=ok",
+    "2026-10-21 15:46: probe re-run 15/15, both repaired golds at rank=1; artifact regenerated (committed 10-13 version remains in git history)"
+  ],
+  "root_cause_final": "NOT missing chunks and NOT path-form mismatch. Storage labels are uniformly backslash-form (the retrieval layer normalizes to forward slashes on return — verified post-repair: 2879/2879 and 2164/2164 backslash labels, and search results come back forward-slashed). Chunk counts and unique paths for the two golds are IDENTICAL before and after repair (179 chunks/3 parts; 86 chunks/2 parts). What changed is embedding freshness: a clean force reindex re-embeds every chunk with the current embedding service, and both golds jumped from absent-in-top-40 to rank=1. The stale embeddings that degraded those two docs' rankings most plausibly date from the 10-14..10-20 test window (partial re-indexes with a differing embedding state); the exact originating operation was not pinned. Run-3's report line '检索回归探针 15/15 当日复验' is corrected by this run: the honest live value this morning would already have been 13/15.",
+  "repair": {
+    "action": "kb_reindex(kb_id, force=true) per affected library (the documented maintenance remedy)",
+    "result": "15/15 probes pass; both repaired golds rank=1; collections rebuilt clean (single generation, uniform labels)",
+    "production_reading": "index drift is REAL but self-healable with one standard maintenance command; monitoring recommendation: run 158_a_retrieval_regression.py as a periodic health check (its exit code is CI-ready)"
+  },
+  "artifact_note": "Re-running 158_a_retrieval_regression.py overwrites benchmark-suite/results/a_retrieval_regression.json (committed record of 2026-10-13 20:42, 15/15). Git history preserves the committed version; the file now holds the post-repair fresh 15/15."
+}

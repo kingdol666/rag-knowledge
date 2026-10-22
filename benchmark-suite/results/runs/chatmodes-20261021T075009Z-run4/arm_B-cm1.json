@@ -1,0 +1,32 @@
+{
+ "mode": "B",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 335.1,
+ "duration_ms": 333679,
+ "turns": 11,
+ "cost_usd": 0.49817140000000004,
+ "session_id": "0d522d7b-7b1c-4b12-a24e-29114478289a",
+ "answer_chars": 1563,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：InstructDS 用「摘要锚定查询生成 → 双重过滤 → 基于查询生成摘要」三步合成 query-对话-摘要三元组 (QDS)，以 Flan-T5-XL 生成查询、再用摘要（而非原始对话）作为答案生成源，从而在几乎无人工标注下获得高质量指令微调数据。**\n\n**三步合成管线（论文 §3.2，part 1 of 4）**\n\n1. **摘要锚定查询生成**：借鉴 Self-Instruct，利用通用 LLM 的条件提问能力；具体用 Flan-T5-XL（文中称 model X，已 Quoref/MC-TACO/CosmosQA 等提问数据训练）**基于参考摘要**为每个对话-摘要对生成 **5 个候选查询**（模板见 Table 7）。\n2. **查询过滤（两道）**：\n   - **文本过滤**：以 model X 作二分类器判定\"可回答性\"，剔除无幻觉不可确答的查询（如 \"What will…/How would…\"），**消除约 45%**；\n   - **语义过滤**：用 **normalized BERTScore 相似度 > 0.65** 去重，保证多样性，**再消除约 50%**。\n3. **基于查询的摘要生成**：以「查询 + 完整摘要」为输入让 model X 产出 query-based summary。论文强调由**压缩摘要**生成比直接由对话生成更",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true,
+   "not_refusal": true
+  }
+ }
+}
