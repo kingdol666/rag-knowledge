@@ -67,12 +67,35 @@ def main() -> int:
     if args.docs_json:
         listing = json.loads(Path(args.docs_json).read_text(encoding="utf-8"))
     else:
-        listing = mcp("kb_get_documents", {"kb_id": args.kb_id, "lightweight": True})
+        # kb-mcp 预算门会把大书架切成页（truncated="budget_guard" + has_more）——
+        # 机侧消费必须跟随分页拿全，否则字面扫描覆盖面静默缩水。
+        listing = mcp("kb_get_documents", {"kb_id": args.kb_id, "lightweight": True, "page": 1})
+        docs_acc = list(listing.get("catalog") or [])
+        while listing.get("has_more"):
+            listing = mcp("kb_get_documents", {"kb_id": args.kb_id, "lightweight": True,
+                                               "page": int(listing.get("page", 1)) + 1})
+            docs_acc.extend(listing.get("catalog") or [])
+        listing = dict(listing)
+        listing["catalog"] = docs_acc
     if not listing.get("success"):
         print(json.dumps({"success": False, "error": listing.get("error", "kb_get_documents failed")},
                          ensure_ascii=False))
         return 1
     docs = listing.get("catalog") or []
+    # 子库容器条目（entry_type=sub_kb / 无 doc_id 的无后缀路径）是导航指针不是文档，
+    # kb_doc_read 必然失败——扫描前剔除，扫子库请对 sub_kb_id 单独跑一轮。
+    skipped_containers = [d.get("doc_path") for d in docs
+                          if d.get("entry_type") == "sub_kb" or not (d.get("doc_id") or d.get("file_id"))]
+    docs = [d for d in docs if d.get("entry_type") != "sub_kb" and (d.get("doc_id") or d.get("file_id"))]
+    if skipped_containers:
+        print(json.dumps({"note": f"skipped {len(skipped_containers)} sub-KB container entries — "
+                                  "run the scanner per sub-KB id to cover them"},
+                         ensure_ascii=False), file=sys.stderr)
+    partial_listing = bool(listing.get("has_more"))
+    if args.docs_json and listing.get("has_more"):
+        print(json.dumps({"warning": "input --docs-json is a truncated page (has_more=true) — "
+                                     "coverage is partial; omit --docs-json to let the scanner page itself"},
+                         ensure_ascii=False), file=sys.stderr)
 
     flags = 0 if args.regex else re.IGNORECASE
     patterns = [re.compile(t if args.regex else re.escape(t), flags) for t in args.terms]
@@ -106,6 +129,7 @@ def main() -> int:
     real_hits = [h for h in hits if h.get("count")]
     print(json.dumps({"kb_id": args.kb_id, "terms": args.terms,
                       "scanned": scanned, "hit_count": len(real_hits),
+                      "partial_listing": partial_listing,
                       "elapsed_s": round(time.time() - t0, 1),
                       "hits": hits}, ensure_ascii=False, indent=1))
     return 0

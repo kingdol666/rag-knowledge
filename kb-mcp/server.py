@@ -201,6 +201,48 @@ _KB_EXISTS_TTL = 60.0
 _KB_EXISTS_NEG_TTL = 5.0  # transient web flaps must not pin "not found" for a minute
 _kb_exists_cache: dict[str, tuple[float, bool]] = {}
 
+# ---- Catalog tool-return budget (hidden retrieval dependency, measured 2026-10-12) ----
+# Engines cap MCP tool results; oversized returns are persisted to disk with only a
+# 2KB preview passed to the model — the model then "sees" 2-3 docs of a 131-doc shelf
+# and false-refuses while the gold entry sat in the unsent tail (B×cm1,
+# review/retrieval-e2e-20261012/REPORT.md 发现1). Every catalog-shaped return is
+# therefore budget-guarded and paginated server-side: a response over the budget can
+# never reach the engine, no matter what the caller asked for.
+KB_TOOL_RETURN_BUDGET = max(4000, int(os.environ.get("KB_TOOL_RETURN_BUDGET", "28000")))  # chars
+KB_DOC_PAGE_SIZE = max(1, int(os.environ.get("KB_DOC_PAGE_SIZE", "40")))
+KB_ROOT_SENTINEL = "__root__"  # kb_list(parent_id="__root__") → top-level KBs only
+
+
+def _doc_group_key(doc_path: str) -> str:
+    """First-level shelf partition: the `prefix__` in a filename (nlp__2310.10981__… → nlp),
+    falling back to the first directory segment under the KB, else "(flat)"."""
+    p = (doc_path or "").replace("\\", "/")
+    name = p.rsplit("/", 1)[-1]
+    stem = re.sub(r"\.(md|markdown|txt)$", "", name, flags=re.IGNORECASE)
+    if "__" in stem:
+        return stem.split("__", 1)[0]
+    parts = p.split("/")
+    return parts[1] if len(parts) > 2 else "(flat)"
+
+
+def _page_slice(entries: list, page: int, page_size: int) -> tuple[list, dict]:
+    total = len(entries)
+    page_count = max(1, (total + page_size - 1) // page_size)
+    page = max(1, min(page, page_count))
+    start = (page - 1) * page_size
+    meta = {"total": total, "page": page, "page_count": page_count,
+            "page_size": page_size, "has_more": page < page_count}
+    return entries[start:start + page_size], meta
+
+
+def _budget_page_size(entries: list, requested: int) -> int:
+    """Clamp page_size so one page serializes under the tool budget (per-entry estimate)."""
+    if not entries:
+        return max(1, requested)
+    per = max(1, len(_j(entries[:8])) // min(8, len(entries)))
+    safe = max(1, (KB_TOOL_RETURN_BUDGET * 9 // 10) // per)
+    return max(1, min(requested, safe))
+
 
 def _kb_exists_cache_clear() -> None:
     _kb_exists_cache.clear()
@@ -311,15 +353,28 @@ async def health_check() -> str:
 # ============================================================
 
 @mcp.tool()
-async def kb_list(lightweight: bool = False) -> str:
-    """List all knowledge bases with id, name, description, and document count.
+async def kb_list(lightweight: bool = False, parent_id: str = "") -> str:
+    """List knowledge bases with id, name, description, and document count.
 
     Set lightweight=True for a minimal catalog [{kb_id, name, description, doc_count, path, parent_id}]
     that keeps agent context clean (no file_size/tags/vector_index metadata).
-    Default lightweight=False returns the full backend response enriched with sub-KBs."""
+    Default lightweight=False returns the full backend response enriched with sub-KBs.
+
+    parent_id — ONE-LEVEL navigation filter (逐级下钻; ladder discipline):
+      "" (default)  → whole catalog: roots + sub-KBs, every entry carries parent_id;
+      "__root__"    → only TOP-LEVEL KBs — judge these descriptions first;
+      "<kb_id>"     → only the DIRECT children of that KB (its sub-KBs, one level).
+    Ladder: kb_list(parent_id="__root__") → pick candidate KB by description →
+    if it has sub-KBs, judge ONLY the sub-KB level (kb_list(parent_id=<kb_id>)) and
+    descend level by level; never list documents of a parent that still has
+    unvisited sub-KBs. Leaf shelves go to kb_get_documents(view="groups" first)."""
     client = _client()
     data = await client.kb_list()
     top_kbs = (data.get("knowledgeBases", []) if isinstance(data, dict) else [])
+
+    def _pid(e: dict) -> str:
+        v = e.get("parent_id") or e.get("parentId") or ""
+        return v if isinstance(v, str) else str(v or "")
 
     # Fetch sub-KBs from the full tree (kb_list alone returns only root KBs)
     sub_kbs = []
@@ -333,15 +388,15 @@ async def kb_list(lightweight: bool = False) -> str:
                     continue
                 if n.get("isKnowledgeBase") or n.get("is_knowledge_base"):
                     nid = n.get("id") or n.get("node_id")
-                    parent_id = n.get("parentId") or n.get("parent_id") or ""
-                    if nid and parent_id:
+                    par_id = n.get("parentId") or n.get("parent_id") or ""
+                    if nid and par_id:
                         sub_kbs.append({
                             "kbId": nid,
                             "path": n.get("path") or n.get("name", ""),
                             "name": n.get("name") or n.get("path", ""),
                             "description": n.get("description") or n.get("desc") or "",
                             "documentCount": n.get("documentCount") or n.get("doc_count") or n.get("document_count") or 0,
-                            "parentId": parent_id,
+                            "parentId": par_id,
                         })
                 _collect_kb_nodes(n.get("children", []))
         tree_list = tree if isinstance(tree, list) else ([tree] if isinstance(tree, dict) else [])
@@ -369,11 +424,20 @@ async def kb_list(lightweight: bool = False) -> str:
                 "path": skb.get("path", ""),
                 "parent_id": skb.get("parentId", ""),
             })
-        return _j({"success": True, "count": len(catalog), "catalog": catalog})
+        if parent_id:
+            want_root = parent_id == KB_ROOT_SENTINEL
+            catalog = [kb for kb in catalog
+                       if (_pid(kb) == "" if want_root else _pid(kb) == parent_id)]
+        return _j({"success": True, "count": len(catalog),
+                   "parent_filter": parent_id or "all", "catalog": catalog})
 
     if isinstance(data, dict) and "knowledgeBases" in data:
         for skb in sub_kbs:
             data["knowledgeBases"].append(skb)
+        if parent_id:
+            want_root = parent_id == KB_ROOT_SENTINEL
+            data["knowledgeBases"] = [kb for kb in data["knowledgeBases"]
+                                      if (_pid(kb) == "" if want_root else _pid(kb) == parent_id)]
         data["count"] = len(data["knowledgeBases"])
     return _j(data)
 
@@ -423,29 +487,103 @@ async def kb_search(query: str, top_k: int = 10) -> str:
 
 
 @mcp.tool()
-async def kb_get_documents(kb_id: str, lightweight: bool = False) -> str:
-    """List all documents inside a knowledge base. kb_id accepts path or UUID.
+async def kb_get_documents(kb_id: str, lightweight: bool = False, view: str = "docs",
+                           group: str = "", page: int = 0, page_size: int = 0) -> str:
+    """List documents inside a knowledge base — PAGINATED and budget-guarded. kb_id accepts path or UUID.
 
-    Set lightweight=True for a minimal catalog [{doc_id, file_id, doc_path, name, description}]
-    that keeps agent context clean (no file_size/tags/vector_index metadata).
-    Default lightweight=False returns the full backend response."""
+    Ladder discipline (逐级检索): never request a whole large shelf in one call. Engines
+    truncate oversized tool returns to a 2KB preview — measured: a 131-doc shelf returned
+    74.9KB, the model saw only the first 2-3 docs and false-refused while the answer sat
+    in the unsent tail. This server hard-caps every return at the tool budget regardless
+    of the caller's arguments, so an oversized catalog can never reach the engine again.
+
+    ONE call at a parent KB shows BOTH levels: its sub-KBs appear as container entries
+    (entry_type="sub_kb", carrying the SUB-KB's own description) alongside its direct
+    documents. Navigate into a sub-KB via kb_list(parent_id=<sub_kb_id>) or
+    kb_get_documents(kb_id=<sub_kb_id>) — container entries have no doc_id and cannot
+    be read as documents.
+
+    - view="groups": return the shelf MAP first — first-level topic groups with counts
+      (derived from the `prefix__` in filenames, e.g. nlp__2310.10981__… → "nlp"). Tiny
+      response; START HERE when the shelf is bigger than one page, then drill into the
+      most promising group only.
+    - view="docs" (default): the document catalog. lightweight=True keeps it minimal
+      [{doc_id, file_id, doc_path, name, description}] (recommended for agents).
+    - group=<name>: only documents of that group (as reported by view="groups").
+    - page/page_size: 1-based paging, page_size default 40. page=0 = auto: shelves that
+      fit the budget return whole (backward compatible) with has_more=false; oversized
+      shelves are AUTOMATICALLY cut to page 1 + truncated="budget_guard" — keep calling
+      with page=2,3,… until has_more=false. Full literal coverage of a big shelf belongs
+      to machine-side scanners (enumerate_scan), not to agent context."""
     if (err := _require_kb(kb_id)): return err
     client = _client()
     if not await _kb_exists(client, kb_id):
         return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
+    data = await client.kb_get_documents(kb_id)
+    if not isinstance(data, dict) or not data.get("success"):
+        return _j(data)
+    raw_docs = data.get("documents", [])
     if lightweight:
-        data = await client.kb_get_documents(kb_id)
-        if not isinstance(data, dict) or not data.get("success"):
-            return _j(data)
-        catalog = [{
+        entries = [{
             "doc_id": d.get("id") or d.get("file_id") or d.get("doc_id"),
             "file_id": d.get("file_id") or d.get("id") or d.get("doc_id"),
             "doc_path": d.get("path"),
             "name": d.get("name"),
             "description": d.get("description", ""),
-        } for d in data.get("documents", [])]
-        return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
-    return _j(await client.kb_get_documents(kb_id))
+        } for d in raw_docs]
+        # Sub-KB container entries (no doc/file id, extensionless path) carry the
+        # SUB-KB's own description — tag them so agents navigate instead of reading.
+        for e in entries:
+            if not e["doc_id"] and not e["file_id"]:
+                e["entry_type"] = "sub_kb"
+    else:
+        entries = raw_docs
+
+    def _path_of(e):
+        return e.get("doc_path") or e.get("path") or ""
+
+    if view == "groups":
+        counts: dict[str, int] = {}
+        for e in entries:
+            if e.get("entry_type") == "sub_kb":
+                continue  # containers are navigation, not documents
+            g = _doc_group_key(_path_of(e))
+            counts[g] = counts.get(g, 0) + 1
+        groups = [{"group": g, "count": c}
+                  for g, c in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))]
+        return _j({"success": True, "kb_id": kb_id, "view": "groups",
+                   "total_docs": len(entries), "group_count": len(groups),
+                   "groups": groups,
+                   "note": "drill down with view='docs' + group='<name>'; page through with page=k"})
+
+    if group:
+        entries = [e for e in entries if _doc_group_key(_path_of(e)) == group]
+
+    requested_size = page_size if page_size and page_size > 0 else KB_DOC_PAGE_SIZE
+    requested_size = max(1, min(requested_size, 200))
+    safe_size = _budget_page_size(entries, requested_size)
+
+    if page >= 1:
+        chunk, meta = _page_slice(entries, page, safe_size)
+        return _j({"success": True, "kb_id": kb_id, "view": "docs",
+                   "count": len(chunk), "catalog": chunk, **meta})
+
+    whole = _j({"success": True, "kb_id": kb_id, "view": "docs",
+                "count": len(entries), "catalog": entries})
+    if len(whole) <= KB_TOOL_RETURN_BUDGET:
+        return _j({"success": True, "kb_id": kb_id, "view": "docs",
+                   "count": len(entries), "catalog": entries,
+                   "total": len(entries), "page": 1, "page_count": 1,
+                   "page_size": len(entries) or 1, "has_more": False})
+    chunk, meta = _page_slice(entries, 1, safe_size)
+    return _j({"success": True, "kb_id": kb_id, "view": "docs",
+               "count": len(chunk), "catalog": chunk,
+               "truncated": "budget_guard",
+               "note": (f"shelf catalog ({len(entries)} docs) exceeds the engine tool-return "
+                        f"budget — this is page 1/{meta['page_count']}. Continue with page=2,… "
+                        f"until has_more=false, drill into view='groups' + group='<name>', or "
+                        f"pre-scan descriptions with kb_search instead of reading every page."),
+               **meta})
 
 
 # ============================================================

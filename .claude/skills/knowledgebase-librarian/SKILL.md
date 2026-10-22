@@ -25,6 +25,7 @@ This lane recalls by navigation, not similarity. Its promise: high recall over s
 3. **The semantic judge under-recalls literal mentions.** "Which parts mention Pemberley" (ground truth 9): instance criterion at threshold 0.5 AND 0.3 each recalled only 3/9 — semantic scoring down-weights incidental mentions. Enumeration questions need `enumerate_scan.py` (literal match: 9/9 in 11.3s, zero agent context).
 4. **Machine-consumed output needs `--raw`.** The default 4000-char truncation cuts JSON mid-string; anything you will parse must use `--raw`. Pass payloads with backslash paths via `@file` (shell argv mangles `\`).
 5. **One judge pass, one criterion.** `criterion=evidence` on an enumeration question scores 111/111 segments above threshold (boilerplate survives too) — a wasted round. Pick the criterion from query shape BEFORE calling; never re-run to "try another mode".
+6. **Tool-return budget is a hidden retrieval dependency (measured 2026-10-12, B×cm1).** A 131-doc shelf's description catalog was 74.9KB; the engine persisted it to disk and passed the model a **2KB preview** — the model "saw" 2-3 docs, judged "not found", and false-refused while the gold entry sat in the unsent tail. Since 2026-10-13 kb-mcp hard-caps every catalog return at ~28K chars server-side (budget guard + pagination + groups view), so an oversized return can no longer reach the engine — but the discipline stands: **the agent should never need to read every description; the mechanical layers do recall, the agent visits only the most-wanted directory.**
 
 ## Execution contract (all harnesses)
 
@@ -35,12 +36,17 @@ This lane recalls by navigation, not similarity. Its promise: high recall over s
 ```text
 Librarian retrieval for: <question>
 Scope: <KB ids/names | all shelves>
-Execute skill://knowledgebase-librarian yourself, MCP tools only, fixed spine:
-preflight → kb_list → kb_get_documents(--raw) → [enumerate_scan.py | batched
-kb_laya_judge] → survivor doc IDs → kb_doc_read survivors (≤2000 chars each)
-→ return RESULT.
-Hard budget: ≤12 MCP calls total; docread only survivor docs; ONE judge pass;
-NO full-library reading, NO criterion switching, NO include_text=true.
+Execute skill://knowledgebase-librarian yourself, MCP tools only, fixed ladder:
+preflight → kb_list → recurse ONE level at a time (kb_list(parent_id=…) or
+container entries) until every kept branch is a LEAF shelf → per leaf:
+kb_search pre-scan → kb_get_documents(view="groups") → kb_get_documents(
+group=<chosen>, page=k) → collect ALL candidates → THEN [enumerate_scan.py |
+batched kb_laya_judge] → survivor doc IDs → kb_doc_read survivors (≤2000 chars
+each) → return RESULT.
+Hard budget: ≤12 MCP calls total; ONE group swept in-context per shelf (machine
+scanners own full coverage); docread only survivor docs; ONE judge pass, fired
+only after navigation completes; NO full-library reading, NO criterion switching,
+NO include_text=true.
 Do not answer the question; do not return full document text.
 ```
 
@@ -52,7 +58,15 @@ Do not answer the question; do not return full document text.
 
 **L0 · Catalog (1 call).** `kb_list(lightweight=true)` — read every KB's id + name + description + doc_count. Match the query's subject × attribute × constraints: keep every `relevant`/`possible` shelf; prune `out_of_scope` only on a present, trustworthy description. Guessing KBs by name is forbidden.
 
-**L1 · Description sweep — the doc-ID layer (1 call per shelf).** `kb_get_documents(lightweight=true, kb_id)` with `--raw`; collect every doc_id/doc_path + description. Group `(part k of N)` siblings for reasoning; keep every concrete ID. Normalize `\` vs `/` when passing paths between tools. Descriptions are claims, not facts (measured: 24/26 novel-part descriptions read "Gutenberg front/back matter" while the parts held chapters) — never prune on description alone.
+**L0.5 · Sub-KB descent — recurse one level at a time until a LEAF (0-1 call per level).** The catalog carries `parent_id` on every entry. For each kept candidate KB, look at **only its next level**: children are the catalog entries whose `parent_id` equals that kb_id (filter what you already hold), or one explicit call `kb_list(lightweight=true, parent_id=<kb_id>)`. Judge those sub-KB descriptions, keep the matching ones, and REPEAT on each kept child — the descent ends only when a candidate has **no children** (a leaf shelf). Two equivalent level views, pick one per node: ① `kb_list(parent_id=…)` (clean sub-KB descriptions) · ② `kb_get_documents(parent)` where sub-KBs appear as `entry_type="sub_kb"` container entries carrying their own descriptions. NEVER list documents of a node that still has unvisited sub-KBs; NEVER mix levels — each step looks at exactly one level of descriptions. (Both views are budget-guarded server-side.)
+
+**L1 · Leaf shelf → map, pre-scan, then targeted pages (2-4 calls).** Reached only when the descent has no sub-KBs left to visit. In order:
+1. **Mechanical description pre-scan first — zero LLM eyeballing:** `kb_search(query=<literal terms>, top_k=10)` is a machine-side name+description scan across all KBs (ranked hits, budget-safe). A confident hit here usually terminates the ladder — go to L3/L4 with that doc. It found `InstructDS` at rank 1 on the exact shelf where the LLM eyeball sweep false-refused.
+2. **Shelf map:** `kb_get_documents(kb_id, lightweight=true, view="groups")` — first-level topic groups with counts (~600 chars for a 131-doc shelf). Pick the most plausible group by the question's domain.
+3. **Targeted pages:** `kb_get_documents(kb_id, lightweight=true, group=<group>, page=k)` — pages are server-capped at ~28K chars / ~40 docs; follow `has_more` **within the chosen group** only. Skip `entry_type="sub_kb"` rows (navigation pointers, not documents — their presence means this shelf has sub-KBs you should have visited at L0.5). Reading every page of every shelf into context is banned — that is the recall machine's job (`enumerate_scan.py`, which pages machine-side and returns only hit doc IDs + windows).
+Descriptions are claims, not facts (measured: 24/26 novel-part descriptions read "Gutenberg front/back matter" while the parts held chapters) — never prune on description alone. Normalize `\` vs `/` when passing paths between tools.
+
+**L2 → L3 ordering is strict**: the descent + page sweep produce the complete candidate doc set FIRST; only then start the judge. Never interleave judging with navigation — a judge fired mid-descent judges an incomplete candidate set and wastes its one pass.
 
 **L2 · Query-shape routing (zero calls).**
 - **Enumeration / literal-mention** ("哪些/列出所有/提到 X/出现 Y"): run `enumerate_scan.py --kb-id <uuid> --terms <literal terms> [--docs-json <L1 output>]`. It scans every doc via MCP machine-side and returns hit doc IDs + evidence windows. This is the recall layer — expect ~0.5s/doc.

@@ -16,7 +16,7 @@ Operation router: move a document → M3 move + M4 reindex (mandatory) · merge 
 
 ## Sequential Workflow
 
-**Step 1 — M1 Survey**: kb_list() + kb_get_documents() confirm the operation target (move/rename/delete/merge/update) and impact scope.
+**Step 1 — M1 Survey**: kb_list() + kb_get_documents() confirm the operation target (move/rename/delete/merge/update) and impact scope. Paginated shelves: the scope size is `total` (not `count` — that is one page); a merge/delete scope survey must walk `page=2,…` until `has_more=false` so no document hides in an unsent page.
 **Step 2 — M2 Destructive operation confirmation**: delete/merge/move operations first dry_run preview → show the impact → wait for user confirmation.
 **Step 3 — M3 document move**: kb_doc_move(doc_path, target_kb_id) → auto reindex after move → kb_search_stats() verify.
 **Step 4 — M3 document rename**: kb_doc_update_meta(kb_id, doc_path, name=new_name) → update metadata.
@@ -54,7 +54,7 @@ After document move/delete/content-update, related experiences may be stale or o
 
 ## M5 — Verify + Report
 
-`kb_get_documents(source)` + `kb_get_documents(target)` + `kb_list()` + `fs_get_tree()`.
+`kb_get_documents(source)` + `kb_get_documents(target)` + `kb_list()` + `fs_get_tree()` — judge by `total` (walk pages when confirming emptiness or full migration; `count` is one page).
 
 ## M6 — Content Update Flow
 
@@ -84,7 +84,7 @@ Error recovery: tool call failure → retry once (5s interval), still failing �
 |-----------|------|-----------|
 | Not reindexing after move | Moved but not findable — the vector layer uses old-path chunks | Immediately `kb_index_document(target, new_path)` + `kb_graph_delete_document(old_path)` |
 | Merging without confirmation | Irreversible — once documents migrate, the source KB is empty | M2 must ask the user and show the migration plan |
-| Deleting a non-empty KB | Loses documents — `kb_delete` doesn't check for documents | First `kb_get_documents` → migrate or `kb_doc_batch_delete` |
+| Deleting a non-empty KB | Loses documents — `kb_delete` doesn't check for documents | First `kb_get_documents` (walk all pages; **empty means `total == 0`**, `count == 0` may just mean an empty page) → migrate or `kb_doc_batch_delete` |
 | Not verifying after content updates | The write may have failed — HTTP has no receipt confirmation | `kb_doc_read` to confirm content matches + `kb_index_document` to rebuild the index |
 | Short paths in batch deletes | Tool errors — `batch_delete` accepts only full paths | Use the full `KB/doc.md` relative path (not bare filenames) |
 | Assuming move/delete are synchronous | Fire-and-forget async — a success return ≠ completion | M5 re-check `kb_get_documents(target)` to confirm |

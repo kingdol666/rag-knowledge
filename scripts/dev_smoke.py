@@ -95,7 +95,8 @@ def main() -> int:
     s, b = jget("http://127.0.0.1:8771/api/v1/health", token=TOKEN)
     check("BE /health", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/meditation/harnesses", token=TOKEN)
+    s, b = jget("http://127.0.0.1:8771/api/v1/meditation/harnesses", token=TOKEN,
+                timeout=90)  # cold cache measured >30 s on first hit
     hlist = b.get("harnesses", []) if isinstance(b, dict) else []
     n = len(hlist)
     check("BE /meditation/harnesses (>=14)", s == 200 and n >= 14,
@@ -161,11 +162,14 @@ def main() -> int:
         check(f"WEB /api/harnesses/{hid}/diagnostics", s == 200, f"status={s}")
 
     # ---------- chat SSE (mock engine, no external deps) ----------
+    # stream:true is REQUIRED: since 2026-09-28 the route defaults to one
+    # non-stream JSON body, which carries no SSE frames at all.
     payload = {
         "prompt": "ping: reply with exactly PONG",
         "cwd": ROOT,
         "engine": "mock",
         "maxTurns": 2,
+        "stream": True,
     }
     saw_event, saw_result, err = False, False, ""
     try:

@@ -78,7 +78,7 @@ export class MockEngine implements ChatEngine {
       message: { role: 'assistant', content: [{ type: 'text', text }] },
     }
     yield {
-      type: 'result', result: text, is_error: false, total_cost_usd: 0,
+      type: 'result', subtype: 'success', result: text, is_error: false, total_cost_usd: 0,
       duration_ms: Date.now() - startTime, num_turns: 1,
       usage: { input_tokens: 0, output_tokens: 0 },
       stop_reason: 'stop', terminal_reason: 'stop',

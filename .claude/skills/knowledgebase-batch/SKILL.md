@@ -11,7 +11,7 @@ Related: single-document ingest → `skill://knowledgebase-ingest` (A0-A9 pipeli
 ## Sequential Workflow
 
 **Step 1 — Pre-Flight check**: one-probe double-check; if not ready, silently kb_project_start to bring services up.
-**Step 2 — Survey scope confirmation**: kb_list() + kb_get_documents() confirm the operation scope and estimate target scale (document count/KB count).
+**Step 2 — Survey scope confirmation**: kb_list() + kb_get_documents() confirm the operation scope and estimate target scale (document count/KB count). Large shelves return PAGINATED (server budget guard: `truncated="budget_guard"` + `has_more` + `total`) — walk `page=2,…` until `has_more=false` before claiming full scope; use the `total` field, never `count`, as the shelf size.
 **Step 3 — Operation-type routing**: match the user request to B1-B7 batch types; combine types if needed.
 **Step 4 — Plan presentation**: show a dry_run preview + batching strategy (20 per batch) + rate limits; wait for confirmation.
 **Step 5 — B1 bulk tag migration**: kb_tags_list() → build tag mapping → kb_doc_update_tags() 30 per batch → kb_doc_get_by_tag() verification.
@@ -27,6 +27,8 @@ Related: single-document ingest → `skill://knowledgebase-ingest` (A0-A9 pipeli
 Router: modify tags uniformly → B1 · add descriptions uniformly → B2 · mass ingest from a directory → B3 · batch move documents → B4 · dedup the whole library → B5 · export a whole-library overview → B6 · rebuild the whole-library graph → B7.
 
 **Pre-batch self-check** (each skip has a cost): how big is the scope, 10 docs or 1000? (timeouts / resource exhaustion) · can you `dry_run` pre-check? (irreversible changes with no rollback) · rate limits / tool concurrency? (mid-run failures are hard to recover) · batching + resumable checkpoints? (starting over wastes everything).
+
+**Pagination rule for every full-shelf enumeration** (B1 tag filter, B2 weak-description scan, B6 export, any "for each KB: kb_get_documents" step): server budget guard caps each response (~28K chars / ~40 docs) — walk `page=2,3,…` until `has_more=false` and size scopes by `total`, never `count`. Prefer registry shortcuts where they exist: tag-scoped work uses `kb_doc_get_by_tag(tag, kb_id)` (YAML registry, returns the full set in one call), not a paginated catalog scan.
 
 ## B1 — Bulk Tag Migration
 

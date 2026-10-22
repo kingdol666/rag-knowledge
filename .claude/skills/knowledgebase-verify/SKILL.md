@@ -40,13 +40,13 @@ Route by the stated focus: suspects metadata inconsistency → V1 · document fa
 
 ## V1 — Three-Way Metadata Integrity (disk ↔ .tree-fs.json ↔ .knowledge-base.yml)
 1. `kb_list()` vs `fs_get_tree()` — flag KBs with no tree node, orphan nodes, doc-count mismatches.
-2. Per KB, `kb_get_documents(kb_id)` — check each doc has a matching file on disk via path cross-reference.
+2. Per KB, `kb_get_documents(kb_id)` — check each doc has a matching file on disk via path cross-reference. **Large shelves are PAGINATED** (server budget guard): the shelf size is the `total` field, never `count` (that is the current page only); a full three-way check must walk `page=2,3,…` until `has_more=false` — auditing page 1 of a 131-doc shelf and calling it consistent is a false pass.
 3. Flag phantom entries (metadata but no disk file) and orphan files (disk but no metadata).
 
-UUID-level consistency is not directly compared: MCP tools cannot read the raw files, and every CRUD updates all three layers atomically — V1 relies on path cross-reference. Known normal behavior (not an inconsistency): `kb_get_documents()` may return more entries than `kb_list(lightweight=true)`'s `doc_count` — the extras are sub-KB containers (`file_type: knowledge-base`); separate levels with `fs_get_tree(max_depth=2)`.
+UUID-level consistency is not directly compared: MCP tools cannot read the raw files, and every CRUD updates all three layers atomically — V1 relies on path cross-reference. Known normal behavior (not an inconsistency): `kb_get_documents()` may return more entries than `kb_list(lightweight=true)`'s `doc_count` — the extras are sub-KB containers (`entry_type="sub_kb"`, extensionless path, no doc_id; each carries the SUB-KB's own description); skip them for document-level checks and separate levels with `fs_get_tree(max_depth=2)`.
 
 ## V2 — Document Integrity
-`kb_get_documents(kb_id)` → sample `kb_doc_read` per the table. Flag: broken 404s, empty descriptions, untagged docs.
+`kb_get_documents(kb_id)` → sample `kb_doc_read` per the table. Flag: broken 404s, empty descriptions, untagged docs. Sampling sizes key off the shelf's `total` field (paginated responses: `count` is one page); sample from ALL pages, not just page 1.
 
 | Library size | Sampling ratio | Minimum samples |
 |--------|---------|---------|
@@ -59,7 +59,7 @@ UUID-level consistency is not directly compared: MCP tools cannot read the raw f
 `kb_doc_read` 2000 chars, only on parsed documents (.pdf/.docx/.pptx-sourced — direct-created MD/TXT has no OCR traces). Flag: empty content (<100 chars), OCR garbage, binary residue, heading-only (no body). MinerU health: `backend_status()` (authoritative).
 
 ## V4 — Index Coverage & Repair (repair needs explicit instruction)
-Vector: `kb_get_documents(kb_id)` → check `vector_index` per doc; `kb_search_stats(kb_id)` → check chunk counts. Repair: `kb_index_document(kb_id, doc_path)` or `kb_batch_index(kb_id, [paths], force=true)`.
+Vector: `kb_get_documents(kb_id)` (walk all pages — coverage % is meaningless on page 1 of N) → check `vector_index` per doc; `kb_search_stats(kb_id)` → check chunk counts. Repair: `kb_index_document(kb_id, doc_path)` or `kb_batch_index(kb_id, [paths], force=true)`.
 Graph: `kb_graph_stats()` → check `neo4j_available`; `kb_graph_kb_overview(kb_id)` → doc_count vs actual. Repair: `kb_graph_build(kb_id, force=true)`; stale entries for deleted docs: `kb_graph_delete_document(doc_path)`.
 
 ## V5 — Scorecard (max 115)

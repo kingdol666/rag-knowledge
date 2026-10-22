@@ -40,11 +40,11 @@ Lightweight: `kb_list(lightweight=true)` returns `[{kb_id, name, description, do
 
 ## L2 — KB Drill-Down
 
-1. `mcp__kb-mcp__kb_get_documents(kb_id)` — metadata: name, path, tags, size, vector_index, dates
+1. `mcp__kb-mcp__kb_get_documents(kb_id)` — metadata: name, path, tags, size, vector_index, dates. Large shelves come back PAGINATED (server budget guard: `truncated="budget_guard"` + `has_more` + `total`): browse `view="groups"` for the shelf map, then `group=<name>` / `page=k` for the section you actually want; walk pages to `has_more=false` only when a full inventory is truly needed (use `total`, never `count`, as the shelf size)
 2. Check each document's `vector_index` field (may be missing while vectors actually exist — see known issues; verify empirically with `kb_search_vector` before claiming "not indexed")
 3. Provide `mcp__kb-mcp__kb_doc_read()` content previews on demand
 
-Lightweight: `kb_get_documents(lightweight=true, kb_id)` returns `[{doc_path, name, description}]`.
+Lightweight: `kb_get_documents(lightweight=true, kb_id)` returns `[{doc_path, name, description}]` (paginated on big shelves — see above).
 
 ## L3 — Browse Tree
 
@@ -53,7 +53,8 @@ Lightweight: `kb_get_documents(lightweight=true, kb_id)` returns `[{doc_path, na
 
 ## Known Issues
 
-- **Hierarchical KB search returns empty content** — a parent KB's `kb_search_two_stage` returns sub-KB container entries with empty content. Use `kb_search_vector(kb_id=<parent KB>)` for real content (sub-KB documents' vector chunks live under the parent's collection; searching the sub-KB UUID returns 0). `kb_graph_kb_overview(kb_id)` is for viewing sub-KB structure only, not a search entry point.
+- **Hierarchical KB entries in search results** — a parent KB's `kb_search_two_stage` may return sub-KB container entries with empty content (measured 2026-10-13: `two_stage(kb_id=<parent>)` → 0 results while the sub-KB docs exist). **Measured behavior**: `kb_search_vector` works by BOTH the sub-KB UUID (each sub-KB owns collection `kb_<sub_uuid>`, A6-V check holds) AND the parent UUID (recursively descends into sub-KB collections) — the older "sub-KB vector search returns 0" note is obsolete. Cross-KB `kb_search` (metadata) finds sub-KB documents tree-wide, kbName showing the sub-KB name. `kb_graph_kb_overview(kb_id)` is for viewing sub-KB structure only, not a search entry point.
+- **Sub-KB container entries in parent listings** — `kb_get_documents(parent, lightweight=true)` lists each sub-KB as an extensionless path with `doc_id=null` and the SUB-KB's own description, now tagged `entry_type="sub_kb"` (2026-10-13): navigation pointers, not documents — never `kb_doc_read` them; drill in via `kb_list(parent_id=<sub_kb_id>)` or `kb_get_documents(sub_kb_id)`.
 - **`vector_index` metadata may be missing** — the vectors exist in ChromaDB but were not written to YAML. Fix with `kb_reindex(kb_id, force=true)` (a write op; the List flow never runs it automatically).
 - **Graph sub-KB nodes show UUIDs only** — `kb_graph_kb_overview`'s sub-KB name is a UUID; look up readable names via `kb_list(lightweight=true)`.
 - **`kb_graph_build` may return `total_relations` 0** — a stats counting bug; the graph data was actually written to Neo4j. Spot check with `kb_graph_document(doc_path)` — do not assume the build failed.

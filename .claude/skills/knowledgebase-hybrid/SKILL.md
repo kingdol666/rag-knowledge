@@ -27,9 +27,13 @@ S0  查询整容    extract subject × attribute × constraints; write bilingual
 S1  向量车道    kb_search_vector(top_k=30, threshold=0.35, balance_kbs=true)
                 → hard threshold → dedup by (kb_id, doc_path) → 候选 A
                 refs only — do NOT read content yet
-S2  内容车道    kb_list → select shelves → kb_get_documents(lightweight) for EVERY doc
-                description → description-overlap ranking (+ L3 trust check) →
-                重叠命中记录为引用（不整读正文）→ 候选 B（refs）
+S2  内容车道    kb_list → select shelves → kb_search(词法预扫描, 机侧) →
+                kb_get_documents(view="groups") → kb_get_documents(group=<选中组>,
+                page=k) 分页读描述（服务端预算门 ~28K chars/页; 超大书架返回被切成
+                truncated="budget_guard"+has_more — 跟页至 false; 全覆盖召回交给
+                enumerate_scan 机侧, 不灌 agent 上下文）→ description-overlap
+                ranking (+ L3 trust check) → 重叠命中记录为引用（不整读正文）→
+                候选 B（refs）
 S3  去重合并    merge A ∪ B keyed on (kb_id, normalized doc_path)
                 lane = both | vector | catalog; a both-doc is kept ONCE
                 (catalog content + vector score); vector-only docs have no content yet

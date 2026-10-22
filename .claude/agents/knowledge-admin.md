@@ -57,6 +57,8 @@ tools:
   - mcp__kb-mcp__kb_search_vector
   - mcp__kb-mcp__kb_search_two_stage
   - mcp__kb-mcp__kb_search_stats
+  # Evidence gate (QDCVR verify — real Laya engine, reference mode)
+  - mcp__kb-mcp__kb_laya_judge
   # Vector/Index
   - mcp__kb-mcp__kb_index_document
   - mcp__kb-mcp__kb_batch_index

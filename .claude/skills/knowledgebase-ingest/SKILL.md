@@ -125,6 +125,26 @@ Per [description-guide.md](references/description-guide.md); **four elements + c
 
 Mis-attribution check: compare the target KB's description against the document's `sub_domain + methods` — an obvious domain conflict (RAG doc into the "polymer library") → rerun the tree.
 
+### A3d-B Batch routing plan (细分入库 — mandatory for ≥3 documents in one request)
+
+Do NOT pile a batch into one flat KB and defer the mess to A8/Organize. Before storing the first document, emit a **routing plan** and execute it as part of the ingest:
+
+```text
+1. Group the batch by sub-domain (from A3 content analysis, ≥2 docs per group;
+   sub_domain_group definition: sub-kb-creation.md § Sub-Domain Detection).
+2. Map each group → the parent KB's existing sub-KB whose description matches (A3d ①);
+   no match → CREATE the sub-KB now: kb_create(name="{Parent}-{SubDomain}",
+   description=<D3 template, four elements + 收录范围>, parent_id=<parent kb_id>).
+3. Route every document to its group's sub-KB; only true singletons (no ≥2-doc group)
+   stay in the parent KB directly.
+4. After the batch: kb_update the PARENT description to carry the 收录清单
+   (sub-KB list + one-line coverage each) — the librarian's L0 prunes at this level.
+```
+
+Triggers: batch ≥3 documents, OR any batch where ≥2 documents share a sub-domain that has no sub-KB yet. Threshold alignment: `SUB_KB_MIN_GROUP_SIZE` ≥2 docs/sub-domain (authoritative table in [sub-kb-creation.md](references/sub-kb-creation.md)); A8's ≥8-doc auto-split remains the sweep net for incremental single-doc ingests, not a license to defer batch structure. Sub-KB naming per [sub-kb-creation.md § Naming](references/sub-kb-creation.md): `{Parent}-{SubDomain}` Camel-Case-with-Hyphens, description unique (never copy-pasted from the parent).
+
+Measured rationale (2026-10-13): a flat 131-doc shelf's description catalog exceeded the engine tool-return budget (74.9KB → 2KB preview → false refusal); hierarchical KBs keep every catalog call small AND make L0/L0.5 pruning decisive. The ladder (`skill://knowledgebase-librarian`) reads sub-KB descriptions level by level — a sub-KB without a qualified description is invisible to it.
+
 ## A4 — Find/Create KB (execute the A3d decision)
 
 Existing KB → use its UUID. Create new/sub → `kb_create(name, description, parent_id)` (D3 KB-level template; a sub-KB points `parent_id` at the parent's `kb_id`).
@@ -179,7 +199,8 @@ Any miss → merge the missed query terms (problem/method dimensions) into the d
 **A7-E — Experience extraction (optional)**: after the final check, if capacity allows — `experience_extract(kb_id=target_kb_id, mode="prepare")` (⚠️ prepare mode has no dry_run; always returns the LLM task package) → Agent LLM refinement → confidence ≥0.8 approved, <0.8 to the draft pool. Recommended when KB completeness/freshness requirements are high.
 
 ## A8 — Sub-KB Evaluation + Orphan Cleanup
-- Parent KB reaches `SUB_KB_AUTO_SPLIT_THRESHOLD` (**≥8 documents spanning ≥2 sub-domains**) → split per [sub-kb-creation.md](references/sub-kb-creation.md) (authoritative threshold table at its top).
+- Parent KB reaches `SUB_KB_AUTO_SPLIT_THRESHOLD` (**≥8 documents spanning ≥2 sub-domains**) → split per [sub-kb-creation.md](references/sub-kb-creation.md) (authoritative threshold table at its top). Batches should never get here — A3d-B routes them up front.
+- **Ladder visibility check (after any sub-KB creation, mandatory)**: `kb_list(lightweight=true, parent_id=<parent>)` must show the new sub-KB WITH its qualified description, and `kb_get_documents(parent, lightweight=true)` must list the container entry (`entry_type="sub_kb"`) carrying that same description — the librarian navigates by exactly these two reads. A sub-KB without a description is invisible to the ladder.
 - Orphan cleanup (opportunistic): KBs with `doc_count=0` and empty descriptions → report to the user whether to delete. **Do not delete without permission.**
 
 ## A9 — Ingestion Report
@@ -187,6 +208,7 @@ Any miss → merge the missed query terms (problem/method dimensions) into the d
 ✅ <filename> → <full path of target KB> | Type: PDF (parsed) | Title: <real title>
    Split (A2.5): not needed (<n> chars ≤ <max_chars>) | split into <N> parts (script), temp original deleted
    Description: <first 80 chars of the qualified description>... | Tags: [tag1, tag2, tag3] (after A3b)
+   Routing (A3d): <KB path incl. sub-KB> | batch plan: <n> docs → <m> sub-KBs (created: [names]) / direct
    Index: vector=<collection> chunks=<n> | graph=<entities>e/<relations>r | Dedup: none / skipped (duplicate of <path>) | Final check: C1-C9 all ✅
 ```
 
