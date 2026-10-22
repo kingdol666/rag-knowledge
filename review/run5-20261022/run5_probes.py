@@ -37,7 +37,8 @@ def env_token() -> str:
 
 
 CHAT = "http://127.0.0.1:6789/api/claude/chat"
-AGENT = "http://127.0.0.1:8771/api/kb/agent/chat"
+# NOTE: the native agent endpoint lives in the WEB layer (nuxt), not the backend.
+AGENT = "http://127.0.0.1:6789/api/kb/agent/chat"
 STAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 
 
