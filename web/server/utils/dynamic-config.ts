@@ -11,34 +11,15 @@
  *   $fetch(`${backendUrl}/api/v1/...`)
  */
 import { readFileSync, existsSync } from 'fs'
-import { resolve, isAbsolute, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { resolve, isAbsolute } from 'path'
+import { getRepoRoot } from '~/server/utils/repo-root'
 
 // ── Path anchors ───────────────────────────────────────────────────────
-// This module is flattened into nitro.mjs, whose static import from the
-// entry evaluates BEFORE index.mjs sets globalThis._importMeta_ — so in the
-// production bundle import.meta.url is the "file:///_entry.js" placeholder
-// and fileURLToPath() throws on win32 (no drive letter). Probe cwd upwards
-// for config.yml as a fallback (node .output/server/index.mjs runs from
-// .output/server; nuxt dev runs from web/ — both reach the repo root).
-function resolveMonorepoRoot(): string {
-  try {
-    const here = dirname(fileURLToPath(import.meta.url))
-    return resolve(here, '../../..')
-  } catch {
-    let dir = process.cwd()
-    for (let i = 0; i < 6; i++) {
-      if (existsSync(resolve(dir, 'config.yml'))) return dir
-      const parent = dirname(dir)
-      if (parent === dir) break
-      dir = parent
-    }
-    return process.cwd()
-  }
-}
-const MONOREPO_ROOT = resolveMonorepoRoot()
-const CONFIG_PATH = resolve(MONOREPO_ROOT, 'config.yml')
-const ENV_PATH = resolve(MONOREPO_ROOT, '.env')
+// Lazy (never at module top level): import.meta.url resolves to a rollup
+// polyfill fallback in prod chunks before index.mjs sets _importMeta_,
+// crashing startup with ERR_INVALID_FILE_URL_PATH (prod verified 2026-10-04).
+const configPath = () => resolve(getRepoRoot(), 'config.yml')
+const envPath = () => resolve(getRepoRoot(), '.env')
 
 // ── Cache (5 second TTL) ───────────────────────────────────────────────
 interface CachedConfig {
@@ -150,12 +131,12 @@ export function getRawConfig(): any {
   if (_cachedConfig && now - _cachedConfig.timestamp < CACHE_TTL) {
     return _cachedConfig.data
   }
-  if (!existsSync(CONFIG_PATH)) {
+  if (!existsSync(configPath())) {
     _cachedConfig = { data: {}, timestamp: now }
     return {}
   }
   try {
-    const raw = readFileSync(CONFIG_PATH, 'utf-8')
+    const raw = readFileSync(configPath(), 'utf-8')
     const parsed = parseYaml(raw)
     _cachedConfig = { data: parsed, timestamp: now }
     return parsed
@@ -172,12 +153,12 @@ export function getEnvConfig(): Record<string, string> {
     return _cachedEnv.data
   }
   const result: Record<string, string> = {}
-  if (!existsSync(ENV_PATH)) {
+  if (!existsSync(envPath())) {
     _cachedEnv = { data: result, timestamp: now }
     return result
   }
   try {
-    const raw = readFileSync(ENV_PATH, 'utf-8')
+    const raw = readFileSync(envPath(), 'utf-8')
     for (const line of raw.split('\n')) {
       const trimmed = line.trim()
       if (!trimmed || trimmed.startsWith('#')) continue
@@ -283,7 +264,7 @@ export function getDynamicAuthConfig(): { enabled: boolean; token: string } {
  * Resolve a path relative to the monorepo root.
  */
 export function resolveMonorepoPath(pathValue: string): string {
-  return isAbsolute(pathValue) ? pathValue : resolve(MONOREPO_ROOT, pathValue)
+  return isAbsolute(pathValue) ? pathValue : resolve(getRepoRoot(), pathValue)
 }
 
 /**

@@ -462,11 +462,22 @@ class ExperienceService:
                 self._write_index(kb_path, index)
 
                 # Re-index if title/problem/solution/key_lessons changed
+                # 注意：vector_service 用 kb_id(UUID) 做 collection 命名（kb_{uuid}），
+                # 必须与 create_experience/reindex_experiences 一致地解析为 UUID，
+                # 否则会索引进错误 collection 导致更新后向量检索不到（2026-10-07 修复）
                 try:
                     from app.services.vector_service import vector_service as _vs
+                    tree = self._read_tree_fs()
+                    kb_id_for_vec = None
+                    for folder in tree.get("folders", []):
+                        if folder.get("path") == kb_path:
+                            kb_id_for_vec = folder.get("id", kb_path)
+                            break
+                    if not kb_id_for_vec:
+                        kb_id_for_vec = kb_path
                     md_content_for_index = self._generate_markdown(exp)
                     vi = _vs.index_document(
-                        kb_path, exp["path"], md_content_for_index,
+                        kb_id_for_vec, exp["path"], md_content_for_index,
                         metadata={"doc_type": "experience", "exp_id": exp_id, "scenario": exp.get("scenario", ""), "category": exp.get("category", "")}
                     )
                     if vi:
@@ -1125,10 +1136,17 @@ class ExperienceService:
                     effective_threshold = max(effective_threshold * 0.7, 0.25)
                     continue
 
-                # Round 3 fallback: lower threshold further, skip content verification
+                # Round 3 fallback: lower threshold further.
+                # P1 fix (2026-10-04): this round previously ALSO set
+                # verify_content=False, letting keyword-recalled lexical matches
+                # through with an *inferred* content_score — a MySQL query
+                # returned a film-annealing experience (P2) in production
+                # testing. Degradation now only widens the vector net; content
+                # verification always runs, and degraded rounds are held to a
+                # stricter content bar (see min_content_score below).
                 if rounds == 2 and effective_threshold > 0.20:
+                    degraded = True
                     effective_threshold = max(effective_threshold * 0.6, 0.15)
-                    verify_content = False
                     continue
 
                 break  # No more rounds to try
@@ -1183,6 +1201,13 @@ class ExperienceService:
                 exp_meta_by_path[ep] = exp
 
         scored_results = []
+        # P1 fix (2026-10-04): hard semantic floor — a real (non-keyword) vector
+        # hit below this score is noise no matter how far the threshold degraded
+        # (round 3 can reach 0.15). Keyword-recalled items are gated by content
+        # verification instead, since their score is lexical, not semantic.
+        semantic_floor = 0.30
+        # Degraded rounds must clear a stricter content bar than the normal ≥3.
+        min_content_score = 4 if degraded else 3
         for exp_path, hit in vector_hits.items():
             exp = exp_meta_by_path.get(exp_path, {})
             if not exp:
@@ -1191,11 +1216,14 @@ class ExperienceService:
 
             vector_score = hit["score"]
             from_keyword = hit.get("_from_keyword", False)
+            if not from_keyword and vector_score < semantic_floor:
+                continue  # 语义硬下限以下 = 噪声，任何降级轮都不放行
+
             if verify_content:
                 relevant, content_score, reason = self._content_verify(
                     query_clean, exp, vector_score)
-                if not relevant:
-                    # 内容分 < 3 → 向量"看起来像"但实际无关 → 丢弃
+                if not relevant or content_score < min_content_score:
+                    # 内容分不达标 → 向量"看起来像"但实际无关 → 丢弃
                     continue
             else:
                 # verify_content=False：用 vector_score 推断 content_score 伪值
@@ -1204,7 +1232,8 @@ class ExperienceService:
                     content_score = 4 if vector_score >= 0.55 else 3
                 else:
                     content_score = 4 if vector_score >= 0.55 else 3
-                relevant = True
+                # 调用方显式关闭内容验证时尊重其选择，但降级轮的门槛仍然生效
+                relevant = content_score >= min_content_score
             rating = exp.get("rating_avg", 0)
             applied = exp.get("applied_count", 0)
             review_count = exp.get("review_count", 0)

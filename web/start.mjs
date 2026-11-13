@@ -136,32 +136,107 @@ if (!_portOk) {
 
 console.log(`[start.mjs] port ${port} is free, launching nuxt...`)
 // ── launch Nuxt ──────────────────────────────────────────────────────
-const child = spawn(
-  process.execPath,
-  [nuxtCliPath, 'dev', '--host', host, '--port', port],
-  {
-    cwd: __dirname,
-    stdio: 'inherit',
-    windowsHide: true,
-    env: childEnv
+// P1 fix (2026-10-04): "prod" previously spawned `nuxt dev` with APP_MODE=prod
+// — i.e. production ran the dev server (HMR, unminified, source maps, full
+// error traces). Now prod = `nuxt build` → run the built Nitro output
+// (.output/server/index.mjs) on the configured host/port. Dev is unchanged.
+// ── Post-build: copy node-pty native binaries into the output ─────────
+// node-pty require()s prebuilds/win32-x64/conpty.node (etc.) with computed
+// runtime paths, so nitro's static tracer ships only lib/ + package.json and
+// the prod terminal crashes with "Cannot find module
+// './prebuilds/win32-x64//conpty.node'". Copy the native dirs explicitly.
+function syncNodePtyBinaries() {
+  const srcBase = path.join(__dirname, 'node_modules', 'node-pty')
+  const dstBase = path.join(__dirname, '.output', 'server', 'node_modules', 'node-pty')
+  if (!fs.existsSync(srcBase) || !fs.existsSync(dstBase)) return
+  for (const dir of ['prebuilds', 'build']) {
+    const src = path.join(srcBase, dir)
+    const dst = path.join(dstBase, dir)
+    if (!fs.existsSync(src)) continue
+    fs.cpSync(src, dst, { recursive: true })
+    console.log(`[start.mjs] copied node-pty/${dir} -> .output/server/node_modules/node-pty/${dir}`)
   }
-)
+}
 
-child.on('exit', (code, signal) => {
-  if (signal) {
-    process.kill(process.pid, signal)
-    return
-  }
-  process.exit(code ?? 0)
-})
+let child
 
-child.on('error', (error) => {
-  console.error(`Failed to start frontend: ${error.message}`)
-  process.exit(1)
-})
+function forwardSignals() {
+  process.on('SIGINT', () => child?.kill('SIGINT'))
+  process.on('SIGTERM', () => child?.kill('SIGTERM'))
+}
 
-process.on('SIGINT', () => child.kill('SIGINT'))
-process.on('SIGTERM', () => child.kill('SIGTERM'))
+if (mode === 'prod') {
+  const build = spawn(
+    process.execPath,
+    [nuxtCliPath, 'build'],
+    { cwd: __dirname, stdio: 'inherit', windowsHide: true, env: childEnv }
+  )
+  build.on('exit', (code) => {
+    if (code !== 0) {
+      console.error(`[start.mjs] nuxt build failed (exit ${code}) — refusing to start prod server.`)
+      process.exit(code ?? 1)
+    }
+    const serverEntry = path.join(__dirname, '.output', 'server', 'index.mjs')
+    if (!fs.existsSync(serverEntry)) {
+      console.error(`[start.mjs] build output missing: ${serverEntry}`)
+      process.exit(1)
+    }
+    syncNodePtyBinaries()
+    console.log(`[start.mjs] build ok — starting Nitro prod server on ${host}:${port}`)
+    child = spawn(
+      process.execPath,
+      [serverEntry],
+      {
+        cwd: __dirname,
+        stdio: 'inherit',
+        windowsHide: true,
+        env: { ...childEnv, PORT: String(port), HOST: host, NITRO_PORT: String(port), NITRO_HOST: host },
+      }
+    )
+    child.on('exit', (code2, signal2) => {
+      if (signal2) {
+        process.kill(process.pid, signal2)
+        return
+      }
+      process.exit(code2 ?? 0)
+    })
+    child.on('error', (error) => {
+      console.error(`Failed to start prod server: ${error.message}`)
+      process.exit(1)
+    })
+  })
+  build.on('error', (error) => {
+    console.error(`Failed to start nuxt build: ${error.message}`)
+    process.exit(1)
+  })
+  forwardSignals()
+} else {
+  child = spawn(
+    process.execPath,
+    [nuxtCliPath, 'dev', '--host', host, '--port', port],
+    {
+      cwd: __dirname,
+      stdio: 'inherit',
+      windowsHide: true,
+      env: childEnv
+    }
+  )
+
+  child.on('exit', (code, signal) => {
+    if (signal) {
+      process.kill(process.pid, signal)
+      return
+    }
+    process.exit(code ?? 0)
+  })
+
+  child.on('error', (error) => {
+    console.error(`Failed to start frontend: ${error.message}`)
+    process.exit(1)
+  })
+
+  forwardSignals()
+}
 
 // ── simple CLI arg parser ────────────────────────────────────────────
 function parseArgs(argv) {

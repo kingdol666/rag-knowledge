@@ -11,6 +11,7 @@ from app.config import config
 from app.models.search_models import (
     BatchIndexDocumentRequest,
     BatchVectorSearchRequest,
+    ContextRequest,
     IndexDocumentRequest,
     ReindexRequest,
     TwoStageSearchRequest,
@@ -163,6 +164,45 @@ async def two_stage_search(req: TwoStageSearchRequest) -> dict[str, Any]:
     return {"success": True, **result}
 
 
+@router.post("/context")
+async def kb_context(req: ContextRequest) -> dict[str, Any]:
+    """闭环任务前知识注入原语（plan 阶段 5）。
+
+    一次调用 = 定向两阶段检索（快车道，秒级）+ 跨库经验检索。
+    预览定位：向量证据未过判卷门，标注 unverified=true；结论级证据由调用方
+    对 doc_paths 追加 kb_laya_judge（常驻 worker 后单批亚秒）。延迟预算 ≤2s。
+    """
+    import time as _time
+    t0 = _time.perf_counter()
+    if not req.task_desc.strip():
+        raise HTTPException(400, "task_desc must not be empty")
+    ts = await asyncio.to_thread(
+        two_stage_search_service.search,
+        query=req.task_desc, kb_id=req.kb_scope,
+        stage1_top_k=20, stage2_top_k=req.top_k,
+        enable_graph_expansion=False, score_threshold=None,
+        balance_kbs=True,
+    )
+    evidence = (ts.get("stage2") or {}).get("results", [])
+    try:
+        from app.services.experience_service import experience_service
+        exp = await experience_service.search_experiences_global(req.task_desc, top_k=req.top_k)
+    except Exception as exc:  # noqa: BLE001 — 经验通道失败不阻塞证据注入
+        logger.warning("context: experience search failed: %s", exc)
+        exp = {}
+    experiences = exp.get("experiences", []) if isinstance(exp, dict) else []
+    return {
+        "success": True,
+        "task_desc": req.task_desc,
+        "evidence": [{"doc_path": e.get("doc_path"), "kb_id": e.get("kb_id"),
+                      "score": e.get("score"), "content": e.get("content"),
+                      "unverified": True} for e in evidence],
+        "experiences": experiences,
+        "latency_ms": int((_time.perf_counter() - t0) * 1000),
+        "note": "evidence 未过判卷门（预览定位）；结论级引用请追加 kb_laya_judge",
+    }
+
+
 @router.post("/index-document", dependencies=[Depends(verify_token)])
 async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
     """单文档索引：向量 + 图谱。
@@ -305,8 +345,18 @@ async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
             "kb_id": owner_kb_id or req.kb_id,
         })
 
+    # P2 fix (2026-10-04): skip_graph(default)=True used to yield
+    # graph_index={} — an empty dict callers misread as "graph built". Be
+    # explicit: say WHY nothing was built and what to call instead.
+    if not graph_stats and (req.skip_graph or not config.graph_enabled):
+        reason = ("skip_graph=true — 图谱在整理阶段由 POST /api/v1/graph/build-kb 统一构建"
+                  if req.skip_graph else "graph.enabled=false (config.yml)")
+        graph_index_payload = {"skipped": True, "reason": reason}
+    else:
+        graph_index_payload = graph_stats
+
     return {"success": True, "vector_index": vector_index,
-            "graph_index": graph_stats, "graph_stats": graph_stats}
+            "graph_index": graph_index_payload, "graph_stats": graph_stats}
 
 
 @router.post("/batch-index", dependencies=[Depends(verify_token)])

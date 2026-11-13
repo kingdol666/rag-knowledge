@@ -19,7 +19,7 @@
  * PATH by the OS itself; availability is probed separately via
  * resolveCommandLocal (pure filesystem scan).
  */
-import { spawn, type ChildProcess, type SpawnOptions } from 'child_process'
+import { spawn, type ChildProcess } from 'child_process'
 import { existsSync, readFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -42,11 +42,15 @@ import { resolveCommandLocal } from '~/server/utils/harness-catalog'
  * hand over its URL. stdio servers (from the monorepo .mcp.json) are passed
  * to harnesses that spawn them themselves (hermes).
  */
+import { spawn, type ChildProcess } from 'child_process'
+import { getRepoRoot } from '~/server/utils/repo-root'
 
 let _kbHttp: { proc: ChildProcess | null; url: string } | null = null
 
 function monorepoRoot(): string {
-  return resolve(dirname(fileURLToPath(import.meta.url)), '../../../..') // engines/ -> server/ -> web/ -> repo
+  // getRepoRoot(): import.meta.url path arithmetic breaks in prod chunks
+  // (physical location moves to .output/server/chunks/...).
+  return getRepoRoot()
 }
 
 async function ensureKbMcpHttp(): Promise<string | null> {
@@ -212,7 +216,7 @@ export class AcpEngine implements ChatEngine {
     }
 
     // ── Literal spawn tables (one row per harness × platform) ──────────
-    const opts: SpawnOptions = {
+    const opts = {
       stdio: ['pipe', 'pipe', 'pipe'],
       windowsHide: true,
       cwd: req.cwd,
@@ -245,7 +249,6 @@ export class AcpEngine implements ChatEngine {
       startTime: Date.now(),
       autoApprove: req.permissionMode === 'bypassPermissions',
       promptDone: Promise.withResolvers<any>(),
-      promptDoneSettled: false,
       promptReqId: null as number | string | null,
       nextId: 1,
       finished: false,
@@ -434,8 +437,7 @@ export class AcpEngine implements ChatEngine {
             if (msg.error) p.reject(new Error(String(msg.error.message || JSON.stringify(msg.error)).slice(0, 300)))
             else p.resolve(msg.result)
           }
-          if (msg.id === state.promptReqId && !state.promptDoneSettled) {
-            state.promptDoneSettled = true
+          if (msg.id === state.promptReqId && !state.promptDone.done) {
             const promptErr = msg.error
               ? String(msg.error.message || JSON.stringify(msg.error)).slice(0, 300)
               : ''
@@ -463,8 +465,7 @@ export class AcpEngine implements ChatEngine {
     })
 
     proc.on('exit', (code) => {
-      if (!state.promptDoneSettled) {
-        state.promptDoneSettled = true
+      if (!state.promptDone.done) {
         state.promptDone.reject(new Error(
           `ACP process exited before turn end (code=${code})${stderrTail ? ` stderr: ${stderrTail.slice(-300)}` : ''}`))
       }
@@ -554,7 +555,7 @@ export async function acpProbeConfigOptions(name: string): Promise<AcpConfigOpti
   const cmdName = name === 'dsh' ? 'dsh' : 'hermes'
   if (!resolveCommandLocal(cmdName)) return null
 
-  const opts: SpawnOptions = {
+  const opts = {
     stdio: ['pipe', 'pipe', 'pipe'],
     windowsHide: true,
     cwd: monorepoRoot(),

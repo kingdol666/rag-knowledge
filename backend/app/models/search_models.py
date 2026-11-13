@@ -22,6 +22,13 @@ class TwoStageSearchRequest(BaseModel):
     balance_kbs: bool = False  # 跨库搜索时均衡结果，防大KB主导
 
 
+class ContextRequest(BaseModel):
+    """闭环任务前知识注入原语（plan 阶段 5）。"""
+    task_desc: str
+    kb_scope: Optional[str] = None
+    top_k: int = 5
+
+
 class IndexDocumentRequest(BaseModel):
     kb_id: str = ""
     doc_path: str = ""

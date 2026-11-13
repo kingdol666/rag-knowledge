@@ -1472,5 +1472,33 @@
         "notes": "调度任务引擎不可用时的静默回退路径（手动触发不回退）。"
       }
     }
+  },
+  "automation": {
+    "title": "自动经验总结",
+    "configTitle": "自动经验总结",
+    "enabled": "已开启",
+    "disabled": "未开启",
+    "noKb": "请先在左侧选择一个知识库",
+    "enableLabel": "开启自动总结",
+    "enableHint": "开启后每入库 {interval} 篇文档，自动更新一条滚动经验总结（provisional，可检索可引用）",
+    "counter": "入库计数",
+    "nextTrigger": "下次触发",
+    "nextTriggerValue": "第 {n} 篇时",
+    "triggerCount": "已总结轮数",
+    "totalDocs": "库内文档总数",
+    "lastTrigger": "上次总结时间",
+    "never": "从未",
+    "summarizeNow": "立即总结",
+    "viewSummary": "查看总结内容",
+    "summarizeOk": "经验总结已{action}",
+    "summarizeDetail": "第 {round} 轮 · 覆盖 {docs} 篇文档",
+    "summarizeFail": "总结失败",
+    "actionCreated": "创建",
+    "actionUpdated": "更新",
+    "historyTitle": "总结历史",
+    "historyItem": "第 {round} 轮：{action}总结（覆盖 {docs} 篇）",
+    "toggleOn": "已开启自动经验总结",
+    "toggleOff": "已关闭自动经验总结",
+    "loadFail": "操作失败"
   }
 }

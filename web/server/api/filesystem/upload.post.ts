@@ -9,12 +9,16 @@ import { getTreeFileSystemService } from '~/server/utils/tree-service'
  *
  * Does NOT index (vector/graph). Callers should chain:
  * upload → index (POST /api/v1/search/index-document) if needed.
+ *
+ * Error contract (P2 fix 2026-10-04): failures now return real 4xx/5xx
+ * status codes instead of HTTP 200 + {"error"} bodies — callers and gateways
+ * judge outcome by status code, not by parsing success flags.
  */
 export default defineEventHandler(async (event) => {
   const method = event.method
 
   if (method !== 'POST') {
-    return { error: 'Invalid method. Use POST for upload.' }
+    throw createError({ statusCode: 405, statusMessage: 'Invalid method. Use POST for upload.' })
   }
 
   const treeService = await getTreeFileSystemService()
@@ -25,11 +29,11 @@ export default defineEventHandler(async (event) => {
     formData = await readMultipartFormData(event)
   } catch (err: any) {
     console.error('[Upload] Failed to parse multipart form:', err)
-    return { error: 'Failed to parse uploaded file: ' + err.message }
+    throw createError({ statusCode: 400, statusMessage: 'Failed to parse uploaded file: ' + err.message })
   }
 
   if (!formData || formData.length === 0) {
-    return { error: 'No file uploaded' }
+    throw createError({ statusCode: 400, statusMessage: 'No file uploaded' })
   }
 
   let parentId: string | null = null
@@ -53,7 +57,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (!fileBuffer || !originalFilename) {
-    return { error: 'File is required' }
+    throw createError({ statusCode: 400, statusMessage: 'File is required' })
   }
 
   try {
@@ -68,9 +72,6 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error: any) {
     console.error('Upload error:', error)
-    return {
-      success: false,
-      error: error.message || 'Upload failed'
-    }
+    throw createError({ statusCode: 500, statusMessage: error.message || 'Upload failed' })
   }
 })

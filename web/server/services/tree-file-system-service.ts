@@ -3,7 +3,7 @@
  * Manages the tree-file-system metadata, disk operations, and KB YAML sync
  */
 
-import { join, dirname, basename, extname } from 'path'
+import { join, dirname, basename, extname, resolve, relative, isAbsolute } from 'path'
 import { mkdir, writeFile, readFile, unlink, rmdir, rm, readdir, stat, rename, cp } from 'fs/promises'
 import { existsSync } from 'fs'
 import { v4 as uuidv4 } from 'uuid'
@@ -1265,20 +1265,54 @@ export class TreeFileSystemService {
    */
     async resolveDocPath(kbId: string, docPath: string): Promise<string | null> {
     const hasSep = docPath.includes('\\') || docPath.includes('/')
+    const docNorm = docPath.replace(/\\/g, '/')
+    const folder = this.metadata.folders.find(
+      (f) => f.isKnowledgeBase && (f.id === kbId || f.path.replace(/\\/g, '/') === kbId)
+    )
+    const folderNorm = folder ? folder.path.replace(/\\/g, '/') : null
     let resolved: string | null = null
-    if (hasSep) {
-      resolved = docPath.replace(/\\/g, '/')
-    } else {
-      const folder = this.metadata.folders.find(
-        (f) => f.isKnowledgeBase && (f.id === kbId || f.path.replace(/\\/g, '/') === kbId)
-      )
-      if (folder) {
-        resolved = folder.path.replace(/\\/g, '/') + '/' + docPath
-      }
+    if (hasSep && folderNorm
+        && (docNorm === folderNorm || docNorm.startsWith(folderNorm + '/'))) {
+      // Storage-relative path already under this KB's folder — use as-is.
+      resolved = docNorm
+    } else if (hasSep && !folderNorm) {
+      // Storage-relative path (legacy callers pass "KB名/doc.md"); KB unmatchable.
+      resolved = docNorm
+    } else if (folder) {
+      // KB-root-relative (bare filename, "experience/exp.md", subdirs): prepend.
+      resolved = folderNorm + '/' + docNorm
     }
     if (!resolved) return null
     const norm = (p: string) => p.replace(/\\/g, '/').toLowerCase()
-    return this.metadata.files.find((f) => norm(f.path) === norm(resolved)) ? resolved : null
+    if (this.metadata.files.find((f) => norm(f.path) === norm(resolved))) return resolved
+    // Metadata-miss fallback: files written to disk WITHOUT tree registration
+    // (experience docs are created by the backend experience service and never
+    // synced into .tree-fs.json) were unreadable through /api/kb/document —
+    // the Laya judge's server-side reference fetch rides this endpoint, so
+    // every unregistered hit was fail-closed out of retrieval (measured
+    // 2026-10-05: 10 experience docs across 9 KBs, whole judge batches
+    // dropped). readDocument() resolves by path on disk anyway, so accept a
+    // physically-existing, storage-root-contained file the metadata lost.
+    return this.existsUnregistered(resolved) ? resolved : null
+  }
+
+  /**
+   * True when `relPath` (storage-relative, forward slashes) names an existing
+   * FILE on disk that stays inside the storage root. Defense: reject any '..'
+   * segment outright, then re-verify containment via path.relative in case a
+   * case/separator trick slips past the string check.
+   */
+  private async existsUnregistered(relPath: string): Promise<boolean> {
+    if (!relPath || relPath.startsWith('/') || relPath.split('/').includes('..')) return false
+    const root = resolve(this.basePath)
+    const abs = resolve(join(root, relPath))
+    const rel = relative(root, abs)
+    if (rel.startsWith('..') || isAbsolute(rel) || !rel) return false
+    try {
+      return (await stat(abs)).isFile()
+    } catch {
+      return false
+    }
   }
   /**
    * Overwrite a file's on-disk content and refresh its size in metadata.
