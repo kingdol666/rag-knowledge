@@ -28,4 +28,14 @@ async def health_check():
     except Exception as exc:  # 探测自身失败不推翻 overall status
         logger.warning("vector subsystem probe failed: %s", exc)
         vector = None
-    return HealthResponse(vector=vector)
+    # BM25 关键词索引就绪度(2026-11-13):冷启动后台预热期间 building=true、
+    # ready=false —— 调用方据此预期两阶段检索可能一次性诚实降级 504。
+    keyword_index: dict = {"ready": None, "building": None}
+    try:
+        from app.services.two_stage_search_service import two_stage_search_service
+
+        keyword_index = two_stage_search_service.keyword_index_status()
+    except Exception as exc:
+        logger.warning("keyword index probe failed: %s", exc)
+        keyword_index = None
+    return HealthResponse(vector=vector, keyword_index=keyword_index)

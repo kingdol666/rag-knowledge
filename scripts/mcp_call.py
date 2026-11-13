@@ -48,6 +48,14 @@ def sse_reader(q: queue.Queue) -> None:
 
 
 def main() -> int:
+    # 2026-11-13: 钉死 stdout/stderr 为 UTF-8。中文 Windows 下管道 stdout 默认
+    # cp936——曾观测到唯一一次 "UTF-8→GBK 误解码" 乱码即此通道形态；此后无论
+    # 调用方是否带 -X utf8，工具输出的字节编码都确定不变。
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     args = sys.argv[1:]
     list_tools = "--tools" in args
     raw_out = "--raw" in args

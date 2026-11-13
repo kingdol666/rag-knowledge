@@ -4,7 +4,7 @@
  * ⭐ THE outward-facing API: external hosts (AgentWorkShop) talk to the KB
  * system's own agent — ONE endpoint, functional decoupling. The caller sends
  * a task prompt; the KB agent autonomously decides how to serve it:
- *   - retrieval / Q&A  → /knowledgebase-search skill (QDCVR pipeline)
+ *   - retrieval / Q&A  → /knowledgebase-search skill (HMRS pipeline)
  *   - document ingest  → kb-mcp write + index tools
  *   - experience / graph / anything KB-related → its native tools
  * One prompt in, one complete result out — the caller never orchestrates
@@ -38,6 +38,7 @@ import { engineTurn, getEngine, normalizeEngine, getChatMeta } from '~/server/en
 import { getProjectRoot } from '~/server/utils/claude-config'
 import { buildAgentChatPreamble } from '~/server/utils/kb-instruction'
 import { registerTask, settleTask } from '~/server/utils/agent-task-registry'
+import { normalizeKbMcpToolName } from '~/server/utils/kb-mcp-tools'
 
 interface AgentChatBody {
   prompt?: string
@@ -47,7 +48,9 @@ interface AgentChatBody {
   timeout_ms?: number
 }
 
-const DEFAULT_TIMEOUT_MS = 420_000
+// 2026-11-13: OOD 全覆盖扫描实测 452.8s（14 turns），默认 420s 会把这类诚实
+// 拒答回合截断成 timeout 失败 —— 默认值提到 600s 与 MAX 上限一致。
+const DEFAULT_TIMEOUT_MS = 600_000
 const MAX_TIMEOUT_MS = 600_000
 const MAX_PROMPT_CHARS = 16_000
 const DEFAULT_HARNESS = 'claude'
@@ -101,12 +104,13 @@ async function executeTurn(req: TurnRequest): Promise<Record<string, any>> {
       disallowedTools: AGENT_DISALLOWED,
       maxTurns: 40,
       fullPromptText: buildAgentChatPreamble() + req.task,
+      requireKbMcp: true,
       signal: abort.signal,
     })) {
       if (msg.type === 'assistant') {
         for (const block of (msg.message?.content ?? []) as Array<Record<string, any>>) {
           if (block?.type === 'tool_use' && block?.name) {
-            toolsUsed.push(String(block.name))
+            toolsUsed.push(normalizeKbMcpToolName(block.name) || String(block.name))
           }
           if (block?.type === 'text' && block?.text) {
             partialText += String(block.text)

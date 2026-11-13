@@ -13,6 +13,9 @@ class HealthResponse(BaseModel):
     # 2026-09-11:backend 重启后 chroma hnsw 段损坏 + 嵌入加载失败曾被上层
     # 误判为"服务健康",检索静默降级 BM25 —— 健康面必须如实暴露子状态。
     vector: Optional[dict] = Field(default=None, description="Vector subsystem readiness")
+    # BM25 关键词索引就绪度(2026-11-13):冷启动构建 2288 文档实测约 79s,
+    # 期间两阶段检索会诚实降级 504。ready=全库索引已发布;building=构建中。
+    keyword_index: Optional[dict] = Field(default=None, description="BM25 keyword index readiness")
 
 
 class ParseResponse(BaseModel):

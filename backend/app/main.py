@@ -204,6 +204,20 @@ async def lifespan(app: FastAPI):
 
     app.state.harness_check_task = asyncio.create_task(_startup_harness_check())
 
+    # ── BM25 keyword index prewarm（启动后台预热，非阻塞；2026-11-13）──
+    # 冷启动全库 BM25 构建实测约 79s（2288 docs），此前首次两阶段检索会撞
+    # MCP 5s 等待预算并诚实降级 504。改为启动即在后台线程预热；就绪状态由
+    # /api/v1/health 的 keyword_index 字段如实暴露（building/ready）。
+    async def _startup_keyword_prewarm() -> None:
+        try:
+            from app.services.two_stage_search_service import two_stage_search_service
+            await asyncio.to_thread(two_stage_search_service._ensure_keyword_index)
+            logger.info("BM25 keyword index prewarmed at startup")
+        except Exception as exc:
+            logger.warning("BM25 keyword index prewarm failed (non-fatal, will lazy-build on first search): %s", exc)
+
+    app.state.keyword_prewarm_task = asyncio.create_task(_startup_keyword_prewarm())
+
     yield
 
     # ── Shutdown: stop MinerU API ──────────────────────────────────────
