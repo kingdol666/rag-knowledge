@@ -4,7 +4,8 @@
 > **服务对象**：投稿正本 **`paper-kbs/tex/journal_20p/main_20p.tex`**（*HMRS: A hierarchical management-and-retrieval system for tiered knowledge document organisation and evidence-traced access*，投 Knowledge-Based Systems, ISSN 0950-7051）。根目录 `paper-kbs/tex/` 是历史稿件，本次未改。  
 > **交付规模**：**29 个已验证 PDF（约 59.2 MB）** = 28 篇 KBS 正式文章 + 1 篇 CEUR-WS 配套前驱论文；`kbs_refs.bib` **29 条 BibTeX**（28 × `@article` + 1 × `@inproceedings`）  
 > **筛选漏斗**：OpenAlex 全刊扫描 1787 篇（2023+，OA）→ 191 篇主题匹配且有可下载 PDF → 121 篇初筛候选 → 36 篇 KBS shortlist（+1 篇 CEUR 配套）→ **28 篇 KBS + 1 篇配套下载成功，8 篇 KBS 未获取**  
-> **整合状态（2026-11-14 已完成）**：29 条中 2 条与正本已有 DOI 重复，净并入 **27 条**；27 条**全部在正文引用并出现在参考文献列表**；`main_20p.pdf` 完整编译为 **20 页 / 0 错误 / 0 未定义引用**。详见第 5 节。
+> **整合状态（2026-11-14 已完成）**：29 条中 2 条与正本已有 DOI 重复，净并入 **27 条**；27 条**全部在正文引用并出现在参考文献列表**；`main_20p.pdf` 完整编译为 **20 页 / 0 错误 / 0 未定义引用**。详见第 5 节。  
+> **第二轮复核（同日）**：按 29 篇 PDF 摘要逐条核验引用的**内容、位置与时机**，查出 1 组位置错配 + 5 处描述不符并已全部修正，重新编译验证 15/15 检查通过。报告见 `paper-kbs/notes/CITATION-CONSISTENCY-AUDIT-2026-11-14.md`。
 
 ---
 
@@ -123,19 +124,21 @@
 > **collection membership、derived descriptions、lifecycle state 可审计**，
 > 而非"检索算法更优"或"验证门是原语"。
 
-27 条净新增按论证逻辑分三组，写入 `n2_related.tex` 三个既有小节，每组都是
-「本刊已有工作分类 → HMRS 差异」的连贯段落，不堆砌文献：
+27 条净新增按论证逻辑写入 `n2_related.tex`，每处都是「本刊已有工作分类 → HMRS 差异」的连贯段落，不堆砌文献。**布局经过第二轮引用一致性审计修正**（见下方），不是初版的三组硬塞：
 
 | 位置 | 落地论点 | 实际引用键 |
 |:--|:--|:--|
-| §2.1 Knowledge management and document acquisition（新增段） | 本刊已有软件参考架构 / 设计科学推导 / 完整知识接地系统 / 部署约束 / 领域知识库构建；HMRS 把集合归属、派生描述、生命周期状态作为可审计对象 | `ocaa2023software`, `gallofr2021jkpdesign`, `yang2024building`, `budur2024building`, `vito2025heliot`, `aarab2024system`, `liao2026practical`, `garridomer2026gofai`, `hou2025method`, `ciatto2025large` |
-| §2.2 Retrieval, organisation and agentic search（新增段） | 检索栈的工程化扩展（RAG 部署、软提示、查询扩展、私有库、知识图、实时接地、多智能体）；这些优化"检索什么/怎么用"，HMRS 问的是"哪个受管集合权威、状态可否审计" | `siddharth2024retrieval`, `peng2024soft`, `massai2023evaluatio`, `zan2025private`, `dai2025large`, `huang2025prompting`, `tao2025fine`, `sinha2026finbloom`, `saadaoui2025coordinat` |
-| §2.3 Verification, correction and abstention（新增段） | 可信性侧的综述 / 变形测试 / 基准框架 / 双记忆，以及"完整系统本身即 KBS 常规贡献类型"；HMRS 只声称报告自身证据门的失效并转成配置规则 | `saeed2023explainab`, `zhou2026lgmt`, `hou2025msdiagnos`, `wu2025informati`, `mohamed2026orchestra`, `liu2026automatin`, `chen2026enhancing`, `sorokin2023sigopt` |
+| §2.1 Knowledge management and document acquisition（新增段） | 本刊已有软件参考架构 + 早期 workshop 版与 PoC、完整知识接地系统、部署约束、领域知识库构建，以及**完整系统类贡献**（多 Agent 框架 / 工程建模 / 电路分析 / GBT 超参 AutoML）；HMRS 把集合归属、派生描述、生命周期状态作为可审计对象 | `ocaa2023software`, `gallofr2021jkpdesign`, `yang2024building`, `budur2024building`, `vito2025heliot`, `aarab2024system`, `liao2026practical`, `garridomer2026gofai`, `hou2025method`, `ciatto2025large`, `mohamed2026orchestra`, `liu2026automatin`, `chen2026enhancing`, `sorokin2023sigopt` |
+| §2.2 Retrieval, organisation and agentic search（新增段） | 检索栈的工程化扩展（RAG 部署、软提示、查询扩展、私有库、KG prompt 理解、长尾 KG 提示、图导航、实时接地、多智能体）；HMRS 问的是"哪个受管集合权威、状态可否审计" | `siddharth2024retrieval`, `peng2024soft`, `massai2023evaluatio`, `zan2025private`, `dai2025large`, `huang2025prompting`, `tao2025fine`, `sinha2026finbloom`, `saadaoui2025coordinat` |
+| §2.3 开头 agent memory 段 | 与 MemGPT / Mem0 / A-MEM 并列的持续学习双记忆系统 | `wu2025informati` |
+| §2.3 Verification, correction and abstention（末段） | **纯可信性/评测**：XAI 元综述、逻辑接地变形测试、多步临床诊断基准；HMRS 只声称报告自身证据门的失效并转成配置规则 | `saeed2023explainab`, `zhou2026lgmt`, `hou2025msdiagnos` |
+
+**第二轮审计修正（`notes/CITATION-CONSISTENCY-AUDIT-2026-11-14.md`）**：初版曾把 5 篇与验证/可信性无关的系统工程与持续学习文献塞进 §2.3 的 "trustworthiness side"，属**位置错配**，编译与引文脚本都查不出来；另有 4 处断言超出摘要证据（"reasoning substrate"、"automated model evaluation"、"design-science derivation"、"clinical reasoning"），以及并列引用误带 "under domain shift" 限定语。现已逐条按 PDF 摘要证据改写，并移动 `n8a_eval.tex` 那句到指标定义之后。**引用是否出现 ≠ 引用是否正确**。
 
 **顺带修好的既有问题**：正本原有 6 条"定义了却从未 `\cite`"（因此根本不会出现在参考文献列表）的孤儿条目。其中 5 条已真实补进正文：
 
-- `feng-abstain`, `yin-knowwhat` → §2.3 的 selective prediction 句，与 `kamath` 并列；
-- `es-ragas-2024`, `saad-falcon-ares-2024`, `jarvelin-cumulated-gain-2002` → `n8a_eval.tex` 的 *Measures and controls*，并明确写出**为什么不用**它们（分析单位是受管文档状态，不是生成答案），避免"引而不用"。
+- `feng-abstain`, `yin-knowwhat` → §2.3 作为**独立并列项**（"identifying what LLMs do not know"），不再与 `kamath` 共享 "under domain shift" 限定语；
+- `es-ragas-2024`, `saad-falcon-ares-2024`, `jarvelin-cumulated-gain-2002` → `n8a_eval.tex` 的 *Measures and controls*，紧跟指标定义句；RAGAs/ARES（生成答案语义质量）与 cumulated gain（排序 graded relevance）分开陈述，并明确写出**为什么不用**它们。
 
 第 6 条 `hmrs-demo` 是本项目自己的前置 demo 论文，**匿名评审下故意保持未引用**，因此也不进入参考文献列表——这是唯一被允许的"定义了但未引用"条目，不要为了凑数把它引上。
 
@@ -174,14 +177,20 @@ pdflatex -interaction=nonstopmode main_20p.tex
 | 正文唯一引用键 | 64 → **96**（27 条新增 + 5 条孤儿全部落地） |
 | 未定义引用 / LaTeX 错误 / >15pt overfull | **0 / 0 / 0** |
 | `main_20p.bbl` 生成的 `\bibitem` | **96** 条，27 条新增**逐条核对全部在列表内** |
-| `main_20p.pdf` | **20 页 / 4,004,182 B**（整合前 19 页） |
+| `main_20p.pdf` | **20 页 / 4,004,525 B**（整合前 19 页；第二次编译为引用审计修正后） |
 | 唯一未引用定义 | `hmrs-demo`（双盲，故意） |
+| 第二轮引用一致性审计 | `verify_citation_fix.py` **15/15 PASS**；27 条新增 + 5 条孤儿仍全部引用，零未定义引用 |
 
 BibTeX 仅余 5 条 `Warning--empty pages`（`raptor`、`react-yao`、`selfrag`、
 `lightman-verify` 为**原有**；`gallofr2021jkpdesign` 为本次新增）。CEUR-WS
 Vol-2978 官方目录不标页码，因此**不编造** `pages` 字段，保留该 warning；
 它与既有 4 条同类，不影响输出。`supplementary.tex` 不含 `\bibliography`，
 不受本次整合影响。
+
+审计证据链：`notes/audit_citation_evidence.py` → `kbs_abstract_evidence.json`
+（29 篇 PDF 摘要）、`bib_titles.json`（97 条题名）、`citation_contexts.json`
+（88 个引用点上下文）→ `CITATION-CONSISTENCY-AUDIT-2026-11-14.md`
+（逐条判定）→ `verify_citation_fix.py`（修正后约束复核）。
 
 ---
 

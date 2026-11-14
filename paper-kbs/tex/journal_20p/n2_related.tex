@@ -26,8 +26,8 @@ without establishing a causal link to answer quality.
 A line of work in this journal takes an explicitly architectural form: a
 software reference architecture for journalistic knowledge platforms is
 derived from the literature and a prototype, specifying module
-responsibilities and architecture principles \citep{ocaa2023software}, and its
-design-science derivation is documented separately
+responsibilities and architecture principles \citep{ocaa2023software}, and an
+earlier workshop version outlines the architecture and a proof-of-concept
 \citep{gallofr2021jkpdesign}. Other work builds and evaluates complete
 knowledge-grounded systems---dialogue systems with graph-based semantic
 models \citep{yang2024building}, OpenQA systems for low-resource languages
@@ -38,7 +38,13 @@ models \citep{yang2024building}, OpenQA systems for low-resource languages
 \citep{garridomer2026gofai} treat deployment constraints as design inputs.
 Domain knowledge bases are built either from operator--function descriptions
 \citep{hou2025method} or by instantiating ontologies with LLM-generated domain
-knowledge \citep{ciatto2025large}. HMRS shares this systems orientation but
+knowledge \citep{ciatto2025large}. The same systems orientation appears in an
+open-source multi-agent framework for evidence-based knowledge-graph enrichment
+\citep{mohamed2026orchestra}, LLM-agent systems for data-driven engineering
+modelling \citep{liu2026automatin}, end-to-end LLM systems for circuit analysis
+\citep{chen2026enhancing}, and an intelligent system that automates
+hyperparameter tuning for gradient-boosted trees \citep{sorokin2023sigopt}.
+HMRS shares this systems orientation but
 makes collection membership, derived descriptions and lifecycle state the
 auditable objects, rather than proposing a reference architecture or a domain
 ontology.
@@ -110,8 +116,9 @@ directions: retrieval-augmented generation over engineering design knowledge
 \citep{siddharth2024retrieval}, soft-prompt tuning of dense retrievers
 \citep{peng2024soft}, and an evaluation of semantic-relation query expansion
 in retrieval systems \citep{massai2023evaluatio}. Private-library retrieval
-supports code generation \citep{zan2025private}; knowledge graphs serve both
-as a reasoning substrate \citep{dai2025large} and as a prompting source for
+supports code generation \citep{zan2025private}; work on knowledge graphs
+ranges from studying how LLMs comprehend graph facts supplied in different
+prompt formats \citep{dai2025large} to prompting LLMs with graphs for
 long-tail factual questions \citep{huang2025prompting}, while fine-grained
 stateful exploration navigates graphs through an LLM \citep{tao2025fine}.
 Real-time financial data grounding \citep{sinha2026finbloom} and coordinated
@@ -127,7 +134,8 @@ systems treat memory as an agent-managed store of interaction records:
 MemGPT pages memory between a context window and an external store
 \citep{memgpt}, Mem0 extracts and consolidates long-term memory from
 conversations \citep{mem0}, and A-MEM organises notes as an agentic memory
-graph \citep{amem}. HMRS manages a document corpus with audited lifecycle
+graph \citep{amem}; continual-learning work adds an information-theoretic dual
+memory system \citep{wu2025informati}. HMRS manages a document corpus with audited lifecycle
 state; the stores are complementary rather than competing, and an ingest
 agent of the kind these frameworks assume can also use collection assignment
 and consistency checks of the kind examined here. Knowledge organisation
@@ -137,7 +145,8 @@ descriptions from parsed content at ingest time.
 
 Self-RAG and CRAG integrate evidence assessment or retrieval correction into
 generation \citep{selfrag,crag}; FLARE triggers retrieval during generation
-\citep{flare}. Selective prediction under domain shift \citep{kamath,feng-abstain,yin-knowwhat},
+\citep{flare}. Selective prediction under domain shift \citep{kamath},
+identifying what LLMs do not know \citep{feng-abstain,yin-knowwhat},
 ontology-grounded retrieval \citep{cyberbot}, and citation verifiability
 \citep{liu-verifiability,gao-citations} address adjacent concerns. EPRAG
 diagnoses evidence states to choose responses, clarification or abstention in
@@ -151,20 +160,14 @@ listwise instability and self-preference \citep{zheng-llmjudge,sun-urara,panicks
 \citep{lightman-verify}. These findings motivate separating evidence
 verification from rank ordering and testing abstention at the answer layer.
 
-The systems genre is equally established on the trustworthiness side: a
-systematic meta-survey of explainable AI \citep{saeed2023explainab},
+Trustworthiness and evaluation are also studied at the systems level in this
+venue: a systematic meta-survey of explainable AI \citep{saeed2023explainab},
 logic-grounded metamorphic testing of reasoning reliability
-\citep{zhou2026lgmt}, a benchmark and evaluation framework for multi-step
-clinical reasoning \citep{hou2025msdiagnos}, and an information-theoretic
-dual memory system \citep{wu2025informati}. Open-source multi-agent
-frameworks with evidence-based graph enrichment
-\citep{mohamed2026orchestra}, engineering modelling with LLM agents
-\citep{liu2026automatin}, end-to-end LLM systems for circuit analysis
-\citep{chen2026enhancing}, and intelligent systems with automated model
-evaluation \citep{sorokin2023sigopt} show that complete systems, not only
-algorithms, are a standard contribution in this venue. The distinction
-claimed here is narrower: HMRS reports the measured failure mode of its own
-evidence gate and turns that negative result into a configuration rule.
+\citep{zhou2026lgmt}, and a benchmark plus evaluation framework for multi-step
+clinical diagnosis \citep{hou2025msdiagnos}. These contributions supply the
+vocabulary of reliability and graded evaluation; the distinction claimed here
+is narrower: HMRS reports the measured failure mode of its own evidence gate
+and turns that negative result into a configuration rule.
 
 \subsection{Research gap}
 \label{sec:gap}

@@ -11,6 +11,12 @@
 > `pdflatex+bibtex` 全链编译 **20 页 / 0 错误 / 0 未定义引用 / 0 超宽 overfull**。
 > 2 条 DOI 重复项已去重，`hmrs-demo` 因双盲保持未引用。文献包、阅读指南与
 > 完整验证记录见 `reference/kbs/README.md`；根目录 `tex/` 是历史稿件，未改动。
+>
+> **2026-11-14 第二轮引用一致性审计**：按 29 篇 PDF 摘要逐条核验引用的内容 /
+> 位置 / 时机，查出 §2.3 一组位置错配（5 篇系统工程与持续学习文献被归入
+> "trustworthiness"）与 5 处超出摘要证据的描述，已全部修正并重新编译
+> （仍 20 页 / 96 条参考文献 / 0 错误，约束复核 15/15 PASS）。报告见
+> `notes/CITATION-CONSISTENCY-AUDIT-2026-11-14.md`。
 
 > **2026-10-12 结构优化稿**: `tex/main.pdf` 48 页(elsarticle preprint 12pt,
 > pdflatex+bibtex 编译,0 错误/0 未解析引用/无 >15pt overfull)。本轮按 KBS 写作

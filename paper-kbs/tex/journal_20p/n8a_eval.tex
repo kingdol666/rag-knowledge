@@ -50,16 +50,17 @@ researcher-authored, not sampled user queries.
 measure the returned top five, with MRR zero if no gold is in that window
 \cite{craswell-msmarco-2021}. Scripted route accuracy checks the gold-domain
 label, whereas gold-string containment checks an exact substring in the
-returned evidence; neither measures semantic answer correctness. The answer
+returned evidence; neither measures semantic answer correctness. Automated
+RAG evaluation frameworks \citep{es-ragas-2024,saad-falcon-ares-2024}
+assess the semantic quality of generated answers, while cumulated-gain
+measures \citep{jarvelin-cumulated-gain-2002} evaluate graded relevance of
+ranked results; neither is used here because the unit of analysis is a managed
+document state, not a generated answer. The answer
 grid measures gold-ID presence in answer or trace, lexical coverage of at
 least $\lceil3n/5\rceil$ annotated terms, and citation-marker presence;
 markers do not verify source resolution or entailment. Wilson intervals are
 conditional on questions and a run; exact McNemar tests are exploratory and
-unadjusted. Agent arms use one model and one run per condition. Automated
-RAG evaluation frameworks \citep{es-ragas-2024,saad-falcon-ares-2024} and
-cumulated-gain measures \citep{jarvelin-cumulated-gain-2002} target semantic
-answer quality and graded relevance; they are not used here because the unit
-of analysis is a managed document state, not a generated answer. The
+unadjusted. Agent arms use one model and one run per condition. The
 answer-layer campaigns were driven through the platform chat API by its
 Claude Code engine, and the four-question harness case compared the Claude
 Code harness with the oh-my-pi harness pinned to the ustc/deepseek-flash

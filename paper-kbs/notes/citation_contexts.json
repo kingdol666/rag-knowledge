@@ -1,0 +1,830 @@
+[
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "modular-rag",
+   "gao-ragsurvey"
+  ],
+  "before": "lacement in appropriate collections and attention to consistency as those collections change. A query may need to move from the relevant collection to a document and then to the passage that carries the evidence, while retaining a pointer to its source. These requirements span document management and query-time retrieval. Modular RAG and retrieval surveys already treat indexing and pre-retrieval as pipeline modules",
+  "after": "; this study examines how collection placement, lifecycle operations and per-tier audits connect to the retrieval step that consumes that state. In retrieval-augmented generation (RAG), retrieved material informs generat"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "rag-lewis",
+   "dpr"
+  ],
+  "before": "lar RAG and retrieval surveys already treat indexing and pre-retrieval as pipeline modules \\cite{modular-rag,gao-ragsurvey}; this study examines how collection placement, lifecycle operations and per-tier audits connect to the retrieval step that consumes that state. In retrieval-augmented generation (RAG), retrieved material informs generation; dense retrieval can embed queries and passages in a shared vector space",
+  "after": ". Agentic systems let a language model call retrieval tools \\cite{mcp,singh-agentic-rag}, and hybrid, lexical and graph-structured variants extend the ranking model \\cite{bm25,rrf-cormack,graphrag,lightrag,raptor}. Knowl"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "mcp",
+   "singh-agentic-rag"
+  ],
+  "before": "ne modules \\cite{modular-rag,gao-ragsurvey}; this study examines how collection placement, lifecycle operations and per-tier audits connect to the retrieval step that consumes that state. In retrieval-augmented generation (RAG), retrieved material informs generation; dense retrieval can embed queries and passages in a shared vector space \\cite{rag-lewis,dpr}. Agentic systems let a language model call retrieval tools",
+  "after": ", and hybrid, lexical and graph-structured variants extend the ranking model \\cite{bm25,rrf-cormack,graphrag,lightrag,raptor}. Knowledge management addresses the collection itself: enterprise content management governs o"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "bm25",
+   "rrf-cormack",
+   "graphrag",
+   "lightrag",
+   "raptor"
+  ],
+  "before": "ations and per-tier audits connect to the retrieval step that consumes that state. In retrieval-augmented generation (RAG), retrieved material informs generation; dense retrieval can embed queries and passages in a shared vector space \\cite{rag-lewis,dpr}. Agentic systems let a language model call retrieval tools \\cite{mcp,singh-agentic-rag}, and hybrid, lexical and graph-structured variants extend the ranking model",
+  "after": ". Knowledge management addresses the collection itself: enterprise content management governs organisational documents \\cite{paivarinta-ecm-2005,tyrvaainen-ecm-2006}, metadata and tagging studies ask how documents are de"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "paivarinta-ecm-2005",
+   "tyrvaainen-ecm-2006"
+  ],
+  "before": "e retrieval can embed queries and passages in a shared vector space \\cite{rag-lewis,dpr}. Agentic systems let a language model call retrieval tools \\cite{mcp,singh-agentic-rag}, and hybrid, lexical and graph-structured variants extend the ranking model \\cite{bm25,rrf-cormack,graphrag,lightrag,raptor}. Knowledge management addresses the collection itself: enterprise content management governs organisational documents",
+  "after": ", metadata and tagging studies ask how documents are described and reviewed \\cite{park-metadata-quality-2009,golder-tagging-2006}, and public knowledge bases curate facts under explicit ontologies \\cite{auer-dbpedia-kb-2"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "park-metadata-quality-2009",
+   "golder-tagging-2006"
+  ],
+  "before": "odel call retrieval tools \\cite{mcp,singh-agentic-rag}, and hybrid, lexical and graph-structured variants extend the ranking model \\cite{bm25,rrf-cormack,graphrag,lightrag,raptor}. Knowledge management addresses the collection itself: enterprise content management governs organisational documents \\cite{paivarinta-ecm-2005,tyrvaainen-ecm-2006}, metadata and tagging studies ask how documents are described and reviewed",
+  "after": ", and public knowledge bases curate facts under explicit ontologies \\cite{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}. Semantic similarity measures topical relatedness rather than evidence containment, a failure mode dis"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "auer-dbpedia-kb-2007",
+   "hoffart-yago2-kb-2013"
+  ],
+  "before": "ing model \\cite{bm25,rrf-cormack,graphrag,lightrag,raptor}. Knowledge management addresses the collection itself: enterprise content management governs organisational documents \\cite{paivarinta-ecm-2005,tyrvaainen-ecm-2006}, metadata and tagging studies ask how documents are described and reviewed \\cite{park-metadata-quality-2009,golder-tagging-2006}, and public knowledge bases curate facts under explicit ontologies",
+  "after": ". Semantic similarity measures topical relatedness rather than evidence containment, a failure mode discussed in the hallucination and RAG surveys \\cite{siren,gao-ragsurvey}. A relevant passage may remain hard to reach i"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "siren",
+   "gao-ragsurvey"
+  ],
+  "before": "m-2005,tyrvaainen-ecm-2006}, metadata and tagging studies ask how documents are described and reviewed \\cite{park-metadata-quality-2009,golder-tagging-2006}, and public knowledge bases curate facts under explicit ontologies \\cite{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}. Semantic similarity measures topical relatedness rather than evidence containment, a failure mode discussed in the hallucination and RAG surveys",
+  "after": ". A relevant passage may remain hard to reach if its collection was not properly classified, its description does not reflect its content, or a rename left the index stale. The management--retrieval boundary creates a s"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "callan1995searching",
+   "si2003redde"
+  ],
+  "before": "ao-ragsurvey}. A relevant passage may remain hard to reach if its collection was not properly classified, its description does not reflect its content, or a rename left the index stale. The management--retrieval boundary creates a systems problem: an index alone cannot ensure that a query reaches an appropriate collection, document and passage. Distributed information retrieval has long studied collection selection",
+  "after": ". This work connects selection to managed collection state and audits selected lifecycle outcomes. It asks how a document collection can be managed so that a query can proceed from collection to document to segment, with"
+ },
+ {
+  "file": "n1_intro.tex",
+  "section": "Introduction",
+  "keys": [
+   "mcp"
+  ],
+  "before": "didate segments; it does not prove support. Answer workflows distinguish a completed search without evidence from tool failure. These stages are described in Sections~\\ref{sec:system}--\\ref{sec:implementation}. The platform integrates document parsing, content-informed collection assignment, content-derived descriptions and tags, lifecycle management, the tiered access path and a Model Context Protocol (MCP) server",
+  "after": ". It runs locally and exposes management and retrieval functions to several agent harnesses. We distinguish implemented functions from those exercised by the reported campaigns: the paper evaluates the management loop fi"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "yang-kbs-llm-2025"
+  ],
+  "before": "\\section{Related work} \\label{sec:related} \\subsection{Knowledge management and document acquisition} Studies of LLM integration with knowledge-based methods describe both the potential and the challenges of combining language models with structured knowledge",
+  "after": ". Public knowledge bases organise facts under explicit ontologies \\citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}, whereas enterprise content management emphasises governance over organisational documents \\citep{paiva"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "auer-dbpedia-kb-2007",
+   "hoffart-yago2-kb-2013"
+  ],
+  "before": "\\section{Related work} \\label{sec:related} \\subsection{Knowledge management and document acquisition} Studies of LLM integration with knowledge-based methods describe both the potential and the challenges of combining language models with structured knowledge \\citep{yang-kbs-llm-2025}. Public knowledge bases organise facts under explicit ontologies",
+  "after": ", whereas enterprise content management emphasises governance over organisational documents \\citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006}. Research on organisational knowledge explains how tacit experience becomes shar"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "paivarinta-ecm-2005",
+   "tyrvaainen-ecm-2006"
+  ],
+  "before": "nt and document acquisition} Studies of LLM integration with knowledge-based methods describe both the potential and the challenges of combining language models with structured knowledge \\citep{yang-kbs-llm-2025}. Public knowledge bases organise facts under explicit ontologies \\citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}, whereas enterprise content management emphasises governance over organisational documents",
+  "after": ". Research on organisational knowledge explains how tacit experience becomes shareable \\citep{nonaka-seci-1994,nonaka-seci-ba-2000}; adjacent work studies metadata quality, tagging, human review and auditability \\citep{p"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "nonaka-seci-1994",
+   "nonaka-seci-ba-2000"
+  ],
+  "before": "combining language models with structured knowledge \\citep{yang-kbs-llm-2025}. Public knowledge bases organise facts under explicit ontologies \\citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}, whereas enterprise content management emphasises governance over organisational documents \\citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006}. Research on organisational knowledge explains how tacit experience becomes shareable",
+  "after": "; adjacent work studies metadata quality, tagging, human review and auditability \\citep{park-metadata-quality-2009,golder-tagging-2006,mosqueira-rey-hitl-2022,barredo-arrieta-xai-2020}; automated text categorization prov"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "park-metadata-quality-2009",
+   "golder-tagging-2006",
+   "mosqueira-rey-hitl-2022",
+   "barredo-arrieta-xai-2020"
+  ],
+  "before": "xplicit ontologies \\citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}, whereas enterprise content management emphasises governance over organisational documents \\citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006}. Research on organisational knowledge explains how tacit experience becomes shareable \\citep{nonaka-seci-1994,nonaka-seci-ba-2000}; adjacent work studies metadata quality, tagging, human review and auditability",
+  "after": "; automated text categorization provides the classification backbone \\citep{sebastiani2002machine}. These strands motivate reliable placement and governance, but do not by themselves connect those controls to evidence- c"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "sebastiani2002machine"
+  ],
+  "before": "arinta-ecm-2005,tyrvaainen-ecm-2006}. Research on organisational knowledge explains how tacit experience becomes shareable \\citep{nonaka-seci-1994,nonaka-seci-ba-2000}; adjacent work studies metadata quality, tagging, human review and auditability \\citep{park-metadata-quality-2009,golder-tagging-2006,mosqueira-rey-hitl-2022,barredo-arrieta-xai-2020}; automated text categorization provides the classification backbone",
+  "after": ". These strands motivate reliable placement and governance, but do not by themselves connect those controls to evidence- checked answers. Document-AI methods, including layout-aware analysis and MinerU, recover text and"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "zhong-publaynet-layout-2019",
+   "huang-layoutlmv3-docai-2022",
+   "mineru"
+  ],
+  "before": "golder-tagging-2006,mosqueira-rey-hitl-2022,barredo-arrieta-xai-2020}; automated text categorization provides the classification backbone \\citep{sebastiani2002machine}. These strands motivate reliable placement and governance, but do not by themselves connect those controls to evidence- checked answers. Document-AI methods, including layout-aware analysis and MinerU, recover text and structure from complex documents",
+  "after": ". Near- duplicate detection and provenance provide complementary safeguards during ingestion \\citep{manku-near-dup-2007,missier-prov-2013,cheney-provenance-2009}. HMRS treats acquisition quality, automatic classification"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "manku-near-dup-2007",
+   "missier-prov-2013",
+   "cheney-provenance-2009"
+  ],
+  "before": "ine}. These strands motivate reliable placement and governance, but do not by themselves connect those controls to evidence- checked answers. Document-AI methods, including layout-aware analysis and MinerU, recover text and structure from complex documents \\citep{zhong-publaynet-layout-2019,huang-layoutlmv3-docai-2022,mineru}. Near- duplicate detection and provenance provide complementary safeguards during ingestion",
+  "after": ". HMRS treats acquisition quality, automatic classification and traceable indexing as design commitments to be tested rather than as preprocessing assumptions; the campaigns measure where they hold and where they fail, w"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "ocaa2023software"
+  ],
+  "before": "be tested rather than as preprocessing assumptions; the campaigns measure where they hold and where they fail, without establishing a causal link to answer quality. A line of work in this journal takes an explicitly architectural form: a software reference architecture for journalistic knowledge platforms is derived from the literature and a prototype, specifying module responsibilities and architecture principles",
+  "after": ", and an earlier workshop version outlines the architecture and a proof-of-concept \\citep{gallofr2021jkpdesign}. Other work builds and evaluates complete knowledge-grounded systems---dialogue systems with graph-based sem"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "gallofr2021jkpdesign"
+  ],
+  "before": "ail, without establishing a causal link to answer quality. A line of work in this journal takes an explicitly architectural form: a software reference architecture for journalistic knowledge platforms is derived from the literature and a prototype, specifying module responsibilities and architecture principles \\citep{ocaa2023software}, and an earlier workshop version outlines the architecture and a proof-of-concept",
+  "after": ". Other work builds and evaluates complete knowledge-grounded systems---dialogue systems with graph-based semantic models \\citep{yang2024building}, OpenQA systems for low-resource languages \\citep{budur2024building}, an"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "yang2024building"
+  ],
+  "before": "e architecture for journalistic knowledge platforms is derived from the literature and a prototype, specifying module responsibilities and architecture principles \\citep{ocaa2023software}, and an earlier workshop version outlines the architecture and a proof-of-concept \\citep{gallofr2021jkpdesign}. Other work builds and evaluates complete knowledge-grounded systems---dialogue systems with graph-based semantic models",
+  "after": ", OpenQA systems for low-resource languages \\citep{budur2024building}, an LLM-based clinical decision support system \\citep{vito2025heliot}, and an IR system for bank supervisors \\citep{aarab2024system}---while privacy-p"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "budur2024building"
+  ],
+  "before": "the literature and a prototype, specifying module responsibilities and architecture principles \\citep{ocaa2023software}, and an earlier workshop version outlines the architecture and a proof-of-concept \\citep{gallofr2021jkpdesign}. Other work builds and evaluates complete knowledge-grounded systems---dialogue systems with graph-based semantic models \\citep{yang2024building}, OpenQA systems for low-resource languages",
+  "after": ", an LLM-based clinical decision support system \\citep{vito2025heliot}, and an IR system for bank supervisors \\citep{aarab2024system}---while privacy-preserving service frameworks \\citep{liao2026practical} and LLM-assist"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "vito2025heliot"
+  ],
+  "before": "chitecture principles \\citep{ocaa2023software}, and an earlier workshop version outlines the architecture and a proof-of-concept \\citep{gallofr2021jkpdesign}. Other work builds and evaluates complete knowledge-grounded systems---dialogue systems with graph-based semantic models \\citep{yang2024building}, OpenQA systems for low-resource languages \\citep{budur2024building}, an LLM-based clinical decision support system",
+  "after": ", and an IR system for bank supervisors \\citep{aarab2024system}---while privacy-preserving service frameworks \\citep{liao2026practical} and LLM-assisted construction of expert systems \\citep{garridomer2026gofai} treat de"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "aarab2024system"
+  ],
+  "before": "workshop version outlines the architecture and a proof-of-concept \\citep{gallofr2021jkpdesign}. Other work builds and evaluates complete knowledge-grounded systems---dialogue systems with graph-based semantic models \\citep{yang2024building}, OpenQA systems for low-resource languages \\citep{budur2024building}, an LLM-based clinical decision support system \\citep{vito2025heliot}, and an IR system for bank supervisors",
+  "after": "---while privacy-preserving service frameworks \\citep{liao2026practical} and LLM-assisted construction of expert systems \\citep{garridomer2026gofai} treat deployment constraints as design inputs. Domain knowledge bases a"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "liao2026practical"
+  ],
+  "before": "tep{gallofr2021jkpdesign}. Other work builds and evaluates complete knowledge-grounded systems---dialogue systems with graph-based semantic models \\citep{yang2024building}, OpenQA systems for low-resource languages \\citep{budur2024building}, an LLM-based clinical decision support system \\citep{vito2025heliot}, and an IR system for bank supervisors \\citep{aarab2024system}---while privacy-preserving service frameworks",
+  "after": "and LLM-assisted construction of expert systems \\citep{garridomer2026gofai} treat deployment constraints as design inputs. Domain knowledge bases are built either from operator--function descriptions \\citep{hou2025metho"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "garridomer2026gofai"
+  ],
+  "before": "dge-grounded systems---dialogue systems with graph-based semantic models \\citep{yang2024building}, OpenQA systems for low-resource languages \\citep{budur2024building}, an LLM-based clinical decision support system \\citep{vito2025heliot}, and an IR system for bank supervisors \\citep{aarab2024system}---while privacy-preserving service frameworks \\citep{liao2026practical} and LLM-assisted construction of expert systems",
+  "after": "treat deployment constraints as design inputs. Domain knowledge bases are built either from operator--function descriptions \\citep{hou2025method} or by instantiating ontologies with LLM-generated domain knowledge \\citep"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "hou2025method"
+  ],
+  "before": "r2024building}, an LLM-based clinical decision support system \\citep{vito2025heliot}, and an IR system for bank supervisors \\citep{aarab2024system}---while privacy-preserving service frameworks \\citep{liao2026practical} and LLM-assisted construction of expert systems \\citep{garridomer2026gofai} treat deployment constraints as design inputs. Domain knowledge bases are built either from operator--function descriptions",
+  "after": "or by instantiating ontologies with LLM-generated domain knowledge \\citep{ciatto2025large}. The same systems orientation appears in an open-source multi-agent framework for evidence-based knowledge-graph enrichment \\cit"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "ciatto2025large"
+  ],
+  "before": "an IR system for bank supervisors \\citep{aarab2024system}---while privacy-preserving service frameworks \\citep{liao2026practical} and LLM-assisted construction of expert systems \\citep{garridomer2026gofai} treat deployment constraints as design inputs. Domain knowledge bases are built either from operator--function descriptions \\citep{hou2025method} or by instantiating ontologies with LLM-generated domain knowledge",
+  "after": ". The same systems orientation appears in an open-source multi-agent framework for evidence-based knowledge-graph enrichment \\citep{mohamed2026orchestra}, LLM-agent systems for data-driven engineering modelling \\citep{li"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "mohamed2026orchestra"
+  ],
+  "before": "construction of expert systems \\citep{garridomer2026gofai} treat deployment constraints as design inputs. Domain knowledge bases are built either from operator--function descriptions \\citep{hou2025method} or by instantiating ontologies with LLM-generated domain knowledge \\citep{ciatto2025large}. The same systems orientation appears in an open-source multi-agent framework for evidence-based knowledge-graph enrichment",
+  "after": ", LLM-agent systems for data-driven engineering modelling \\citep{liu2026automatin}, end-to-end LLM systems for circuit analysis \\citep{chen2026enhancing}, and an intelligent system that automates hyperparameter tuning fo"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "liu2026automatin"
+  ],
+  "before": "s as design inputs. Domain knowledge bases are built either from operator--function descriptions \\citep{hou2025method} or by instantiating ontologies with LLM-generated domain knowledge \\citep{ciatto2025large}. The same systems orientation appears in an open-source multi-agent framework for evidence-based knowledge-graph enrichment \\citep{mohamed2026orchestra}, LLM-agent systems for data-driven engineering modelling",
+  "after": ", end-to-end LLM systems for circuit analysis \\citep{chen2026enhancing}, and an intelligent system that automates hyperparameter tuning for gradient-boosted trees \\citep{sorokin2023sigopt}. HMRS shares this systems orien"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "chen2026enhancing"
+  ],
+  "before": "tor--function descriptions \\citep{hou2025method} or by instantiating ontologies with LLM-generated domain knowledge \\citep{ciatto2025large}. The same systems orientation appears in an open-source multi-agent framework for evidence-based knowledge-graph enrichment \\citep{mohamed2026orchestra}, LLM-agent systems for data-driven engineering modelling \\citep{liu2026automatin}, end-to-end LLM systems for circuit analysis",
+  "after": ", and an intelligent system that automates hyperparameter tuning for gradient-boosted trees \\citep{sorokin2023sigopt}. HMRS shares this systems orientation but makes collection membership, derived descriptions and lifecy"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Knowledge management and document acquisition",
+  "keys": [
+   "sorokin2023sigopt"
+  ],
+  "before": "citep{ciatto2025large}. The same systems orientation appears in an open-source multi-agent framework for evidence-based knowledge-graph enrichment \\citep{mohamed2026orchestra}, LLM-agent systems for data-driven engineering modelling \\citep{liu2026automatin}, end-to-end LLM systems for circuit analysis \\citep{chen2026enhancing}, and an intelligent system that automates hyperparameter tuning for gradient-boosted trees",
+  "after": ". HMRS shares this systems orientation but makes collection membership, derived descriptions and lifecycle state the auditable objects, rather than proposing a reference architecture or a domain ontology. \\subsection{Re"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "rag-lewis"
+  ],
+  "before": "lligent system that automates hyperparameter tuning for gradient-boosted trees \\citep{sorokin2023sigopt}. HMRS shares this systems orientation but makes collection membership, derived descriptions and lifecycle state the auditable objects, rather than proposing a reference architecture or a domain ontology. \\subsection{Retrieval, organisation and agentic search} RAG grounds generated responses in retrieved passages",
+  "after": "; dense retrievers learn shared query--passage representations \\citep{dpr}, while BM25 remains a strong lexical baseline \\citep{bm25}. Ghali et al. combine semantic retrieval, vector storage and language models to query"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "dpr"
+  ],
+  "before": "citep{sorokin2023sigopt}. HMRS shares this systems orientation but makes collection membership, derived descriptions and lifecycle state the auditable objects, rather than proposing a reference architecture or a domain ontology. \\subsection{Retrieval, organisation and agentic search} RAG grounds generated responses in retrieved passages \\citep{rag-lewis}; dense retrievers learn shared query--passage representations",
+  "after": ", while BM25 remains a strong lexical baseline \\citep{bm25}. Ghali et al. combine semantic retrieval, vector storage and language models to query structured and unstructured data \\citep{ghali-kbs-retrieval-2025}. Hybrid"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "bm25"
+  ],
+  "before": "tion but makes collection membership, derived descriptions and lifecycle state the auditable objects, rather than proposing a reference architecture or a domain ontology. \\subsection{Retrieval, organisation and agentic search} RAG grounds generated responses in retrieved passages \\citep{rag-lewis}; dense retrievers learn shared query--passage representations \\citep{dpr}, while BM25 remains a strong lexical baseline",
+  "after": ". Ghali et al. combine semantic retrieval, vector storage and language models to query structured and unstructured data \\citep{ghali-kbs-retrieval-2025}. Hybrid retrieval combines sparse and dense signals, including reci"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "ghali-kbs-retrieval-2025"
+  ],
+  "before": "nce architecture or a domain ontology. \\subsection{Retrieval, organisation and agentic search} RAG grounds generated responses in retrieved passages \\citep{rag-lewis}; dense retrievers learn shared query--passage representations \\citep{dpr}, while BM25 remains a strong lexical baseline \\citep{bm25}. Ghali et al. combine semantic retrieval, vector storage and language models to query structured and unstructured data",
+  "after": ". Hybrid retrieval combines sparse and dense signals, including reciprocal-rank fusion \\citep{rrf-cormack}; embedding models such as BGE-M3 support multilingual and multi-granularity search \\citep{bge-m3}. Graph- and tre"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "rrf-cormack"
+  ],
+  "before": "esponses in retrieved passages \\citep{rag-lewis}; dense retrievers learn shared query--passage representations \\citep{dpr}, while BM25 remains a strong lexical baseline \\citep{bm25}. Ghali et al. combine semantic retrieval, vector storage and language models to query structured and unstructured data \\citep{ghali-kbs-retrieval-2025}. Hybrid retrieval combines sparse and dense signals, including reciprocal-rank fusion",
+  "after": "; embedding models such as BGE-M3 support multilingual and multi-granularity search \\citep{bge-m3}. Graph- and tree-structured systems organise and retrieve structured relationships: GraphRAG adds entity-relation graphs"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "bge-m3"
+  ],
+  "before": "tations \\citep{dpr}, while BM25 remains a strong lexical baseline \\citep{bm25}. Ghali et al. combine semantic retrieval, vector storage and language models to query structured and unstructured data \\citep{ghali-kbs-retrieval-2025}. Hybrid retrieval combines sparse and dense signals, including reciprocal-rank fusion \\citep{rrf-cormack}; embedding models such as BGE-M3 support multilingual and multi-granularity search",
+  "after": ". Graph- and tree-structured systems organise and retrieve structured relationships: GraphRAG adds entity-relation graphs and community summaries \\citep{graphrag}, LightRAG uses dual-level retrieval with incremental grap"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "graphrag"
+  ],
+  "before": "uery structured and unstructured data \\citep{ghali-kbs-retrieval-2025}. Hybrid retrieval combines sparse and dense signals, including reciprocal-rank fusion \\citep{rrf-cormack}; embedding models such as BGE-M3 support multilingual and multi-granularity search \\citep{bge-m3}. Graph- and tree-structured systems organise and retrieve structured relationships: GraphRAG adds entity-relation graphs and community summaries",
+  "after": ", LightRAG uses dual-level retrieval with incremental graph merging \\citep{lightrag}, and RAPTOR builds a recursive cluster tree \\citep{raptor}. RMR-SST represents multimodal engineering-document content as structured se"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "lightrag"
+  ],
+  "before": "eval combines sparse and dense signals, including reciprocal-rank fusion \\citep{rrf-cormack}; embedding models such as BGE-M3 support multilingual and multi-granularity search \\citep{bge-m3}. Graph- and tree-structured systems organise and retrieve structured relationships: GraphRAG adds entity-relation graphs and community summaries \\citep{graphrag}, LightRAG uses dual-level retrieval with incremental graph merging",
+  "after": ", and RAPTOR builds a recursive cluster tree \\citep{raptor}. RMR-SST represents multimodal engineering-document content as structured semantic trees and retrieves across abstraction levels \\citep{li-kbs-rmrsst-2026}. Hie"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "raptor"
+  ],
+  "before": "rank fusion \\citep{rrf-cormack}; embedding models such as BGE-M3 support multilingual and multi-granularity search \\citep{bge-m3}. Graph- and tree-structured systems organise and retrieve structured relationships: GraphRAG adds entity-relation graphs and community summaries \\citep{graphrag}, LightRAG uses dual-level retrieval with incremental graph merging \\citep{lightrag}, and RAPTOR builds a recursive cluster tree",
+  "after": ". RMR-SST represents multimodal engineering-document content as structured semantic trees and retrieves across abstraction levels \\citep{li-kbs-rmrsst-2026}. Hierarchical representation is therefore already an establishe"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "li-kbs-rmrsst-2026"
+  ],
+  "before": "ee-structured systems organise and retrieve structured relationships: GraphRAG adds entity-relation graphs and community summaries \\citep{graphrag}, LightRAG uses dual-level retrieval with incremental graph merging \\citep{lightrag}, and RAPTOR builds a recursive cluster tree \\citep{raptor}. RMR-SST represents multimodal engineering-document content as structured semantic trees and retrieves across abstraction levels",
+  "after": ". Hierarchical representation is therefore already an established retrieval concern: RAPTOR summarises a tree of clusters over document text and retrieves over that tree, and GraphRAG retrieves over an entity graph induc"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "raptor",
+   "graphrag"
+  ],
+  "before": "s and documents---which collection exists, which document belongs to it, which description explains it---and selected lifecycle outcomes can be audited across its state sources. The hierarchies that RAPTOR and GraphRAG query are built offline at index time---recursive cluster summarisation and pre-generated community summaries respectively---and their papers do not address incremental maintenance after corpus change",
+  "after": ". LightRAG does contribute incremental graph updates \\citep{lightrag}, so HMRS's difference is not incremental update per se but the governance of collection membership and document lifecycle, reconciled across three sta"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "lightrag"
+  ],
+  "before": "ich description explains it---and selected lifecycle outcomes can be audited across its state sources. The hierarchies that RAPTOR and GraphRAG query are built offline at index time---recursive cluster summarisation and pre-generated community summaries respectively---and their papers do not address incremental maintenance after corpus change \\cite{raptor,graphrag}. LightRAG does contribute incremental graph updates",
+  "after": ", so HMRS's difference is not incremental update per se but the governance of collection membership and document lifecycle, reconciled across three state sources. Incremental vector-index maintenance is itself an active"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "singh2021freshdiskann",
+   "xu2023spfresh"
+  ],
+  "before": "s respectively---and their papers do not address incremental maintenance after corpus change \\cite{raptor,graphrag}. LightRAG does contribute incremental graph updates \\citep{lightrag}, so HMRS's difference is not incremental update per se but the governance of collection membership and document lifecycle, reconciled across three state sources. Incremental vector-index maintenance is itself an active systems concern",
+  "after": "; HMRS complements it at the metadata layer with an explicit re-index operation and three-source reconciliation. Retrieval granularity is likewise a design variable: proposition-level and late-chunking strategies change"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "chen2024dense",
+   "gunther2024late"
+  ],
+  "before": "nt lifecycle, reconciled across three state sources. Incremental vector-index maintenance is itself an active systems concern \\cite{singh2021freshdiskann,xu2023spfresh}; HMRS complements it at the metadata layer with an explicit re-index operation and three-source reconciliation. Retrieval granularity is likewise a design variable: proposition-level and late-chunking strategies change what a retrievable unit carries",
+  "after": ". TEIE-RAG combines hierarchical semantic chunking with retrieval-model tuning and source grounding for engineering information extraction \\citep{shen-kbs-teierag-2026}. HMRS splits at recognised structural markers and i"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "shen-kbs-teierag-2026"
+  ],
+  "before": "complements it at the metadata layer with an explicit re-index operation and three-source reconciliation. Retrieval granularity is likewise a design variable: proposition-level and late-chunking strategies change what a retrievable unit carries \\cite{chen2024dense,gunther2024late}. TEIE-RAG combines hierarchical semantic chunking with retrieval-model tuning and source grounding for engineering information extraction",
+  "after": ". HMRS splits at recognised structural markers and indexes the resulting parts. HMRS uses a narrower document--library--tag graph for navigation and candidate expansion; the graph does not establish answer evidence on it"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "callan1995searching",
+   "si2003redde"
+  ],
+  "before": "ts at recognised structural markers and indexes the resulting parts. HMRS uses a narrower document--library--tag graph for navigation and candidate expansion; the graph does not establish answer evidence on its own. The decision of which collection to consult has a longer history in distributed IR: resource-selection methods such as CORI and ReDDE rank collections by estimated relevance before searching within them",
+  "after": ". HMRS adopts the same select-then-search ordering but treats collections as managed, reconciled state rather than static statistical summaries. Tool-using agents extend retrieval through iterative interaction \\citep{re"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "react-yao",
+   "toolformer"
+  ],
+  "before": "to consult has a longer history in distributed IR: resource-selection methods such as CORI and ReDDE rank collections by estimated relevance before searching within them \\citep{callan1995searching,si2003redde}. HMRS adopts the same select-then-search ordering but treats collections as managed, reconciled state rather than static statistical summaries. Tool-using agents extend retrieval through iterative interaction",
+  "after": ". MCP standardises access to tool servers \\citep{mcp}, while Modular RAG and agentic-retrieval surveys describe reconfigurable retrieval pipelines and their efficiency challenges \\citep{modular-rag,singh-agentic-rag}. De"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "mcp"
+  ],
+  "before": "methods such as CORI and ReDDE rank collections by estimated relevance before searching within them \\citep{callan1995searching,si2003redde}. HMRS adopts the same select-then-search ordering but treats collections as managed, reconciled state rather than static statistical summaries. Tool-using agents extend retrieval through iterative interaction \\citep{react-yao,toolformer}. MCP standardises access to tool servers",
+  "after": ", while Modular RAG and agentic-retrieval surveys describe reconfigurable retrieval pipelines and their efficiency challenges \\citep{modular-rag,singh-agentic-rag}. DeepRead performs structure-aware reasoning for agentic"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "modular-rag",
+   "singh-agentic-rag"
+  ],
+  "before": "e}. HMRS adopts the same select-then-search ordering but treats collections as managed, reconciled state rather than static statistical summaries. Tool-using agents extend retrieval through iterative interaction \\citep{react-yao,toolformer}. MCP standardises access to tool servers \\citep{mcp}, while Modular RAG and agentic-retrieval surveys describe reconfigurable retrieval pipelines and their efficiency challenges",
+  "after": ". DeepRead performs structure-aware reasoning for agentic search: it converts a document to structured Markdown, indexes paragraphs with section coordinates, and lets an agent locate then read sections in order \\citep{de"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "deepread"
+  ],
+  "before": "tandardises access to tool servers \\citep{mcp}, while Modular RAG and agentic-retrieval surveys describe reconfigurable retrieval pipelines and their efficiency challenges \\citep{modular-rag,singh-agentic-rag}. DeepRead performs structure-aware reasoning for agentic search: it converts a document to structured Markdown, indexes paragraphs with section coordinates, and lets an agent locate then read sections in order",
+  "after": ". Its hierarchy is thus a read-only, per-document navigation aid built once at ingestion. HMRS differs in scope and in lifecycle: its hierarchy spans collections and documents, is a persistent managed asset whose state c"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "siddharth2024retrieval"
+  ],
+  "before": "lifecycle: its hierarchy spans collections and documents, is a persistent managed asset whose state can be audited after selected operations, and exposes the catalogue-first librarian lane alongside dense and hybrid alternatives under explicit call and tool policies. Recent articles in this venue extend the retrieval stack in complementary directions: retrieval-augmented generation over engineering design knowledge",
+  "after": ", soft-prompt tuning of dense retrievers \\citep{peng2024soft}, and an evaluation of semantic-relation query expansion in retrieval systems \\citep{massai2023evaluatio}. Private-library retrieval supports code generation \\"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "peng2024soft"
+  ],
+  "before": "nt managed asset whose state can be audited after selected operations, and exposes the catalogue-first librarian lane alongside dense and hybrid alternatives under explicit call and tool policies. Recent articles in this venue extend the retrieval stack in complementary directions: retrieval-augmented generation over engineering design knowledge \\citep{siddharth2024retrieval}, soft-prompt tuning of dense retrievers",
+  "after": ", and an evaluation of semantic-relation query expansion in retrieval systems \\citep{massai2023evaluatio}. Private-library retrieval supports code generation \\citep{zan2025private}; work on knowledge graphs ranges from s"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "massai2023evaluatio"
+  ],
+  "before": "irst librarian lane alongside dense and hybrid alternatives under explicit call and tool policies. Recent articles in this venue extend the retrieval stack in complementary directions: retrieval-augmented generation over engineering design knowledge \\citep{siddharth2024retrieval}, soft-prompt tuning of dense retrievers \\citep{peng2024soft}, and an evaluation of semantic-relation query expansion in retrieval systems",
+  "after": ". Private-library retrieval supports code generation \\citep{zan2025private}; work on knowledge graphs ranges from studying how LLMs comprehend graph facts supplied in different prompt formats \\citep{dai2025large} to prom"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "zan2025private"
+  ],
+  "before": "and tool policies. Recent articles in this venue extend the retrieval stack in complementary directions: retrieval-augmented generation over engineering design knowledge \\citep{siddharth2024retrieval}, soft-prompt tuning of dense retrievers \\citep{peng2024soft}, and an evaluation of semantic-relation query expansion in retrieval systems \\citep{massai2023evaluatio}. Private-library retrieval supports code generation",
+  "after": "; work on knowledge graphs ranges from studying how LLMs comprehend graph facts supplied in different prompt formats \\citep{dai2025large} to prompting LLMs with graphs for long-tail factual questions \\citep{huang2025prom"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "dai2025large"
+  ],
+  "before": "er engineering design knowledge \\citep{siddharth2024retrieval}, soft-prompt tuning of dense retrievers \\citep{peng2024soft}, and an evaluation of semantic-relation query expansion in retrieval systems \\citep{massai2023evaluatio}. Private-library retrieval supports code generation \\citep{zan2025private}; work on knowledge graphs ranges from studying how LLMs comprehend graph facts supplied in different prompt formats",
+  "after": "to prompting LLMs with graphs for long-tail factual questions \\citep{huang2025prompting}, while fine-grained stateful exploration navigates graphs through an LLM \\citep{tao2025fine}. Real-time financial data grounding \\"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "huang2025prompting"
+  ],
+  "before": "of dense retrievers \\citep{peng2024soft}, and an evaluation of semantic-relation query expansion in retrieval systems \\citep{massai2023evaluatio}. Private-library retrieval supports code generation \\citep{zan2025private}; work on knowledge graphs ranges from studying how LLMs comprehend graph facts supplied in different prompt formats \\citep{dai2025large} to prompting LLMs with graphs for long-tail factual questions",
+  "after": ", while fine-grained stateful exploration navigates graphs through an LLM \\citep{tao2025fine}. Real-time financial data grounding \\citep{sinha2026finbloom} and coordinated multi-agent answer generation \\citep{saadaoui202"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "tao2025fine"
+  ],
+  "before": "retrieval systems \\citep{massai2023evaluatio}. Private-library retrieval supports code generation \\citep{zan2025private}; work on knowledge graphs ranges from studying how LLMs comprehend graph facts supplied in different prompt formats \\citep{dai2025large} to prompting LLMs with graphs for long-tail factual questions \\citep{huang2025prompting}, while fine-grained stateful exploration navigates graphs through an LLM",
+  "after": ". Real-time financial data grounding \\citep{sinha2026finbloom} and coordinated multi-agent answer generation \\citep{saadaoui2025coordinat} illustrate the range of deployed configurations. These systems optimise what is r"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "sinha2026finbloom"
+  ],
+  "before": "ibrary retrieval supports code generation \\citep{zan2025private}; work on knowledge graphs ranges from studying how LLMs comprehend graph facts supplied in different prompt formats \\citep{dai2025large} to prompting LLMs with graphs for long-tail factual questions \\citep{huang2025prompting}, while fine-grained stateful exploration navigates graphs through an LLM \\citep{tao2025fine}. Real-time financial data grounding",
+  "after": "and coordinated multi-agent answer generation \\citep{saadaoui2025coordinat} illustrate the range of deployed configurations. These systems optimise what is retrieved and how it is used; HMRS instead asks which managed c"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Retrieval, organisation and agentic search",
+  "keys": [
+   "saadaoui2025coordinat"
+  ],
+  "before": "n knowledge graphs ranges from studying how LLMs comprehend graph facts supplied in different prompt formats \\citep{dai2025large} to prompting LLMs with graphs for long-tail factual questions \\citep{huang2025prompting}, while fine-grained stateful exploration navigates graphs through an LLM \\citep{tao2025fine}. Real-time financial data grounding \\citep{sinha2026finbloom} and coordinated multi-agent answer generation",
+  "after": "illustrate the range of deployed configurations. These systems optimise what is retrieved and how it is used; HMRS instead asks which managed collection is authoritative and whether its state can be audited after each l"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "memgpt"
+  ],
+  "before": "ed and how it is used; HMRS instead asks which managed collection is authoritative and whether its state can be audited after each lifecycle operation. \\subsection{Verification, correction and abstention} Two further lines border the design without competing with it. Agent memory systems treat memory as an agent-managed store of interaction records: MemGPT pages memory between a context window and an external store",
+  "after": ", Mem0 extracts and consolidates long-term memory from conversations \\citep{mem0}, and A-MEM organises notes as an agentic memory graph \\citep{amem}; continual-learning work adds an information-theoretic dual memory syst"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "mem0"
+  ],
+  "before": "and whether its state can be audited after each lifecycle operation. \\subsection{Verification, correction and abstention} Two further lines border the design without competing with it. Agent memory systems treat memory as an agent-managed store of interaction records: MemGPT pages memory between a context window and an external store \\citep{memgpt}, Mem0 extracts and consolidates long-term memory from conversations",
+  "after": ", and A-MEM organises notes as an agentic memory graph \\citep{amem}; continual-learning work adds an information-theoretic dual memory system \\citep{wu2025informati}. HMRS manages a document corpus with audited lifecycle"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "amem"
+  ],
+  "before": ". \\subsection{Verification, correction and abstention} Two further lines border the design without competing with it. Agent memory systems treat memory as an agent-managed store of interaction records: MemGPT pages memory between a context window and an external store \\citep{memgpt}, Mem0 extracts and consolidates long-term memory from conversations \\citep{mem0}, and A-MEM organises notes as an agentic memory graph",
+  "after": "; continual-learning work adds an information-theoretic dual memory system \\citep{wu2025informati}. HMRS manages a document corpus with audited lifecycle state; the stores are complementary rather than competing, and an"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "wu2025informati"
+  ],
+  "before": "sign without competing with it. Agent memory systems treat memory as an agent-managed store of interaction records: MemGPT pages memory between a context window and an external store \\citep{memgpt}, Mem0 extracts and consolidates long-term memory from conversations \\citep{mem0}, and A-MEM organises notes as an agentic memory graph \\citep{amem}; continual-learning work adds an information-theoretic dual memory system",
+  "after": ". HMRS manages a document corpus with audited lifecycle state; the stores are complementary rather than competing, and an ingest agent of the kind these frameworks assume can also use collection assignment and consistenc"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "skos"
+  ],
+  "before": "y graph \\citep{amem}; continual-learning work adds an information-theoretic dual memory system \\citep{wu2025informati}. HMRS manages a document corpus with audited lifecycle state; the stores are complementary rather than competing, and an ingest agent of the kind these frameworks assume can also use collection assignment and consistency checks of the kind examined here. Knowledge organisation standards such as SKOS",
+  "after": "and Dublin Core provide conventions for vocabularies and descriptive metadata; HMRS derives collection and document descriptions from parsed content at ingest time. Self-RAG and CRAG integrate evidence assessment or re"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "selfrag",
+   "crag"
+  ],
+  "before": "ese frameworks assume can also use collection assignment and consistency checks of the kind examined here. Knowledge organisation standards such as SKOS \\citep{skos} and Dublin Core provide conventions for vocabularies and descriptive metadata; HMRS derives collection and document descriptions from parsed content at ingest time. Self-RAG and CRAG integrate evidence assessment or retrieval correction into generation",
+  "after": "; FLARE triggers retrieval during generation \\citep{flare}. Selective prediction under domain shift \\citep{kamath}, identifying what LLMs do not know \\citep{feng-abstain,yin-knowwhat}, ontology-grounded retrieval \\citep{"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "flare"
+  ],
+  "before": "istency checks of the kind examined here. Knowledge organisation standards such as SKOS \\citep{skos} and Dublin Core provide conventions for vocabularies and descriptive metadata; HMRS derives collection and document descriptions from parsed content at ingest time. Self-RAG and CRAG integrate evidence assessment or retrieval correction into generation \\citep{selfrag,crag}; FLARE triggers retrieval during generation",
+  "after": ". Selective prediction under domain shift \\citep{kamath}, identifying what LLMs do not know \\citep{feng-abstain,yin-knowwhat}, ontology-grounded retrieval \\citep{cyberbot}, and citation verifiability \\citep{liu-verifiabi"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "kamath"
+  ],
+  "before": "anisation standards such as SKOS \\citep{skos} and Dublin Core provide conventions for vocabularies and descriptive metadata; HMRS derives collection and document descriptions from parsed content at ingest time. Self-RAG and CRAG integrate evidence assessment or retrieval correction into generation \\citep{selfrag,crag}; FLARE triggers retrieval during generation \\citep{flare}. Selective prediction under domain shift",
+  "after": ", identifying what LLMs do not know \\citep{feng-abstain,yin-knowwhat}, ontology-grounded retrieval \\citep{cyberbot}, and citation verifiability \\citep{liu-verifiability,gao-citations} address adjacent concerns. EPRAG dia"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "feng-abstain",
+   "yin-knowwhat"
+  ],
+  "before": "Dublin Core provide conventions for vocabularies and descriptive metadata; HMRS derives collection and document descriptions from parsed content at ingest time. Self-RAG and CRAG integrate evidence assessment or retrieval correction into generation \\citep{selfrag,crag}; FLARE triggers retrieval during generation \\citep{flare}. Selective prediction under domain shift \\citep{kamath}, identifying what LLMs do not know",
+  "after": ", ontology-grounded retrieval \\citep{cyberbot}, and citation verifiability \\citep{liu-verifiability,gao-citations} address adjacent concerns. EPRAG diagnoses evidence states to choose responses, clarification or abstenti"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "cyberbot"
+  ],
+  "before": "e metadata; HMRS derives collection and document descriptions from parsed content at ingest time. Self-RAG and CRAG integrate evidence assessment or retrieval correction into generation \\citep{selfrag,crag}; FLARE triggers retrieval during generation \\citep{flare}. Selective prediction under domain shift \\citep{kamath}, identifying what LLMs do not know \\citep{feng-abstain,yin-knowwhat}, ontology-grounded retrieval",
+  "after": ", and citation verifiability \\citep{liu-verifiability,gao-citations} address adjacent concerns. EPRAG diagnoses evidence states to choose responses, clarification or abstention in multi-source enterprise retrieval \\citep"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "liu-verifiability",
+   "gao-citations"
+  ],
+  "before": "ent descriptions from parsed content at ingest time. Self-RAG and CRAG integrate evidence assessment or retrieval correction into generation \\citep{selfrag,crag}; FLARE triggers retrieval during generation \\citep{flare}. Selective prediction under domain shift \\citep{kamath}, identifying what LLMs do not know \\citep{feng-abstain,yin-knowwhat}, ontology-grounded retrieval \\citep{cyberbot}, and citation verifiability",
+  "after": "address adjacent concerns. EPRAG diagnoses evidence states to choose responses, clarification or abstention in multi-source enterprise retrieval \\citep{kinalioglu-kbs-eprag-2026}. HMRS externalises verification as a reu"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "kinalioglu-kbs-eprag-2026"
+  ],
+  "before": "val during generation \\citep{flare}. Selective prediction under domain shift \\citep{kamath}, identifying what LLMs do not know \\citep{feng-abstain,yin-knowwhat}, ontology-grounded retrieval \\citep{cyberbot}, and citation verifiability \\citep{liu-verifiability,gao-citations} address adjacent concerns. EPRAG diagnoses evidence states to choose responses, clarification or abstention in multi-source enterprise retrieval",
+  "after": ". HMRS externalises verification as a reusable server-side operation: the gate fetches document text, judges evidence and returns provenance to the answer layer. This design makes the verifier inspectable, but not infall"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "zheng-llmjudge",
+   "sun-urara",
+   "panickssery-selfpref"
+  ],
+  "before": "ion in multi-source enterprise retrieval \\citep{kinalioglu-kbs-eprag-2026}. HMRS externalises verification as a reusable server-side operation: the gate fetches document text, judges evidence and returns provenance to the answer layer. This design makes the verifier inspectable, but not infallible. The LLM-as-a-judge literature documents preference bias, imperfect agreement, listwise instability and self-preference",
+  "after": "; outcome-based verification can reward flawed reasoning \\citep{lightman-verify}. These findings motivate separating evidence verification from rank ordering and testing abstention at the answer layer. Trustworthiness a"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "lightman-verify"
+  ],
+  "before": "a reusable server-side operation: the gate fetches document text, judges evidence and returns provenance to the answer layer. This design makes the verifier inspectable, but not infallible. The LLM-as-a-judge literature documents preference bias, imperfect agreement, listwise instability and self-preference \\citep{zheng-llmjudge,sun-urara,panickssery-selfpref}; outcome-based verification can reward flawed reasoning",
+  "after": ". These findings motivate separating evidence verification from rank ordering and testing abstention at the answer layer. Trustworthiness and evaluation are also studied at the systems level in this venue: a systematic"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "saeed2023explainab"
+  ],
+  "before": "wise instability and self-preference \\citep{zheng-llmjudge,sun-urara,panickssery-selfpref}; outcome-based verification can reward flawed reasoning \\citep{lightman-verify}. These findings motivate separating evidence verification from rank ordering and testing abstention at the answer layer. Trustworthiness and evaluation are also studied at the systems level in this venue: a systematic meta-survey of explainable AI",
+  "after": ", logic-grounded metamorphic testing of reasoning reliability \\citep{zhou2026lgmt}, and a benchmark plus evaluation framework for multi-step clinical diagnosis \\citep{hou2025msdiagnos}. These contributions supply the voc"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "zhou2026lgmt"
+  ],
+  "before": "f}; outcome-based verification can reward flawed reasoning \\citep{lightman-verify}. These findings motivate separating evidence verification from rank ordering and testing abstention at the answer layer. Trustworthiness and evaluation are also studied at the systems level in this venue: a systematic meta-survey of explainable AI \\citep{saeed2023explainab}, logic-grounded metamorphic testing of reasoning reliability",
+  "after": ", and a benchmark plus evaluation framework for multi-step clinical diagnosis \\citep{hou2025msdiagnos}. These contributions supply the vocabulary of reliability and graded evaluation; the distinction claimed here is narr"
+ },
+ {
+  "file": "n2_related.tex",
+  "section": "Verification, correction and abstention",
+  "keys": [
+   "hou2025msdiagnos"
+  ],
+  "before": "motivate separating evidence verification from rank ordering and testing abstention at the answer layer. Trustworthiness and evaluation are also studied at the systems level in this venue: a systematic meta-survey of explainable AI \\citep{saeed2023explainab}, logic-grounded metamorphic testing of reasoning reliability \\citep{zhou2026lgmt}, and a benchmark plus evaluation framework for multi-step clinical diagnosis",
+  "after": ". These contributions supply the vocabulary of reliability and graded evaluation; the distinction claimed here is narrower: HMRS reports the measured failure mode of its own evidence gate and turns that negative result i"
+ },
+ {
+  "file": "n3_overview.tex",
+  "section": "System overview and management model",
+  "keys": [
+   "mcp"
+  ],
+  "before": "\\section{System overview and management model} \\label{sec:system} HMRS is a self-hosted knowledge document management system for converting heterogeneous documents into managed, searchable collections. A Python parsing service, a TypeScript web application and an MCP tool server share local storage and retrieval engines",
+  "after": ". The design follows from the dependency chain of Section~\\ref{sec:intro}: what a document is parsed as determines what can be indexed, the collection it is filed into determines which tier can see it, and the tiers that"
+ },
+ {
+  "file": "n4_acquisition.tex",
+  "section": "Acquisition and automatic classification: from parsed document to\nowned collection",
+  "keys": [
+   "mineru"
+  ],
+  "before": "\\section{Acquisition and automatic classification: from parsed document to owned collection} \\label{sec:acquisition} Acquisition determines what later retrieval can support, and it is where a document is assigned to the collection that owns it. HMRS submits PDFs, Office files and scans to MinerU through an asynchronous parsing service",
+  "after": "; parse tasks return identifiers that callers can poll, while workflow quality review examines the resulting text for parsing defects. The intended ingest workflow includes submission, parsing, agent-mediated quality re"
+ },
+ {
+  "file": "n6_retrieval.tex",
+  "section": "Tier policies and the evidence gate",
+  "keys": [
+   "laya"
+  ],
+  "before": "per-library vector top-30 at cosine threshold 0.35 together with catalogue candidates, followed by fusion and a twelve-candidate cap. These values identify that experiment, not the current chat default. A composed hybrid directive may call vector and catalogue tools in an agent workflow. Table~\\ref{tab:lanes} summarises the current modes and the evaluated composition. The gate is the local Laya evidence classifier",
+  "after": ", exposed as \\path{kb_laya_judge}. In reference mode, the server fetches candidate documents, scores their segments against the query and returns surviving segments with provenance and a bounded evidence pack. This is a"
+ },
+ {
+  "file": "n7_implementation.tex",
+  "section": "Runtime and deployment",
+  "keys": [
+   "chroma",
+   "hnsw",
+   "bge-m3"
+  ],
+  "before": "es endpoint timeouts and turn limits, and may register an asynchronous task. Lane-specific retrieval sequences and call budgets are workflow instructions; the endpoint does not enforce a separate per-lane call quota. \\subsection{Runtime and deployment} \\label{sec:impl-runtime} The backend uses Python 3.12 and FastAPI. ChromaDB stores cosine-space HNSW collections with normalised BGE-M3 embeddings (1024 dimensions)",
+  "after": "; Neo4j stores the document graph \\cite{neo4j}; BM25 supports lexical search \\cite{bm25}; MinerU provides parsing and OCR \\cite{mineru}. The Laya verifier runs locally as a serialised worker. The evaluation environment"
+ },
+ {
+  "file": "n7_implementation.tex",
+  "section": "Runtime and deployment",
+  "keys": [
+   "neo4j"
+  ],
+  "before": "synchronous task. Lane-specific retrieval sequences and call budgets are workflow instructions; the endpoint does not enforce a separate per-lane call quota. \\subsection{Runtime and deployment} \\label{sec:impl-runtime} The backend uses Python 3.12 and FastAPI. ChromaDB stores cosine-space HNSW collections with normalised BGE-M3 embeddings (1024 dimensions) \\cite{chroma,hnsw,bge-m3}; Neo4j stores the document graph",
+  "after": "; BM25 supports lexical search \\cite{bm25}; MinerU provides parsing and OCR \\cite{mineru}. The Laya verifier runs locally as a serialised worker. The evaluation environment is one self-hosted Windows workstation with an"
+ },
+ {
+  "file": "n7_implementation.tex",
+  "section": "Runtime and deployment",
+  "keys": [
+   "bm25"
+  ],
+  "before": "equences and call budgets are workflow instructions; the endpoint does not enforce a separate per-lane call quota. \\subsection{Runtime and deployment} \\label{sec:impl-runtime} The backend uses Python 3.12 and FastAPI. ChromaDB stores cosine-space HNSW collections with normalised BGE-M3 embeddings (1024 dimensions) \\cite{chroma,hnsw,bge-m3}; Neo4j stores the document graph \\cite{neo4j}; BM25 supports lexical search",
+  "after": "; MinerU provides parsing and OCR \\cite{mineru}. The Laya verifier runs locally as a serialised worker. The evaluation environment is one self-hosted Windows workstation with an RTX 5060 (8 GB) used for embeddings and j"
+ },
+ {
+  "file": "n7_implementation.tex",
+  "section": "Runtime and deployment",
+  "keys": [
+   "mineru"
+  ],
+  "before": "ctions; the endpoint does not enforce a separate per-lane call quota. \\subsection{Runtime and deployment} \\label{sec:impl-runtime} The backend uses Python 3.12 and FastAPI. ChromaDB stores cosine-space HNSW collections with normalised BGE-M3 embeddings (1024 dimensions) \\cite{chroma,hnsw,bge-m3}; Neo4j stores the document graph \\cite{neo4j}; BM25 supports lexical search \\cite{bm25}; MinerU provides parsing and OCR",
+  "after": ". The Laya verifier runs locally as a serialised worker. The evaluation environment is one self-hosted Windows workstation with an RTX 5060 (8 GB) used for embeddings and judging. Local execution reduces external servic"
+ },
+ {
+  "file": "n8a_eval.tex",
+  "section": "Experimental setup",
+  "keys": [
+   "craswell-msmarco-2021"
+  ],
+  "before": "comparison. A separate routing corpus has 138 documents in 879 parts across ten domains, 72 in-domain questions and four out-of-domain probes per arm; two cross-placeholder probes are excluded. Questions and annotations are researcher-authored, not sampled user queries. \\textbf{Measures and controls.} Document-level Hit@5, Recall@5 and MRR@5 measure the returned top five, with MRR zero if no gold is in that window",
+  "after": ". Scripted route accuracy checks the gold-domain label, whereas gold-string containment checks an exact substring in the returned evidence; neither measures semantic answer correctness. Automated RAG evaluation framework"
+ },
+ {
+  "file": "n8a_eval.tex",
+  "section": "Experimental setup",
+  "keys": [
+   "es-ragas-2024",
+   "saad-falcon-ares-2024"
+  ],
+  "before": "sampled user queries. \\textbf{Measures and controls.} Document-level Hit@5, Recall@5 and MRR@5 measure the returned top five, with MRR zero if no gold is in that window \\cite{craswell-msmarco-2021}. Scripted route accuracy checks the gold-domain label, whereas gold-string containment checks an exact substring in the returned evidence; neither measures semantic answer correctness. Automated RAG evaluation frameworks",
+  "after": "assess the semantic quality of generated answers, while cumulated-gain measures \\citep{jarvelin-cumulated-gain-2002} evaluate graded relevance of ranked results; neither is used here because the unit of analysis is a ma"
+ },
+ {
+  "file": "n8a_eval.tex",
+  "section": "Experimental setup",
+  "keys": [
+   "jarvelin-cumulated-gain-2002"
+  ],
+  "before": "e, with MRR zero if no gold is in that window \\cite{craswell-msmarco-2021}. Scripted route accuracy checks the gold-domain label, whereas gold-string containment checks an exact substring in the returned evidence; neither measures semantic answer correctness. Automated RAG evaluation frameworks \\citep{es-ragas-2024,saad-falcon-ares-2024} assess the semantic quality of generated answers, while cumulated-gain measures",
+  "after": "evaluate graded relevance of ranked results; neither is used here because the unit of analysis is a managed document state, not a generated answer. The answer grid measures gold-ID presence in answer or trace, lexical c"
+ }
+]
