@@ -5,6 +5,18 @@
 \expandafter\ifx\csname href\endcsname\relax
   \def\href#1#2{#2} \def\path#1{#1}\fi
 
+\bibitem{modular-rag}
+Y.~Gao, Y.~Xiong, M.~Wang, H.~Wang, Modular {RAG}: Transforming {RAG} systems
+  into {LEGO}-like reconfigurable frameworks, ACM Transactions on Information
+  Systems 44 (2026) 1--53.
+\newblock \href {https://doi.org/10.1145/3837856} {\path{doi:10.1145/3837856}}.
+
+\bibitem{gao-ragsurvey}
+Y.~Gao, Y.~Xiong, X.~Gao, et~al., Retrieval-augmented generation for large
+  language models: A survey, arXiv preprint arXiv:2312.10997 (2023).
+\newblock \href {https://doi.org/10.48550/arXiv.2312.10997}
+  {\path{doi:10.48550/arXiv.2312.10997}}.
+
 \bibitem{rag-lewis}
 P.~Lewis, E.~Perez, A.~Piktus, F.~Petroni, V.~Karpukhin, N.~Goyal,
   H.~K{\"u}ttler, M.~Lewis, W.~Yih, T.~Rockt{\"a}schel, S.~Riedel, D.~Kiela,
@@ -34,139 +46,6 @@ A.~Singh, A.~Ehtesham, S.~Kumar, T.~T. Khoei, A.~V. Vasilakos, Agentic
 \newblock \href {https://doi.org/10.48550/arXiv.2501.09136}
   {\path{doi:10.48550/arXiv.2501.09136}}.
 
-\bibitem{siren}
-Y.~Zhang, Y.~Li, L.~Cui, D.~Cai, L.~Liu, T.~Fu, X.~Huang, E.~Zhao, Y.~Zhang,
-  C.~Xu, Y.~Chen, L.~Wang, A.~T. Luu, W.~Bi, F.~Shi, S.~Shi,
-  \href{https://arxiv.org/abs/2309.01219}{Siren's song in the {AI} ocean: A
-  survey on hallucination in large language models}, arXiv preprint
-  arXiv:2309.01219 (2023).
-\newline\urlprefix\url{https://arxiv.org/abs/2309.01219}
-
-\bibitem{gao-ragsurvey}
-Y.~Gao, Y.~Xiong, X.~Gao, et~al., Retrieval-augmented generation for large
-  language models: A survey, arXiv preprint arXiv:2312.10997 (2023).
-\newblock \href {https://doi.org/10.48550/arXiv.2312.10997}
-  {\path{doi:10.48550/arXiv.2312.10997}}.
-
-\bibitem{mineru}
-B.~Wang, C.~Xu, X.~Zhao, L.~Ouyang, F.~Wu, Z.~Zhao, R.~Xu, K.~Liu, Y.~Qu,
-  F.~Shang, B.~Zhang, L.~Wei, Z.~Sui, W.~Li, B.~Shi, Y.~Qiao, D.~Lin, C.~He,
-  {MinerU}: An open-source solution for precise document content extraction,
-  arXiv preprint arXiv:2409.18839 (2024).
-\newblock \href {https://doi.org/10.48550/arXiv.2409.18839}
-  {\path{doi:10.48550/arXiv.2409.18839}}.
-
-\bibitem{qdcvr-demo}
-A.~Name, {QDCVR}: Content-routed organization and layered agent retrieval with
-  inspectable evidence, in: Proc. of the 35th {ACM} International Conference on
-  Information and Knowledge Management ({CIKM} '26), Demo Track, 2026, to
-  appear.
-
-\bibitem{auer-dbpedia-kb-2007}
-S.~Auer, C.~Bizer, G.~Kobilarov, J.~Lehmann, R.~Cyganiak, Z.~Ives, {DBpedia}: A
-  nucleus for a web of open data, in: The Semantic Web (ISWC/ASWC 2007),
-  Lecture Notes in Computer Science, Springer, 2007, pp. 722--735.
-\newblock \href {https://doi.org/10.1007/978-3-540-76298-0_52}
-  {\path{doi:10.1007/978-3-540-76298-0_52}}.
-
-\bibitem{hoffart-yago2-kb-2013}
-J.~Hoffart, F.~M. Suchanek, K.~Berberich, G.~Weikum, {YAGO2}: A spatially and
-  temporally enhanced knowledge base from {Wikipedia}, Artificial Intelligence
-  194 (2013) 28--61.
-\newblock \href {https://doi.org/10.1016/j.artint.2012.06.001}
-  {\path{doi:10.1016/j.artint.2012.06.001}}.
-
-\bibitem{paivarinta-ecm-2005}
-T.~P{\"a}iv{\"a}rinta, B.~E. Munkvold, Enterprise content management: An
-  integrated perspective on information management, in: Proc. 38th Annual
-  Hawaii International Conference on System Sciences (HICSS), IEEE, 2005, pp.
-  96--96.
-\newblock \href {https://doi.org/10.1109/hicss.2005.244}
-  {\path{doi:10.1109/hicss.2005.244}}.
-
-\bibitem{tyrvaainen-ecm-2006}
-P.~Tyrv{\"a}inen, T.~P{\"a}iv{\"a}rinta, A.~Salminen, J.~Iivari, Characterizing
-  the evolving research on enterprise content management, European Journal of
-  Information Systems 15~(6) (2006) 627--634.
-\newblock \href {https://doi.org/10.1057/palgrave.ejis.3000648}
-  {\path{doi:10.1057/palgrave.ejis.3000648}}.
-
-\bibitem{nonaka-seci-1994}
-I.~Nonaka, A dynamic theory of organizational knowledge creation, Organization
-  Science 5~(1) (1994) 14--37.
-\newblock \href {https://doi.org/10.1287/orsc.5.1.14}
-  {\path{doi:10.1287/orsc.5.1.14}}.
-
-\bibitem{nonaka-seci-ba-2000}
-I.~Nonaka, R.~Toyama, N.~Konno, {SECI}, {Ba} and leadership: a unified model of
-  dynamic knowledge creation, Long Range Planning 33~(1) (2000) 5--34.
-\newblock \href {https://doi.org/10.1016/s0024-6301(99)00115-6}
-  {\path{doi:10.1016/s0024-6301(99)00115-6}}.
-
-\bibitem{park-metadata-quality-2009}
-J.-R. Park, Metadata quality in digital repositories: A survey of the current
-  state of the art, Cataloging \& Classification Quarterly 47~(3-4) (2009)
-  213--228.
-\newblock \href {https://doi.org/10.1080/01639370902737240}
-  {\path{doi:10.1080/01639370902737240}}.
-
-\bibitem{golder-tagging-2006}
-S.~A. Golder, B.~A. Huberman, Usage patterns of collaborative tagging systems,
-  Journal of Information Science 32~(2) (2006) 198--208.
-\newblock \href {https://doi.org/10.1177/0165551506062337}
-  {\path{doi:10.1177/0165551506062337}}.
-
-\bibitem{mosqueira-rey-hitl-2022}
-E.~Mosqueira-Rey, E.~Hern{\'a}ndez-Pereira, D.~Alonso-R{\'i}os,
-  J.~Bobes-Bascar{\'a}n, {\'A}.~Fern{\'a}ndez-Leal, Human-in-the-loop machine
-  learning: a state of the art, Artificial Intelligence Review 56~(4) (2022)
-  3005--3054.
-\newblock \href {https://doi.org/10.1007/s10462-022-10246-w}
-  {\path{doi:10.1007/s10462-022-10246-w}}.
-
-\bibitem{barredo-arrieta-xai-2020}
-A.~Barredo~Arrieta, N.~D{\'i}az-Rodr{\'i}guez, J.~Del~Ser, A.~Bennetot,
-  S.~Tabik, A.~Barbado, S.~Garcia, S.~Gil-Lopez, D.~Molina, R.~Benjamins,
-  R.~Chatila, F.~Herrera, Explainable artificial intelligence ({XAI}):
-  Concepts, taxonomies, opportunities and challenges toward responsible {AI},
-  Information Fusion 58 (2020) 82--115.
-\newblock \href {https://doi.org/10.1016/j.inffus.2019.12.012}
-  {\path{doi:10.1016/j.inffus.2019.12.012}}.
-
-\bibitem{zhong-publaynet-layout-2019}
-X.~Zhong, J.~Tang, A.~Jimeno~Yepes, {PubLayNet}: Largest dataset ever for
-  document layout analysis, in: 2019 International Conference on Document
-  Analysis and Recognition (ICDAR), IEEE, 2019, pp. 1015--1022.
-\newblock \href {https://doi.org/10.1109/icdar.2019.00166}
-  {\path{doi:10.1109/icdar.2019.00166}}.
-
-\bibitem{huang-layoutlmv3-docai-2022}
-Y.~Huang, T.~Lv, L.~Cui, Y.~Lu, F.~Wei, {LayoutLMv3}: Pre-training for document
-  {AI} with unified text and image masking, in: Proc. 30th ACM International
-  Conference on Multimedia (MM '22), ACM, 2022, pp. 4083--4091.
-\newblock \href {https://doi.org/10.1145/3503161.3548112}
-  {\path{doi:10.1145/3503161.3548112}}.
-
-\bibitem{manku-near-dup-2007}
-G.~S. Manku, A.~Jain, A.~Das~Sarma, Detecting near-duplicates for web crawling,
-  in: Proc. 16th International Conference on World Wide Web (WWW '07), ACM,
-  2007, pp. 141--150.
-\newblock \href {https://doi.org/10.1145/1242572.1242592}
-  {\path{doi:10.1145/1242572.1242592}}.
-
-\bibitem{missier-prov-2013}
-P.~Missier, K.~Belhajjame, J.~Cheney, The {W3C} {PROV} family of specifications
-  for modelling provenance metadata, in: Proc. 16th International Conference on
-  Extending Database Technology (EDBT/ICDT '13), ACM, 2013, pp. 773--776.
-\newblock \href {https://doi.org/10.1145/2452376.2452478}
-  {\path{doi:10.1145/2452376.2452478}}.
-
-\bibitem{cheney-provenance-2009}
-J.~Cheney, L.~Chiticariu, W.-C. Tan, Provenance in databases: Why, how, and
-  where, Foundations and Trends in Databases 1~(4) (2009) 379--474.
-\newblock \href {https://doi.org/10.1561/1900000006}
-  {\path{doi:10.1561/1900000006}}.
-
 \bibitem{bm25}
 S.~Robertson, H.~Zaragoza, The probabilistic relevance framework: {BM25} and
   beyond, Foundations and Trends in Information Retrieval 3~(4) (2009)
@@ -181,15 +60,6 @@ G.~V. Cormack, C.~L.~A. Clarke, S.~Buettcher, Reciprocal rank fusion
   Development in Information Retrieval, 2009, pp. 758--759.
 \newblock \href {https://doi.org/10.1145/1571941.1572114}
   {\path{doi:10.1145/1571941.1572114}}.
-
-\bibitem{bge-m3}
-J.~Chen, S.~Xiao, P.~Zhang, K.~Luo, D.~Lian, Z.~Liu, {M3-Embedding}:
-  Multi-linguality, multi-functionality, multi-granularity text embeddings
-  through self-knowledge distillation, in: Findings of the Association for
-  Computational Linguistics: ACL 2024, Association for Computational
-  Linguistics, 2024, pp. 2318--2335.
-\newblock \href {https://doi.org/10.18653/v1/2024.findings-acl.137}
-  {\path{doi:10.18653/v1/2024.findings-acl.137}}.
 
 \bibitem{graphrag}
 D.~Edge, H.~Trinh, N.~Cheng, J.~Bradley, A.~Chao, A.~Mody, S.~Truitt,
@@ -213,6 +83,275 @@ P.~Sarthi, S.~Abdullah, A.~Tuli, S.~Khanna, A.~Goldie, C.~D. Manning, {RAPTOR}:
 \newblock \href {https://doi.org/10.48550/arXiv.2401.18059}
   {\path{doi:10.48550/arXiv.2401.18059}}.
 
+\bibitem{paivarinta-ecm-2005}
+T.~P{\"a}iv{\"a}rinta, B.~E. Munkvold, Enterprise content management: An
+  integrated perspective on information management, in: Proc. 38th Annual
+  Hawaii International Conference on System Sciences (HICSS), IEEE, 2005, pp.
+  96--96.
+\newblock \href {https://doi.org/10.1109/hicss.2005.244}
+  {\path{doi:10.1109/hicss.2005.244}}.
+
+\bibitem{tyrvaainen-ecm-2006}
+P.~Tyrv{\"a}inen, T.~P{\"a}iv{\"a}rinta, A.~Salminen, J.~Iivari, Characterizing
+  the evolving research on enterprise content management, European Journal of
+  Information Systems 15~(6) (2006) 627--634.
+\newblock \href {https://doi.org/10.1057/palgrave.ejis.3000648}
+  {\path{doi:10.1057/palgrave.ejis.3000648}}.
+
+\bibitem{park-metadata-quality-2009}
+J.-R. Park, Metadata quality in digital repositories: A survey of the current
+  state of the art, Cataloging \& Classification Quarterly 47~(3-4) (2009)
+  213--228.
+\newblock \href {https://doi.org/10.1080/01639370902737240}
+  {\path{doi:10.1080/01639370902737240}}.
+
+\bibitem{golder-tagging-2006}
+S.~A. Golder, B.~A. Huberman, Usage patterns of collaborative tagging systems,
+  Journal of Information Science 32~(2) (2006) 198--208.
+\newblock \href {https://doi.org/10.1177/0165551506062337}
+  {\path{doi:10.1177/0165551506062337}}.
+
+\bibitem{auer-dbpedia-kb-2007}
+S.~Auer, C.~Bizer, G.~Kobilarov, J.~Lehmann, R.~Cyganiak, Z.~Ives, {DBpedia}: A
+  nucleus for a web of open data, in: The Semantic Web (ISWC/ASWC 2007),
+  Lecture Notes in Computer Science, Springer, 2007, pp. 722--735.
+\newblock \href {https://doi.org/10.1007/978-3-540-76298-0_52}
+  {\path{doi:10.1007/978-3-540-76298-0_52}}.
+
+\bibitem{hoffart-yago2-kb-2013}
+J.~Hoffart, F.~M. Suchanek, K.~Berberich, G.~Weikum, {YAGO2}: A spatially and
+  temporally enhanced knowledge base from {Wikipedia}, Artificial Intelligence
+  194 (2013) 28--61.
+\newblock \href {https://doi.org/10.1016/j.artint.2012.06.001}
+  {\path{doi:10.1016/j.artint.2012.06.001}}.
+
+\bibitem{siren}
+Y.~Zhang, Y.~Li, L.~Cui, D.~Cai, L.~Liu, T.~Fu, X.~Huang, E.~Zhao, Y.~Zhang,
+  C.~Xu, Y.~Chen, L.~Wang, A.~T. Luu, W.~Bi, F.~Shi, S.~Shi,
+  \href{https://arxiv.org/abs/2309.01219}{Siren's song in the {AI} ocean: A
+  survey on hallucination in large language models}, arXiv preprint
+  arXiv:2309.01219 (2023).
+\newline\urlprefix\url{https://arxiv.org/abs/2309.01219}
+
+\bibitem{callan1995searching}
+J.~P. Callan, Z.~Lu, W.~B. Croft, Searching distributed collections with
+  inference networks, in: Proc. of the 18th Annual International ACM SIGIR
+  Conference (SIGIR '95), 1995, pp. 21--28.
+\newblock \href {https://doi.org/10.1145/215206.215328}
+  {\path{doi:10.1145/215206.215328}}.
+
+\bibitem{si2003redde}
+L.~Si, J.~Callan, Relevant document distribution estimation method for resource
+  selection, in: Proc. of the 26th Annual International ACM SIGIR Conference
+  (SIGIR '03), 2003, pp. 298--305.
+\newblock \href {https://doi.org/10.1145/860435.860490}
+  {\path{doi:10.1145/860435.860490}}.
+
+\bibitem{yang-kbs-llm-2025}
+W.~Yang, L.~Some, M.~Bain, B.~Kang, A comprehensive survey on integrating large
+  language models with knowledge-based methods, Knowledge-Based Systems 318
+  (2025) 113503.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.113503}
+  {\path{doi:10.1016/j.knosys.2025.113503}}.
+
+\bibitem{nonaka-seci-1994}
+I.~Nonaka, A dynamic theory of organizational knowledge creation, Organization
+  Science 5~(1) (1994) 14--37.
+\newblock \href {https://doi.org/10.1287/orsc.5.1.14}
+  {\path{doi:10.1287/orsc.5.1.14}}.
+
+\bibitem{nonaka-seci-ba-2000}
+I.~Nonaka, R.~Toyama, N.~Konno, {SECI}, {Ba} and leadership: a unified model of
+  dynamic knowledge creation, Long Range Planning 33~(1) (2000) 5--34.
+\newblock \href {https://doi.org/10.1016/s0024-6301(99)00115-6}
+  {\path{doi:10.1016/s0024-6301(99)00115-6}}.
+
+\bibitem{mosqueira-rey-hitl-2022}
+E.~Mosqueira-Rey, E.~Hern{\'a}ndez-Pereira, D.~Alonso-R{\'i}os,
+  J.~Bobes-Bascar{\'a}n, {\'A}.~Fern{\'a}ndez-Leal, Human-in-the-loop machine
+  learning: a state of the art, Artificial Intelligence Review 56~(4) (2022)
+  3005--3054.
+\newblock \href {https://doi.org/10.1007/s10462-022-10246-w}
+  {\path{doi:10.1007/s10462-022-10246-w}}.
+
+\bibitem{barredo-arrieta-xai-2020}
+A.~Barredo~Arrieta, N.~D{\'i}az-Rodr{\'i}guez, J.~Del~Ser, A.~Bennetot,
+  S.~Tabik, A.~Barbado, S.~Garcia, S.~Gil-Lopez, D.~Molina, R.~Benjamins,
+  R.~Chatila, F.~Herrera, Explainable artificial intelligence ({XAI}):
+  Concepts, taxonomies, opportunities and challenges toward responsible {AI},
+  Information Fusion 58 (2020) 82--115.
+\newblock \href {https://doi.org/10.1016/j.inffus.2019.12.012}
+  {\path{doi:10.1016/j.inffus.2019.12.012}}.
+
+\bibitem{sebastiani2002machine}
+F.~Sebastiani, Machine learning in automated text categorization, ACM Computing
+  Surveys 34~(1) (2002) 1--47.
+\newblock \href {https://doi.org/10.1145/505282.505283}
+  {\path{doi:10.1145/505282.505283}}.
+
+\bibitem{zhong-publaynet-layout-2019}
+X.~Zhong, J.~Tang, A.~Jimeno~Yepes, {PubLayNet}: Largest dataset ever for
+  document layout analysis, in: 2019 International Conference on Document
+  Analysis and Recognition (ICDAR), IEEE, 2019, pp. 1015--1022.
+\newblock \href {https://doi.org/10.1109/icdar.2019.00166}
+  {\path{doi:10.1109/icdar.2019.00166}}.
+
+\bibitem{huang-layoutlmv3-docai-2022}
+Y.~Huang, T.~Lv, L.~Cui, Y.~Lu, F.~Wei, {LayoutLMv3}: Pre-training for document
+  {AI} with unified text and image masking, in: Proc. 30th ACM International
+  Conference on Multimedia (MM '22), ACM, 2022, pp. 4083--4091.
+\newblock \href {https://doi.org/10.1145/3503161.3548112}
+  {\path{doi:10.1145/3503161.3548112}}.
+
+\bibitem{mineru}
+B.~Wang, C.~Xu, X.~Zhao, L.~Ouyang, F.~Wu, Z.~Zhao, R.~Xu, K.~Liu, Y.~Qu,
+  F.~Shang, B.~Zhang, L.~Wei, Z.~Sui, W.~Li, B.~Shi, Y.~Qiao, D.~Lin, C.~He,
+  {MinerU}: An open-source solution for precise document content extraction,
+  arXiv preprint arXiv:2409.18839 (2024).
+\newblock \href {https://doi.org/10.48550/arXiv.2409.18839}
+  {\path{doi:10.48550/arXiv.2409.18839}}.
+
+\bibitem{manku-near-dup-2007}
+G.~S. Manku, A.~Jain, A.~Das~Sarma, Detecting near-duplicates for web crawling,
+  in: Proc. 16th International Conference on World Wide Web (WWW '07), ACM,
+  2007, pp. 141--150.
+\newblock \href {https://doi.org/10.1145/1242572.1242592}
+  {\path{doi:10.1145/1242572.1242592}}.
+
+\bibitem{missier-prov-2013}
+P.~Missier, K.~Belhajjame, J.~Cheney, The {W3C} {PROV} family of specifications
+  for modelling provenance metadata, in: Proc. 16th International Conference on
+  Extending Database Technology (EDBT/ICDT '13), ACM, 2013, pp. 773--776.
+\newblock \href {https://doi.org/10.1145/2452376.2452478}
+  {\path{doi:10.1145/2452376.2452478}}.
+
+\bibitem{cheney-provenance-2009}
+J.~Cheney, L.~Chiticariu, W.-C. Tan, Provenance in databases: Why, how, and
+  where, Foundations and Trends in Databases 1~(4) (2009) 379--474.
+\newblock \href {https://doi.org/10.1561/1900000006}
+  {\path{doi:10.1561/1900000006}}.
+
+\bibitem{ocaa2023software}
+M.~G. Oca{\~n}a, A.~L. Opdahl, {A Software Reference Architecture for
+  Journalistic Knowledge Platforms}, Knowledge-Based Systems 276 (2023) 110750.
+\newblock \href {https://doi.org/10.1016/j.knosys.2023.110750}
+  {\path{doi:10.1016/j.knosys.2023.110750}}.
+
+\bibitem{gallofr2021jkpdesign}
+M.~Gallofr\'e Oca\~na, A.~L. Opdahl, Developing a software reference
+  architecture for journalistic knowledge platforms, in: Proceedings of the 6th
+  Workshop on Semantic Access to Big Data and AI (SAML), Vol. 2978 of CEUR
+  Workshop Proceedings, 2021.
+
+\bibitem{yang2024building}
+Y.~Yang, H.~Huang, Y.~Gao, J.~Li, {Building knowledge-grounded dialogue systems
+  with graph-based semantic modelling}, Knowledge-Based Systems 298 (2024)
+  111943.
+\newblock \href {https://doi.org/10.1016/j.knosys.2024.111943}
+  {\path{doi:10.1016/j.knosys.2024.111943}}.
+
+\bibitem{budur2024building}
+E.~Budur, R.~{\"O}z{\c{c}}elik, D.~Soylu, O.~Khattab, T.~G{\"u}ng{\"o}r,
+  C.~Potts, {Building efficient and effective OpenQA systems for low-resource
+  languages}, Knowledge-Based Systems 302 (2024) 112243.
+\newblock \href {https://doi.org/10.1016/j.knosys.2024.112243}
+  {\path{doi:10.1016/j.knosys.2024.112243}}.
+
+\bibitem{vito2025heliot}
+G.~D. Vito, F.~Ferrucci, A.~Angelakis, {HELIOT: LLM-Based CDSS for adverse drug
+  reaction management}, Knowledge-Based Systems 328 (2025) 114184.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.114184}
+  {\path{doi:10.1016/j.knosys.2025.114184}}.
+
+\bibitem{aarab2024system}
+I.~Aarab, {LLM-based IR-system for bank supervisors}, Knowledge-Based Systems
+  310 (2024) 112914.
+\newblock \href {https://doi.org/10.1016/j.knosys.2024.112914}
+  {\path{doi:10.1016/j.knosys.2024.112914}}.
+
+\bibitem{liao2026practical}
+X.~Liao, Y.~Mao, W.~Liu, A.~Yang, {A practical and privacy-preserving framework
+  for real-world large language model services}, Knowledge-Based Systems 337
+  (2026) 115347.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.115347}
+  {\path{doi:10.1016/j.knosys.2026.115347}}.
+
+\bibitem{garridomer2026gofai}
+E.~C. Garrido-Merch{\'a}n, C.~Puente, {GOFAI meets generative AI: Development
+  of expert systems by means of large language models}, Knowledge-Based Systems
+  351 (2026) 116657.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.116657}
+  {\path{doi:10.1016/j.knosys.2026.116657}}.
+
+\bibitem{hou2025method}
+S.~Hou, A.~Zhao, J.~Liang, Z.~Shen, H.~Wu, {Geo-FuB: A method for constructing
+  an Operator-Function knowledge base for geospatial code generation with large
+  language models}, Knowledge-Based Systems 319 (2025) 113624.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.113624}
+  {\path{doi:10.1016/j.knosys.2025.113624}}.
+
+\bibitem{ciatto2025large}
+G.~Ciatto, A.~Agiollo, M.~Magnini, A.~Omicini, {Large language models as
+  oracles for instantiating ontologies with domain-specific knowledge},
+  Knowledge-Based Systems 310 (2025) 112940.
+\newblock \href {https://doi.org/10.1016/j.knosys.2024.112940}
+  {\path{doi:10.1016/j.knosys.2024.112940}}.
+
+\bibitem{ghali-kbs-retrieval-2025}
+M.-K. Ghali, A.~Farrag, D.~Won, Y.~Jin, Enhancing knowledge retrieval with
+  in-context learning and semantic search through generative {AI},
+  Knowledge-Based Systems 311 (2025) 113047.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.113047}
+  {\path{doi:10.1016/j.knosys.2025.113047}}.
+
+\bibitem{bge-m3}
+J.~Chen, S.~Xiao, P.~Zhang, K.~Luo, D.~Lian, Z.~Liu, {M3-Embedding}:
+  Multi-linguality, multi-functionality, multi-granularity text embeddings
+  through self-knowledge distillation, in: Findings of the Association for
+  Computational Linguistics: ACL 2024, Association for Computational
+  Linguistics, 2024, pp. 2318--2335.
+\newblock \href {https://doi.org/10.18653/v1/2024.findings-acl.137}
+  {\path{doi:10.18653/v1/2024.findings-acl.137}}.
+
+\bibitem{li-kbs-rmrsst-2026}
+F.~Li, X.~Li, J.~Bao, Recursive multi-modal retrieval for structured semantic
+  trees in engineering documents, Knowledge-Based Systems 338 (2026) 115433.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.115433}
+  {\path{doi:10.1016/j.knosys.2026.115433}}.
+
+\bibitem{singh2021freshdiskann}
+A.~Singh, S.~J. Subramanya, R.~Krishnaswamy, H.~V. Simhadri, Freshdiskann: A
+  fast and accurate graph-based ann index for streaming similarity search
+  (2021).
+\newblock \href {http://arxiv.org/abs/2105.09613} {\path{arXiv:2105.09613}}.
+
+\bibitem{xu2023spfresh}
+Y.~Xu, H.~Liang, J.~Li, S.~Xu, Q.~Chen, Q.~Zhang, C.~Li, Z.~Yang, F.~Yang,
+  Y.~Yang, P.~Cheng, M.~Yang, Spfresh: Incremental in-place update for
+  billion-scale vector search, in: Proc. of the 29th Symposium on Operating
+  Systems Principles (SOSP '23), 2023, pp. 545--561.
+\newblock \href {https://doi.org/10.1145/3600006.3613166}
+  {\path{doi:10.1145/3600006.3613166}}.
+
+\bibitem{chen2024dense}
+T.~Chen, H.~Wang, S.~Chen, W.~Yu, K.~Ma, X.~Zhao, H.~Zhang, D.~Yu, Dense x
+  retrieval: What retrieval granularity should we use?, in: Proc. of EMNLP
+  2024, 2024, pp. 15159--15177.
+\newblock \href {https://doi.org/10.18653/v1/2024.emnlp-main.845}
+  {\path{doi:10.18653/v1/2024.emnlp-main.845}}.
+
+\bibitem{gunther2024late}
+M.~G{\"u}nther, I.~Mohr, D.~J. Williams, B.~Wang, H.~Xiao, Late chunking:
+  Contextual chunk embeddings using long-context embedding models (2024).
+\newblock \href {http://arxiv.org/abs/2409.04701} {\path{arXiv:2409.04701}}.
+
+\bibitem{shen-kbs-teierag-2026}
+J.~Shen, H.~Zhu, B.~Zhang, Toward trustworthy engineering information
+  extraction using retrieval-augmented generation, Knowledge-Based Systems 348
+  (2026) 116418.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.116418}
+  {\path{doi:10.1016/j.knosys.2026.116418}}.
+
 \bibitem{react-yao}
 S.~Yao, J.~Zhao, D.~Yu, N.~Du, I.~Shafran, K.~Narasimhan, Y.~Cao, {ReAct}:
   Synergizing reasoning and acting in language models, in: The Eleventh
@@ -228,18 +367,90 @@ T.~Schick, J.~Dwivedi-Yu, R.~Dess{\`i}, R.~Raileanu, M.~Lomeli, E.~Hambro,
 \newblock \href {https://doi.org/10.52202/075280-2997}
   {\path{doi:10.52202/075280-2997}}.
 
-\bibitem{modular-rag}
-Y.~Gao, Y.~Xiong, K.~Wang, et~al., Modular {RAG}: Transforming {RAG} systems
-  into {LEGO}-like reconfigurable frameworks, ACM Transactions on Information
-  Systems 44 (2026) 1--53.
-\newblock \href {https://doi.org/10.1145/3837856} {\path{doi:10.1145/3837856}}.
-
 \bibitem{deepread}
 Z.~Li, H.~Tian, L.~Luo, Y.~Cao, P.~Luo, {DeepRead}: Document structure-aware
   reasoning to enhance agentic search, arXiv preprint arXiv:2602.05014v3
   (2026).
 \newblock \href {https://doi.org/10.48550/arXiv.2602.05014}
   {\path{doi:10.48550/arXiv.2602.05014}}.
+
+\bibitem{siddharth2024retrieval}
+L.~Siddharth, J.~Luo, {Retrieval augmented generation using engineering design
+  knowledge}, Knowledge-Based Systems 303 (2024) 112410.
+\newblock \href {https://doi.org/10.1016/j.knosys.2024.112410}
+  {\path{doi:10.1016/j.knosys.2024.112410}}.
+
+\bibitem{peng2024soft}
+Z.~Peng, X.~Wu, Q.~Wang, Y.~Fang, {Soft prompt tuning for augmenting dense
+  retrieval with large language models}, Knowledge-Based Systems 309 (2024)
+  112758.
+\newblock \href {https://doi.org/10.1016/j.knosys.2024.112758}
+  {\path{doi:10.1016/j.knosys.2024.112758}}.
+
+\bibitem{massai2023evaluatio}
+L.~Massai, {Evaluation of semantic relations impact in query expansion-based
+  retrieval systems}, Knowledge-Based Systems 283 (2023) 111183.
+\newblock \href {https://doi.org/10.1016/j.knosys.2023.111183}
+  {\path{doi:10.1016/j.knosys.2023.111183}}.
+
+\bibitem{zan2025private}
+D.~Zan, B.~Chen, Y.~Gong, J.~Cao, F.~Zhang, B.~Wu, B.~Guan, Y.~Yin, Y.~Wang,
+  {Private-library-oriented code generation with large language models},
+  Knowledge-Based Systems 326 (2025) 113934.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.113934}
+  {\path{doi:10.1016/j.knosys.2025.113934}}.
+
+\bibitem{dai2025large}
+X.~Dai, Y.~Hua, T.~Wu, S.~Yang, J.~Qiu, G.~Qi, {Large language models can
+  better understand knowledge graphs than we thought}, Knowledge-Based Systems
+  312 (2025) 113060.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.113060}
+  {\path{doi:10.1016/j.knosys.2025.113060}}.
+
+\bibitem{huang2025prompting}
+W.~Huang, G.~Zhou, M.~Lapata, P.~Vougiouklis, S.~Montella, J.~Z. Pan,
+  {Prompting large language models with knowledge graphs for question answering
+  involving long-tail facts}, Knowledge-Based Systems 324 (2025) 113648.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.113648}
+  {\path{doi:10.1016/j.knosys.2025.113648}}.
+
+\bibitem{tao2025fine}
+D.~Tao, C.~Wang, F.~Huang, J.~Chen, Y.~Huang, M.~Jiang, {Fine-grained Stateful
+  Knowledge Exploration: Effective and efficient graph retrieval with Large
+  Language Models}, Knowledge-Based Systems 326 (2025) 114011.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.114011}
+  {\path{doi:10.1016/j.knosys.2025.114011}}.
+
+\bibitem{sinha2026finbloom}
+A.~Sinha, C.~Agarwal, P.~Malo, {FinBloom: Knowledge-Grounding Large Language
+  Model with Real-Time Financial Data}, Knowledge-Based Systems 339 (2026)
+  115559.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.115559}
+  {\path{doi:10.1016/j.knosys.2026.115559}}.
+
+\bibitem{saadaoui2025coordinat}
+S.~Saadaoui, E.~Alonso, {Coordinated LLM multi-agent systems for collaborative
+  question-answer generation}, Knowledge-Based Systems 330 (2025) 114627.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.114627}
+  {\path{doi:10.1016/j.knosys.2025.114627}}.
+
+\bibitem{memgpt}
+C.~Packer, S.~Wooders, K.~Lin, V.~Fang, S.~G. Patil, I.~Stoica, J.~E. Gonzalez,
+  {MemGPT}: Towards {LLMs} as operating systems, arXiv preprint
+  arXiv:2310.08560 (2023).
+
+\bibitem{mem0}
+P.~Chhikara, D.~Khant, S.~Aryan, T.~Singh, D.~Yadav, Mem0: Building
+  production-ready {AI} agents with scalable long-term memory, arXiv preprint
+  arXiv:2504.19413 (2025).
+
+\bibitem{amem}
+W.~Xu, Z.~Liang, K.~Mei, H.~Gao, J.~Tan, Y.~Zhang, {A-MEM}: Agentic memory for
+  {LLM} agents, arXiv preprint arXiv:2502.12110 (2025).
+
+\bibitem{skos}
+A.~Miles, S.~Bechhofer, {SKOS} simple knowledge organization system reference,
+  W3C Recommendation, \url{https://www.w3.org/TR/skos-reference/} (2009).
 
 \bibitem{selfrag}
 A.~Asai, Z.~Wu, Y.~Wang, A.~Sil, H.~Hajishirzi,
@@ -269,6 +480,21 @@ A.~Kamath, R.~Jia, P.~Liang, Selective question answering under domain shift,
 \newblock \href {https://doi.org/10.18653/v1/2020.acl-main.503}
   {\path{doi:10.18653/v1/2020.acl-main.503}}.
 
+\bibitem{feng-abstain}
+S.~Feng, W.~Shi, Y.~Wang, et~al., Don't hallucinate, abstain: Identifying {LLM}
+  knowledge gaps via multi-{LLM} collaboration, in: Proceedings of the 62nd
+  Annual Meeting of the Association for Computational Linguistics (ACL), 2024,
+  pp. 14664--14690.
+\newblock \href {https://doi.org/10.18653/v1/2024.acl-long.786}
+  {\path{doi:10.18653/v1/2024.acl-long.786}}.
+
+\bibitem{yin-knowwhat}
+Z.~Yin, Q.~Sun, Q.~Guo, et~al., Do large language models know what they don't
+  know?, in: Findings of the Association for Computational Linguistics: ACL
+  2023, 2023, pp. 8653--8665.
+\newblock \href {https://doi.org/10.18653/v1/2023.findings-acl.551}
+  {\path{doi:10.18653/v1/2023.findings-acl.551}}.
+
 \bibitem{cyberbot}
 C.~Zhao, R.~{De Maria}, T.~Kumarage, K.~S. Chaudhary, G.~Agrawal, Y.~Li,
   J.~Park, Y.-C. Chen, Y.~Deng, H.~Liu, {CyberBOT}: Ontology-grounded retrieval
@@ -291,6 +517,13 @@ T.~Gao, H.~Yen, J.~Yu, D.~Chen, Enabling large language models to generate text
   in Natural Language Processing (EMNLP), 2023, pp. 6465--6488.
 \newblock \href {https://doi.org/10.18653/v1/2023.emnlp-main.398}
   {\path{doi:10.18653/v1/2023.emnlp-main.398}}.
+
+\bibitem{kinalioglu-kbs-eprag-2026}
+I.~H. Kinalioglu, {EPRAG}: An epistemic policy framework for action selection
+  in multi-source enterprise retrieval-augmented generation, Knowledge-Based
+  Systems 352 (2026) 116929.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.116929}
+  {\path{doi:10.1016/j.knosys.2026.116929}}.
 
 \bibitem{zheng-llmjudge}
 L.~Zheng, W.-L. Chiang, Y.~Sheng, et~al., Judging {LLM}-as-a-judge with
@@ -320,10 +553,66 @@ H.~Lightman, V.~Kosaraju, Y.~Burda, et~al., Let's verify step by step, in: The
 \newblock \href {https://doi.org/10.48550/arXiv.2305.20050}
   {\path{doi:10.48550/arXiv.2305.20050}}.
 
+\bibitem{saeed2023explainab}
+W.~Saeed, C.~W.~P. Omlin, {Explainable AI (XAI): A systematic meta-survey of
+  current challenges and future opportunities}, Knowledge-Based Systems 263
+  (2023) 110273.
+\newblock \href {https://doi.org/10.1016/j.knosys.2023.110273}
+  {\path{doi:10.1016/j.knosys.2023.110273}}.
+
+\bibitem{zhou2026lgmt}
+Z.~Zhou, M.~Li, X.~Fang, X.~Zhou, W.~Lin, Z.~Zheng, {LGMT: Logic-Grounded
+  Metamorphic Testing for evaluating the reasoning reliability of LLMs},
+  Knowledge-Based Systems 348 (2026) 116324.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.116324}
+  {\path{doi:10.1016/j.knosys.2026.116324}}.
+
+\bibitem{hou2025msdiagnos}
+R.~Hou, S.~Chen, Y.~Fan, G.~Yu, L.~Zhu, J.~Sun, J.~Liu, T.~Ruan, {MSDiagnosis:
+  A benchmark and framework for evaluating large language models in multi-step
+  clinical diagnosis}, Knowledge-Based Systems 330 (2025) 114524.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.114524}
+  {\path{doi:10.1016/j.knosys.2025.114524}}.
+
+\bibitem{wu2025informati}
+R.~Wu, K.~Huang, H.~Zhang, Q.~Liu, J.~Guo, J.~Deng, F.~Ye,
+  {Information-Theoretic Dual Memory System for continual learning},
+  Knowledge-Based Systems 325 (2025) 113913.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.113913}
+  {\path{doi:10.1016/j.knosys.2025.113913}}.
+
+\bibitem{mohamed2026orchestra}
+A.~H. Mohamed, K.~S. Shalaby, A.~Kaladharan, S.~Sen, H.~Ata{\c{s}}, A.~T.
+  Kodamullil, {KG-Orchestra: An Open-Source Multi-Agent Framework for
+  Evidence-Based Biomedical Knowledge Graphs Enrichment}, Knowledge-Based
+  Systems (2026) 117316\href {https://doi.org/10.1016/j.knosys.2026.117316}
+  {\path{doi:10.1016/j.knosys.2026.117316}}.
+
+\bibitem{liu2026automatin}
+Y.~Liu, Z.~Abulawi, A.~Garimidi, D.~Lim, {Automating data-driven modeling and
+  analysis for engineering applications using large language model agents},
+  Knowledge-Based Systems 343 (2026) 115989.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.115989}
+  {\path{doi:10.1016/j.knosys.2026.115989}}.
+
+\bibitem{chen2026enhancing}
+L.-L. Chen, W.~Sun, H.~Xie, Y.~Cai, Y.~Zhang, {Enhancing large language
+  model-based systems for end-to-end circuit analysis problem solving},
+  Knowledge-Based Systems 353 (2026) 117171.
+\newblock \href {https://doi.org/10.1016/j.knosys.2026.117171}
+  {\path{doi:10.1016/j.knosys.2026.117171}}.
+
+\bibitem{sorokin2023sigopt}
+A.~G. Sorokin, X.~Zhu, E.~H. Lee, B.~Cheng, {SigOpt Mulch: An intelligent
+  system for AutoML of gradient boosted trees}, Knowledge-Based Systems 273
+  (2023) 110604.
+\newblock \href {https://doi.org/10.1016/j.knosys.2023.110604}
+  {\path{doi:10.1016/j.knosys.2023.110604}}.
+
 \bibitem{laya}
 Laya, Model card, \url{https://huggingface.co/convaiinnovations/laya}, locally
   hosted decision model shipped with the platform artefacts; used in this work
-  as the content-verification judge. Accessed 2026-10-08 (2025).
+  as the content-verification judge. Accessed 2026-10-08 (2026).
 
 \bibitem{chroma}
 {Chroma}, The {AI}-native open-source embedding database,
@@ -347,12 +636,6 @@ N.~Craswell, B.~Mitra, E.~Yilmaz, D.~Campos, J.~Lin, {MS MARCO}: Benchmarking
 \newblock \href {https://doi.org/10.1145/3404835.3462804}
   {\path{doi:10.1145/3404835.3462804}}.
 
-\bibitem{jarvelin-cumulated-gain-2002}
-K.~J{\"a}rvelin, J.~Kek{\"a}l{\"a}inen, Cumulated gain-based evaluation of {IR}
-  techniques, ACM Transactions on Information Systems 20~(4) (2002) 422--446.
-\newblock \href {https://doi.org/10.1145/582415.582418}
-  {\path{doi:10.1145/582415.582418}}.
-
 \bibitem{es-ragas-2024}
 S.~Es, J.~James, L.~Espinosa~Anke, S.~Schockaert, {RAGAs}: Automated evaluation
   of retrieval augmented generation, in: Proc. 18th Conference of the European
@@ -368,19 +651,10 @@ J.~Saad-Falcon, O.~Khattab, C.~Potts, M.~Zaharia, {ARES}: An automated
 \newblock \href {https://doi.org/10.18653/v1/2024.naacl-long.20}
   {\path{doi:10.18653/v1/2024.naacl-long.20}}.
 
-\bibitem{feng-abstain}
-S.~Feng, W.~Shi, Y.~Wang, et~al., Don't hallucinate, abstain: Identifying {LLM}
-  knowledge gaps via multi-{LLM} collaboration, in: Proceedings of the 62nd
-  Annual Meeting of the Association for Computational Linguistics (ACL), 2024,
-  pp. 14664--14690.
-\newblock \href {https://doi.org/10.18653/v1/2024.acl-long.786}
-  {\path{doi:10.18653/v1/2024.acl-long.786}}.
-
-\bibitem{yin-knowwhat}
-Z.~Yin, Q.~Sun, Q.~Guo, et~al., Do large language models know what they don't
-  know?, in: Findings of the Association for Computational Linguistics: ACL
-  2023, 2023, pp. 8653--8665.
-\newblock \href {https://doi.org/10.18653/v1/2023.findings-acl.551}
-  {\path{doi:10.18653/v1/2023.findings-acl.551}}.
+\bibitem{jarvelin-cumulated-gain-2002}
+K.~J{\"a}rvelin, J.~Kek{\"a}l{\"a}inen, Cumulated gain-based evaluation of {IR}
+  techniques, ACM Transactions on Information Systems 20~(4) (2002) 422--446.
+\newblock \href {https://doi.org/10.1145/582415.582418}
+  {\path{doi:10.1145/582415.582418}}.
 
 \end{thebibliography}

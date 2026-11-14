@@ -1,7 +1,16 @@
-# paper-kbs — KBS期刊论文《QDCVR》实验与手稿
+# paper-kbs — KBS期刊论文《HMRS》实验与手稿
 
 本目录是为 **Knowledge-Based Systems** (Elsevier) 撰写的完整论文及其全部实验产物。
-论文系统 = `D:\codes\ragproject\rag-knowledge`(QDCVR 平台 v2.3.0)。
+论文系统 = `D:\codes\ragproject\rag-knowledge`(HMRS 平台 v2.3.0)。
+
+> **2026-11-14 KBS 本刊文献整合**：当前投稿正本是 `tex/journal_20p/main_20p.tex`
+> (elsarticle 双栏)。新增 **27 条** KBS 本刊系统 / 平台 / 架构 / 部署类文献已
+> 全部写入 §2 三个小节与评测设置段落，并逐条出现在参考文献列表；另补齐 5 条
+> 既有"定义了却从未引用"的孤儿条目。`refs.bib` 35→62 条，与
+> `refs_new_verified.bib` 合计 **97 条定义 / 96 条引用**，
+> `pdflatex+bibtex` 全链编译 **20 页 / 0 错误 / 0 未定义引用 / 0 超宽 overfull**。
+> 2 条 DOI 重复项已去重，`hmrs-demo` 因双盲保持未引用。文献包、阅读指南与
+> 完整验证记录见 `reference/kbs/README.md`；根目录 `tex/` 是历史稿件，未改动。
 
 > **2026-10-12 结构优化稿**: `tex/main.pdf` 48 页(elsarticle preprint 12pt,
 > pdflatex+bibtex 编译,0 错误/0 未解析引用/无 >15pt overfull)。本轮按 KBS 写作
@@ -80,7 +89,7 @@ cd ../tex && pdflatex main && bibtex main && pdflatex main && pdflatex main
 ## 实验设计一页纸
 
 - **Exp1 (工具层)**: 同一 42 文档/5 库生产语料,16 个金标题,7 方法
-  (BM25 / Dense / RRF / Graph / Two-stage / Fusion-only / QDCVR-Hybrid+judge),
+  (BM25 / Dense / RRF / Graph / Two-stage / Fusion-only / HMRS-Hybrid+judge),
   指标 Hit@5 / Recall@5 / MRR / 时延。平台方法全部经真实 MCP 工具接口调用。
 - **Exp2 (Agent 层)**: 4 题 (Q2 EL脱层 / Q4 POE阻隔 / Q6 克重条款 / Q7 TC0根因) × 4 臂
   (search 钉库 / librarian 全库 / hybrid 钉库 / bare 无KB) × 2 轮,经公开 chat API
@@ -111,7 +120,8 @@ cd ../tex && pdflatex main && bibtex main && pdflatex main && pdflatex main
 
 | 要求 | 状态 |
 |---|---|
-| elsarticle 模板 + 编号引用 (unsrtnat) | ✅ main.tex |
+| elsarticle 模板 + 编号引用 (elsarticle-num) | ✅ `tex/journal_20p/main_20p.tex` |
+| KBS 本刊近三年系统类文献引用 | ✅ 27 条已写入正文并列入参考文献（2026-11-14，见 `reference/kbs/README.md`） |
 | Highlights (3–5×≤85 字符) | ✅ highlights.tex |
 | 结构: 摘要(≈250词)/关键词/背景/相关工作/方法/实现/实验/讨论/结论 | ✅ |
 | 声明: CRediT / 利益冲突 / 数据可用性 / AI 使用声明 | ✅ |

@@ -1,0 +1,748 @@
+[
+ {
+  "file": "A_SoftwareRefArch_JournalisticKnowledgePlatforms_2023.pdf",
+  "doi": "10.1016/j.knosys.2023.110750",
+  "tier": "A",
+  "title": "A Software Reference Architecture for Journalistic Knowledge Platforms",
+  "year": 2023,
+  "citations": 12,
+  "authors": [
+   "Marc Gallofré Ocaña",
+   "Andreas Lothe Opdahl"
+  ],
+  "is_oa": true,
+  "why": "软件参考架构 + 知识平台；与 HMRS 'P1-P5 设计原则 + 模块契约' 的文体最接近",
+  "downloaded": true,
+  "source_url": "https://mediafutures.no/1-s2-0-s0950705123005002-main/",
+  "candidates_tried": 3,
+  "note": "third-pass: publisher-authorised OA copy served by MediaFutures research centre; 901005 B, 16 pages"
+ },
+ {
+  "file": "B_RAG_EngineeringDesignKnowledge_2024.pdf",
+  "doi": "10.1016/j.knosys.2024.112410",
+  "tier": "B",
+  "title": "Retrieval augmented generation using engineering design knowledge",
+  "year": 2024,
+  "citations": 105,
+  "authors": [
+   "L. Siddharth",
+   "Jianxi Luo"
+  ],
+  "is_oa": true,
+  "why": "工程设计知识上的 RAG 部署案例；HMRS 'deployed industrial case study' 的同类文体",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_Survey_LLM_KnowledgeBasedMethods_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.113503",
+  "tier": "B",
+  "title": "A comprehensive survey on integrating large language models with knowledge-based methods",
+  "year": 2025,
+  "citations": 109,
+  "authors": [
+   "Wenli Yang",
+   "Lilian Some",
+   "Michael Bain",
+   "Byeong Ho Kang"
+  ],
+  "is_oa": true,
+  "why": "KBS 本刊 LLM×知识方法综述（109 引）；Related Work 定位锚点",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_KnowledgeRetrieval_InContextLearning_SemanticSearch_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.113047",
+  "tier": "B",
+  "title": "Enhancing knowledge retrieval with in-context learning and semantic search through generative AI",
+  "year": 2025,
+  "citations": 66,
+  "authors": [
+   "Mohammed-Khalil Ghali",
+   "Abdelrahman Farrag",
+   "Daehan Won",
+   "Yu Jin"
+  ],
+  "is_oa": true,
+  "why": "知识检索 + 语义搜索系统；对应 HMRS 三车道召回层",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_XAI_MetaSurvey_2023.pdf",
+  "doi": "10.1016/j.knosys.2023.110273",
+  "tier": "B",
+  "title": "Explainable AI (XAI): A systematic meta-survey of current challenges and future opportunities",
+  "year": 2023,
+  "citations": 945,
+  "authors": [
+   "Waddah Saeed",
+   "Christian Walter Peter Omlin"
+  ],
+  "is_oa": true,
+  "why": "KBS 高引 XAI 元综述（945 引）；支撑 inspectable evidence 的论证",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_LLM_Oracles_OntologyInstantiation_2025.pdf",
+  "doi": "10.1016/j.knosys.2024.112940",
+  "tier": "B",
+  "title": "Large language models as oracles for instantiating ontologies with domain-specific knowledge",
+  "year": 2025,
+  "citations": 56,
+  "authors": [
+   "Giovanni Ciatto",
+   "Andrea Agiollo",
+   "Matteo Magnini",
+   "Andrea Omicini"
+  ],
+  "is_oa": true,
+  "why": "LLM 实例化领域本体；对应内容路由组织与知识层构建",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_PrivateLibrary_CodeGeneration_LLM_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.113934",
+  "tier": "B",
+  "title": "Private-library-oriented code generation with large language models",
+  "year": 2025,
+  "citations": 44,
+  "authors": [
+   "Daoguang Zan",
+   "Bei Chen",
+   "Yongshun Gong",
+   "Junzhi Cao",
+   "Fengji Zhang",
+   "Bingchao Wu",
+   "Bei Guan",
+   "Yilong Yin"
+  ],
+  "is_oa": true,
+  "why": "私有库检索增强代码生成；对应自托管语料 + 库内证据",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_SoftPrompt_DenseRetrieval_2024.pdf",
+  "doi": "10.1016/j.knosys.2024.112758",
+  "tier": "B",
+  "title": "Soft prompt tuning for augmenting dense retrieval with large language models",
+  "year": 2024,
+  "citations": 44,
+  "authors": [
+   "Zhiyuan Peng",
+   "Xuyang Wu",
+   "Qifan Wang",
+   "Yi Fang"
+  ],
+  "is_oa": true,
+  "why": "稠密检索增强；对应 HMRS 的向量召回基线讨论",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_Coordinated_LLM_MultiAgent_QA_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.114627",
+  "tier": "A",
+  "title": "Coordinated LLM multi-agent systems for collaborative question-answer generation",
+  "year": 2025,
+  "citations": 24,
+  "authors": [
+   "Sami Saadaoui",
+   "Eduardo Alonso"
+  ],
+  "is_oa": true,
+  "why": "多智能体协同问答系统；对应 MCP 优先的机器接口与 harness 可插拔",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": null,
+  "doi": "10.1016/j.knosys.2025.114526",
+  "tier": "B",
+  "title": "TreeQA: Enhanced LLM-RAG with logic tree reasoning for reliable and interpretable multi-hop question answering",
+  "year": 2025,
+  "citations": 15,
+  "authors": [
+   "Xiangrui Zhang",
+   "Fuyong Zhao",
+   "Yutian Liu",
+   "Panfeng Chen",
+   "Yanhao Wang",
+   "Xiaohua Wang",
+   "Dan Ma",
+   "Huarong Xu"
+  ],
+  "is_oa": true,
+  "why": "可靠可解释多跳 RAG；与内容验证门的可解释裁决直接对标",
+  "downloaded": false,
+  "source_url": null,
+  "candidates_tried": 1,
+  "note": " | second-pass: no legal OA PDF found"
+ },
+ {
+  "file": "A_Building_OpenQA_LowResource_2024.pdf",
+  "doi": "10.1016/j.knosys.2024.112243",
+  "tier": "A",
+  "title": "Building efficient and effective OpenQA systems for low-resource languages",
+  "year": 2024,
+  "citations": 12,
+  "authors": [
+   "Emrah Budur",
+   "Rıza Özçelik",
+   "Dilara Soylu",
+   "Omar Khattab",
+   "Tunga Güngör",
+   "Christopher Potts"
+  ],
+  "is_oa": true,
+  "why": "构建 OpenQA 系统；系统实现与评测文体的范本",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_FineGrained_StatefulKnowledgeExploration_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.114011",
+  "tier": "A",
+  "title": "Fine-grained Stateful Knowledge Exploration: Effective and efficient graph retrieval with Large Language Models",
+  "year": 2025,
+  "citations": 11,
+  "authors": [
+   "Dehao Tao",
+   "Congqi Wang",
+   "Feng Huang",
+   "Junhao Chen",
+   "Yongfeng Huang",
+   "Minghu Jiang"
+  ],
+  "is_oa": true,
+  "why": "图检索 + LLM 的细粒度知识探索框架；对应 Librarian 分层导航",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_Building_KnowledgeGrounded_Dialogue_2024.pdf",
+  "doi": "10.1016/j.knosys.2024.111943",
+  "tier": "A",
+  "title": "Building knowledge-grounded dialogue systems with graph-based semantic modelling",
+  "year": 2024,
+  "citations": 8,
+  "authors": [
+   "Yizhe Yang",
+   "Heyan Huang",
+   "Yang Gao",
+   "Jiawei Li"
+  ],
+  "is_oa": true,
+  "why": "构建知识接地对话系统；系统设计与开发论文",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_HELIOT_LLM_CDSS_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.114184",
+  "tier": "A",
+  "title": "HELIOT: LLM-Based CDSS for adverse drug reaction management",
+  "year": 2025,
+  "citations": 9,
+  "authors": [
+   "Gabriele De Vito",
+   "Filomena Ferrucci",
+   "Athanasios Angelakis"
+  ],
+  "is_oa": true,
+  "why": "LLM 临床决策支持系统；领域知识库 + 可信输出",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 2,
+  "note": null
+ },
+ {
+  "file": null,
+  "doi": "10.1016/j.knosys.2026.115469",
+  "tier": "B",
+  "title": "Addressing hallucinations in generative AI agents using observability and dual memory knowledge graphs",
+  "year": 2026,
+  "citations": 8,
+  "authors": [
+   "Amali Matharaarachchi",
+   "Harsha Moraliyage",
+   "Nishan Mills",
+   "Gihan Gamage",
+   "Daswin Pasantha De Silva",
+   "Milos Manic"
+  ],
+  "is_oa": true,
+  "why": "幻觉治理 + 可观测性 + 双记忆知识图；最贴近 HMRS 诚实弃答与可审计性",
+  "downloaded": false,
+  "source_url": null,
+  "candidates_tried": 0,
+  "note": " | second-pass: no legal OA PDF found"
+ },
+ {
+  "file": null,
+  "doi": "10.1016/j.knosys.2025.113179",
+  "tier": "A",
+  "title": "Intermediate triple table: A general architecture for virtual knowledge graphs",
+  "year": 2025,
+  "citations": 8,
+  "authors": [
+   "Julián Arenas-Guerrero",
+   "Óscar Corcho",
+   "María S. Pérez"
+  ],
+  "is_oa": true,
+  "why": "虚拟知识图的通用架构；架构型论文范本",
+  "downloaded": false,
+  "source_url": null,
+  "candidates_tried": 2,
+  "note": "not a PDF (text/html; charset=utf-8, 7094B) | second-pass: no legal OA PDF found"
+ },
+ {
+  "file": "A_GOFAI_Meets_GenerativeAI_ExpertSystems_2026.pdf",
+  "doi": "10.1016/j.knosys.2026.116657",
+  "tier": "A",
+  "title": "GOFAI meets generative AI: Development of expert systems by means of large language models",
+  "year": 2026,
+  "citations": 5,
+  "authors": [
+   "Eduardo C. Garrido‐Merchán",
+   "Cristina Puente"
+  ],
+  "is_oa": true,
+  "why": "用 LLM 开发专家系统；知识系统工程化",
+  "downloaded": true,
+  "source_url": "cached",
+  "candidates_tried": 3,
+  "note": null
+ },
+ {
+  "file": null,
+  "doi": "10.1016/j.knosys.2025.114896",
+  "tier": "B",
+  "title": "Optimising retrieval performance in RAG systems: A new growing window semantic chunking strategy to address weak semantic boundaries",
+  "year": 2025,
+  "citations": 5,
+  "authors": [
+   "Antonio Moreno-Cediel",
+   "Eva García‐López",
+   "Antonio García‐Cabot",
+   "David de-Fitero-Dominguez"
+  ],
+  "is_oa": true,
+  "why": "RAG 系统分块策略优化；对应 HMRS 语义切分门",
+  "downloaded": false,
+  "source_url": null,
+  "candidates_tried": 1,
+  "note": "not a PDF (text/html; charset=utf-8, 7530B) | second-pass: no legal OA PDF found"
+ },
+ {
+  "file": null,
+  "doi": "10.1016/j.knosys.2026.115800",
+  "tier": "A",
+  "title": "LLM-based harmonized data ingestion for dataspace: a novel system for automating data ingestion across heterogeneous data sources",
+  "year": 2026,
+  "citations": 1,
+  "authors": [
+   "Parwinder Singh",
+   "Michele Gaspari",
+   "Nirvana Meratnia",
+   "Mirko A. Presser"
+  ],
+  "is_oa": true,
+  "why": "异构数据源自动摄取系统；对应 HMRS 九步摄入管线",
+  "downloaded": false,
+  "source_url": null,
+  "candidates_tried": 1,
+  "note": " | second-pass: no legal OA PDF found"
+ },
+ {
+  "file": null,
+  "doi": "10.1016/j.knosys.2026.117231",
+  "tier": "B",
+  "title": "DamageRAG: Benchmarking and diagnosing multi-hop retrieval-augmented reasoning for structural damage inspection",
+  "year": 2026,
+  "citations": 0,
+  "authors": [
+   "Ziyu Hu"
+  ],
+  "is_oa": true,
+  "why": "多跳 RAG 的基准 + 诊断；与 HMRS '验证器失效诊断' 的负结果写法同类",
+  "downloaded": false,
+  "source_url": null,
+  "candidates_tried": 0,
+  "note": " | second-pass: no legal OA PDF found"
+ },
+ {
+  "file": "A_KG_Orchestra_OpenSource_MultiAgent_Framework_2026.pdf",
+  "doi": "10.1016/j.knosys.2026.117316",
+  "tier": "A",
+  "title": "KG-Orchestra: An Open-Source Multi-Agent Framework for Evidence-Based Biomedical Knowledge Graphs Enrichment",
+  "year": 2026,
+  "citations": 0,
+  "authors": [
+   "Ahmed Hossameldin Mohamed",
+   "Karim S. Shalaby",
+   "Abish Kaladharan",
+   "Sutrishna Sen",
+   "Heval Ataş",
+   "Alpha Tom Kodamullil"
+  ],
+  "is_oa": true,
+  "why": "开源多智能体框架 + 证据驱动知识图；文体与技术形态双重贴近",
+  "downloaded": true,
+  "source_url": "https://www.biorxiv.org/content/10.64898/2026.02.18.706536v1.full.pdf",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": null,
+  "doi": "10.1016/j.knosys.2026.116771",
+  "tier": "B",
+  "title": "QueCo: Query-conditioned consensus over unverified evidence for training-free zero-shot anomaly detection",
+  "year": 2026,
+  "citations": 0,
+  "authors": [
+   "Eunsun Yun",
+   "Heechul Lim",
+   "Haeyun Lee",
+   "Kang-Wook Chon",
+   "Minjoong Jeong"
+  ],
+  "is_oa": true,
+  "why": "未验证证据上的查询条件共识；对应验证门前的证据不确定性",
+  "downloaded": false,
+  "source_url": null,
+  "candidates_tried": 0,
+  "note": "HTTPError: HTTP Error 403: Forbidden | second-pass: no legal OA PDF found"
+ },
+ {
+  "file": null,
+  "doi": "10.1016/j.knosys.2026.116890",
+  "tier": "B",
+  "title": "Generating knowledge graphs from news articles via multi-agent claim extraction and attribution",
+  "year": 2026,
+  "citations": 0,
+  "authors": [
+   "Massimiliano Fadda",
+   "Enrico Motta",
+   "Francesco Osborne",
+   "Diego Reforgiato Recupero",
+   "Angelo A. Salatino"
+  ],
+  "is_oa": true,
+  "why": "多智能体声明抽取 + 归因；对应 per-citation provenance",
+  "downloaded": false,
+  "source_url": null,
+  "candidates_tried": 2,
+  "note": "HTTPError: HTTP Error 403: Forbidden | second-pass: no legal OA PDF found"
+ },
+ {
+  "file": "A_LLM_IR_System_BankSupervisors_2024.pdf",
+  "doi": "10.1016/j.knosys.2024.112914",
+  "tier": "A",
+  "title": "LLM-based IR-system for bank supervisors",
+  "year": 2024,
+  "citations": 6,
+  "authors": [
+   "Ilias Aarab"
+  ],
+  "is_oa": true,
+  "why": "面向银行监管者的 LLM 检索系统；与 HMRS 同为'部署型 IR 系统'工业案例",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2508.02945",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_Practical_PrivacyPreserving_Framework_LLM_Services_2026.pdf",
+  "doi": "10.1016/j.knosys.2026.115347",
+  "tier": "A",
+  "title": "A practical and privacy-preserving framework for real-world large language model services",
+  "year": 2026,
+  "citations": 3,
+  "authors": [
+   "Xueping Liao",
+   "Yu Mao",
+   "Wei Liu",
+   "Anjia Yang"
+  ],
+  "is_oa": true,
+  "why": "真实 LLM 服务的实用框架；工程约束与部署设计",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2411.01471",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_MSDiagnosis_Benchmark_Framework_MultiStepClinical_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.114524",
+  "tier": "A",
+  "title": "MSDiagnosis: A benchmark and framework for evaluating large language models in multi-step clinical diagnosis",
+  "year": 2025,
+  "citations": 15,
+  "authors": [
+   "Ruihui Hou",
+   "Shencheng Chen",
+   "Yongqi Fan",
+   "Guoxing Yu",
+   "Lifeng Zhu",
+   "Jing Sun",
+   "Jingping Liu",
+   "Tong Ruan"
+  ],
+  "is_oa": true,
+  "why": "基准 + 框架 + 多步推理评测；与 HMRS 分层评测设计同源",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2408.10039",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_SigOpt_Mulch_IntelligentSystem_AutoML_2023.pdf",
+  "doi": "10.1016/j.knosys.2023.110604",
+  "tier": "A",
+  "title": "SigOpt Mulch: An intelligent system for AutoML of gradient boosted trees",
+  "year": 2023,
+  "citations": 9,
+  "authors": [
+   "Aleksei G. Sorokin",
+   "Xinran Zhu",
+   "Eric Hans Lee",
+   "Bolong Cheng"
+  ],
+  "is_oa": true,
+  "why": "智能系统构建与自动化评测；系统工程文体",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2307.04849",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_QueryExpansion_SemanticRelations_RetrievalSystems_2023.pdf",
+  "doi": "10.1016/j.knosys.2023.111183",
+  "tier": "B",
+  "title": "Evaluation of semantic relations impact in query expansion-based retrieval systems",
+  "year": 2023,
+  "citations": 11,
+  "authors": [
+   "Lorenzo Massai"
+  ],
+  "is_oa": true,
+  "why": "查询扩展对检索系统的影响评测；对应 HMRS 查询改写层",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2203.16230",
+  "candidates_tried": 2,
+  "note": null
+ },
+ {
+  "file": "A_Automating_EngineeringModeling_LLM_Agents_2026.pdf",
+  "doi": "10.1016/j.knosys.2026.115989",
+  "tier": "A",
+  "title": "Automating data-driven modeling and analysis for engineering applications using large language model agents",
+  "year": 2026,
+  "citations": 8,
+  "authors": [
+   "Yang Liu",
+   "Zaid Abulawi",
+   "Abhiram Garimidi",
+   "Doyeong Lim"
+  ],
+  "is_oa": true,
+  "why": "工程应用中的 LLM Agent 自动化系统；工业部署视角",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2510.01398",
+  "candidates_tried": 2,
+  "note": null
+ },
+ {
+  "file": "B_GeoFuB_OperatorFunction_KnowledgeBase_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.113624",
+  "tier": "B",
+  "title": "Geo-FuB: A method for constructing an Operator-Function knowledge base for geospatial code generation with large language models",
+  "year": 2025,
+  "citations": 30,
+  "authors": [
+   "Shuyang Hou",
+   "Anqi Zhao",
+   "Jianyuan Liang",
+   "Zhangxiao Shen",
+   "Huayi Wu"
+  ],
+  "is_oa": true,
+  "why": "领域知识库自动构建；对应内容路由组织与元数据派生",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2410.20975",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_InformationTheoretic_DualMemory_System_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.113913",
+  "tier": "B",
+  "title": "Information-Theoretic Dual Memory System for continual learning",
+  "year": 2025,
+  "citations": 3,
+  "authors": [
+   "Runqing Wu",
+   "KaiHui Huang",
+   "HanYi Zhang",
+   "Qihe Liu",
+   "Jinyu Guo",
+   "JingSong Deng",
+   "Fei Ye"
+  ],
+  "is_oa": true,
+  "why": "双记忆系统设计；对应长期记忆/经验层",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2501.07382",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_LGMT_ReasoningReliability_Testing_2026.pdf",
+  "doi": "10.1016/j.knosys.2026.116324",
+  "tier": "B",
+  "title": "LGMT: Logic-Grounded Metamorphic Testing for evaluating the reasoning reliability of LLMs",
+  "year": 2026,
+  "citations": 4,
+  "authors": [
+   "Zenghui Zhou",
+   "Man Li",
+   "Xiaoke Fang",
+   "Xinyi Zhou",
+   "Weibin Lin",
+   "Zheng Zheng"
+  ],
+  "is_oa": true,
+  "why": "LLM 推理可靠性的逻辑接地测试；对应验证器失效诊断",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2605.23965",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "B_FinBloom_KnowledgeGrounding_RealtimeData_2026.pdf",
+  "doi": "10.1016/j.knosys.2026.115559",
+  "tier": "B",
+  "title": "FinBloom: Knowledge-Grounding Large Language Model with Real-Time Financial Data",
+  "year": 2026,
+  "citations": 4,
+  "authors": [
+   "Ankur Sinha",
+   "Chaitanya Agarwal",
+   "Pekka Malo"
+  ],
+  "is_oa": true,
+  "why": "实时数据知识接地；对应证据新鲜度与来源可追溯",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2502.18471",
+  "candidates_tried": 2,
+  "note": null
+ },
+ {
+  "file": "B_Prompting_LLM_KG_LongTailFacts_QA_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.113648",
+  "tier": "B",
+  "title": "Prompting large language models with knowledge graphs for question answering involving long-tail facts",
+  "year": 2025,
+  "citations": 28,
+  "authors": [
+   "Wenyu Huang",
+   "Guancheng Zhou",
+   "Mirella Lapata",
+   "Pavlos Vougiouklis",
+   "Sébastien Montella",
+   "Jeff Z. Pan"
+  ],
+  "is_oa": true,
+  "why": "长尾事实问答中的知识图提示；对标跨库检索",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2405.06524",
+  "candidates_tried": 2,
+  "note": null
+ },
+ {
+  "file": "B_LLM_Understand_KnowledgeGraphs_2025.pdf",
+  "doi": "10.1016/j.knosys.2025.113060",
+  "tier": "B",
+  "title": "Large language models can better understand knowledge graphs than we thought",
+  "year": 2025,
+  "citations": 45,
+  "authors": [
+   "Xinbang Dai",
+   "Yuncheng Hua",
+   "Tongtong Wu",
+   "Sheng Yang",
+   "Ji Qiu",
+   "Guilin Qi"
+  ],
+  "is_oa": true,
+  "why": "LLM 与知识图交互能力；支撑知识层设计讨论",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2402.11541",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_Enhancing_LLM_Systems_CircuitAnalysis_2026.pdf",
+  "doi": "10.1016/j.knosys.2026.117171",
+  "tier": "A",
+  "title": "Enhancing large language model-based systems for end-to-end circuit analysis problem solving",
+  "year": 2026,
+  "citations": 3,
+  "authors": [
+   "Liang‐Liang Chen",
+   "Weiyu Sun",
+   "Huiru Xie",
+   "Yongnuo Cai",
+   "Ying Zhang"
+  ],
+  "is_oa": true,
+  "why": "端到端 LLM 系统增强；系统工程方法",
+  "downloaded": true,
+  "source_url": "https://arxiv.org/pdf/2512.10159",
+  "candidates_tried": 1,
+  "note": null
+ },
+ {
+  "file": "A_COMPANION_Developing_SoftwareRefArch_JKP_CEUR2021.pdf",
+  "doi": "",
+  "tier": "A",
+  "title": "[非 KBS，配套] 同一作者团队的软件参考架构设计科学方法前驱论文（CEUR-WS 开放获取）",
+  "year": null,
+  "citations": null,
+  "authors": null,
+  "is_oa": null,
+  "why": "[非 KBS，配套] 同一作者团队的软件参考架构设计科学方法前驱论文（CEUR-WS 开放获取）",
+  "downloaded": true,
+  "source_url": "https://ceur-ws.org/Vol-2978/saml-paper2.pdf",
+  "candidates_tried": 1,
+  "note": null
+ }
+]
