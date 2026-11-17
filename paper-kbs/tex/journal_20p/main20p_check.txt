@@ -1,0 +1,1386 @@
+HMRS: A hierarchical management-and-retrieval system for tiered knowledge document
+                             organisation and evidence-traced access
+
+                                                        Author Namea,, Co-author Namea
+
+                                                          aAffiliation Department, University, City, Country, City, Country
+
+Abstract
+
+Document collections support knowledge work only when acquisition, organisation, maintenance and access are connected. We
+present HMRS, a self-hosted system that manages collections, documents and segments through catalogue, shelf, document and
+segment views. Parsed content informs collection assignment; document files, the tree registry and per-library metadata support
+lifecycle audits. An optional evidence gate scores passages but does not establish entailment; pinned search may bypass catalogue
+navigation.
+
+   In a 100-paper arXiv campaign, 79 were retrievable and 21 were not. A separate 400-page-per-language test measured assignment
+accuracy of 0.875 (English) and 1.0 (Chinese/Japanese). A scripted 72-question route audit selected the gold collection in 72/72
+full-card and 37/72 name-only cases; an unlogged fallback may use descriptions. On the same questions, frozen containment was
+52/72 for the tiered chunk-window arm and later executions gave 51/72 (70.8%), with the arm ordering preserved across three
+executions; a precise no-navigation arm reached 45/72 (difference unresolved) and a scoped flat union 39/72. Arms vary in multiple
+components and the flat lookup may depend on the gold domain. Gold identifiers appeared in all 60 answer-or- trace cells; the arms
+separated on document-style citation markers (9/10 versus 2/10), a lexical contrast, not semantic quality. In a same-pool replay of a
+retired hybrid wrapper, verifier re-ranking lowered Hit@5 from 15/16 to 7/16; fusion order restored 15/16. All 191 recorded scores
+exceeded threshold.
+
+   The results document an auditable structure, not general retrieval superiority, semantic answer quality or reliability. This replay
+warns against one historical ordering configuration; filtering was not tested on that pool.
+
+Keywords: Knowledge document management, Document classification, Hierarchical organisation, Tiered retrieval, Evidence
+verification, Model Context Protocol
+
+1. Introduction                                                    sational documents [12, 13], metadata and tagging studies ask
+                                                                   how documents are described and reviewed [14, 15], and public
+   Enterprises record regulations, failure analyses and opera-     knowledge bases curate facts under explicit ontologies [16, 17].
+tional lessons in unstructured documents. Using such docu-         Semantic similarity measures topical relatedness rather than ev-
+ments as a knowledge base requires reliable parsing, placement     idence containment, a failure mode discussed in the hallucina-
+in appropriate collections and attention to consistency as those   tion and RAG surveys [18, 2]. A relevant passage may remain
+collections change. A query may need to move from the rele-        hard to reach if its collection was not properly classified, its de-
+vant collection to a document and then to the passage that car-    scription does not reflect its content, or a rename left the index
+ries the evidence, while retaining a pointer to its source.        stale.
+
+   These requirements span document management and query-             The management­retrieval boundary creates a systems prob-
+time retrieval. Modular RAG and retrieval surveys already treat    lem: an index alone cannot ensure that a query reaches an ap-
+indexing and pre-retrieval as pipeline modules [1, 2]; this study  propriate collection, document and passage. Distributed infor-
+examines how collection placement, lifecycle operations and        mation retrieval has long studied collection selection [19, 20].
+per-tier audits connect to the retrieval step that consumes that   This work connects selection to managed collection state and
+state. In retrieval-augmented generation (RAG), retrieved mate-    audits selected lifecycle outcomes. It asks how a document
+rial informs generation; dense retrieval can embed queries and     collection can be managed so that a query can proceed from
+passages in a shared vector space [3, 4]. Agentic systems let      collection to document to segment, with each transition open
+a language model call retrieval tools [5, 6], and hybrid, lex-     to inspection. We study this question through an implemented
+ical and graph-structured variants extend the ranking model        system and bounded operational audits. Integration by itself is
+[7, 8, 9, 10, 11]. Knowledge management addresses the col-         not treated as evidence of improved retrieval or answer quality.
+lection itself: enterprise content management governs organi-
+                                                                      HMRS (Hierarchical Management Retrieval System) is a
+    Corresponding author.                                          self-hosted knowledge document management system. It main-
+     Email address: author@example.com (Author Name)               tains collections, documents and segments and supports cata-
+logue, shelf, document and segment views. In the catalogue-                   in 72/72 cases after reading 879 parts, but generated no
+first policy, the catalogue exposes collection descriptions, the              answers; the R3 read-all run was incomplete. Separately,
+shelf exposes document descriptions within a selected collec-                 two ten-question answer grids reported gold identifiers in
+tion, the document view opens its body, and the segment view                  the answer or trace for all 60 cells; document-style ci-
+exposes indexed passages. Pinned search can bypass catalogue                  tation markers separated the arms (9/7/2, and 9/9/9 on a
+and shelf selection; these are access views over the managed                  common substrate), and these lexical checks do not estab-
+objects, not four separate storage levels. An ingest agent selects            lish semantic correctness or claim-to-source support (Sec-
+collections from parsed content, while lifecycle audits compare               tions 8.6 and 8.7).
+document files, tree-registry entries and per-library metadata.           4. A same-pool diagnostic of verifier role. In a replay of
+The optional evidence gate scores candidate segments; it does                 a retired hybrid wrapper, verifier-score ordering reduced
+not prove support. Answer workflows distinguish a completed                   Hit@5 from 0.94 to 0.44, while retaining fusion order re-
+search without evidence from tool failure. These stages are de-               stored 0.94. All 191 recorded scores exceeded the con-
+scribed in Sections 3­7.                                                      figured threshold, so filtering did not activate and remains
+                                                                              untested on this pool (Sections 6 and 8.9).
+   The platform integrates document parsing, content-informed
+collection assignment, content-derived descriptions and tags,           1.1. Research questions and reading guide
+lifecycle management, the tiered access path and a Model Con-
+text Protocol (MCP) server [5]. It runs locally and exposes                Five questions connect the management model to the evi-
+management and retrieval functions to several agent harnesses.          dence and keep each conclusion within the scope of its mea-
+We distinguish implemented functions from those exercised by            surement. RQ1 asks whether documents can be parsed, auto-
+the reported campaigns: the paper evaluates the management              matically classified into a collection and stored with state that
+loop first, then examines how access workflows use the man-             stays consistent across the three sources, and where that pro-
+aged state to retrieve evidence.                                        cess fails. RQ2 asks whether the tiered path selects the correct
+Contributions.                                                          collection and narrows to the documents that contain the target
+                                                                        evidence, and what the collection-selection contrast does and
+  1. A management­retrieval contract for knowledge docu-                does not establish. RQ3 compares the tested content-layer con-
+      ments. HMRS represents collections, documents and seg-            figurations on gold-evidence containment and retrieval cost on
+      ments as managed objects and connects parsing, content-           the same question corpus, and asks whether the tiered path con-
+      informed placement, descriptions/tags, lifecycle updates,         tains more gold evidence than flat or navigation-free alterna-
+      indexing and catalogue-first access through one auditable         tives. RQ4 examines how verifier-score ordering affects recall
+      state. It compares document files, the tree registry and          and what can be inferred about filtering when the configured
+      per-library metadata after selected operations, and distin-       threshold rejects no recorded score. RQ5 summarises observed
+      guishes checks enforced by tools from semantic decisions          abstention, runtime, tool cost and execution failures at the an-
+      made by agent workflows (Sections 3­7).                           swer layer.
+
+  2. A collection-assignment and route-card audit. In a 100-               Section 2 positions the work; Sections 3­ 6 describe the man-
+      paper arXiv campaign, 79 papers were retrievable and              agement model, the collection and document levels, and the
+      21 were not, with incomplete failure attribution. In a            tiered access path; Section 7 covers deployment and enforce-
+      separate ingestion test on 400 Wikipedia pages per lan-           ment; and Section 8 evaluates the system, followed by implica-
+      guage, content-based assignment accuracy was 0.875 for            tions, limitations and conclusions in Sections 9­11.
+      English and 1.0 for Chinese and Japanese. In a 72-question
+      scripted audit, full route cards returned the gold collection     2. Related work
+      for 72/72 questions, compared with 37/72 for nominally
+      name-only cards. An unlogged fallback could still use de-         2.1. Knowledge management and document acquisition
+      scriptions, so this is a configuration contrast, not an iso-
+      lated treatment effect (Sections 8.4 and 8.2).                       Studies of LLM integration with knowledge-based meth-
+                                                                        ods describe both the potential and the challenges of combin-
+  3. A bounded content- and answer-layer account. On the                ing language models with structured knowledge [21]. Pub-
+      same 72 questions, the latest complete R3 follow-up con-          lic knowledge bases organise facts under explicit ontologies
+      tained the gold string in 51/72 cases for A0h, compared           [16, 17], whereas enterprise content management emphasises
+      with 45/72 for the navigation-free precise arm, 44/72 for         governance over organisational documents [12, 13]. Research
+      A0f, 39/72 for A0 and A1b, and 25/72 for A2. The frozen           on organisational knowledge explains how tacit experience be-
+      A0h result was 52/72, and A0h was the highest configu-            comes shareable [22, 23]; adjacent work studies metadata qual-
+      ration in the frozen run, an archived reproduction and the        ity, tagging, human review and auditability [14, 15, 24, 25];
+      follow-up, with the A0h > PD > A0f ordering preserved             automated text categorization provides the classification back-
+      and no per-question flips for A1b and A2. The A0h­A0              bone [26]. These strands motivate reliable placement and gov-
+      contrasts were 15­0 frozen and 12­0 in R3 (p = 6.1×10-5           ernance, but do not by themselves connect those controls to
+      and p = 0.00049, unadjusted). The arms vary in multiple           evidence- checked answers. Document-AI methods, including
+      components and the flat lookup may depend on the gold             layout-aware analysis and MinerU, recover text and structure
+      domain. A mechanical full-read script found the strings
+
+                                                                     2
+from complex documents [27, 28, 29]. Near- duplicate detec-             build these hierarchies offline at index time--recursive clus-
+tion and provenance provide complementary safeguards during             ter summarisation and pre-generated community summaries,
+ingestion [30, 31, 32]. HMRS treats acquisition quality, auto-          respectively [11, 9]. LightRAG does contribute incremental
+matic classification and traceable indexing as design commit-           graph updates [10], so HMRS's difference is not incremen-
+ments to be tested rather than as preprocessing assumptions;            tal update per se but the governance of collection membership
+the campaigns measure where they hold and where they fail,              and document lifecycle, reconciled across three state sources.
+without establishing a causal link to answer quality.                   Incremental vector-index maintenance is itself an active sys-
+                                                                        tems concern [50, 51]; HMRS complements it at the metadata
+   A line of work in this journal takes an explicitly architectural     layer with an explicit re-index operation and three-source rec-
+form: a software reference architecture for journalistic knowl-         onciliation. Retrieval granularity is likewise a design variable:
+edge platforms is derived from the literature and a prototype,          proposition-level and late-chunking strategies change what a re-
+specifying module responsibilities and architecture principles          trievable unit carries [52, 53]. TEIE-RAG combines hierarchi-
+[33], and an earlier workshop version outlines the architec-            cal semantic chunking with retrieval-model tuning and source
+ture and a proof-of-concept [34]. Other work builds and eval-           grounding for engineering information extraction [54]. HMRS
+uates complete knowledge-grounded systems--dialogue sys-                splits at recognised structural markers and indexes the resulting
+tems with graph-based semantic models [35], OpenQA systems              parts. HMRS uses a narrower document­library­tag graph for
+for low-resource languages [36], an LLM-based clinical deci-            navigation and candidate expansion; the graph does not estab-
+sion support system [37], and an IR system for bank supervisors         lish answer evidence on its own.
+[38]--while privacy-preserving service frameworks [39] and
+LLM-assisted construction of expert systems [40] treat deploy-             The decision of which collection to consult has a longer
+ment constraints as design inputs. Domain knowledge bases are           history in distributed IR: resource-selection methods such as
+built either from operator­function descriptions [41] or by in-         CORI and ReDDE rank collections by estimated relevance be-
+stantiating ontologies with LLM-generated domain knowledge              fore searching within them [19, 20]. HMRS adopts the same
+[42]. The same systems orientation appears in an open-source            select-then-search ordering but treats collections as managed,
+multi-agent framework for evidence-based knowledge-graph                reconciled state rather than static statistical summaries.
+enrichment [43], LLM-agent systems for data-driven engineer-
+ing modelling [44], end-to-end LLM systems for circuit analy-              Tool-using agents extend retrieval through iterative interac-
+sis [45], and an intelligent system that automates hyperparam-          tion [55, 56]. MCP standardises access to tool servers [5],
+eter tuning for gradient-boosted trees [46]. HMRS shares this           while Modular RAG and agentic-retrieval surveys describe re-
+systems orientation but makes collection membership, derived            configurable retrieval pipelines and their efficiency challenges
+descriptions and lifecycle state the auditable objects, rather than     [1, 6]. DeepRead performs structure-aware reasoning for agen-
+proposing a reference architecture or a domain ontology.                tic search: it converts a document to structured Markdown, in-
+                                                                        dexes paragraphs with section coordinates, and lets an agent
+2.2. Retrieval, organisation and agentic search                         locate then read sections in order [57]. Its hierarchy is thus a
+                                                                        read-only, per-document navigation aid built once at ingestion.
+   RAG grounds generated responses in retrieved passages [3];           HMRS differs in scope and in lifecycle: its hierarchy spans col-
+dense retrievers learn shared query­passage representations [4],        lections and documents, is a persistent managed asset whose
+while BM25 remains a strong lexical baseline [7]. Ghali et al.          state can be audited after selected operations, and exposes the
+combine semantic retrieval, vector storage and language mod-            catalogue-first librarian lane alongside dense and hybrid alter-
+els to query structured and unstructured data [47]. Hybrid re-          natives under explicit call and tool policies.
+trieval combines sparse and dense signals, including reciprocal-
+rank fusion [8]; embedding models such as BGE-M3 support                   Recent articles in this venue extend the retrieval stack
+multilingual and multi-granularity search [48]. Graph- and              in complementary directions: retrieval-augmented generation
+tree-structured systems organise and retrieve structured rela-          over engineering design knowledge [58], soft-prompt tuning
+tionships: GraphRAG adds entity-relation graphs and commu-              of dense retrievers [59], and an evaluation of semantic-relation
+nity summaries [9], LightRAG uses dual-level retrieval with             query expansion in retrieval systems [60]. Private-library re-
+incremental graph merging [10], and RAPTOR builds a re-                 trieval supports code generation [61]; work on knowledge
+cursive cluster tree [11]. RMR-SST represents multimodal                graphs ranges from studying how LLMs comprehend graph
+engineering-document content as structured semantic trees and           facts supplied in different prompt formats [62] to prompting
+retrieves across abstraction levels [49]. Hierarchical representa-      LLMs with graphs for long-tail factual questions [63], while
+tion is therefore already an established retrieval concern: RAP-        fine-grained stateful exploration navigates graphs through an
+TOR summarises a tree of clusters over document text and                LLM [64]. Real-time financial data grounding [65] and coor-
+retrieves over that tree, and GraphRAG retrieves over an en-            dinated multi-agent answer generation [66] illustrate the range
+tity graph induced from the corpus. HMRS differs in what                of deployed configurations. These systems optimise what is re-
+the hierarchy governs. Its hierarchy is a management struc-             trieved and how it is used; HMRS instead asks which managed
+ture over collections and documents--which collection exists,           collection is authoritative and whether its state can be audited
+which document belongs to it, which description explains it--           after each lifecycle operation.
+and selected lifecycle outcomes can be audited across its state
+sources. The original RAPTOR and GraphRAG formulations
+
+                                                                     3
+2.3. Verification, correction and abstention                          and answer-time evidence inspection. It reports where imple-
+                                                                      mentation and transport boundaries constrain the workflow and
+   Two further lines border the design without competing with         measures verifier admission separately from verifier ordering.
+it. Agent memory systems treat memory as an agent-managed             The contribution is an auditable management­retrieval con-
+store of interaction records: MemGPT pages memory between             tract, not a claim that prior systems lack reusable verification
+a context window and an external store [67], Mem0 extracts            or that one retrieval algorithm is universally superior.
+and consolidates long-term memory from conversations [68],
+and A-MEM organises notes as an agentic memory graph                     The study treats three design commitments as questions to
+[69]; continual-learning work adds an information-theoretic           test: whether content-based classification and lifecycle checks
+dual memory system [70]. HMRS manages a document corpus               expose collection state; whether a retrieved document should
+with audited lifecycle state; the stores are complementary rather     be re-ranked by a verifier or retain its fusion order; and whether
+than competing, and an ingest agent of the kind these frame-          agent workflows can report absence while separating completed
+works assume can also use collection assignment and consis-           negative searches from execution failures. Its contribution is a
+tency checks of the kind examined here. Knowledge organi-             knowledge document management workflow that connects and
+sation standards such as SKOS [71] and Dublin Core provide            exposes stages from parse admission through answer-evidence
+conventions for vocabularies and descriptive metadata; HMRS           reporting, a per-question account of answer-layer checks, and a
+derives collection and document descriptions from parsed con-         same-pool diagnostic showing a loss under verifier-score order-
+tent at ingest time.                                                  ing when the tested threshold admitted every recorded score. It
+                                                                      proposes no new ranking algorithm and does not claim that the
+   Self-RAG and CRAG integrate evidence assessment or re-             underlying retrieval problem is solved.
+trieval correction into generation [72, 73]; FLARE triggers re-
+trieval during generation [74]. Selective prediction under do-        3. System overview and management model
+main shift [75], identifying what LLMs do not know [76, 77],
+ontology-grounded retrieval [78], and citation verifiability [79,        HMRS is a self-hosted knowledge document management
+80] address adjacent concerns. EPRAG diagnoses evidence               system for converting heterogeneous documents into managed,
+states to choose responses, clarification or abstention in multi-     searchable collections. A Python parsing service, a TypeScript
+source enterprise retrieval [81]. HMRS externalises verifica-         web application and an MCP tool server share local storage and
+tion as a reusable server-side operation: the gate fetches doc-       retrieval engines [5]. The design follows from the dependency
+ument text, judges evidence and returns provenance to the an-         chain of Section 1: what a document is parsed as determines
+swer layer. This design makes the verifier inspectable, but not       what can be indexed, the collection it is filed into determines
+infallible.                                                           which tier can see it, and the tiers that follow determine whether
+                                                                      a supporting passage is ever read. The primary object of the de-
+   The LLM-as-a-judge literature documents preference bias,           sign is therefore the managed collection rather than the query.
+imperfect agreement, listwise instability and self-preference         State is made auditable through three sources--the document
+[82, 83, 84]; outcome-based verification can reward flawed rea-       files, the tree registry and per-library metadata--so that a man-
+soning [85]. These findings motivate separating evidence veri-        agement operation can be checked against what it claimed to
+fication from rank ordering and testing abstention at the answer      do. Each check belongs to the platform operation or calling
+layer.                                                                workflow that performs it, and the evaluation reports evidence
+                                                                      at that level.
+   Trustworthiness and evaluation are also studied at the sys-
+tems level in this venue: a systematic meta-survey of explain-        3.1. Management levels and the tiered access path
+able AI [86], logic-grounded metamorphic testing of reasoning
+reliability [87], and a benchmark plus evaluation framework for          The access path has four views over three managed object
+multi-step clinical diagnosis [88]. These contributions supply        levels. The catalogue view exposes collections and their de-
+the vocabulary of reliability and graded evaluation; the distinc-     scriptions; the shelf view exposes (document, description) en-
+tion claimed here is narrower: HMRS reports the measured fail-        tries within a selected collection; the document view opens a
+ure mode of its own evidence gate and turns that negative result      document body; and the segment view exposes indexed parts
+into a configuration rule.                                            and, when invoked, their evidence scores and provenance. The
+                                                                      shelf is a listing view, not a fourth storage level, and a pinned
+2.4. Research gap                                                     search may bypass catalogue and shelf selection. The levels
+                                                                      describe maintained objects and operations; the views describe
+   Supplementary Table S11 compares representative strands            what a query or agent can inspect and in what order.
+rather than every system in the literature. Prior work already
+studies selective question answering, citation verifiability and         At the collection level an ingest agent can classify a parsed
+retrieval correction; the distinction here is not that abstention     document against the catalogue of library descriptions and se-
+or evidence checks are absent from prior research. The gap            lect a collection based on its subject. The same workflow de-
+this study addresses is therefore a systems question: how can a       rives descriptions and tags from the body rather than the file-
+knowledge-document platform make the management state that            name; these semantic decisions are not enforced by the parse
+precedes retrieval observable, maintainable and usable by an
+agent? HMRS examines the complete workflow from acquisi-
+tion checks and automatic collection assignment through three-
+source consistency, lifecycle operations, catalogue-first access
+
+                                                                   4
+Table 1: Management levels and the tiered access path. Each level names the objects it maintains, the operations that write them, the state that
+describes them, the tier that reads them, and the measurement that exercises it. The selected access policy determines which tiers are visited; a
+pinned search can bypass catalogue navigation.
+
+Level       Objects and operations         State description             Read tier        Check           Evidence
+Collection                                                               catalogue                        E1, E2
+            libraries and sub-libraries;   library registry,                              catalogue
+Document    automatic assignment from      per-library metadata,         shelf            inventory and
+Segment     parsed content; description    library-level index                            description
+            and tag derivation; catalogue                                document and     round-trip
+            listing                        document files, tree          segment
+            documents and their parts;     registry, per-library                          reconciliation on E2
+            duplicate review; move,        metadata                                       selected
+            rename, delete; forced                                                        operations
+            re-index                       chunk identifiers,
+            structural split; dense and    per-segment scores with                        index coverage  E1, E5­E9
+            lexical indices; optional      provenance                                     and post-index
+            evidence gate                                                                 probe
+
+API. Sub-libraries are first-class tree nodes with their own de-         Library search   HMRS access
+scriptions and indices. At the document level, duplicate de-                   Catalogue
+tection reports candidate pairs for review rather than deleting                 Shelf           Collection
+them, because adjacent parts may be similar while carrying dis-                                  catalogue
+tinct sections. Re-indexing remains a separate, explicit oper-
+ation. At the segment level a document is split at recognised                               Document shelf
+structural markers and its parts are indexed for dense and lexi-
+cal search. When a workflow invokes the evidence gate, candi-            Book             Document
+date documents are fetched and their segments scored; the gate
+returns surviving segments with provenance. This score-based             Passage          Segment
+admission check is distinct from candidate ranking, fusion and
+workflow-level caps, and it does not establish that a passage                                                       Evidence
+entails an answer claim.                                                                                             scoring
+                                                                                                                    (optional)
+   Figure 1 relates a catalogue-first access path to library search:
+the catalogue lists collections and their descriptions, the shelf        Figure 1: Library analogy for a catalogue-first HMRS access path.
+lists documents in a selected collection, the document view              The library catalogue, shelf, book and passage correspond to the col-
+opens a body, and the segment view exposes passages for op-              lection catalogue, document listing, document body and segment. Evi-
+tional scoring. The shelf is a listing view, and pinned searches         dence scoring is optional; pinned search may bypass the catalogue and
+can bypass the first two views. Figure 2 depicts the service entry       shelf.
+points, shared state and retrieval components. In a catalogue-
+first workflow each selection can narrow the scope the next step         a third built-in server policy; it combines vector and catalogue
+considers. Its checks have distinct denominators: a catalogue            calls under an explicit directive. The document graph supports
+that does not contain the owning collection is a different failure       navigation, not evidence. Experience retrieval and the persona-
+from a shelf that omits the document, and the system reports             distillation workflows reuse knowledge-base infrastructure but
+them separately.                                                         follow their own retrieval and filtering paths; neither is de-
+                                                                         scribed here as invoking Laya, and neither was evaluated at
+   Figure 3 summarises an illustrative workflow from document            scale.
+acquisition and organisation to retrieval and evidence inspec-
+tion. Parsing is used when needed; quality review and content-              The platform exposes five management domains: acquisi-
+based collection assignment are agent-workflow procedures,               tion, organisation, lifecycle, query and operational experience.
+and indexing depends on the entry point. A question can select           Some controls are enforced by API/MCP operations; semantic
+documents through catalogue and shelf navigation or through              and quality checks are agent-workflow procedures, and cam-
+pinned vector or two-stage search. Laya scoring is optional;             paign audits test selected outcomes. Table 2 distinguishes these
+incomplete execution is distinct from a completed review that            layers and maps each domain to the evidence that exercises it.
+finds no support. The workflow does not imply that every step
+is enforced by the API. The management path covers acqui-                3.2. Data model and object lifecycle
+sition (Section 4), content-informed organisation and lifecycle
+checks (Section 5), and the tool and runtime layer (Section 7).             Documents are Markdown with extracted images. Library
+The chat endpoint defines pinned-search and all-library librar-          state is described by the document files, the .tree-fs.json
+ian policies. Hybrid is a composed retrieval configuration, not          registry and each .knowledge-base.yml. The ingest work-
+                                                                         flow tracks raw, parsed, stored and indexed states and can mark
+                                                                         completion after its configured retrieval probe. Indexing is a
+
+                                                                      5
+ Clients     Access & Orchestration                                    Knowledge Management                 Retrieval & Navigation
+ Browser                (HMRS)                                             Services (Shared)
+Agent / CLI                                                                                                          Retrieval
+             Nuxt Web     FastAPI            save                      Shared Managed State                           (ChromaDB / BGE-M3
+                          (Parsing)                                                                                   + BM25)
+                                     MinerU                                      Document Files
+                                                                                 (source & parsed)                        Neo4j Graph
+                                             Parsed                                                                        (Navigation Only)
+                                                                                 Tree Registry
+                                             Markdown                            (hierarchy & structure)
+
+             MCP                 Management Ops                                  Library Metadata
+             Tool Server         (import / organize / update)                   (collections & attributes)
+
+              (Optional)         Retrieval Ops                                   Dense + BM25 Indices
+                                 (search / get / evidence)                       (retrieval indexes)
+
+             Laya
+             (Evidence Scoring)
+
+Figure 2: HMRS service architecture. The browser and agent/CLI access the web and MCP interfaces. Parsing, management and retrieval operate
+on shared document files, the tree registry, library metadata and search indices. Laya scoring is optional, and the Neo4j graph supports navigation.
+
+separate transition: some save paths start vector/BM25 index-          establish that property. The platform accepts scanned pages,
+ing asynchronously, while the web parsed-file save path does           Office files and plain text, but quality review, classification and
+not. Reconciliation detects selected stale-index conditions or         completion checks are not all enforced by the parse API.
+disagreement among the three sources; it is not a cross-store
+transaction. Because the three sources are written by different        4.1. Quality gates and ingest lifecycle
+management operations, the collection has no single authorita-
+tive record of its own state, and the reconciliation audit exists         Duplicate handling has two paths rather than a universal ad-
+to make disagreement observable rather than to prevent it.             mission gate. The upload service rejects an exact same-parent
+                                                                       duplicate by content hash, while the separate near-duplicate
+4. Acquisition and automatic classification: from parsed               tool reports similar candidates for review at a configured thresh-
+   document to owned collection                                        old; it does not delete them automatically. In the ingest work-
+                                                                       flow, an agent reviews parsed text for OCR noise, binary
+   Acquisition determines what later retrieval can support, and        residue, bodyless headings, whitespace collapse and language
+it is where a document is assigned to the collection that owns it.     mismatch. Save and indexing behaviour depends on the en-
+HMRS submits PDFs, Office files and scans to MinerU through            try point: the web parsed-file save route stores content without
+an asynchronous parsing service [29]; parse tasks return identi-       starting indexing, while the MCP parsed-document save oper-
+fiers that callers can poll, while workflow quality review exam-       ation can start vector/BM25 indexing asynchronously. The in-
+ines the resulting text for parsing defects.                           gestion agent classifies the document into a library whose scope
+                                                                       matches the parsed content's subject, not its filename, and the
+   The intended ingest workflow includes submission, parsing,          classification is recorded so that the owning collection can be
+agent-mediated quality review, duplicate review, optional split-       compared with the catalogue afterwards.
+ting, collection assignment, storage, indexing and a retrieval
+probe. These dependencies matter to the system claim: pars-               When requested and above the configured context ceiling
+ing produces the content used for placement; placement con-            (30,000 characters in the arXiv campaign; 60,000 in later con-
+trols the collections visible to later access; indexing makes the      figurations), documents are split at recognised structural mark-
+stored parts searchable; and the probe checks that the claimed         ers. The splitter targets 0.85 utilisation as a soft target and
+transition is visible through the retrieval interface. Depending       detects units such as headings, Markdown tables, lists, block
+on the entry point, artefacts may include a parse task identi-         quotes and fenced code. It does not guarantee preservation of
+fier, a quality report, a content fingerprint, a split manifest, a     equation boundaries. Descriptions and tags are derived from
+storage record, a placement decision and a probe result. The           the body and checked by the ingest workflow; mismatches call
+workflow treats a content-derived retrieval probe as evidence of       for metadata correction, not document rewriting. Vector/BM25
+retrievability; an HTTP success from a save call alone does not        indexing and graph construction are distinct operations. Post-
+                                                                       index verification checks selected properties such as a non-
+
+                                                                    6
+Table 2: Management functions, the enforcement or workflow check associated with each, and the evaluation that exercises it. The table separates
+API/MCP controls from agent procedures and campaign audits; semantic choices such as which collection owns a document remain workflow
+decisions and are measured, not enforced.
+
+Group         Operations                                                Platform or workflow check                      Evidence
+Acquisition   submit, parse (MinerU), quality review, duplicate
+Organisation  review, structural split, store, index                    parse-task state; workflow quality checks;      E1
+              create library or sub-library, content-informed           entry-point-specific deduplication and          E1­E2
+Lifecycle     placement, descriptions and tags, duplicate review        indexing; post-index probe
+Query                                                                   API validates identifiers and required          E2
+Experience    move, rename, delete, force re-index, graph build         fields; workflow checks descriptions and        E5­E9
+                                                                        tags; audit compares files, tree and library    E4
+              tier selection, vector, keyword, catalogue and            metadata
+              two-stage search, gate invocation                         operation-specific API updates;
+              extract, approve, tier, search                            reconciliation audit detects selected stale or
+                                                                        inconsistent state
+                                                                        endpoint enforces tool allow/deny lists,
+                                                                        timeouts and turn limits; invoked gate
+                                                                        returns survivor provenance
+                                                                        experience tools apply their own retrieval,
+                                                                        verification and credibility filters
+
+empty vector collection and expected chunk identifiers; recon-          5.1. Classification, metadata, tags and duplicate review
+ciliation can detect stale index state, but is not a transaction           Integrity checks compare the document files,
+across storage and index services.
+                                                                        the .tree-fs.json tree and each library's
+4.2. Acquisition evidence and accounting limits                         .knowledge-base.yml for document existence, path and
+                                                                        index metadata. Tags derive from content and are checked
+   The 100-paper campaign produced 322 stored parts in five li-         against it. Duplicate detection reports candidate pairs for re-
+braries, so the collection level was populated across five distinct     view; deletion is not automatic because adjacent parts may be
+owning collections rather than a single corpus. Its reconcilia-         similar while containing distinct source sections.
+tion is incomplete: the state file records 91 submitted names; at
+the 2026-10-13 evaluation snapshot 79 papers were retrievable              The layer's operations are library and sub-library creation,
+and 21 were not, and the surviving artefacts do not enumerate           classification, description and tag edits, move, rename, delete,
+attempts and failures per paper, so the missing 21 cannot be            duplicate review and forced re-index. Together they implement
+attributed to parsing alone. Formula-dense scans and a recov-           the management loop that turns parsed content into a main-
+ered batch-process crash were observed; neither establishes the         tained collection: placement records ownership, descriptions
+cause for every missing paper.                                          expose scope, lifecycle operations change ownership or con-
+                                                                        tent, and reconciliation checks whether the representations still
+   A separate cross-lingual test processed 400 Wikipedia pages          agree. Each operation updates the state relevant to it; for ex-
+per language. Ingestion success was 1.0 in both rounds. Auto-           ample, a move changes the document path and registry entries,
+matic membership accuracy was 0.875 for English and 1.0 for             while re-indexing updates search indices. The audit compares
+Chinese and Japanese; this metric measures whether content-             the files and registries where applicable. The catalogue lists li-
+based classification placed a document in the correct collec-           braries, their descriptions, sub-library containers and document
+tion independently of its filename. Section 8.2 reports the             descriptions, which lets a reader or an agent decide where to
+per-language storage and self-retrieval results. These measure-         look before opening a body. Classification involves a semantic
+ments characterise ingestion, classification and storage, not an-       choice: the ingest agent selects the library from the parsed con-
+swer quality.                                                           tent, and the platform checks the consequences rather than the
+                                                                        choice. The same asymmetry holds at query time: the work-
+5. Collection and document management: organisation,                    flow selects a collection, whereas operations to open and index
+   classification and lifecycle                                         documents, and optionally score their segments, are provided
+                                                                        by the server.
+   Organisation determines which collections exist, which tier
+can see a document, and whether the stored state remains trust-            Sub-libraries are tree nodes with their own descriptions and
+worthy. HMRS places documents by content rather than file-              indices. For a parent scope, the vector service resolves the
+name; split parts inherit the source assignment, and the cat-           parent and its descendants to the collections available to that
+alogue exposes library and document descriptions before full            query; the two-stage service likewise resolves descendant iden-
+bodies are read. This section covers the collection and docu-           tifiers during its lexical stage. This is a scope-resolution policy,
+ment levels of Table 1; the segment level is treated in Section 6.      not a claim that child vectors are stored in the parent's collec-
+                                                                        tion. The measured campaigns used explicit per-library scopes
+                                                                        for the flat union and did not treat parent traversal as an inde-
+                                                                        pendently benchmarked retrieval condition. Index availability
+
+                                                                     7
+Stage 1: Acquire          Stage 2: Organize                         Stage 3: Retrieve            Stage 4: Inspect and report
+
+            Documents     Content-based                                       User question      Use Laya Yes           Laya
+                          collection assignment                                                  scoring?               scoring
+             Parse when
+             required     Descriptions and tags                        Catalogue                 No
+             (MinerU)
+                          Save                                         Shelf      Pinned vector             Read evidence
+           Agent quality                                                           / two-stage
+           review          Managed collection
+                           (shared)                                                    search
+
+                                    if triggered                       Document
+                          Index (entry-point
+                          dependent)                                   Candidate documents       Supported  Completed   Incomplete
+                                                                                                   answer     review:   tool failure
+
+                                                                                                 + sources  no support
+
+                                                                                                 Any stage: failure / timeout
+
+Figure 3: Illustrative HMRS workflow from document acquisition to evidence-based reporting. Documents are parsed when needed, organised
+into collections and indexed according to the entry point. A question can use catalogue navigation or pinned search; optional Laya scoring
+precedes evidence inspection. A completed review without support is distinct from an incomplete search or tool failure, which may occur at any
+stage.
+
+and route-specific failures therefore still require a post-search      its parts. Two built-in chat policies and an experimental compo-
+probe.                                                                 sition use different affordances of that path, and a calling work-
+                                                                       flow may invoke the separate server-side Laya evidence gate.
+5.2. Lifecycle operations, graph and operational knowledge             The tool fetches referenced document text, segments it and ap-
+                                                                       plies a local, query-conditioned verdict. Its model-card field
+   A historical rename trial left stale vector chunks until forced     (noul) is a typed 0­1 score; this study reports no probability-
+re-indexing. The current rename path starts index synchronisa-         calibration experiment and does not interpret the score as a cal-
+tion asynchronously, with failures logged as non-fatal; check-         ibrated probability. Segments meeting the configured threshold
+ing the resulting index remains necessary because successful           (0.5 by default) are returned as survivors with provenance. A
+metadata updates alone do not establish index consistency. The         scored segment below the threshold is not admitted, while tool
+document graph supports navigation and candidate expansion,            or fetch failures are reported separately; a partially completed
+not evidence. Operational lessons are stored as retrievable doc-       call may still return successfully scored survivors. The answer
+uments with credibility tiers, but the available measurements          workflow reserves a scoped not-found report for a completed
+are case examples rather than a scale evaluation of distillation,      search with no supporting evidence, not for an execution fail-
+approval or credibility decay.                                         ure.
+
+5.3. Organisation contract                                                An access workflow can combine the following operations.
+                                                                       Their order and inclusion depend on the entry point and the
+   The evaluation checks three-source consistency, content-            question; the list is not a server-enforced sequence for every
+derived descriptions, regression probes and lifecycle outcomes         query.
+(Section 8.3). Reconciliation can expose selected stale or in-
+consistent states; it does not detect or prevent every failure by        1. Rewrite. The agent forms retrieval queries from the ques-
+construction. Merge and split remain outside the controlled test             tion.
+scope, so performance claims must be read within the corpus
+sizes reported in the Evaluation section.                                2. Gather. A pinned search calls two-stage or vector search; a
+                                                                             catalogue-first search selects collections and document de-
+6. The tiered access path: from collection to admitted seg-                  scriptions. A composed workflow can combine candidates
+   ment                                                                      from more than one source.
+
+   The access path reads the collections, catalogue and indices          3. Merge and cap. Where multiple sources are combined, the
+maintained by acquisition and organisation. It is the query-                 workflow can deduplicate and limit the candidate set. Spe-
+side counterpart of the management levels: the catalogue tier                cific limits are properties of the evaluated configuration,
+chooses a collection, the shelf tier chooses documents within it,            not universal platform guarantees.
+the document tier opens a body, and the segment tier can score
+                                                                         4. Judge. When invoked, the gate fetches candidate docu-
+                                                                             ments, scores segments and returns survivors with prove-
+                                                                             nance; fetch and tool failures are reported separately from
+                                                                             low scores.
+
+                                                                    8
+ Question /       Select         Pinned collections                                        Use Laya            Fetch and score
+query rewrite    path(s)         vector / two-stage                                          gate?    Yes segments (Laya)
+               one or both
+                                                                   Candidate references
+                                                                   (optional merge / cap)                       No
+
+                                 Catalogue / shelf
+                                 select documents
+
+                                    Answer with                Support  Yes                  Review                 Read selected
+                                 source references Yes         found?                      complete?                   evidence
+
+                                 Scoped not-found              No                                   No
+
+                                 and blind spots                                           Incomplete review:          Any stage:
+                                                                                           scope and available      failure / timeout
+
+                                                                                                  evidence
+
+Figure 4: Tiered access workflow. Candidate references can be gathered from pinned collections, catalogue navigation or a combination. The
+optional Laya gate fetches and scores segments. An incomplete operation at any stage reports its scope and any available evidence; a scoped
+not-found is reserved for a completed review without support. The workflow describes intended agent behaviour, not a server-enforced sequence.
+
+Algorithm 1 Tiered access with optional evidence gate              6.1. Tier policies and the evidence gate
+
+Require: question q; catalogue C; threshold ; gate flag g             The current chat instructions provide two retrieval modes.
+                                                                   In pinned mode, the agent rewrites the question and calls the
+1: D  GatherCandidates(q, C)  pinned or catalogue-first            two-stage search (preferred) or vector search within the se-
+                                                                   lected collections; it can send candidate references to Laya in
+2: if g then                                                       sequential batches and optionally open a survivor for a spe-
+                                                                   cific quote. In all-library mode, the instruction walks the cat-
+3: S  LayaJudge(D, q, )           fetch, score and return          alogue and selected shelves, selects document references from
+                                                                   descriptions and sends these to Laya before reading survivors.
+survivors                                                          These are agent instructions, so actual tool use is reported from
+                                                                   traces rather than assumed from the instruction. Endpoint-level
+4: else                                                            timeouts and turn limits bound execution; retrieval sequences
+                                                                   and batch sizes are workflow instructions rather than separate
+5: S  ReadSelected(D)                                              server-enforced per-lane quotas.
+
+6: end if                                                             The experiments also use fixed retrieval configurations. In
+                                                                   particular, the historical hybrid wrapper whose logged pools are
+7: if execution incomplete then                                    analysed in Section 8.9 is no longer a registered tool. Another
+                                                                   controlled candidate-pool experiment uses per-library vector
+8: return incomplete status, searched scope, and available         top-30 at cosine threshold 0.35 together with catalogue candi-
+                                                                   dates, followed by fusion and a twelve-candidate cap. These
+evidence                                                           values identify that experiment, not the current chat default. A
+                                                                   composed hybrid directive may call vector and catalogue tools
+9: else if completed review finds no support then                  in an agent workflow. Table 3 summarises the current modes
+                                                                   and the evaluated composition.
+10: return scoped not-found (searched scope, blind spots)
+                                                                      The gate is the local Laya evidence classifier [89], exposed
+11: else                                                           as kb_laya_judge. In reference mode, the server fetches can-
+                                                                   didate documents, scores their segments against the query and
+12: return agent-synthesised answer with source refer-             returns surviving segments with provenance and a bounded ev-
+                                                                   idence pack. This is a threshold-based admission operation; it
+ences                                                              does not itself fuse candidate sources or impose the workflow's
+                                                                   top-k reading window. Those decisions belong to the calling
+13: end if                                                         search configuration or agent workflow. To construct the evi-
+                                                                   dence pack, the tool orders surviving segments by source and
+5. Read and answer. The agent examines the evidence pack
+   and may read a surviving document to check a specific
+   claim before synthesising an answer.
+
+   Figure 4 summarises this workflow and its terminal condi-
+tions; Algorithm 1 expresses the same decision sequence in
+pseudocode. Both are workflow abstractions: individual entry
+points may omit or combine candidate-gathering steps.
+
+   Exhausting a policy's call budget is intended to produce a
+scope and blind-spot report. The endpoint enforces timeouts
+and turn limits; the per-policy budgets are workflow instruc-
+tions, not server quotas.
+
+                                                               9
+Table 3: Access policies over the tiered path. Modes differ in how candidate collections and documents are selected. The hybrid row describes
+an experimental composition.
+
+Policy     Tiers traversed              Retrieval affordance               Budget type             Intended terminal report
+Search                                                                     Endpoint turn limit     Answer or report not-found
+Librarian  pinned collections,          Two-stage or vector search
+Hybrid     segment                                                         Workflow instructions   Scope and blind spots
+           catalogue, shelf, document,  Catalogue navigation and optional
+           segment                      judging                            Configuration-specific  Candidates or judged
+           catalogue and segment        Composed vector and catalogue      candidate cap           survivors
+                                        calls
+
+position, deduplicates them and applies the character limit. A             The chat endpoint adapts multiple agent harnesses to the
+passing verdict is not proof of truth or entailment; the verifier       lane interface. The server selects a harness and permission
+remains subject to calibration and transport limitations.               mode, enforces configured tool allow/deny lists, applies end-
+                                                                        point timeouts and turn limits, and may register an asyn-
+   The two-stage tool builds a candidate pool with lexical search       chronous task. Lane-specific retrieval sequences and call bud-
+and optional graph expansion, then applies dense ranking. It            gets are workflow instructions; the endpoint does not enforce a
+does not call the evidence gate; a ranked chunk does not by             separate per-lane call quota.
+itself establish evidential support, and a similarity threshold is
+not an abstention mechanism. The 13 October catalogue inci-             7.2. Runtime and deployment
+dent showed that oversized tool returns can conceal documents
+before reasoning begins. The tested repair adds a server-side              The backend uses Python 3.12 and FastAPI. ChromaDB
+character budget, grouped views and pagination; its behaviour           stores cosine-space HNSW collections with normalised BGE-
+is reported in the Evaluation section.                                  M3 embeddings (1024 dimensions) [90, 91, 48]; Neo4j stores
+                                                                        the document graph [92]; BM25 supports lexical search [7];
+6.2. Honest abstention                                                  MinerU provides parsing and OCR [29]. The Laya verifier runs
+   A candidate list may contain high-similarity but unsupported         locally as a serialised worker.
+
+documents. The answer workflow instructs the agent to report               The evaluation environment is one self-hosted Windows
+not-found when its completed evidence review finds no support,          workstation with an RTX 5060 (8 GB) used for embeddings
+including the searched scope and known blind spots, rather than         and judging. Local execution reduces external service depen-
+falling back to parametric knowledge. This behaviour was ob-            dencies but does not establish privacy, access-control or multi-
+served in the reported trials; it is not a server-side semantic-        host deployment guarantees. A stack-ensure script checks the
+classifier guarantee. Timeouts, unavailable tools and incom-            API, web front end and MCP endpoints and can restart missing
+plete searches are execution failures, not evidence of semantic         services before an end-to-end retrieval probe. Three recent ac-
+absence (Section 8).                                                    ceptance trials reported recovery from a stopped stack without
+                                                                        manual intervention; this observation does not establish avail-
+7. Agent interface and implementation                                   ability in every deployment.
+
+7.1. MCP tools and lane policy                                             The implementation and scripts are available at https://github
+   The platform exposes MCP tools across management and re-             .com/kingdol666/rag-knowledge; experimental corpora remain
+                                                                        subject to their data-use constraints.
+trieval categories. They fall into the management groups of Ta-
+ble 2: parsing and quality review for admission, library and            8. Evaluation
+sub-library creation, placement, description and tag editing for
+organisation, move, rename, delete and forced re-index for life-           We evaluate HMRS as a knowledge-management system
+cycle, catalogue, vector, keyword and two-stage search for the          with an access path, not as an isolated ranker. The evalua-
+access path, the Laya evidence gate for segment admission,              tion is organised into three evidence families. The management
+the document graph for navigation, and operational-experience           family (E1­E2 and E4) tests acquisition, content-based assign-
+tools. These tools support a closed operational loop: a write           ment, three-source consistency, lifecycle operations and oper-
+changes managed state, a read or probe checks the resulting             ational knowledge; these campaigns provide bounded observa-
+state, and a re-index or reconciliation operation makes stale           tions rather than complete failure rates. The access family sep-
+state visible or repairable. Persona-distillation workflows are         arates a scripted route-card audit of the description layer (E3)
+outside the scope of this evaluation and use their own retrieval        from the content-layer configuration comparison (E5). The an-
+and synthesis path. Access policies receive read-oriented tool          swer and deployment family (E6­E7) tests trace proxies, trans-
+sets; administrative writes remain separate, and long-running           port contracts and observed abstention. E8 diagnoses veri-
+parse, re-index and graph operations return pollable task iden-         fier placement through a same-pool ordering replay, and E9
+tifiers. Figure S1 summarises the software design: a tool layer         bounds stability, concurrency, gate and scope behaviour. E3
+over management services that share one auditable state, with           tests scripted collection choice and E5 measures retrieved text
+the evidence gate as an optional segment-level call.
+
+                                                                    10
+on the same question set; E6 uses separate questions to inspect             platform chat API by its Claude Code engine, and the four-
+answers and traces. These results do not form paired stages of              question harness case compared the Claude Code harness with
+one end-to-end trial and are not pooled into a system-level accu-           the oh-my-pi harness pinned to the ustc/deepseek-flash model
+racy. In research-question terms, E1, E2 and E4 answer RQ1;                 (November 2026). Two corpus-integrity defects were repaired
+E3 answers the collection-selection part of RQ2; E5 answers                 before measurement, so their natural failure rate is unknown.
+RQ3; E8 answers RQ4; E6 and E7 answer RQ5; E9 bounds all                    Table 4 records these boundaries; Tables S9­S10 map manage-
+five questions. Table 4 records the design and provenance of                ment functions and campaigns to their checks.
+each campaign; Tables S9­S10 group the management obser-
+vations and retrieval designs with their limits.                            8.2. E1: Acquisition and parsing
+
+8.1. Experimental design and measures                                          The 100-paper campaign recorded 322 parts in five libraries.
+                                                                            At the October snapshot 91 paper names appeared in the ingest
+   Corpora and questions. Five data packages are used, each                 state and 79 papers were retrievable: twelve recorded and nine
+with its own unit. The industrial demonstration corpus contains             unrecorded papers were not retrievable, and the records do not
+42 documents in five libraries, including twenty near-duplicate             establish per-paper parse status or the stage causing each fail-
+telemetry reports, and 16 developer-authored questions with                 ure. A later re-check enumerated 328 parts in the same five
+gold document fragments; Q16 shares a token with its gold file-             libraries and found a content-derived description for every part
+name. The arXiv campaign submitted 100 papers across about                  (328/328, at least 60 characters, with no placeholder names),
+25 domains and produced 322 stored parts in five libraries at the           a metadata result separate from retrieval accuracy. The same
+2026-10-13 snapshot; its ten gold questions are keyed by arXiv              re-check ran a filename-stem short-query identifier probe: a
+identifiers. A later re-check enumerated 328 parts in the same              query built from each PDF filename stem was searched in re-
+five libraries and audited their descriptions; it is a separate state,      sult names for the arXiv ID. The ID appeared for all 100 records
+not a matched rerun. The cross-lingual ingestion corpus has 400             after forced reindexing, explicit indexing and a probe-tool cor-
+Wikipedia pages per language (English, Chinese and Japanese)                rection. This is an identifier-visibility diagnostic, not scoped
+and 40 extractive queries per language; its index self-check is             title retrieval: 72 records did not specify a library and 45 re-
+not a task-level retrieval benchmark. A separate routing cor-               turned a chunk-copy name first. It is not a matched before­after
+pus has 138 documents in 879 parts across ten domains, 72 in-               comparison with the October snapshot. A separate ten-question
+domain questions and four out-of-domain probes per arm; two                 vector check, scoped to the five libraries, placed the gold docu-
+cross-placeholder probes are excluded. The same 72 questions                ment first in all ten questions and invoked the judge with its real
+were rerun as a same-question follow-up whose corpus grew                   engine in all ten; the retained summary does not preserve com-
+to 906 parts; it is not an independent sample. The packaged                 plete judge inputs, so survivor and evidence-pack counts are not
+trace tables retain 76 question IDs per complete arm; four R1­              reported as a 10/10 result. The cross-lingual test ingested 400
+R4 cross-placeholder/out-of-domain probes remain in the CSV.                pages per language with membership 0.875 for English and 1.0
+They are excluded from the 72-question in-domain containment                for Chinese and Japanese; its post-ingest self-retrieval is an in-
+and paired tests, and are not pooled into an abstention-success             dex check, not a task-level benchmark. A separate 50-paper,
+rate. Questions and gold annotations were developer-authored,               26-domain campaign parsed and verified all papers, but 41 neg-
+not sampled user queries.                                                   ative tag flags did not block ingestion.
+
+   Measures and controls. Document-level Hit@5, Recall@5                    8.3. E2: Organisation, consistency, and management opera-
+and MRR@5 measure the returned top five, with MRR zero if                         tions
+no gold appears in that window [93]. Scripted route accuracy
+checks the labelled collection, whereas gold-string containment                The consistency checks show that the three-source state is
+checks an exact substring in the returned evidence; neither mea-            auditable and repairable, not that every operation is correct. A
+sures semantic answer correctness. Automated RAG evaluation                 disposable-library rename left stale chunks in the vector index:
+frameworks [94, 95] assess the semantic quality of generated                18 instead of nine, with duplicate results; forced re-index re-
+answers, while cumulated-gain measures [96] evaluate graded                 stored nine. The 322-part campaign passed its content check
+relevance of ranked results; neither is used to score seman-                on all parts and its three-source checks on a 33-part sample. A
+tic answer quality here. The answer grids check whether the                 disposable three-level fixture supported parent-to-child moves,
+gold identifier appears in the answer or trace, whether at least            listing, reading and judging. Of 16 lifecycle scenarios, create,
+3n/5 annotated terms are present (strict) or an accepted alias              move, delete and forced re-index passed, while task-status re-
+(alias-aware), and whether a document-style citation marker is              porting and the update check failed; merge and split were not
+present. A marker does not establish source resolution or en-               controlled. Tag checking passed 165 parts, while orphan tags
+tailment. Wilson intervals are conditional on the questions and             and one cross-library registry leak were observed. The graph
+run. Exact McNemar tests are exploratory, two-sided and un-                 supplies navigation rather than evidentiary support: a document
+adjusted; no familywise inference is intended across the listed             move changed four tag edges (4,675 to 4,679) on a 658-node
+contrasts. Agent arms use one model and one run per con-                    graph, which is a navigation record, not evidence. These results
+dition; retries after transport failures are not independent re-            motivate reconciliation without establishing its completeness.
+peats. The answer-layer campaigns were driven through the
+
+                                                                        11
+Table 4: Evaluation design and provenance. Each row is a separate corpus, run and unit; counts are not pooled into a system-level accuracy. The
+72-question follow-up reuses the frozen questions and reports 906 stored parts. The November arXiv observation is a filename-stem short-query
+identifier probe, not scoped title retrieval or a matched before­after comparison. The answer grids use one run per arm and lexical proxies; the
+verifier score archive and ordering archive are separate records.
+
+Campaign and state    Material and unit                   Comparison or observation                Measure and boundary
+Industrial corpus,
+2026-10-13            42 documents in five libraries; 16  Hybrid candidates; verifier ordering     Document Hit@5; same-pool replay; one
+arXiv, 2026-10-13     questions                                                                    workstation
+arXiv, 2026-11-14/15  100 papers; 322 parts in five       Platform, file and chunk-replica answer  Gold-ID, strict/alias keywords, markers; one run
+                      libraries; 10 questions             arms                                     per arm
+Wikipedia ingestion   100 papers; 328 parts in five       Title-derived ID probe and a scoped      Target arXiv ID in result names; 72/100 probes
+                      libraries; 10 questions             ten-question vector check                unscoped, 45 chunk-copy-first; not a matched
+Routing, frozen and                                                                                rerun
+follow-up             400 pages per language; 40          English, Chinese and Japanese            Source-category agreement; post-ingest index
+                      queries per language                assignment                               self-check; not a task benchmark
+Answer grids          72 in-domain questions; 138         Description-layer and content-layer      Gold-domain choice and exact-string
+                      documents; 879 parts (follow-up     configurations                           containment; multiple components; gold-domain
+Verifier archive      906)                                                                         fallback; same questions, not independent
+                      10 questions; 30 cells per grid     Platform, file and chunk-replica arms;   Gold-ID, strict/alias keywords, markers; one run
+                                                          common substrate                         per arm; lexical proxies, not semantic support
+                      191 scores from 16 hybrid runs;     Score distribution and same-pool         Medians and Hit@5; separate archives;
+                      17 gold and 174 non-gold            ordering                                 exploratory p values; filtering never activates
+
+8.4. E3: Paired route-card audit: the description-layer abla-          8.5. E4: Operational knowledge and automated distillation
+      tion
+                                                                          The experience store is a functional observation, not an ef-
+   The collection tier is audited as a paired description-layer        fectiveness result. It holds operational lessons as retrievable
+contrast: route cards carrying derived descriptions (A0) against       documents--addressed, indexed and searched as an ordinary
+nominally name-only cards (A3), on one fixed question set.             document, with a credibility tier deciding whether a lesson may
+A scripted route-card probe returned the labelled domain for           be shown (Section 5.2). Three case measurements exist: an
+72/72 in-domain questions in A0 and 37/72 in nominally name-           extraction campaign over one small knowledge base produced
+only A3; 35 routes were correct only in A0 (Figure 5a; exact           thirteen candidate drafts; one end-to-end scenario was sedi-
+McNemar p = 5.82 × 10-11). Evidence-pack containment was               mented into one experience (exp-d6f4d47ae3d6) that a later
+37/72 for A0, 33/72 for A3 and 72/72 for the mechanical read-          global experience search returned first, at local similarity 0.711;
+all arm (Figure 5b; A0­A3 10:6, p = 0.4545; read-all­A0 35:0,          and the draft-approval path was never exercised, because the
+p = 5.82 × 10-11). The frozen traces recorded 31.4 KB and              draft pool was empty (count 0) and the read and approve op-
+16.3 s per A0 question, 309 KB and 13.8 s per A0h question,            erations could not run. The heuristic extraction path had run
+and 24.3 MB and 253.7 s per read-all question (Figure 5c); the         only in dry-run mode, returning a dump the quality gate would
+read-all scan issued 64,584 document-read calls in total, about        reject. One scenario and thirteen candidates cannot support an
+897 per question. These are tool-side text and tool-time obser-        effectiveness claim; scheduled distillation, review and approval
+vations, not network traffic, model input or end-to-end latency.       at scale, application feedback and credibility decay went unex-
+Read-all is a mechanical string scan, not an answering agent.          ercised.
+
+   The contrast is a configuration diagnostic, not an independent      8.6. E5: Content-layer configuration comparison
+agent-selection test. An unlogged A3 fallback could read de-
+scriptions; some questions share titles with route-card descrip-          A0 is the tiered baseline with route-card selection and a
+tions; A3 can search outside the evaluation scope; and 52 of           40K reference-mode judge. A0f retains route-card selection
+the 72 questions were automatically expanded, with 47 from             but reads full document windows inline (up to 250K charac-
+three domains. The difference therefore does not isolate the ef-       ters); A0h adds the top-eight vector-chunk windows to A0f,
+fect of descriptions. It does show that the route card and the         with a 60K evidence cap. PD removes catalogue navigation
+returned evidence are separate tiers: A0 finds the collection in       and searches a per-library top-six document union before full-
+every question while A3 does not, and the evidence pack can            window judging. A1b is a scoped union of vector results from
+still miss the string when the collection is correct (A0 37/72         the ten evaluation libraries, merged by score and judged in a
+containment). The read-all arm bounds what a full scan can             40K reference window; A2 uses the same scoped vector union
+find, at about 78 times the recorded text of A0h; it says nothing      with concatenated candidate snippets and no judge. A3 uses
+about careful reading or answer quality. The content-layer con-        nominally name-only route cards, while read-all mechanically
+figurations, in which the tiered chunk-window arm A0h reaches          scans every stored part for the target string. A1b and A2 use
+51­52/72 containment, are reported in Section 8.6; the 37/72           per-library vector search, not an unrestricted all-library query.
+figure above is this audit's own route-card evidence-pack con-         Route-card retrieval uses top-30 vector candidates at cosine
+tainment.                                                              threshold 0.35 with a 0.30 retry. These are recorded configura-
+                                                                       tion details, not a single-factor design: A0h, PD and A1b vary
+
+                                                                   12
+                                  (a)      37/72                                                  (b)               33/72                      72/72
+                                                                                                                       37/72
+                             A3                                       72/72            Read-all
+                                                                                              A3
+                             A0        25  50     75                  100                     A0              25    50            75           100
+                                 0                                                                0
+
+                                           Gold-domain selection (%)                                              Gold-string containment (%)
+
+Gold-string containment (%)  100 (c)       0.01                              0.1                       1                      10
+
+                              75
+                              50
+                              25
+
+                                0
+                               0.001
+
+                                                                      Recorded text (MB/question; log)
+
+                                                                      A0          A0h  A1b                A3
+
+                                                                      A0f         PD   A2                 Read-all
+
+Figure 5: Route-card diagnostic on 72 in-domain questions. (a) Gold-domain selection: A0 72/72, A3 37/72; Wilson 95% intervals; 35 A0-
+only routes, exact McNemar p = 5.82 × 10-11. (b) Exact gold-string containment: A0 37/72, A3 33/72, mechanical read-all 72/72; A0­A3
+10:6 (p = 0.4545), read-all­A0 35:0 (p = 5.82 × 10-11). (c) Frozen trace-recorded text per question (MB, log scale) against containment; A0h
+0.309 MB/72.2%, read-all 24.3 MB/100%, A0 0.031 MB/51.4%. In panel (c), the A0f and PD markers are shifted horizontally by 8 pt solely
+
+for visibility; the summary data retain their unshifted coordinates. Read-all is a mechanical string scan, not an answering agent; A3 has an
+
+unlogged fallback and may search outside the evaluation scope; tool time excludes answer generation. These are routing, substring and text-
+volume diagnostics, not answer quality or an isolated description effect.
+
+in routing, candidate construction and judging, so their differ-                       led the tiered baseline A0 on fifteen frozen questions with
+ences cannot be assigned to navigation alone. Some reference                           no reverse (p = 6.1 × 10-5) and on twelve follow-up ques-
+lookups may use the gold domain, with unknown frequency and                            tions with no reverse (p = 0.00049). A0h led the scoped flat
+impact; A3 may retrieve outside the evaluation scope.                                  union A1b on thirteen frozen and twelve follow-up questions,
+                                                                                       again with no reverse (p = 0.00024; p = 0.00049). A0h led
+   A0h holds the highest containment in every ex-                                      PD on seven questions in both records while PD led on one
+ecution. In the frozen aggregate, gold strings were                                    (p = 0.0703); this contrast is not statistically resolved, and
+contained for A0/A0f/A0h/PD/A1b/A2/A3/read-all in                                      PD differs from A0h in more than navigation. The window
+37/45/52/46/39/25/33/72 of 72 questions (Figure 6a); these                             expansion is supported separately: A0f led A0 on eight frozen
+are evidence-string proxies, not answer correctness. The A0h                           questions with no reverse (p = 0.0078) and on five follow-up
+Wilson 95% interval is [0.610, 0.812]. The four content arms                           questions (p = 0.0625), and PD led A0 on six follow-up ques-
+(A0, A0f, A0h, PD) were executed three times: the frozen                               tions with no reverse (p = 0.031). A1b and A0 showed no re-
+run, an archived reproduction of it recorded to retain response                        solved difference in either record (frozen 2­4, p = 0.69; follow-
+texts, and a later same-question follow-up on a corpus grown                           up 1­1). Removing the evidence gate is the clearest isolated
+from 879 to 906 parts. A0h was the highest configuration                               cost: A2 contained the string for 25/72 against 37/72 (frozen)
+and the ordering A0h > PD > A0f > A0 held in all three                                 and 39/72 (follow-up) for A0, with discordant records of 6­18
+records (52/46/45/37, then 51/45/44/39 twice). The reproduc-                           (p = 0.0227) and 5­19 (p = 0.0066). A2 and A0 also differ in
+tion agreed with the frozen records on 71/72 questions for                             returned text, so even this comparison does not isolate the gate
+A0f, A0h and PD and on 68/72 for A0, and the follow-up re-
+turned hit/miss records identical to the reproduction for all four                     mechanism alone. PD led A1b on seven frozen questions with
+arms. A1b and A2 repeated their frozen counts exactly in the                           no reverse (p = 0.0156). Table S13 retains all paired records
+follow-up, with no per-question flips; frozen versus follow-up                         for auditability.
+agreement was 94.4% for A0 and 98.6% for A0f, A0h and PD.
+The follow-up reuses the frozen questions, so these are stability                         The follow-up completes as follows. A0/A0f/A0h/PD/A1b/A2
+records, not independent test sets.                                                    yielded 39/44/51/45/39/25 contained strings; A0h, at 51/72
+                                                                                       (70.8%), is 16.7 percentage points above A0. A3, recorded
+   In exploratory paired records (two-sided exact McNemar                              separately and later, yielded 25/72 with the gold domain se-
+tests, unadjusted; no familywise inference is intended), A0h                           lected for 49/72 questions, 13 missing top candidates and 23
+
+                                                                                  13
+                            Frozen (Wilson 95% CI)                     Same-question follow-up
+
+           (a)                                    72/--                            (b)                 13      p<0.001
+                                                 52/51
+Read-all                                         46/45                 A0h­A1b 0
+     A0h                                         45/44
+       PD                                        39/39                 A0h­PD 1                 7                            p=0.07
+      A0f                                        37/39
+     A1b                                         33/25                 PD­A1b 0                 7              p=0.016
+       A0                                        25/25
+       A3                                                              A0h­A0 0                            15  p<0.001
+       A2
+                                                                       A0f­A0 0                     8                 p=0.008
+                                                                       A2­A0                    6              18 p=0.023
+
+0               20  40  60  80 100                                     0                5          10 15 20
+
+                    Gold-string containment (%)                                                 Discordant questions (n=72)
+
+Figure 6: Content-layer configurations on 72 in-domain questions. (a) Frozen gold-string containment with Wilson 95% intervals (filled circles)
+and the same-question follow-up (open triangles); counts are in the right-hand column (frozen / follow-up). The frozen aggregate combines
+dates; A3 was added separately to the follow-up and read-all was incomplete. The dashed line marks frozen A0. (b) Paired discordance for six
+frozen contrasts; each point is the number of questions on which the first (circle) or second (triangle) arm alone contained the string; p values are
+two-sided exact McNemar, unadjusted. A0h, PD and A1b change multiple components; A0, A1b and A3 may use the gold domain for reference
+resolution; read-all is a mechanical scan, not an answering agent. These are substring results, not answer correctness or a causal single-factor
+effect.
+
+empty packs; the causes are not established, so A3 is read qual-       8.7. E6: Answer and trace checks, abstention and cost
+itatively across runs. Follow-up read-all was incomplete (three
+completed rows at the report cutoff) and is not plotted as a              Two ten-question grids compare a platform agent (P), di-
+72-question result; the frozen read-all is a mechanical substring      rect file tools (F) and a chunk-replica arm (C) that searches an
+scan, not an agent that reads and answers. A0h recorded 309            800-character chunk copy of the same content through the plat-
+KB and 13.8 s of tool time per frozen question, versus 24.3 MB         form's own vector lane--a same-content, flat-chunk substrate
+and 253.7 s for the scan; in the follow-up, A0's elapsed-time          control for the document-level organisation. The original grid
+mean was 17.4 s, median 9.8 s and maximum 540.9 s. Tool time           uses different substrates; the later grid pins the same five li-
+excludes answer generation, and recorded bytes may include             braries, and its C arm searches those libraries directly. Gold-ID
+overlap; neither is network traffic or measured model input.           presence, strict and alias-aware keyword coverage and citation
+                                                                       markers are deterministic checks, not assessments of semantic
+   Among A0's 35 frozen misses, A0f, A0h and PD contain the            support. An identifier in the trace need not have been read; a
+string in 8, 15 and 9 cases, respectively. These sets overlap--8       marker does not establish that a cited passage exists or entails
+questions recovered by all three, 7 only by A0h, 1 only by PD          the answer. Figure 7 shows the per-question marker pattern;
+and 19 by none--so they are not additive configuration gains.          Table S14 gives the per-question records and Table S15 the ag-
+A post-hoc search classified five first matching string locations      gregate checks and run-time observations.
+outside a nominal window and 30 inside; the chosen matching
+file need not be the gold document or a candidate actually read,          In both grids the gold identifier occurred in the answer or
+so these categories do not identify the causes of misses. As           trace of all 60 cells: gold presence is at ceiling for every arm,
+an external content-based reference point on the same libraries,       so the arms are not separated by whether the gold document
+a separate 40-question diagnostic found the gold string in the         is reached--the separation appears in document-style citation
+returned text for 24/40 BM25 cases and 19/40 dense-search              markers. In the original grid, marker-bearing answers were
+cases, and for 26/40 when the top five texts of each list were         9/10 for P, 7/10 for F and 2/10 for C (Figure 7a); strict key-
+concatenated (despite the historical label F-rrf, no reciprocal-       word coverage was 9/10 for each arm and alias-aware coverage
+rank fusion was computed). These substring checks use dif-             10/10. Under the common substrate, markers were 9/10 in ev-
+ferent questions, scopes and returned-text construction, and no        ery arm (Figure 7b), strict coverage 7/10, 7/10 and 8/10, and
+paired comparison is reported across the two tests. Supplemen-         alias-aware coverage 9/10, 9/10 and 10/10. The original-grid
+tary Tables S12­S13 give the per-arm intervals and all paired          mean time and cost were 52.6 s and $0.711 per question for
+records.                                                               P, 22.2 s and $0.487 for F, and 24.5 s and $0.527 for C; these
+                                                                       are single-run observations. The marker counts agree between
+                                                                       grids in 18 cells, the replication adds a marker in nine and nei-
+                                                                       ther has one in three (McNemar p = 0.0039), so the marker gap
+
+                                                                   14
+Answer-grid arm      Original substrates  Marker present                 No marker
+                 C                                 2/10                 Common five-library substrate
+
+                 F                                           7/10                                                                              9/10
+
+                 P                                           9/10                                                                              9/10
+
+                    01 02 03 04 05 06 07 08 09 10                                                                                              9/10
+                                              Question (BQ)              01 02 03 04 05 06 07 08 09 10
+
+                                                                                                   Question (BQ)
+
+Figure 7: Answer traceability on two ten-question grids. (a) Original grid: rows P, F and C, columns BQ01­BQ10; a filled square marks a
+document-style marker and the row-end count is the number of marker-bearing answers (9/10, 7/10, 2/10). (b) Common-substrate replication on
+the same five libraries: markers are 9/10 in every arm. Gold-ID presence is 10/10 in every cell of both grids; strict keyword coverage is 9/9/9 in (a)
+and 7/7/8 in (b); alias-aware coverage is 10/10/10 and 9/9/10. Markers are lexical proxies and do not verify source resolution or entailment; each
+arm is one run, and the original grid uses different substrates. The replication changes the substrate and raises C and F markers, so the marker gap
+is not an interface effect alone.
+
+is substrate-bound rather than an interface effect alone. The           8.8. E7: Deployment-layer system arms and honesty contracts
+detailed source-presence audit appears in Tables S7­S8 of the
+supplementary inventory and is not an entailment test.                     Three questions crossed pinned, unpinned and pinned
+                                                                        hybrid-directed API arms. The pinned arms returned the two in-
+   A later ten-question run on the repaired platform, with the          corpus gold identifiers, and all three reported not-found for the
+same five libraries, returned the gold identifier and a citation        out-of-corpus probe. In one unpinned setting, a 131-document,
+marker in all ten answers, with full keyword coverage in nine           74.9 KB catalogue exceeded the tool-output budget; a trun-
+(one question covered one of two annotated terms). Its mean             cated preview led to false refusal or a hang. After pagina-
+wall-clock was 131 s per question and its total cost was 3.10           tion and grouped views were added, selected reruns completed,
+USD. This is a single current-state observation on a later stack        including the formerly failing query. These observations do
+and model state; it is not a controlled arm and is not pooled with      not establish general transport reliability; they show that the
+the grids. Read together, the records support a bounded claim:          management-to-answer path can fail in transport and that the
+document-level organisation is associated with document-style           workflow exposes the failure rather than hiding it. An eighteen-
+citation behaviour--the tiered platform arm carried markers in          arm honesty battery observed no fabricated citations in its fi-
+9/10 and, after repair, 10/10 answers, while the flat chunk-            nal responses; interrupted arms were rerun and each arm has
+replica arm carried 2/10 in the original grid--but these are lexi-      one final observation. The deployment checks are operational
+cal proxies; no semantic-quality superiority is claimed, and the        boundaries, not a retrieval comparison.
+latest run's keyword coverage (9/10) matches F and trails the
+historical P arm.                                                       8.9. E8: When the verifier fails
+
+   Answer-level case study. A separate recorded demonstra-                 The 191 recorded candidate scores from 16 hybrid runs in-
+tion parsed and ingested a DeepSeek-R1 paper, then used two             cluded 17 in-pool golds and 174 non-golds. All recorded
+agent harnesses on the same four questions. The prompt sup-             scores exceeded the 0.5 threshold; one additional Q14 can-
+plied the library, paper and arXiv identifier and prescribed the        didate had no recorded score. Gold and non-gold medians
+retrieval, judging and reading steps; it did not test autonomous        were 0.88 and 0.86 (Figure 8a). The candidate-level Mann­
+collection selection. The case compendium reports eight re-             Whitney test (p = 0.26) is exploratory and ignores clustering
+sponses checked against the source on answer content, docu-             by query. The score archive and the ordering archive are sep-
+ment provenance, quoted material and fabricated facts; all eight        arate records. Re-ranking these scores reduced Hit@5 to 7/16,
+passed that case review (Table S16). On the question asking for         compared with 15/16 when recorded survivors retained fusion
+electricity cost, both responses said the paper did not provide an      order (Figure 8b). A Q2 example appears in Fig. S5: the gold
+electricity figure and distinguished the reported $294K GPU-            root-cause report scored 0.846 against five telemetry reports at
+rental-based training-cost estimate. This is an observed refusal        0.887­0.926 and was demoted from fusion rank 1 to rank 8,
+to infer an absent value, not a general abstention guarantee.           outside the read window. A replay of the same pairs with an
+Three further industrial-corpus probes returned not-found; the          NLI checkpoint produced Hit@5 0.3125; a span-level replay
+retrieval threshold retained candidates in related absent probes        produced 0.1875. A relative-margin replay kept 16 of 17 golds
+(Fig. S3).                                                              at m = 0.15 and all 17 at m = 0.20, while the mean candidate
+
+                                                                    15
+                                                               Hit@5           Miss
+
+                1.0 (a)                                                        (b)
+
+                0.9                    0.88              0.86  Fusion order                              15/16
+
+Verifier score  0.8                          Non-gold
+                                             (n=174)
+                0.7
+
+                0.6                                            Verifier order                                  7/16
+                                                                                                         16
+                0.5                                                            1     4  8  12
+
+                                Gold                                                    Question number
+                               (n=17)
+
+Figure 8: Verifier scores and same-pool ordering. (a) Recorded Laya scores for 191 candidates from sixteen hybrid runs: 17 in-pool golds and
+
+174 non-golds; all recorded values exceed the 0.5 threshold; one additional Q14 fusion candidate has no recorded score. Horizontal jitter is for
+legibility; medians are 0.88 and 0.86; the Mann­Whitney p = 0.26 is exploratory and ignores clustering by query. (b) The same sixteen pools
+replayed with fusion order and with verifier order; filled squares and circles mark a gold in the top five, open marks a miss; Hit@5 is 15/16 for
+fusion order and 7/16 for verifier order. The score archive and the ordering archive are separate records. The verifier is not a ranker; these records
+do not show that threshold filtering is ineffective or that another verifier would behave the same way.
+
+count stayed near twelve; these replays neither isolate trunca-          ships, coverage claims over the global channel should be read
+tion nor establish the cause of verifier failure. The arXiv corpus       against this fault mode.
+did not show the same top-five collapse; domain, language and
+corpus size changed together. No answer-level test validates a              A reconstructed fixed-candidate gate comparison used ten
+higher filtering threshold; Table S6 of the supplementary inven-         questions, a 12-candidate cap and a 4,000-character pack. All
+tory sweeps the recorded scores and Fig. S4 replays relative-            three arms packed the gold first for the eight gold-answerable
+margin variants of the same pools. The result is a role warning:         questions; for nine of ten questions the filtered and unfiltered
+the verifier can filter, but ordering by its score lost the gold in      document sets matched. LLM grades still varied under identi-
+this pool. Filtering itself was never activated, because every           cal packs (including 0  5 and 3  0), so these observations
+recorded score passed the threshold.                                     do not establish an answer-quality benefit from gating. The two
+                                                                         non-gold questions, an unanswerable clinical question and an
+8.10. E9: Operational boundaries: stability, concurrency, gate           out-of-corpus particle-physics question, were refused in every
+       and scope ablations                                               arm; the judge-survivor lists were empty in 2/4 A0 and 0/4 A0h
+                                                                         out-of-domain routing probes. Both A0 empty cases lacked a
+   A 27-cell stability campaign completed without recorded an-           top candidate; these are retrieval-stage outcomes, not verified
+swer errors across three tasks, three lanes and three rounds. On         gate rejections or answer-level refusal rates.
+one instance, a concurrency sweep of 90/180/270 requests at
+5/15/30 clients raised median latency from 5.2 to 1577 ms; 111              The scope diagnostic used ten arXiv questions, eight of
+of 270 requests timed out at 30 clients. A later cache repair low-       which had gold documents in the evaluation corpus; the other
+ered selected 30-client read-ladder median latency to 65.8 ms,           two were excluded from Hit@5. With the gold library pinned,
+but the full sweep was not repeated. These are single-instance           Hit@5 was 1.0 on the eight graded questions; pinning a non-
+measurements; raw concurrent-write counts and crash-recovery             gold library yielded 0.0. The unscoped search covered 20 live
+evidence were unavailable. A post-acceptance inspection also             libraries, including 15 outside the five-library evaluation cor-
+exposed a coverage fault mode in the cross-library vector chan-          pus, and is not a matched-scope comparison. The catalogue
+nel: collections whose on-disk index segments are unreadable             route selected the correct library first for six of eight answer-
+are silently skipped inside the per-collection loop, and the re-         able questions; file names carried domain prefixes. These small,
+sponse still reports success without any degraded marker. Logs           single-engine experiments do not establish an independent ef-
+identified eight affected collections in one inspection, includ-         fect of content placement or an overall system advantage; they
+ing a freshly ingested library. For that library, a scoped probe         define the operational envelope in which the management and
+found the document while the global search missed it; forced             answer results should be read.
+re-indexing restored the global hit. A scoped probe on another
+affected library also returned no results, so the failure cannot be      9. Discussion and lessons learned
+assumed to be confined to the global channel. Logs surface the
+underlying read error, but the response does not; until the repair          The management evidence is the first result, not merely a pre-
+                                                                         condition for the retrieval experiments. Across the acquisition
+                                                                         and organisation campaigns, HMRS recorded 322 stored parts
+
+                                                                     16
+across five libraries, measured content-based assignment sep-            10. Threats to validity
+arately from retrieval, and exposed state disagreement after a
+rename and in selected lifecycle checks. The 79/21 arXiv avail-          Data and scope. The corpora and questions are small and
+ability result and the 0.875/1.0/1.0 cross-lingual assignment re-        bounded; questions and gold annotations were developer-
+sult come from different corpora and should be read as comple-           authored. The management campaigns and the access cam-
+mentary evidence: the former identifies an incomplete inges-             paigns use different corpora and should not be pooled. The
+tion boundary, while the latter tests content-based placement.           72-question route set includes 52 automatically expanded ques-
+The 33-part consistency sample and selected passing lifecy-              tions, and 47 questions come from three English domains. Four
+cle checks show that the management loop is exercisable, not             out-of-domain probes cannot estimate abstention rates. The
+that it is transactionally complete. The failed task-status/update       storage reconciliation checks 33 of 322 parts. Different re-
+checks and stale-index rename are important system results be-           trieval arms use different scopes or substrates; the historical
+cause they show why reconciliation and post-operation probes             hybrid wrapper, not the current composed hybrid lane, was
+are part of the design rather than optional diagnostics.                 tested. Broader generalisation requires independent questions,
+                                                                         larger corpora and matched single-factor comparisons across
+   The access results then show how managed state is con-                the content-layer configurations.
+sumed. The frozen route-card audit selected the gold collec-             Measurement and comparisons. Gold-string containment is
+tion in 72/72 full-card cases and 37/72 nominally name-only              a substring proxy, not semantic answer correctness. Gold-
+cases, but its fallback and scripted nature prevent a causal inter-      ID, lexical and citation marker checks likewise do not estab-
+pretation. In the latest complete R3 content-layer follow-up on          lish claim-to-source support. Two answer grids used ten ques-
+the same questions, A0h, the tiered configuration with a chunk-          tions, one model and one run per arm; one replication held li-
+window union, had the highest observed exact-string contain-             braries fixed, while substrates differed in the original grid. The
+ment at 51/72 questions; PD, A0f, A0/A1b and A2 contained it             scripted full-read baseline searches strings and generates no an-
+in 45/72, 44/72, 39/72 and 25/72, respectively. A0h versus A0            swer. A0h, A1b and PD change multiple components, and A0,
+was 12­0 (p = 0.00049, exploratory and unadjusted). These                A1b and A3 may use the gold domain to resolve candidate ref-
+are containment proxies, not semantic answers, and the config-           erences. Historical traces do not quantify this fallback. A3
+urations vary in more than navigation alone. The frozen read-all         can also admit candidates outside the evaluated libraries and its
+scan found every string but generated no answers, while the R3           name-only routing may fall back to descriptions. Thus these
+read-all run was incomplete; this is why the mechanical upper            arms cannot isolate navigation or establish deployed perfor-
+bound is not a current Agent baseline. These observations de-            mance. The later run repeats the same questions and is not an
+scribe the tested configuration on this corpus and question set;         independent test set; code hashes and judge inputs are not fully
+they do not establish a universal advantage of hierarchical re-          preserved for each historical record.
+trieval.                                                                 Statistical and operational validity. Paired tests are ex-
+                                                                         ploratory and not pre-registered; Wilson intervals condition
+   The same-pool diagnostic illustrates how candidate-evidence           on the sampled questions and do not capture run-to-run vari-
+ordering can matter in this setting. On identical logged pools           ance. Candidate- and span-level tests treat observations within
+from the retired hybrid wrapper, verifier-score ordering repro-          queries as independent and may be anti-conservative. Some E5
+duced the Hit@5 collapse documented in Section 8.9; all 191              reference-mode score and candidate inputs were not retained;
+recorded scores exceeded the configured threshold, so filter-            the E8 verifier replay is reproducible from the released scores,
+ing did not activate and its benefit was not measured. This is           golds and grader. The manual refusal battery has one final ob-
+a bounded warning about a particular ordering, not a finding             servation per arm, and experience approval was not exercised.
+about every verifier or current retrieval lane.                          The 16 lifecycle assertions, selected pagination checks and one-
+                                                                         workstation concurrency measurements do not establish multi-
+   The reported answer and refusal cases show selected work-             host reliability, adversarial security, human adoption or crash
+flow behaviour, not a reliable abstention rate. Pagination               recovery. The global cross-library vector channel also silently
+repaired selected oversized catalogue paths, but incomplete              skipped unreadable collections in one inspection while report-
+searches and tool failures remain distinct from a completed              ing success; until the response exposes this condition, success-
+search without support. A late inspection also found that the            ful global queries do not establish complete corpus coverage.
+global channel can silently skip unreadable library indexes              Future work should instrument the reference lookup, remove
+while reporting success; until this is surfaced, a successful re-        gold-dependent fallback, conduct matched single-factor abla-
+sponse is not evidence of complete cross-library coverage. The           tions and a genuine agent full-read baseline, surface global-
+inspection identified eight affected collections; scoped search          channel degradation, and pre-specify repeated comparisons and
+worked for the newly ingested example, but a probe on another            multiplicity control.
+affected library returned no results. Stronger claims need in-
+dependent questions, controlled single-factor comparisons, re-           11. Conclusion
+peated runs, semantic support review, and tests of operations
+and recovery beyond the present local setting.                              HMRS is a knowledge-document management system whose
+                                                                         retrieval path depends on managed state. It parses heteroge-
+
+                                                                     17
+neous sources, assigns content to collections, derives descrip-           with multiplicity control, and crash-recovery tests.
+tions and tags, stores documents and structural parts, exposes
+catalogue-first access, and records lifecycle state across doc-           CRediT authorship contribution statement
+ument files, the tree registry and per-library metadata. The
+segment-level gate adds provenance and an admission signal;                  Author 1: Conceptualisation, Methodology, Software, In-
+it is not a truth oracle or a ranker. This separation of managed          vestigation, Data curation, Writing ­ original draft. Author 2:
+objects, access views and workflow decisions is the system's              Validation, Writing ­ review & editing, Supervision.
+central design claim.
+                                                                          Declaration of competing interest
+   The management campaigns show that this loop is opera-
+tional but not complete. The 100-paper arXiv campaign pro-                   The authors declare that they have no known competing fi-
+duced 322 parts, with 79 papers retrievable and 21 not; the sep-          nancial interests or personal relationships that could have ap-
+arate 400-pages-per-language test measured content-based as-              peared to influence the work reported in this paper.
+signment accuracy of 0.875 for English and 1.0 for Chinese and
+Japanese. A 33-part storage sample passed its selected checks,            Funding
+while a rename exposed stale index state and 16 lifecycle sce-
+narios included failures in task-status and update checks. The               This research did not receive any specific grant from funding
+system therefore contributes a testable management loop with              agencies in the public, commercial, or not-for-profit sectors.
+explicit failure visibility, rather than an unqualified claim of au-
+tomatic consistency.                                                      Ethics statement
+
+   The access campaigns provide the next layer of evidence.                  This article does not report studies involving human partici-
+The frozen route-card audit produced 72/72 full-card versus               pants, human data, or animals.
+37/72 nominally name-only collection selection, with an un-
+logged fallback that prevents causal attribution. In the latest           Data availability
+complete R3 content-layer follow-up on the same questions, the
+tiered chunk-window arm A0h achieved 51/72 (70.8%), above                    Source code and benchmark scripts are available at https:
+PD 45/72, A0f 44/72, A0/A1b 39/72 and A2 25/72; its paired                //github.com/kingdol666/rag-knowledge. The repository in-
+contrast with A0 was 12­0 (p = 0.00049, exploratory). A0h                 dexes the artefact inventory; hashes for the corrected and pre-
+was the highest configuration in the frozen run, an archived re-          correction annotations and grader are recorded in paper- kbs
+production and the follow-up, with the A0h > PD > A0f or-                 /tex/journal_20p/revision-20261112.sha256. The supple-
+dering preserved in all three; A1b and A2 repeated their frozen           ment contains campaign inventories, per-question summaries
+counts exactly. These values are gold-string containment prox-            and lifecycle and ablation tables. De-identified per-question
+ies and the arms vary in more than navigation. The frozen read-           records for the November 2026 route and content-layer cam-
+all script found all 72 strings but generated no answers, and             paigns are prepared as comma-separated files for deposit along-
+R3 read-all was incomplete. At the answer layer, gold iden-               side the supplementary material (supp_traces_frozen.csv, 608
+tifiers appeared in all 60 grid cells and in a later ten-question         rows over eight arms; supp_traces_followup.csv, 532 rows over
+run; document-style citation markers separated the substrates             seven arms; supp_traces_floor.csv, 120 rows over three retrieval
+(9/7/2, then 9/9/9 on a common substrate, and 10/10 after re-             diagnostics); each row carries the arm, question identifier, con-
+pair against the flat chunk replica's 2/10)--lexical contrasts, not       tainment outcome, byte and timing totals and, where applica-
+semantic support. Together, the results support the narrower              ble, route labels, with question texts, gold strings and evidence-
+claim that A0h had the highest observed exact-string contain-             pack contents withheld because of source-document restric-
+ment among completed arms on this corpus and question set,                tions. The CSV files and revision manifest must be included
+not semantic answer accuracy, universal retrieval superiority or          in the deposited package before submission. The 42-document
+a single-factor causal hierarchy claim.                                   industrial corpus is a non-customer demonstration instance, not
+                                                                          deposited publicly. The verifier comparison is reproducible
+   These bounded results support treating the collection as a             from the released scores, golds and grader; an end-to-end rerun
+managed, auditable object and motivate its use as an inspectable          needs a substitute corpus, with a recipe and synthetic sample in
+basis for evidence-traced retrieval. The immediate deployment             paper-kbs/notes/industrial-corpus-substitute-recipe-2026-10-1
+implication is to expose collection state and incomplete paths,           6.md.
+retain evidence provenance, and separately evaluate verifier-
+based admission and ordering before deployment. The global                Acknowledgments
+channel can also silently skip unreadable library indexes while
+reporting success; until that condition is surfaced, a success-              The authors thank the maintainers of the open-source com-
+ful cross-library response is not evidence of complete coverage.          ponents the platform builds on.
+The study's contribution is a system-level management contract
+and a bounded A0h observation, not a claim of universal re-
+trieval superiority. Broader evaluation needs semantic support
+review, independently authored questions, repeated agent trials
+with run-to-run variance estimates, larger matched comparisons
+
+                                                                      18
+Declaration of generative AI and AI-assisted technologies in                            [16] S. Auer, C. Bizer, G. Kobilarov, J. Lehmann, R. Cyganiak, Z. Ives,
+                                                                                              DBpedia: A nucleus for a web of open data, in: The Semantic Web
+the manuscript preparation process                                                            (ISWC/ASWC 2007), Lecture Notes in Computer Science, Springer,
+                                                                                              2007, pp. 722­735. doi:10.1007/978-3-540-76298-0_52.
+   The authors used Anthropic Claude Code and ZCode, Ope-
+                                                                                        [17] J. Hoffart, F. M. Suchanek, K. Berberich, G. Weikum, YAGO2: A spa-
+nAI Codex, and an AI image generation tool for experiment                                     tially and temporally enhanced knowledge base from Wikipedia, Artifi-
+                                                                                              cial Intelligence 194 (2013) 28­61. doi:10.1016/j.artint.2012.06.001.
+execution, tabulation, language editing and initial figure de-
+                                                                                        [18] Y. Zhang, Y. Li, L. Cui, D. Cai, L. Liu, T. Fu, X. Huang, E. Zhao,
+sign. The manuscript includes edited figure assets and an ed-                                 Y. Zhang, C. Xu, Y. Chen, L. Wang, A. T. Luu, W. Bi, F. Shi, S. Shi,
+                                                                                              Siren's song in the AI ocean: A survey on hallucination in large language
+itable vector workflow diagram. The authors reviewed the final                                models, arXiv preprint arXiv:2309.01219 (2023).
+                                                                                              URL https://arxiv.org/abs/2309.01219
+text and figures and take responsibility for them; all reported
+                                                                                        [19] J. P. Callan, Z. Lu, W. B. Croft, Searching distributed collections with in-
+experimental numbers come from logged runs on the authors'                                    ference networks, in: Proc. of the 18th Annual International ACM SIGIR
+                                                                                              Conference (SIGIR '95), 1995, pp. 21­28. doi:10.1145/215206.215328.
+machine.
+                                                                                        [20] L. Si, J. Callan, Relevant document distribution estimation method for
+References                                                                                    resource selection, in: Proc. of the 26th Annual International ACM SIGIR
+                                                                                              Conference (SIGIR '03), 2003, pp. 298­305. doi:10.1145/860435.86049
+ [1] Y. Gao, Y. Xiong, M. Wang, H. Wang, Modular RAG: Transforming RAG                        0.
+      systems into LEGO-like reconfigurable frameworks, ACM Transactions
+      on Information Systems 44 (2026) 1­53. doi:10.1145/3837856.                       [21] W. Yang, L. Some, M. Bain, B. Kang, A comprehensive survey
+                                                                                              on integrating large language models with knowledge-based methods,
+ [2] Y. Gao, Y. Xiong, X. Gao, et al., Retrieval-augmented generation for large               Knowledge-Based Systems 318 (2025) 113503. doi:10.1016/j.knosys
+      language models: A survey, arXiv preprint arXiv:2312.10997 (2023). doi:                 .2025.113503.
+      10.48550/arXiv.2312.10997.
+                                                                                        [22] I. Nonaka, A dynamic theory of organizational knowledge creation, Or-
+ [3] P. Lewis, E. Perez, A. Piktus, F. Petroni, V. Karpukhin, N. Goyal, H. Küt-               ganization Science 5 (1) (1994) 14­37. doi:10.1287/orsc.5.1.14.
+      tler, M. Lewis, W. Yih, T. Rocktäschel, S. Riedel, D. Kiela, Retrieval-
+      augmented generation for knowledge-intensive NLP tasks, in: Advances              [23] I. Nonaka, R. Toyama, N. Konno, SECI, Ba and leadership: a unified
+      in Neural Information Processing Systems, Vol. 33, Curran Associates,                   model of dynamic knowledge creation, Long Range Planning 33 (1)
+      Inc., 2020, pp. 9459­9474.                                                              (2000) 5­34. doi:10.1016/s0024-6301(99)00115-6.
+      URL https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780
+      e1bc26945df7481e5-Abstract.html                                                   [24] E. Mosqueira-Rey, E. Hernández-Pereira, D. Alonso-Ríos, J. Bobes-
+
+ [4] V. Karpukhin, B. Oguz, S. Min, P. Lewis, L. Wu, S. Edunov, D. Chen,                      Bascarán, Á. Fernández-Leal, Human-in-the-loop machine learning: a
+      W. Yih, Dense passage retrieval for open-domain question answering, in:                 state of the art, Artificial Intelligence Review 56 (4) (2022) 3005­3054.
+      Proceedings of the 2020 Conference on Empirical Methods in Natural                      doi:10.1007/s10462-022-10246-w.
+      Language Processing (EMNLP), 2020, pp. 6769­6781. doi:10.18653/v1/
+      2020.emnlp-main.550.                                                              [25] A. Barredo Arrieta, N. Díaz-Rodríguez, J. Del Ser, A. Bennetot,
+                                                                                              S. Tabik, A. Barbado, S. Garcia, S. Gil-Lopez, D. Molina, R. Benjamins,
+ [5] Model Context Protocol Contributors, Model context protocol specifica-                   R. Chatila, F. Herrera, Explainable artificial intelligence (XAI): Concepts,
+      tion (2025-11-25), https://modelcontextprotocol.io/specification/2025                   taxonomies, opportunities and challenges toward responsible AI, Infor-
+      -11-25, accessed September 19, 2026; specification revision 2025-11-25                  mation Fusion 58 (2020) 82­115. doi:10.1016/j.inffus.2019.12.012.
+      (2025).
+                                                                                        [26] F. Sebastiani, Machine learning in automated text categorization, ACM
+ [6] A. Singh, A. Ehtesham, S. Kumar, T. T. Khoei, A. V. Vasilakos, Agentic                   Computing Surveys 34 (1) (2002) 1­47. doi:10.1145/505282.505283.
+      retrieval-augmented generation: A survey on agentic RAG, arXiv preprint
+      arXiv:2501.09136 (2025). doi:10.48550/arXiv.2501.09136.                           [27] X. Zhong, J. Tang, A. Jimeno Yepes, PubLayNet: Largest dataset ever
+                                                                                              for document layout analysis, in: 2019 International Conference on Doc-
+ [7] S. Robertson, H. Zaragoza, The probabilistic relevance framework:                        ument Analysis and Recognition (ICDAR), IEEE, 2019, pp. 1015­1022.
+      BM25 and beyond, Foundations and Trends in Information Retrieval 3 (4)                  doi:10.1109/icdar.2019.00166.
+      (2009) 333­389. doi:10.1561/1500000019.
+                                                                                        [28] Y. Huang, T. Lv, L. Cui, Y. Lu, F. Wei, LayoutLMv3: Pre-training for doc-
+ [8] G. V. Cormack, C. L. A. Clarke, S. Buettcher, Reciprocal rank fu-                        ument AI with unified text and image masking, in: Proc. 30th ACM In-
+      sion outperforms Condorcet and individual rank learning methods, in:                    ternational Conference on Multimedia (MM '22), ACM, 2022, pp. 4083­
+      Proceedings of the 32nd International ACM SIGIR Conference on Re-                       4091. doi:10.1145/3503161.3548112.
+      search and Development in Information Retrieval, 2009, pp. 758­759.
+      doi:10.1145/1571941.1572114.                                                      [29] B. Wang, C. Xu, X. Zhao, L. Ouyang, F. Wu, Z. Zhao, R. Xu, K. Liu,
+                                                                                              Y. Qu, F. Shang, B. Zhang, L. Wei, Z. Sui, W. Li, B. Shi, Y. Qiao, D. Lin,
+ [9] D. Edge, H. Trinh, N. Cheng, J. Bradley, A. Chao, A. Mody, S. Tru-                       C. He, MinerU: An open-source solution for precise document content
+      itt, D. Metropolitansky, R. O. Ness, J. Larson, From local to global:                   extraction, arXiv preprint arXiv:2409.18839 (2024). doi:10.48550/arXiv
+      A GraphRAG approach to query-focused summarization, arXiv preprint                      .2409.18839.
+      arXiv:2404.16130 (2024).
+      URL https://arxiv.org/abs/2404.16130                                              [30] G. S. Manku, A. Jain, A. Das Sarma, Detecting near-duplicates for web
+                                                                                              crawling, in: Proc. 16th International Conference on World Wide Web
+[10] Z. Guo, L. Xia, Y. Yu, T. Ao, C. Huang, LightRAG: Simple and fast                        (WWW '07), ACM, 2007, pp. 141­150. doi:10.1145/1242572.1242592.
+      retrieval-augmented generation, in: Findings of the Association for Com-
+      putational Linguistics: EMNLP 2025, 2025, pp. 10746­10761. doi:                   [31] P. Missier, K. Belhajjame, J. Cheney, The W3C PROV family of spec-
+      10.18653/v1/2025.findings-emnlp.568.                                                    ifications for modelling provenance metadata, in: Proc. 16th Interna-
+                                                                                              tional Conference on Extending Database Technology (EDBT/ICDT '13),
+[11] P. Sarthi, S. Abdullah, A. Tuli, S. Khanna, A. Goldie, C. D. Manning,                    ACM, 2013, pp. 773­776. doi:10.1145/2452376.2452478.
+      RAPTOR: Recursive abstractive processing for tree-organized retrieval,
+      in: The Twelfth International Conference on Learning Representations              [32] J. Cheney, L. Chiticariu, W.-C. Tan, Provenance in databases: Why, how,
+      (ICLR), 2024. doi:10.48550/arXiv.2401.18059.                                            and where, Foundations and Trends in Databases 1 (4) (2009) 379­474.
+                                                                                              doi:10.1561/1900000006.
+[12] T. Päivärinta, B. E. Munkvold, Enterprise content management: An inte-
+      grated perspective on information management, in: Proc. 38th Annual               [33] M. G. Ocaña, A. L. Opdahl, A Software Reference Architecture for Jour-
+      Hawaii International Conference on System Sciences (HICSS), IEEE,                       nalistic Knowledge Platforms, Knowledge-Based Systems 276 (2023)
+      2005, pp. 96­96. doi:10.1109/hicss.2005.244.                                            110750. doi:10.1016/j.knosys.2023.110750.
+
+[13] P. Tyrväinen, T. Päivärinta, A. Salminen, J. Iivari, Characterizing the            [34] M. Gallofré Ocaña, A. L. Opdahl, Developing a software reference archi-
+      evolving research on enterprise content management, European Journal                    tecture for journalistic knowledge platforms, in: Proceedings of the 6th
+      of Information Systems 15 (6) (2006) 627­634. doi:10.1057/palgrave.eji                  Workshop on Semantic Access to Big Data and AI (SAML), Vol. 2978 of
+      s.3000648.                                                                              CEUR Workshop Proceedings, 2021.
+
+[14] J.-R. Park, Metadata quality in digital repositories: A survey of the current      [35] Y. Yang, H. Huang, Y. Gao, J. Li, Building knowledge-grounded dia-
+      state of the art, Cataloging & Classification Quarterly 47 (3-4) (2009)                 logue systems with graph-based semantic modelling, Knowledge-Based
+      213­228. doi:10.1080/01639370902737240.                                                 Systems 298 (2024) 111943. doi:10.1016/j.knosys.2024.111943.
+
+[15] S. A. Golder, B. A. Huberman, Usage patterns of collaborative tagging              [36] E. Budur, R. Özçelik, D. Soylu, O. Khattab, T. Güngör, C. Potts, Build-
+      systems, Journal of Information Science 32 (2) (2006) 198­208. doi:                     ing efficient and effective OpenQA systems for low-resource languages,
+      10.1177/0165551506062337.                                                               Knowledge-Based Systems 302 (2024) 112243. doi:10.1016/j.knosys.2
+                                                                                              024.112243.
+
+                                                                                        [37] G. D. Vito, F. Ferrucci, A. Angelakis, HELIOT: LLM-Based CDSS
+
+                                                                                    19
+      for adverse drug reaction management, Knowledge-Based Systems 328                     design knowledge, Knowledge-Based Systems 303 (2024) 112410. doi:
+      (2025) 114184. doi:10.1016/j.knosys.2025.114184.                                      10.1016/j.knosys.2024.112410.
+[38] I. Aarab, LLM-based IR-system for bank supervisors, Knowledge-Based              [59] Z. Peng, X. Wu, Q. Wang, Y. Fang, Soft prompt tuning for augmenting
+      Systems 310 (2024) 112914. doi:10.1016/j.knosys.2024.112914.                          dense retrieval with large language models, Knowledge-Based Systems
+[39] X. Liao, Y. Mao, W. Liu, A. Yang, A practical and privacy-preserving                   309 (2024) 112758. doi:10.1016/j.knosys.2024.112758.
+      framework for real-world large language model services, Knowledge-              [60] L. Massai, Evaluation of semantic relations impact in query expansion-
+      Based Systems 337 (2026) 115347. doi:10.1016/j.knosys.2026.115347.                    based retrieval systems, Knowledge-Based Systems 283 (2023) 111183.
+[40] E. C. Garrido-Merchán, C. Puente, GOFAI meets generative AI: Develop-                  doi:10.1016/j.knosys.2023.111183.
+      ment of expert systems by means of large language models, Knowledge-            [61] D. Zan, B. Chen, Y. Gong, J. Cao, F. Zhang, B. Wu, B. Guan, Y. Yin,
+      Based Systems 351 (2026) 116657. doi:10.1016/j.knosys.2026.116657.                    Y. Wang, Private-library-oriented code generation with large language
+[41] S. Hou, A. Zhao, J. Liang, Z. Shen, H. Wu, Geo-FuB: A method for                       models, Knowledge-Based Systems 326 (2025) 113934. doi:10.1016/
+      constructing an Operator-Function knowledge base for geospatial code                  j.knosys.2025.113934.
+      generation with large language models, Knowledge-Based Systems 319
+      (2025) 113624. doi:10.1016/j.knosys.2025.113624.                                [62] X. Dai, Y. Hua, T. Wu, S. Yang, J. Qiu, G. Qi, Large language models can
+[42] G. Ciatto, A. Agiollo, M. Magnini, A. Omicini, Large language models                   better understand knowledge graphs than we thought, Knowledge-Based
+      as oracles for instantiating ontologies with domain-specific knowledge,               Systems 312 (2025) 113060. doi:10.1016/j.knosys.2025.113060.
+      Knowledge-Based Systems 310 (2025) 112940. doi:10.1016/j.knosys.2
+      024.112940.                                                                     [63] W. Huang, G. Zhou, M. Lapata, P. Vougiouklis, S. Montella, J. Z. Pan,
+                                                                                            Prompting large language models with knowledge graphs for question an-
+[43] A. H. Mohamed, K. S. Shalaby, A. Kaladharan, S. Sen, H. Atas¸,                         swering involving long-tail facts, Knowledge-Based Systems 324 (2025)
+      A. T. Kodamullil, KG-Orchestra: An Open-Source Multi-Agent Frame-                     113648. doi:10.1016/j.knosys.2025.113648.
+      work for Evidence-Based Biomedical Knowledge Graphs Enrichment,
+      Knowledge-Based Systems (2026) 117316doi:10.1016/j.knosys.2026.                 [64] D. Tao, C. Wang, F. Huang, J. Chen, Y. Huang, M. Jiang, Fine-grained
+      117316.                                                                               Stateful Knowledge Exploration: Effective and efficient graph retrieval
+                                                                                            with Large Language Models, Knowledge-Based Systems 326 (2025)
+[44] Y. Liu, Z. Abulawi, A. Garimidi, D. Lim, Automating data-driven model-                 114011. doi:10.1016/j.knosys.2025.114011.
+      ing and analysis for engineering applications using large language model
+      agents, Knowledge-Based Systems 343 (2026) 115989. doi:10.1016/j.kn             [65] A. Sinha, C. Agarwal, P. Malo, FinBloom: Knowledge-Grounding Large
+      osys.2026.115989.                                                                     Language Model with Real-Time Financial Data, Knowledge-Based Sys-
+                                                                                            tems 339 (2026) 115559. doi:10.1016/j.knosys.2026.115559.
+[45] L.-L. Chen, W. Sun, H. Xie, Y. Cai, Y. Zhang, Enhancing large lan-
+      guage model-based systems for end-to-end circuit analysis problem solv-         [66] S. Saadaoui, E. Alonso, Coordinated LLM multi-agent systems for col-
+      ing, Knowledge-Based Systems 353 (2026) 117171. doi:10.1016/j.knos                    laborative question-answer generation, Knowledge-Based Systems 330
+      ys.2026.117171.                                                                       (2025) 114627. doi:10.1016/j.knosys.2025.114627.
+
+[46] A. G. Sorokin, X. Zhu, E. H. Lee, B. Cheng, SigOpt Mulch: An intelligent         [67] C. Packer, S. Wooders, K. Lin, V. Fang, S. G. Patil, I. Stoica, J. E. Gon-
+      system for AutoML of gradient boosted trees, Knowledge-Based Systems                  zalez, MemGPT: Towards LLMs as operating systems, arXiv preprint
+      273 (2023) 110604. doi:10.1016/j.knosys.2023.110604.                                  arXiv:2310.08560 (2023).
+
+[47] M.-K. Ghali, A. Farrag, D. Won, Y. Jin, Enhancing knowledge retrieval            [68] P. Chhikara, D. Khant, S. Aryan, T. Singh, D. Yadav, Mem0: Build-
+      with in-context learning and semantic search through generative AI,                   ing production-ready AI agents with scalable long-term memory, arXiv
+      Knowledge-Based Systems 311 (2025) 113047. doi:10.1016/j.knosys                       preprint arXiv:2504.19413 (2025).
+      .2025.113047.
+                                                                                      [69] W. Xu, Z. Liang, K. Mei, H. Gao, J. Tan, Y. Zhang, A-MEM: Agentic
+[48] J. Chen, S. Xiao, P. Zhang, K. Luo, D. Lian, Z. Liu, M3-Embedding:                     memory for LLM agents, arXiv preprint arXiv:2502.12110 (2025).
+      Multi-linguality, multi-functionality, multi-granularity text embeddings
+      through self-knowledge distillation, in: Findings of the Association for        [70] R. Wu, K. Huang, H. Zhang, Q. Liu, J. Guo, J. Deng, F. Ye, Information-
+      Computational Linguistics: ACL 2024, Association for Computational                    Theoretic Dual Memory System for continual learning, Knowledge-
+      Linguistics, 2024, pp. 2318­2335. doi:10.18653/v1/2024.findings-acl.1                 Based Systems 325 (2025) 113913. doi:10.1016/j.knosys.2025.113913.
+      37.
+                                                                                      [71] A. Miles, S. Bechhofer, SKOS simple knowledge organization system
+[49] F. Li, X. Li, J. Bao, Recursive multi-modal retrieval for structured se-               reference, W3C Recommendation, https://www.w3.org/TR/skos-referen
+      mantic trees in engineering documents, Knowledge-Based Systems 338                    ce/ (2009).
+      (2026) 115433. doi:10.1016/j.knosys.2026.115433.
+                                                                                      [72] A. Asai, Z. Wu, Y. Wang, A. Sil, H. Hajishirzi, Self-RAG: Learning to
+[50] A. Singh, S. J. Subramanya, R. Krishnaswamy, H. V. Simhadri,                           retrieve, generate, and critique through self-reflection, in: The Twelfth
+      Freshdiskann: A fast and accurate graph-based ann index for streaming                 International Conference on Learning Representations (ICLR), 2024.
+      similarity search (2021). arXiv:2105.09613.                                           URL https://openreview.net/forum?id=hSyW5go0v8
+
+[51] Y. Xu, H. Liang, J. Li, S. Xu, Q. Chen, Q. Zhang, C. Li, Z. Yang, F. Yang,       [73] S.-Q. Yan, J.-C. Gu, Y. Zhu, Z.-H. Ling, Corrective retrieval augmented
+      Y. Yang, P. Cheng, M. Yang, Spfresh: Incremental in-place update for                  generation, arXiv preprint arXiv:2401.15884 (2024). doi:10.48550/arXiv
+      billion-scale vector search, in: Proc. of the 29th Symposium on Operating             .2401.15884.
+      Systems Principles (SOSP '23), 2023, pp. 545­561. doi:10.1145/360000
+      6.3613166.                                                                      [74] Z. Jiang, F. Xu, L. Gao, Z. Sun, Q. Liu, J. Dwivedi-Yu, Y. Yang, J. Callan,
+                                                                                            G. Neubig, Active retrieval augmented generation, in: Proceedings of the
+[52] T. Chen, H. Wang, S. Chen, W. Yu, K. Ma, X. Zhao, H. Zhang, D. Yu,                     2023 Conference on Empirical Methods in Natural Language Processing
+      Dense x retrieval: What retrieval granularity should we use?, in: Proc. of            (EMNLP), 2023, pp. 7969­7992. doi:10.18653/v1/2023.emnlp-main.49
+      EMNLP 2024, 2024, pp. 15159­15177. doi:10.18653/v1/2024.emnlp-m                       5.
+      ain.845.
+                                                                                      [75] A. Kamath, R. Jia, P. Liang, Selective question answering under domain
+[53] M. Günther, I. Mohr, D. J. Williams, B. Wang, H. Xiao, Late chunk-                     shift, in: Proceedings of the 58th Annual Meeting of the Association for
+      ing: Contextual chunk embeddings using long-context embedding models                  Computational Linguistics (ACL), 2020, pp. 5684­5696. doi:10.18653/v
+      (2024). arXiv:2409.04701.                                                             1/2020.acl-main.503.
+
+[54] J. Shen, H. Zhu, B. Zhang, Toward trustworthy engineering information            [76] S. Feng, W. Shi, Y. Wang, et al., Don't hallucinate, abstain: Identifying
+      extraction using retrieval-augmented generation, Knowledge-Based Sys-                 LLM knowledge gaps via multi-LLM collaboration, in: Proceedings of
+      tems 348 (2026) 116418. doi:10.1016/j.knosys.2026.116418.                             the 62nd Annual Meeting of the Association for Computational Linguis-
+                                                                                            tics (ACL), 2024, pp. 14664­14690. doi:10.18653/v1/2024.acl-long.786.
+[55] S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan, Y. Cao, ReAct:
+      Synergizing reasoning and acting in language models, in: The Eleventh           [77] Z. Yin, Q. Sun, Q. Guo, et al., Do large language models know what they
+      International Conference on Learning Representations (ICLR), 2023. doi:               don't know?, in: Findings of the Association for Computational Linguis-
+      10.48550/arXiv.2210.03629.                                                            tics: ACL 2023, 2023, pp. 8653­8665. doi:10.18653/v1/2023.findings-a
+                                                                                            cl.551.
+[56] T. Schick, J. Dwivedi-Yu, R. Dessì, R. Raileanu, M. Lomeli, E. Hambro,
+      L. Zettlemoyer, N. Cancedda, T. Scialom, Toolformer: Language models            [78] C. Zhao, R. De Maria, T. Kumarage, K. S. Chaudhary, G. Agrawal, Y. Li,
+      can teach themselves to use tools, in: Advances in Neural Information                 J. Park, Y.-C. Chen, Y. Deng, H. Liu, CyberBOT: Ontology-grounded re-
+      Processing Systems, Vol. 36, 2023, pp. 68539­68551. doi:10.52202/075                  trieval augmented generation for reliable cybersecurity education, in: Pro-
+      280-2997.                                                                             ceedings of the 34th ACM International Conference on Information and
+                                                                                            Knowledge Management, Association for Computing Machinery, 2025,
+[57] Z. Li, H. Tian, L. Luo, Y. Cao, P. Luo, DeepRead: Document                             pp. 6752­6756. doi:10.1145/3746252.3761478.
+      structure-aware reasoning to enhance agentic search, arXiv preprint
+      arXiv:2602.05014v3 (2026). doi:10.48550/arXiv.2602.05014.                       [79] N. F. Liu, T. Zhang, P. Liang, Evaluating verifiability in generative search
+                                                                                            engines, in: Findings of the Association for Computational Linguistics:
+[58] L. Siddharth, J. Luo, Retrieval augmented generation using engineering                 EMNLP 2023, 2023, pp. 7001­7025. doi:10.18653/v1/2023.findings-e
+                                                                                            mnlp.467.
+
+                                                                                      [80] T. Gao, H. Yen, J. Yu, D. Chen, Enabling large language models to gener-
+
+                                                                                  20
+      ate text with citations, in: Proceedings of the 2023 Conference on Empiri-
+      cal Methods in Natural Language Processing (EMNLP), 2023, pp. 6465­
+      6488. doi:10.18653/v1/2023.emnlp-main.398.
+[81] I. H. Kinalioglu, EPRAG: An epistemic policy framework for ac-
+      tion selection in multi-source enterprise retrieval-augmented generation,
+      Knowledge-Based Systems 352 (2026) 116929. doi:10.1016/j.knosys.2
+      026.116929.
+[82] L. Zheng, W.-L. Chiang, Y. Sheng, et al., Judging LLM-as-a-judge
+      with MT-Bench and Chatbot Arena, in: Advances in Neural Informa-
+      tion Processing Systems (NeurIPS), Vol. 36, 2023, pp. 46595­46623.
+      doi:10.52202/075280-2020.
+[83] W. Sun, L. Yan, X. Ma, S. Wang, P. Ren, Z. Chen, D. Yin, Z. Ren, Is
+      ChatGPT good at search? investigating large language models as Re-
+      Ranking Agents, in: Proceedings of the 2023 Conference on Empirical
+      Methods in Natural Language Processing (EMNLP), 2023, pp. 14918­
+      14937. doi:10.18653/v1/2023.emnlp-main.923.
+[84] A. Panickssery, S. R. Bowman, S. Feng, LLM evaluators recognize and
+      favor their own generations, in: Advances in Neural Information Pro-
+      cessing Systems (NeurIPS), Vol. 37, 2024, pp. 68772­68802. doi:
+      10.52202/079017-2197.
+[85] H. Lightman, V. Kosaraju, Y. Burda, et al., Let's verify step by step,
+      in: The Twelfth International Conference on Learning Representations
+      (ICLR), 2024. doi:10.48550/arXiv.2305.20050.
+[86] W. Saeed, C. W. P. Omlin, Explainable AI (XAI): A systematic meta-
+      survey of current challenges and future opportunities, Knowledge-Based
+      Systems 263 (2023) 110273. doi:10.1016/j.knosys.2023.110273.
+[87] Z. Zhou, M. Li, X. Fang, X. Zhou, W. Lin, Z. Zheng, LGMT: Logic-
+      Grounded Metamorphic Testing for evaluating the reasoning reliability of
+      LLMs, Knowledge-Based Systems 348 (2026) 116324. doi:10.1016/j.kn
+      osys.2026.116324.
+[88] R. Hou, S. Chen, Y. Fan, G. Yu, L. Zhu, J. Sun, J. Liu, T. Ruan, MSDiag-
+      nosis: A benchmark and framework for evaluating large language models
+      in multi-step clinical diagnosis, Knowledge-Based Systems 330 (2025)
+      114524. doi:10.1016/j.knosys.2025.114524.
+[89] Laya, Model card, https://huggingface.co/convaiinnovations/laya, locally
+      hosted decision model shipped with the platform artefacts; used in this
+      work as the content-verification judge. Accessed 2026-10-08 (2026).
+[90] Chroma, The AI-native open-source embedding database, https://www.tr
+      ychroma.com (accessed 2026-09-18) (2026).
+[91] Y. A. Malkov, D. A. Yashunin, Efficient and robust approximate nearest
+      neighbor search using hierarchical navigable small world graphs, IEEE
+      Transactions on Pattern Analysis and Machine Intelligence 42 (4) (2020)
+      824­836. doi:10.1109/TPAMI.2018.2889473.
+[92] Neo4j, Inc., Neo4j graph database, https://neo4j.com (accessed 2026-09-
+      18) (2026).
+[93] N. Craswell, B. Mitra, E. Yilmaz, D. Campos, J. Lin, MS MARCO:
+      Benchmarking ranking models in the large-data regime, in: Proc. 44th In-
+      ternational ACM SIGIR Conference (SIGIR '21), ACM, 2021, pp. 1566­
+      1576. doi:10.1145/3404835.3462804.
+[94] S. Es, J. James, L. Espinosa Anke, S. Schockaert, RAGAs: Automated
+      evaluation of retrieval augmented generation, in: Proc. 18th Conference
+      of the European Chapter of the ACL: System Demonstrations, ACL,
+      2024, pp. 150­158. doi:10.18653/v1/2024.eacl-demo.16.
+[95] J. Saad-Falcon, O. Khattab, C. Potts, M. Zaharia, ARES: An automated
+      evaluation framework for retrieval-augmented generation systems, in:
+      Proc. 2024 Conference of the North American Chapter of the ACL: Hu-
+      man Language Technologies (Vol. 1: Long Papers), ACL, 2024, pp. 338­
+      354. doi:10.18653/v1/2024.naacl-long.20.
+[96] K. Järvelin, J. Kekäläinen, Cumulated gain-based evaluation of IR tech-
+      niques, ACM Transactions on Information Systems 20 (4) (2002) 422­
+      446. doi:10.1145/582415.582418.
+
+                                                                             21
+

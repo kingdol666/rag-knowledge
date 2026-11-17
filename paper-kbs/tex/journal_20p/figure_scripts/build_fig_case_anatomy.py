@@ -55,6 +55,15 @@ def wrap(text: str, width: int) -> str:
     return "\n".join(textwrap.wrap(text, width=width, break_long_words=False))
 
 
+def clip(text: str, limit: int) -> str:
+    """Word-boundary truncation with an ellipsis (never mid-word)."""
+    t = " ".join(text.split())
+    if len(t) <= limit:
+        return t
+    cut = t[:limit].rsplit(" ", 1)[0].rstrip(",;:")
+    return cut + " …"
+
+
 def load_provenance() -> dict:
     data = json.loads(PROVENANCE.read_text(encoding="utf-8"))
     science = data["cases"]["A-science-en-roberta.pdf"]
@@ -271,7 +280,7 @@ def case_a(ax, data):
     arrow(ax, 0.340, row2, 0.370, row2, BLUE, "add")
     evidence_card(ax, 0.370, row2 - 0.040, 0.255, 0.080,
                   "archived passage · #70",
-                  science["excerpt"].split(" ... ", 1)[-1][:46] + "...",
+                  wrap(clip(science["excerpt"].split(" ... ", 1)[-1], 64), 36),
                   accent=BLUE, body_size=6.8)
     arrow(ax, 0.625, row2, 0.665, row2, BLUE)
     verdict_card(ax, 0.665, row2 - 0.040, 0.275, 0.080, True,
@@ -335,9 +344,10 @@ def case_b(ax, data):
                  "A0h · ENHANCED", ("windows + top-8 chunks", f"{literature['arms']['A0h']['survivor_count']} survivors"),
                  accent=BLUE, face=PALE_BLUE, body_size=6.65)
     arrow(ax, 0.355, row_h, 0.385, row_h, BLUE, "add")
+    key_clause = "Why, " + literature["excerpt"].split("Why,", 1)[-1].strip()
     evidence_card(ax, 0.385, row_h - 0.034, 0.310, 0.068,
                   "original English excerpt",
-                  wrap(literature["excerpt"], 52),
+                  wrap("… " + key_clause, 44),
                   accent=BLUE, body_size=6.15)
     arrow(ax, 0.695, row_h, 0.730, row_h, BLUE)
     verdict_card(ax, 0.730, row_h - 0.034, 0.210, 0.068, True,

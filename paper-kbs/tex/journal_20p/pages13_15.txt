@@ -1,0 +1,206 @@
+the ten evaluation libraries, merged by score and judged in a          strings; A0h, at 51/72 (70.8%), is 16.7 percentage points above
+40K reference window; A2 uses the same scoped vector union             A0. A3, recorded separately and later, yielded 25/72 (gold
+with concatenated candidate snippets and no judge. A3 uses             domain selected 49/72, 13 missing top candidates, 23 empty
+nominally name-only route cards, while read-all mechanically           packs); the causes are not established, so A3 is read qualita-
+scans every stored part for the target string. Route-card re-          tively across runs. Follow-up read-all was incomplete (three
+trieval uses top-30 vector candidates at cosine threshold 0.35         completed rows at the report cutoff) and is not plotted as a 72-
+with a 0.30 retry. These are recorded configuration details, not       question result; the frozen read-all is a mechanical substring
+a single-factor design: A0h, PD and A1b vary in routing, can-          scan, not an agent that reads and answers. A0h recorded 309
+didate construction and judging, so their differences cannot be        KB and 13.8 s of tool time per frozen question, versus 24.3
+assigned to navigation alone. Some reference lookups may use           MB and 253.7 s for the scan; in the follow-up, A0's elapsed-
+the gold domain, with unknown frequency and impact; A3 may             time mean was 17.4 s, median 9.8 s and maximum 540.9 s.
+retrieve outside the evaluation scope.                                 Tool time excludes answer generation, and recorded bytes may
+                                                                       include overlap; neither is network traffic or measured model
+   A0h holds the highest containment in every ex-                      input.
+ecution. In the frozen aggregate, gold strings were
+contained for A0/A0f/A0h/PD/A1b/A2/A3/read-all in                         Among A0's 35 frozen misses, A0f, A0h and PD contain the
+37/45/52/46/39/25/33/72 of 72 questions (Figure 7a); these             string in 8, 15 and 9 cases, respectively. These sets overlap--8
+are evidence-string proxies, not answer correctness. The A0h           questions recovered by all three, 7 only by A0h, 1 only by PD
+Wilson 95% interval is [0.610, 0.812]. The four content arms           and 19 by none--so they are not additive configuration gains.
+(A0, A0f, A0h, PD) were executed three times: the frozen               A post-hoc search classified five first matching string locations
+run, an archived reproduction of it recorded to retain response        outside a nominal window and 30 inside; the chosen match-
+texts, and a later same-question follow-up on a corpus grown           ing file need not be the gold document or a candidate actually
+from 879 to 906 parts (the R3 record). A0h was the highest             read, so these categories do not identify the causes of misses.
+configuration and the ordering A0h > PD > A0f > A0 held in             As an external content-based reference point, a separate 40-
+all three records (52/46/45/37, then 51/45/44/39 twice). The           question diagnostic found the gold string in returned text for
+reproduction agreed with the frozen records on 71/72 questions         24/40 BM25 cases, 19/40 dense-search cases, and 26/40 when
+for A0f, A0h and PD and on 68/72 for A0, and the follow-up             the top five texts from each list were concatenated. The his-
+returned hit/miss records identical to the reproduction for all        torical label F-rrf is retained only for trace compatibility: no
+four arms. A1b and A2 repeated their frozen counts exactly in          reciprocal-rank fusion was computed, and the questions, scopes
+the follow-up, with no per-question flips; frozen versus follow-       and returned- text construction differ from E5.
+up agreement was 94.4% for A0 and 98.6% for A0f, A0h and
+PD. The follow-up reuses the frozen questions, so these are               Figure 6 illustrates how these lexical outcomes arise in
+stability records, not independent test sets.                          recorded evidence paths. For G-gwr-1, A0 and A0h both se-
+                                                                       lect the correct gov-zh collection, but A0 exposes the 2022
+   In exploratory paired records (two-sided exact McNemar              wording (5.5 per cent), whereas the additional A0h chunk lane
+tests, unadjusted; no familywise inference is intended), A0h           exposes the 2025 sibling-report wording (5 per cent). For F-pp-
+led the tiered baseline A0 on fifteen frozen questions with            1, the A0 and A0f paths stop before the dialogue, while A0h
+no reverse (p = 6.1 × 10-5) and on twelve follow-up ques-              admits the original excerpt containing "four or five thousand
+tions with no reverse (p = 0.00049). A0h led the scoped flat           a year." The figure reports recorded evidence and exact-string
+union A1b on thirteen frozen and twelve follow-up questions,           verdicts only; a sibling-document match is not semantic answer
+again with no reverse (p = 0.00024; p = 0.00049). A0h led              correctness.
+PD on seven questions in both records while PD led on one
+(p = 0.0703); this contrast is not statistically resolved, and         8.7. E6: Answer and trace checks, abstention and cost
+PD differs from A0h in more than navigation. The window
+expansion is supported separately: A0f led A0 on eight frozen             Two ten-question grids on the arXiv question set compare a
+questions with no reverse (p = 0.0078) and on five follow-up           platform agent (P), direct file tools (F) and a chunk-replica arm
+questions (p = 0.0625), and PD led A0 on six follow-up ques-           (C) that searches an 800-character chunk copy of the same con-
+tions with no reverse (p = 0.031). A1b and A0 showed no re-            tent through the platform's own vector lane--a same-content,
+solved difference in either record (frozen 2­4, p = 0.69; follow-      flat-chunk substrate control for the document-level organisa-
+up 1­1). Removing the evidence gate is the clearest isolated           tion. The original grid uses different substrates; the later grid
+cost: A2 contained the string for 25/72 against 37/72 (frozen)         pins the same five libraries, and its C arm searches those li-
+and 39/72 (follow-up) for A0, with discordant records of 6­18          braries directly. Gold-ID presence, strict and alias-aware key-
+(p = 0.0227) and 5­19 (p = 0.0066). A2 and A0 also differ in           word coverage and citation markers are deterministic checks,
+returned text, so even this comparison does not isolate the gate       not assessments of semantic support. An identifier in the trace
+mechanism alone. PD led A1b on seven frozen questions with             need not have been read; a marker does not establish that a
+no reverse (p = 0.0156). Table S13 retains all paired records          cited passage exists or entails the answer. Figure 8 shows the
+for auditability.                                                      per-question marker pattern; Table S14 gives the per-question
+                                                                       records and Table S15 the aggregate checks and run-time ob-
+   The follow-up completes as follows. The six arms A0, A0f,           servations.
+A0h, PD, A1b and A2 yielded 39/44/51/45/39/25 contained
+
+                                                                   13
+(a) G-gwr-1 · two alternative evidence paths
+
+collection gov-zh · translated from Chinese
+
+Q: What GDP growth target does the 2024 Report on the Work of the Government set?
+
+evaluation target: "GDP growth of around 5 per cent"
+
+1 Alternative retrieval arms                     read EVIDENCE · 2022 Work Report                      same question · different evidence admission
+                                                         GDP growth of around 5.5 per cent         MISS gold wording absent
+                       A0 · BASELINE
+
+                       tiered judged pack
+                       22 survivors · 40K cap
+
+A0h · ENHANCED                                   add EVIDENCE · 2025 Work Report · chunk #11       HIT exact gold string present
+                                                         GDP growth of around 5 per cent
+tiered pack + top-8 chunks
+27 total survivors
+
+                       Sibling-report lexical match; the matching file need not be the gold document.
+
+(b) F-pp-1 · controls versus chunk-window union
+
+literature-en · original English
+
+Q: What yearly income does Mrs Bennet attribute to the single man at the beginning?
+
+evaluation target: "four or five thousand a year"
+
+1 Parallel control arms                          EVIDENCE · headers only                                                               A0 and A0f are alternatives
+                                                 dialogue not admitted                             MISS gold string absent
+                       A0 · PACK
+
+                        1 survivor · P&P part 2
+
+A0f · WINDOW                                     EVIDENCE · window boundary                        MISS gold string absent
+full window of part 2                            ends before dialogue
+
+2 Enhanced arm                                                                                                              chunk-window union
+
+A0h · ENHANCED                                   add EVIDENCE · original English excerpt               HIT gold present
+
+windows + top-8 chunks                                   "...he has four or five thousand a year,
+27 -> 2 survivors                                        and very likely more."
+
+The 2026-11-17 rerun missed F-pp-1 in every arm except A0h; verdicts are lexical proxies, not answer correctness.
+
+Figure 6: Transparent case anatomy for two recorded retrieval paths. (a) For G-gwr-1, A0 and A0h route to gov-zh; the baseline evidence
+exposes 2022 wording, whereas the additional chunk-window lane exposes the 2025 sibling-report wording containing the target string. (b) For
+F-pp-1, A0 and A0f stop before the dialogue, while A0h admits the original English excerpt. The nodes show recorded retrieval/evidence stages,
+and HIT/MISS denotes exact substring containment in the recorded evidence pack, not semantic answer correctness. The sibling-report match in
+(a) is intentionally disclosed.
+
+   In both grids the gold identifier occurred in the answer or         same five libraries, returned the gold identifier and a citation
+trace of all 60 cells: gold presence is at ceiling for every arm,      marker in all ten answers, with full keyword coverage in nine
+so the arms are not separated by whether the gold document             (one question covered one of two annotated terms). Its mean
+is reached--the separation appears in document-style citation          wall-clock was 131 s per question and its total cost was 3.10
+markers. In the original grid, marker-bearing answers were             USD. This is a single current-state observation on a later stack
+9/10 for P, 7/10 for F and 2/10 for C (Figure 8a); strict key-         and model state; it is not a controlled arm and is not pooled with
+word coverage was 9/10 for each arm and alias-aware coverage           the grids. Read together, the records support a bounded claim:
+10/10. Under the common substrate, markers were 9/10 in ev-            document-level organisation is associated with document-style
+ery arm (Figure 8b), strict coverage 7/10, 7/10 and 8/10, and          citation behaviour--the tiered platform arm carried markers in
+alias-aware coverage 9/10, 9/10 and 10/10. The original-grid           9/10 and, after repair, 10/10 answers, against 2/10 for the flat
+mean time and cost were 52.6 s and $0.711 per question for P,          chunk replica in the original grid--but these are lexical proxies;
+22.2 s and $0.487 for F, and 24.5 s and $0.527 for C; these are        no semantic-quality superiority is claimed, and the latest run's
+single-run observations. Both grids carry a marker in 18 cells         keyword coverage (9/10) matches F and trails the historical P
+and neither in three (21/30 agreement); the replication adds a         arm.
+marker in nine cells and removes none (9­0 discordance, Mc-
+Nemar p = 0.0039), so the marker gap is substrate-bound rather            Answer-level case study. A separate recorded demonstra-
+than an interface effect alone. The detailed source-presence au-       tion parsed and ingested a DeepSeek-R1 paper, then used two
+dit appears in Tables S7­S8 of the supplementary inventory and         agent harnesses on the same four questions. The prompt sup-
+is not an entailment test.                                             plied the library, paper and arXiv identifier and prescribed the
+                                                                       retrieval, judging and reading steps; it did not test autonomous
+   A later ten-question run on the repaired platform, with the         collection selection. The case compendium reports eight re-
+
+                                                                   14
+                            Frozen (Wilson 95% CI)                      Same-question follow-up
+
+           (a)                                    72/--                             (b)                 13      p<0.001
+                                                 52/51
+Read-all                                         46/45                  A0h­A1b 0
+                                                 45/44                   A0h­PD 1
+A0h                                              39/39                   PD­A1b 0                  7
+                                                 37/39                   A0h­A0 0                  7
+                                                 33/25                    A0f­A0 0                                            p=0.07
+                                                 25/25                                               8
+PD                                                                         A2­A0                 6
+
+A0f                                                                                                             p=0.016
+
+A1b                                                                                                         15  p<0.001
+
+A0                                                                                                              p=0.008
+
+A3
+
+A2                                                                                                              18 p=0.023
+
+     0          20  40  60  80 100                                      0                5       10 15 20
+
+                    Gold-string containment (%)                                                  Discordant questions (n=72)
+
+Figure 7: Content-layer configurations on 72 in-domain questions. (a) Frozen gold-string containment with Wilson 95% intervals (filled circles)
+and the same-question follow-up (open triangles); counts are in the right-hand column (frozen / follow-up). The frozen aggregate combines
+dates; A3 was added separately to the follow-up and read-all was incomplete. The dashed line marks frozen A0. (b) Paired discordance for six
+frozen contrasts; each point is the number of questions on which the first (circle) or second (triangle) arm alone contained the string; p values are
+two-sided exact McNemar, unadjusted. A0h, PD and A1b change multiple components; A0, A1b and A3 may use the gold domain for reference
+resolution; read-all is a mechanical scan, not an answering agent. These are substring results, not answer correctness or a causal single-factor
+effect.
+
+sponses checked against the source on answer content, docu-             8.9. E8: When the verifier fails
+ment provenance, quoted material and fabricated facts; all eight
+passed that case review (Table S16). On the question asking for            The 191 recorded candidate scores from 16 hybrid runs in-
+electricity cost, both responses said the paper did not provide an      cluded 17 in-pool golds and 174 non-golds. All recorded
+electricity figure and distinguished the reported $294K GPU-            scores exceeded the 0.5 threshold; one additional Q14 can-
+rental-based training-cost estimate. This is an observed refusal        didate had no recorded score. Gold and non-gold medians
+to infer an absent value, not a general abstention guarantee.           were 0.88 and 0.86 (Figure 9a). The candidate-level Mann­
+Three further industrial-corpus probes returned not-found; the          Whitney test (p = 0.26) is exploratory and ignores clustering
+retrieval threshold retained candidates in related absent probes        by query. The score archive and the ordering archive are sep-
+(Fig. S3).                                                              arate records. Re-ranking these scores reduced Hit@5 to 7/16,
+                                                                        compared with 15/16 when recorded survivors retained fusion
+8.8. E7: Deployment-layer system arms and honesty contracts             order (Figure 9b). A Q2 example appears in Fig. S5: the gold
+                                                                        root-cause report scored 0.846 against five telemetry reports at
+   Three questions crossed pinned, unpinned and pinned                  0.887­0.926 and was demoted from fusion rank 1 to rank 8,
+hybrid-directed API arms. The pinned arms returned the two in-          outside the read window. A replay of the same pairs with an
+corpus gold identifiers, and all three reported not-found for the       NLI checkpoint produced Hit@5 0.3125; a span-level replay
+out-of-corpus probe. In one unpinned setting, a 131-document,           produced 0.1875. A relative-margin replay kept 16 of 17 golds
+74.9 KB catalogue exceeded the tool-output budget; a trun-              at m = 0.15 and all 17 at m = 0.20, while the mean candidate
+cated preview led to false refusal or a hang. After pagina-             count stayed near twelve; these replays neither isolate trunca-
+tion and grouped views were added, selected reruns completed,           tion nor establish the cause of verifier failure. The arXiv corpus
+including the formerly failing query. These observations do             did not show the same top-five collapse; domain, language and
+not establish general transport reliability; they show that the         corpus size changed together. No answer-level test validates a
+management-to-answer path can fail in transport and that this           higher filtering threshold; Table S6 of the supplementary inven-
+failure mode is exposed by the workflow rather than hidden--            tory sweeps the recorded scores and Fig. S4 replays relative-
+the silent index-skip fault in E9 is the counterexample that mo-        margin variants of the same pools. The result is a role warning:
+tivates surfaced degradation markers. An eighteen-arm honesty           the verifier can filter, but ordering by its score lost the gold in
+battery observed no fabricated citations in its final responses;        this pool. Filtering itself was never activated, because every
+interrupted arms were rerun and each arm has one final obser-           recorded score passed the threshold.
+vation. The deployment checks are operational boundaries, not
+a retrieval comparison.
+
+                                                                    15
+
