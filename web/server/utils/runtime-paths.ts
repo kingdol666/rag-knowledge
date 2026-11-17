@@ -7,7 +7,6 @@ import {
 } from '~/server/utils/dynamic-config'
 
 // Shared root discovery is kept separate to avoid a dynamic-config ↔ runtime-paths cycle.
-import { getRepoRoot } from '~/server/utils/repo-root'
 
 // -- runtime defaults --
 export const DEFAULT_BACKEND_API_URL = 'http://localhost:8765'
@@ -20,7 +19,7 @@ function readEnv(name: string): string | undefined {
 
 export function resolveProjectPath(pathValue: string): string {
   return normalize(
-    isAbsolute(pathValue) ? pathValue : resolve(getRepoRoot(), pathValue),
+    isAbsolute(pathValue) ? pathValue : resolve(getMonorepoRoot(), pathValue),
   )
 }
 
