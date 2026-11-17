@@ -1,8 +1,8 @@
-"""Full-stack API smoke test: backend (8771, Bearer token) + web server (6789).
+"""Full-stack API smoke test: backend (8770, Bearer token) + web server (6789).
 
 Reads MCP_AUTH_TOKEN from repo .env (never printed). Exits 1 on any FAIL.
 SSRF-hardened by construction: every request passes guard_url(), which only
-allows http://{127.0.0.1|localhost}:{8771|6789} with resolved-IP pinning and
+allows http://{127.0.0.1|localhost}:{8770|6789} with resolved-IP pinning and
 redirects disabled.
 Usage: python scripts/dev_smoke.py
 """
@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ALLOWED_HOSTS = {"127.0.0.1", "localhost"}
-ALLOWED_PORTS = {8771, 6789}
+ALLOWED_PORTS = {8770, 6789}
 
 
 def guard_url(url: str) -> None:
@@ -92,10 +92,10 @@ def jget(url, **kw):
 
 def main() -> int:
     # ---------- backend ----------
-    s, b = jget("http://127.0.0.1:8771/api/v1/health", token=TOKEN)
+    s, b = jget("http://127.0.0.1:8770/api/v1/health", token=TOKEN)
     check("BE /health", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/meditation/harnesses", token=TOKEN,
+    s, b = jget("http://127.0.0.1:8770/api/v1/meditation/harnesses", token=TOKEN,
                 timeout=90)  # cold cache measured >30 s on first hit
     hlist = b.get("harnesses", []) if isinstance(b, dict) else []
     n = len(hlist)
@@ -107,34 +107,34 @@ def main() -> int:
         print(f"       harnesses available={avail}/{n}, with-hint={with_hint}",
               flush=True)
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/meditation/status", token=TOKEN)
+    s, b = jget("http://127.0.0.1:8770/api/v1/meditation/status", token=TOKEN)
     check("BE /meditation/status", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/meditation/harness-status", token=TOKEN)
+    s, b = jget("http://127.0.0.1:8770/api/v1/meditation/harness-status", token=TOKEN)
     check("BE /meditation/harness-status", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/meditation/models", token=TOKEN, timeout=90)
+    s, b = jget("http://127.0.0.1:8770/api/v1/meditation/models", token=TOKEN, timeout=90)
     check("BE /meditation/models", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/config", token=TOKEN)
+    s, b = jget("http://127.0.0.1:8770/api/v1/config", token=TOKEN)
     check("BE /config", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/graph/stats", token=TOKEN, timeout=60)
+    s, b = jget("http://127.0.0.1:8770/api/v1/graph/stats", token=TOKEN, timeout=60)
     check("BE /graph/stats", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/search/stats", token=TOKEN, timeout=60)
+    s, b = jget("http://127.0.0.1:8770/api/v1/search/stats", token=TOKEN, timeout=60)
     check("BE /search/stats", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/experience/health", token=TOKEN, timeout=60)
+    s, b = jget("http://127.0.0.1:8770/api/v1/experience/health", token=TOKEN, timeout=60)
     check("BE /experience/health", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/soul/list", token=TOKEN, timeout=60)
+    s, b = jget("http://127.0.0.1:8770/api/v1/soul/list", token=TOKEN, timeout=60)
     check("BE /soul/list", s == 200, f"status={s}")
 
-    s, b = jget("http://127.0.0.1:8771/api/v1/search/debug-paths", token=TOKEN, timeout=60)
+    s, b = jget("http://127.0.0.1:8770/api/v1/search/debug-paths", token=TOKEN, timeout=60)
     check("BE /search/debug-paths", s == 200, f"status={s}")
 
-    s, b = request("http://127.0.0.1:8771/api/v1/search/vector", method="POST",
+    s, b = request("http://127.0.0.1:8770/api/v1/search/vector", method="POST",
                    payload={"query": "transformer attention", "top_k": 3},
                    token=TOKEN, timeout=60)
     check("BE POST /search/vector", s == 200, f"status={s}")
