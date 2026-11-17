@@ -1,0 +1,63 @@
+\label{sec:ladder-opt}
+\textbf{Content-layer configurations.} The access comparison varies route
+selection, candidates, reading window and judging together. A0 combines
+route-card selection with a 40K reference-mode judge; A0f reads full document
+windows inline, up to 250K characters; A0h adds the top-eight vector-chunk
+windows to A0f with a 60K evidence cap. PD omits catalogue navigation and
+judges a per-library top-six document union. A1b merges scoped vector results
+from ten evaluation libraries and judges a 40K reference window; A2 uses a
+scoped vector union and concatenated snippets without the judge. A3 uses
+nominally name-only cards. A1b and A2 are per-library searches, not unrestricted
+global searches. Some reference lookups may use the gold domain; their
+frequency is unknown. The historical traces do not preserve every prompt or
+configuration hash. Consequently these arms are configuration comparisons,
+not isolated navigation or gate ablations.
+
+In the frozen 11 November aggregate, A0/A0f/A0h/PD/A1b/A2/A3 contained the
+gold string for 37/45/52/46/39/25/33 of 72 questions. A mechanical read-all
+scan found 72/72 strings; it reads stored parts and produces no answers. In
+the later same-question record, the seven configurations contained the string
+for 39/44/51/45/39/25/25 cases, respectively
+(Figure~\ref{fig:ladder}). A0h was highest among the completed follow-up arms
+at 51/72 (70.8\%). The later read-all record was incomplete, with three gold
+rows at the report cutoff; it is not a 72-question comparison. A3 was added
+separately and the reason for its change is unresolved. Supplementary Tables
+S12--S14 give per-arm results and paired records.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_exp_content}
+\caption{Exact-string containment by content-access configuration on the
+same 72 in-domain questions. Points show frozen and same-question follow-up
+proportions with Wilson 95\% intervals; counts give questions containing the
+gold string. The frozen and later records contain 879 and 906 stored parts,
+respectively; later A3 was added separately. The frozen read-all result is a
+mechanical substring scan, while its follow-up is incomplete. Configurations
+change several components and the measure is not semantic answer accuracy.}
+\label{fig:ladder}\label{fig:r3-content}
+\end{figure*}
+
+For the frozen aggregate, A0h contained the string when A1b did not for 13
+questions and the reverse occurred for none (two-sided exact McNemar
+$p=0.00024$). Against PD the discordant count was 7--1 in A0h's favour
+($p=0.0703$). In the later record the A0h--A0 contrast was 12--0
+($p=0.00049$). These are unadjusted, exploratory paired comparisons of
+string containment; they do not establish a single-component effect or an
+advantage in semantic answer quality. In particular, A2 differs from A0 in
+routing, candidate construction and returned text as well as judging.
+
+A separate frozen 40-question diagnostic returned the gold string in 24/40
+BM25 and 19/40 dense cases. Concatenating the top five texts from each list
+gave 26/40; the historical label \texttt{F-rrf} denotes text concatenation,
+not reciprocal-rank fusion. BM25 uses the local corpus whereas dense search
+uses the global index. These results differ in scope and text construction
+from the 72-question experiment and should not be compared as a matched
+benchmark. Later 40-question records use different conditions.
+
+Among the frozen A0's 35 misses, A0f, A0h and PD contained the string in 8,
+15 and 9 cases, respectively; these sets overlap. A post-hoc location search
+cannot identify causes because a matching file need not be a candidate read
+by the experiment. The mechanical read-all scan recorded 24.3 MB and 253.7 s
+per question, whereas A0h recorded 309 KB and 13.8 s; the byte measures can
+overlap and differ between procedures, and tool time excludes answer
+generation. They are not comparable model-input or end-to-end answer costs.

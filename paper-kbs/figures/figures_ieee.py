@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""IEEE TII figures for the QDCVR paper.
+"""IEEE TII figures for the HMRS paper.
 
 Sizes: single column 3.5 in (89 mm), double column 7.16 in (181 mm).
 Style: Okabe-Ito palette, sans, thin frames — IEEE two-column layout.
@@ -195,9 +195,9 @@ def fig_lanes():
 def fig_tool():
     s = json.loads((RES / "exp1_summary.json").read_text(encoding="utf-8"))["summary"]
     order = ["bm25", "dense", "rrf", "graph", "twostage", "fusion_only",
-             "qdcvr_hybrid"]
+             "hmrs_hybrid"]
     labels = ["BM25", "Dense", "RRF", "Graph", "2-stage", "Fusion",
-              "QDCVR"]
+              "HMRS"]
     fig, (a1, a2) = plt.subplots(2, 1, figsize=(SC, 96 * MM),
                                  sharex=True)
     x = range(len(order))
@@ -245,7 +245,7 @@ def fig_inflation():
     qg = {q["qid"]: q["gold_doc_substrings"] for q in QUESTIONS}
     gold, nongold = [], []
     for row in data["rows"]:
-        if row.get("method") != "qdcvr_hybrid" or "judge_scores" not in row:
+        if row.get("method") != "hmrs_hybrid" or "judge_scores" not in row:
             continue
         gold += row["judge_scores"]["gold"]
         for p, sc in row["judge_scores"]["all"].items():

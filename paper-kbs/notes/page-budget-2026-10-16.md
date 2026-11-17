@@ -1,13 +1,70 @@
-# Page budget under the KBS submission formats (2026-10-16)
+# Page budget under the KBS submission formats (2026-10-16; revised 2026-11-11)
 
 Measurement record for the 2026-10-16 assessment
 (`review/KBS-PAPER-ASSESSMENT-2026-10-16.md`, recommendation P0-1). The KBS
 Guide for Authors asks for "preferably no more than **20 double line-spaced
 manuscript pages** (including tables and figures)". Two builds were measured.
 
+## 2026-11-11 revision — HMRS restructure
+
+The system was renamed from HMRS to **HMRS (Hierarchical Management
+Retrieval System / 逐级管理检索系统)** and the manuscript was restructured
+around a management-level model: documents are managed at collection,
+document and segment level, and questions are served along a tiered access
+path (catalogue → shelf → document → segment) rather than through a
+content-verified retriever. The restructure added one body table
+(`tab:levels`, the level → operation → state → tier → check → evidence
+ladder), one related-work paragraph distinguishing *hierarchical management*
+from *hierarchical representation* (RAPTOR, GraphRAG), and a management-first
+discussion; it removed the separate `hmrs-demo` bib key in favour of
+`hmrs-demo`.
+
+Cost of the restructure on the camera-ready preview: **20 → 22 pages**
+(+981 body words, one body table). The +2 pages were accepted rather than
+recovered, because reaching 20 would require cutting roughly 700 words of
+existing evaluation prose per page, which the compression plan below
+explicitly rejects ("a materially weaker paper"). The 20-page preference
+remains an editorial risk that the compression plan below is written for; it
+is not a KBS hard limit, and the two-column build remains what
+`submission-20p/` packages.
+
+### 2026-11-11, later — polish and the management-model figure
+
+A full language polish and a new figure were added the same day:
+
+- **Figure `fig_management_model`** (management levels and the tiered query
+  path) was generated as a concept image and rebuilt as native vector under
+  the repository's Arial/8 pt contract, then inserted as Figure 3 in
+  Section 3. The five-seat panel review had recorded that the paper's central
+  claim had no figure of its own, so this adds one.
+- **The figure cost one further page: 22 → 23.** A later consolidation pass
+  added the Origin-style retrieval-comparison figure
+  (`fig_retrieval_comparison`, rendered from the frozen `exp1_summary.json`
+  and `exp10_papers_toollayer.json` so it cannot drift from Table 2) and a
+  design-and-results summary table for E4--E8 (`tab:retrieval-design`),
+  taking the preview to **24 pages**. `_postcheck.ps1` now gates on
+  `page count <= 24`. These pages were spent on the argument and on the
+  requested experimental consolidation, not on cosmetics; the alternative
+  (dropping experimental material to buy the pages back) is the trade the
+  compression plan below already rejects.
+- The polish itself was length-neutral in the body: spelling was normalised
+  to British, the repeated "first-class" modifier was reduced, long
+  sentences were split, and the paragraphs were re-wrapped. The abstract was
+  trimmed from 256 to 244 words to stay under the 250-word KBS limit.
+
+Measured after the restructure, polish and experimental consolidation:
+**24 pages, 19,337 words total / 17,561 excluding the reference list, 11
+figures and 8 body tables, abstract 246 words, highlights 5 × ≤ 85
+characters.** A stale-data audit (2026-11-11) removed the superseded
+six-method lane matrix (`tab:e4-matrix`, sourced from an archived
+2026-10-13 run) and added the current 2026-11-11 content-layer optimisation
+arms (E2c, `fig_ladder_optimization`); the net page count is unchanged.
+
+## Builds
+
 | build | source | class options | pages | notes |
 |---|---|---|---|---|
-| camera-ready preview (layout of record) | `paper-kbs/tex/journal_20p/main_20p.tex` | `[final,5p,times,twocolumn]` | **20** | all `_postcheck.ps1` gates pass: 0 overfull, 0 undefined, every float cited, figures ≥ 7 pt effective |
+| camera-ready preview (layout of record) | `paper-kbs/tex/journal_20p/main_20p.tex` | `[final,5p,times,twocolumn]` | **24** | all `_postcheck.ps1` gates pass: 0 overfull, 0 undefined, every float cited, figures ≥ 7 pt effective |
 | review format (Elsevier double-spaced) | `paper-kbs/tex/journal_20p/main_20p_review.tex` | `[review,12pt]` | **69** | 0 errors; 0 "Overfull \hbox" warnings in the current build. The wide float tables remain legible; see the file header |
 
 Rebuild commands:
@@ -24,14 +81,15 @@ pdflatex -jobname=main_20p_review main_20p_review.tex   # twice
 
 ## Measured content
 
-- words: **17{,}753** total, **15{,}654** excluding the reference list
-  (`pymupdf` token count on the 2026-10-18 build, after the 2026-10-17
-  restructure and the management-function / functional-check tables)
+- words: **18,734** total, **16,960** excluding the reference list
+  (`pymupdf` token count on the 2026-11-11 build, after the HMRS restructure
+  and the management-level / functional-check tables)
 - references: 54 entries (`refs.bib` 35 + `refs_new_verified.bib` 19)
-- floats: 8 figures, 7 body tables; 5 further tables moved to the supplement on
+- floats: 8 figures, 8 body tables (the level-to-evidence ladder `tab:levels`
+  was added on 2026-11-11); 5 further tables moved to the supplement on
   2026-10-16 (Part D, Tables S1-S5); Figure 10 was removed on 2026-10-17
   because Table 5 carries the same six methods
-- abstract 246 words; highlights 5 × ≤ 85 characters
+- abstract 256 words; highlights 5 × ≤ 85 characters
 
 ## What the numbers mean
 

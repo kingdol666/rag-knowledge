@@ -1,4 +1,4 @@
-# KBS 投稿评审报告 — QDCVR 系统论文（2026-10-12）
+# KBS 投稿评审报告 — HMRS 系统论文（2026-10-12）
 
 评审对象：`paper-kbs/tex/main2.tex`（elsarticle `[preprint,12pt]`），四个构建：
 preprint 80 页 / journal 双栏 37 页 / review 双倍行距 115 页 / 扁平投稿包 80 页；
@@ -26,7 +26,7 @@ Devil's Advocate（致命缺陷）。每条结论均由主 Agent 独立复核（
 1. **结论的核心主张被自己的表推翻。** `n11_conclusion.tex:18-21` 写
    "Staged, multi-channel retrieval with content adjudication reaches documents that
    one-shot vector top-$k$ misses"，而 `n8b_eval.tex:85-91` 的九配置表里
-   BM25 1.00 / RRF 1.00 / Dense 0.94 / QDCVR-Hybrid（judged）0.44，
+   BM25 1.00 / RRF 1.00 / Dense 0.94 / HMRS-Hybrid（judged）0.44，
    且 `n8b_eval.tex:259-260` 自己写着 "Nothing here is a retrieval advance"。
    摘要、RQ3 行、结论三处同句，无法作为单段笔误解释。
 2. **两个被设计章论证的机制在配对消融中都是零效应。** 内容门：10 题中 9 题两臂收到

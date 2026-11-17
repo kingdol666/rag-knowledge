@@ -12,7 +12,7 @@ RES = HERE / "results"
 
 rows = json.loads((RES / "exp1_retrieval.json").read_text(encoding="utf-8"))["rows"]
 methods = ["bm25", "dense", "rrf", "graph", "twostage", "fusion_only",
-           "qdcvr_hybrid"]
+           "hmrs_hybrid"]
 
 print("== Table 3 (16 questions) ==")
 for m in methods:
@@ -30,10 +30,10 @@ for m in methods:
               if r.get("method") == m and "error" not in r and not r["hit@5"]]
     print(f"{m:<14} {misses}")
 
-print("\n== judge inflation (qdcvr_hybrid rows) ==")
+print("\n== judge inflation (hmrs_hybrid rows) ==")
 gold, nongold = [], []
 for r in rows:
-    if r.get("method") != "qdcvr_hybrid" or "judge_scores" not in r:
+    if r.get("method") != "hmrs_hybrid" or "judge_scores" not in r:
         continue
     gold += r["judge_scores"]["gold"]
     for p, sc in r["judge_scores"]["all"].items():
@@ -57,7 +57,7 @@ except ImportError:
 print("\n== threshold/cut behaviour ==")
 n_runs = n_kept = n_dropped = 0
 for r in rows:
-    if r.get("method") != "qdcvr_hybrid" or "judge_scores" not in r:
+    if r.get("method") != "hmrs_hybrid" or "judge_scores" not in r:
         continue
     n_runs += 1
     n_kept += len(r["judge_scores"]["all"])

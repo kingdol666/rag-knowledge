@@ -45,7 +45,7 @@ n8a_eval.tex:91  \textbf{Lifecycle operations.} Table~\ref{tab:org-ops} lists th
 n_appendix_tables.tex:122  \label{tab:org-ops}
 
 === aux label check ===
-\newlabel{tab:appendixranks}{{A.1}{62}{Per-question best gold rank (top-5 window; `--' = gold absent) for the seven tool-layer pipelines (logged runs) and the two derived configurations (offline replay of the same logged QDCVR-Hybrid pools as Fig.~\ref {fig:marginvariants}). Fusion = fusion-only (no judge); Hybrid = the shipped QDCVR-Hybrid judged ordering; Filter = judge-as-filter. Question numbers and texts: Table~\ref {tab:questions}}{table.caption.32}{}}
+\newlabel{tab:appendixranks}{{A.1}{62}{Per-question best gold rank (top-5 window; `--' = gold absent) for the seven tool-layer pipelines (logged runs) and the two derived configurations (offline replay of the same logged HMRS-Hybrid pools as Fig.~\ref {fig:marginvariants}). Fusion = fusion-only (no judge); Hybrid = the shipped HMRS-Hybrid judged ordering; Filter = judge-as-filter. Question numbers and texts: Table~\ref {tab:questions}}{table.caption.32}{}}
 \newlabel{tab:org-ops}{{B.5}{65}{Lifecycle operations exercised on disposable test libraries. Merge and split were analysed but never executed}{table.caption.36}{}}
 
 === multiply defined labels in build log ===
@@ -935,7 +935,7 @@ Let me peek at it.
 
 
 [assistant]
-Excellent — this artifact confirms: **n_docs = 79** (retrievable papers) and shows **nine configuration lanes per question**: bm25, dense, rrf, graph, twostage, fusion_only, judged, filter_only — that's 8 keys, plus the hybrid (hybrid_latency_s) = 9 configurations. This is the "nine configurations" of Table 5! So the definitions are: BM25, Dense, RRF, Graph, Two-stage, Fusion-only, Judged (QDCVR-Hybrid), Filter, and Hybrid(lane C). 
+Excellent — this artifact confirms: **n_docs = 79** (retrievable papers) and shows **nine configuration lanes per question**: bm25, dense, rrf, graph, twostage, fusion_only, judged, filter_only — that's 8 keys, plus the hybrid (hybrid_latency_s) = 9 configurations. This is the "nine configurations" of Table 5! So the definitions are: BM25, Dense, RRF, Graph, Two-stage, Fusion-only, Judged (HMRS-Hybrid), Filter, and Hybrid(lane C). 
 
 This also confirms the auditor's edit #3: the nine configurations need definitions in the paper.
 

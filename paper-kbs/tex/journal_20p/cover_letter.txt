@@ -1,0 +1,46 @@
+Dear Editors of Knowledge-Based Systems,
+
+We submit our manuscript "HMRS: A hierarchical management-and-retrieval
+system for tiered knowledge document organisation and evidence-traced
+access" for consideration as a research paper.
+
+Retrieval-augmented pipelines usually assume that a corpus is already
+indexed and governed. In practice, parsed documents drift: placements
+change, indexes go stale, and answers lose the link to their sources. Our
+manuscript studies the missing half — management — as a first-class system
+concern. HMRS manages collections, documents and segments as explicit
+objects and serves catalogue-first access through one auditable state,
+with an optional evidence gate that admits scored passages without
+claiming entailment.
+
+We believe the work fits Knowledge-Based Systems because it is a
+knowledge-document management system contribution: it reports the design,
+an MCP-based implementation, and a bounded, artifact-anchored evaluation
+rather than a new ranking algorithm. Three evidence lines carry the
+claims. First, management and lifecycle audits (three-source consistency,
+rename and re-index failure modes, cross-language assignment) establish
+that the state is inspectable and repairable, including where it fails.
+Second, on a 72-question routing corpus, the tiered chunk-window
+configuration held the highest exact gold-string containment in three
+recorded executions (52/72 frozen; 51/72 in a reproduction and a
+same-question follow-up), with paired contrasts of 15-0 and 12-0 against
+the tiered baseline; the navigation-free comparison remains statistically
+unresolved and is reported as such. Third, at the answer layer, gold
+identifiers appeared in every recorded cell while document-style citation
+markers separated document-level organisation from a flat chunk replica
+(9/10 versus 2/10; 10/10 after repair) — a lexical contrast we explicitly
+do not read as semantic quality. A same-pool replay additionally shows why
+verifier scores must not be used for ordering.
+
+All statements are traceable to frozen archives; limitations, exploratory
+statistics and non-independent follow-up are disclosed in the manuscript.
+The work is original, not under consideration elsewhere, and all authors
+have approved the submission. We declare no competing interests; funding
+and data availability are stated in the manuscript. Generative-AI use for
+experiment execution, tabulation, language editing and initial figure
+design is declared before the references.
+
+Thank you for your consideration.
+
+Sincerely,
+The authors

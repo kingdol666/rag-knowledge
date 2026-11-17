@@ -1,0 +1,156 @@
+%% n8c_eval.tex — E6 answer behaviour/abstention/cost, E7 deployment arms,
+%% E8 verifier failure, E9 operational boundaries.
+%% Every figure is attributed to its artefact; corpora are never mixed.
+%% LABEL MAP (2026-11-13 renumbering; labels are historical, titles current):
+%%   sec:e5 -> E6 | sec:sysarms -> E7 | sec:e6 -> E8 | sec:e7 -> E9 (merges former E7+E8)
+%%   (in n8a: sec:routing-audit -> E3; in n8b: sec:e3 -> E4, sec:ladder-opt -> E5)
+
+\subsection{E6: Answer and trace checks, abstention and cost}
+\label{sec:e5}
+\label{sec:agentic}\label{sec:abstention}\label{sec:composition}\label{sec:eval-agent}
+Two ten-question grids compare a platform agent (P), direct file tools (F)
+and a chunk-replica arm (C) that searches an 800-character chunk copy of the
+same content through the platform's own vector lane---a same-content,
+flat-chunk substrate control for the document-level organisation. The original
+grid uses different substrates; the
+later grid pins the same five libraries. Gold-ID presence, strict and
+alias-aware keyword coverage, and citation markers are deterministic checks,
+not assessments of semantic support. A marker does not establish that a cited
+passage exists or entails the answer.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\caption{Answer and trace proxy checks in the original 30-cell grid
+(\protect\path{run-20261013T094350Z-5f9faac}). Each arm shows strict (s)
+and alias-aware (a) keyword coverage and recognised citation-marker counts (m).
+Strict coverage uses a majority rule. The gold identifier occurred in the
+answer or trace in all ten cells of each arm; this check is omitted from the
+table. Markers do not establish source existence or support. The common-substrate
+replication is reported in the text.}
+\label{tab:e5-answers}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.335\textwidth}l*{9}{c}@{}}
+\toprule
+ & & & \multicolumn{3}{c}{Platform (P)} & \multicolumn{3}{c}{File tools (F)} & \multicolumn{3}{c}{Chunk replica (C)}\\
+\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-12}
+Q & Question (abridged) & Gold & s & a & m & s & a & m & s & a & m\\
+\midrule
+BQ01 & Transformer attention; why recurrence is replaced & 1706.03762 & \yes & \yes & 6 & \yes & \yes & 0 & \yes & \yes & 5\\
+BQ02 & NISQ definition and its central limitation & 1801.00862 & \yes & \yes & 4 & \yes & \yes & 3 & \yes & \yes & 0\\
+BQ03 & MultiMedQA and Flan-PaLM on MedQA & 2212.13138 & \yes & \yes & 4 & \yes & \yes & 1 & \yes & \yes & 1\\
+BQ04 & Three ontologies subdividing the Gene Ontology & 1602.01876 & \yes & \yes & 1 & \yes & \yes & 1 & \yes & \yes & 0\\
+BQ05 & European growth versus Unified Growth Theory & 1512.08067 & \yes & \yes & 0 & \yes & \yes & 0 & \yes & \yes & 0\\
+BQ06 & Contributions governing precipitation extremes & 1503.07557 & $\times$ & \yes & 6 & \yes & \yes & 4 & \yes & \yes & 0\\
+BQ07 & MameLoshnLM and its parameter scale & 2608.05850 & \yes & \yes & 1 & \yes & \yes & 2 & \yes & \yes & 0\\
+BQ08 & Oxygen redox and cathode capacity & 2408.09942 & \yes & \yes & 2 & \yes & \yes & 0 & \yes & \yes & 0\\
+BQ09 & Visual SLAM in dynamic scenes (MLP-SLAM) & 2410.10669 & \yes & \yes & 2 & $\times$ & \yes & 6 & \yes & \yes & 0\\
+BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes & \yes & 6 & $\times$ & \yes & 0\\
+\midrule
+ & \emph{All ten questions} & & 9 & 10 & 29 & 9 & 10 & 23 & 9 & 10 & 6\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+In each arm the answer or recorded trace contained a gold identifier in all
+ten cells in both grids. In the
+original grid strict keyword coverage was 9/10 for each arm, alias-aware
+coverage 10/10, and marker-bearing answers 9/10, 7/10 and 2/10 for P, F and
+C (Table~\ref{tab:e5-answers}; Fig.~S2 shows the grid's aggregate). Under the common substrate these marker
+counts were 9/10 for each arm; strict coverage was 7/10, 7/10 and 8/10,
+respectively. The substrate difference prevents attributing the marker gap to
+an interface alone. Original-grid mean time and cost were 52.6 s and $\$0.711$
+for P, 22.2 s and $\$0.487$ for F, and 24.5 s and $\$0.527$ for C; these are
+single-run observations. The detailed source-presence audit appears in
+Tables~S7--S8 and is not an entailment test.
+
+\textbf{Answer-level case study.} A separate recorded demonstration parsed and
+ingested a DeepSeek-R1 paper, then used two agent harnesses on the same four
+questions. The case compendium reports eight responses checked against the
+source on answer content, document provenance, quoted material and fabricated
+facts; all eight passed that case review. This is a small, non-blinded case
+study, not an independent benchmark of semantic answer accuracy (Table S14). On the
+question asking for electricity cost, both responses said that the paper did
+not provide an electricity figure and distinguished the reported $\$294$K
+GPU-rental-based training-cost estimate. This is an observed refusal to infer
+the requested absent value, not a general abstention guarantee. Three further
+industrial-corpus probes returned not-found; the retrieval threshold retained
+candidates in related absent probes (Fig.~S3).
+
+\subsection{E7: Deployment-layer system arms and honesty contracts}
+\label{sec:sysarms}
+Three questions crossed pinned, unpinned and pinned hybrid-directed API arms.
+The pinned arms returned the two in-corpus gold identifiers, and all three
+reported not-found for the out-of-corpus probe. In one unpinned setting, a
+131-document, 74.9 KB catalogue exceeded the tool-output budget; a truncated
+preview led to false refusal or a hang. After pagination and grouped views were
+added, selected reruns completed, including the formerly failing query. These
+observations do not establish general transport reliability. An eighteen-arm
+honesty battery observed no fabricated citations in its final responses;
+interrupted arms were rerun and each arm has one final observation.
+
+\subsection{E8: When the verifier fails}
+\label{sec:e6}
+\label{sec:inflation}\label{sec:eval-verify}
+The 191 recorded candidate scores from 16 hybrid runs include 17 in-pool
+golds and 174 non-golds. All exceed the 0.5 threshold; an additional Q14
+candidate has no recorded score. Gold and non-gold medians were 0.88 and
+0.86 (Figure~\ref{fig:inflation}). The candidate-level Mann--Whitney test
+ignores clustering by query, so its $p$ value is exploratory. Re-ranking on
+these scores reduced Hit@5 to 7/16 versus 15/16 when recorded survivors
+retained fusion order; a Q2 example appears in Fig.~S5.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{fig4_inflation}
+\caption{Recorded Laya scores for 191 candidates from sixteen hybrid runs:
+17 in-pool golds and 174 non-golds. All recorded values exceed the dashed
+0.5 threshold; one additional Q14 fusion candidate has no recorded score and
+its status is unknown. A two-sided Mann--Whitney test found no statistically
+significant difference between the groups ($p=0.26$; exploratory, as it
+ignores clustering by query); their medians are 0.88
+and 0.86, respectively. Horizontal
+jitter is for legibility.}
+\label{fig:inflation}
+\end{figure}
+
+
+A replay of the same pairs with an NLI checkpoint produced Hit@5 0.3125; a
+span-level replay produced 0.1875. These results neither isolate truncation
+nor prove the cause of verifier failure. The arXiv corpus did not show the
+same top-five collapse; domain, language and corpus size changed together.
+No answer-level test validates a higher filtering threshold; supplementary
+Table~S6 sweeps the recorded scores and Fig.~S4 replays relative-margin
+variants of the same pools.
+
+\subsection{E9: Operational boundaries: stability, concurrency, gate and
+scope ablations}
+\label{sec:e7}
+A 27-cell stability campaign completed without recorded answer errors across
+three tasks, three lanes and three rounds. On one instance, a concurrency
+sweep of 90/180/270 requests at 5/15/30 clients raised median latency from
+5.2 to 1577 ms; 111 of 270 requests timed out at 30 clients. A later cache
+repair lowered selected 30-client read-ladder median latency to 65.8 ms, but
+the full sweep was not repeated. These are single-instance measurements;
+raw concurrent-write counts and crash-recovery evidence were unavailable.
+
+A reconstructed fixed-candidate gate comparison used ten questions, a
+12-candidate cap and a 4,000-character pack. All three arms packed the gold
+first for eight gold-answerable questions; for nine of ten questions the
+filtered and unfiltered document sets matched. LLM grades still varied under
+identical packs (including $0\to5$ and $3\to0$); these observations do not
+establish an answer-quality benefit from gating. The two non-gold questions
+were abstained on in every arm. In the separate four out-of-domain routing
+probes, the judge-survivor lists were empty in 2/4 A0 and 0/4 A0h cases.
+Both A0 empty cases lacked a top candidate; these are neither verified gate
+rejections nor answer-level refusal rates.
+
+The scope diagnostic on the arXiv question set supplied the gold library to a
+pinned condition, yielding Hit@5 1.0; a deliberately wrong library yielded
+0.0. The unscoped search covered 20 live libraries, including 15 outside the
+five-library evaluation corpus, and is not a matched-scope comparison. The
+catalogue route selected the correct library first for six of eight
+answerable questions; file names carried domain prefixes. These small,
+single-engine experiments do not establish an independent effect of content
+placement or an overall system advantage.

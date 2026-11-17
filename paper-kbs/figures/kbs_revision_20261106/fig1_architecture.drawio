@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" modified="2026-11-06T07:42:32+00:00" agent="Codex" version="24.7.17" type="device">
+  <diagram id="architecture" name="Architecture">
+    <mxGraphModel dx="1320" dy="660" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1320" pageHeight="660" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="QDCVR deployment architecture" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#20262E;fontSize=25;fontFamily=Arial;fontStyle=1;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="28" y="16" width="1000" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Web, agent, parsing and retrieval services share one auditable knowledge state" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#46515C;fontSize=18;fontFamily=Arial;fontStyle=0;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="54" width="1260" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="interface_band" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAFBFC;strokeColor=#D5DDE5;strokeWidth=1.0;" vertex="1" parent="1">
+          <mxGeometry x="24" y="94" width="1272" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="interface_label" value="ENTRY POINTS" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#0072B2;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="99" width="190" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="browser" value="Browser / Web UI" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#E8F1F8;strokeColor=#0072B2;strokeWidth=1.4;fontColor=#20262E;fontSize=20;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="205" y="108" width="265" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="agent" value="Agent / CLI" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#F2EDF5;strokeColor=#7A5C93;strokeWidth=1.4;fontColor=#20262E;fontSize=20;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="108" width="220" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="service_band" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5DDE5;strokeWidth=1.0;" vertex="1" parent="1">
+          <mxGeometry x="24" y="190" width="1272" height="154" as="geometry" />
+        </mxCell>
+        <mxCell id="service_label" value="SERVICE BOUNDARIES" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#009E73;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="196" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="nuxt" value="Nuxt 3 server&#10;proxy · catalog · file operations" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#E8F1F8;strokeColor=#0072B2;strokeWidth=1.4;fontColor=#20262E;fontSize=19;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="205" y="240" width="265" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="fastapi" value="FastAPI parse API&#10;asynchronous parse tasks" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#EAF4EF;strokeColor=#009E73;strokeWidth=1.4;fontColor=#20262E;fontSize=19;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="520" y="240" width="230" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="mineru" value="Managed MinerU worker&#10;separate process · dynamic port" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#EAF4EF;strokeColor=#009E73;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="800" y="240" width="230" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="mcp" value="MCP server · 95 tools&#10;stdio · HTTP · files" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#F2EDF5;strokeColor=#7A5C93;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="240" width="220" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="browser_to_nuxt" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0072B2;strokeWidth=1.6;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="browser" target="nuxt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="agent_to_mcp" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7A5C93;strokeWidth=1.6;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="agent" target="mcp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nuxt_to_fastapi" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#009E73;strokeWidth=1.6;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="nuxt" target="fastapi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fastapi_to_mineru" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#009E73;strokeWidth=1.6;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fastapi" target="mineru">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="module_band" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FAFBFC;strokeColor=#D5DDE5;strokeWidth=1.0;" vertex="1" parent="1">
+          <mxGeometry x="24" y="356" width="1272" height="102" as="geometry" />
+        </mxCell>
+        <mxCell id="module_label" value="PLATFORM FUNCTIONS" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#7A5C93;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="361" width="245" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="ingest" value="Ingestion · quality · split · enrich" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#EAF4EF;strokeColor=#009E73;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="205" y="397" width="265" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="lifecycle" value="KB catalog · lifecycle&#10;audits" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#FBF2DF;strokeColor=#E69F00;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="510" y="397" width="255" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="search" value="BM25 · vector · two-stage · graph" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#E8F1F8;strokeColor=#0072B2;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="800" y="397" width="230" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="gate" value="Optional Laya gate · segment score" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#FAECE8;strokeColor=#D55E00;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="397" width="220" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="state_band" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5DDE5;strokeWidth=1.0;" vertex="1" parent="1">
+          <mxGeometry x="24" y="472" width="1272" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="state_label" value="SHARED KNOWLEDGE STATE" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#7A5C93;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="479" width="315" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="docstore" value="Document files&#10;Markdown · extracted assets" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#F2EDF5;strokeColor=#7A5C93;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="205" y="526" width="265" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="registry" value="Registries&#10;.tree-fs.json · per-KB YAML" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#F2EDF5;strokeColor=#7A5C93;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="510" y="526" width="255" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="indices" value="Search indices&#10;Chroma vectors · BM25" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#F2EDF5;strokeColor=#7A5C93;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="800" y="526" width="230" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="graph" value="Knowledge graph&#10;Neo4j · navigation" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#F2EDF5;strokeColor=#7A5C93;strokeWidth=1.4;fontColor=#20262E;fontSize=18;fontFamily=Arial;fontStyle=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="526" width="220" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="mcp_to_gate" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7A5C93;strokeWidth=1.6;endArrow=block;endFill=1;dashed=1;dashPattern=5 4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="mcp" target="gate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ingest_to_files" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#009E73;strokeWidth=1.6;endArrow=block;endFill=1;dashed=1;dashPattern=5 4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="ingest" target="docstore">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lifecycle_to_registry" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E69F00;strokeWidth=1.6;endArrow=block;endFill=1;dashed=1;dashPattern=5 4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="lifecycle" target="registry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="search_to_indices" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0072B2;strokeWidth=1.6;endArrow=block;endFill=1;dashed=1;dashPattern=5 4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="search" target="indices">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="search_to_graph" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0072B2;strokeWidth=1.6;endArrow=block;endFill=1;dashed=1;dashPattern=5 4;exitX=0.85;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="search" target="graph">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" value="Saving, indexing and evidence judging are separate operations; the gate is an optional tool call." style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontColor=#46515C;fontSize=18;fontFamily=Arial;fontStyle=0;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="626" width="1210" height="24" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

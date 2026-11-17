@@ -61,7 +61,7 @@ the sentence ending "the 0.5 threshold never fired as a refusal".
 ## 5. Story line (the core of the request)
 
 - **`n1_intro.tex`** — the gap and the contributions were rewritten. New gap sentence: "No single stage owns the property the user actually needs---that the sentence being cited is supported by the document being cited---and so no stage is accountable for it." The three contracts are now a displayed `enumerate` with **named** items: *Content governs placement*, *Content governs admission*, *Absence is reported*. Contributions re-titled to lead with novelty.
-- **`n2_related.tex`** — added `\subsection{Research gap}` (`sec:gap`) stating explicitly what is not a system today, and a new full-width `table*` `tab:positioning` (Strand / Representative work / What it optimizes / What it leaves to the deployment) with a final `QDCVR (this work)` row. Every cell is derived from citations already in the section; **no new reference was invented**. Column spec uses `>{\raggedright\arraybackslash}p{...}` to stop hyphenation of "Knowl-edge man-agement".
+- **`n2_related.tex`** — added `\subsection{Research gap}` (`sec:gap`) stating explicitly what is not a system today, and a new full-width `table*` `tab:positioning` (Strand / Representative work / What it optimizes / What it leaves to the deployment) with a final `HMRS (this work)` row. Every cell is derived from citations already in the section; **no new reference was invented**. Column spec uses `>{\raggedright\arraybackslash}p{...}` to stop hyphenation of "Knowl-edge man-agement".
 - **`n3_overview.tex`** — "Requirements and principles" replaced by `\subsection{Design principles: three enforceable contracts}`, naming the organising idea ("content, not metadata and not rank, is the governing object at every boundary a stored document crosses") and giving each contract's *Mechanism* and *Check*. The architecture subsection now says where the three contracts sit on the path.
 - **`highlights.tex`** — "Today's tests separate…" (a deictic unfit for print) became "Deployment tests separate document recall from answer-level citation behavior" (77 chars, inside the 85-char ceiling).
 
@@ -77,17 +77,17 @@ The stale `main_20p.pdf` is locked by an external process (a PDF viewer), so the
 build uses a separate jobname. From `paper-kbs/tex/journal_20p/`:
 
 ```
-pdflatex -interaction=nonstopmode -jobname=qdcvr_kbs main_20p.tex
-bibtex qdcvr_kbs
-pdflatex -interaction=nonstopmode -jobname=qdcvr_kbs main_20p.tex
-pdflatex -interaction=nonstopmode -jobname=qdcvr_kbs main_20p.tex
+pdflatex -interaction=nonstopmode -jobname=hmrs_kbs main_20p.tex
+bibtex hmrs_kbs
+pdflatex -interaction=nonstopmode -jobname=hmrs_kbs main_20p.tex
+pdflatex -interaction=nonstopmode -jobname=hmrs_kbs main_20p.tex
 ```
 
 Do **not** use `-halt-on-error` while diagnosing: it aborts at the first error.
 Toolchain: `C:\texlive\2025\bin\windows\{pdflatex,bibtex,pdftoppm,pdftotext}.exe`.
 
 Final build: **22 pages, 0 Overfull \hbox, 0 undefined references, 0 undefined
-citations, 0 LaTeX errors.** `qdcvr_kbs.pdf` is the build;
+citations, 0 LaTeX errors.** `hmrs_kbs.pdf` is the build;
 `final_20p.pdf` is a byte-identical copy under the older name. The stale
 `main_20p.pdf` (821,299 B, 2026-10-13 18:01) could not be overwritten because it
 is held open by a PDF viewer — close the viewer and re-run to restore the
@@ -144,7 +144,7 @@ Still open, in priority order:
   248-word abstract that contains both, and assigns Methods and Results to the
   same sentence. The word-limit check passes.
 - `optimize_title.py` moved from 85/100 to 90/100 after the title was expanded;
-  its one remaining note is the `QDCVR:` acronym, which is the system's name.
+  its one remaining note is the `HMRS:` acronym, which is the system's name.
 
 ## 9. Open items (cannot be automated)
 

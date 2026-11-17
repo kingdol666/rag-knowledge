@@ -1,0 +1,103 @@
+\section{Evaluation}
+\label{sec:eval}
+We evaluate the management lifecycle and retrieval on separate corpora. E1--E3
+cover ingestion, organisation, scripted routing and experience; E4 and
+Section~\ref{sec:ladder-opt} compare retrieval configurations; E5--E8 examine
+answer behaviour, deployment, verification and operational boundaries. Results
+are reported per corpus, without pooling. Table~S9 maps management functions
+to tests; Table~\ref{tab:retrieval} and Table~\ref{tab:e5-answers} report
+retrieval and answer checks.
+
+\subsection{Experimental setup}
+\label{sec:eval-setup}
+\textbf{Corpora and questions.} The industrial demonstration corpus contains
+42 documents in five libraries, including twenty near-duplicate telemetry
+reports, and 16 developer-authored questions with gold document fragments; Q16
+shares a token with its gold filename. The arXiv campaign submitted 100 papers
+across about 25 domains, producing 322 stored parts in five libraries; 79 were
+retrievable at the 2026-10-13 snapshot. Its ten gold questions are keyed by
+arXiv identifiers. The cross-lingual ingestion corpus has 400 Wikipedia pages
+per language (English, Chinese and Japanese) and 40 extractive queries per
+language; its index self-check is not a task-level retrieval comparison. A
+separate routing corpus has 138 documents in 879 parts across ten domains,
+72 in-domain questions and four out-of-domain probes per arm; two
+cross-placeholder probes are excluded. Questions and annotations are
+researcher-authored, not sampled user queries.
+
+\textbf{Measures and controls.} Document-level Hit@5, Recall@5 and MRR@5
+measure the returned top five, with MRR zero if no gold is in that window
+\cite{craswell-msmarco-2021}. Scripted route accuracy checks the gold-domain
+label, whereas gold-string containment checks an exact substring in the
+returned evidence; neither measures semantic answer correctness. The answer
+grid measures gold-ID presence in answer or trace, lexical coverage of at
+least $\lceil3n/5\rceil$ annotated terms, and citation-marker presence;
+markers do not verify source resolution or entailment. Wilson intervals are
+conditional on questions and a run; exact McNemar tests are exploratory and
+unadjusted. Agent arms use one model and one run per condition; retries after
+transport failures are not independent repeats. Two corpus-integrity defects
+were repaired before measurement, so their natural failure rate is unknown.
+Table~S10 summarises the experimental design and headline results.
+
+\subsection{E1: Acquisition and parsing}
+\label{sec:e1}
+The 100-paper campaign recorded 322 parts. At the evaluation snapshot 91
+paper names appeared in the ingest state and 79 papers were retrievable:
+12 recorded and nine unrecorded papers were not retrievable. The records do
+not establish individual parse status or the stage causing each failure. In
+the cross-lingual benchmark ingestion succeeded in both rounds, and
+membership against source-category labels was 0.875 for English and 1.0 for
+Chinese and Japanese; the post-ingest Hit@1 is an index self-check, not a
+retrieval benchmark. A separate 50-paper, 26-domain campaign parsed and
+verified all papers, but 41 negative tag flags did not block ingestion.
+
+\subsection{E2: Organisation, consistency, and management operations}
+\label{sec:e2}
+A disposable-library rename left stale chunks in the vector index: 18 instead
+of nine, with duplicate results; forced re-index restored nine. The 322-part
+campaign passed its content check on all parts and three-source checks on a
+33-part sample. A disposable three-level fixture supported parent-to-child
+moves, listing, reading and judging. Of 16 lifecycle scenarios, create, move,
+delete and forced re-index passed, while task-status reporting and the update
+check failed; merge and split were not controlled. Tag checking passed 165
+parts, while orphan tags and one cross-library registry leak were observed.
+The graph supplies navigation rather than evidentiary support.
+
+\subsection{E2b: Paired route-card audit}
+\label{sec:routing-audit}
+A scripted route-card probe returned the labelled domain for 72/72 in-domain
+questions in A0 and 37/72 in nominally name-only A3; 35 routes were correct
+only in A0 (Figure~\ref{fig:routing}). This is not an independent LLM-agent
+selection test. Although the A3 indexed cards excluded descriptions, an
+unlogged fallback could read them; some questions share titles with route-card
+descriptions. The difference therefore does not isolate the effect of
+removing descriptions. Of the 72 questions, 52 were automatically expanded
+and 47 came from three domains, limiting generality.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig3_routing}
+\caption{Paired scripted route audit (72 in-domain questions). (a) Gold-domain
+choice: A0 72/72, A3 37/72 (Wilson 95\% intervals; McNemar
+$p=5.82\times10^{-11}$). (b) Exact-string containment: A0/A3 Laya evidence
+packs and A1 concatenated text from all 879 parts (37/72, 33/72, 72/72; Wilson
+intervals; paired $p=0.4545$ for A0--A3 and $p=5.82\times10^{-11}$ for
+A1--A0). (c) Trace-recorded text bytes on a symmetric-log axis linear through
+1 KB, including 11 zero-byte A3 cases; (d) tool wall-clock on a log axis.
+Boxes show IQR, whiskers 5th--95th percentiles, dots questions and diamonds
+means. A0/A3 bytes sum candidate-snippet and evidence-pack text (possible
+overlap); A1 sums document-read responses. Tool time excludes answer
+generation. A1 is a script, not an answering agent; the A3 fallback is
+unlogged. These are routing, substring and tool-cost diagnostics, not answer
+quality or an isolated description effect.}
+\label{fig:routing}
+\end{figure*}
+
+
+Evidence-pack containment was 37/72 for A0 and 33/72 for A3. A mechanical
+read-all script found all 72 strings after reading 879 parts; it produced no
+answers. It averaged 24.3 MB and 253.7 s across 897 calls per question, versus
+31.4 KB and 16.3 s for A0. Recorded bytes may include overlapping text and are
+neither network traffic nor measured model input; tool time excludes answer
+generation. Read-all is a string-containment diagnostic, not a careful-reading
+agent or answer-quality baseline. The follow-up content configurations are
+reported in Section~\ref{sec:ladder-opt}.

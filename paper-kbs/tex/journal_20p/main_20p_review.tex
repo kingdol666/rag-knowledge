@@ -73,8 +73,8 @@
 
 \begin{frontmatter}
 
-\title{QDCVR: A content-governed knowledge-base management system with
-verified retrieval and reported absence}
+\title{HMRS: A hierarchical management retrieval system for tiered knowledge
+document organisation and verified access}
 
 \author[inst1]{Author Name\corref{cor1}}
 \ead{author@example.com}
@@ -85,15 +85,19 @@ City, Country}, city={City}, country={Country}}
 
 \begin{abstract}
 Document collections need more than a retriever: documents must be
-parsed and admitted, organized so that they can be found, and used to answer
-questions whose cited evidence can be traced. We present QDCVR, a self-hosted
-knowledge-base management system that treats content as the shared object
-across acquisition, organization and question answering. Its management layer
-parses and gates documents, splits long files, places
-documents by content rather than filename, and keeps files, registry and
+parsed and admitted, classified into the collections that own them, kept
+consistent through every later edit, and used to answer questions whose cited
+evidence can be traced. We present HMRS, a self-hosted knowledge document
+management system that treats the managed collection as the primary object of
+design. Documents are managed at three levels---collection, document and
+segment---and questions are served along a tiered access path that narrows
+from the catalogue of collections, through the shelf of document descriptions,
+to the segment that carries the evidence. Its management layer parses and
+gates documents, splits long files, assigns each document to a collection
+from its content rather than its filename, and keeps files, registry and
 metadata consistent through rename, move, delete and re-index. Retrieval is one
-module: three lanes share an invoked server-side content verifier, and an
-answer workflow is instructed to report absence.
+module of that path: three access policies share an invoked server-side content
+verifier, and an answer workflow is instructed to report absence.
 We evaluate the system on three corpora, one an industrial demonstration
 instance. Our evaluation method combines functional audits, per-question
 answer checks, abstention probes and same-pool replays.
@@ -112,8 +116,8 @@ not universal retrieval superiority.
 \end{abstract}
 
 \begin{keyword}
-Knowledge base management \sep Document ingestion \sep Content verification \sep
-Knowledge organization \sep Retrieval-augmented generation \sep
+Knowledge document management \sep Document classification \sep
+Hierarchical organisation \sep Tiered retrieval \sep Content verification \sep
 Model Context Protocol
 \end{keyword}
 

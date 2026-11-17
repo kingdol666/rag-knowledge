@@ -10,7 +10,7 @@ Methods (all invoked through the platform's real interfaces):
   graph         : MCP kb_graph_search (Neo4j keyword lookup over graph nodes).
   twostage      : MCP kb_search_two_stage (BM25+graph candidate pool -> dense refine).
   hybrid_nojudge: MCP kb_hybrid_search enable_judge=false (fusion + cut only).
-  qdcvr_hybrid  : MCP kb_hybrid_search enable_judge=true (full QDCVR pipeline).
+  hmrs_hybrid  : MCP kb_hybrid_search enable_judge=true (full HMRS pipeline).
 
 Output: results/exp1_retrieval.json + console table.
 """
@@ -184,7 +184,7 @@ def rank_hybrid(mc, query, enable_judge: bool):
 
 
 METHODS = ["bm25", "dense", "rrf", "graph", "twostage",
-           "fusion_only", "qdcvr_hybrid"]
+           "fusion_only", "hmrs_hybrid"]
 
 
 def main() -> int:

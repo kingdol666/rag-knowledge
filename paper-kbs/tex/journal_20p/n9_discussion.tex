@@ -1,79 +1,53 @@
 \section{Discussion and lessons learned}
 \label{sec:discussion}
 
-The first implication concerns what the answers are worth. On the fixed
-question set the workflow locates the right document in all 30 cells of both
-grids, and alias-aware keyword coverage stays at 9-10/10. Marker-bearing and
-strict-keyword counts are not stable across substrates: the number of
-marker-bearing answers, 9/7/2, becomes 9/9/9 when every arm reads the same
-libraries. Across
-paired cells, all five strict disagreements and all nine marker disagreements
-run in one direction, so the change is a substrate effect rather than run
-noise. The practical lesson is therefore narrower: judge the workflow on
-provenance and coverage, and report the substrate alongside any marker or
-keyword comparison. Retrieval recall alone is a weak criterion here, because every
-lexical baseline reaches it on the same corpus.
+The management evidence is the first result, not merely a precondition for the
+retrieval experiments. Across the acquisition and organisation campaigns, HMRS
+recorded 322 stored parts across five libraries, measured content-based
+assignment separately from retrieval, and exposed state disagreement after a
+rename and in selected lifecycle checks. The 79/21 arXiv availability result
+and the 0.875/1.0/1.0 cross-lingual assignment result come from different
+corpora and should be read as complementary evidence: the former identifies an
+incomplete ingestion boundary, while the latter tests content-based placement.
+The 33-part consistency sample and selected passing lifecycle checks show
+that the management loop is exercisable, not that it is transactionally
+complete. The failed task-status/update checks and stale-index rename are
+important system results because they show why reconciliation and post-operation
+probes are part of the design rather than optional diagnostics.
 
-The second implication concerns verifier placement, and it is the paper's main
-mechanical finding: holding the pool and scores fixed while the filter removes
-none of them locates the ordering failure. On identical logged
-pools, re-ranking by the verdict lowers Hit@5 from 0.94 under fusion-only to
-0.44. A derived replay that keeps the fusion order among scored survivors
-returns the fusion-only metrics, and rephrased questions separate the roles
-further: the judged configuration falls to 0.5 while both fusion-order
-variants hold at 0.9375. Because all 191 recorded scores exceed the 0.5
-threshold and one Q14 fused candidate has no recorded score, the comparison
-diagnoses the induced ordering, not a threshold-filter benefit. A second
-checkpoint and its span-level variant fail the same way on the same pools. The
-second corpus does not reproduce the collapse, so the strongest supported
-claim is that ranking by these checkpoints should not replace fusion order
-under the tested confuser density; whether confuser density itself is the
-cause remains an association, because the probe moved domain, language and
-corpus size together.
+The access results then show how managed state is consumed. The frozen route-card
+audit selected the gold collection in 72/72 full-card cases and 37/72 nominally
+name-only cases, but its fallback and scripted nature prevent a causal
+interpretation. In the latest complete R3 content-layer follow-up on the same
+questions, A0h, the tiered configuration with a chunk-window union, had the
+highest observed annotated target-string containment in returned evidence packs
+at 51/72 questions; a sibling-document occurrence may count. PD, A0f, A0/A1b and A2 contained it in
+45/72, 44/72, 39/72 and 25/72, respectively. A0h versus A0 was 12--0
+($p=0.00049$, exploratory and unadjusted). These are containment proxies, not
+semantic answers, and the configurations vary in more than navigation alone.
+The frozen read-all scan found every string but generated no answers, while the
+R3 read-all run was incomplete; this is why the mechanical upper bound is not a
+current Agent baseline. These observations describe the tested configuration
+on this corpus and question set; they do not establish a universal advantage of hierarchical
+retrieval.
 
-The third implication concerns abstention. Similarity can retrieve related
-material without answering a query. In this system, the answer workflow
-instructs the agent to report the searched scope and say not-found when its
-completed evidence review finds no support; the retrieval threshold never
-played that role, since the graded probes retained 10 to 12 of their 12
-candidates at every tier. The adversarial battery observed no fabricated
-citations in eighteen final arms, but one partial answer fell outside the
-binary grading scheme and each arm has a single final observation. Timeouts,
-unavailable tools and incomplete searches must be reported as execution
-failures, not conflated with semantic absence.
+The same-pool diagnostic illustrates how candidate-evidence ordering can matter
+in this setting. On identical logged pools from the retired hybrid wrapper,
+verifier-score ordering reproduced the Hit@5 collapse documented in
+Section~\ref{sec:e6}; all 191 recorded scores exceeded the configured
+threshold, so filtering did not activate and its benefit was not measured.
+This is a bounded warning about a particular ordering, not a finding about
+every verifier or current retrieval lane.
 
-The fourth implication concerns transport. A reproduced oversized-catalog
-response hid entries from the agent and led to a false refusal. Server-side
-budgets, grouped views and pagination repaired the selected tested paths on
-rerun. This supports the narrower point that transport limits can affect
-retrieval outcomes, and that the enforcement layer honesty requires has
-limits of its own.
-
-The five research questions close at different evidence levels. RQ1 is
-answered as an operational observation of the management layer, bounded by 21
-papers that never became retrievable and by the use of a filename-independent
-membership measurement rather than a per-document adjudication of placement.
-RQ2 is answered for one corpus, one model and one question family: every
-answer names its gold document, alias-aware coverage is 9-10/10, and the
-citation-syntax difference between interfaces does not survive a
-common-substrate replication; the checks are lexical and do not establish
-semantic support. RQ3 reports tool-layer recall separately from end-to-end
-source-marker checks; it does not claim similar recall in every interface or
-isolate the gate's causal effect. RQ4 is answered within one corpus, one
-checkpoint and one question family: on identical logged pools the tested
-answer is to keep fusion order, and the comparison does not validate threshold
-discrimination. RQ5 documents observed abstentions, turn-dominated latency and
-a transport failure/recovery, with no broad reliability or user-utility
-estimate.
-
-More broadly, parsers, registries, indices and answer workflows benefit from
-post-conditions that can be checked independently of success messages.
-Catalogues and graphs support navigation but are not themselves evidence, in
-keeping with provenance and auditability work in data systems
-\cite{missier-prov-2013,cheney-provenance-2009}. The results remain bounded by
-the tested corpora, developer-authored questions, one workstation and few
-end-to-end observations. Larger independent question sets, repeated agent
-trials, claim-level support assessments, a confuser-density-controlled
-verifier evaluation that holds corpus, language and question set fixed while
-varying near-duplicate density, operator studies of not-found reports and
-crash-recovery tests are needed before stronger deployment claims.
+The reported answer and refusal cases show selected workflow behaviour, not a
+reliable abstention rate. Pagination repaired selected oversized catalogue
+paths, but incomplete searches and tool failures remain distinct from a
+completed search without support. A late inspection also found that the global
+channel can silently skip unreadable library indexes while reporting success;
+until this is surfaced, a successful response is not evidence of complete
+cross-library coverage. The inspection identified eight affected collections;
+scoped search worked for the newly ingested example, but a probe on another
+affected library returned no results. Stronger claims need
+independent questions, controlled single-factor comparisons, repeated runs,
+semantic support review, and tests of operations and recovery beyond the
+present local setting.

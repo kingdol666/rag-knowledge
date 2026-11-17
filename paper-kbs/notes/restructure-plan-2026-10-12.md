@@ -1,4 +1,4 @@
-# 论文重构方案：由 QDCVR 检索论文 → 知识库管理系统设计论文
+# 论文重构方案：由 HMRS 检索论文 → 知识库管理系统设计论文
 
 > 目标期刊：**Knowledge-Based Systems (Elsevier, KBS)**
 > 依据：用户指令（m00002 / m00004）＋ `/academic-paper` skill Phase 0→2 产物
@@ -10,7 +10,7 @@
 
 用户原话（m00002，用户连发两次，m00004 同文）：
 
-> 「我的这个项目其实并不是单纯的讲解基于内容检索，而是创建了一个知识库管理系统，因此请你给我按照整个的系统的功能，做详细的讲解，把整个系统设计，架构，功能，全部讲述清楚，不是只讲述这个QDCVR，论文题目可以做一下修改，改为基于内容检索的知识库管理系统设计，然后可以根据当前的真实的项目设计把文章内容做一些修改，讲解整体的系统设计，而不是单纯讲解QDCVR，实验部分可以用QDCVR实验结果，并且要有其他的功能的测试结果，请根据我的需求把整篇文章重构！ /academic-paper 请你使用这个skill对论文做好架构编排，满足KBS期刊要求。」
+> 「我的这个项目其实并不是单纯的讲解基于内容检索，而是创建了一个知识库管理系统，因此请你给我按照整个的系统的功能，做详细的讲解，把整个系统设计，架构，功能，全部讲述清楚，不是只讲述这个HMRS，论文题目可以做一下修改，改为基于内容检索的知识库管理系统设计，然后可以根据当前的真实的项目设计把文章内容做一些修改，讲解整体的系统设计，而不是单纯讲解HMRS，实验部分可以用HMRS实验结果，并且要有其他的功能的测试结果，请根据我的需求把整篇文章重构！ /academic-paper 请你使用这个skill对论文做好架构编排，满足KBS期刊要求。」
 
 拆解为 6 条硬需求：
 
@@ -20,7 +20,7 @@
 | N2 | **讲清整个系统的设计、架构、功能** | §3–§7 五个设计/实现章节，系统功能表（表 1）逐模块交代 |
 | N3 | 论文题目改为**基于内容检索的知识库管理系统设计** | §A 配置记录给出中英标题候选 |
 | N4 | 按**真实项目**改写（不是泛泛而谈） | 所有设计描述绑定真实构件：MCP 工具名、`.tree-fs.json`/`.knowledge-base.yml`、MinerU、ChromaDB、Neo4j、medi tation、SOUL、ragctl |
-| N5 | 实验保留 **QDCVR 结果** ＋ **其他功能的测试结果** | §8 评估重构为 E1–E7 七组（QDCVR 仍是 E4/E5/E6），新增 E1 采集、E2 组织与一致性、E3 经验库与冥想、E7 非功能 |
+| N5 | 实验保留 **HMRS 结果** ＋ **其他功能的测试结果** | §8 评估重构为 E1–E7 七组（HMRS 仍是 E4/E5/E6），新增 E1 采集、E2 组织与一致性、E3 经验库与冥想、E7 非功能 |
 | N6 | 用 `/academic-paper` 做好**架构编排**，满足 **KBS** 要求 | 本文档 + KBS 合规检查表（§B） |
 
 ---
@@ -245,7 +245,7 @@
 
 - **语料**：`wikimedia/wikipedia 20231101`，经 datasets-server `/rows` 顺序采样，每语 400 页 × {en, zh, ja}；每语 40 道抽取式 cloze 题（年份 span → `____`，答案逐字取自正文），`{"qid":"mqa-<lang>-NNN", ...}`。指纹：corpus sha256_16 en `a73b0036d110ea38` / zh `7da277ed473e64dc` / ja `b6935e3bae573980`；queries `75b468dd5c7eae37` / `65f494e30eb0c36f` / `a5f9be94b660ad25`；采于 2026-09-12。文件：`benchmark-web/benchmark/data/benchmarks/crosslang-manifest-{en,zh,ja}.json`、`cloze-{en,zh,ja}-dev.jsonl`；采集脚本 `benchmark-web/benchmark/scripts/fetch_crosslang_corpus.py:153,178-185`。
 - **Module A（入库）——可用且强**：`ingest_success_rate` = **1.0 × 3 语 × 2 轮**（每语每轮 400 篇）；`membership_accuracy` en **0.875** / zh 1.0 / ja 1.0（n=400）；`storage_completeness_mean`（大文档分片求和）en 0.975 / zh 0.9559 / ja 0.9402（n_sampled 40）；`self_retrieval_hit1` en 0.975 / zh 1.0 / ja 1.0（n=40）；第 2 轮与第 1 轮**逐位一致**。出处 `benchmark-web/benchmark/results/benchmark/benchmark_ingestion_{en,zh,ja}_20260912T1300{04,24,41}Z.json`（第 1 轮）与 `..._20260912T1301{01,17,34}Z.json`（第 2 轮），键位 :7-11；分母实现 `benchmark-web/benchmark/scripts/benchmark_ingestion.py:254-255,264-272,279-284`。→ 这是"知识采集"章最硬的跨语言证据，且 en 的 0.875 归属准确率正好是需要诚实报告的组织类缺陷。
-- **Module B（检索）——数字自相矛盾且与主张相反，禁止引用**。待验臂 = `staged`（`meta.policy` = "QDCVR deterministic: status→kb_list→two_stage→thr0.35+dedup→doc_read×3"）；基线 = `vector`（`kb_search_vector` top-10，BGE-M3）——`benchmark_content_en_20260912T133147Z.json:1053-1057`。staged：recall@1/@5/@10 = 0.025/0.025/0.025（en，两轮）、0.0/0.0/0.0（zh）、0.225/0.275/0.275（ja）；nDCG@5 0.025/0.0/0.2515；MRR 0.025/0.0/0.2437；stage 命中分布 `{"miss":39,"stage1":1}`（en）/ `{"miss":40}`（zh）/ `{"miss":29,"stage1":9,"stage2":2}`（ja）；**stage3 从未出现，`verification_boost_delta_mean` 六次运行全为 0.0**。基线：recall@1 0.975/0.95/0.95、nDCG@5 0.8885/0.882/0.8853、MRR 0.975/0.9708/0.9708、hit 0.975/1/1、延迟 0.597/0.64/0.657 s（staged 4.216/4.12/4.104 s，工具调用 5.9/5.9/5.62）。
+- **Module B（检索）——数字自相矛盾且与主张相反，禁止引用**。待验臂 = `staged`（`meta.policy` = "HMRS deterministic: status→kb_list→two_stage→thr0.35+dedup→doc_read×3"）；基线 = `vector`（`kb_search_vector` top-10，BGE-M3）——`benchmark_content_en_20260912T133147Z.json:1053-1057`。staged：recall@1/@5/@10 = 0.025/0.025/0.025（en，两轮）、0.0/0.0/0.0（zh）、0.225/0.275/0.275（ja）；nDCG@5 0.025/0.0/0.2515；MRR 0.025/0.0/0.2437；stage 命中分布 `{"miss":39,"stage1":1}`（en）/ `{"miss":40}`（zh）/ `{"miss":29,"stage1":9,"stage2":2}`（ja）；**stage3 从未出现，`verification_boost_delta_mean` 六次运行全为 0.0**。基线：recall@1 0.975/0.95/0.95、nDCG@5 0.8885/0.882/0.8853、MRR 0.975/0.9708/0.9708、hit 0.975/1/1、延迟 0.597/0.64/0.657 s（staged 4.216/4.12/4.104 s，工具调用 5.9/5.9/5.62）。
   **不可用的四条理由**：① 度量实现不一致——基线 recall@5/@10 是**原始计数**（3.8、6.875、3.775、6.425、3.4、5.7）而 recall@1 是比率，同一臂出现 recall@5 < recall@1（`benchmark-web/benchmark/scripts/benchmark_content_mcp.py:71`）；② 另有两个 en 运行整体为死值（staged 与 baseline 全 0.0，`hit_dist {"miss":40}`）：`benchmark_content_en_20260912T132330Z.json`、`benchmark_content_en_20260912T132645Z.json`；③ 流水线在 502 处中断——`benchmark-web/benchmark/results/crosslang-final.log:36-74` 抛 `urllib.error.HTTPError: HTTP Error 502: Bad Gateway`（`benchmark_ingestion.py:339/332` → `reindex_kb:217` → `bench_http.py:105`），`final-run.log` 仅 18 行且停在 reindex 中途；④ 40 题里 39 题零命中、仅 1 题 stage1 命中，是**臂失效**的指纹而非管线测量值。
   → **写稿处置**：只用 Module A。不得把 Module B 跨语言数字当作支持**或**反驳；跨语言主张只能由 Module A + `paper-kbs` 单语实验支撑，并在 Threats 写明"跨语言检索战役中途中断，其部分数字不可解释"。修复重跑列为决策项 H-1。
 - **Module C（冥想）——零数据**：`benchmark-web/benchmark/results/benchmark/benchmark_meditation_en_r{1,2}.json` 不存在，该树内无任何 `*meditation*.json`；`run_success_rate`/`kb_coverage`/`structural_mean`/`grounded_ratio_mean`/`ablation_exp_hit3_mean`/`ablation_kb_top1_mean` 全部**无值**（脚本 `benchmark_meditation.py:164-180` 定义了键但从未产出）。`results/benchmark-report.html` 从未生成；`docs/BENCHMARK.md:10` 引用的 `docs/benchmark-audit-2026-09-12.md` 不存在。
@@ -313,7 +313,7 @@
 4. **Phase 5b 摘要**：重写英文摘要（≈250 词）＋中文摘要；关键词 6 个；`highlights.tex` 5 条 ≤85 字符。
 5. **Phase 6 自评**：以 `academic-paper-reviewer` 视角做一轮结构化自审（KBS 编辑视角 + 方法学 + 定位），最多 2 轮修订；Critical 问题必须清零。
 6. **Phase 7 排版**：`pdflatex → bibtex → pdflatex ×2`，零错误、零未解析引用；更新 `main.md` 预览与图版本；核对图表编号与交叉引用；生成投稿包清单（图独立文件、声明齐全）。
-7. **验收**：① 全篇无 QDCVR-only 叙事残留；② 每条系统功能都有构件名 + 证据编号；③ 每个 RQ 有对应证据组与消融；④ 所有数字可回溯到 JSON/日志路径；⑤ 无编造引用。
+7. **验收**：① 全篇无 HMRS-only 叙事残留；② 每条系统功能都有构件名 + 证据编号；③ 每个 RQ 有对应证据组与消融；④ 所有数字可回溯到 JSON/日志路径；⑤ 无编造引用。
 
 ---
 

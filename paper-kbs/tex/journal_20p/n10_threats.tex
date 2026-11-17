@@ -1,67 +1,48 @@
 \section{Threats to validity}
 \label{sec:threats}
 
-\noindent\textbf{Corpus and scale.} The results cover bounded demonstration and public
-collections and a small arXiv-based corpus. Retrieval-only modes searched live
-libraries, whereas lexical and dense baselines used a corpus index; these are
-not identical retrieval substrates. The three answer arms of the original
-grid also differ in substrate (default library scope, exported file tree,
-800-character mirror), so that grid compares interface plus substrate; the
-30-cell replication pins every arm to the same five libraries, and the marker
-differences do not survive it. The three-source consistency
-check is a 33-part sample, one tenth of the 322-part corpus, not a full
-audit. Findings should not be generalized to larger or differently organized
-collections without replication.
+\noindent\textbf{Data and scope.} The corpora and questions are small and
+bounded; questions and gold annotations were developer-authored. The
+management campaigns and the access campaigns use different corpora and
+should not be pooled. The 72-question route set includes 52 automatically
+expanded questions, and 47 questions come from three English domains. Four
+out-of-domain probes cannot estimate abstention rates. The storage
+reconciliation checks 33 of 322 parts. Different retrieval arms use different
+scopes or substrates; the historical hybrid wrapper, not the current composed
+hybrid lane, was tested. Broader generalisation requires independent questions,
+larger corpora and matched single-factor comparisons across the content-layer
+configurations.
 
-\noindent\textbf{Question construction and denominators.} Questions and gold
-annotations were developer-authored. The two three-arm grids of
-Section~\ref{sec:e5} are ten questions of one question family on one model,
-each run once per arm: the platform arm's latency separation holds in both,
-but the citation separation does not survive the common substrate, and the
-grids cannot resolve differences smaller than one cell. The grounding reading
-is at ceiling in both. Two answers in the original grid contain
-an evidence-insufficiency qualifier; the grader's
-\texttt{insufficient\_evidence} flag is a substring test that also fires when
-the phrase appears inside a fully answering text, so we read those two flags
-as measurement artifacts, not as hedges. Agent-track retrieval
-hits are inferred from trace and answer, while citation checks provide the
-more direct functional measure.
+\noindent\textbf{Measurement and comparisons.} Annotated target-string
+containment in a returned evidence pack is a substring proxy, not gold-document
+retrieval, semantic answer correctness or entailment; a sibling-document
+occurrence may count. Gold-ID, lexical and citation marker checks likewise do
+not establish claim-to-source support. Two answer
+grids used ten questions, one model and one run per arm; one replication held
+libraries fixed, while substrates differed in the original grid. The scripted
+full-read baseline searches strings and generates no answer. A0h, A1b and PD
+change multiple components, and A0, A1b and A3 may use the gold domain to
+resolve candidate references. Historical traces do not quantify this fallback.
+A3 can also admit candidates outside the evaluated libraries and its
+name-only routing may fall back to descriptions. Thus these arms cannot isolate
+navigation or establish deployed performance. The later run repeats the same
+questions and is not an independent test set; code hashes and judge inputs are
+not fully preserved for each historical record.
 
-\noindent\textbf{Execution and grading.} The refusal battery has one final
-observation per arm after rerunning two MCP-mount interruptions. Fabrication
-checks were manually audited, and the binary gate required reclassification
-of one body-level partial answer. Retrieval-only elapsed time is not directly
-comparable to end-to-end agent latency. The E5 grader is deterministic but
-lexical: its gold-ID, keyword and citation-marker checks do not establish
-semantic claim support; gold-ID presence is checked in the answer or the
-recorded trace, and keyword coverage passes at $\lceil 3n/5\rceil$ of the
-annotated terms, so a missing term can still pass. Aliases are reported as a
-separate regrade. The 30-cell grid and its controlled replication are each one run
-per arm on one model, recorded as claude-opus-4-8[1m]; the paired analysis in
-Section~\ref{sec:e5} bounds the stable reads. Five cells of the original grid
-departed from the stated contract (Section~\ref{sec:e5}), and one platform
-answer in the replication contains a short Chinese phrase. The archived pools store the survivors of each judged pool rather
-than the dropped list, so the filter role cannot be re-derived beyond the
-recorded scores. The BQ06 gold key was corrected to the source paper's
-thermodynamic reading after inspection, and declared aliases cover known
-word-form variants and Chinese renderings; the pre-correction question set and
-its grade (strict 10/9/9) are retained alongside the corrected regrade (strict
-9/9/9), and both sets are frozen for this submission in
-\path{paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt}, so the
-two-grade disclosure cannot drift after review. The
-MCP lifecycle script passed its 16 direct assertions and the stdio protocol
-test passed, but the lifecycle script is not pytest-collection-safe because it
-calls \texttt{sys.exit} at module import.
-
-{% keep the closing paragraph off a one-line orphan at a column foot;
-% the blank line must sit inside this group so \par sees the penalty
-\clubpenalty=10000
-\noindent\textbf{Scope.} Tests ran on a single local workstation and one
-verifier checkpoint. They do not establish generalization across model hosts,
-large-scale corpora, independently authored questions, operator adoption,
-adversarial access or crash-mid-write recovery. The pagination repair was
-verified on selected catalog and query cases; broader transport boundary
-testing remains necessary.
-
-}
-
+\noindent\textbf{Statistical and operational validity.} Paired tests are
+exploratory and not pre-registered; Wilson intervals condition on the sampled
+questions and do not capture run-to-run variance. Candidate- and span-level
+tests treat observations within queries as independent and may be
+anti-conservative. Some E5 reference-mode score and candidate inputs were not retained; the E8
+verifier replay is reproducible from the released scores, golds and grader.
+The manual refusal battery has one final observation per arm, and experience
+approval was not exercised. The 16 lifecycle assertions, selected pagination
+checks and one-workstation concurrency measurements do not establish multi-host
+reliability, adversarial security, human adoption or crash recovery. The global
+cross-library vector channel also silently skipped unreadable collections in
+one inspection while reporting success; until the response exposes this
+condition, successful global queries do not establish complete corpus coverage.
+Future work should instrument the reference lookup, remove gold-dependent
+fallback, conduct matched single-factor ablations and a genuine agent full-read
+baseline, surface global-channel degradation, and pre-specify repeated
+comparisons and multiplicity control.

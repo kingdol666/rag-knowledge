@@ -8,7 +8,7 @@ holdout question, select the smallest margin on the remaining 15 questions
 such that every training gold survives the relative cut, then apply the
 selected margin to the holdout and check its gold.
 
-Data: exp1_retrieval.json qdcvr_hybrid rows (logged per-candidate judge
+Data: exp1_retrieval.json hmrs_hybrid rows (logged per-candidate judge
 scores, 16 questions, 17 in-pool gold instances). No service calls.
 """
 from __future__ import annotations
@@ -28,7 +28,7 @@ def load() -> list[dict]:
         encoding="utf-8"))["rows"]
     out = []
     for r in rows:
-        if r.get("method") != "qdcvr_hybrid" or "judge_scores" not in r:
+        if r.get("method") != "hmrs_hybrid" or "judge_scores" not in r:
             continue
         q = next(qq for qq in QUESTIONS if qq["qid"] == r["qid"])
         allsc = {p: s for p, s in r["judge_scores"]["all"].items()}

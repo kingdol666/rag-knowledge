@@ -2,101 +2,143 @@
 \label{sec:intro}
 
 Enterprises record regulations, failure analyses and operational lessons in
-unstructured documents. A document collection becomes a knowledge base only
-when three things hold: its documents are parsed and admitted reliably, they
-are organized so that the right material can be found, and the system can
-answer a question with a citation whose source is traceable. Answering a
-question such as \emph{why did edge delamination appear in a photovoltaic
-inspection?} requires the report that records the decision, the evidence
-inside it and an accurate pointer to both. Retrieval-augmented generation
-(RAG) addresses discovery by embedding queries and passages in a shared vector
-space \cite{rag-lewis,dpr}; agentic systems extend this process by letting a
-language model call retrieval tools \cite{mcp,singh-agentic-rag}. Yet semantic
-similarity measures topical relatedness, not whether a passage contains
-evidence for the requested claim \cite{siren,gao-ragsurvey}.
+unstructured documents. Using such documents as a knowledge base requires
+reliable parsing, placement in appropriate collections and attention to
+consistency as those collections change.
+A query may need to move from the relevant collection to a document and then
+to the passage that carries the evidence, while retaining a pointer to its
+source.
 
-The relevant capabilities are usually treated separately. Retrieval asks
-whether a relevant passage enters a ranked list. Knowledge management governs
-how documents are organized and maintained. Document AI recovers text, tables
-and formulas from complex layouts \cite{mineru}. In operational systems, these
-operations form one dependency chain: parsing errors affect indexing, placement
-limits what retrieval can see, and ranking alone cannot establish whether a
-candidate supports an answer. A knowledge-base management system has to own
-this chain, yet no single stage in common deployments owns the property the
-user actually needs---that the sentence being cited is supported by the
-document being cited.
+These requirements span document management and query-time retrieval.
+Modular RAG and retrieval surveys already treat indexing and pre-retrieval as
+pipeline modules \cite{modular-rag,gao-ragsurvey}; this study examines how
+collection placement, lifecycle operations and per-tier audits connect to the
+retrieval step that consumes that state. In retrieval-augmented generation
+(RAG), retrieved material informs generation; dense retrieval can embed queries
+and passages in a shared vector space \cite{rag-lewis,dpr}. Agentic systems let a language
+model call retrieval tools \cite{mcp,singh-agentic-rag}, and hybrid, lexical
+and graph-structured variants extend the ranking model
+\cite{bm25,rrf-cormack,graphrag,lightrag,raptor}. Knowledge management
+addresses the collection itself: enterprise content management governs
+organisational documents \cite{paivarinta-ecm-2005,tyrvaainen-ecm-2006},
+metadata and tagging studies ask how documents are described and reviewed
+\cite{park-metadata-quality-2009,golder-tagging-2006}, and public knowledge
+bases curate facts under explicit ontologies
+\cite{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}. Semantic similarity
+measures topical relatedness rather than evidence containment, a failure mode
+discussed in the hallucination and RAG surveys \cite{siren,gao-ragsurvey}.
+A relevant passage may remain hard to reach if its collection was not
+properly classified, its description does not reflect its content, or a
+rename left the index stale.
 
-This paper presents QDCVR (Query-Driven Content-Verified Retrieval), a
-self-hosted knowledge-base management system that treats content as the
-shared object across acquisition, organization and question answering. It
-organizes the workflow around three design contracts:
+The management--retrieval boundary creates a systems problem: an index alone
+cannot ensure that a query reaches an appropriate collection, document and
+passage. Distributed information retrieval has long studied collection
+selection \cite{callan1995searching,si2003redde}. This work connects selection
+to managed collection state and audits selected lifecycle outcomes. It asks how
+a document collection can be managed so that a query can proceed from
+collection to document to segment, with each transition open to inspection.
+We study this question through an implemented system and bounded operational
+audits. Integration by itself is not treated as evidence of improved retrieval
+or answer quality.
 
-\begin{enumerate}
-\item \emph{Content informs placement.} An ingest agent uses the parsed body
-to choose a library and derive descriptions or tags; server-side checks
-validate storage state and consistency, not semantic routing accuracy.
-\item \emph{Content informs admission.} When the retrieval workflow invokes
-the server-side Laya tool, it fetches and scores candidate segments and returns
-survivors with provenance; the score is an admission signal, not truth.
-\item \emph{Absence is reported.} The answer workflow instructs the agent to
-report the searched scope when a completed evidence review finds no support.
-Tool failures and incomplete searches are execution failures, not evidence of
-semantic absence.
-\end{enumerate}
+HMRS (Hierarchical Management Retrieval System) is a self-hosted
+knowledge document management system. It maintains collections, documents and
+segments and supports catalogue, shelf, document and segment views. In the
+catalogue-first policy, the catalogue exposes collection descriptions, the
+shelf exposes document descriptions within a selected collection, the document
+view opens its body, and the segment view exposes indexed passages. Pinned
+search can bypass catalogue and shelf selection; these are access views over
+the managed objects, not four separate storage levels. An ingest agent selects
+collections from parsed content, while lifecycle audits compare document files,
+tree-registry entries and per-library metadata. The optional evidence gate
+scores candidate segments; it does not prove support. Answer workflows
+distinguish a completed search without evidence from tool failure. These
+stages are described in Sections~\ref{sec:system}--\ref{sec:implementation}.
 
-The platform integrates document parsing, content-informed
-organization, lifecycle management, operational experiences, multi-lane
-retrieval and a Model Context Protocol (MCP) server with 95 registered tools
-\cite{mcp}. It runs locally and exposes retrieval functions to several agent
-harnesses. Untested functions are identified rather than inferred from their
-implementation.
+The platform integrates document parsing, content-informed collection assignment,
+content-derived descriptions and tags, lifecycle management, the tiered access
+path and a Model Context Protocol (MCP) server \cite{mcp}. It runs locally and
+exposes management and retrieval functions to several agent harnesses. We
+distinguish implemented functions from those exercised by the reported
+campaigns: the paper evaluates the management loop first, then examines how
+access workflows use the managed state to retrieve evidence.
 
 \noindent\textbf{Contributions.}
 \begin{enumerate}
-\item A self-hosted knowledge-base management system that links quality-gated
-acquisition, content-informed placement, three-source consistency and lifecycle
-operations, with an invoked server-side evidence gate on the query path. The
-management layer is described function by function, from parse admission to
-lifecycle audits (Sections~\ref{sec:system}--\ref{sec:implementation}).
-\item An answer-level evaluation over ten questions crossed with three
-retrieval interfaces in two 30-cell grids (original and common-substrate),
-reported per question: gold-identifier
-presence, strict and alias-aware keyword coverage, recognized citation markers,
-and abstention on verified-absent questions (Section~\ref{sec:e5},
-Table~\ref{tab:e5-answers}).
-\item A same-pool diagnostic that isolates the verifier's \emph{ordering}
-effect. Ordering candidates by the verifier score
-lowers Hit@5 from 0.94 to 0.44, while retaining fusion order among recorded
-survivors restores 0.94; all 191 recorded scores exceed the configured 0.5
-threshold, so the filter removed none of them and the loss is attributable to
-the induced ordering in this run, not to threshold filtering. A verifier score
-that survives an admission filter is therefore not thereby usable as a ranker
-(Sections~\ref{sec:lanes} and~\ref{sec:e4}--\ref{sec:e6}).
+\item A management--retrieval contract for knowledge documents. HMRS represents
+collections, documents and segments as managed objects and connects parsing,
+content-informed placement, descriptions/tags, lifecycle updates, indexing and
+catalogue-first access through one auditable state. It compares document files,
+the tree registry and per-library metadata after selected operations, and
+distinguishes checks enforced by tools from semantic decisions made by agent
+workflows (Sections~\ref{sec:system}--\ref{sec:implementation}).
+\item A collection-assignment and route-card audit. In a 100-paper arXiv
+campaign, 79 papers were retrievable and 21 were not, with incomplete failure
+attribution. In a separate ingestion test on 400 Wikipedia pages per language,
+content-based assignment accuracy was 0.875 for English and 1.0 for Chinese and
+Japanese. In a 72-question scripted audit, full route cards returned the gold
+collection for 72/72 questions, compared with 37/72 for nominally name-only
+cards. An unlogged fallback could still use descriptions, so this is a
+configuration contrast, not an isolated treatment effect
+(Sections~\ref{sec:routing-audit} and~\ref{sec:e1}).
+\item A bounded content- and answer-layer account. Six evidence
+configurations are compared on one fixed question set: A0 is the tiered
+baseline; A0f reads full document windows; A0h additionally unions vector
+chunk windows; PD is a navigation-free per-library union; A1b is a scoped
+flat vector union; A2 drops the evidence gate (configurations defined in
+Section~\ref{sec:ladder-opt}). On the same 72 questions,
+the latest complete same-question follow-up (the R3 record) contained the
+annotated target string somewhere in the returned evidence pack in 51/72 cases
+for A0h, compared with 45/72 for the per-library union without catalogue
+navigation (PD), 44/72 for A0f, 39/72 for A0 and A1b, and 25/72 for A2. A
+sibling-document occurrence may count; these are lexical proxies, not
+gold-document retrieval or semantic answer correctness. The frozen A0h result
+was 52/72, and A0h
+was the highest configuration in the frozen run, an archived reproduction
+and the follow-up, with the A0h $>$ PD $>$ A0f ordering preserved and no
+per-question flips for A1b and A2. The A0h--A0 contrasts were 15--0 frozen
+and 12--0 in R3 ($p=6.1\times10^{-5}$ and $p=0.00049$, unadjusted). The arms
+vary in multiple components and the flat lookup may depend on the gold
+domain. A mechanical
+full-read script found the strings in 72/72 cases after reading 879 parts, but
+generated no answers; the R3 read-all run was incomplete. Separately, two
+ten-question answer grids reported gold identifiers in the answer or trace for
+all 60 cells. Because a trace identifier need not have been read, this check
+cannot establish document reachability; document-style citation markers
+separated the arms (9/7/2, and 9/9/9 on a common substrate). These lexical
+checks do not establish semantic correctness or claim-to-source support
+(Sections~\ref{sec:ladder-opt} and~\ref{sec:e5}).
+\item A same-pool diagnostic of verifier role. In a replay of a retired hybrid
+wrapper, verifier-score ordering reduced Hit@5 from 0.94 to 0.44, while retaining
+fusion order restored 0.94. All 191 recorded scores exceeded the configured
+threshold, so filtering did not activate and remains untested on this pool
+(Sections~\ref{sec:lanes} and~\ref{sec:e6}).
 \end{enumerate}
-
-A CIKM~2026 demonstration introduced the organization and retrieval layers
-\cite{qdcvr-demo}. The journal extension adds acquisition and lifecycle
-measurements, the operational-knowledge case study, and the verifier-placement
-and transport-failure analyses. The architecture and retrieval interface build
-on the demo; the contribution claimed here is the additional evidence and
-failure analysis, not a wholly new system.
 
 \subsection{Research questions and reading guide}
 \label{sec:rq}
 
-Five questions structure the design-to-evidence sequence, ordered by the
-weight of the answer rather than by the pipeline: how the management layer
-behaves on demonstration and public collections, covering parsing, admission, placement and
-lifecycle (RQ1); what answer quality the end-to-end workflow reaches on a fixed
-question set, measured per question and per interface (RQ2); how the tested
-retrieval configurations compare on document recall and evidence markers
-(RQ3); whether a verifier score should order candidates or only filter them
-(RQ4); and what abstention, cost and execution-reliability observations arise
-in end-to-end trials (RQ5).
+Five questions connect the management model to the evidence and keep each
+conclusion within the scope of its measurement. \textbf{RQ1} asks whether
+documents can be parsed, automatically classified into a collection and stored
+with state that stays consistent across the three sources, and where that
+process fails. \textbf{RQ2} asks whether the tiered path selects the correct
+collection and narrows to the documents that contain the target evidence, and
+what the collection-selection contrast does and does not establish.
+\textbf{RQ3} compares the tested content-layer configurations on
+annotated target-string containment in returned evidence packs and retrieval
+cost on the same question corpus, and asks whether the tiered path contains
+more of this lexical proxy than flat or navigation-free alternatives.
+\textbf{RQ4} examines
+how verifier-score ordering affects recall and what can be inferred about
+filtering when the configured threshold rejects no recorded score.
+\textbf{RQ5} summarises observed abstention, runtime, tool cost and execution
+failures at the answer layer.
 
 Section~\ref{sec:related} positions the work; Sections~\ref{sec:system}--
-\ref{sec:organization} describe the architecture and management functions;
-Section~\ref{sec:lanes} specifies retrieval and verification;
+\ref{sec:retrieval} describe the management model, the collection and
+document levels, and the tiered access path;
 Section~\ref{sec:implementation} covers deployment and enforcement; and
 Section~\ref{sec:eval} evaluates the system, followed by implications,
 limitations and conclusions in

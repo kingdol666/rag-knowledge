@@ -1,0 +1,154 @@
+\section{The tiered access path: from collection to admitted segment}
+\label{sec:retrieval}
+\label{sec:lanes}
+
+The access path reads the collections, catalogue and indices maintained by
+acquisition and organisation. It is the query-side counterpart of the
+management levels: the catalogue tier chooses a collection, the shelf tier
+chooses documents within it, the document tier opens a body, and the segment
+tier can score its parts. Three access policies use different affordances of that
+path, and a calling workflow may invoke the separate server-side Laya evidence
+gate. The tool fetches referenced document text, segments it and applies a
+local, query-conditioned verdict. Its model-card field (\texttt{noul}) is a
+typed 0--1 score; this study reports no probability-calibration experiment and
+does not interpret the score as a calibrated probability. Segments meeting the
+configured threshold (0.5 by default) are returned as survivors with
+provenance. A scored segment below the threshold is not admitted, while tool
+or fetch failures are reported separately; a partially completed call may
+still return successfully scored survivors. The answer workflow reserves a
+scoped not-found report for a completed search with no supporting evidence,
+not for an execution failure.
+
+An access workflow can combine the following operations. Their order and
+inclusion depend on the entry point and the question; the list is not a
+server-enforced sequence for every query.
+\begin{enumerate}
+\item \emph{Rewrite.} The agent forms retrieval queries from the question.
+\item \emph{Gather.} A pinned search calls two-stage or vector search; a
+catalogue-first search selects collections and document descriptions. A
+composed workflow can combine candidates from more than one source.
+\item \emph{Merge and cap.} Where multiple sources are combined, the workflow
+can deduplicate and limit the candidate set. Specific limits are properties of
+the evaluated configuration, not universal platform guarantees.
+\item \emph{Judge.} When invoked, the gate fetches candidate documents, scores
+segments and returns survivors with provenance; fetch and tool failures are
+reported separately from low scores.
+\item \emph{Read and answer.} The agent examines the evidence pack and may read
+a surviving document to check a specific claim before synthesising an answer.
+\end{enumerate}
+
+Figure~\ref{fig:tiered-algorithm} summarises this workflow and its terminal
+conditions; Algorithm~\ref{alg:tiered} expresses the same decision sequence
+in pseudocode. Both are workflow abstractions: individual entry points may
+omit or combine candidate-gathering steps.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_tiered_algorithm}
+\caption{Tiered access workflow. Candidate references can be gathered from
+pinned collections, catalogue navigation or a combination. The optional Laya
+gate fetches and scores segments. Incomplete review reports its scope and any
+available evidence; a scoped not-found is reserved for a completed review
+without support. The workflow describes intended agent behaviour, not a
+server-enforced sequence.}
+\label{fig:tiered-algorithm}
+\end{figure*}
+
+\begin{algorithm}[t]
+\caption{Tiered access with optional evidence gate}
+\label{alg:tiered}
+\begin{algorithmic}[1]
+\Require question $q$; catalogue $\mathcal{C}$; threshold $\tau$; gate flag $g$
+\State $D \gets \textsc{GatherCandidates}(q,\mathcal{C})$ \Comment{pinned or catalogue-first}
+\If{$g$}
+  \State $S \gets \textsc{LayaJudge}(D,q,\tau)$ \Comment{fetch, score and return survivors}
+\Else
+  \State $S \gets \textsc{ReadSelected}(D)$
+\EndIf
+\If{execution incomplete}
+  \State \Return incomplete status, searched scope, and available evidence
+\ElsIf{completed review finds no support}
+  \State \Return scoped not-found (searched scope, blind spots)
+\Else
+  \State \Return agent-synthesised answer with source references
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+Exhausting a policy's call budget is intended to produce a scope and blind-spot
+report. The endpoint enforces timeouts and turn limits; the per-policy budgets
+are workflow instructions, not server quotas.
+
+\subsection{Tier policies and the evidence gate}
+\label{sec:trace}
+\label{sec:gate}
+\label{sec:gate-primitive}
+\label{sec:twostage}
+
+The current chat instructions provide two retrieval modes. In pinned mode,
+the agent rewrites the question and calls the two-stage search (preferred) or
+vector search within the selected collections; it can send candidate references
+to Laya in sequential batches and optionally open a survivor for a specific
+quote. In all-library mode, the instruction walks the catalogue and selected
+shelves, selects document references from descriptions and sends these to Laya
+before reading survivors. These are agent instructions, so actual tool use is
+reported from traces rather than assumed from the instruction. Endpoint-level
+timeouts and turn limits bound execution; retrieval sequences and batch sizes
+are workflow instructions rather than separate server-enforced per-lane quotas.
+
+The experiments also use fixed retrieval configurations. In particular, the
+historical hybrid wrapper whose logged pools are analysed in
+Section~\ref{sec:e6} is no longer a
+registered tool. Another controlled candidate-pool experiment uses per-library
+vector top-30 at cosine threshold 0.35 together with catalogue candidates,
+followed by fusion and a twelve-candidate cap. These values identify that
+experiment, not the current chat default. A composed hybrid directive may call
+vector and catalogue tools in an agent workflow. Table~\ref{tab:lanes}
+summarises the current modes and the evaluated composition.
+
+The gate is the local Laya evidence classifier \cite{laya}, exposed as
+\path{kb_laya_judge}. In reference mode, the server fetches candidate
+documents, scores their segments against the query and returns surviving
+segments with provenance and a bounded evidence pack. This is a threshold-based
+admission operation; it does not itself fuse candidate sources or impose the
+workflow's top-$k$ reading window. Those decisions belong to the calling search
+configuration or agent workflow. To construct the evidence pack, the tool
+orders surviving segments by source and position, deduplicates them and applies
+the character limit. A passing verdict
+is not proof of truth or entailment; the verifier remains subject to calibration
+and transport limitations.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\caption{Access policies over the tiered path. Modes differ in how candidate collections and documents are selected.
+The hybrid row describes an experimental composition.}
+\label{tab:lanes}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.11\textwidth}>{\raggedright\arraybackslash}p{0.19\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}@{}}
+\toprule
+Policy & Tiers traversed & Retrieval affordance & Budget type & Intended terminal report\\
+\midrule
+Search & pinned collections, segment & Two-stage or vector search & Endpoint turn limit & Answer or report not-found\\
+Librarian & catalogue, shelf, document, segment & Catalogue navigation and optional judging & Workflow instructions & Scope and blind spots\\
+Hybrid & catalogue and segment & Composed vector and catalogue calls & Configuration-specific candidate cap & Candidates or judged survivors\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The two-stage tool builds a candidate pool with lexical search and optional
+graph expansion, then applies dense ranking. It does not call the
+evidence gate; a ranked chunk is not admissible evidence until verified, and a
+similarity threshold is not an abstention mechanism. The 13 October catalogue
+incident showed that oversized tool returns can conceal documents before
+reasoning begins. The tested repair adds a server-side character budget,
+grouped views and pagination; its behaviour is reported in the Evaluation
+section.
+
+\subsection{Honest abstention}
+A candidate list may contain high-similarity but unsupported documents. The
+answer workflow instructs the agent to report not-found when its completed
+evidence review finds no support, including the searched scope and known blind
+spots, rather than falling back to parametric knowledge. This behaviour was
+observed in the reported trials; it is not a server-side semantic-classifier
+guarantee. Timeouts, unavailable tools and incomplete searches are execution
+failures, not evidence of semantic absence (Section~\ref{sec:eval}).

@@ -13,7 +13,7 @@ Enterprises accumulate regulations, failure analyses and operational lessons
 as unstructured documents, and answering one engineering question requires
 locating, reading and citing the right one. Retrieval-augmented generation
 addresses the locating step, but its ranking signal measures topic related-
-ness rather than evidence presence. QDCVR is a self-hosted knowledge-
+ness rather than evidence presence. HMRS is a self-hosted knowledge-
 base management system that governs content across all three actions. Six
 subsystems—quality-gated parsing and ingestion, content-routed organiza-
 tion, life-cycle management with three-source consistency audits, a document
@@ -81,7 +81,7 @@ absence of evidence is an answer : when verification eliminates every candi-
 date, the system returns an explicit not-found report rather than the closest
 text. Claims are therefore auditable, with every placement, verdict, cut and
 lifecycle operation on record.
-    QDCVR (Query-Driven Content-Verified Retrieval, v2.3), the self-hosted
+    HMRS (Hierarchical Management Retrieval System, v2.3), the self-hosted
 knowledge-base management system built here, implements this position end
 to end on a deployed industrial corpus and on acquisition and functional cam-
 paigns. Six functional subsystems carry the platform: a quality-gated pars-
@@ -349,7 +349,7 @@ hybrid reaches 0.44; the value of the gate measured here is auditable, fail-
 closed, per-citation provenance, not ranking quality (Sections 8.5 and 8.7).
 
 3. System overview and design principles
-    QDCVR (v2.3) is a self-hosted knowledge-base management system that
+    HMRS (v2.3) is a self-hosted knowledge-base management system that
 turns a folder of PDFs, Office documents, and scans into knowledge bases
 that agents can be trusted to answer from. It is deployed as four cooperating
 services behind one configuration file: a Python service that schedules parsing
@@ -400,7 +400,7 @@ a bare mark would mislead. Marks denote capability, not measured quality.
  ECM platforms [11, 12] n/r   lifecycle n/r    –        –       –    n/r
  Public KBs,            n/r  ontology    –     –        –       –     –
  DBpedia/YAGO [9, 10]
- QDCVR (this work)          ✓        ✓                       ✓            ✓        ✓         ✓       ✓
+ HMRS (this work)          ✓        ✓                       ✓            ✓        ✓         ✓       ✓
 
 
 
@@ -600,7 +600,7 @@ to the evaluation subsections of Section 8.
                                                                   Solid arrows: runtime call path; the ingestion pipeline feeds all four stores.
 
 
-Figure 1: QDCVR architecture. Documents enter through the acquisition
+Figure 1: HMRS architecture. Documents enter through the acquisition
 pipeline (left) and are parsed, quality-gated, split, described and indexed into four
 stores. At run time (right), clients and external agent harnesses reach the platform
 through the chat endpoint, which attaches a lane policy; the policy is enforced
@@ -1691,7 +1691,7 @@ BGE-M3 [24]; RRF as reciprocal-rank fusion at k = 60 of those two
 rankings [26]; Graph through kb_graph_search, a node-name and path
 match over the document graph; Two-stage through kb_search_two_stage
 (Section 6.5); and the hybrid lane through kb_hybrid_search with the
-gate switched off (Fusion-only) and on (QDCVR-Hybrid ). Two further
+gate switched off (Fusion-only) and on (HMRS-Hybrid ). Two further
 rows are derived offline by replaying the judged hybrid run’s own logged
 twelve-candidate pools and verdict scores: Judge-as-filter keeps the sur-
 vivors in their fusion order, and RRF-fuse fuses the fusion ranking with the
@@ -1734,17 +1734,17 @@ RRF (BM25∥Dense)       1.00     1.00     0.927         0.88         11 ms     
 Graph (Neo4j)          0.56     0.53     0.562         0.56         68 ms            68 ms
 Two-stage              1.00     0.97     0.927         0.94         77 ms            40 ms
 Fusion-only            0.94     0.94     0.856         0.94         62 ms             66 ms
-QDCVR-Hybrid           0.44     0.41     0.226         0.50         542 ms           582 ms
+HMRS-Hybrid           0.44     0.41     0.226         0.50         542 ms           582 ms
 Derived (offline, same logged hybrid pools):
   Judge-as-filter†     0.94     0.94      0.856        0.94     † 542 ms / 582 ms
 
   RRF-fuse             0.88     0.88      0.606        0.88     (same single call)
-† Derived rows replay the QDCVR-Hybrid run’s own logged 12-candidate pools
+† Derived rows replay the HMRS-Hybrid run’s own logged 12-candidate pools
 
 and judge scores, so they reuse that call’s latency; the judge executes once either
 way.
 (b) Second corpus: 79 retrievable arXiv papers of the 100 submitted, ten questions
-Configuration BM25 Dense RRF Graph Two-stage Fusion-only QDCVR-Hybrid Judge-as-filter
+Configuration BM25 Dense RRF Graph Two-stage Fusion-only HMRS-Hybrid Judge-as-filter
 Hit@5          0.90 0.90 0.90 0.20   0.90       0.90         0.90         0.90
 
 
@@ -1768,7 +1768,7 @@ the questions are written in its vocabulary, three configurations tie at Hit@5
                                                   43
     The central result is the verdict’s role, not its existence. The
 same judged scores enter three configurations: not used (fusion-only, Hit@5
-0.94), used to re-rank candidates (QDCVR-Hybrid, 0.44), and used as a filter
+0.94), used to re-rank candidates (HMRS-Hybrid, 0.44), and used as a filter
 that keeps survivors in their fusion order (judge-as-filter, 0.94). On the eight
 questions where re-ranking and filtering differ (Q2, Q4, Q5, Q6, Q8, Q9,
 Q11, Q12), filtering wins all eight and loses none, with eight further ties on
@@ -2174,7 +2174,7 @@ graded abstention probes.
                                                 Gold docs           Non-gold
                                                                     survivors
 
-Figure 7: Evidence-criterion judge scores from the sixteen QDCVR-Hybrid tool
+Figure 7: Evidence-criterion judge scores from the sixteen HMRS-Hybrid tool
 runs: all 191 judged candidates. Gold documents (green, n = 17; Q16’s gold never
 entered its candidate pool) and same-domain non-gold survivors (orange, n = 174)
 overlap almost completely: medians 0.876 versus 0.863, Mann–Whitney p = 0.26.
@@ -2281,7 +2281,7 @@ and the measured result. All numbers come from released logs.
                             gold: EL-2025-0317 delamination RCA report       extruder-PLC demo telemetry reports (5)      other corpus documents (6)
 
 
-Figure 8: Anatomy of one real query (Q2; single logged QDCVR-Hybrid call).
+Figure 8: Anatomy of one real query (Q2; single logged HMRS-Hybrid call).
 Each line is one of the 12 fused candidates; the green band is the top-5 window
 the answer agent reads in full. (a) The shipped re-ranking: the judge scores five
 extruder-PLC telemetry reports 0.887–0.926 and the gold root-cause report 0.846,
@@ -2676,7 +2676,7 @@ document, and the out-of-corpus answers were audited manually. Determin-
 istic layers are bit-identical across two rounds except for latency fields.
 
 11. Conclusion
-    QDCVR turns “the retriever found it” into “the system verified it”. Its
+    HMRS turns “the retriever found it” into “the system verified it”. Its
 design position is that the governed object of a knowledge-base management
 system is content: content decides where a document belongs and whether a
 candidate may be cited, and the absence of content that answers a question
@@ -2776,8 +2776,8 @@ the lifecycle-operation evidence.
                                      65
 Table A.1: Per-question best gold rank (top-5 window; ‘–’ = gold absent) for the
 seven tool-layer pipelines (logged runs) and the two derived configurations (offline
-replay of the same logged QDCVR-Hybrid pools as Fig. 4). Fusion = fusion-only
-(no judge); Hybrid = the shipped QDCVR-Hybrid judged ordering; Filter = judge-
+replay of the same logged HMRS-Hybrid pools as Fig. 4). Fusion = fusion-only
+(no judge); Hybrid = the shipped HMRS-Hybrid judged ordering; Filter = judge-
 as-filter. Question numbers and texts: Table B.4.
 
       Q    BM25   Dense   RRF   Graph   2-stage   Fusion   Hybrid   Filter   RRF-fuse
@@ -2948,7 +2948,7 @@ Update check Fail, ragctl version timed out after 30 s
      traction. arXiv preprint arXiv:2409.18839, 2024. doi: 10.48550/arXiv
      .2409.18839. URL https://arxiv.org/abs/2409.18839.
 
- [8] Author Name. QDCVR: Content-routed organization and layered agent
+ [8] Author Name. HMRS: Content-routed organization and layered agent
      retrieval with inspectable evidence. In Proc. of the 35th ACM Interna-
 
 

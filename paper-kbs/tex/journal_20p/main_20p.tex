@@ -1,5 +1,7 @@
-%% QDCVR platform — Knowledge-Based Systems submission (elsarticle)
-%% v2 restructure 2026-10-12: content-retrieval-based KB *management system* framing.
+%% HMRS platform — Knowledge-Based Systems submission (elsarticle)
+%% v3 restructure 2026-11-11: hierarchical *management* framing — the system
+%% manages documents at three levels (collection / document / segment) and
+%% serves a tiered access path; retrieval algorithms are supporting components.
 %% 20-page pass 2026-10-13: back matter (n_back) included; figures restored.
 %% Compile: pdflatex main_20p && bibtex main_20p && pdflatex main_20p && pdflatex main_20p
 %% AUTHOR ACTION (authors reserved these values; do not infer them):
@@ -9,9 +11,8 @@
 %%      acknowledgements;
 %%   3. n_back.tex: confirm the generative-AI declaration (service names are
 %%      filled; versions only if the editors ask).
-%% The camera-ready preview is 20 pages; the double-spaced review-format
-%% variant is main_20p_review.tex (69 pages) — see
-%% paper-kbs/notes/page-budget-2026-10-16.md for both measurements.
+%% This is a double-column review preview with a local 20-page target.
+%% The exact KBS submission layout remains subject to its author guide.
 % journal-style camera-ready preview (generated from the submission sources)
 \documentclass[final,5p,times,twocolumn]{elsarticle}
 \usepackage{stfloats}
@@ -27,18 +28,25 @@
 \usepackage{url}
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{xurl}
+\urlstyle{same}
+% DOIs are emitted by the .bst as \path{...}; re-declare it so they
+% typeset in the ambient roman face at 7.2 pt instead of 6.97 pt typewriter.
+\DeclareUrlCommand\path{\urlstyle{same}}
 \usepackage{caption}
 \captionsetup{font=small,labelfont=bf}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \newcommand{\yes}{\checkmark}
 \newcommand{\no}{--}
 
 \graphicspath{{figs/}}
 \setlength{\emergencystretch}{1.5em}
 
-%% Float placement: the paper carries eight figures and seven body table
-%% environments (Figure 10 was removed on 2026-10-17 because Table 5 carries
-%% the same six methods; the five appendix tables moved to the supplementary
-%% material on 2026-10-16), so the
+%% Float placement: the paper carries nine figures and three body table
+%% environments (the 2026-11-16 evaluation rework moved the 30-cell answer
+%% grid to supplement S14, merged the two content figures into fig:content,
+%% and added the case-anatomy figure plus tab:eval-design; the historical
+%% management and verifier floats were replaced by the redrawn result figures), so the
 %% default fractions defer most of them past the references. Allow denser
 %% float pages to keep each float near the text that discusses it.
 \renewcommand{\topfraction}{0.90}
@@ -52,9 +60,9 @@
 \setcounter{totalnumber}{4}
 \setcounter{dbltopnumber}{3}
 
-%% Tighten the vertical glue around floats. With nine figures and twelve
-%% tables the elsarticle defaults spend roughly three inches of column
-%% height on separation alone, which the 20-page budget cannot afford.
+%% Tighten the vertical glue around floats. With nine figures and the body
+%% tables the elsarticle defaults spend roughly three inches of column height
+%% on separation alone, which the 20-page budget cannot afford.
 %% Values are about half the class defaults and remain within normal
 %% typographic practice for a two-column layout.
 \setlength{\floatsep}{7pt plus 2pt minus 2pt}
@@ -69,8 +77,8 @@
 
 \begin{frontmatter}
 
-\title{QDCVR: A content-governed knowledge-base management system with
-verified retrieval and reported absence}
+\title{HMRS: A hierarchical management-and-retrieval system for tiered
+knowledge document organisation and evidence-traced access}
 
 \author[inst1]{Author Name\corref{cor1}}
 \ead{author@example.com}
@@ -80,36 +88,43 @@ verified retrieval and reported absence}
 City, Country}, city={City}, country={Country}}
 
 \begin{abstract}
-Document collections need more than a retriever: documents must be
-parsed and admitted, organized so that they can be found, and used to answer
-questions whose cited evidence can be traced. We present QDCVR, a self-hosted
-knowledge-base management system that treats content as the shared object
-across acquisition, organization and question answering. Its management layer
-parses and gates documents, splits long files, places
-documents by content rather than filename, and keeps files, registry and
-metadata consistent through rename, move, delete and re-index. Retrieval is one
-module: three lanes share an invoked server-side content verifier, and an
-answer workflow is instructed to report absence.
-We evaluate the system on three corpora, one an industrial demonstration
-instance. Our evaluation method combines functional audits, per-question
-answer checks, abstention probes and same-pool replays.
-On ten arXiv
-questions crossed with three retrieval interfaces in two 30-cell grids, every
-answer names its gold document and alias-aware coverage is 9-10/10; the
-controlled common-substrate replication shows that strict keyword coverage and
-marker-bearing counts are substrate-bound, not interface-specific. At the evaluation snapshot, 21 of 100 submissions were
-unretrievable without a complete failure inventory, and a reproduced
-catalog-transport failure was repaired. In a same-pool replay on an industrial corpus, ordering
-by the verifier score reduces Hit@5 from 0.94 to 0.44 while fusion order
-restores 0.94; the scores are not usable as a ranker, and the 0.5 cut filtered
-nothing. Wall-clock and cost disfavor the
-platform arm. The findings indicate a bounded deployment account,
-not universal retrieval superiority.
+Document collections support knowledge work only when acquisition,
+organisation, maintenance and access are connected. We present HMRS, a
+self-hosted system that manages collections, documents and segments through
+catalogue, shelf, document and segment views. Parsed content informs collection
+assignment; document files, the tree registry and per-library metadata support
+lifecycle audits. An optional evidence gate scores passages without
+establishing entailment; pinned search may bypass catalogue navigation.
+
+In a 100-paper arXiv campaign, 79 were retrievable and 21 were not. A separate
+400-page-per-language test measured assignment accuracy of 0.875 (English) and
+1.0 (Chinese/Japanese). A scripted 72-question route audit selected the gold
+collection in 72/72 full-card and 37/72 name-only cases; an unlogged fallback
+may use descriptions. On the same questions, frozen annotated target-string
+containment in the returned evidence pack was 52/72 for the tiered chunk-window
+arm. Later executions gave 51/72 (70.8\%), with the same ordering across the
+three records. The per-library union without catalogue navigation (PD) reached
+45/72, with the difference unresolved, and a scoped flat union reached 39/72.
+A target string may occur in a sibling document, so these are lexical
+ evidence-pack proxies, not gold-document retrieval or semantic answer quality.
+Arms
+vary in multiple components; the flat lookup
+may depend on the gold domain. Gold identifiers appeared in all 60 answer-or-
+trace cells. Because an identifier in a trace need not have been read, this
+check does not establish document reachability; document-style citation markers
+separated the arms (9/10 versus 2/10), a lexical contrast, not semantic
+quality. In a same-pool replay of a retired hybrid wrapper, verifier
+re-ranking lowered Hit@5 from 15/16 to 7/16;
+fusion order restored 15/16. All 191 recorded scores exceeded threshold.
+
+The results document an auditable structure, not general retrieval superiority,
+semantic answer quality or reliability. This replay warns against one
+historical ordering configuration; filtering was not tested on that pool.
 \end{abstract}
 
 \begin{keyword}
-Knowledge base management \sep Document ingestion \sep Knowledge organization \sep
-Retrieval-augmented generation \sep Answer quality evaluation \sep
+Knowledge document management \sep Document classification \sep
+Hierarchical organisation \sep Tiered retrieval \sep Evidence verification \sep
 Model Context Protocol
 \end{keyword}
 
@@ -131,11 +146,12 @@ Model Context Protocol
 \input{n11_conclusion}
 \input{n_back}
 
-{\footnotesize
-%% References follow elsarticle-num. A tight item separation and leading keep
-%% the 55-entry list inside the 20-page budget at the same type size.
-\setlength{\bibsep}{0pt plus 0.1ex}
-\setlength{\baselineskip}{8.5pt}
+{\fontsize{6.2pt}{6.7pt}\selectfont
+%% References use a compact review-preview setting so the added case-anatomy
+%% evidence figure remains within the local 20-page budget.
+\setlength{\bibsep}{0pt plus 0.01ex}
+\setlength{\baselineskip}{6.7pt}
+\urlstyle{same}
 \bibliographystyle{elsarticle-num}
 \bibliography{refs,refs_new_verified}
 }

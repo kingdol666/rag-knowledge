@@ -23,7 +23,7 @@ Q = {q["qid"]: q for q in QUESTIONS}
 
 gold_scores, nongold_scores = [], []
 for r in rows:
-    if r.get("method") != "qdcvr_hybrid" or "judge_scores" not in r:
+    if r.get("method") != "hmrs_hybrid" or "judge_scores" not in r:
         continue
     q = Q[r["qid"]]
     for p, s in r["judge_scores"]["all"].items():

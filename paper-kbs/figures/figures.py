@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Publication figures for the KBS submission (QDCVR platform).
+"""Publication figures for the KBS submission (HMRS platform).
 
 Typography contract (Elsevier artwork requirement)
 --------------------------------------------------
@@ -605,9 +605,9 @@ def fig_lanes():
 def fig_retrieval():
     summary = json.loads((RESULTS / "exp1_summary.json").read_text(encoding="utf-8"))
     s = summary["summary"]
-    order = ["bm25", "dense", "rrf", "graph", "twostage", "fusion_only", "qdcvr_hybrid"]
+    order = ["bm25", "dense", "rrf", "graph", "twostage", "fusion_only", "hmrs_hybrid"]
     # short tick labels: the method names live in the caption instead
-    labels = ["BM25", "Dense", "RRF", "Graph", "2-stage", "Fusion", "QDCVR-H"]
+    labels = ["BM25", "Dense", "RRF", "Graph", "2-stage", "Fusion", "HMRS-H"]
 
     # Effectiveness only, drawn at the column width the manuscript places it
     # at. Latency is reported in the table and the text; a second panel
@@ -624,7 +624,7 @@ def fig_retrieval():
                color=RAMP[k], edgecolor="white", linewidth=0.4)
     ax.set_xticks(x)
     ax.set_xticklabels(["BM25", "Dense", "RRF", "Graph", "2-stg", "Fusion",
-                        "QDCVR-H"], rotation=35, ha="right",
+                        "HMRS-H"], rotation=35, ha="right",
                        rotation_mode="anchor")
     ax.set_ylabel("Score (16 questions)")
     ax.set_ylim(0, 1.55)
@@ -637,8 +637,8 @@ def fig_retrieval():
     ax.annotate("fusion", xy=(5, s["fusion_only"]["hit@5"]),
                 xytext=(5, s["fusion_only"]["hit@5"] + 0.19), ha="center",
                 color=C["dgrey"])
-    ax.annotate("verdict", xy=(6, s["qdcvr_hybrid"]["hit@5"]),
-                xytext=(6, s["qdcvr_hybrid"]["hit@5"] + 0.19), ha="center",
+    ax.annotate("verdict", xy=(6, s["hmrs_hybrid"]["hit@5"]),
+                xytext=(6, s["hmrs_hybrid"]["hit@5"] + 0.19), ha="center",
                 color=SEM["failure"])
     save(fig, "fig3_retrieval")
 
@@ -650,7 +650,7 @@ def fig_inflation():
     data = json.loads((RESULTS / "exp1_retrieval.json").read_text(encoding="utf-8"))
     gold_scores, nongold_scores = [], []
     for row in data["rows"]:
-        if row.get("method") != "qdcvr_hybrid" or "judge_scores" not in row:
+        if row.get("method") != "hmrs_hybrid" or "judge_scores" not in row:
             continue
         gold_scores += row["judge_scores"]["gold"]
         for p, sc in row["judge_scores"]["all"].items():
@@ -668,9 +668,9 @@ def fig_inflation():
                    label=name, zorder=3)
         ax.hlines(np.median(vals), i - 0.22, i + 0.22, color=col, lw=1.4,
                   zorder=4)
-    ax.axhline(0.5, color=C["dgrey"], lw=0.8, ls="--")
-    ax.text(1.80, 0.508, "accept 0.5", color=C["dgrey"], ha="right",
-            va="bottom", zorder=5)
+    ax.axhline(0.5, color=C["dgrey"], lw=0.8, ls="--", zorder=1)
+    ax.text(1.80, 0.525, "accept 0.5", color=C["dgrey"], ha="right",
+            va="bottom", zorder=5, bbox=dict(facecolor="white", edgecolor="none", pad=1.2))
     ax.set_xticks([0, 1])
     ax.set_xticklabels([f"Gold docs\n(n = {len(gold_scores)})",
                         f"Non-gold\n(n = {len(nongold_scores)})"])
@@ -690,8 +690,9 @@ def fig_inflation():
                 va="center", ha="left")
     ax.annotate(f"{med_n:.2f}", (1.24, med_n), fontsize=_FS,
                 color=C["dgrey"], va="center", ha="left")
-    ax.annotate("Mann-Whitney $p$ = 0.26", (0.5, 0.458), ha="center",
-                va="bottom", color=C["dgrey"])
+    ax.annotate("Mann-Whitney $p$ = 0.26", (0.5, 0.455), ha="center",
+                va="bottom", color=C["dgrey"], zorder=10,
+                bbox=dict(facecolor="white", edgecolor="white", pad=2.0, alpha=.95))
     save(fig, "fig4_inflation")
 
 
@@ -974,7 +975,7 @@ def fig_robustness():
     ax = axes[1][0]
     arms = [("bm25", "BM25"), ("fusion_only", "Fusion"),
             ("judged", "Judged"), ("filter_only", "Filter")]
-    orig = [1.00, e1s["fusion_only"]["hit@5"], e1s["qdcvr_hybrid"]["hit@5"],
+    orig = [1.00, e1s["fusion_only"]["hit@5"], e1s["hmrs_hybrid"]["hit@5"],
             0.9375]
     papers = [e10[a]["hit@5"] for a, _ in arms]
     x = np.arange(len(arms))
@@ -1032,7 +1033,7 @@ def fig_robustness():
 
 
 # ===========================================================================
-# Fig 8 —anatomy of one real query (Q2, logged QDCVR-Hybrid traces)
+# Fig 8 —anatomy of one real query (Q2, logged HMRS-Hybrid traces)
 # ===========================================================================
 def fig_anatomy():
     d = json.loads((RESULTS / "exp5_q2_anatomy.json").read_text(

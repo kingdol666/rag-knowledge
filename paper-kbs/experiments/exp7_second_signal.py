@@ -41,7 +41,7 @@ def load_pairs():
                                 .read_text(encoding="utf-8"))}
     pairs = []  # (qid, path, laya_score, text, is_gold)
     for r in rows:
-        if r.get("method") != "qdcvr_hybrid" or "judge_scores" not in r:
+        if r.get("method") != "hmrs_hybrid" or "judge_scores" not in r:
             continue
         q = next(qq for qq in QUESTIONS if qq["qid"] == r["qid"])
         subs = [g.lower() for g in q["gold_doc_substrings"]]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Shared infrastructure for the KBS-paper experiments (QDCVR platform).
+"""Shared infrastructure for the KBS-paper experiments (HMRS platform).
 
 - NoProxyOpener: urllib opener that bypasses the system proxy (localhost!).
 - get_token(): loop-auth.json -> .env MCP_AUTH_TOKEN fallback.

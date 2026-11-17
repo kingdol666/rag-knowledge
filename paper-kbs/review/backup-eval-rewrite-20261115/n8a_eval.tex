@@ -1,0 +1,128 @@
+\section{Evaluation}
+\label{sec:eval}
+We evaluate HMRS from knowledge acquisition and management through collection
+selection, evidence access and answer production. The experiments address the
+research questions in Section~\ref{sec:intro}: management checks address RQ1;
+route-card and content-access comparisons address RQ2--RQ3; a verifier-ordering
+diagnostic addresses RQ4; and answer and operational observations address
+RQ5. Each result belongs to the corpus, run and measurement in which it was
+recorded. They are not pooled into a system-wide accuracy.
+
+\subsection{Experimental design and measures}
+\label{sec:eval-setup}
+Table~\ref{tab:eval-design} distinguishes the datasets and experimental units.
+The industrial questions and 72-question routing set were developer-authored;
+the latter includes 52 automatically expanded questions, with 47 from three
+domains. The 100-paper arXiv corpus has ten question--document pairs; its
+2026-10-13 snapshot and later diagnostic are distinct states. The routing
+follow-up reuses the 72 questions but reports 906 stored parts rather than the
+frozen record's 879. It is therefore a same-question follow-up, not an
+independent evaluation on an unchanged corpus.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Evaluation design and provenance. Results from different campaigns
+and units are reported separately. The 72-question follow-up reuses the frozen
+questions and changes the recorded corpus size.}
+\label{tab:eval-design}
+\begin{tabular}{@{}p{0.19\textwidth}p{0.20\textwidth}p{0.23\textwidth}p{0.25\textwidth}@{}}
+\toprule
+Campaign and state & Material and unit & Comparison or observation & Measure and boundary \\
+\midrule
+Industrial corpus & 42 documents; 16 questions & Hybrid candidates; verifier ordering & Document Hit@5; same-pool replay \\
+ArXiv, Oct. 13 & 100 papers; 10 questions & Platform, file and vector-only answer arms & ID, keyword and marker proxies; one run per arm \\
+ArXiv, Nov. 14--15 & 100-paper probe; 10 answers & Title lookup and a separate platform answer run & Recorded ID/keyword/marker presence; search scope varies \\
+Wikipedia ingestion & 400 pages per language & English, Chinese and Japanese assignment & Source-category agreement; index self-check \\
+Routing, frozen and follow-up & 72 in-domain questions; 879/906 parts & Route cards and content-access configurations & Gold-domain choice and exact-string containment \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Document Hit@5 is the proportion of questions whose gold document appears
+among the first five returned results. Route accuracy checks a labelled
+domain, while \emph{gold-string containment} checks an exact substring in
+returned evidence. The answer grids check whether a gold identifier appears
+in the answer or trace, whether annotated keywords occur, and whether a
+citation-like marker is present. Strict keyword coverage requires at least
+$\lceil3n/5\rceil$ of the $n$ terms; alias-aware scoring accepts listed
+alternatives. A marker need not resolve to a supporting source. These proxies
+do not establish semantic answer correctness or claim--source entailment;
+no independent semantic or entailment evaluation was performed. Wilson 95\%
+intervals describe uncertainty conditional on these questions and run;
+paired exact McNemar tests below are exploratory and unadjusted. Agent arms
+use one model and one run per condition; retries after transport failures are
+not independent repetitions. Supplementary Tables S9--S10 map functions and
+campaigns to their underlying checks.
+
+\subsection{Knowledge acquisition and management}
+\label{sec:e1}\label{sec:e2}\label{sec:e3}
+The management tests cover acquisition, collection assignment, consistency,
+lifecycle operations and experience storage (Table~\ref{tab:management}).
+In the 2026-10-13 arXiv snapshot, 79 of 100 submitted papers were retrievable;
+91 names appeared in ingest state, but the available records do not identify
+the failure stage for each remaining paper. In the separate Wikipedia test,
+assignment agreement with source-category labels was 350/400 for English and
+400/400 each for Chinese and Japanese. Post-ingest self-retrieval is an index
+check, not an independent retrieval benchmark.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Selected knowledge-management observations. Counts come from
+separate campaigns, fixtures and units; untested operations are not counted
+as failures or successes.}
+\label{tab:management}
+\begin{tabular}{@{}p{0.19\textwidth}p{0.31\textwidth}p{0.36\textwidth}@{}}
+\toprule
+Function & Recorded observation & Scope or remaining boundary \\
+\midrule
+ArXiv acquisition & 79/100 papers retrievable; 322 parts stored & October snapshot; per-paper failure stage not established \\
+Collection assignment & English 350/400; Chinese and Japanese 400/400 each & Separate Wikipedia source-category labels \\
+State consistency & 33 parts checked against three state sources & Sampled check, not every stored part \\
+Lifecycle operations & Create, move, delete and forced re-index passed; task status and update checks failed & 16 scenarios; merge and split not controlled \\
+Index recovery & Rename left 18 rather than 9 vector chunks; forced re-index restored 9 & One disposable-library fixture \\
+Experience & 13 candidate drafts; one recorded lesson retrieved first & One small campaign and one scenario; draft approval not exercised \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The lifecycle checks also exposed orphan tags and a cross-library tag-registry
+leak. The experience campaign produced candidate drafts, but the recorded
+approval path could not run with an empty draft pool; scheduled distillation
+and feedback at scale were not assessed. These results demonstrate selected
+operations and expose maintenance failures, rather than a complete lifecycle
+success rate.
+
+A later title-query diagnostic recorded target IDs among the first five saved
+result names for 100/100 papers after index work. However, 72 probe records
+had no library specified and some results were chunk-copy entries. The result
+is not a 100-paper scoped-library retrieval accuracy, nor a matched before--after
+comparison with the October snapshot. The later ten-question answer run is
+reported separately in Section~\ref{sec:e5}.
+
+\subsection{Collection selection and content access}
+\label{sec:routing-audit}
+The route-card diagnostic contrasts cards with derived descriptions (A0) and
+nominally name-only cards (A3) on the frozen 72 questions. The scripted probe
+selected the labelled domain for 72/72 A0 and 37/72 A3 cases; evidence-pack
+string containment was 37/72 and 33/72, respectively
+(Figure~\ref{fig:routing}). The contrast separates route selection from
+returned evidence, but is not an independent agent-selection test: an
+unlogged A3 fallback could read descriptions, some questions share titles
+with route-card descriptions, and A3 may search outside the evaluation scope.
+Thus the difference does not isolate the effect of descriptions alone.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_exp_route}
+\caption{Frozen route-card configuration diagnostic on 72 in-domain
+questions: labelled-domain selection and exact-string containment in returned
+evidence packs for A0 and nominally name-only A3. Points show proportions and
+whiskers show Wilson 95\% intervals; counts are per question. An unlogged A3
+fallback could use descriptions, so the comparison is neither an independent
+agent-routing test nor a controlled single-factor ablation.}
+\label{fig:routing}
+\end{figure*}

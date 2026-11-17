@@ -1,0 +1,6449 @@
+[
+ {
+  "file": "A_Automating_EngineeringModeling_LLM_Agents_2026.pdf",
+  "pages": 34,
+  "bytes": 7209213,
+  "has_graphics": true,
+  "graphic_pages": [
+   6,
+   9,
+   11,
+   12,
+   21,
+   22,
+   24,
+   25,
+   26,
+   28
+  ],
+  "n_captions": 9,
+  "captions": [
+   {
+    "page": 6,
+    "num": 1,
+    "caption": "Figure 1: (a) An agentic system leveraging a pre-trained LLM, supporting libraries, and",
+    "want": true
+   },
+   {
+    "page": 9,
+    "num": 2,
+    "caption": "Figure 2: Supervisor-centric architecture of the multi-agent system, illustrating the inter-",
+    "want": true
+   },
+   {
+    "page": 12,
+    "num": 3,
+    "caption": "Figure 3: The ReAct-based architecture of the single-agent system, illustrating the itera-",
+    "want": true
+   },
+   {
+    "page": 21,
+    "num": 4,
+    "caption": "Figure 4: Workflow of the multi-agent system illustrating the handling of a code execution",
+    "want": true
+   },
+   {
+    "page": 22,
+    "num": 5,
+    "caption": "Figure 5: Workflow of the ReAct-agent system illustrating the handling of a code execution",
+    "want": true
+   },
+   {
+    "page": 24,
+    "num": 6,
+    "caption": "Figure 6: Comparison of deep ensemble predictions and uncertainty quantification for",
+    "want": true
+   },
+   {
+    "page": 25,
+    "num": 7,
+    "caption": "Figure 7: Scatter plots for the test dataset, showing predicted-to-measured CHF ratios",
+    "want": false
+   },
+   {
+    "page": 26,
+    "num": 8,
+    "caption": "Figure 8: Comprehensive performance evaluation across eight blind datasets, comparing",
+    "want": false
+   },
+   {
+    "page": 28,
+    "num": 9,
+    "caption": "Figure 9: Distribution histograms of error metrics for human expert model and the LLM",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2153
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2649
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2894
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2853
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2548
+   },
+   {
+    "page": 6,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1759
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 2344
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 1270
+   },
+   {
+    "page": 9,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 267
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1494
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 29,
+    "textlen": 2033
+   },
+   {
+    "page": 12,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1710
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 9,
+    "textlen": 1574
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 10,
+    "textlen": 1558
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 1936
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 2112
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 1391
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 2140
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 2273
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1687
+   },
+   {
+    "page": 21,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1539
+   },
+   {
+    "page": 22,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 147
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2780
+   },
+   {
+    "page": 24,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 830
+   },
+   {
+    "page": 25,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1434
+   },
+   {
+    "page": 26,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1135
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 1951
+   },
+   {
+    "page": 28,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1905
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2597
+   },
+   {
+    "page": 30,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1726
+   },
+   {
+    "page": 31,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1948
+   },
+   {
+    "page": 32,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1975
+   },
+   {
+    "page": 33,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2096
+   },
+   {
+    "page": 34,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2014
+   }
+  ]
+ },
+ {
+  "file": "A_Building_KnowledgeGrounded_Dialogue_2024.pdf",
+  "pages": 18,
+  "bytes": 5180799,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   2,
+   3,
+   5,
+   7,
+   12,
+   14
+  ],
+  "n_captions": 7,
+  "captions": [
+   {
+    "page": 2,
+    "num": 1,
+    "caption": "Figure 1: An example of knowledge-grounded dialogue with responses from models. Text in orange denotes the the information",
+    "want": false
+   },
+   {
+    "page": 3,
+    "num": 2,
+    "caption": "Figure 2: An example illustrates the distance of tokens in sequence and graph, which will affect the modeling of long-distance",
+    "want": true
+   },
+   {
+    "page": 5,
+    "num": 3,
+    "caption": "Figure 3: An example of Grounded Graph construction procedure. To simplify the graph, we only choose the last utterance and",
+    "want": false
+   },
+   {
+    "page": 7,
+    "num": 4,
+    "caption": "Figure 4: Illustration of our 𝐺2𝐴𝑇architecture.",
+    "want": true
+   },
+   {
+    "page": 12,
+    "num": 5,
+    "caption": "Figure 5: Comparison of different graph structures.",
+    "want": true
+   },
+   {
+    "page": 14,
+    "num": 6,
+    "caption": "Figure 6: Comparison of models with or without 𝐺2.",
+    "want": true
+   },
+   {
+    "page": 14,
+    "num": 7,
+    "caption": "Figure 7: Ablation study",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 1,
+    "drawings": 6,
+    "textlen": 5613
+   },
+   {
+    "page": 2,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 3735
+   },
+   {
+    "page": 3,
+    "images": 2,
+    "drawings": 1,
+    "textlen": 4021
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 6153
+   },
+   {
+    "page": 5,
+    "images": 1,
+    "drawings": 3,
+    "textlen": 3306
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 14,
+    "textlen": 4223
+   },
+   {
+    "page": 7,
+    "images": 1,
+    "drawings": 3,
+    "textlen": 2716
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 5216
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 4711
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 6047
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 11,
+    "textlen": 2526
+   },
+   {
+    "page": 12,
+    "images": 3,
+    "drawings": 1,
+    "textlen": 4948
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 11,
+    "textlen": 2164
+   },
+   {
+    "page": 14,
+    "images": 6,
+    "drawings": 1,
+    "textlen": 3472
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 9,
+    "textlen": 4798
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 7782
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 8205
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 359
+   }
+  ]
+ },
+ {
+  "file": "A_Building_OpenQA_LowResource_2024.pdf",
+  "pages": 29,
+  "bytes": 1003838,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   7,
+   10,
+   12,
+   14,
+   16,
+   17,
+   18,
+   19,
+   21
+  ],
+  "n_captions": 4,
+  "captions": [
+   {
+    "page": 10,
+    "num": 1,
+    "caption": "Figure 1: System overview diagram for the OpenQA retriever component. We assume the knowledge source is independent of",
+    "want": true
+   },
+   {
+    "page": 12,
+    "num": 2,
+    "caption": "Figure 2: Overview diagram for the OpenQA reader component. For the sake of clarity in the figure, we assume the knowledge",
+    "want": true
+   },
+   {
+    "page": 21,
+    "num": 3,
+    "caption": "Figure 3: Retriever results for the OpenQA formulation for different sample portions of XQuAD-TR based on Wiki-TR-2023.",
+    "want": false
+   },
+   {
+    "page": 21,
+    "num": 4,
+    "caption": "Figure 4: Reader results for the OpenQA formulation for different sample portions of XQuAD-TR based on Wiki-TR-2023.",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 1,
+    "drawings": 6,
+    "textlen": 5140
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5859
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 6153
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 5354
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 6267
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 6333
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 24,
+    "textlen": 4993
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 4849
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 5798
+   },
+   {
+    "page": 10,
+    "images": 10,
+    "drawings": 185,
+    "textlen": 2831
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 6197
+   },
+   {
+    "page": 12,
+    "images": 6,
+    "drawings": 117,
+    "textlen": 3329
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 14,
+    "textlen": 5809
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 21,
+    "textlen": 6193
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 10,
+    "textlen": 5541
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 185,
+    "textlen": 7141
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 154,
+    "textlen": 7413
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 93,
+    "textlen": 6813
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 85,
+    "textlen": 6154
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 17,
+    "textlen": 4939
+   },
+   {
+    "page": 21,
+    "images": 2,
+    "drawings": 6,
+    "textlen": 2374
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 5741
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 5317
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5877
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 7362
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 8256
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 8310
+   },
+   {
+    "page": 28,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 8254
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 6447
+   }
+  ]
+ },
+ {
+  "file": "A_COMPANION_Developing_SoftwareRefArch_JKP_CEUR2021.pdf",
+  "pages": 8,
+  "bytes": 1052354,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   4,
+   6
+  ],
+  "n_captions": 2,
+  "captions": [
+   {
+    "page": 4,
+    "num": 1,
+    "caption": "Figure 1: The SRA for JKPs (represented with ArchiMate 3.1 notation).",
+    "want": false
+   },
+   {
+    "page": 6,
+    "num": 2,
+    "caption": "Figure 2: Visual representation of the instantiated architecture for the JKP prototype.",
+    "want": true
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 1,
+    "drawings": 14,
+    "textlen": 4917
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5427
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4689
+   },
+   {
+    "page": 4,
+    "images": 1,
+    "drawings": 2,
+    "textlen": 3424
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5220
+   },
+   {
+    "page": 6,
+    "images": 1,
+    "drawings": 12,
+    "textlen": 3009
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4795
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4886
+   }
+  ]
+ },
+ {
+  "file": "A_Coordinated_LLM_MultiAgent_QA_2025.pdf",
+  "pages": 36,
+  "bytes": 1930166,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   2,
+   3,
+   10,
+   17,
+   18,
+   19,
+   20
+  ],
+  "n_captions": 2,
+  "captions": [
+   {
+    "page": 10,
+    "num": 1,
+    "caption": "Figure 1: CIR3 takes an input document (1), identifies subtopics (2), and prompts writer",
+    "want": false
+   },
+   {
+    "page": 20,
+    "num": 2,
+    "caption": "Figure 2: Number of inner-refinement cycles (x-axis), given as intervals, required to process",
+    "want": true
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 1,
+    "drawings": 45,
+    "textlen": 1230
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 23,
+    "textlen": 2185
+   },
+   {
+    "page": 3,
+    "images": 1,
+    "drawings": 2,
+    "textlen": 2092
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2246
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2430
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2255
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2329
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2154
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 2274
+   },
+   {
+    "page": 10,
+    "images": 1,
+    "drawings": 3,
+    "textlen": 1968
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 1201
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2292
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 2579
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2363
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2082
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2448
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 95,
+    "textlen": 3011
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 30,
+    "textlen": 2118
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 33,
+    "textlen": 2126
+   },
+   {
+    "page": 20,
+    "images": 1,
+    "drawings": 12,
+    "textlen": 1575
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2062
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1782
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1811
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2172
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2125
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2105
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2213
+   },
+   {
+    "page": 28,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2072
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1895
+   },
+   {
+    "page": 30,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1987
+   },
+   {
+    "page": 31,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1986
+   },
+   {
+    "page": 32,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1336
+   },
+   {
+    "page": 33,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 464
+   },
+   {
+    "page": 34,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 395
+   },
+   {
+    "page": 35,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1978
+   },
+   {
+    "page": 36,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1024
+   }
+  ]
+ },
+ {
+  "file": "A_Enhancing_LLM_Systems_CircuitAnalysis_2026.pdf",
+  "pages": 108,
+  "bytes": 3016611,
+  "has_graphics": true,
+  "graphic_pages": [
+   17,
+   23,
+   25,
+   27,
+   28,
+   29,
+   33,
+   46,
+   54,
+   67,
+   68,
+   69,
+   74
+  ],
+  "n_captions": 9,
+  "captions": [
+   {
+    "page": 17,
+    "num": 1,
+    "caption": "Figure 1: Source detection using external computer vision tools and correction via inset source images:",
+    "want": false
+   },
+   {
+    "page": 23,
+    "num": 2,
+    "caption": "Figure 2: Problem solving pipeline of ngspice. Note: The circuit diagram in this figure is taken from Problem 6.4-6 in Svoboda",
+    "want": true
+   },
+   {
+    "page": 23,
+    "num": 3,
+    "caption": "Figure 3: Multiple trials of Gemini- and ngspice-based problem solving processes",
+    "want": true
+   },
+   {
+    "page": 25,
+    "num": 4,
+    "caption": "Figure 4: Framework of the proposed circuit problem solving method",
+    "want": true
+   },
+   {
+    "page": 28,
+    "num": 5,
+    "caption": "Figure 5: Precision–Recall curve of the best fine-tuned YOLO11 model on the test dataset.",
+    "want": false
+   },
+   {
+    "page": 29,
+    "num": 6,
+    "caption": "Figure 6: Circuit diagram samples from the dataset used for YOLO model fine-tuning",
+    "want": true
+   },
+   {
+    "page": 33,
+    "num": 7,
+    "caption": "Figure 7: Circuit diagram samples illustrating the detection of independent and dependent",
+    "want": true
+   },
+   {
+    "page": 46,
+    "num": 8,
+    "caption": "Figure 8: Examples of textbook-quality and various hand-drawn circuit diagrams for",
+    "want": true
+   },
+   {
+    "page": 54,
+    "num": 9,
+    "caption": "Figure 9: Examples illustrating differences in circuit-diagram styles between Svoboda and",
+    "want": true
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2104
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2446
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2832
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2722
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2359
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2578
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2574
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2874
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2830
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2826
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2211
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2456
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 2212
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2216
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2301
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2312
+   },
+   {
+    "page": 17,
+    "images": 5,
+    "drawings": 60,
+    "textlen": 2066
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1865
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2513
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1985
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2636
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2369
+   },
+   {
+    "page": 23,
+    "images": 15,
+    "drawings": 89,
+    "textlen": 629
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1933
+   },
+   {
+    "page": 25,
+    "images": 10,
+    "drawings": 85,
+    "textlen": 850
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1973
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 30,
+    "textlen": 1936
+   },
+   {
+    "page": 28,
+    "images": 0,
+    "drawings": 40,
+    "textlen": 1787
+   },
+   {
+    "page": 29,
+    "images": 3,
+    "drawings": 8,
+    "textlen": 1589
+   },
+   {
+    "page": 30,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2578
+   },
+   {
+    "page": 31,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1529
+   },
+   {
+    "page": 32,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1194
+   },
+   {
+    "page": 33,
+    "images": 2,
+    "drawings": 1,
+    "textlen": 1571
+   },
+   {
+    "page": 34,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2159
+   },
+   {
+    "page": 35,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2358
+   },
+   {
+    "page": 36,
+    "images": 0,
+    "drawings": 12,
+    "textlen": 2218
+   },
+   {
+    "page": 37,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2371
+   },
+   {
+    "page": 38,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2012
+   },
+   {
+    "page": 39,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2204
+   },
+   {
+    "page": 40,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2468
+   },
+   {
+    "page": 41,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2400
+   },
+   {
+    "page": 42,
+    "images": 0,
+    "drawings": 19,
+    "textlen": 2287
+   },
+   {
+    "page": 43,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 2418
+   },
+   {
+    "page": 44,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1965
+   },
+   {
+    "page": 45,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2543
+   },
+   {
+    "page": 46,
+    "images": 5,
+    "drawings": 1,
+    "textlen": 519
+   },
+   {
+    "page": 47,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 2625
+   },
+   {
+    "page": 48,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 1959
+   },
+   {
+    "page": 49,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 1579
+   },
+   {
+    "page": 50,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2804
+   },
+   {
+    "page": 51,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 2549
+   },
+   {
+    "page": 52,
+    "images": 0,
+    "drawings": 11,
+    "textlen": 2177
+   },
+   {
+    "page": 53,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2431
+   },
+   {
+    "page": 54,
+    "images": 2,
+    "drawings": 3,
+    "textlen": 1564
+   },
+   {
+    "page": 55,
+    "images": 0,
+    "drawings": 10,
+    "textlen": 1803
+   },
+   {
+    "page": 56,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2430
+   },
+   {
+    "page": 57,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 2651
+   },
+   {
+    "page": 58,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 1998
+   },
+   {
+    "page": 59,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2374
+   },
+   {
+    "page": 60,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2759
+   },
+   {
+    "page": 61,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2582
+   },
+   {
+    "page": 62,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2705
+   },
+   {
+    "page": 63,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2612
+   },
+   {
+    "page": 64,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2829
+   },
+   {
+    "page": 65,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1878
+   },
+   {
+    "page": 66,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 2370
+   },
+   {
+    "page": 67,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1481
+   },
+   {
+    "page": 68,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1547
+   },
+   {
+    "page": 69,
+    "images": 1,
+    "drawings": 3,
+    "textlen": 956
+   },
+   {
+    "page": 70,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1159
+   },
+   {
+    "page": 71,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1461
+   },
+   {
+    "page": 72,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1126
+   },
+   {
+    "page": 73,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1401
+   },
+   {
+    "page": 74,
+    "images": 1,
+    "drawings": 2,
+    "textlen": 614
+   },
+   {
+    "page": 75,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 1736
+   },
+   {
+    "page": 76,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1536
+   },
+   {
+    "page": 77,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1213
+   },
+   {
+    "page": 78,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1262
+   },
+   {
+    "page": 79,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1928
+   },
+   {
+    "page": 80,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1730
+   },
+   {
+    "page": 81,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1906
+   },
+   {
+    "page": 82,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 1301
+   },
+   {
+    "page": 83,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1632
+   },
+   {
+    "page": 84,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1632
+   },
+   {
+    "page": 85,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1515
+   },
+   {
+    "page": 86,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1648
+   },
+   {
+    "page": 87,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1382
+   },
+   {
+    "page": 88,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1835
+   },
+   {
+    "page": 89,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1611
+   },
+   {
+    "page": 90,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1448
+   },
+   {
+    "page": 91,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1965
+   },
+   {
+    "page": 92,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1834
+   },
+   {
+    "page": 93,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1661
+   },
+   {
+    "page": 94,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1647
+   },
+   {
+    "page": 95,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1761
+   },
+   {
+    "page": 96,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1807
+   },
+   {
+    "page": 97,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 2132
+   },
+   {
+    "page": 98,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1494
+   },
+   {
+    "page": 99,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1375
+   },
+   {
+    "page": 100,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2084
+   },
+   {
+    "page": 101,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1928
+   },
+   {
+    "page": 102,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2007
+   },
+   {
+    "page": 103,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2133
+   },
+   {
+    "page": 104,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2062
+   },
+   {
+    "page": 105,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2037
+   },
+   {
+    "page": 106,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1984
+   },
+   {
+    "page": 107,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2084
+   },
+   {
+    "page": 108,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 273
+   }
+  ]
+ },
+ {
+  "file": "A_FineGrained_StatefulKnowledgeExploration_2025.pdf",
+  "pages": 14,
+  "bytes": 769794,
+  "has_graphics": true,
+  "graphic_pages": [
+   3,
+   4,
+   7,
+   9,
+   12
+  ],
+  "n_captions": 3,
+  "captions": [
+   {
+    "page": 3,
+    "num": 1,
+    "caption": "Figure 1: Compared to existing methods, our approach exhibits",
+    "want": false
+   },
+   {
+    "page": 4,
+    "num": 2,
+    "caption": "Figure 2: A simple example illustrating the differences between the paradigm we propose and the existing main stream paradigm.",
+    "want": true
+   },
+   {
+    "page": 12,
+    "num": 3,
+    "caption": "Figure 3: LLM prompts for Chinese datasets.",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 902
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 5458
+   },
+   {
+    "page": 3,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 5145
+   },
+   {
+    "page": 4,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 2609
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5326
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5903
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 108,
+    "textlen": 3509
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 16,
+    "textlen": 5493
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 50,
+    "textlen": 4174
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 4401
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 10,
+    "textlen": 5232
+   },
+   {
+    "page": 12,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1562
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 6193
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1049
+   }
+  ]
+ },
+ {
+  "file": "A_GOFAI_Meets_GenerativeAI_ExpertSystems_2026.pdf",
+  "pages": 18,
+  "bytes": 2213232,
+  "has_graphics": true,
+  "graphic_pages": [
+   6,
+   7,
+   8,
+   9,
+   11,
+   13,
+   14,
+   15,
+   16
+  ],
+  "n_captions": 5,
+  "captions": [
+   {
+    "page": 6,
+    "num": 1,
+    "caption": "Figure 1: Knowledge visualization of 100 nodes of causal and domain relations extracted about the",
+    "want": false
+   },
+   {
+    "page": 8,
+    "num": 2,
+    "caption": "Figure 2: Nodes can be pruned using the visualization script. We include in this figure 20 nodes of",
+    "want": false
+   },
+   {
+    "page": 9,
+    "num": 3,
+    "caption": "Figure 3: Diagram flow with all the processes involved in the creation of the expert system from the",
+    "want": true
+   },
+   {
+    "page": 13,
+    "num": 4,
+    "caption": "Figure 4: Knowledge network of Plato of the LLM. 10 main relations. We can see famous concepts",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 5,
+    "caption": "Figure 5: Knowledge graph extracted from Grok regarding Plato.",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3184
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4634
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4223
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2039
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 14,
+    "textlen": 2513
+   },
+   {
+    "page": 6,
+    "images": 1,
+    "drawings": 8,
+    "textlen": 1663
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 36,
+    "textlen": 1633
+   },
+   {
+    "page": 8,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1699
+   },
+   {
+    "page": 9,
+    "images": 1,
+    "drawings": 2,
+    "textlen": 2227
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 3841
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 81,
+    "textlen": 3082
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 11,
+    "textlen": 4860
+   },
+   {
+    "page": 13,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 2108
+   },
+   {
+    "page": 14,
+    "images": 1,
+    "drawings": 39,
+    "textlen": 1205
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 47,
+    "textlen": 2925
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 52,
+    "textlen": 3971
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2981
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3117
+   }
+  ]
+ },
+ {
+  "file": "A_HELIOT_LLM_CDSS_2025.pdf",
+  "pages": 18,
+  "bytes": 760590,
+  "has_graphics": true,
+  "graphic_pages": [
+   6,
+   7,
+   9,
+   10,
+   11,
+   12,
+   13
+  ],
+  "n_captions": 7,
+  "captions": [
+   {
+    "page": 4,
+    "num": 1,
+    "caption": "Figure 1: Decision Support Prompt: System Prompt.",
+    "want": true
+   },
+   {
+    "page": 4,
+    "num": 2,
+    "caption": "Figure 2: Decision Support Prompt: User Prompt.",
+    "want": false
+   },
+   {
+    "page": 5,
+    "num": 3,
+    "caption": "Figure 3: Ingredient Translation Prompt.",
+    "want": false
+   },
+   {
+    "page": 6,
+    "num": 4,
+    "caption": "Figure 4: HELIOT CDSS Architecture.",
+    "want": true
+   },
+   {
+    "page": 7,
+    "num": 5,
+    "caption": "Figure 5: Overview of the Pharmaceutical Data Pipeline Process.",
+    "want": true
+   },
+   {
+    "page": 10,
+    "num": 6,
+    "caption": "Figure 6: Class Distribution in the Patients Dataset.",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 7,
+    "caption": "Figure 7: Experiment Design and Setup.",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 14,
+    "textlen": 2303
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4717
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5370
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 3151
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 4681
+   },
+   {
+    "page": 6,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1866
+   },
+   {
+    "page": 7,
+    "images": 1,
+    "drawings": 10,
+    "textlen": 1984
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 17,
+    "textlen": 3962
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 26,
+    "textlen": 3608
+   },
+   {
+    "page": 10,
+    "images": 1,
+    "drawings": 13,
+    "textlen": 2785
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 54,
+    "textlen": 3990
+   },
+   {
+    "page": 12,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 2048
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 56,
+    "textlen": 3887
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 4981
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4861
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4944
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4625
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1433
+   }
+  ]
+ },
+ {
+  "file": "A_KG_Orchestra_OpenSource_MultiAgent_Framework_2026.pdf",
+  "pages": 62,
+  "bytes": 2384738,
+  "has_graphics": true,
+  "graphic_pages": [
+   31,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62
+  ],
+  "n_captions": 0,
+  "captions": [],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1324
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2421
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2175
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2976
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2993
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2913
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2563
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2635
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2497
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1842
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 1492
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2319
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2385
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2056
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2216
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 1819
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 1747
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2189
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2719
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 2037
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2034
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2166
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2678
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 9,
+    "textlen": 1822
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 2201
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 12,
+    "textlen": 1170
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 2549
+   },
+   {
+    "page": 28,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 2068
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 17,
+    "textlen": 1932
+   },
+   {
+    "page": 30,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 2088
+   },
+   {
+    "page": 31,
+    "images": 0,
+    "drawings": 31,
+    "textlen": 1872
+   },
+   {
+    "page": 32,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2956
+   },
+   {
+    "page": 33,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2821
+   },
+   {
+    "page": 34,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2758
+   },
+   {
+    "page": 35,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2994
+   },
+   {
+    "page": 36,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2940
+   },
+   {
+    "page": 37,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2986
+   },
+   {
+    "page": 38,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2450
+   },
+   {
+    "page": 39,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1630
+   },
+   {
+    "page": 40,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2219
+   },
+   {
+    "page": 41,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2240
+   },
+   {
+    "page": 42,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2179
+   },
+   {
+    "page": 43,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2012
+   },
+   {
+    "page": 44,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2175
+   },
+   {
+    "page": 45,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2127
+   },
+   {
+    "page": 46,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2004
+   },
+   {
+    "page": 47,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1304
+   },
+   {
+    "page": 48,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2129
+   },
+   {
+    "page": 49,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2404
+   },
+   {
+    "page": 50,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2381
+   },
+   {
+    "page": 51,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 732
+   },
+   {
+    "page": 52,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 53,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 54,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 55,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 56,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 57,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 58,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 59,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 60,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 61,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   },
+   {
+    "page": 62,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 356
+   }
+  ]
+ },
+ {
+  "file": "A_LLM_IR_System_BankSupervisors_2024.pdf",
+  "pages": 19,
+  "bytes": 444786,
+  "has_graphics": true,
+  "graphic_pages": [
+   4,
+   7,
+   10,
+   12,
+   15,
+   16,
+   19
+  ],
+  "n_captions": 6,
+  "captions": [
+   {
+    "page": 4,
+    "num": 1,
+    "caption": "Figure 1: Text statistics of the findings database",
+    "want": false
+   },
+   {
+    "page": 7,
+    "num": 2,
+    "caption": "Figure 2: Comparison of BM25, BM25L and BM25+",
+    "want": true
+   },
+   {
+    "page": 15,
+    "num": 3,
+    "caption": "Figure 3: The diagram illustrates a transformer-based sequential denoising autoencoder. The process begins in the top part where the input finding",
+    "want": true
+   },
+   {
+    "page": 16,
+    "num": 4,
+    "caption": "Figure 4: Birdview of the validation methodology.",
+    "want": true
+   },
+   {
+    "page": 19,
+    "num": 5,
+    "caption": "Figure 5: Simulation exercise of a perfect IR system, ω1(.). ω2(.) is a biased system that samples from G with a higher probability than from D\\G.",
+    "want": true
+   },
+   {
+    "page": 19,
+    "num": 6,
+    "caption": "Figure 6: MAP across different k values for the Hybrid model",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 3888
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4894
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4804
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 616,
+    "textlen": 373
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 3568
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 3730
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 347,
+    "textlen": 1838
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4645
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 4142
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 26,
+    "textlen": 3141
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4183
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 47,
+    "textlen": 3642
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4836
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 3219
+   },
+   {
+    "page": 15,
+    "images": 1,
+    "drawings": 8,
+    "textlen": 1271
+   },
+   {
+    "page": 16,
+    "images": 11,
+    "drawings": 33,
+    "textlen": 1559
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 4546
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4651
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 349,
+    "textlen": 569
+   }
+  ]
+ },
+ {
+  "file": "A_MSDiagnosis_Benchmark_Framework_MultiStepClinical_2025.pdf",
+  "pages": 16,
+  "bytes": 1697767,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   2,
+   4,
+   5,
+   6,
+   7,
+   13,
+   14,
+   15
+  ],
+  "n_captions": 9,
+  "captions": [
+   {
+    "page": 1,
+    "num": 1,
+    "caption": "Figure 1: An example of our diagnostic benchmark and",
+    "want": false
+   },
+   {
+    "page": 4,
+    "num": 2,
+    "caption": "Figure 2: Distribution of “Primary diagnosis matches",
+    "want": false
+   },
+   {
+    "page": 5,
+    "num": 3,
+    "caption": "Figure 3: Our framework for the multi-step clinical diagnosis. The top portion of the figure illustrates the flow of",
+    "want": true
+   },
+   {
+    "page": 8,
+    "num": 4,
+    "caption": "Figure 4: Case study. The green (red) highlight indicates correct (incorrect) results. Purple marks lack of domain",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 5,
+    "caption": "Figure 5: The prompt of forward inference.",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 6,
+    "caption": "Figure 6: The prompt of refine the diagnosis results.",
+    "want": false
+   },
+   {
+    "page": 15,
+    "num": 7,
+    "caption": "Figure 7: The prompt of reflection on diagnostic result.",
+    "want": false
+   },
+   {
+    "page": 15,
+    "num": 8,
+    "caption": "Figure 8: The prompt of backward inference from diag-",
+    "want": false
+   },
+   {
+    "page": 16,
+    "num": 9,
+    "caption": "Figure 9: A complete multi-step diagnostic example.",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 34,
+    "textlen": 4587
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 27,
+    "textlen": 4384
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4558
+   },
+   {
+    "page": 4,
+    "images": 5,
+    "drawings": 45,
+    "textlen": 4163
+   },
+   {
+    "page": 5,
+    "images": 5,
+    "drawings": 41,
+    "textlen": 5192
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 34,
+    "textlen": 3776
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 22,
+    "textlen": 4073
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 17,
+    "textlen": 5490
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4878
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5152
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 876
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4537
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 50,
+    "textlen": 4174
+   },
+   {
+    "page": 14,
+    "images": 6,
+    "drawings": 36,
+    "textlen": 4536
+   },
+   {
+    "page": 15,
+    "images": 6,
+    "drawings": 48,
+    "textlen": 5802
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 6794
+   }
+  ]
+ },
+ {
+  "file": "A_Practical_PrivacyPreserving_Framework_LLM_Services_2026.pdf",
+  "pages": 26,
+  "bytes": 1420820,
+  "has_graphics": true,
+  "graphic_pages": [
+   8,
+   9,
+   10,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   23,
+   24,
+   25
+  ],
+  "n_captions": 23,
+  "captions": [
+   {
+    "page": 8,
+    "num": 1,
+    "caption": "Fig. 1: API-based mode interaction.",
+    "want": false
+   },
+   {
+    "page": 9,
+    "num": 2,
+    "caption": "Fig. 2: Subscription-based mode interaction.",
+    "want": false
+   },
+   {
+    "page": 10,
+    "num": 3,
+    "caption": "Fig. 3: Security reduction of our construction from a partially blind signature.",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 4,
+    "caption": "Fig. 4: Q1 - Q5 communication time momparison.",
+    "want": false
+   },
+   {
+    "page": 13,
+    "num": 5,
+    "caption": "Fig. 5: Q1 - Q5 communication request size comparison.",
+    "want": false
+   },
+   {
+    "page": 13,
+    "num": 6,
+    "caption": "Fig. 6: Q1 - Q5 communication response size comparison.",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 7,
+    "caption": "Fig. 7: Different Numbers of Users Communication Time Comparison(Deepseek 14B).",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 8,
+    "caption": "Fig. 8: Different Numbers of Users Request Size Comparison(Deepseek 14B).",
+    "want": false
+   },
+   {
+    "page": 15,
+    "num": 9,
+    "caption": "Fig. 9: Different Numbers of Users Response Size Comparison(Deepseek 14B).",
+    "want": false
+   },
+   {
+    "page": 15,
+    "num": 10,
+    "caption": "Fig. 10: Different Numbers of Users Communication Time Comparison(Qwen2.5 14B).",
+    "want": false
+   },
+   {
+    "page": 16,
+    "num": 11,
+    "caption": "Fig. 11: Different Numbers of Users Request Size Comparison(Qwen2.5 14B).",
+    "want": false
+   },
+   {
+    "page": 16,
+    "num": 12,
+    "caption": "Fig. 12: Different Numbers of Users Response Size Comparison(Qwen2.5 14B).",
+    "want": false
+   },
+   {
+    "page": 17,
+    "num": 13,
+    "caption": "Fig. 13: Q1 - Q5 communication time differentials comparison.",
+    "want": false
+   },
+   {
+    "page": 17,
+    "num": 16,
+    "caption": "Fig. 16. The results show substantial temporal variability when downloading the same file over HTTPS, confirming that such",
+    "want": false
+   },
+   {
+    "page": 18,
+    "num": 14,
+    "caption": "Fig. 14: Q1 - Q5 communication request size differentials comparison.",
+    "want": false
+   },
+   {
+    "page": 19,
+    "num": 15,
+    "caption": "Fig. 15: Q1 - Q5 communication response size differentials comparison.",
+    "want": false
+   },
+   {
+    "page": 19,
+    "num": 16,
+    "caption": "Fig. 16: Network conditions for downloading 10MB ,100MB and 1000MB files via HTTPS protocol",
+    "want": false
+   },
+   {
+    "page": 23,
+    "num": 17,
+    "caption": "Fig. 17: Q1 - Q5 communication time comparison(DeepSeek-R1-Distill-Llama-8B).",
+    "want": false
+   },
+   {
+    "page": 23,
+    "num": 18,
+    "caption": "Fig. 18: Q1 - Q5 communication request size comparison(DeepSeek-R1-Distill-Llama-8B).",
+    "want": false
+   },
+   {
+    "page": 24,
+    "num": 19,
+    "caption": "Fig. 19: Q1 - Q5 communication response size comparison(DeepSeek-R1-Distill-Llama-8B).",
+    "want": false
+   },
+   {
+    "page": 24,
+    "num": 20,
+    "caption": "Fig. 20: Q1 - Q5 communication time differentials comparison(DeepSeek-R1-Distill-Llama-8B).",
+    "want": false
+   },
+   {
+    "page": 25,
+    "num": 21,
+    "caption": "Fig. 21: Q1 - Q5 communication request size differentials comparison(DeepSeek-R1-Distill-Llama-8B).",
+    "want": false
+   },
+   {
+    "page": 25,
+    "num": 22,
+    "caption": "Fig. 22: Q1 - Q5 communication response size differentials comparison(DeepSeek-R1-Distill-Llama-8B).",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5538
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5472
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5917
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4741
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4552
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 6109
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 6285
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 539,
+    "textlen": 1908
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 547,
+    "textlen": 2074
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 175,
+    "textlen": 2582
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5798
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 180,
+    "textlen": 2559
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 209,
+    "textlen": 2671
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 83,
+    "textlen": 531
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 81,
+    "textlen": 541
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 80,
+    "textlen": 557
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 124,
+    "textlen": 4043
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 178,
+    "textlen": 3472
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 462,
+    "textlen": 1543
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1300
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5535
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 4008
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 207,
+    "textlen": 1737
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 245,
+    "textlen": 3283
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 246,
+    "textlen": 2222
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2865
+   }
+  ]
+ },
+ {
+  "file": "A_SigOpt_Mulch_IntelligentSystem_AutoML_2023.pdf",
+  "pages": 14,
+  "bytes": 858133,
+  "has_graphics": true,
+  "graphic_pages": [
+   4,
+   6,
+   7,
+   8,
+   10,
+   11,
+   13,
+   14
+  ],
+  "n_captions": 7,
+  "captions": [
+   {
+    "page": 4,
+    "num": 1,
+    "caption": "Figure 1: Overview of SigOpt’s HPO computation workflows.",
+    "want": true
+   },
+   {
+    "page": 4,
+    "num": 2,
+    "caption": "Figure 2: An HPO example of tuning XGBoost using the vanilla",
+    "want": false
+   },
+   {
+    "page": 4,
+    "num": 3,
+    "caption": "Figure 3: An HPO example of tuning XGBoost using the Mulch",
+    "want": false
+   },
+   {
+    "page": 7,
+    "num": 4,
+    "caption": "Figure 4: A violin plot of XGBoost hyperparameter importance scores sorted by mean importance score in decreasing order and log scaled.",
+    "want": false
+   },
+   {
+    "page": 8,
+    "num": 5,
+    "caption": "Figure 5: On the left three plots, we show some priors (dark blue) that have been fit to an empirical density (grey) of previously identified",
+    "want": false
+   },
+   {
+    "page": 8,
+    "num": 6,
+    "caption": "Figure 6: Contours and histograms of classification accuracy when",
+    "want": false
+   },
+   {
+    "page": 11,
+    "num": 7,
+    "caption": "Figure 7: Mulch’s metalearning (blue) results in identification of better models compared to: vanilla SigOpt (orange), Optuna (black),",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 4881
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5952
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5468
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 107,
+    "textlen": 5243
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5539
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 167,
+    "textlen": 3182
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 142,
+    "textlen": 3520
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 340,
+    "textlen": 4615
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 13,
+    "textlen": 5575
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 23,
+    "textlen": 5411
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 464,
+    "textlen": 3664
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 7369
+   },
+   {
+    "page": 13,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 4933
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 23,
+    "textlen": 1721
+   }
+  ]
+ },
+ {
+  "file": "A_SoftwareRefArch_JournalisticKnowledgePlatforms_2023.pdf",
+  "pages": 16,
+  "bytes": 901005,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   3,
+   7,
+   8,
+   11,
+   14
+  ],
+  "n_captions": 4,
+  "captions": [
+   {
+    "page": 3,
+    "num": 1,
+    "caption": "Fig. 1. Construction process of the SRA for JKPs.",
+    "want": true
+   },
+   {
+    "page": 7,
+    "num": 2,
+    "caption": "Fig. 2. High-level view of the architecture.",
+    "want": true
+   },
+   {
+    "page": 8,
+    "num": 3,
+    "caption": "Fig. 3. The SRA for JKPs (represented with ArchiMate 3.1 notation).",
+    "want": false
+   },
+   {
+    "page": 11,
+    "num": 4,
+    "caption": "Fig. 4. The instantiated architecture for the JKP prototype.",
+    "want": true
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 3,
+    "drawings": 33,
+    "textlen": 5328
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 7862
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 162,
+    "textlen": 6200
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 7414
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 5582
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 7008
+   },
+   {
+    "page": 7,
+    "images": 1,
+    "drawings": 17,
+    "textlen": 5378
+   },
+   {
+    "page": 8,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 6896
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 6612
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 4836
+   },
+   {
+    "page": 11,
+    "images": 1,
+    "drawings": 67,
+    "textlen": 5028
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 7974
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3931
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 131,
+    "textlen": 1011
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 10194
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8743
+   }
+  ]
+ },
+ {
+  "file": "B_FinBloom_KnowledgeGrounding_RealtimeData_2026.pdf",
+  "pages": 39,
+  "bytes": 3015303,
+  "has_graphics": true,
+  "graphic_pages": [
+   3,
+   4,
+   6,
+   10,
+   11,
+   13,
+   15,
+   17,
+   18,
+   19,
+   31,
+   34
+  ],
+  "n_captions": 6,
+  "captions": [
+   {
+    "page": 3,
+    "num": 1,
+    "caption": "Figure 1: Static approach for answering user query without knowledge grounding",
+    "want": false
+   },
+   {
+    "page": 4,
+    "num": 2,
+    "caption": "Figure 2: Dynamic approach for answering user query with knowledge grounding. The",
+    "want": false
+   },
+   {
+    "page": 6,
+    "num": 3,
+    "caption": "Figure 3: Working of the proposed architecture: An example",
+    "want": true
+   },
+   {
+    "page": 11,
+    "num": 4,
+    "caption": "Figure 4: Steps for dataset generation",
+    "want": false
+   },
+   {
+    "page": 17,
+    "num": 5,
+    "caption": "Figure 5: Development process for Financial Agent.",
+    "want": true
+   },
+   {
+    "page": 19,
+    "num": 6,
+    "caption": "Figure 6: Work flow and interoperability of the modules.",
+    "want": true
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2491
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3701
+   },
+   {
+    "page": 3,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 2409
+   },
+   {
+    "page": 4,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 2004
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3390
+   },
+   {
+    "page": 6,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 2055
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3625
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3682
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3424
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 56,
+    "textlen": 3462
+   },
+   {
+    "page": 11,
+    "images": 1,
+    "drawings": 21,
+    "textlen": 2723
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2441
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 21,
+    "textlen": 2402
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3542
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 30,
+    "textlen": 3620
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3574
+   },
+   {
+    "page": 17,
+    "images": 1,
+    "drawings": 34,
+    "textlen": 2586
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 23,
+    "textlen": 3150
+   },
+   {
+    "page": 19,
+    "images": 1,
+    "drawings": 3,
+    "textlen": 2099
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3306
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2619
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2663
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2738
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2701
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2842
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1465
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 9,
+    "textlen": 2161
+   },
+   {
+    "page": 28,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 2962
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 803
+   },
+   {
+    "page": 30,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3844
+   },
+   {
+    "page": 31,
+    "images": 0,
+    "drawings": 21,
+    "textlen": 2560
+   },
+   {
+    "page": 32,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2432
+   },
+   {
+    "page": 33,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 4998
+   },
+   {
+    "page": 34,
+    "images": 0,
+    "drawings": 31,
+    "textlen": 2202
+   },
+   {
+    "page": 35,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2317
+   },
+   {
+    "page": 36,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 1738
+   },
+   {
+    "page": 37,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 1931
+   },
+   {
+    "page": 38,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1781
+   },
+   {
+    "page": 39,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2190
+   }
+  ]
+ },
+ {
+  "file": "B_GeoFuB_OperatorFunction_KnowledgeBase_2025.pdf",
+  "pages": 44,
+  "bytes": 3513998,
+  "has_graphics": true,
+  "graphic_pages": [
+   8,
+   9,
+   10,
+   12,
+   13,
+   18,
+   21,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   34,
+   35,
+   36
+  ],
+  "n_captions": 0,
+  "captions": [],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2388
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2216
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2611
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2169
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2215
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2370
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2247
+   },
+   {
+    "page": 8,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1431
+   },
+   {
+    "page": 9,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1558
+   },
+   {
+    "page": 10,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1515
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2436
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 30,
+    "textlen": 1963
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 21,
+    "textlen": 1854
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 2448
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 18,
+    "textlen": 2355
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2300
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2350
+   },
+   {
+    "page": 18,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1563
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 13,
+    "textlen": 2055
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 1619
+   },
+   {
+    "page": 21,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1317
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2385
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 30,
+    "textlen": 1553
+   },
+   {
+    "page": 24,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 958
+   },
+   {
+    "page": 25,
+    "images": 1,
+    "drawings": 7,
+    "textlen": 1857
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 80,
+    "textlen": 1277
+   },
+   {
+    "page": 27,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1784
+   },
+   {
+    "page": 28,
+    "images": 1,
+    "drawings": 20,
+    "textlen": 1513
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 52,
+    "textlen": 1219
+   },
+   {
+    "page": 30,
+    "images": 1,
+    "drawings": 67,
+    "textlen": 725
+   },
+   {
+    "page": 31,
+    "images": 1,
+    "drawings": 28,
+    "textlen": 1452
+   },
+   {
+    "page": 32,
+    "images": 0,
+    "drawings": 26,
+    "textlen": 1626
+   },
+   {
+    "page": 33,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2464
+   },
+   {
+    "page": 34,
+    "images": 0,
+    "drawings": 27,
+    "textlen": 1792
+   },
+   {
+    "page": 35,
+    "images": 0,
+    "drawings": 63,
+    "textlen": 1729
+   },
+   {
+    "page": 36,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 1798
+   },
+   {
+    "page": 37,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2344
+   },
+   {
+    "page": 38,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2620
+   },
+   {
+    "page": 39,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1882
+   },
+   {
+    "page": 40,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2174
+   },
+   {
+    "page": 41,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2279
+   },
+   {
+    "page": 42,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2346
+   },
+   {
+    "page": 43,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2240
+   },
+   {
+    "page": 44,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 927
+   }
+  ]
+ },
+ {
+  "file": "B_InformationTheoretic_DualMemory_System_2025.pdf",
+  "pages": 35,
+  "bytes": 2409375,
+  "has_graphics": true,
+  "graphic_pages": [
+   9,
+   15,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28
+  ],
+  "n_captions": 9,
+  "captions": [
+   {
+    "page": 9,
+    "num": 1,
+    "caption": "Figure 1: The training procedure for the proposed dual memory system consisting of a fast and slow",
+    "want": true
+   },
+   {
+    "page": 15,
+    "num": 2,
+    "caption": "Figure 2: The optimization process of the proposed balanced sample selection approach. The first",
+    "want": true
+   },
+   {
+    "page": 23,
+    "num": 3,
+    "caption": "Figure 3: Performance comparison between the proposed ITDMS framework and baselines in imbal-",
+    "want": true
+   },
+   {
+    "page": 24,
+    "num": 4,
+    "caption": "Figure 4: The forgetting analysis of various models. (a), (b), (c) report the results on the Split-MNIST,",
+    "want": false
+   },
+   {
+    "page": 25,
+    "num": 5,
+    "caption": "Figure 5: The distribution changes of the sample selection weights during the optimization process.",
+    "want": true
+   },
+   {
+    "page": 25,
+    "num": 6,
+    "caption": "Figure 6: Changes of variables under different λH2 and λCS settings throughout the optimization",
+    "want": false
+   },
+   {
+    "page": 26,
+    "num": 7,
+    "caption": "Figure 7: Comparison of sampling effects between unbalanced sampling mode against the random",
+    "want": true
+   },
+   {
+    "page": 27,
+    "num": 8,
+    "caption": "Figure 8: Comparison of sampling effects between the balanced sampling mode against the random",
+    "want": true
+   },
+   {
+    "page": 28,
+    "num": 9,
+    "caption": "Figure 9: The results of the ablation study. (a), (b), and (c) : The classification accuracy curves of",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2602
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 3505
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3586
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 3317
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 3049
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3236
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3551
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3274
+   },
+   {
+    "page": 9,
+    "images": 27,
+    "drawings": 139,
+    "textlen": 3158
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 3400
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 2381
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 2551
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 3022
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 3098
+   },
+   {
+    "page": 15,
+    "images": 45,
+    "drawings": 456,
+    "textlen": 2644
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2901
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 2110
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 2453
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 10,
+    "textlen": 3314
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3509
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 3314
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 2734
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 958,
+    "textlen": 3082
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 1840,
+    "textlen": 2030
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 36025,
+    "textlen": 3651
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 5057,
+    "textlen": 2687
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 5057,
+    "textlen": 2462
+   },
+   {
+    "page": 28,
+    "images": 0,
+    "drawings": 3749,
+    "textlen": 1964
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3520
+   },
+   {
+    "page": 30,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2861
+   },
+   {
+    "page": 31,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2570
+   },
+   {
+    "page": 32,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2772
+   },
+   {
+    "page": 33,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2601
+   },
+   {
+    "page": 34,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2627
+   },
+   {
+    "page": 35,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1381
+   }
+  ]
+ },
+ {
+  "file": "B_KnowledgeRetrieval_InContextLearning_SemanticSearch_2025.pdf",
+  "pages": 13,
+  "bytes": 2176747,
+  "has_graphics": true,
+  "graphic_pages": [
+   4,
+   5,
+   8,
+   9,
+   10
+  ],
+  "n_captions": 5,
+  "captions": [
+   {
+    "page": 4,
+    "num": 1,
+    "caption": "Figure 1: Methodology overview for GTR showing our embedding-based retrieval system using document chunking,",
+    "want": true
+   },
+   {
+    "page": 5,
+    "num": 2,
+    "caption": "Figure 2: Methodology overview for GTR-T highlighting our approach for structured data retrieval, utilizing table",
+    "want": true
+   },
+   {
+    "page": 8,
+    "num": 3,
+    "caption": "Figure 3: GTR Reponse and Output Length",
+    "want": false
+   },
+   {
+    "page": 9,
+    "num": 4,
+    "caption": "Figure 4: GTR Semantic Evaluation",
+    "want": false
+   },
+   {
+    "page": 10,
+    "num": 5,
+    "caption": "Figure 5: Performance Metrics of GTR-T Model",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 3906
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 6356
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5048
+   },
+   {
+    "page": 4,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 1787
+   },
+   {
+    "page": 5,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 2120
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 4216
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 4132
+   },
+   {
+    "page": 8,
+    "images": 2,
+    "drawings": 3,
+    "textlen": 3110
+   },
+   {
+    "page": 9,
+    "images": 2,
+    "drawings": 3,
+    "textlen": 2638
+   },
+   {
+    "page": 10,
+    "images": 3,
+    "drawings": 3,
+    "textlen": 3352
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4204
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1600
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 1730
+   }
+  ]
+ },
+ {
+  "file": "B_LGMT_ReasoningReliability_Testing_2026.pdf",
+  "pages": 23,
+  "bytes": 2301894,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   4,
+   5,
+   12,
+   13,
+   14,
+   20
+  ],
+  "n_captions": 7,
+  "captions": [
+   {
+    "page": 3,
+    "num": 1,
+    "caption": "Figure 1. In the first query, the model is presented with",
+    "want": false
+   },
+   {
+    "page": 4,
+    "num": 1,
+    "caption": "Figure 1: An illustration of an LLM’s failure to maintain",
+    "want": true
+   },
+   {
+    "page": 4,
+    "num": 2,
+    "caption": "Figure 2: An illustration of semantic drift caused by traditional",
+    "want": true
+   },
+   {
+    "page": 5,
+    "num": 3,
+    "caption": "Figure 3: Overview of the LGMT Framework.",
+    "want": true
+   },
+   {
+    "page": 12,
+    "num": 4,
+    "caption": "Figure 4: Average MVR across MR categories. MR-C and",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 5,
+    "caption": "Figure 5: Hidden Defect Rate (HDR) across models and",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 6,
+    "caption": "Figure 6: False Unreported Rate (FUR) across models and",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 1,
+    "drawings": 6,
+    "textlen": 5578
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5770
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 6043
+   },
+   {
+    "page": 4,
+    "images": 2,
+    "drawings": 4,
+    "textlen": 3758
+   },
+   {
+    "page": 5,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 4226
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 3765
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4825
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5473
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 9,
+    "textlen": 5276
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 5483
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 10,
+    "textlen": 5145
+   },
+   {
+    "page": 12,
+    "images": 1,
+    "drawings": 4,
+    "textlen": 4556
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 59,
+    "textlen": 4511
+   },
+   {
+    "page": 14,
+    "images": 2,
+    "drawings": 1,
+    "textlen": 4186
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 6250
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5841
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 8104
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5834
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 13,
+    "textlen": 5703
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 29,
+    "textlen": 3872
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2193
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 3762
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 1270
+   }
+  ]
+ },
+ {
+  "file": "B_LLM_Oracles_OntologyInstantiation_2025.pdf",
+  "pages": 38,
+  "bytes": 1171613,
+  "has_graphics": true,
+  "graphic_pages": [
+   6,
+   9,
+   15,
+   20,
+   22,
+   23,
+   33,
+   34,
+   35,
+   37
+  ],
+  "n_captions": 5,
+  "captions": [
+   {
+    "page": 6,
+    "num": 1,
+    "caption": "Figure 1: Conceptualization of LLM services",
+    "want": false
+   },
+   {
+    "page": 9,
+    "num": 2,
+    "caption": "Figure 2: Overview of KGFiller, based on a running example. The example assumes that the ontology to be populated is about animals, and it includes the classes",
+    "want": true
+   },
+   {
+    "page": 14,
+    "num": 3,
+    "caption": "fig. 3. The root class is Edible and it has several direct",
+    "want": false
+   },
+   {
+    "page": 15,
+    "num": 3,
+    "caption": "Figure 3: Class hierarchy of the case study ontology. Notice that the hierarchy is not really a tree, but rather a DAG. The asterisk (*) denotes classes",
+    "want": false
+   },
+   {
+    "page": 23,
+    "num": 4,
+    "caption": "Figure 4: Comparison of the performance of Harvest [59] and KGFiller",
+    "want": true
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 3553
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 5015
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4315
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4716
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4476
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 30,
+    "textlen": 3774
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4571
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4543
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 339,
+    "textlen": 2382
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 4211
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 4365
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 4222
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4718
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4249
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 233,
+    "textlen": 2970
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 15,
+    "textlen": 4407
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4663
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 4145
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4899
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 37,
+    "textlen": 3978
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4625
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 31,
+    "textlen": 3969
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 48,
+    "textlen": 3463
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4449
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4522
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3586
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3851
+   },
+   {
+    "page": 28,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3669
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3545
+   },
+   {
+    "page": 30,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3752
+   },
+   {
+    "page": 31,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3696
+   },
+   {
+    "page": 32,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 742
+   },
+   {
+    "page": 33,
+    "images": 0,
+    "drawings": 65,
+    "textlen": 4529
+   },
+   {
+    "page": 34,
+    "images": 0,
+    "drawings": 23,
+    "textlen": 4092
+   },
+   {
+    "page": 35,
+    "images": 0,
+    "drawings": 32,
+    "textlen": 4645
+   },
+   {
+    "page": 36,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4628
+   },
+   {
+    "page": 37,
+    "images": 0,
+    "drawings": 221,
+    "textlen": 3312
+   },
+   {
+    "page": 38,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4318
+   }
+  ]
+ },
+ {
+  "file": "B_LLM_Understand_KnowledgeGraphs_2025.pdf",
+  "pages": 24,
+  "bytes": 1235622,
+  "has_graphics": true,
+  "graphic_pages": [
+   2,
+   6,
+   8,
+   9,
+   12,
+   17
+  ],
+  "n_captions": 6,
+  "captions": [
+   {
+    "page": 2,
+    "num": 1,
+    "caption": "Figure 1: KG is processed into different input formats to provide LLM with knowledge.",
+    "want": true
+   },
+   {
+    "page": 6,
+    "num": 2,
+    "caption": "Figure 2: There are six categories of our expansion method. (1) expanded nodes = 0, depth = 0: only",
+    "want": false
+   },
+   {
+    "page": 8,
+    "num": 3,
+    "caption": "Figure 3: Performance of LLM in Triple-to-Text Pipeline. The x-axis represents various input",
+    "want": true
+   },
+   {
+    "page": 9,
+    "num": 4,
+    "caption": "Figure 4: We employ a human-annotated KG mapping with a document for generating multi-hop",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 5,
+    "caption": "Figure 5: We examine the average attention proportion between the predicted labels (indicated by a",
+    "want": false
+   },
+   {
+    "page": 17,
+    "num": 6,
+    "caption": "Figure 6: We calculate the number of nodes for random replacement and deletion based on the ratio.",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 2065
+   },
+   {
+    "page": 2,
+    "images": 1,
+    "drawings": 48,
+    "textlen": 2273
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2858
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2557
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2488
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 157,
+    "textlen": 2877
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2840
+   },
+   {
+    "page": 8,
+    "images": 27,
+    "drawings": 2258,
+    "textlen": 901
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 49,
+    "textlen": 2715
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 2576
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 17,
+    "textlen": 2458
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 54,
+    "textlen": 3761
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 2177
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 11,
+    "textlen": 2009
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2206
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 2442
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 191,
+    "textlen": 1762
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 17,
+    "textlen": 3151
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 1939
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2161
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2019
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2105
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2139
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 995
+   }
+  ]
+ },
+ {
+  "file": "B_PrivateLibrary_CodeGeneration_LLM_2025.pdf",
+  "pages": 19,
+  "bytes": 5507716,
+  "has_graphics": true,
+  "graphic_pages": [
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   9,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   19
+  ],
+  "n_captions": 15,
+  "captions": [
+   {
+    "page": 3,
+    "num": 1,
+    "caption": "Figure 1: An example of code generation on public library",
+    "want": false
+   },
+   {
+    "page": 4,
+    "num": 2,
+    "caption": "Figure 2: One simple Python example of code generation. ■",
+    "want": false
+   },
+   {
+    "page": 4,
+    "num": 3,
+    "caption": "Figure 3: An API instance of API documentation. It showcases",
+    "want": false
+   },
+   {
+    "page": 5,
+    "num": 4,
+    "caption": "Figure 4: Schematic diagram of our framework: APIFinder",
+    "want": true
+   },
+   {
+    "page": 6,
+    "num": 5,
+    "caption": "Figure 5: An overview of the preparation of training corpus for APIFinder.",
+    "want": true
+   },
+   {
+    "page": 6,
+    "num": 6,
+    "caption": "Figure 6: User interaction interface with APIFinder: users can",
+    "want": false
+   },
+   {
+    "page": 7,
+    "num": 7,
+    "caption": "Figure 7: An overview of the preparation of training corpus for CodeGenAPI. For visual simplicity, we use colors instead of",
+    "want": true
+   },
+   {
+    "page": 11,
+    "num": 7,
+    "caption": "Figure 7. Table 4 presents the performance of CODEGE-",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 8,
+    "caption": "Figure 8: (a) The recall rate (%) and (b) accuracy (%) of APIFinder on private library benchmarks under various settings.",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 9,
+    "caption": "Figure 9: Pass@1 (%) of CodeGen 350M and Codex in",
+    "want": false
+   },
+   {
+    "page": 13,
+    "num": 10,
+    "caption": "Figure 10: Parameter size vs. pass@𝑘: a comparative analysis",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 11,
+    "caption": "Figure 11: Performance analysis of 11 code generation models",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 12,
+    "caption": "Figure 12: API number vs.",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 13,
+    "caption": "Figure 13: Comparative analysis of passed, invalid, and incor-",
+    "want": false
+   },
+   {
+    "page": 14,
+    "num": 13,
+    "caption": "Figure 13. Our finding is that the models with superior per-",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 828
+   },
+   {
+    "page": 2,
+    "images": 1,
+    "drawings": 6,
+    "textlen": 5388
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 36,
+    "textlen": 5492
+   },
+   {
+    "page": 4,
+    "images": 1,
+    "drawings": 25,
+    "textlen": 4703
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 48,
+    "textlen": 5376
+   },
+   {
+    "page": 6,
+    "images": 9,
+    "drawings": 73,
+    "textlen": 4642
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 55,
+    "textlen": 4491
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 6025
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 392,
+    "textlen": 5258
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 4868
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 315,
+    "textlen": 5686
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 249,
+    "textlen": 3397
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 220,
+    "textlen": 4642
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 282,
+    "textlen": 3945
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 176,
+    "textlen": 5542
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 139,
+    "textlen": 5172
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 8395
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5607
+   },
+   {
+    "page": 19,
+    "images": 9,
+    "drawings": 1,
+    "textlen": 4992
+   }
+  ]
+ },
+ {
+  "file": "B_Prompting_LLM_KG_LongTailFacts_QA_2025.pdf",
+  "pages": 18,
+  "bytes": 905972,
+  "has_graphics": true,
+  "graphic_pages": [
+   2,
+   6,
+   11,
+   12,
+   13
+  ],
+  "n_captions": 5,
+  "captions": [
+   {
+    "page": 6,
+    "num": 2,
+    "caption": "Figure 2: Obtaining non-parametric knowledge from KG.",
+    "want": false
+   },
+   {
+    "page": 11,
+    "num": 3,
+    "caption": "Figure 3: LLMs’ performance on the LTGen benchmark with respect to long-tail level.",
+    "want": false
+   },
+   {
+    "page": 11,
+    "num": 4,
+    "caption": "Figure 4: LLMs’ performance on the LTGen benchmark with respect to reference triple numbers.",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 5,
+    "caption": "Figure 5: LLMs’ performance when prompted with different sources of external knowledge on the LTGen benchmark with respect to long-tail",
+    "want": false
+   },
+   {
+    "page": 13,
+    "num": 6,
+    "caption": "Figure 6: LLMs’ performance when prompted with different sources of external knowledge on the LTGen benchmark with respect to reference",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 4100
+   },
+   {
+    "page": 2,
+    "images": 3,
+    "drawings": 24,
+    "textlen": 3509
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4575
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 12,
+    "textlen": 2825
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 3844
+   },
+   {
+    "page": 6,
+    "images": 28,
+    "drawings": 37,
+    "textlen": 4736
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 3357
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 3268
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 3411
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 20,
+    "textlen": 3519
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 279,
+    "textlen": 1642
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 467,
+    "textlen": 2737
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 490,
+    "textlen": 2729
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 2034
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 2113
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 6,
+    "textlen": 6397
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 7285
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 6334
+   }
+  ]
+ },
+ {
+  "file": "B_QueryExpansion_SemanticRelations_RetrievalSystems_2023.pdf",
+  "pages": 14,
+  "bytes": 2577574,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   8,
+   9,
+   10,
+   12
+  ],
+  "n_captions": 12,
+  "captions": [
+   {
+    "page": 2,
+    "num": 1,
+    "caption": "Fig. 1. Relevance feedback.",
+    "want": false
+   },
+   {
+    "page": 3,
+    "num": 2,
+    "caption": "Fig. 2. Semantic network for concept mammal.",
+    "want": false
+   },
+   {
+    "page": 4,
+    "num": 3,
+    "caption": "Fig. 3. Resources exploited by the Babelnet semantic expansion.",
+    "want": false
+   },
+   {
+    "page": 6,
+    "num": 4,
+    "caption": "Fig. 4. Generation of the corpus.",
+    "want": false
+   },
+   {
+    "page": 8,
+    "num": 5,
+    "caption": "Fig. 5. Generation and structure of the combined corpora.",
+    "want": true
+   },
+   {
+    "page": 8,
+    "num": 6,
+    "caption": "Fig. 6. Default ANNIE pipeline loaded with different configurations of corpora.",
+    "want": true
+   },
+   {
+    "page": 9,
+    "num": 7,
+    "caption": "Fig. 7. Ground truth builder infrastructure.",
+    "want": true
+   },
+   {
+    "page": 10,
+    "num": 8,
+    "caption": "Fig. 8. Main flowchart of the approach.",
+    "want": true
+   },
+   {
+    "page": 12,
+    "num": 9,
+    "caption": "Fig. 9. Precision plot for multi-relation expansions.",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 10,
+    "caption": "Fig. 10. Recall plot for multi-relation expansions.",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 11,
+    "caption": "Fig. 11. F-measure plot for multi-relation expansions.",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 12,
+    "caption": "Fig. 12. Accuracy plot for multi-relation expansions.",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 3,
+    "drawings": 33,
+    "textlen": 5262
+   },
+   {
+    "page": 2,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 7561
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 114,
+    "textlen": 6956
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 181,
+    "textlen": 6830
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 7766
+   },
+   {
+    "page": 6,
+    "images": 1,
+    "drawings": 3,
+    "textlen": 3621
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 7613
+   },
+   {
+    "page": 8,
+    "images": 2,
+    "drawings": 0,
+    "textlen": 192
+   },
+   {
+    "page": 9,
+    "images": 1,
+    "drawings": 10,
+    "textlen": 5665
+   },
+   {
+    "page": 10,
+    "images": 1,
+    "drawings": 12,
+    "textlen": 3306
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 12,
+    "textlen": 6516
+   },
+   {
+    "page": 12,
+    "images": 4,
+    "drawings": 13198,
+    "textlen": 4356
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 9737
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 3560
+   }
+  ]
+ },
+ {
+  "file": "B_RAG_EngineeringDesignKnowledge_2024.pdf",
+  "pages": 16,
+  "bytes": 1760476,
+  "has_graphics": true,
+  "graphic_pages": [
+   2,
+   5,
+   6,
+   7,
+   8,
+   9,
+   11,
+   13,
+   15,
+   16
+  ],
+  "n_captions": 6,
+  "captions": [
+   {
+    "page": 2,
+    "num": 1,
+    "caption": "Figure 1: Illustrating our approach for relation extraction.",
+    "want": true
+   },
+   {
+    "page": 7,
+    "num": 2,
+    "caption": "Figure 2: Fine-tuning language models for A) Relation Identification and B) Relation Elicitation.",
+    "want": false
+   },
+   {
+    "page": 8,
+    "num": 3,
+    "caption": "Figure 3: Link prediction between pairs of entities and relationships to construct facts.",
+    "want": false
+   },
+   {
+    "page": 9,
+    "num": 4,
+    "caption": "Figure 4: Scenarios for usage of LLMs in the design process, including RAG.",
+    "want": true
+   },
+   {
+    "page": 11,
+    "num": 5,
+    "caption": "Figure 5: A portion of 177 recurring facts that represent generalisable design knowledge of fan systems. An interactive",
+    "want": true
+   },
+   {
+    "page": 13,
+    "num": 6,
+    "caption": "Figure 6: A portion of 141 facts constituting specific knowledge of the airflow noise issue fan systems. The entire",
+    "want": true
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 3,
+    "textlen": 3225
+   },
+   {
+    "page": 2,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 2667
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 4158
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 3854
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 58,
+    "textlen": 4556
+   },
+   {
+    "page": 6,
+    "images": 1,
+    "drawings": 26,
+    "textlen": 2655
+   },
+   {
+    "page": 7,
+    "images": 1,
+    "drawings": 12,
+    "textlen": 2448
+   },
+   {
+    "page": 8,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 2947
+   },
+   {
+    "page": 9,
+    "images": 1,
+    "drawings": 10,
+    "textlen": 2634
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 10,
+    "textlen": 4634
+   },
+   {
+    "page": 11,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 2877
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 5008
+   },
+   {
+    "page": 13,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 2542
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 18,
+    "textlen": 4511
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 27,
+    "textlen": 4985
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 36,
+    "textlen": 3566
+   }
+  ]
+ },
+ {
+  "file": "B_SoftPrompt_DenseRetrieval_2024.pdf",
+  "pages": 14,
+  "bytes": 856809,
+  "has_graphics": true,
+  "graphic_pages": [
+   4,
+   5,
+   7,
+   9,
+   11
+  ],
+  "n_captions": 6,
+  "captions": [
+   {
+    "page": 4,
+    "num": 1,
+    "caption": "Figure 1: The pipeline of the proposed Soft Prompt Tuning",
+    "want": true
+   },
+   {
+    "page": 5,
+    "num": 2,
+    "caption": "Figure 2: The main architecture of the proposed SPTAR: a) The same LLM is shared by soft prompt tuning module, soft prompt",
+    "want": true
+   },
+   {
+    "page": 9,
+    "num": 3,
+    "caption": "Figure 3: T-SNE embedding visualization of soft prompt’s virtual tokens: a) soft prompt’s virtual tokens with different datasets;",
+    "want": false
+   },
+   {
+    "page": 11,
+    "num": 4,
+    "caption": "Figure 4: SPTAR-DPR NDCG@10 scores with different top-𝑘",
+    "want": false
+   },
+   {
+    "page": 11,
+    "num": 5,
+    "caption": "Figure 5: Evaluation of SPTAR-DPR with different 𝑋com-",
+    "want": false
+   },
+   {
+    "page": 12,
+    "num": 6,
+    "caption": "Figure 6: Evaluation of SPTAR-DPR with different numbers",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5146
+   },
+   {
+    "page": 2,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 6722
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 6726
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 48,
+    "textlen": 4124
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 201,
+    "textlen": 5313
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5925
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 35,
+    "textlen": 4663
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 12,
+    "textlen": 5319
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 623,
+    "textlen": 4173
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 7,
+    "textlen": 6298
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 28,
+    "textlen": 5431
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 16,
+    "textlen": 5073
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 9148
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 10216
+   }
+  ]
+ },
+ {
+  "file": "B_Survey_LLM_KnowledgeBasedMethods_2025.pdf",
+  "pages": 25,
+  "bytes": 2789678,
+  "has_graphics": true,
+  "graphic_pages": [
+   1,
+   2,
+   3,
+   17,
+   18
+  ],
+  "n_captions": 2,
+  "captions": [
+   {
+    "page": 2,
+    "num": 1,
+    "caption": "Fig. 1. Overall structure of the paper organization.",
+    "want": true
+   },
+   {
+    "page": 3,
+    "num": 2,
+    "caption": "Fig. 2. The evolution of large language models.",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 2,
+    "drawings": 20,
+    "textlen": 4862
+   },
+   {
+    "page": 2,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 4849
+   },
+   {
+    "page": 3,
+    "images": 1,
+    "drawings": 0,
+    "textlen": 6617
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 7052
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 17,
+    "textlen": 4810
+   },
+   {
+    "page": 6,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8479
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8474
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8072
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8593
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 5,
+    "textlen": 7779
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 8,
+    "textlen": 4699
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8267
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 12,
+    "textlen": 6928
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8694
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8493
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8520
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 30,
+    "textlen": 2794
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 33,
+    "textlen": 1956
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8345
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 8568
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 7969
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 9039
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 10874
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 11019
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 0,
+    "textlen": 10108
+   }
+  ]
+ },
+ {
+  "file": "B_XAI_MetaSurvey_2023.pdf",
+  "pages": 29,
+  "bytes": 1011032,
+  "has_graphics": true,
+  "graphic_pages": [
+   2,
+   6
+  ],
+  "n_captions": 3,
+  "captions": [
+   {
+    "page": 2,
+    "num": 1,
+    "caption": "Figure 1: The ﬁve main perspectives for the need for XAI.",
+    "want": false
+   },
+   {
+    "page": 2,
+    "num": 1,
+    "caption": "Fig. 1. The perspective groups below are to some extent based on the work in [6]:",
+    "want": false
+   },
+   {
+    "page": 6,
+    "num": 2,
+    "caption": "Figure 2: The proposed organization to discuss the challenges and research directions in XAI. For simplicity, the arrows",
+    "want": false
+   }
+  ],
+  "page_stats": [
+   {
+    "page": 1,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 3297
+   },
+   {
+    "page": 2,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 2032
+   },
+   {
+    "page": 3,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 5427
+   },
+   {
+    "page": 4,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 3973
+   },
+   {
+    "page": 5,
+    "images": 0,
+    "drawings": 10,
+    "textlen": 1909
+   },
+   {
+    "page": 6,
+    "images": 1,
+    "drawings": 1,
+    "textlen": 2575
+   },
+   {
+    "page": 7,
+    "images": 0,
+    "drawings": 4,
+    "textlen": 2189
+   },
+   {
+    "page": 8,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5859
+   },
+   {
+    "page": 9,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 5872
+   },
+   {
+    "page": 10,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5392
+   },
+   {
+    "page": 11,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5145
+   },
+   {
+    "page": 12,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5431
+   },
+   {
+    "page": 13,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4933
+   },
+   {
+    "page": 14,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4949
+   },
+   {
+    "page": 15,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5748
+   },
+   {
+    "page": 16,
+    "images": 0,
+    "drawings": 2,
+    "textlen": 5015
+   },
+   {
+    "page": 17,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4926
+   },
+   {
+    "page": 18,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5441
+   },
+   {
+    "page": 19,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 6014
+   },
+   {
+    "page": 20,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5299
+   },
+   {
+    "page": 21,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5672
+   },
+   {
+    "page": 22,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 5061
+   },
+   {
+    "page": 23,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4988
+   },
+   {
+    "page": 24,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4834
+   },
+   {
+    "page": 25,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4889
+   },
+   {
+    "page": 26,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4615
+   },
+   {
+    "page": 27,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4686
+   },
+   {
+    "page": 28,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 4646
+   },
+   {
+    "page": 29,
+    "images": 0,
+    "drawings": 1,
+    "textlen": 800
+   }
+  ]
+ }
+]

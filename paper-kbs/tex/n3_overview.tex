@@ -1,7 +1,7 @@
 \section{System overview and design principles}
 \label{sec:system}
 
-QDCVR (v2.3) is a self-hosted knowledge-base management system that turns a
+HMRS (v2.3) is a self-hosted knowledge-base management system that turns a
 folder of PDFs, Office documents, and scans into knowledge bases that agents
 can be trusted to answer from. It is deployed as four cooperating services
 behind one configuration file: a Python service that schedules parsing and
@@ -111,7 +111,7 @@ which is why the worker, its file lock and its verdict cache exist
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{fig1_architecture}
-\caption{QDCVR architecture. Documents enter through the acquisition
+\caption{HMRS architecture. Documents enter through the acquisition
 pipeline (left) and are parsed, quality-gated, split, described and indexed
 into four stores. At run time (right), clients and agent harnesses reach the
 platform through the chat endpoint, which attaches a lane policy enforced

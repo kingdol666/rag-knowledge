@@ -55,7 +55,7 @@ two rankings \cite{rrf-cormack}; \emph{Graph} through
 \emph{Two-stage} through \texttt{kb\_search\_two\_stage}
 (Section~\ref{sec:twostage}); and the hybrid lane through
 \texttt{kb\_hybrid\_search} with the gate switched off
-(\emph{Fusion-only}) and on (\emph{QDCVR-Hybrid}). That lane is implemented in
+(\emph{Fusion-only}) and on (\emph{HMRS-Hybrid}). That lane is implemented in
 the shipped tool layer as a server-side composition of the vector, catalog and
 judging tools named above; \texttt{kb\_hybrid\_search} was an earlier single-call
 wrapper that is no longer registered. Two further rows are derived
@@ -88,7 +88,7 @@ RRF (BM25$\|$Dense)   & 1.00 & 1.00 & 0.927 & 0.88 & 11\,ms     & 9\,ms \\
 Graph (Neo4j)         & 0.56 & 0.53 & 0.562 & 0.56 & 68\,ms     & 68\,ms \\
 Two-stage             & 1.00 & 0.97 & 0.927 & 0.94 & 77\,ms     & 40\,ms \\
 Fusion-only           & 0.94 & 0.94 & 0.856 & 0.94 & 62\,ms     & 66\,ms \\
-QDCVR-Hybrid          & 0.44 & 0.41 & 0.226 & 0.50 & 542\,ms    & 582\,ms \\
+HMRS-Hybrid          & 0.44 & 0.41 & 0.226 & 0.50 & 542\,ms    & 582\,ms \\
 \midrule
 \multicolumn{7}{l}{\emph{Derived (offline, same logged hybrid pools):}}\\
 \quad Judge-as-filter$^{\dagger}$ & 0.94 & 0.94 & 0.856 & 0.94 & \multicolumn{2}{l}{$^{\dagger}$542\,ms / 582\,ms} \\
@@ -97,7 +97,7 @@ QDCVR-Hybrid          & 0.44 & 0.41 & 0.226 & 0.50 & 542\,ms    & 582\,ms \\
 \end{tabular}}
 \par\smallskip
 \raggedright\small
-$^{\dagger}$\,Derived rows replay the QDCVR-Hybrid run's own logged
+$^{\dagger}$\,Derived rows replay the HMRS-Hybrid run's own logged
 12-candidate pools and judge scores, so they reuse that call's latency; the
 judge executes once either way.
 
@@ -107,7 +107,7 @@ judge executes once either way.
 \toprule
 \multicolumn{9}{@{}l}{\textbf{(b)} Second corpus: 79 retrievable arXiv papers of the 100 submitted, ten questions}\\
 \midrule
-Configuration & BM25 & Dense & RRF & Graph & Two-stage & Fusion-only & QDCVR-Hybrid & Judge-as-filter \\
+Configuration & BM25 & Dense & RRF & Graph & Two-stage & Fusion-only & HMRS-Hybrid & Judge-as-filter \\
 Hit@5 & 0.90 & 0.90 & 0.90 & 0.20 & 0.90 & 0.90 & 0.90 & 0.90 \\
 \bottomrule
 \end{tabular}}
@@ -153,7 +153,7 @@ words leads on MRR.
 
 \textbf{The central result is the verdict's role, not its existence.} The same
 judged scores enter three configurations: not used (fusion-only, Hit@5 0.94),
-used to re-rank candidates (QDCVR-Hybrid, 0.44), and used as a filter that
+used to re-rank candidates (HMRS-Hybrid, 0.44), and used as a filter that
 keeps survivors in their fusion order (judge-as-filter, 0.94). On the eight
 questions where re-ranking and filtering differ (Q2, Q4, Q5, Q6, Q8, Q9, Q11,
 Q12), filtering wins all eight and loses none, with eight further ties on

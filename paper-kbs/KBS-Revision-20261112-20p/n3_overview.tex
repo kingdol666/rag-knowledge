@@ -1,0 +1,153 @@
+\section{System overview and management model}
+\label{sec:system}
+
+HMRS is a self-hosted knowledge document management system for converting
+heterogeneous documents into managed, searchable collections. A Python
+parsing service, a TypeScript web application and an MCP tool server share
+local storage and retrieval engines \cite{mcp}. The design follows from the
+dependency chain of Section~\ref{sec:intro}: what a document is parsed as
+determines what can be indexed, the collection it is filed into determines
+which tier can see it, and the tiers that follow determine whether a
+supporting passage is ever read. The primary object of the design is therefore
+the managed collection rather than the query. State is made auditable through
+three sources---the document files, the tree registry and per-library
+metadata---so that a management operation can be checked against what it
+claimed to do. Each check belongs to the platform operation or calling
+workflow that performs it, and the evaluation reports evidence at that level.
+
+\subsection{Management levels and the tiered access path}
+\label{sec:levels}
+
+HMRS manages documents at three levels and answers questions along a path that
+mirrors them. The levels and the path are related but not identical: the
+levels describe what is maintained and by which operations, while the tiers
+describe what a query may look at and in what order.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\caption{Management levels and the tiered access path. Each level names the
+objects it maintains, the operations that write them, the state that describes
+them, the tier that reads them, and the measurement that exercises it.
+The selected access policy determines which tiers are visited; a pinned
+search can bypass catalogue navigation.}
+\label{tab:levels}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.18\textwidth}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
+\toprule
+Level & Objects and operations & State description & Read tier & Check & Evidence\\
+\midrule
+Collection & libraries and sub-libraries; automatic assignment from parsed content; description and tag derivation; catalogue listing & library registry, per-library metadata, library-level index & catalogue & catalogue inventory and description round-trip & E1, E2, E4b\\
+Document & documents and their parts; duplicate review; move, rename, delete; forced re-index & document files, tree registry, per-library metadata & shelf & reconciliation on selected operations & E2\\
+Segment & structural split; dense and lexical indices; optional evidence gate & chunk identifiers, per-segment scores with provenance & document and segment & index coverage and post-index probe & E1, E4--E8\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+At the collection level an ingest agent can classify a parsed document against
+the catalogue of library descriptions and select a collection based on its
+subject. The same workflow derives descriptions and tags from the body rather
+than the filename; these semantic decisions are not enforced by the parse API. Sub-libraries are
+first-class tree nodes with their own descriptions and indices, so the
+collection structure is a tree that can be consulted at query time. At the
+document level the unit of work is the document and its parts; duplicate
+detection reports candidate pairs for review rather than deleting them,
+because adjacent parts of one source may be similar while carrying distinct
+sections, and re-indexing remains a separate, explicit operation. At the
+segment level a document is split at recognised structural markers and its
+parts are indexed for dense and lexical search; when a workflow invokes the
+evidence gate, each candidate segment is fetched and scored against the posed
+question, and surviving segments are returned with provenance. That is the
+only tier at which a passage can be judged to support a claim.
+
+Figure~\ref{fig:levels} shows the management structure alongside an
+illustrative catalogue-first access path. This path proceeds as a ladder: the
+\emph{catalogue} tier lists collections and their descriptions, the
+\emph{shelf} tier lists the documents and their descriptions inside a
+selected collection, the \emph{document} tier opens a body, and the
+\emph{segment} tier scores its parts. Figure~\ref{fig:arch} shows the service
+boundaries and the shared state these tiers read and write. In a catalogue-first workflow each selection can narrow the scope the next
+step considers. Its checks have distinct denominators: a catalogue that does
+not contain the owning collection is a different failure from a shelf that
+omits the document, and the system reports them separately.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_management_model}
+\caption{Management levels and an illustrative catalogue-first query path. The levels maintain collections, documents and segments over shared state; the query path may use a subset of these tiers, and evidence judging is optional.}
+\label{fig:levels}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig1_architecture_native}
+\caption{HMRS service architecture. The browser reaches the Nuxt server; agent tools access the MCP server, which calls service APIs and reads local state. The platform functions operate over files, registries and indices; the evidence gate is optional.}
+\label{fig:arch}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig2_workflow_native}
+\caption{Ingestion and query workflows over shared state. An agent can select a collection from document content; indexing depends on the entry point. At query time, candidate gathering may be followed by optional segment scoring. A threshold-passing score does not guarantee support; execution failures are distinguished from a completed search without support.}
+\label{fig:workflow}
+\end{figure*}
+
+Figure~\ref{fig:workflow} relates the acquisition and query workflows to
+their shared state. The management path covers acquisition (Section~\ref{sec:acquisition}),
+content-informed organisation and lifecycle checks
+(Section~\ref{sec:organization}), and the tool and runtime layer
+(Section~\ref{sec:implementation}). The chat endpoint defines pinned-search
+and all-library librarian policies. Hybrid is a composed retrieval
+configuration, not a third built-in server policy; it combines vector and
+catalogue calls under an explicit directive. The document graph supports
+navigation, not evidence. Experience retrieval and the persona-distillation workflows reuse
+knowledge-base infrastructure but follow their own retrieval and filtering
+paths; neither is described here as invoking Laya, and neither was evaluated
+at scale.
+
+The platform exposes five management domains: acquisition, organisation,
+lifecycle, query and operational experience. Some controls are enforced by
+API/MCP operations; semantic and quality checks are agent-workflow procedures,
+and campaign audits test selected outcomes. Table~\ref{tab:functions}
+distinguishes these layers and maps each domain to the evidence that exercises
+it.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Management functions, the enforcement or workflow check associated
+with each, and the evaluation that exercises it. The table separates API/MCP
+controls from agent procedures and campaign audits; semantic choices such as
+which collection owns a document remain workflow decisions and are measured,
+not enforced.}
+\label{tab:functions}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.37\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.11\textwidth}@{}}
+\toprule
+Group & Operations & Platform or workflow check & Evidence\\
+\midrule
+Acquisition & submit, parse (MinerU), quality review, duplicate review, structural split, store, index & parse-task state; workflow quality checks; entry-point-specific deduplication and indexing; post-index probe & E1\\
+Organisation & create library or sub-library, content-informed placement, descriptions and tags, duplicate review & API validates identifiers and required fields; workflow checks descriptions and tags; audit compares files, tree and library metadata & E1--E2\\
+Lifecycle & move, rename, delete, force re-index, graph build & operation-specific API updates; reconciliation audit detects selected stale or inconsistent state & E2\\
+Query & tier selection, vector, keyword, catalogue and two-stage search, gate invocation & endpoint enforces tool allow/deny lists, timeouts and turn limits; invoked gate returns survivor provenance & E4--E8\\
+Experience & extract, approve, tier, search & experience tools apply their own retrieval, verification and credibility filters & E3\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Data model and object lifecycle}
+\label{sec:datamodel}
+\label{sec:lifecycle}
+
+Documents are Markdown with extracted images. Library state is described by
+the document files, the \texttt{.tree-fs.json} registry and each
+\texttt{.knowledge-base.yml}. The ingest workflow tracks raw, parsed, stored
+and indexed states and can mark completion after its configured retrieval
+probe. Indexing is a separate transition: some save paths start vector/BM25
+indexing asynchronously, while the web parsed-file save path does not.
+Reconciliation detects selected stale-index conditions or disagreement among
+the three sources; it is not a cross-store transaction. Because the three
+sources are written by different management operations, the collection has no
+single authoritative record of its own state, and the reconciliation audit
+exists to make disagreement observable rather than to prevent it.

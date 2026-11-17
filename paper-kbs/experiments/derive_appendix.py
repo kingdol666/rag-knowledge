@@ -21,7 +21,7 @@ TEXDIR = HERE / "tex"
 E5_METHODS = {"filter_only", "rrf_fuse"}
 DISPLAY = [("bm25", "BM25"), ("dense", "Dense"), ("rrf", "RRF"),
            ("graph", "Graph"), ("twostage", "2-stage"),
-           ("fusion_only", "Fusion"), ("qdcvr_hybrid", "Hybrid"),
+           ("fusion_only", "Fusion"), ("hmrs_hybrid", "Hybrid"),
            ("filter_only", "Filter"), ("rrf_fuse", "RRF-fuse")]
 BS = "\\"
 
@@ -51,9 +51,9 @@ def main() -> int:
         BS + "caption{Per-question best gold rank (top-5 window; `--' = gold"
         " absent) for the seven tool-layer pipelines (logged runs) and the"
         " two derived configurations (offline replay of the same logged"
-        " QDCVR-Hybrid pools as Fig.~" + BS + "ref{fig:marginvariants})."
+        " HMRS-Hybrid pools as Fig.~" + BS + "ref{fig:marginvariants})."
         " Fusion = fusion-only (no judge); Hybrid = the shipped"
-        " QDCVR-Hybrid judged ordering; Filter = judge-as-filter."
+        " HMRS-Hybrid judged ordering; Filter = judge-as-filter."
         " Question numbers and texts: Table~" + BS + "ref{tab:questions}.}",
         BS + "label{tab:appendixranks}",
         BS + "begin{tabular}{l" + "c" * len(DISPLAY) + "}",

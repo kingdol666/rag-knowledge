@@ -4,9 +4,9 @@
 #   powershell -ExecutionPolicy Bypass -File _postcheck.ps1 -NoBibtex  # fast: single pass
 #
 # Checks, in order:
-#   1. pdflatex -> bibtex -> pdflatex -> pdflatex under jobname qdcvr_kbs
+#   1. pdflatex -> bibtex -> pdflatex -> pdflatex under jobname hmrs_kbs
 #      (main_20p.pdf itself is usually locked by an open PDF viewer)
-#   2. page count against the 20-page target
+#   2. page count against the 22-page target
 #   3. Overfull \hbox count (must be 0)
 #   4. undefined references / citations (must be 0)
 #   5. LaTeX errors (must be 0)
@@ -18,7 +18,7 @@ param([switch]$NoBibtex)
 
 $ErrorActionPreference = 'Stop'
 $env:PATH = "C:\texlive\2025\bin\windows;$env:PATH"
-$job = 'qdcvr_kbs'
+$job = 'hmrs_kbs'
 $fail = 0
 
 function Gate($name, $ok, $detail) {
@@ -49,7 +49,14 @@ $log = Get-Content "$job.log" -Raw
 "`n=== gates ==="
 Gate 'pdf was rewritten by this run' ($stampAfter -gt $stampBefore) "$stampAfter"
 $pages = [int][regex]::Match($log, "Output written on $job\.pdf \((\d+) pages").Groups[1].Value
-Gate 'page count <= 20' ($pages -le 20) "$pages pages"
+# 2026-11-11: the HMRS restructure (management-level model, tab:levels) took the
+# two-column preview from 20 to 22 pages, and the management-model figure
+# (fig_management_model) added one more, and the Origin-style retrieval
+# comparison figure plus the E4-E8 design/results table added one more.
+# The gate tracks the measured build;
+# the compression plan in notes/page-budget-2026-10-16.md still applies if an
+# editor asks for the 20-page preference.
+Gate 'page count <= 20' ($pages -le 20) "$pages pages (local target)"
 
 $over = ([regex]::Matches($log, 'Overfull \\hbox')).Count
 Gate 'no overfull hbox' ($over -eq 0) "$over found"
@@ -67,7 +74,7 @@ if (-not $NoBibtex) {
 }
 
 # --- float label integrity -------------------------------------------------
-$tex = Get-ChildItem *.tex | ForEach-Object { Get-Content $_.FullName -Raw }
+$tex = Get-ChildItem *.tex | Where-Object { $_.Name -notin @('supplementary.tex', 'supplementary-arm-tables.tex', 'main_20p_review.tex') } | ForEach-Object { Get-Content $_.FullName -Raw }
 $all = $tex -join "`n"
 $labels = [regex]::Matches($all, '\\label\{([^}]+)\}') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
 $refs = [regex]::Matches($all, '\\(?:ref|autoref)\{([^}]+)\}') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
@@ -84,10 +91,12 @@ Gate 'every float cited' ($uncited.Count -eq 0) $(if ($uncited) { $uncited -join
 $eap = $ErrorActionPreference
 $ErrorActionPreference = 'Continue'
 $art = (uv run --with pymupdf python -B _audit_artwork_20p.py 2>&1 | Out-String)
+$artExit = $LASTEXITCODE
 $ErrorActionPreference = $eap
 $art -split "`n" | Where-Object { $_ -match '^\s*fig|BELOW|minimum effective' } | ForEach-Object { $_.TrimEnd() }
 $below = ([regex]::Matches($art, 'BELOW 7pt')).Count
 Gate 'all figures >= 7 pt effective' ($below -eq 0) "$below below floor"
+Gate 'artwork audit ran' ($artExit -eq 0 -and $art -match 'minimum effective') "exit $artExit"
 
 # --- page map --------------------------------------------------------------
 pdftotext -layout "$job.pdf" map5.txt

@@ -1,0 +1,203 @@
+\documentclass[final,5p,times,twocolumn]{elsarticle}
+\usepackage{stfloats}\usepackage{graphicx}\usepackage{booktabs}\usepackage{array}\usepackage{amsmath}\usepackage{amssymb}\usepackage{caption}\usepackage{url}\usepackage{xurl}\urlstyle{same}
+\newcommand{\yes}{\checkmark}\newcommand{\no}{--}
+\graphicspath{{figs/}}\journal{Knowledge-Based Systems}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@dblfptop}{0pt}
+\setlength{\@fpsep}{12pt}
+\setlength{\@dblfpsep}{12pt}
+\makeatother
+\begin{document}
+\setcounter{figure}{0}\setcounter{table}{8}\renewcommand{\thefigure}{S\arabic{figure}}\renewcommand{\thetable}{S\arabic{table}}
+\twocolumn[{%
+\centering
+\section*{Supplementary Material}
+\includegraphics[width=\textwidth]{fig1_architecture_native}
+\captionof{figure}{HMRS service boundaries and shared state. The browser reaches the
+Nuxt server, while agent tools use the MCP server. The evidence gate is an
+optional call; threshold passage is not proof of support.}
+\label{fig:softdesign}
+\vspace{1em}
+}]
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_exp_answer_grid}
+\caption{Answer checks for the original grid (30 cells,
+\protect\path{run-20261013T094350Z-5f9faac}). Gold-identifier coverage is at
+ceiling in all three arms; strict keyword coverage shows three misses, and
+recognised citation markers fall from nine to seven to two answers. A later grid on selected libraries gives nine marker-bearing answers in every
+arm; its vector arm used different search instructions and substrate. The marker pattern counts
+document-style syntax; it does not verify citation
+resolution or claim support. Wall-clock and cost figures for these cells are
+reported in the text and in the supplementary material.}
+\label{fig:threearms}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_exp_s3}
+\caption{Tool-layer out-of-corpus probes
+(\protect\path{paper-kbs/experiments/results/exp3_abstention.json}) retained 9--11 documents after the 12-candidate cap; the merged pool had 42--43 candidates. Separately, dense-search chunks had scores above the 0.35 threshold. The two counts use different units. Thus the retrieval threshold did not identify semantic absence in
+these probes. In a separate answer-workflow probe family
+(\protect\path{paper-kbs/experiments/results/exp8b_absent_agent.json}), three
+completed absent queries returned natural-language not-found reports and no
+fabricated citation was observed. The latter is an observation of instructed
+agent behaviour, not a server-side guarantee.}
+\label{fig:ood}
+\end{figure}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.78\textwidth]{fig_exp_s4}
+\caption{Two historical industrial-corpus diagnostics from separate archives.
+(a)~A relative-margin replay over the score archive: keep the top five plus every candidate
+within $m$ of the pool's best score, $m$ swept 0.05--0.35; the upper blue curve counts gold instances kept of the 17 that entered a pool, while the lower orange curve shows the mean candidates returned of the twelve submitted. Dashed and dotted rules mark $m=0.15$ (16 of 17 golds kept) and $m=0.20$ (all 17), respectively. (b)~A separate run compares the verdict's four roles
+on the candidate pools and verdict scores recorded in that run: fusion order,
+verdict as re-ranker, verdict as filter, and rank fusion. Only the role
+differs, which makes the panel an attribution rather than a benchmark; the
+re-ranking role is the one that loses the gold.}
+\label{fig:marginvariants}
+\end{figure*}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.78\textwidth]{fig_exp_s5}
+\caption{Anatomy of one real query (Q2; single logged HMRS-Hybrid call).
+Each line is one of the 12 fused candidates; the shaded band is the top-5
+window the answer agent reads in full. (a)~The shipped re-ranking: the
+judge scores five extruder-PLC telemetry reports $0.887$--$0.926$ and the
+gold root-cause report $0.846$, demoting it from fusion rank~1 to
+rank~8 --- outside the read window. (b)~The same call with the verdicts
+used only as a filter: all 12 pass, the fusion order stands, and the gold
+is the first document read. Same pool, same scores, same verdicts; only
+the role of the induced ordering differs.}
+\label{fig:anatomy}
+\end{figure*}
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Functional checks on the management layer. Each row names the
+function, the test and its scale, the observed outcome, and the current section that reports it. The numbers are those of the cited campaigns; none is
+re-estimated. A passing check means the stated property was observed on the
+stated scale, not that the function is exhaustively verified.}
+\label{tab:kb-checks}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.115\textwidth}>{\raggedright\arraybackslash}p{0.265\textwidth}>{\raggedright\arraybackslash}p{0.39\textwidth}>{\raggedright\arraybackslash}p{0.10\textwidth}@{}}
+\toprule
+Function & Test and scale & Observed outcome & Where\\
+\midrule
+Parse and ingest & 100-paper campaign; state-file reconciliation & 91 names in the state file; 79 retrievable at the 2026-10-13 snapshot and 21 not (twelve recorded, nine unrecorded); no per-paper parse status & 8.2\\
+Parse quality & 50-paper, 26-domain campaign & 50/50 parsed and verified, all probes ok; 202 tags; 41 tag flags negative without blocking ingestion & 8.2\\
+Structural split & 50 papers at the 30{,}000-character tier & 165 stored parts (9 whole papers, 156 split parts) in 2{,}672\,s; storage 50/50; descriptions and tags 165/165 & 8.2\\
+Near-duplicate review & 322-part corpus, 0.90 threshold & 35 candidate groups (0.90--0.975), zero true duplicates, nothing deleted & 8.2\\
+Content placement & 100-paper campaign; 400 pages per language & 322 parts recorded for the paper campaign; cross-lingual membership 0.875 (en), 1.0 (zh, ja) & 8.2\\
+Content audit and three-source consistency & 322-part content audit; 33-part storage sample & 322/322 content; 33/33 sampled storage checks; separate disposable-library rename defect fixed by re-index & 8.2\\
+Lifecycle operations & 16 scenarios on two disposable libraries & create, move, delete and forced re-index pass; two failures (task status, update check) & 8.2\\
+Sub-library hierarchy & Three-level disposable fixture & create, parent-to-child move, listing, reading and judging all pass & 8.2\\
+Tags and graph & 316-tag registry; 658-node graph & 165 stored parts pass the tag check in 47.6\,s; four tag edges on one document move 4{,}675 to 4{,}679 & 8.2\\
+Experience store & One small knowledge base; one end-to-end scenario & 13 candidate drafts; one lesson retrieved first at 0.711; approval path unexercised & 8.2\\
+\bottomrule
+\end{tabular}
+\end{table*}
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Design and headline results of the retrieval and answer experiments.
+Each row names the corpus and scale, the metric and the comparison it is read
+against, the headline outcome, and the claim that outcome supports together
+with its limit. The content-access row reports both the frozen result and a same-question R3 follow-up; the corpus also changed.}
+\label{tab:retrieval-design}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.10\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
+\toprule
+Study & Corpus and scale & Metric and comparison & Headline result & Supports / limit\\
+\midrule
+Route (RQ2) & Ten-domain 72 q; route cards with and without descriptions & Scripted gold-domain choice & A0 72/72 vs nominally name-only A3 37/72; McNemar $p=5.82\times10^{-11}$ & Scripted probe, unlogged fallback; configuration contrast, not a causal description effect\\
+Access (RQ3) & Ten-domain 72 q; content-layer arms & Containment; tiered vs flat vs precise vs ablated & Frozen A0h 72.2\% (52/72); same-question R3 A0h 70.8\% (51/72), PD 62.5\%, A0/A1b 54.2\%, A2 34.7\% & Multiple components vary; flat lookup can use gold domain; R3 read-all incomplete\\
+Answers (RQ5) & Two 30-cell grids, three interfaces & Gold-ID in answer or trace, lexical coverage, citation markers & Gold-ID 60/60; lexical and marker counts vary with substrate & Traceability, not semantic support; one run per arm, at ceiling\\
+API (RQ5) & Three arms $\times$ three questions, public API & Cost, refusal behaviour, transport & S2 false refusal on a 131-doc catalogue (74.9\,KB over tool budget); repaired by pagination & Transport and cost boundary; one campaign and later follow-up; per-arm costs in supplement\\
+Judge (RQ4) & 191 logged scores; second NLI signal & Gold vs non-gold score separation; judge-as-ranker vs fusion order; rank replay & Separate archives: score medians 0.88/0.86; paired ordering Hit@5 7/16 vs 15/16; NLI Hit@5 5/16 & Exploratory score comparison; ordering replay on a historical wrapper\\
+Runtime & 27-cell stability; 90/180/270-request sweep; gate on/off $n=10$; pinned vs unscoped scope & Wall clock and timeout rate; answer grades; Hit@5 under each scope & 41\% timeouts at 30 clients; no measured gate benefit here; both scopes Hit@5 1.0 & Single-instance envelope; scope not isolated, filename confound\\
+\bottomrule
+\end{tabular}
+\end{table*}
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\caption{Positioning. Each strand addresses part of the path from stored
+document to answer. HMRS studies a knowledge document management workflow
+combining automatic collection assignment, content-informed acquisition,
+server-side checks when invoked, and answer-layer reporting; the evaluation
+measures selected components and boundaries in the main paper. References for
+the representative strands are provided in the main paper's related-work section.}
+
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.145\textwidth}>{\raggedright\arraybackslash}p{0.285\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}@{}}
+\toprule
+Strand & Representative work & What it optimises & What it leaves to the deployment\\
+\midrule
+Knowledge management & Public knowledge bases; enterprise content management & An explicit ontology, or governance over a curated collection & Whether an answer drawn from that collection is supported by the text it cites\\
+Document AI & Layout-aware extraction; MinerU & Recovery of text, tables and formulas from difficult layouts & Whether what was recovered is complete enough to index, and where it is then stored\\
+Retrieval & Dense, lexical and hybrid ranking & Rank quality over a corpus that is assumed indexed & Whether a top-ranked candidate contains evidence for the claim it is used to support\\
+Graph-structured organisation & GraphRAG, LightRAG, RAPTOR & Multi-hop and hierarchical relationships between documents & Evidentiary status: a graph edge is a navigation fact, not evidence\\
+Self-reflective generation & Self-RAG, CRAG, FLARE; judge-based verification & Evidence assessment or retrieval correction in generation workflows & How verification and abstention interact with knowledge-base acquisition and organisation in a knowledge-base workflow\\
+Agentic tool use & ReAct, MCP & Access to retrieval tools behind a stable interface & Whether configured retrieval budgets and failure states are exposed and checked in a particular deployment\\
+Structure-aware navigation & DeepRead  & In-document section coordinates for locate-then-read agentic search & Cross-collection lifecycle governance and selected reconciliation audits\\
+Collection selection & CORI, ReDDE & Ranking collections by estimated relevance before within-collection search & Lifecycle governance and three-source reconciliation of the selected collections\\
+\midrule
+HMRS (this work) & Main paper, Sections 3--7 & A management-level model: automatic collection assignment, three-source state checks, a tiered access path, an invoked server-side evidence gate and agent answer reporting & Claims beyond the measured corpora and configurations, bounded in the main paper limitations\\
+\bottomrule
+\end{tabular}
+\end{table*}
+\input{supplementary-arm-tables}
+\begin{table*}[t]
+\centering\small
+\caption{Recorded answer-case comparison on one ingested DeepSeek-R1 paper.
+The cells summarise the case compendium; complete responses and source text
+are retained in the associated demonstration records. This non-blinded case
+study is not a measurement of general answer accuracy or abstention.}
+\label{tab:s-answer-cases}
+\begin{tabular}{@{}p{0.18\textwidth}p{0.35\textwidth}p{0.35\textwidth}@{}}
+\toprule
+Question & OMP response summary & Claude response summary \\
+\midrule
+Benchmark scores & AIME 79.8\%, MATH-500 97.3\%; distinguished R1-Zero & Same two values; distinguished R1-Zero \\
+RL and rewards & GRPO, rule-based rewards; noted reward hacking & GRPO and rule-based rewards; noted reward hacking \\
+R1-Zero training & RL without SFT; poor readability and language mixing & RL without SFT; poor readability and language mixing \\
+Electricity cost & No electricity amount reported; distinguished the \$294K rental-based training estimate & No electricity amount reported; distinguished the \$294K rental-based training estimate \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\caption{Question-level answer proxies for the original 30-cell grid
+(\protect\path{run-20261013T094350Z-5f9faac}). For each arm, s is strict
+keyword coverage, a is alias-aware coverage, and m is the count of recognised
+citation-like markers. The gold ID appeared in the answer or trace in all
+cells. A marker does not verify source resolution or entailment.}
+\label{tab:s-answer-grid}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.30\textwidth}l*{9}{c}@{}}
+\toprule
+ & & & \multicolumn{3}{c}{Platform (P)} & \multicolumn{3}{c}{File (F)} & \multicolumn{3}{c}{Vector (C)}\\
+\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-12}
+Q & Question (abridged) & Gold & s & a & m & s & a & m & s & a & m\\
+\midrule
+BQ01 & Transformer attention and recurrence & 1706.03762 & \yes & \yes & 6 & \yes & \yes & 0 & \yes & \yes & 5\\
+BQ02 & NISQ definition and limitation & 1801.00862 & \yes & \yes & 4 & \yes & \yes & 3 & \yes & \yes & 0\\
+BQ03 & MultiMedQA and Flan-PaLM on MedQA & 2212.13138 & \yes & \yes & 4 & \yes & \yes & 1 & \yes & \yes & 1\\
+BQ04 & Gene Ontology subdivisions & 1602.01876 & \yes & \yes & 1 & \yes & \yes & 1 & \yes & \yes & 0\\
+BQ05 & European growth and Unified Growth Theory & 1512.08067 & \yes & \yes & 0 & \yes & \yes & 0 & \yes & \yes & 0\\
+BQ06 & Controls on precipitation extremes & 1503.07557 & $\times$ & \yes & 6 & \yes & \yes & 4 & \yes & \yes & 0\\
+BQ07 & MameLoshnLM and parameter scale & 2608.05850 & \yes & \yes & 1 & \yes & \yes & 2 & \yes & \yes & 0\\
+BQ08 & Oxygen redox and cathode capacity & 2408.09942 & \yes & \yes & 2 & \yes & \yes & 0 & \yes & \yes & 0\\
+BQ09 & Visual SLAM in dynamic scenes & 2410.10669 & \yes & \yes & 2 & $\times$ & \yes & 6 & \yes & \yes & 0\\
+BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes & \yes & 6 & $\times$ & \yes & 0\\
+\midrule
+ & \emph{All ten questions} & & 9 & 10 & 29 & 9 & 10 & 23 & 9 & 10 & 6\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\end{document}

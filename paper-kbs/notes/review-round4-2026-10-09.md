@@ -62,7 +62,7 @@ fixable in days without new experiments."
 
 ### 投稿阻断项（不变，AUTHOR ACTION）
 
-作者姓名/单位/ORCID、CRediT 真名、funding、qdcvr-demo bib 作者占位符。
+作者姓名/单位/ORCID、CRediT 真名、funding、hmrs-demo bib 作者占位符。
 
 ### 发表预判
 

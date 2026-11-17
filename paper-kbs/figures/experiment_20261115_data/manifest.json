@@ -1,0 +1,15 @@
+{
+  "sources_sha256": {
+    "review/experiment-redesign-20261101/artifacts/final_bench/s4_traces_final.json": "d1379a546e6d6aa0c390fd8ffc262608ee70a2c0ae41c9fc826ce2a8d190f87c",
+    "review/experiment-redesign-20261101/artifacts/replication_bench_20261112/s4_traces_r3.json": "efe05ff215f02d0234b627be8feffd0f0962f0a965290c5fa918a5717337d417",
+    "paper-kbs/experiments/results/exp1_retrieval.json": "0a6b56eece0db237ecdc6e0685dc78de88c4a8d7d68494526e06496a6f5b68d1",
+    "paper-kbs/experiments/results/exp5_judge_filter.json": "25c049ed5ba38c0cd0815bbf18f857bf32d36a47f3eb2cb799effe8e53da5b24",
+    "paper-kbs/experiments/kbcommon.py": "3ec900036bbb4faeda953bd0da90773c1307ea94b57dbbb25976ea673df63baa"
+  },
+  "artifacts": "fig_exp_route/content/verifier.{pdf,png}",
+  "route": "frozen 72 non-refusal cases, Wilson 95%",
+  "content": "frozen and follow-up 72 non-refusal cases, Wilson 95%; follow-up read-all only 3 complete and not plotted",
+  "verifier": "exp1 recorded scores and exp5 same-pool ordering are separate archives; absent score excluded",
+  "note": "Figure generation uses Matplotlib, with Origin-style presentation; the Origin application was not used.",
+  "matplotlib_version": "3.10.1"
+}

@@ -27,7 +27,7 @@
 | 🟡 双道（机制增强，L4/L5.5 Jev 门） | 6 题 | A 5 正确/1 部分；**B 0 正确/2 部分/4 拒答** | A 29.2–69.0 s、$0.54–1.03；B 28.6–50.4 s、11–22 候选/33–64 窗/0–6 保留 part | `benchmark-suite/results/DESC-FIX-AND-TWO-LANE-MULTI-TEST.md`；`benchmark-suite/results/TWO-LANE-MULTI-TEST.md` | 已测结构性原因：B 的证据窗跨越不相连的 part 区间；「在这个语料上向量的『精确指向 chunk』仍然更强」；替代道是 workaround |
 | 🟡 智能体 harness 集成（harness 矩阵） | 试过 omp/claude/codex/cursor/gemini/crush/opencode/goose/qwen/pi/copilot | 探针有记录，无汇总判定 | 最大探针日志 `probes/pi.txt` 83,957 B、`probes/copilot.txt` 50,479 B | `review/fulltest-20261012/probes/` | 若干探针只有 109–370 B 的桩（crush/cursor/goose/opencode/qwen）——harness 覆盖不均 |
 | 🟢 静态证据链（技能 ↔ 94 工具） | 20 技能、94 工具 | 20/20 `quick_validate` PASS（原为 0/20）；0 FAIL/0 WARN；冒烟 22 调用 0 失败 | 最慢 `kb_find_duplicates` 15.8 s；其余 9–3751 ms | `benchmark-suite/results/SKILL-STANDARD-AND-CHAT-LANE-TEST.md:12-46`；`benchmark-suite/results/SKILL-AUDIT.md`；`benchmark-suite/results/SKILL-SMOKE.md` | 首轮 6 次冒烟失败是测试者自己的坏 `kb_id` 输入，重跑归零；只读，写链未证；触发词冲突只修了 1 处 |
-| 🔴 面向论文的数字审计（非系统功能） | 核 24 条主张 | TRUE/STALE/UNVERIFIABLE/FALSE 混合 | 「139 后端测试」实为 **233**；「57 MCP E2E」实为 **39**；「106 端点」实为 **114 路径/121 操作**；「122 web 路由」实为 **124**；「19 Agent Skills」实为 **20** | `.audit/README-FACT-AUDIT.md` | README 基准表（P@5 0.590/FPR 12.0%/84 ms；QDCVR 0.630/3.0%/38 ms）**无法核实**，且被可追溯的 `module_b_retrieval_r2.json`（P@5 0.21 staged / 0.20 vector，1.33 s/0.081 s）反驳；`tmp/test_full_smoke.py` 不存在；「Auth is off」**为假**（认证开启、401 实测、116/121 操作需 bearer） |
+| 🔴 面向论文的数字审计（非系统功能） | 核 24 条主张 | TRUE/STALE/UNVERIFIABLE/FALSE 混合 | 「139 后端测试」实为 **233**；「57 MCP E2E」实为 **39**；「106 端点」实为 **114 路径/121 操作**；「122 web 路由」实为 **124**；「19 Agent Skills」实为 **20** | `.audit/README-FACT-AUDIT.md` | README 基准表（P@5 0.590/FPR 12.0%/84 ms；HMRS 0.630/3.0%/38 ms）**无法核实**，且被可追溯的 `module_b_retrieval_r2.json`（P@5 0.21 staged / 0.20 vector，1.33 s/0.081 s）反驳；`tmp/test_full_smoke.py` 不存在；「Auth is off」**为假**（认证开启、401 实测、116/121 操作需 bearer） |
 
 ## 可引用的原话（逐字，含 file:line）
 
@@ -54,7 +54,7 @@
 2. **D1 改名/移动后留旧 chunk** —— 假近重 0.9738、`chunk_count` 18 vs 9（`SKILL-E2E-REPORT.md:130-142`）；只有手工异步 `kb_reindex` 能修。
 3. `kb_project_status(show_version=True)` 被静默忽略（D2）；`kb_task_status` 字段自相矛盾（D4）——只轮询 `status` 的消费者「could loop indefinitely」。
 4. `kb_search` 关键词相关性噪声：「quality」⊂「inequality」返回 5 篇无关经济学文档（D5）；用 `XYLOPHONE-9912` 的受控复测排第 1。
-5. `soul-rag` **PARTIAL** —— `soul_qdcvr_ask` 353.2 s 后仍 `running`；未见答案/引用/PAS 分。
+5. `soul-rag` **PARTIAL** —— `soul_hmrs_ask` 353.2 s 后仍 `running`；未见答案/引用/PAS 分。
 6. 经验草稿审批链**从未被行使**（草稿池空）；经验 CRUD、人格训练/RL/冥想、补天蒸馏、`parse_doc`/`kb_doc_save_parsed` 均**未被行使**。
 7. 双道 B 道在该语料上 6/6、首轮 4/4 零正确答案——未解决。
 8. `kb_graph_build` 留下卡在 `"running"` 的任务行；任务状态不能作为图谱完成证据。

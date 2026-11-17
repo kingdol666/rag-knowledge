@@ -1,0 +1,47 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+HMRS is a knowledge-document management system whose retrieval path depends on
+managed state. It parses heterogeneous sources, assigns content to collections,
+derives descriptions and tags, stores documents and structural parts, exposes
+catalogue-first access, and records lifecycle state across document files, the
+tree registry and per-library metadata. The segment-level gate adds provenance
+and an admission signal; it is not a truth oracle or a ranker. This separation
+of managed objects, access views and workflow decisions is the system's central
+design claim.
+
+The management campaigns show that this loop is operational but not complete.
+The October 2026 arXiv campaign recorded 322 parts, with 79 papers retrievable and
+21 not at that snapshot; the separate 400-pages-per-language test measured content-based
+assignment accuracy of 0.875 for English and 1.0 for Chinese and Japanese. A
+33-part storage sample passed its selected checks, while a rename exposed stale
+index state and 16 lifecycle scenarios included failures in task-status and
+update checks. The system therefore contributes a testable management loop with
+explicit failure visibility, rather than an unqualified claim of automatic
+consistency.
+
+The access campaigns provide the next layer of evidence. The frozen route-card
+audit produced 72/72 full-card versus 37/72 nominally name-only collection
+selection, with an unlogged fallback that prevents causal attribution. In the
+same-question R3 content-layer follow-up, the tiered chunk-window arm A0h achieved
+51/72 (70.8\%), above PD 45/72, A0f 44/72, A0/A1b 39/72 and A2 25/72; its paired
+contrast with A0 was 12--0 ($p=0.00049$, exploratory). These values are
+ gold-string containment proxies and the arms vary in more than navigation.
+The frozen read-all script found all 72 strings but generated no answers, and
+R3 read-all was incomplete. Together, the results support the narrower claim that A0h had the highest
+observed exact-string containment among completed R3 arms on this corpus and
+question set, not semantic answer accuracy, universal retrieval superiority or
+a single-factor causal hierarchy claim.
+
+These bounded results support treating the collection as a managed, auditable
+object and motivate its use as an inspectable basis for evidence-traced
+retrieval. The immediate deployment implication is to expose collection state
+and incomplete paths, retain evidence provenance, and separately evaluate
+verifier-based admission and ordering before deployment. The global channel can also
+silently skip unreadable library indexes while reporting success; until that
+condition is surfaced, a successful cross-library response is not evidence of
+complete coverage. The study's contribution is a system-level management
+contract and a bounded A0h observation, not a claim of universal retrieval
+superiority. Broader evaluation needs semantic support review, independently
+authored questions, repeated agent trials with run-to-run variance estimates,
+larger matched comparisons with multiplicity control, and crash-recovery tests.

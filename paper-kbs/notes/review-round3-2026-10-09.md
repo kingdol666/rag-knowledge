@@ -201,7 +201,7 @@ than §7.2 implies).
 | R16 | Benchmark at 2× scale; paraphrase set; second judge replay; NLI/symbolic signals; user study | encouraged | future work | roadmap (not run) |
 
 AUTHOR ACTION (unchanged, submission-blocking): real author names/affiliations/
-ORCID, CRediT roles, funding or the no-funding statement, qdcvr-demo bib entry
+ORCID, CRediT roles, funding or the no-funding statement, hmrs-demo bib entry
 authors.
 
 ---

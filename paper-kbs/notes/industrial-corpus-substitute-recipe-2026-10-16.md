@@ -15,7 +15,7 @@ alone, because it consumes logged results rather than the corpus text:
 
 | artifact | contents | re-derives |
 |---|---|---|
-| `paper-kbs/experiments/results/exp1_retrieval.json` | 112 tool-layer rows; the 16 `qdcvr_hybrid` rows carry all candidate scores in `judge_scores.all` (191 recorded scores, Q14 has 11) and the post-judge `ranked_top5` | the judge-ordering row of Table 2 (Hit@5 0.4375, Recall@5 0.4062, MRR 0.2260) and the score census (every recorded score > 0.5, minimum 0.589) |
+| `paper-kbs/experiments/results/exp1_retrieval.json` | 112 tool-layer rows; the 16 `hmrs_hybrid` rows carry all candidate scores in `judge_scores.all` (191 recorded scores, Q14 has 11) and the post-judge `ranked_top5` | the judge-ordering row of Table 2 (Hit@5 0.4375, Recall@5 0.4062, MRR 0.2260) and the score census (every recorded score > 0.5, minimum 0.589) |
 | `paper-kbs/experiments/kbcommon.py` (`QUESTIONS`) | the 16 gold questions with `gold_doc_substrings` and fact markers | gold/non-gold labels for every logged candidate |
 | `paper-kbs/experiments/exp6_loo_margin.py` | relative-margin sweep over the same logged scores; makes no service calls | Fig. 6(a) |
 | `paper-kbs/experiments/exp7_second_signal.py`, `exp9_span_nli.py` | independent NLI replays over the same 191 (query, candidate) pairs | the second-checkpoint failure |
@@ -32,7 +32,7 @@ rows = json.load(open('paper-kbs/experiments/results/exp1_retrieval.json'))['row
 Q = {q['qid']: q for q in QUESTIONS}
 ok = []
 for r in rows:
-    if r.get('method') != 'qdcvr_hybrid' or 'judge_scores' not in r:
+    if r.get('method') != 'hmrs_hybrid' or 'judge_scores' not in r:
         continue
     order = sorted(r['judge_scores']['all'], key=lambda p: -r['judge_scores']['all'][p])
     hits, _ = gold_hit([norm_path(p) for p in order], Q[r['qid']]['gold_doc_substrings'], 5)

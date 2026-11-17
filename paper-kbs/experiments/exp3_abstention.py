@@ -71,7 +71,7 @@ def part_b(rows: list[dict]) -> dict:
     stats = {m: {"gold_kept": 0, "gold_pool": 0, "kept_sizes": []}
              for m in margins}
     for r in rows:
-        if r.get("method") != "qdcvr_hybrid" or "judge_scores" not in r:
+        if r.get("method") != "hmrs_hybrid" or "judge_scores" not in r:
             continue
         scores = sorted(r["judge_scores"]["all"].values(), reverse=True)
         if not scores:
@@ -103,7 +103,7 @@ def part_c(rows: list[dict]) -> list[dict]:
     qg = {q["qid"]: q["gold_doc_substrings"] for q in QUESTIONS}
     out = []
     for r in rows:
-        if r.get("method") != "qdcvr_hybrid" or "judge_scores" not in r:
+        if r.get("method") != "hmrs_hybrid" or "judge_scores" not in r:
             continue
         order = sorted(r["judge_scores"]["all"].items(),
                        key=lambda kv: -kv[1])

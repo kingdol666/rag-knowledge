@@ -15,7 +15,7 @@ from pathlib import Path
 import fitz  # PyMuPDF
 
 HERE = Path(__file__).resolve().parent
-LOG = HERE / "qdcvr_kbs.log"
+LOG = HERE / "hmrs_kbs.log"
 FIGS = HERE / "figs"
 
 NATIVE_RE = re.compile(

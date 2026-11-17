@@ -6,6 +6,39 @@ Sources are listed in §1; every requirement below is quoted from one of them.
 Items marked **[verified locally]** were re-checked against the downloaded
 Elsevier bundle or the installed class in this session.
 
+## 0. Revision 2026-11-11 (HMRS restructure)
+
+The manuscript was restructured on 2026-11-11 around the HMRS management
+spine (collection → document → segment; catalogue → shelf → document →
+segment). The table in §4 and the row-by-row statuses in §2 are the
+2026-10-12 measurement and are retained as that dated record. Current state,
+re-measured on 2026-11-11:
+
+| requirement | 2026-10-12 | 2026-11-11 |
+|---|---|---|
+| #1 length (≤20 double-spaced pages, "preferably") | not met (36 two-column pages) | **not met** — 24 two-column pages, 17,561 body words; gate moved to `page count <= 24` in `_postcheck.ps1`; rationale in `page-budget-2026-10-16.md` |
+| #2 abstract ≤250 words | met (246–249) | met (244; `_kbs_compliance_check.py` re-verified) |
+| #3 keywords 1–7 | met (6) | met (6) |
+| #4 highlights 3–5 × ≤85 chars | met (5, longest 76) | met (5, longest 77) |
+| #9 GenAI declaration title and placement | done | done (unchanged) |
+| #14 artwork ≥7 pt finished type | partly met | **met** — all 9 figures ≥7.09 pt effective, 0 below floor; the reference list was also raised from 6.97 pt to 7.17 pt (`\urlstyle{same}` + `\DeclareUrlCommand\path{\urlstyle{same}}`) |
+| #14 artwork approved fonts | not recorded | **met** — `fig3_routing` was rebuilt with Arial (it had embedded DejaVuSans, which is not on the Elsevier list); all 9 figures now embed Arial only |
+| #16 "no multiple graphs combined into one file" | flagged | still flagged — `fig3_routing` (4 diagnostic panels), `fig6_margin_variants` (2 replays), `fig11_three_arms` (3 arms, arguably the before/after comparison exception) |
+| #13 tables editable / cited | met | met — 8 body tables, every float cited, 9 figures all cited |
+
+Three items changed materially and need an author's decision: the length
+overrun grew from the restructure (see above), the multi-panel figure files
+are still flagged under #16, and the manuscript still carries no figure of the
+three-level management model or the tiered path, which is now its central
+claim. The retired system name that was still embedded in Figure 1's title
+was patched on 2026-11-11 (the editable source is
+`paper-kbs/figures/kbs_revision_20261106/fig1_architecture.drawio`); the
+`highlights.docx` in `journal_20p/` was regenerated; the typeset author note
+in `n_back.tex` was moved into a source comment; and the experimental freeze
+manifest was re-frozen with LF line endings and corrected artefact paths, so
+`sha256sum -c .frozen-experiment-sha256.txt` now passes (49 entries) instead
+of failing on every path as it did before.
+
 ## 1. Sources (retrieved 2026-10-12)
 
 | source | what it establishes |
@@ -147,7 +180,7 @@ if the editor objects, each panel is already an independent drawing in
 
 1. Author names, affiliations, corresponding e-mail, ORCID, CRediT roles and
    funding text — `paper-kbs/tex/main2.tex:48-53` and the three
-   `AUTHOR ACTION` markers (also the `qdcvr-demo` BibTeX entry's placeholder
+   `AUTHOR ACTION` markers (also the `hmrs-demo` BibTeX entry's placeholder
    author in `refs.bib`).
 2. Elsevier declaration-of-competing-interests export (`.doc/.docx`).
 3. Cover letter and any suggested reviewers (not required by the guide, but

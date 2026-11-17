@@ -101,7 +101,7 @@ Every quantitative claim in `n1…n11` is traceable to one of:
 `paper-kbs/notes/functional-test-evidence-2026-10-12.md`,
 `paper-kbs/notes/exp11-gate-ablation-report.md` (+ JSON + cells),
 `paper-kbs/notes/exp12-partition-ablation-report.md` (+ JSON + cells),
-`paper-kbs/experiments/results/*.json` (the QDCVR suite),
+`paper-kbs/experiments/results/*.json` (the HMRS suite),
 `review/fulltest-20261012/SUMMARY.md`, `benchmark-suite/results/*`, `paper_demo/tex/*`.
 Cross-lingual numbers are ingestion only (Module A); all cross-lingual retrieval numbers are
 banned because the underlying suite is incomplete (recorded in Threats).
@@ -109,7 +109,7 @@ banned because the underlying suite is incomplete (recorded in Threats).
 ## 5. Remaining work before submission
 
 1. **Author metadata** (`main2.tex:35-41`, `n_back.tex:33,37`): names, affiliations, ORCID,
-   corresponding e-mail, CRediT roles, funding text. Also `refs.bib` key `qdcvr-demo` carries the
+   corresponding e-mail, CRediT roles, funding text. Also `refs.bib` key `hmrs-demo` carries the
    placeholder author `Author Name`.
 2. **Cover letter** + **suggested reviewers** (Editorial Manager, `editorialmanager.com/knosys`).
 3. Optional: further compress §8 (≈4.9k words vs the plan's 3.0k budget) if a 13k-word target is

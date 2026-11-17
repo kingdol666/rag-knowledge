@@ -1,0 +1,54 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+HMRS manages documents at three levels and answers questions along a path that
+mirrors them. At the collection level, documents are parsed, classified into
+the library whose scope matches their body, and catalogued with derived
+descriptions and tags; at the document level, move, rename, delete and forced
+re-index operations update the collection, while reconciliation can detect
+selected disagreements among three state sources; at the segment level, an
+optional gate scores candidate passages and returns survivors with provenance.
+The collection-selection step connects the managed catalogue to retrieval;
+its outcome depends on the chosen access workflow.
+
+The campaigns confirm selected paths of that structure and also expose its
+limits. Ingestion and classification produced 322 stored parts across five
+libraries, but 21 of 100 submissions were not retrievable and the surviving
+records cannot attribute the failure to a stage. A separate 33-part storage
+sample passed, while an independent disposable-library test exposed a
+stale-index rename defect corrected by forced re-indexing. In 16 lifecycle
+scenarios, create, move, delete and forced re-index passed, whereas task-status
+reporting and the update check failed. The route-card audit found
+collection-selection correctness of 72/72 with full route cards versus 37/72
+with name-only cards, but an unlogged fallback
+rules out a causal interpretation. Evidence-pack string containment was
+37/72 (A0) versus 33/72 (A3) ($p=0.4545$). A mechanical full-read script found all 72
+strings after reading 879 parts, but generated no answers. The answer grids had
+gold identifiers in the answer or recorded trace for all 60 cells, but lexical and citation markers do not
+establish semantic support. On identical pools, verifier re-ranking reduced
+Hit@5 from 0.94 to 0.44; fusion order restored 0.94, and the configured
+threshold rejected none of 191 scores. On the same 72-question corpus, the
+tiered path with a chunk-window evidence union contained the gold string in
+52/72, above a scoped flat union with a potentially gold-dependent reference
+lookup (39/72; 13--0, unadjusted $p=0.00024$) and above a precise arm without navigation (46/72;
+7--1, $p=0.0703$). The answer grids add a substrate contrast: answers over the
+document-level organisation carried document-style citation markers in nine
+of ten cells against two of ten over a flat 800-character chunk replica of
+the same content, a difference bound to the content substrate rather than a
+retrieval difference. A recorded demonstration on one newly ingested paper showed two
+agent harnesses passing the same four-question case review on content,
+provenance, quotation and absence of fabrication (supplementary Table~S14),
+including a matched refusal to report a cost figure the source does not state.
+
+These results document an auditable management structure, bounded per-tier
+measurements and a deployment warning against verifier-as-ranker. The
+content-layer comparisons change multiple components, and the flat arm uses a
+potentially gold-label-dependent lookup; they do not isolate a hierarchy effect. They
+do not establish system-level superiority, general retrieval effectiveness,
+semantic answer quality or reliability. Broader evaluation needs independently
+authored questions, repeated agent trials with run-to-run variance estimates,
+claim-level support review, larger and repeated versions of the
+ladder-versus-flat-and-precise contrast with multiplicity control, and
+crash-recovery tests. Within these bounds, HMRS shows that treating the
+collection as a managed, auditable object is a viable, inspectable basis for
+evidence-traced retrieval.

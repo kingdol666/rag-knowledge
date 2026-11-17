@@ -1,0 +1,30 @@
+{
+  "sources_sha256": {
+    "review/experiment-redesign-20261101/artifacts/final_bench/s4_traces_final.json": "d1379a546e6d6aa0c390fd8ffc262608ee70a2c0ae41c9fc826ce2a8d190f87c",
+    "review/experiment-redesign-20261101/artifacts/final_bench/s6_stats.json": "6c88cfd4ba15148d51bfc40d2b221e21fd556d2b34c24b2fff9ebeae9cf20cc3",
+    "review/experiment-redesign-20261101/artifacts/replication_bench_20261112/s4_traces_r3.json": "efe05ff215f02d0234b627be8feffd0f0962f0a965290c5fa918a5717337d417",
+    "review/experiment-redesign-20261101/artifacts/replication_bench_20261112/s6_stats.json": "03e6f763c884d04a47934f510602d3ba4f15d5ed608ac5f875c81beb8d44218c",
+    "benchmark-suite/results/exp_r2_grade_corrected.json": "ad9e4c47db9266ed650961c2f8f7d88ba4317890480f8057c0da9c77f581571b",
+    "benchmark-suite/results/exp_rerun5_grade.json": "d715ce68b9573b76b5ecb8d9140cc0238ad06e846bfc2b2547151a53435a0d74",
+    "paper-kbs/experiments/results/exp1_retrieval.json": "0a6b56eece0db237ecdc6e0685dc78de88c4a8d7d68494526e06496a6f5b68d1",
+    "paper-kbs/experiments/results/exp5_judge_filter.json": "25c049ed5ba38c0cd0815bbf18f857bf32d36a47f3eb2cb799effe8e53da5b24",
+    "experiment_data/case-anatomy-provenance.json": "9b86f34992db7b3ac2707e07eaf64bd07f91346ba8ee9e3b22c3900b276f102b",
+    "experiment_data/figure-redraw-manifest-20261116.json": "0fb8fbb7aa2d26a7dff70a72c95530b4e59aac661338c92b06c184786eaa36ff",
+    "review/_exp_rerun_20261114/answers_fresh_summary.json": "c2fa7dfd23f0bde941823962874356fa868dd4bb4faa3f599e97e93a93d29db2",
+    "review/_exp_rerun_20261114/desc_audit.json": "6783db9958466961a417accd6242e37a354c49d5878ced36b690bf0cea16480d",
+    "review/_exp_rerun_20261114/probe5_final.json": "2969af837a349ace85d6fdf61fd126bb81864b54d685b94d3c7ce83f1c0517a6"
+  },
+  "figures": [
+    "fig_opt_route",
+    "fig_opt_content",
+    "fig_opt_answer",
+    "fig_opt_verifier",
+    "fig_opt_case"
+  ],
+  "note": "Matplotlib, Origin-style presentation; the Origin application was not used. All counts and intervals are recomputed from the archived records before plotting.",
+  "route": "frozen 72 in-domain questions; A0/A3 route and containment; read-all mechanical scan.",
+  "content": "frozen and same-question follow-up, 72 in-domain questions; follow-up read-all incomplete and not plotted.",
+  "answer": "original and common-substrate 30-cell grades; markers only; strict and alias counts are annotated.",
+  "verifier": "191 logged scores and a separate 16-pool ordering archive; the score archive and ordering archive are not the same requests.",
+  "matplotlib_version": "3.10.1"
+}

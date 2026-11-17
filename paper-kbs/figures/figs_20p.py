@@ -286,9 +286,9 @@ def fig3():
         (RESULTS / "exp1_summary.json").read_text(encoding="utf-8"))
     s = summary["summary"]
     order = ["bm25", "dense", "rrf", "graph", "twostage", "fusion_only",
-             "qdcvr_hybrid"]
+             "hmrs_hybrid"]
     # short tick labels: the method names live in the caption instead
-    labels = ["BM25", "Dense", "RRF", "Graph", "2-stg", "Fusion", "QDCVR-H"]
+    labels = ["BM25", "Dense", "RRF", "Graph", "2-stg", "Fusion", "HMRS-H"]
     colors = [C["grey"], C["sky"], C["blue"], C["pink"], C["yellow"],
               C["orange"], C["green"]]
     x = list(range(len(order)))
