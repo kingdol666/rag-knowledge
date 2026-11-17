@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KBS 期刊论文绘图风格画廊 — 架构图 / 执行流程图</title>
+<style>
+:root{
+  --bg:#f5f7fa; --card:#ffffff; --ink:#1b2330; --muted:#5d6b7d;
+  --line:#dde4ec; --accent:#1f5fa8; --accent-soft:#e8f1fb;
+  --tag:#eef2f7; --warn:#b45309; --warn-bg:#fff7e8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Segoe UI","Microsoft YaHei","PingFang SC",Arial,sans-serif;
+  font-size:16px;line-height:1.75}
+.wrap{max-width:1400px;margin:0 auto;padding:36px 28px 80px}
+header{background:linear-gradient(0deg,#fff,#f0f5fb);border:1px solid var(--line);
+  border-radius:16px;padding:30px 34px;margin-bottom:26px}
+h1{margin:0 0 10px;font-size:30px;letter-spacing:.3px}
+.sub{color:var(--muted);font-size:16px;margin:0 0 20px}
+.stats{display:flex;flex-wrap:wrap;gap:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:10px;
+  padding:10px 16px;min-width:150px}
+.stat b{display:block;font-size:23px;color:var(--accent);line-height:1.3}
+.stat span{font-size:13px;color:var(--muted)}
+nav{position:sticky;top:0;z-index:20;background:rgba(245,247,250,.96);
+  backdrop-filter:blur(6px);border-bottom:1px solid var(--line);
+  padding:12px 0;margin-bottom:28px}
+nav a{display:inline-block;margin:0 10px 4px 0;padding:6px 14px;border-radius:20px;
+  background:#fff;border:1px solid var(--line);color:var(--accent);
+  text-decoration:none;font-size:14px}
+nav a:hover{background:var(--accent-soft)}
+section{margin-top:42px}
+h2{font-size:23px;border-left:5px solid var(--accent);padding-left:14px;margin:0 0 6px}
+.sect-note{color:var(--muted);margin:0 0 22px;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(530px,1fr));gap:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;box-shadow:0 2px 10px rgba(20,40,70,.05);display:flex;flex-direction:column}
+.card-head{padding:18px 22px 12px}
+.kicker{font-size:12px;letter-spacing:.6px;color:var(--accent);font-weight:700;text-transform:uppercase}
+.card h3{margin:4px 0 8px;font-size:18px;line-height:1.45}
+.cap{font-size:13px;color:var(--muted);font-style:italic;margin:0 0 10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{background:var(--tag);border-radius:5px;padding:2px 9px;font-size:12px;color:#41506a}
+.badge.key{background:#dcecfb;color:#174d86}
+.badge.warn{background:var(--warn-bg);color:var(--warn)}
+.imgbox{background:#fbfcfe;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:14px;text-align:center;cursor:zoom-in}
+.imgbox img{max-width:100%;height:auto;display:block;margin:0 auto;border:1px solid #eef1f5}
+.card-body{padding:16px 22px 20px;font-size:14.5px;flex:1}
+.card-body p{margin:0 0 10px}
+.card-body .lbl{display:inline-block;min-width:74px;font-weight:700;color:var(--accent)}
+.links{padding:0 22px 18px;font-size:13px}
+.links a{color:var(--accent);text-decoration:none;margin-right:14px}
+.links a:hover{text-decoration:underline}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);
+  border-radius:10px;overflow:hidden;font-size:14.5px;margin:16px 0}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#eef4fb;color:#234;font-weight:700}
+tr:last-child td{border-bottom:none}
+.box{background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent);
+  border-radius:10px;padding:18px 22px;margin:16px 0}
+.box.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.p0{color:#b91c1c;font-weight:700}.p1{color:#b45309;font-weight:700}.p2{color:#1f5fa8;font-weight:700}
+footer{margin-top:48px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:20px}
+#lb{position:fixed;inset:0;background:rgba(12,18,28,.92);display:none;z-index:99;
+  align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+#lb img{max-width:96%;max-height:94%;background:#fff;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+#lb .hint{position:absolute;bottom:18px;color:#cfd8e6;font-size:13px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:20px 14px 60px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>KBS 期刊论文绘图风格画廊</h1>
+  <p class="sub">从 29 篇 Knowledge-Based Systems 文献中定位并导出的核心架构设计图与执行流程图。
+     每张图都来自真实 PDF 页面渲染，附原文图注、论文内容解读与绘图风格点评。</p>
+  <div class="stats">
+    <div class="stat"><b>29</b><span>KBS 文献 PDF</span></div>
+    <div class="stat"><b>88</b><span>导出页面 PNG</span></div>
+    <div class="stat"><b>15</b><span>重点解读论文</span></div>
+    <div class="stat"><b>20</b><span>精选架构/流程图</span></div>
+    <div class="stat"><b>144 / 216 dpi</b><span>整页 / 图区裁剪</span></div>
+  </div>
+</header>
+
+<nav>
+  <a href="#s1">① 系统架构图</a>
+  <a href="#s2">② RAG 检索流水线</a>
+  <a href="#s3">③ 执行流程图</a>
+  <a href="#s4">④ 框架总览与结构图</a>
+  <a href="#s5">⑤ 风格规律总结</a>
+  <a href="#s6">⑥ 对 HMRS 的画图建议</a>
+</nav>
+
+<section id="s1">
+  <h2>① 系统架构设计图</h2>
+  <p class="sect-note">KBS 系统类论文最常见的「Figure 2/3」：先给一张组件-连接-边界的架构蓝图，再给一张实例化原型图。这是与我们 HMRS 论文最直接对标的图型。</p>
+  <div class="grid" id="g1"></div>
+</section>
+
+<section id="s2">
+  <h2>② RAG / 知识检索流水线</h2>
+  <p class="sect-note">把「文档 → 分块 → 向量 → 检索 → 上下文 → LLM → 答案」画成一条带泳道的闭环，是 KBS 检索类论文的标准做法。</p>
+  <div class="grid" id="g2"></div>
+</section>
+
+<section id="s3">
+  <h2>③ 执行流程图 / 时序图 / 算法流程图</h2>
+  <p class="sect-note">论文里「系统怎么跑一遍」通常用编号步骤、UML 时序图或判定菱形流程图表达，而不是再画一张架构图。</p>
+  <div class="grid" id="g3"></div>
+</section>
+
+<section id="s4">
+  <h2>④ 框架总览、综述结构与风格边界样本</h2>
+  <p class="sect-note">卡片式总览、箭头标题带、以及「不规范」的手绘样本，共同构成 KBS 真实绘图风格的全貌。</p>
+  <div class="grid" id="g4"></div>
+</section>
+
+<section id="s5">
+  <h2>⑤ KBS 绘图风格：8 条可验证规律</h2>
+  <p class="sect-note">以下每条都能在本画廊的具体图里找到对应证据，不是泛泛而谈。</p>
+  <table>
+    <tr><th style="width:52px">#</th><th style="width:190px">规律</th><th>证据与说明</th></tr>
+    <tr><td>1</td><td>架构图用「标准建模语言」而非自由涂鸦</td><td>Journalistic KP 的 Fig.3 明确标注 <i>represented with ArchiMate 3.1 notation</i>；HELIOT Fig.4 用 C4/UML 组件图写出 <code>[Component: Streamlit]</code>、<code>[Container: TileDB]</code>、<code>[Software System] GPT-4 API</code>。组件右上角带小图标区分类型，右下角放线型图例。</td></tr>
+    <tr><td>2</td><td>「大虚线框 = 系统边界 / 泳道」</td><td>GTR Fig.1 用两个虚线圆角框分出 USER INPUT 与 MODEL FRAMEWORK；HELIOT 用虚线框圈住整个 Heliot CDSS，把外部 LLM 放在框外；CIR3 用底色带表示 Transactive Memory State。</td></tr>
+    <tr><td>3</td><td>中心化布局：知识库居中，其余组件环绕</td><td>Journalistic KP Fig.2/3 把 Knowledge Base 放正中，Ingestor、Feeder、Retriever、Learner、Curator 分列四周；HMRS 的五层数据模型完全可以用同样的中心辐射式。</td></tr>
+    <tr><td>4</td><td>箭头必须带「语义标签」和「线型区分」</td><td>Journalistic KP 图例区分实线 Trigger direction 与虚线 Information flow；HELIOT 箭头写 <code>Makes API calls [JSON/HTTP]</code>、<code>Reads from [Array API]</code>；Supervisor 图用实线=任务下发、虚线=报告回传。</td></tr>
+    <tr><td>5</td><td>配色极度克制，多为单色系 + 少量强调色</td><td>ArchiMate 图全篇只有青色（#9fe6e3 系）+ 白 + 黑；HELIOT 只有蓝 + 深蓝 + 灰；FinBloom 甚至全灰阶。彩色只用于编码语义（GTR 用红/蓝/黄/绿点区分 query / stored / retrieved vectors；QueryExpansion 用菱形紫色、处理框蓝色、输出框黄色）。</td></tr>
+    <tr><td>6</td><td>流程用编号①–⑦、判定菱形与显式反馈回路</td><td>CIR3 Fig.1 把 7 个步骤直接编号在箭头上，并写出 <code>&lt;K</code>、<code>&lt;L</code> 迭代次数与收敛判定；QueryExpansion Fig.8 用 5 个菱形判定 + TP/FP/TN/FN 出口；DualMemory Fig.1 用黄色菱形 <code>b &lt; b*</code>。</td></tr>
+    <tr><td>7</td><td>跨栏大图承载主架构，单栏小图承载辅助流程</td><td>实测坐标：ArchiMate 主图占整页宽；Journalistic KP Fig.2 高层视图 bbox 仅 (369,560)-(495,695)，是右栏单栏小图。双栏排版下主图一般跨两栏放在页面上部。</td></tr>
+    <tr><td>8</td><td>图注写「这张图在做什么」，不止写题名</td><td>CIR3 图注长达 5 行，逐步解释 (1)–(7)；HELIOT 写 <i>Overview of the Pharmaceutical Data Pipeline Process</i>；GTR 写明 <i>showing our embedding-based retrieval system using document chunking</i>。图注本身就是小摘要。</td></tr>
+  </table>
+  <div class="box warn">
+    <b>诚实边界：</b>本画廊里有 3 类样本不是 KBS 正式排版，解读风格时已经区分：
+    <code>A_COMPANION_*</code> 是 CEUR-WS workshop 前驱稿；<code>A_KG_Orchestra_*</code> 是 bioRxiv 预印本；
+    <code>A_GOFAI_*</code> 虽发表于 KBS，但用的是手写体涂鸦风格，属于低规范样本（故意保留作反例）。
+    另外 <b>KG-Orchestra 的 62 页 PDF 正文完全没有嵌入图形对象</b>，图形集中在 p52–p62 附录，因此不作为风格样本。
+  </div>
+</section>
+
+<section id="s6">
+  <h2>⑥ 对 HMRS 论文画图的具体建议</h2>
+  <table>
+    <tr><th style="width:70px">优先级</th><th style="width:220px">动作</th><th>依据 / 落地方式</th></tr>
+    <tr><td class="p0">P0</td><td>主架构图改用 ArchiMate 或 C4 组件图</td><td>参照 Journalistic KP Fig.3 与 HELIOT Fig.4：五层数据模型 L1–L5 各自画成组件框，框内列子组件，框上标 <code>[Component]</code> / <code>[Container]</code> 类型，用虚线大框圈出「系统边界」，把外部 embedding / LLM 服务放到框外。这比自由画方框更经得起系统类期刊评审。</td></tr>
+    <tr><td class="p0">P0</td><td>补一张「带编号」的 QDCVR 执行流程图</td><td>参照 CIR3 Fig.1 与 Supervisor 时序图：把「路由 → 召回 → 内容 Rubric 裁决 → c≤4 丢弃 / c=5 fallback / c≥6 采用 → not-found report」画成 ①–⑦ 带判定菱形的流程，并显式画出 librarian escalation 与 feedback 回路。当前稿件缺的正是这类「系统怎么跑一遍」的图。</td></tr>
+    <tr><td class="p0">P0</td><td>给每张图配线型图例</td><td>实线=控制/触发，虚线=数据流/信息流（ArchiMate 图例），并在箭头上写语义标签。HMRS 有 HTTP 写路径与直连文件读路径两条完全不同的通道，必须靠线型+标签区分，否则读者会误以为是同一条数据总线。</td></tr>
+    <tr><td class="p1">P1</td><td>主图跨双栏、辅助图单栏</td><td>按实测坐标，跨栏图放在页面上部占满 textwidth；高层概览图可缩成单栏小图。避免把复杂架构硬塞进单栏导致字号小于 8pt。</td></tr>
+    <tr><td class="p1">P1</td><td>配色统一到单色系 + 1 个强调色</td><td>建议青/蓝单色系（与 ArchiMate、HELIOT 一致），仅用一种强调色标出「内容裁决」这一创新点（对应 GTR 里用彩色点编码向量类型的做法）。不要每种模块一种颜色。</td></tr>
+    <tr><td class="p1">P1</td><td>图注写成小摘要</td><td>像 CIR3 那样在图注里逐条解释编号步骤与判定条件，而不是只写 "Overview of our system"。</td></tr>
+    <tr><td class="p1">P1</td><td>加一张「原型实例化」图</td><td>Journalistic KP Fig.4 用真实组件 logo（DBpedia / Wikidata / docker）证明架构可落地。HMRS 可对应放 ChromaDB、Neo4j、BGE-M3、MCP 等真实组件标识，强化 Applied Research / KBS 系统论文最看重的「真的实现了」。</td></tr>
+    <tr><td class="p2">P2</td><td>避免手写体、曲线箭头、无图例的自由涂鸦</td><td>GOFAI Fig.3 是已发表但明显低规范的样本；也避免 LGMT 式彩色卡片堆叠用于系统架构（它适合评测框架总览，不适合表达组件连接）。</td></tr>
+    <tr><td class="p2">P2</td><td>避免把实验结果图当架构图</td><td>本包中 <code>A_Practical_PrivacyPreserving_Framework</code> 有 22 张图全是通信耗时/请求大小的柱状对比，无一张架构图——这类论文不适合作为绘图风格参照。</td></tr>
+  </table>
+</section>
+
+<footer>
+  <b>证据链：</b>
+  <code>scan_all_kbs_figures.py</code>（29 篇全量图注 + 图像密度索引）→
+  <code>render_selected_kbs_figures.py</code>（28 页精选渲染 + 图形 bbox 裁剪）→
+  <code>refine_kbs_crops.py</code>（5 张按实测坐标精修）→
+  <code>ViewImage</code> 逐张视觉核对 → 本画廊。
+  所有 PNG 位于 <code>paper-kbs/reference/kbs/figures/</code>，<code>_crop.png</code> 为图区裁剪，<code>__pNN.png</code> 为整页（可看双栏排版）。
+</footer>
+</div>
+
+<div id="lb"><img id="lbimg" src="" alt="放大图"><div class="hint">点击任意位置关闭 · Esc 关闭</div></div>
+
+<script>
+const F = "figures/";
+const D = [
+ {g:"g1", slug:"A_SoftwareRefArch_JournalisticKnowledgePlatforms_2023", p:"08",
+  title:"Software Reference Architecture for Journalistic Knowledge Platforms", yr:"KBS 276, 2023",
+  cap:"Fig. 3. The SRA for JKPs (represented with ArchiMate 3.1 notation).",
+  tags:["ArchiMate 3.1","参考架构","★最推荐参照"], key:true,
+  what:"新闻机构用了大量 AI／大数据／知识系统却难以协同，作者用设计科学研究提出一个统一的「新闻知识平台」软件参考架构（SRA），把已验证的最佳实践固化成通用蓝图。",
+  style:"六大组件 Ingestor / Knowledge Base / Feeder / Retriever / Learner / Curator 全部用同色青色框，子组件右上角带 ArchiMate 组件小图标；右下角独立图例区分实线 Trigger direction 与虚线 Information flow。Knowledge Base 居中，其余组件环绕。",
+  take:"与 HMRS 最像的一张图：分层组件 + 中心知识库 + 明确读写通道，连「组织优先于检索」都能用同样的中心辐射式表达。"},
+
+ {g:"g1", slug:"A_SoftwareRefArch_JournalisticKnowledgePlatforms_2023", p:"11",
+  title:"JKP 原型实例化架构", yr:"KBS 276, 2023 · Fig. 4",
+  cap:"Fig. 4. The instantiated architecture for the JKP prototype.",
+  tags:["原型实例化","真实组件 logo","单栏图"],
+  what:"把上面的抽象 SRA 落到可运行原型：用 DBpedia、Wikidata、GeoNames、Wikipedia 作为外部知识源，docker 承载微服务，验证架构不是纸面设计。",
+  style:"与 Fig.3 完全同构的青色框，但子组件换成原型真实实现（News Feeds、Angler Detector、Query Engine），并把真实技术 logo 摆在框外作为「外部数据源」证据。",
+  take:"系统类论文很吃这一套：「抽象架构图 + 实例化图」成对出现，等于用图证明可落地性。"},
+
+ {g:"g1", slug:"A_HELIOT_LLM_CDSS_2025", p:"06",
+  title:"HELIOT：面向药物不良反应管理的 LLM 临床决策支持系统", yr:"KBS 2025 · Fig. 4",
+  cap:"Figure 4: HELIOT CDSS Architecture.",
+  tags:["C4 / UML 组件图","系统边界","★软件工程规范"], key:true,
+  what:"针对现有 CDSS 依赖静态数据库与规则、告警疲劳的问题，用 LLM 处理自由文本临床信息，给出用药管理建议。",
+  style:"标准 C4/UML：<code>[Person] Physician</code> 深蓝人形、<code>[Component: Streamlit]</code> Web App、<code>[Component: FastAPI]</code> API、<code>[Container: TileDB]</code> 药品库、<code>[Software System] GPT-4 API</code> 灰色外部系统；虚线框是系统边界，每条箭头写清 <code>Makes API calls [JSON/HTTP]</code>、<code>Reads from [Array API]</code>。",
+  take:"如果 HMRS 想强调「HTTP 写入 / 文件直连读取」两条通道，这是最规范的画法模板。"},
+
+ {g:"g1", slug:"A_Automating_EngineeringModeling_LLM_Agents_2026", p:"09",
+  title:"Automating Data-Driven Modeling with LLM Agents", yr:"KBS 2026 · Fig. 2",
+  cap:"Figure 2: Supervisor-centric architecture of the multi-agent system, illustrating the interactions.",
+  tags:["多智能体","角色图标","实线/虚线"], key:false,
+  what:"传统数据驱动建模需要大量人工，难扩展；作者用 LLM 智能体流水线自动完成建模、训练脚本生成、执行与调参。",
+  style:"极简到只用 4 个角色（Supervisor / Coder / Executioner / Tuner）+ 一个 UML 组织图标；实线=任务下发，点划线=Report completion / error info 回传，箭头文字沿斜线旋转排布。",
+  take:"适合表达 SOUL / Agent 编排的控制关系；不适合表达数据通道，信息量偏低。"},
+
+ {g:"g1", slug:"A_COMPANION_Developing_SoftwareRefArch_JKP_CEUR2021", p:"04",
+  title:"JKP 参考架构的 CEUR workshop 前驱版本", yr:"CEUR-WS 2021 · Fig. 1",
+  cap:"Figure 1: The SRA for JKPs (represented with ArchiMate 3.1 notation).",
+  tags:["前驱稿","非 KBS 正式排版"], warn:true,
+  what:"2023 年 KBS 正式版的前身，已经提出新闻知识平台需要软件参考架构来统合机器学习与知识图谱。",
+  style:"单栏 LNCS 排版的 ArchiMate 图，比正式版更紧凑、组件更少；可用来观察同一张图从 workshop 到期刊的演进。",
+  take:"对比阅读有用，但不要拿 LNCS 单栏的排版当 KBS 双栏标准。"},
+
+ {g:"g2", slug:"B_KnowledgeRetrieval_InContextLearning_SemanticSearch_2025", p:"04",
+  title:"GTR：文档分块 + 向量检索 + 上下文学习的领域问答系统", yr:"KBS 2025 · Fig. 1",
+  cap:"Figure 1: Methodology overview for GTR showing our embedding-based retrieval system using document chunking.",
+  tags:["RAG pipeline","双泳道","★与 QDCVR 直接对标"], key:true,
+  what:"通用 LLM 回答领域文档不准、微调又太贵；作者用文档分块 → embeddings → ChromaDB 向量库 → prompt context → LLM 的方式免训练地做领域问答，并用 GoogleTrans 支持任意语言查询与回译。",
+  style:"两个虚线圆角大框分 USER INPUT 与 MODEL FRAMEWORK；图标化（PDF、客服耳机、聊天气泡、大脑）；彩色仅用于向量示意——黄=query vector、蓝=stored vectors、红=retrieved vectors，绿色虚线圈表示近邻；平行四边形表示 prompt / answer。",
+  take:"这是「纯向量召回」路线最清晰的一张图。HMRS 的差异化（内容 Rubric 覆盖向量分数）可以直接在这张图的右下角加一个裁决模块，对比效果极强。"},
+
+ {g:"g2", slug:"B_FinBloom_KnowledgeGrounding_RealtimeData_2026", p:"06",
+  title:"FinBloom / Financial Agent：实时文本与表格数据接地", yr:"KBS 2026 · Fig. 3",
+  cap:"Figure 3: Working of the proposed architecture: An example.",
+  tags:["知识接地","灰阶","示例驱动"],
+  what:"LLM 难处理需要实时信息的金融问题；作者构建 5 万+ 金融查询的 Financial Context Dataset，让 Agent 从 News / Tabular 两个数据模块抽取实时上下文再交给 LLM。",
+  style:"全灰阶圆角框 + 竖排文字标签（Data Module / Agent）；把真实 query、真实上下文 c、真实答案 y^ 作为文本框直接放进图里，用数学符号 c, x 标注输入。",
+  take:"「用一条真实例子走通系统」是很好的 Figure 3 写法，适合展示 HMRS 的 not-found report 实例。"},
+
+ {g:"g2", slug:"B_RAG_EngineeringDesignKnowledge_2024", p:"09",
+  title:"RAG using Engineering Design Knowledge", yr:"KBS 303, 2024 · Fig. 4",
+  cap:"Figure 4: Scenarios for usage of LLMs in the design process, including RAG.",
+  tags:["黑白图标","线型图例","KBS 303/112410"],
+  what:"从专利描述抽取显式事实 {head :: relation :: tail}，构建 37.5 万训练样本，在 4,870 项风扇专利上灌出 293 万条事实知识库，再用显式事实引导 LLM 合成设计知识。",
+  style:"全黑白，靠图标（终端、齿轮、文档、数据库、知识图谱、剪贴板）和 3 种线型（实线 / 虚线 / 点线）表达 Scenario 1/2/3，右下角给出线型图例；点线大回路表示设计过程闭环反馈。",
+  take:"「用线型编码不同场景」这一招很适合画 HMRS 的多入口（Web / HTTP / CLI / MCP）。"},
+
+ {g:"g3", slug:"A_Automating_EngineeringModeling_LLM_Agents_2026", p:"21",
+  title:"多智能体建模流水线（UML 时序图）", yr:"KBS 2026 · Fig. 4",
+  cap:"Figure 4: Workflow of the multi-agent system illustrating the handling of a code execution error.",
+  tags:["UML 时序图","生命线","★执行流程范本"], key:true,
+  what:"展示系统跑一遍的完整过程，重点演示脚本执行失败后如何 debug、patch 并重新执行。",
+  style:"6 条参与者生命线（Supervisor / Model Generator / Training Generator / Eval Generator / Script Executor / Tuning Agent），顶部与底部各放一次彩色圆角角色框；实线=请求、虚线=返回；末尾黄色高亮框 <code>All tasks complete.</code>。",
+  take:"把「一次查询的生命周期」画成时序图，比再画一张架构图更能说明 Agent 编排与错误恢复。"},
+
+ {g:"g3", slug:"A_Coordinated_LLM_MultiAgent_QA_2025", p:"10",
+  title:"CIR3：多智能体问答的反思-精炼闭环", yr:"KBS 2025 · Fig. 1",
+  cap:"Figure 1: CIR3 takes an input document (1), identifies subtopics (2), prompts writer agents ... returns the final QAs (7).",
+  tags:["编号①–⑦","判定菱形","反馈回路"], key:true,
+  what:"针对 LLM 在专业领域 QA 上下文召回低、事实不一致的问题，用 Classifier / Moderator / 多 Writer Perspective / Curmudgeon 评审 Agent 组成「集体意图阅读」框架，多轮精炼直到收敛。",
+  style:"淡蓝底 + 黄色底色带标出 Transactive Memory State；①–⑦ 编号直接标在箭头上；虚线框圈住 Writer 组；菱形判定写 Faithful? Comprehensive? Convergence?；反馈回路标 <code>&lt;K</code>、<code>&lt;L</code> 迭代上限。图注本身用 5 行逐步解释每个编号。",
+  take:"HMRS 的内容 Rubric 三档裁决（c≥6 采用 / c=5 fallback / c≤4 丢弃）非常适合这种「编号 + 菱形 + 回路」的画法。"},
+
+ {g:"g3", slug:"B_QueryExpansion_SemanticRelations_RetrievalSystems_2023", p:"10",
+  title:"基于语义关系的查询扩展：主算法流程图", yr:"KBS 2023 · Fig. 8",
+  cap:"Fig. 8. Main flowchart of the approach.",
+  tags:["算法流程图","菱形判定","多色编码"],
+  what:"用分类法标签生成同义/反义等语义资源，接入分类器把用户 query 重述为 intent，并逐一跟踪每种语义关系对检索效果的影响。",
+  style:"粉=输入/输出，蓝=处理步骤，紫=判定菱形（has lemma? / which POS? / is empty? / all lists parsed? / match with GT?），黄=动作，绿=中间数据；文档堆叠图标表示 taxonomy lists；右下角 TP/FP/TN/FN 四个胶囊出口。",
+  take:"颜色在这里承担「节点类型编码」而非装饰——如果 HMRS 要画复杂流程，这是配色的正确理由。"},
+
+ {g:"g3", slug:"A_HELIOT_LLM_CDSS_2025", p:"07",
+  title:"药品数据流水线三阶段", yr:"KBS 2025 · Fig. 5",
+  cap:"Figure 5: Overview of the Pharmaceutical Data Pipeline Process.",
+  tags:["分阶段标题带","数据流水线","真实工具 logo"],
+  what:"HELIOT 的数据从哪来、怎么清洗、怎么入库：AIFA 药品库 → 说明书采集 → PubChem/LLM 预处理 → 生成 Drugs DB 与同义词词典。",
+  style:"①②③ 三个 chevron 箭头标题带（Data collection / Data preprocessing / Populate Databases）；文档形状表示数据集，圆柱表示数据库，齿轮表示服务，蓝色虚线箭头贯穿三阶段；放真实 logo（PostgreSQL、PubChem、ChatGPT）。",
+  take:"「分阶段 + 编号 + 数据形状」是 ETL/解析流水线最易读的画法，可直接对应 HMRS 的 Stage 0–9 pipeline。"},
+
+ {g:"g3", slug:"B_InformationTheoretic_DualMemory_System_2025", p:"09",
+  title:"信息论双记忆系统：训练流程", yr:"KBS 2025 · Fig. 1",
+  cap:"Figure 1: The training procedure for the proposed dual memory system consisting of a fast and slow memory buffer.",
+  tags:["fast/slow memory","数学符号","黄色决策菱形"],
+  what:"持续学习中单记忆缓冲能力有限；作者提出 fast / slow 双记忆 + 信息论样本选择策略，防止灾难性遗忘。",
+  style:"左侧训练主链（Update fast memory → Training/Replay loss → Backpropagation），右侧浅蓝区单独画 Info sample strategy，中间用黄色菱形 <code>b &lt; b*</code>、<code>D<sup>js</sup> &gt; Δ</code> 判定连接；框内写真实公式与 <code>M<sup>slow</sup></code>、<code>D<sup>buf</sup></code>，底部嵌真实图像缩略图（Vehicle/Boat/Signage/Animal）。",
+  take:"说明 KBS 允许在一张图里同时出现公式、决策与真实数据样本，信息密度可以很高，但必须有浅色分区把子流程隔开。"},
+
+ {g:"g3", slug:"A_LLM_IR_System_BankSupervisors_2024", p:"16",
+  title:"银行监管 IR 系统的验证方法流程", yr:"KBS 2024 · Fig. 4",
+  cap:"Figure 4: Birdview of the validation methodology.",
+  tags:["数学集合符号","虚线重复域","评测流程"],
+  what:"银行监管者要让新监管措施与历史先例一致；系统摄取现场检查 findings，混合 lexical/semantic/CRR 特征检索最相关的历史 findings 及措施。",
+  style:"从 Findings set F 分叉出 G 与 D 的集合定义框，向下到 <code>d_i ~ U(D)</code>、<code>d̄_i = d_i ∪ Ĝ</code>，灰色虚线大椭圆标 <code>Repeat M times</code>，最后汇到 <code>MAP_i^j</code> / <code>MRR_i^j</code>；淡紫渐变圆角框 + 蓝色强调边框。",
+  take:"评测方法本身也值得单独一张流程图——这正是 HMRS 实验章节目前缺的图。"},
+
+ {g:"g3", slug:"B_FinBloom_KnowledgeGrounding_RealtimeData_2026", p:"19",
+  title:"FinBloom 模块互操作：极简 5 步流程", yr:"KBS 2026 · Fig. 6",
+  cap:"Figure 6: Work flow and interoperability of the modules.",
+  tags:["极简黑白","编号 1–5","单栏图"],
+  what:"把整个知识接地系统压缩成 5 步：User Query → FinBloom 7B ↔ Data Module（Structured Query / Data Access）→ Enriched Query → LLM → Output。",
+  style:"纯黑白线框圆角矩形 + 数字前缀，唯一的双向箭头标出 Agent 与数据模块之间的查询/取数；没有任何图标和配色。",
+  take:"反面参照：信息量足够但视觉说服力弱。复杂系统不要只用这种图，应配一张跨栏主架构图。"},
+
+ {g:"g4", slug:"B_LGMT_ReasoningReliability_Testing_2026", p:"05",
+  title:"LGMT：逻辑接地的蜕变测试框架总览", yr:"KBS 2026 · Fig. 3",
+  cap:"Figure 3: Overview of the LGMT Framework.",
+  tags:["四阶段卡片","指标数字前置","现代总览图"],
+  what:"静态 benchmark 会高估 LLM 逻辑推理；作者用一阶逻辑等价关系导出蜕变关系，构造语义不变测试用例，靠跨用例一致性发现推理缺陷（无需 oracle）。",
+  style:"Stage 1–4 四张蓝色标题卡片横向并列，卡内用浅蓝子卡与图标列出数据集/关系/步骤；底部通栏横条用大数字突出 6,240 源用例 → 76,298 MGs → 3,091 选用；绿色 ✓ / 红色 ✗ 直接画判定结果。",
+  take:"这是「评测框架总览」的最佳范式，但不适合画组件连接关系。HMRS 的实验章节可以借用这种四阶段卡片。"},
+
+ {g:"g4", slug:"B_Survey_LLM_KnowledgeBasedMethods_2025", p:"02",
+  title:"LLM 与知识库方法综述：论文组织图", yr:"KBS 2025 · Fig. 1",
+  cap:"Fig. 1. Overall structure of the paper organization.",
+  tags:["三列箭头标题带","分类树","综述结构图"],
+  what:"综述 LLM 与结构化知识库的结合方式、实际应用，以及技术/运营/伦理挑战，并给出挑战与未来建议。",
+  style:"三列 chevron 箭头标题（LLMs Foundation / LLMs' Challenges and Solution / LLMs + Knowledge Bases），每列一个白底框内放深色彩色圆角条目，列间用灰色粗箭头连接，底部大括号汇合到 Challenges and Future Recommendations。",
+  take:"适合 Related Work 或论文结构图；配色是橙→蓝→绿三段，属于少数用多色编码章节的样本。"},
+
+ {g:"g4", slug:"B_PrivateLibrary_CodeGeneration_LLM_2025", p:"05",
+  title:"私有库代码生成框架 APIFinder / APICoder", yr:"KBS 2025 · Fig. 4",
+  cap:"Figure 4: Schematic diagram of our framework: APIFinder.",
+  tags:["图标化","双向数据流","双模型配色"],
+  what:"LLM 预训练没见过私有库 API；作者模拟程序员查文档写私有代码的过程，拆成 APIFinder（检索相关 API）与 APICoder（生成目标代码）两级模型。",
+  style:"黑白图标（代码窗口、文档、API 列表）配两个彩色人形图标：橙=APIFinder M^F、蓝=APICoder M^C；粗黑实线箭头表达 Context x → Documentation → Retrieved APIs A → Target Code y 的数据回路。",
+  take:"用两个颜色区分「两个不同的模型/角色」，是配色服务于语义的又一个干净例子。"},
+
+ {g:"g4", slug:"A_GOFAI_Meets_GenerativeAI_ExpertSystems_2026", p:"09",
+  title:"GOFAI 遇上生成式 AI：专家系统构建流程（低规范样本）", yr:"KBS 2026 · Fig. 3",
+  cap:"Figure 3: Diagram flow with all the processes involved in the creation of the expert system.",
+  tags:["手写体","曲线箭头","⚠风格反例"], warn:true,
+  what:"针对 LLM 幻觉与不可验证事实，通过限定领域 + 结构化 prompt 抽取生成符号化知识表示，以可控透明方式构建专家系统。",
+  style:"手写风格字体 + 绿/橙/黄/红/蓝彩色矩形 + 手绘曲线箭头，箭头文字（Sends prompt to / Returns json with knowledge）也是手写体；没有图例、没有编号、没有系统边界。",
+  take:"虽然确实发表在 KBS，但这是明显低规范的样本：读图成本高、难以复用到双栏排版。保留在此作为「不要这样画」的对照。"},
+
+ {g:"g4", slug:"A_SoftwareRefArch_JournalisticKnowledgePlatforms_2023", p:"03",
+  title:"设计科学研究：SRA 六步构建过程", yr:"KBS 276, 2023 · Fig. 1",
+  cap:"Fig. 1. Construction process of the SRA for JKPs.",
+  tags:["方法论流程","6 步编号","黑白极简"],
+  what:"作者交代参考架构是怎么被推导出来的：先定 SRA 类型、选设计策略，再做实证取数、构建、加入可变性，最后评估。",
+  style:"6 个黑白圆角框按 Z 字形排列，每框带粗体编号前缀；没有任何配色、图标或判定分支，纯线性流程。",
+  take:"方法论/贡献推导过程用这种极简图即可，把视觉预算留给主架构图。"}
+];
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+D.forEach(function(d,i){
+  const crop = F + d.slug + "__p" + d.p + "_crop.png";
+  const full = F + d.slug + "__p" + d.p + ".png";
+  const badges = (d.tags||[]).map(function(t){
+    let c="badge";
+    if(d.key && t.indexOf("★")===0) c+=" key";
+    if(d.warn && (t.indexOf("⚠")===0 || t.indexOf("非 KBS")===0 || t.indexOf("前驱")===0)) c+=" warn";
+    return '<span class="'+c+'">'+esc(t)+'</span>';
+  }).join("");
+  const html =
+   '<article class="card">'+
+    '<div class="card-head"><div class="kicker">'+esc(d.yr)+'</div>'+
+    '<h3>'+esc(d.title)+'</h3>'+
+    '<p class="cap">'+esc(d.cap)+'</p>'+
+    '<div class="badges">'+badges+'</div></div>'+
+    '<div class="imgbox" onclick="zoom(\''+crop+'\')">'+
+      '<img src="'+crop+'" alt="'+esc(d.title)+' 图区裁剪" loading="lazy"></div>'+
+    '<div class="card-body">'+
+      '<p><span class="lbl">论文讲什么</span>'+d.what+'</p>'+
+      '<p><span class="lbl">图怎么画</span>'+d.style+'</p>'+
+      '<p><span class="lbl">可借鉴</span>'+d.take+'</p>'+
+    '</div>'+
+    '<div class="links"><a href="'+full+'" target="_blank">查看整页双栏排版 ↗</a>'+
+      '<a href="'+crop+'" target="_blank">打开原图 ↗</a></div>'+
+   '</article>';
+  document.getElementById(d.g).insertAdjacentHTML("beforeend", html);
+});
+
+const lb=document.getElementById("lb"), lbimg=document.getElementById("lbimg");
+function zoom(src){lbimg.src=src;lb.style.display="flex"}
+lb.onclick=function(){lb.style.display="none";lbimg.src=""};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){lb.style.display="none";lbimg.src=""}});
+</script>
+</body>
+</html>

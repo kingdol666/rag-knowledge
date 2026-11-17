@@ -1,0 +1,38 @@
+\section{Discussion and lessons learned}
+\label{sec:discussion}
+
+The management evaluation exposes both useful checks and their limits. In the
+100-paper campaign, 79 submissions were retrievable and 21 were not; the
+surviving records do not locate each failure. Automatic collection membership
+was 0.875 for English and 1.0 for Chinese and Japanese. Of 16 lifecycle
+scenarios, create, move, delete and forced re-index passed, whereas task-status
+reporting and update checks failed. A historical rename test exposed a stale
+index; current rename attempts asynchronous index synchronisation, whose
+success still needs checking. These results motivate reconciliation without
+establishing its completeness.
+
+The scripted route audit hit the gold collection in 72/72 cases for A0 and
+37/72 for nominally name-only A3. An unlogged fallback may use descriptions,
+so this does not isolate their effect or measure independent agent routing.
+The 72-question content-layer contrasts also change multiple components, and a
+candidate-reference lookup in A0, A1b and A3 may depend on the gold domain.
+They describe these records rather than a causal navigation benefit. The
+mechanical full-read script located all strings in 879 parts but generated no
+answers. Gold-string containment and the saturated gold-ID answer grids do not
+establish semantic correctness or claim support.
+
+Retrieval results do not establish consistent hybrid superiority. On the
+42-document corpus, BM25 Hit@5 was 1.00 and the tested historical hybrid
+wrapper achieved 0.44; on the 79-paper corpus the non-graph configurations
+were at 0.90. On identical logged pools, verifier-score ordering reduced Hit@5
+from 0.94 to 0.44, whereas fusion order restored 0.94. All 191 recorded scores
+exceeded the configured threshold, so filtering did not activate and its
+benefit was not measured. This is a bounded warning about a particular
+ordering, not a finding about every verifier or current retrieval lane.
+
+The reported answer and refusal cases show selected workflow behaviour, not a
+reliable abstention rate. Pagination repaired selected oversized catalogue
+paths, but incomplete searches and tool failures remain distinct from a
+completed search without support. Stronger claims need independent questions,
+controlled single-factor comparisons, repeated runs, semantic support review,
+and tests of operations and recovery beyond the present local setting.

@@ -1,0 +1,213 @@
+%% n8b_eval.tex -- evaluation, middle part: E3 (operational knowledge and
+%% automated distillation) and E4 (retrieval quality and the role of the
+%% verdict). Compressed 2026-10-12. Labels owned here: sec:e3, sec:e4,
+%% sec:eval-retrieval, tab:retrieval, tab:e4-modes, fig:retrieval,
+%% fig:marginvariants.
+\subsection{E3: Operational knowledge and automated distillation}
+\label{sec:e3}
+
+The experience store holds operational lessons as retrievable
+documents---addressed, indexed and searched as an ordinary document, with a
+credibility tier deciding whether it may be shown at all
+(Section~\ref{sec:org-experience}). Three case measurements exist: an
+extraction campaign over one small knowledge base produced thirteen
+candidate drafts (archived \path{experience_smoke.json} in the 2026-10-13
+batch tarball; \texttt{extract\_candidates}~13, \texttt{drafts\_created}~13);
+one end-to-end scenario was sedimented into one experience
+(\texttt{exp-d6f4d47ae3d6}) that a later global experience search returned
+first, at local similarity 0.711 (archived scenario A6 of the 2026-10-12
+full-test campaign); and the draft-approval path was never exercised, because
+the draft pool was empty (\texttt{count}~0) and \path{experience_draft_read}
+and \path{experience_draft_approve} could not run; the heuristic extraction
+path had run only in dry-run mode, returning a dump the quality gate would
+reject. One scenario and thirteen candidates cannot support an effectiveness
+claim; scheduled distillation, review and approval at scale, application
+feedback and credibility decay went unexercised. What they show is narrower:
+an operational lesson can travel the document path with its tier attached.
+
+\subsection{E4: Retrieval quality and the role of the verdict}
+\label{sec:e4}
+\label{sec:eval-retrieval}
+
+Nine configurations, defined here so the table reads on its own. Five were
+measured through their own tool-layer entry points: \emph{Dense} via
+\texttt{kb\_search\_vector} with BGE-M3 \cite{bge-m3}; \emph{Graph} via
+\texttt{kb\_graph\_search}, a keyword match over node names, paths and tags in
+the document graph; \emph{Two-stage} via
+\texttt{kb\_search\_two\_stage} (Section~\ref{sec:twostage}); and the hybrid
+rows via \texttt{kb\_hybrid\_search}, an earlier server-side single-call
+composition of the vector, catalogue and judging tools, with the gate off
+(\emph{Fusion-only}) and on (\emph{HMRS-Hybrid}). \emph{BM25} runs in process
+over the fetched full texts (jieba tokenizer, $k_1=1.5$, $b=0.75$), and
+\emph{RRF} fuses that ranking with the dense one at $k=60$
+\cite{rrf-cormack}; neither is the platform's keyword tool, so the millisecond
+latencies are in-process measurements rather than a server round trip. The
+evaluated hybrid wrapper is no longer registered in the current tool layer,
+whose hybrid lane is the composed chat configuration of
+Section~\ref{sec:twostage}, so the negative ordering result below is bounded
+to that retired wrapper. Two further rows are derived offline by replaying the
+judged hybrid run's logged twelve-candidate pools and verdict scores:
+\emph{Judge-as-filter} keeps survivors in fusion order and \emph{RRF-fuse}
+fuses the fusion ranking with the judge-score ranking at $k=60$. All three
+see the same candidates and scores, so the comparison is an attribution,
+not a benchmark. Because every logged candidate survived the configured 0.5
+threshold, the filter replay is identical to fusion order by construction and
+does not test filtering. Figure~\ref{fig:retrieval} renders the two corpora of
+Table~\ref{tab:retrieval} so the quality and the cross-corpus pattern can be
+read at a glance.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_retrieval_comparison}
+\caption{Tool-layer retrieval quality on the two corpora of
+Table~\ref{tab:retrieval}. (a)~The 42-document industrial demonstration corpus
+over 16 gold-annotated questions: Hit@5, Recall@5 and MRR@5 for the seven
+logged configurations. (b)~Hit@5 on the 79 retrievable arXiv papers over ten
+questions. On the industrial corpus the evaluated, retired HMRS-Hybrid ordering is the
+weakest configuration on all three metrics, while BM25 and RRF reach 1.00
+Hit@5; on the arXiv corpus every configuration except Graph reaches 0.90.
+The two derived replays (Judge-as-filter, RRF-fuse) are reported in
+Table~\ref{tab:retrieval} and Fig.~S4 rather than
+duplicated here. Values are read from the frozen result artefacts
+(\protect\path{exp1\_summary.json}, \protect\path{exp10\_papers\_toollayer.json}).}
+\label{fig:retrieval}
+\end{figure*}
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\caption{Tool-layer retrieval on the 42-document industrial demonstration corpus
+(mean over 16 gold-annotated questions; top-5 document lists; latency per
+call, warmed). The paraphrase column re-asks those sixteen questions in
+different words (\protect\path{paper-kbs/experiments/results/exp6_paraphrase.json});
+block~(b) repeats the Hit@5 measurement on a second corpus, the 79 retrievable
+papers of the 100-paper arXiv ingestion, over ten questions.}
+\label{tab:retrieval}
+\resizebox{\textwidth}{!}{%
+\footnotesize
+\begin{tabular}{lcccccc}
+\toprule
+Method & Hit@5 & Recall@5 & MRR@5 & Paraphrase Hit@5 & Latency (mean) & Latency (median) \\
+\midrule
+BM25                  & 1.00 & 1.00 & 0.958 & 0.88 & 0.9\,ms    & 1\,ms \\
+Dense (BGE-M3)        & 0.94 & 0.94 & 0.856 & 0.94 & 18\,ms     & 17\,ms \\
+RRF (BM25$\|$Dense)   & 1.00 & 1.00 & 0.927 & 0.88 & 11\,ms     & 9\,ms \\
+Graph (Neo4j)         & 0.56 & 0.53 & 0.562 & 0.56 & 68\,ms     & 68\,ms \\
+Two-stage             & 1.00 & 0.97 & 0.927 & 0.94 & 77\,ms     & 40\,ms \\
+Fusion-only           & 0.94 & 0.94 & 0.856 & 0.94 & 62\,ms     & 66\,ms \\
+HMRS-Hybrid          & 0.44 & 0.41 & 0.226 & 0.50 & 542\,ms    & 582\,ms \\
+\midrule
+\multicolumn{7}{l}{\emph{Derived (offline, same logged hybrid pools):}}\\
+\quad Judge-as-filter$^{\dagger}$ & 0.94 & 0.94 & 0.856 & 0.94 & \multicolumn{2}{l}{$^{\dagger}$542\,ms / 582\,ms} \\
+\quad RRF-fuse & 0.88 & 0.88 & 0.606 & 0.88 & \multicolumn{2}{l}{(same single call)} \\
+\bottomrule
+\end{tabular}}
+\par\smallskip
+\raggedright\small
+$^{\dagger}$\,Derived rows replay the HMRS-Hybrid run's own logged
+12-candidate pools and judge scores, so they reuse that call's latency; the
+judge executes once either way.
+
+\par\smallskip
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\multicolumn{9}{@{}l}{\textbf{(b)} Second corpus: 79 retrievable arXiv papers of the 100 submitted, ten questions}\\
+\midrule
+Configuration & BM25 & Dense & RRF & Graph & Two-stage & Fusion-only & HMRS-Hybrid & Judge-as-filter \\
+Hit@5 & 0.90 & 0.90 & 0.90 & 0.20 & 0.90 & 0.90 & 0.90 & 0.90 \\
+\bottomrule
+\end{tabular}}
+\end{table*}
+
+The 42-document results show strong lexical retrieval: BM25 and RRF each
+reached Hit@5 1.00, while the retired HMRS-Hybrid wrapper reached 0.44.
+Excluding Q16, whose filename shares a question token, leaves BM25 at 1.00
+on 15 questions. Baseline latencies are in-process and not comparable to a
+server round trip. The 79-paper evaluation gives Hit@5 0.90 for seven of
+eight configurations and 0.20 for Graph; its corpus and questions differ.
+
+On identical logged candidate pools, the judge-score ordering yields Hit@5
+0.44; keeping the original fusion order among recorded survivors yields 0.94.
+All 191 recorded scores exceeded the 0.5 threshold, and one additional
+candidate had no recorded score. Thus the observed loss concerns ordering;
+the configured filter did not reject a scored candidate and its efficacy is
+not established. The same-pool replay is a diagnostic of this retired wrapper,
+not a benchmark of the current composed hybrid lane. Under paraphrase, the
+judged configuration reached Hit@5 0.50 versus 0.94 with fusion order.
+On the second corpus, Hit@5 did not fall but MRR fell from 0.90 to 0.70;
+different corpus characteristics prevent causal attribution. See
+Section~\ref{sec:e6} for the score distribution and Fig.~S4 for additional
+replays.
+
+\subsection{E4b: Content-layer configuration comparison}
+\label{sec:ladder-opt}
+The routing corpus was also used to compare eight evidence configurations.
+A0 is the tiered baseline; A0f uses expanded document windows, A0h additionally
+unions vector chunk windows, PD uses a navigation-free precise per-document
+search, A1b a scoped flat union and reference-mode judge, A2 skips that judge,
+A3 uses nominally name-only cards, and read-all scans every stored part.
+A0h, PD and A1b differ in multiple components, so their differences cannot be
+assigned to navigation alone. A3 may retrieve outside the evaluation scope.
+
+In the 11 November aggregate, gold strings were contained for A0/A0f/A0h/PD/
+A1b/A2/A3/read-all in 37/45/52/46/39/25/33/72 of 72 questions, respectively
+(Figure~\ref{fig:ladder}); these are evidence-string proxies, not answer
+correctness. Supplementary Tables S12--S13 give the per-arm intervals and
+paired records. The A0h Wilson 95\% interval is [0.610, 0.812]. In exploratory,
+unadjusted paired records, A0h contained the string while A1b did not on 13
+questions and the reverse occurred on none (two-sided exact McNemar
+$p=0.00024$). A0h led PD on seven questions while PD led on one
+($p=0.0703$). These records do not show a statistically resolved advantage
+over PD and are not unbiased deployment estimates: A0, A1b and A3 can use
+the gold domain to resolve judge references, with unknown frequency and impact.
+
+A later same-question record yields 39/44/51/45/39/25 for the first six arms,
+respectively. Per-question agreement with the frozen record is 94.4\% for A0,
+98.6\% for A0f, A0h and PD, and 100\% for A1b and A2; the same question set
+is reused and complete execution provenance is unavailable. In a separately
+added later A3 record, containment is 25/72, with 13 missing top candidates
+and 23 empty packs; their causes are not established. Later read-all is
+incomplete. The frozen read-all is a mechanical substring scan, not an agent
+that reads and answers. A0h recorded 309 KB and 13.8 s per question versus
+24.3 MB and 253.7 s for that scan; the recorded-byte definitions differ and
+may include overlap.
+
+Among A0's 35 misses, A0f, A0h and PD contain the string in 8, 15 and 9 cases,
+respectively. These sets overlap and are not additive. A post-hoc search
+classified five first matching string locations outside a nominal window and
+30 inside; the chosen matching file need not be the gold document or a
+candidate actually read, so these categories do not identify the causes of
+misses (Figure~\ref{fig:miss-overlap}).
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_ladder_optimization}
+\caption{Content-layer optimisation arms on the 72 in-domain questions of the
+ten-domain corpus. (a)~Blue circles and Wilson 95\% intervals show the
+11 November frozen aggregate of gold-string containment; orange triangles
+show later records on the same questions. The frozen aggregate combines runs
+on different dates; A3 was added separately to the later record. Read-all is
+incomplete in the later record. The dashed line is the frozen tiered baseline A0. A0f
+(expanded-window judge) and A0h (plus a chunk-window union) have higher containment than A0; PD
+(precise per-document, no navigation) is the ladder-versus-precise contrast
+(A0h vs PD: 7--1 discordant, McNemar $p=0.0703$); A0h vs the scoped flat union
+A1b is 13--0 ($p=0.00024$). A1b, A2 (no gate) and A3 (name-only cards) are the
+flat and ablated controls; read-all is a mechanical upper bound, not an agent
+baseline. A1b uses a reference-mode judge and can use the gold domain in
+reference resolution; A0h and PD differ in both routing and chunk union.
+(b)~Frozen-aggregate mean total tool calls and trace-recorded kilobytes per
+question; bytes can include overlapping text.}
+\label{fig:ladder}
+\end{figure*}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_miss_overlap}
+\caption{Overlap among configurations for the 35 questions where frozen A0
+lacked the gold string. Each bar is a mutually exclusive outcome across A0f,
+A0h and PD; the counts are not additive configuration gains. These are
+substring results, not identified causes of failure.}
+\label{fig:miss-overlap}
+\end{figure}

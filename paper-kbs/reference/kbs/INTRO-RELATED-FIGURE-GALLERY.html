@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KBS 引言 / 相关工作配图模板画廊 — 动机图 · 对比图 · 分类图</title>
+<style>
+:root{
+  --bg:#f6f8fb; --card:#fff; --ink:#1b2431; --muted:#5c6b7e;
+  --line:#dce4ed; --accent:#185a9d; --soft:#e9f2fc;
+  --tag:#eef2f7; --gold:#b06a00; --gold-bg:#fff7e6;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font-family:"Segoe UI","Microsoft YaHei","PingFang SC",Arial,sans-serif;
+ font-size:16px;line-height:1.75}
+.wrap{max-width:1400px;margin:auto;padding:36px 28px 80px}
+header{background:linear-gradient(0deg,#fff,#eef5fd);border:1px solid var(--line);
+ border-radius:16px;padding:30px 34px;margin-bottom:24px}
+h1{font-size:30px;margin:0 0 10px}
+.sub{color:var(--muted);margin:0 0 20px}
+.stats{display:flex;flex-wrap:wrap;gap:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:150px}
+.stat b{display:block;font-size:23px;color:var(--accent);line-height:1.3}
+.stat span{font-size:13px;color:var(--muted)}
+nav{position:sticky;top:0;z-index:20;background:rgba(246,248,251,.96);
+ backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:12px 0;margin-bottom:26px}
+nav a{display:inline-block;margin:0 10px 4px 0;padding:6px 14px;border-radius:20px;
+ background:#fff;border:1px solid var(--line);text-decoration:none;color:var(--accent);font-size:14px}
+nav a:hover{background:var(--soft)}
+section{margin-top:42px}
+h2{font-size:23px;border-left:5px solid var(--accent);padding-left:14px;margin:0 0 6px}
+.sect-note{color:var(--muted);margin:0 0 22px;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+ box-shadow:0 2px 10px rgba(20,40,70,.05);display:flex;flex-direction:column}
+.head{padding:18px 22px 12px}
+.kicker{font-size:12px;letter-spacing:.6px;color:var(--accent);font-weight:700;text-transform:uppercase}
+.head h3{font-size:18px;line-height:1.45;margin:4px 0 8px}
+.cap{font-size:13px;color:var(--muted);font-style:italic;margin:0 0 10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{background:var(--tag);border-radius:5px;padding:2px 9px;font-size:12px;color:#41506a}
+.badge.key{background:#dcecfb;color:#174d86}.badge.gold{background:var(--gold-bg);color:var(--gold)}
+.imgbox{background:#fbfcfe;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+ padding:14px;text-align:center;cursor:zoom-in}
+.imgbox img{max-width:100%;height:auto;display:block;margin:auto;border:1px solid #eef1f5}
+.body{padding:16px 22px 18px;font-size:14.5px;flex:1}
+.body p{margin:0 0 10px}
+.body .lbl{display:inline-block;min-width:88px;font-weight:700;color:var(--accent)}
+.links{padding:0 22px 18px;font-size:13px}
+.links a{color:var(--accent);text-decoration:none;margin-right:14px}
+.links a:hover{text-decoration:underline}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);
+ border-radius:10px;overflow:hidden;font-size:14.5px;margin:16px 0}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#eef4fb;font-weight:700}tr:last-child td{border-bottom:none}
+.box{background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent);
+ border-radius:10px;padding:18px 22px;margin:16px 0}
+.box.gold{border-left-color:var(--gold);background:var(--gold-bg)}
+.p0{color:#b91c1c;font-weight:700}.p1{color:#a35a00;font-weight:700}.p2{color:#185a9d;font-weight:700}
+footer{margin-top:48px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:20px}
+#lb{position:fixed;inset:0;background:rgba(12,18,28,.92);display:none;z-index:99;
+ align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+#lb img{max-width:96%;max-height:94%;background:#fff;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+#lb .hint{position:absolute;bottom:18px;color:#cfd8e6;font-size:13px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:20px 14px 60px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>KBS 引言 / 相关工作配图模板画廊</h1>
+<p class="sub">从 29 篇 Knowledge-Based Systems 文献中，按章节标题定位出 Introduction / Related Work 内的配图，
+再筛出最值得当作作图模板的真实图页。上一份画廊聚焦方法部分的架构图/流程图，<b>本画廊只收录引言与相关工作里的图</b>。</p>
+<div class="stats">
+<div class="stat"><b>29</b><span>扫描 PDF</span></div>
+<div class="stat"><b>42</b><span>章节内候选图</span></div>
+<div class="stat"><b>13</b><span>精选模板图</span></div>
+<div class="stat"><b>5 类</b><span>可复用图型</span></div>
+<div class="stat"><b>39 张</b><span>新渲染 PNG</span></div>
+</div>
+</header>
+
+<nav>
+<a href="#s1">① Before / After 动机图</a>
+<a href="#s2">② 失败案例图</a>
+<a href="#s3">③ 范式对比图</a>
+<a href="#s4">④ 分类 / 背景图</a>
+<a href="#s5">⑤ 结构 / 组织图</a>
+<a href="#s6">⑥ 5 类模板规律</a>
+<a href="#s7">⑦ 套用到 HMRS</a>
+</nav>
+
+<section id="s1">
+<h2>① Before / After 动机图</h2>
+<p class="sect-note">引言最有力的开局：一张「没有我们的方法会怎样」，一张「有我们的方法会怎样」。两张图结构相同、只差一个模块，读者一眼看到贡献边界。</p>
+<div class="grid" id="g1"></div>
+</section>
+
+<section id="s2">
+<h2>② 失败案例图</h2>
+<p class="sect-note">用一个具体 query 展示现有方法答错/答不全，配对话气泡、机器人图标与红绿高亮。这是把「问题存在」讲实的最快方式。</p>
+<div class="grid" id="g2"></div>
+</section>
+
+<section id="s3">
+<h2>③ 范式对比图</h2>
+<p class="sect-note">上下或左右两套流程并排，配同一个真实问题，展示「旧范式哪里冗余、新范式哪里变干净」。适合承载 HMRS 的「向量召回 → 内容裁决」叙事。</p>
+<div class="grid" id="g3"></div>
+</section>
+
+<section id="s4">
+<h2>④ 分类 / 背景图</h2>
+<p class="sect-note">Related Work 常用：把领域切成几类视角/输入形式/语义关系，或画一条时间轴。用图标 + 柔和配色，比大段文字更易读。</p>
+<div class="grid" id="g4"></div>
+</section>
+
+<section id="s5">
+<h2>⑤ 结构 / 组织图</h2>
+<p class="sect-note">综述类论文在引言末尾给出全文地图；研究论文则给出 benchmark 或问题定义的结构。这一类图信息密度低但定位作用强。</p>
+<div class="grid" id="g5"></div>
+</section>
+
+<section id="s6">
+<h2>⑥ 5 类引言/相关工作图型模板</h2>
+<table>
+<tr><th style="width:150px">图型</th><th style="width:230px">什么时候用</th><th>画法骨架（从上述真实图抽象）</th></tr>
+<tr><td><b>T1 Before/After</b></td><td>你的方法就是在流程里加了一个关键模块</td><td>两张几乎相同的图并排或上下；左图标题 <code>Without X</code>，只有 <code>User Query → LLM → Output</code>；右图标题 <code>With X</code>，在中间插入虚线框圈住的模块（标注 Contribution），右侧仍保留原 LLM 但输入变成 <code>c, x</code>。灰阶即可。</td></tr>
+<tr><td><b>T2 Failure Case</b></td><td>要证明现有方法在真实问题上出错</td><td>左右两栏共用一个 Premises/Question 框；改写一处关键条件（红色虚线高亮）；下方各放 chat bubble + 机器人图标；答案用 Unknown / No + ✓✗ 对比。对话气泡与图标让抽象逻辑变得可感。</td></tr>
+<tr><td><b>T3 Paradigm Comparison</b></td><td>你的贡献是改变整个检索/推理范式</td><td>上下两条泳道：上方旧范式（冷色），下方新范式（暖色），左侧写明输入/线索，中间画同一条 KG/文档路径，右侧放同一个真实问题的 Response（部分正确 vs 完整正确，用绿/红标）。底部一句话写清 LLM 依据什么做选择。</td></tr>
+<tr><td><b>T4 Taxonomy / Background</b></td><td>Related Work 要交代领域版图</td><td>2–6 个圆形或圆角框围成环/并列，每个框内放图标 + 短标题 + <code>e.g., ...</code> 例子；或画一条水平时间轴，节点上挂年份与事件方框。配色：每个类别一个柔和色（黄/蓝/绿），文字黑色。</td></tr>
+<tr><td><b>T5 Organization / Dataset Structure</b></td><td>引言末尾给出全文地图或 benchmark 定义</td><td>综述：3 列箭头标题带 + 每列子条目 + 底部大括号汇合到挑战/建议。数据集：顶部一个真实案例框，下面 ① 旧数据集 ② 我们数据集 两条横向步骤链，底部放图标图例。</td></tr>
+</table>
+<div class="box"><b>共同规律：</b>引言图几乎不用跨栏大图，多为单栏或 2/3 栏；<b>图注本身就是一个完整小例子</b>（例如 <i>An example of knowledge-grounded dialogue with responses from models. Text in orange denotes ...</i>）；用红色/绿色只标注「错/对」，不用于装饰；图标（人、机器人、文档、数据库、剪贴板）比抽象方框更能降低理解成本。</div>
+</section>
+
+<section id="s7">
+<h2>⑦ 直接套用到 HMRS 论文</h2>
+<table>
+<tr><th style="width:70px">优先级</th><th style="width:200px">建议图</th><th>模板来源与落地画法</th></tr>
+<tr><td class="p0">P0</td><td>Figure 1：无内容验证 vs 有内容验证</td><td>套 <b>T1（FinBloom Fig.1/2）</b>。左图 <code>Without content verification</code>：<code>Query → 向量召回 top-1 (s=0.95) → LLM → 错误答案</code>；右图 <code>With content verification</code>：召回后插入虚线框 <code>Contribution: 0–8 Content Rubric</code>，输出 <code>c=3 ⇒ discard → not-found report</code>。灰阶 + 一个强调色，两图结构严格对称。</td></tr>
+<tr><td class="p0">P0</td><td>Figure 2：一个具体失败 query</td><td>套 <b>T2（LGMT Fig.1/2 + PrivateLibrary Fig.1）</b>。用一个域外问题，左栏展示「向量相似度最高但正文无关」的候选（红色虚线高亮），右栏展示 HMRS 读正文后 <code>c≤4</code> 并输出 not-found。底部各放一个 chat bubble 写模型回答，绿✓/红✗ 对照。</td></tr>
+<tr><td class="p0">P0</td><td>Figure 3：向量召回范式 vs 组织优先范式</td><td>套 <b>T3（FineGrained Fig.2）</b>。上泳道冷色：整题 → 向量召回 → 候选堆叠 → 冗余/错配；下泳道暖色：按内容路由到领域库 → 逐候选正文证据核对 → 采用/fallback/丢弃。右侧放同一个真实问题的两种回答，标出哪个完整。</td></tr>
+<tr><td class="p1">P1</td><td>Related Work：检索系统版图</td><td>套 <b>T4（XAI meta-survey Fig.1 + LLM-KG Fig.1）</b>。画 4–5 个圆形：向量检索 / 图检索 / 自我反思 RAG / Agent 工具检索 / 内容验证检索（突出自己），每圆放图标 + <code>e.g., ...</code> 代表工作。或画一条 RAG 演化时间轴（2020→2026）。</td></tr>
+<tr><td class="p1">P1</td><td>引言末尾：全文地图 + 数据集结构</td><td>套 <b>T5（Survey Fig.1 + MSDiagnosis Fig.1）</b>。若正文篇幅允许，加一张论文组织图；实验章节前加一张「现有 QA 单跳 vs 我们六层题集」的结构图，明确每层考什么能力。</td></tr>
+<tr><td class="p1">P1</td><td>图注写法</td><td>按 KBS 样本，每张引言图的图注写成 2–3 行小摘要，形如 <i>An example of content-overrides-vector retrieval. Red denotes a high-similarity but content-irrelevant candidate; green denotes the accepted evidence.</i></td></tr>
+<tr><td class="p2">P2</td><td>不要做的事</td><td>不要把方法部分的 ArchiMate 架构图搬到引言当 Figure 1（那是 Figure 4 的位置）；不要在动机图里用十几种颜色；不要用没有真实 query 的纯抽象方框。</td></tr>
+</table>
+<div class="box gold"><b>一句话结论：</b>你的论文最强的叙事恰恰是「向量很相似但正文不支持」——这在 KBS 里对应的是 T2 失败案例图 + T1 前后对比图的组合，比单纯再画一张系统架构图更能让评审在 10 秒内抓住贡献。</div>
+</section>
+
+<footer>
+<b>证据链：</b><code>locate_intro_related_figures.py</code>（章节标题定位，42 张候选）→
+<code>render_intro_related_figures.py</code>（20 页渲染，图注 y0 约束裁剪）→
+逐张视觉核对 → 本画廊。所有 PNG 在 <code>paper-kbs/reference/kbs/figures/</code>，
+<code>*_intro_crop.png</code> 为图区裁剪、<code>*_intro.png</code> 为整页排版。
+完整中文报告见 <code>paper-kbs/notes/KBS-INTRO-RELATED-FIGURE-ANALYSIS-2026-11-17.md</code>。
+</footer>
+</div>
+<div id="lb"><img id="lbimg" src="" alt="放大图"><div class="hint">点击任意位置关闭 · Esc 关闭</div></div>
+<script>
+const F="figures/";
+const D=[
+{g:"g1",slug:"B_FinBloom_KnowledgeGrounding_RealtimeData_2026",p:"03",
+ title:"静态问答：无知识接地（Without knowledge grounding）",yr:"KBS 2026 · Introduction Fig.1",
+ cap:"Figure 1: Static approach for answering user query without knowledge grounding.",
+ tags:["T1 Before","灰阶极简","★首选模板"],key:true,
+ what:"用一个只有三个元素的图说明现状：用户查询 x 直接进 LLM，产出 y，中间没有任何外部知识。",
+ style:"全灰阶：一个灰色圆角 LLM 框 + 两条直线箭头 + 数学符号 x / y；标题带下划线。刻意画得极简，为下一张「有知识接地」留出全部视觉差异。",
+ use:"左半张照搬：Query → 向量召回 → LLM → 错误答案，标题写 Without content verification。"},
+{g:"g1",slug:"B_FinBloom_KnowledgeGrounding_RealtimeData_2026",p:"04",
+ title:"动态问答：有知识接地（With knowledge grounding）",yr:"KBS 2026 · Introduction Fig.2",
+ cap:"Figure 2: Dynamic approach for answering user query with knowledge grounding.",
+ tags:["T1 After","Step 1 / Step 2","★首选模板"],key:true,
+ what:"同一个查询，现在先由 Agent 从 News/Tabular 数据模块取数构造金融上下文 c，再把 c 与 x 一起交给 LLM。",
+ style:"与 Fig.1 同构但信息更密：虚线大框标 Contribution，内部 Data Module / Agent 两层，双向箭头标 Data Access Query 与 Data Extraction；右侧 LLM 输入变成 c, x；底部 Step 1 / Step 2。",
+ use:"右半张照搬：在召回与 LLM 之间插入虚线框标 Contribution: 0–8 Rubric，输出从 y 改为 not-found report。"},
+{g:"g2",slug:"B_LGMT_ReasoningReliability_Testing_2026",p:"04",
+ title:"逻辑等价改写导致 LLM 自相矛盾",yr:"KBS 2026 · Introduction Fig.1",
+ cap:"Figure 1: An illustration of an LLM's failure to maintain logical consistency.",
+ tags:["T2 失败案例","对话气泡","红黄高亮"],key:true,
+ what:"同一组前提，只把第二条改写成逻辑等价的「对任意实体…」形式，LLM 就给出了相反答案——证明静态 benchmark 高估了可靠性。",
+ style:"左右两栏共用同一 Question；被改写的前提用黄色虚线框高亮；下方各一个 chat bubble + 机器人图标；答案 Unknown? 与 No 用红✗/棕字对比；中间竖直虚线分隔。",
+ use:"把「逻辑改写」换成「向量相似但正文无关」，左栏展示 s=0.95 的错候选，右栏展示 c≤4 被丢弃并输出 not-found。"},
+{g:"g2",slug:"B_PrivateLibrary_CodeGeneration_LLM_2025",p:"03",
+ title:"公开库会写、私有库写错：一组代码对照",yr:"KBS 2025 · Introduction Fig.1",
+ cap:"Figure 1: An example of code generation on public library.",
+ tags:["T2 失败案例","绿✓/红✗","真实示例"],
+ what:"同样的 .isin 用法，LLM 在 pandas 上生成正确代码，在它没见过的 monkey 库上却幻觉出 pandas.DataFrame.isin。",
+ style:"两段真实代码逐行对照；正确行淡绿底 + 绿色✓，错误行淡红底 + 红色✗；中间虚线气泡写模型自述「I have never seen monkey, but ...」；右下角小人工图标表示可查文档。",
+ use:"把代码换成检索结果：绿色行=正文证据支持被采纳，红色行=相似度高但正文不支持被丢弃，气泡写模型理由。"},
+{g:"g3",slug:"A_FineGrained_StatefulKnowledgeExploration_2025",p:"04",
+ title:"无状态探索 vs 细粒度有状态探索",yr:"KBS 2025 · Introduction Fig.2",
+ cap:"Figure 2: A simple example illustrating the differences between the paradigm we propose and the existing mainstream paradigm.",
+ tags:["T3 范式对比","同一真实例子","★强推"],key:true,
+ what:"同一个问题「John Lennon 乐队吉他手的生日是什么」，旧范式围绕整题反复检索得到冗余路径、答案不完整；新范式先抽取生日/吉他手等细粒度线索再检索，答案完整。",
+ style:"上下两条泳道：上冷蓝 = Stateless Exploration，下暖橙 = Fine-grained Stateful Exploration；左侧真实问题框，中间同一条 KG 路径图，右侧 Response 用绿色/红色逐字标对错；底部一句话写 LLM 依据什么选关系。",
+ use:"改成向量召回 vs 内容裁决：上泳道展示 top-k 堆叠与重复，下泳道展示按内容路由 + Rubric 裁决，右侧同一 query 的答案对照。"},
+{g:"g3",slug:"A_MSDiagnosis_Benchmark_Framework_MultiStepClinical_2025",p:"01",
+ title:"单步诊断数据集 vs 多步诊断数据集",yr:"KBS 2025 · Introduction Fig.1",
+ cap:"Figure 1: An example of our diagnostic benchmark and the multi-step diagnosis task.",
+ tags:["T3 范式对比","真实病例","图标图例"],
+ what:"用同一份真实病历，展示旧 benchmark 只标主诊断（单步），新 benchmark 要求依次给出主诊断→鉴别诊断→最终诊断（多步）。",
+ style:"顶部一个病例文本框（关键句蓝色高亮）；中部两条横向步骤链，① 旧数据集 ② 我们的数据集；Step1/2/3 用小医生图标连接；底部图例用蓝/绿方块区分诊断类型。",
+ use:"改成旧 QA 题集（单跳、关键词判分）vs 你的六层题集（拒答/多跳/内容裁决），顶部放一个真实域外 query。"},
+{g:"g3",slug:"A_Building_KnowledgeGrounded_Dialogue_2024",p:"02",
+ title:"知识接地对话：多模型回答与 Grounded Graph",yr:"KBS 2024 · Introduction Fig.1",
+ cap:"Figure 1: An example of knowledge-grounded dialogue with responses from models. Text in orange denotes the information.",
+ tags:["T3 示例对比","真值与图示","上下分区"],
+ what:"左上是真实对话上下文与知识库片段，右上并列 BART/CoDR/DoHA/KAT/G2AT 五个模型的回答，底部把对话与知识画成一张 grounded graph。",
+ style:"上下两区：上方表格分 Dialogue Context / Knowledge Base / Response 三块，错误回答用橙红色标出并给 Ground Truth；下方紫色节点=对话、绿色节点=知识、重叠节点=接地，黑线连接。",
+ use:"把五个模型换成「纯向量 / 阈值门 / 我们的方法」三行回答，底部画内容证据图，重叠节点表示被采信证据。"},
+{g:"g4",slug:"B_XAI_MetaSurvey_2023",p:"02",
+ title:"需要可解释 AI 的五个视角",yr:"KBS 2023 · Related Work Fig.1",
+ cap:"Figure 1: The five main perspectives for the need for XAI.",
+ tags:["T4 分类图","图标+柔和配色"],key:false,
+ what:"把「为什么需要 XAI」拆成监管、科学、终端用户与社会、模型开发、产业五个视角，每个视角给一个典型例子。",
+ style:"五个大圆围成环，圆心放图标（人、科学家、群体、程序员、商务），下方 e.g., 举例；每个圆一个柔和色（绿/黄/蓝），中央三段色块拼出 Perspectives。",
+ use:"Related Work 里画检索范式版图：向量检索 / 图检索 / 自反思 RAG / Agent 工具检索 / 内容验证检索（最后一个高亮）。"},
+{g:"g4",slug:"B_LLM_Understand_KnowledgeGraphs_2025",p:"02",
+ title:"同一张 KG 的三种输入格式",yr:"KBS 2025 · Related Work Fig.1",
+ cap:"Figure 1: KG is processed into different input formats to provide LLM with knowledge.",
+ tags:["T4 背景图","输入格式对比"],
+ what:"把同一个拜登家族知识图分别转成线性三元组、自然语言、外部知识三种形式喂给 LLM，并给出一个多跳问题。",
+ style:"左侧一个大 KG 图（节点配色 + 边标签），右侧三个上下排列的彩色框（蓝/绿/粉），下方问题框 + 机器人图标 + 答案气泡，外层虚线大框包住全局。",
+ use:"画「同一份文档的三种表示」：原始 Markdown / 向量块 / 带内容分的证据块，说明只有第三种携带正文证据。"},
+{g:"g4",slug:"B_QueryExpansion_SemanticRelations_RetrievalSystems_2023",p:"03",
+ title:"语义网络：概念 mammal 的关系定义",yr:"KBS 2023 · Related Work Fig.2",
+ cap:"Fig. 2. Semantic network for concept mammal.",
+ tags:["T4 概念图","黑白极简"],
+ what:"用 is-a / has / lives-in 等关系把 Mammal、Animal、Cat、Bear、Whale、Fish、Water 连成网络，作为后续查询扩展的资源定义。",
+ style:"纯黑白：无边框节点文字 + 带箭头的直线，关系标签写在边上方（is a、has、is an、lives in）；没有任何配色和框。",
+ use:"概念定义图用这种极简画法即可，把视觉预算留给动机图。"},
+{g:"g4",slug:"B_Survey_LLM_KnowledgeBasedMethods_2025",p:"03",
+ title:"大语言模型演化时间轴",yr:"KBS 2025 · Introduction Fig.2",
+ cap:"Fig. 2. The evolution of large language models.",
+ tags:["T4 时间轴","领域背景"],
+ what:"从 1950s 规则系统一路到 2024 动态知识更新，把统计模型、神经模型、Transformer、指令微调、多模态等关键节点挂到一条时间轴上。",
+ style:"一条水平黑线，橙色圆点标年份节点，节点上下交错挂橙框标签（年份 + 事件名），右侧 2025 收尾；极简但信息密度高。",
+ use:"Related Work 加一条「RAG 演化轴」：2020 RAG → 2023 Self-RAG/CRAG → 2025 Agentic RAG → 2026 内容验证检索。"},
+{g:"g5",slug:"B_Survey_LLM_KnowledgeBasedMethods_2025",p:"02",
+ title:"综述全文结构图",yr:"KBS 2025 · Introduction Fig.1",
+ cap:"Fig. 1. Overall structure of the paper organization.",
+ tags:["T5 论文地图","三列箭头带"],
+ what:"把全文分成 LLM 基础、LLM 挑战与方案、LLM + 知识库三大板块，底部汇合到挑战与未来建议。",
+ style:"三个 chevron 箭头标题（橙/蓝/绿）各带一个白底框与彩色圆角条目，列间灰粗箭头；底部大括号汇合到灰色圆角框。",
+ use:"如果你最终投 KBS 且篇幅足够，引言末尾可用同构画法给出全文地图；Applied Research 短文可省略。"},
+{g:"g5",slug:"A_SoftwareRefArch_JournalisticKnowledgePlatforms_2023",p:"03",
+ title:"设计科学研究：参考架构六步构建流程",yr:"KBS 276 (2023) · Introduction Fig.1",
+ cap:"Fig. 1. Construction process of the SRA for JKPs.",
+ tags:["T5 方法位置","6 步编号","黑白极简"],
+ what:"交代参考架构是怎么推导出来的：定类型 → 选策略 → 实证取数 → 构建 → 加可变性 → 评估。",
+ style:"6 个黑白圆角框 Z 字形排列，粗体编号前缀，纯线性无配色。",
+ use:"作为「方法论可信性」图放在引言末或方法首；证明你的 Rubric 不是拍脑袋定的。"}
+];
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+D.forEach(function(d){
+ const crop=F+d.slug+"__p"+d.p+"_intro_crop.png";
+ const full=F+d.slug+"__p"+d.p+"_intro.png";
+ const badges=(d.tags||[]).map(function(t){
+   let c="badge";
+   if(d.key&&t.indexOf("★")===0)c+=" key";
+   if(t.indexOf("T1")===0||t.indexOf("T3")===0)c+=" gold";
+   return '<span class="'+c+'">'+esc(t)+'</span>';
+ }).join("");
+ document.getElementById(d.g).insertAdjacentHTML("beforeend",
+  '<article class="card">'+
+   '<div class="head"><div class="kicker">'+esc(d.yr)+'</div><h3>'+esc(d.title)+'</h3>'+
+   '<p class="cap">'+esc(d.cap)+'</p><div class="badges">'+badges+'</div></div>'+
+   '<div class="imgbox" onclick="zoom(\''+crop+'\')"><img src="'+crop+'" alt="'+esc(d.title)+'" loading="lazy"></div>'+
+   '<div class="body"><p><span class="lbl">讲了什么</span>'+d.what+'</p>'+
+   '<p><span class="lbl">画法拆解</span>'+d.style+'</p>'+
+   '<p><span class="lbl">套到 HMRS</span>'+d.use+'</p></div>'+
+   '<div class="links"><a href="'+full+'" target="_blank">查看整页双栏排版 ↗</a>'+
+   '<a href="'+crop+'" target="_blank">打开原图 ↗</a></div></article>');
+});
+const lb=document.getElementById("lb"),lbimg=document.getElementById("lbimg");
+function zoom(src){lbimg.src=src;lb.style.display="flex"}
+lb.onclick=function(){lb.style.display="none";lbimg.src=""};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){lb.style.display="none";lbimg.src=""}});
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+%% n8b_eval.tex -- evaluation, middle part: E4 (operational knowledge and
+%% automated distillation) and E5 (content-layer configuration comparison).
+%% 2026-11-13: the former seven-configuration tool-layer table (tab:retrieval,
+%% fig:retrieval) was removed with the RAG-lane comparison; the verdict-role
+%% diagnostic now lives only in E8. Labels owned here: sec:e3, sec:ladder-opt,
+%% fig:ladder, fig:miss-overlap.
+\subsection{E4: Operational knowledge and automated distillation}
+\label{sec:e3}
+
+The experience store holds operational lessons as retrievable
+documents---addressed, indexed and searched as an ordinary document, with a
+credibility tier deciding whether it may be shown at all
+(Section~\ref{sec:org-experience}). Three case measurements exist: an
+extraction campaign over one small knowledge base produced thirteen
+candidate drafts (archived \path{experience_smoke.json} in the 2026-10-13
+batch tarball; \texttt{extract\_candidates}~13, \texttt{drafts\_created}~13);
+one end-to-end scenario was sedimented into one experience
+(\texttt{exp-d6f4d47ae3d6}) that a later global experience search returned
+first, at local similarity 0.711 (archived scenario A6 of the 2026-10-12
+full-test campaign); and the draft-approval path was never exercised, because
+the draft pool was empty (\texttt{count}~0) and \path{experience_draft_read}
+and \path{experience_draft_approve} could not run; the heuristic extraction
+path had run only in dry-run mode, returning a dump the quality gate would
+reject. One scenario and thirteen candidates cannot support an effectiveness
+claim; scheduled distillation, review and approval at scale, application
+feedback and credibility decay went unexercised. One recorded lesson was
+retrieved with its tier.
+
+\subsection{E5: Content-layer configuration comparison}
+\label{sec:ladder-opt}
+A0 is the tiered baseline with route-card selection and a 40K reference-mode
+judge. A0f retains route-card selection but reads full document windows inline
+(up to 250K characters); A0h adds the top-eight vector-chunk windows to A0f,
+with a 60K evidence cap. PD removes catalogue navigation and searches a
+per-library top-six document union before full-window judging. A1b is a
+scoped union of vector results from the ten evaluation libraries, merged by
+score and judged in a 40K reference window; A2 uses a scoped vector union and
+concatenated candidate snippets without the judge. A3 uses nominally name-only route cards, while read-all mechanically
+scans every stored part for the target string. A1b and A2 use per-library
+vector search, not an unrestricted all-library query. Route-card retrieval
+uses top-30 vector candidates at cosine threshold 0.35 with a 0.30 retry.
+These are recorded configuration details, not a single-factor design: A0h,
+PD and A1b vary in routing, candidate construction and judging, and their
+differences cannot be assigned to navigation alone. Some reference lookups
+may use the gold domain; their frequency and impact are unknown. A3 may
+retrieve outside the evaluation scope. The frozen traces do not preserve
+complete prompts and configuration hashes for every historical arm, which
+limits exact reconstruction.
+
+In the 11 November aggregate, gold strings were contained for A0/A0f/A0h/PD/
+A1b/A2/A3/read-all in 37/45/52/46/39/25/33/72 of 72 questions, respectively
+(Figure~\ref{fig:ladder}); these are evidence-string proxies, not answer
+correctness. Supplementary Tables S12--S14 give the per-arm intervals and
+paired records. The A0h Wilson 95\% interval is [0.610, 0.812]. In exploratory,
+unadjusted paired records, A0h contained the string while A1b did not on 13
+questions and the reverse occurred on none (two-sided exact McNemar
+$p=0.00024$). PD led A1b on seven questions with no reverse
+($p=0.0156$). A0h led PD on seven questions while PD led on one
+($p=0.0703$). A2 contained the string for 25/72 against 37/72 for A0
+(uncorrected exact McNemar $p=0.0227$; the later record repeats 25/72). A2 and
+A0 also differ in routing, candidate construction and returned text, so this
+comparison does not isolate the gate. These records do not show a statistically resolved advantage
+over PD and are not unbiased deployment estimates: A0, A1b and A3 can use
+the gold domain to resolve judge references, with unknown frequency and impact.
+In a separate 40-question diagnostic, the gold string appeared in the
+returned text for 24/40 BM25 cases and 19/40 dense-search cases. Concatenating
+the top five texts from each list gave 26/40; despite the historical label
+\texttt{F-rrf}, this operation did not compute reciprocal-rank fusion. BM25
+reads the local corpus, whereas dense search uses the global index. These
+substring checks use a 40-question subset and different scopes and returned-text
+construction from the 72-question evidence-pack experiment. They do not measure
+gold-document Hit@5; no paired comparison is reported across the two tests.
+
+The later R3 record reuses the same 72 questions and yields
+39/44/51/45/39/25 contained gold strings for A0/A0f/A0h/PD/A1b/A2,
+respectively. A0h had the highest observed containment among these completed
+arms (51/72, 70.8\%), 16.7 percentage points above A0 (39/72, 54.2\%). On
+paired questions, 12 contained the string only in A0h and none only in A0
+(exact two-sided $p=0.00049$). This exploratory, unadjusted comparison measures
+retrieved text, not answer correctness or a single-factor hierarchy effect. Agreement with the frozen
+hit/miss status was 94.4\% for A0, 98.6\% for A0f, A0h and PD, and 100\%
+for A1b and A2. The corpus contained 906 parts in the follow-up versus 879 in
+the frozen record, and complete execution provenance is unavailable; this is
+not an independent test set. In a separately added later A3 record,
+containment was 25/72 and the scripted gold domain was selected for 49/72;
+13 top candidates were missing and 23 packs were empty. The causes of the
+change are not established. Follow-up read-all was incomplete at the report
+cutoff (three completed gold rows). The frozen read-all is a mechanical
+substring scan, not an agent that reads and answers. Retrieval thresholds
+followed platform defaults (score 0.35 with a 0.30 retry, top-30 wide net).
+In the frozen data, A0h recorded 309 KB and 13.8 s per question versus
+24.3 MB and 253.7 s for the read-all scan; byte definitions differ and may
+overlap. In the follow-up, A0's elapsed-time mean was 17.4 s, median 9.8 s,
+and maximum 540.9 s. This wall time includes script processing and tool waits,
+but not answer generation; the mean alone does not describe typical latency.
+
+Among A0's 35 misses, A0f, A0h and PD contain the string in 8, 15 and 9 cases,
+respectively. These sets overlap and are not additive. A post-hoc search
+classified five first matching string locations outside a nominal window and
+30 inside; the chosen matching file need not be the gold document or a
+candidate actually read, so these categories do not identify the causes of
+misses (Figure~\ref{fig:miss-overlap}).
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.87\textwidth]{fig_r3_content_followup}
+\caption{R3 comparison on 72 gold questions. (a)~Frozen and same-question
+follow-up gold-string containment with Wilson 95\% intervals. (b)~Follow-up
+retrieval-workflow wall time (log scale; answer generation excluded). Boxes
+show the interquartile range, whiskers extend to observations within 1.5 times
+that range, and dots represent questions; means and medians are marked.
+Table~S13 reports trace bytes. The corpus changed and questions were reused,
+so the follow-up is not an independent test.}
+\label{fig:r3-content}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_ladder_optimization}
+\caption{Content-layer configurations on 72 in-domain questions.
+(a)~Frozen gold-string containment with Wilson 95\% intervals (blue circles)
+and later records on the same questions (orange triangles). The frozen
+aggregate combines dates; A3 was added separately to the later record and
+read-all was incomplete. The dashed line marks frozen A0. Read-all is a
+mechanical string scan, not an answering agent. A1b may use the gold domain
+for reference resolution; A0h and PD differ in both routing and chunk union.
+(b)~Frozen-aggregate mean tool calls and trace-recorded kilobytes per
+question; bytes can overlap. Paired comparisons are reported in the text.}
+\label{fig:ladder}
+\end{figure*}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_miss_overlap}
+\caption{Overlap among configurations for the 35 questions where frozen A0
+lacked the gold string. Each bar is a mutually exclusive outcome across A0f,
+A0h and PD; the counts are not additive configuration gains. These are
+substring results, not identified causes of failure.}
+\label{fig:miss-overlap}
+\end{figure}

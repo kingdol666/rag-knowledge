@@ -1,0 +1,199 @@
+\section{Related work}
+\label{sec:related}
+
+\subsection{Knowledge management and document acquisition}
+Studies of LLM integration with knowledge-based methods describe both the
+potential and the challenges of combining language models with structured
+knowledge \citep{yang-kbs-llm-2025}. Public knowledge bases organise facts under explicit ontologies
+\citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013}, whereas enterprise content
+management emphasises governance over organisational documents
+\citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006}. Research on organisational
+knowledge explains how tacit experience becomes shareable
+\citep{nonaka-seci-1994,nonaka-seci-ba-2000}; adjacent work studies metadata
+quality, tagging, human review and auditability
+\citep{park-metadata-quality-2009,golder-tagging-2006,mosqueira-rey-hitl-2022,barredo-arrieta-xai-2020}; automated text categorization provides the classification backbone \citep{sebastiani2002machine}. These strands motivate reliable placement
+and governance, but do not by themselves connect those controls to evidence-
+checked answers. Document-AI methods, including layout-aware analysis and
+MinerU, recover text and structure from complex documents
+\citep{zhong-publaynet-layout-2019,huang-layoutlmv3-docai-2022,mineru}. Near-
+duplicate detection and provenance provide complementary safeguards during
+ingestion \citep{manku-near-dup-2007,missier-prov-2013,cheney-provenance-2009}.
+HMRS treats acquisition quality, automatic classification and traceable
+indexing as design commitments to be tested rather than as preprocessing
+assumptions; the campaigns measure where they hold and where they fail,
+without establishing a causal link to answer quality.
+
+A line of work in this journal takes an explicitly architectural form: a
+software reference architecture for journalistic knowledge platforms is
+derived from the literature and a prototype, specifying module
+responsibilities and architecture principles \citep{ocaa2023software}, and an
+earlier workshop version outlines the architecture and a proof-of-concept
+\citep{gallofr2021jkpdesign}. Other work builds and evaluates complete
+knowledge-grounded systems---dialogue systems with graph-based semantic
+models \citep{yang2024building}, OpenQA systems for low-resource languages
+\citep{budur2024building}, an LLM-based clinical decision support system
+\citep{vito2025heliot}, and an IR system for bank supervisors
+\citep{aarab2024system}---while privacy-preserving service frameworks
+\citep{liao2026practical} and LLM-assisted construction of expert systems
+\citep{garridomer2026gofai} treat deployment constraints as design inputs.
+Domain knowledge bases are built either from operator--function descriptions
+\citep{hou2025method} or by instantiating ontologies with LLM-generated domain
+knowledge \citep{ciatto2025large}. The same systems orientation appears in an
+open-source multi-agent framework for evidence-based knowledge-graph enrichment
+\citep{mohamed2026orchestra}, LLM-agent systems for data-driven engineering
+modelling \citep{liu2026automatin}, end-to-end LLM systems for circuit analysis
+\citep{chen2026enhancing}, and an intelligent system that automates
+hyperparameter tuning for gradient-boosted trees \citep{sorokin2023sigopt}.
+HMRS shares this systems orientation but
+makes collection membership, derived descriptions and lifecycle state the
+auditable objects, rather than proposing a reference architecture or a domain
+ontology.
+
+\subsection{Retrieval, organisation and agentic search}
+RAG grounds generated responses in retrieved passages \citep{rag-lewis}; dense
+retrievers learn shared query--passage representations \citep{dpr}, while BM25
+remains a strong lexical baseline \citep{bm25}. Ghali et al. combine
+semantic retrieval, vector storage and language models to query structured and
+unstructured data \citep{ghali-kbs-retrieval-2025}. Hybrid retrieval combines
+sparse and dense signals, including reciprocal-rank fusion
+\citep{rrf-cormack}; embedding models such as BGE-M3 support multilingual and
+multi-granularity search \citep{bge-m3}. Graph- and tree-structured systems
+organise and retrieve structured relationships: GraphRAG adds entity-relation
+graphs and community summaries \citep{graphrag}, LightRAG uses dual-level
+retrieval with incremental graph merging \citep{lightrag}, and RAPTOR builds a
+recursive cluster tree \citep{raptor}. RMR-SST represents multimodal
+engineering-document content as structured semantic trees and retrieves
+across abstraction levels \citep{li-kbs-rmrsst-2026}. Hierarchical
+representation is therefore already an established retrieval concern: RAPTOR summarises a tree of clusters over
+document text and retrieves over that tree, and GraphRAG retrieves over an
+entity graph induced from the corpus. HMRS differs in what the hierarchy
+governs. Its hierarchy is a management structure over collections and
+documents---which collection exists, which document belongs to it, which
+description explains it---and selected lifecycle outcomes can be audited
+across its state sources. The original RAPTOR and GraphRAG formulations build these hierarchies
+offline at index time---recursive cluster summarisation and pre-generated
+community summaries, respectively \cite{raptor,graphrag}. LightRAG
+does contribute incremental graph updates \citep{lightrag}, so HMRS's
+difference is not incremental update per se but the governance of collection
+membership and document lifecycle, reconciled across three state sources.
+Incremental vector-index maintenance is itself an
+active systems concern \cite{singh2021freshdiskann,xu2023spfresh}; HMRS
+complements it at the metadata layer with an explicit re-index operation and
+three-source reconciliation. Retrieval granularity is likewise a design
+variable: proposition-level and late-chunking strategies change what a
+retrievable unit carries \cite{chen2024dense,gunther2024late}. TEIE-RAG
+combines hierarchical semantic chunking with retrieval-model tuning and source
+grounding for engineering information extraction \citep{shen-kbs-teierag-2026}.
+HMRS splits at recognised structural markers and indexes the resulting parts.
+HMRS uses a
+narrower document--library--tag graph for navigation and candidate
+expansion; the graph does not establish answer evidence on its own.
+
+The decision of which collection to consult has a longer history in
+distributed IR: resource-selection methods such as CORI and ReDDE rank
+collections by estimated relevance before searching within them
+\citep{callan1995searching,si2003redde}. HMRS adopts the same
+select-then-search ordering but treats collections as managed, reconciled
+state rather than static statistical summaries.
+
+Tool-using agents extend retrieval through iterative interaction
+\citep{react-yao,toolformer}. MCP standardises access to tool servers
+\citep{mcp}, while Modular RAG and agentic-retrieval surveys describe
+reconfigurable retrieval pipelines and their efficiency challenges
+\citep{modular-rag,singh-agentic-rag}. DeepRead performs structure-aware
+reasoning for agentic search: it converts a document to structured Markdown,
+indexes paragraphs with section coordinates, and lets an agent locate then
+read sections in order \citep{deepread}. Its hierarchy is thus a read-only,
+per-document navigation aid built once at ingestion. HMRS differs in scope
+and in lifecycle: its hierarchy spans collections and documents, is a
+persistent managed asset whose state can be audited after selected operations, and exposes the
+catalogue-first librarian lane alongside dense and hybrid alternatives under
+explicit call and tool policies.
+
+Recent articles in this venue extend the retrieval stack in complementary
+directions: retrieval-augmented generation over engineering design knowledge
+\citep{siddharth2024retrieval}, soft-prompt tuning of dense retrievers
+\citep{peng2024soft}, and an evaluation of semantic-relation query expansion
+in retrieval systems \citep{massai2023evaluatio}. Private-library retrieval
+supports code generation \citep{zan2025private}; work on knowledge graphs
+ranges from studying how LLMs comprehend graph facts supplied in different
+prompt formats \citep{dai2025large} to prompting LLMs with graphs for
+long-tail factual questions \citep{huang2025prompting}, while fine-grained
+stateful exploration navigates graphs through an LLM \citep{tao2025fine}.
+Real-time financial data grounding \citep{sinha2026finbloom} and coordinated
+multi-agent answer generation \citep{saadaoui2025coordinat} illustrate the
+range of deployed configurations. These systems optimise what is retrieved
+and how it is used; HMRS instead asks which managed collection is
+authoritative and whether its state can be audited after each lifecycle
+operation.
+
+\subsection{Verification, correction and abstention}
+Two further lines border the design without competing with it. Agent memory
+systems treat memory as an agent-managed store of interaction records:
+MemGPT pages memory between a context window and an external store
+\citep{memgpt}, Mem0 extracts and consolidates long-term memory from
+conversations \citep{mem0}, and A-MEM organises notes as an agentic memory
+graph \citep{amem}; continual-learning work adds an information-theoretic dual
+memory system \citep{wu2025informati}. HMRS manages a document corpus with audited lifecycle
+state; the stores are complementary rather than competing, and an ingest
+agent of the kind these frameworks assume can also use collection assignment
+and consistency checks of the kind examined here. Knowledge organisation
+standards such as SKOS \citep{skos} and Dublin Core provide conventions for
+vocabularies and descriptive metadata; HMRS derives collection and document
+descriptions from parsed content at ingest time.
+
+Self-RAG and CRAG integrate evidence assessment or retrieval correction into
+generation \citep{selfrag,crag}; FLARE triggers retrieval during generation
+\citep{flare}. Selective prediction under domain shift \citep{kamath},
+identifying what LLMs do not know \citep{feng-abstain,yin-knowwhat},
+ontology-grounded retrieval \citep{cyberbot}, and citation verifiability
+\citep{liu-verifiability,gao-citations} address adjacent concerns. EPRAG
+diagnoses evidence states to choose responses, clarification or abstention in
+multi-source enterprise retrieval \citep{kinalioglu-kbs-eprag-2026}. HMRS externalises
+verification as a reusable server-side operation: the gate fetches document
+text, judges evidence and returns provenance to the answer layer. This design
+makes the verifier inspectable, but not infallible.
+
+The LLM-as-a-judge literature documents preference bias, imperfect agreement,
+listwise instability and self-preference \citep{zheng-llmjudge,sun-urara,panickssery-selfpref}; outcome-based verification can reward flawed reasoning
+\citep{lightman-verify}. These findings motivate separating evidence
+verification from rank ordering and testing abstention at the answer layer.
+
+Trustworthiness and evaluation are also studied at the systems level in this
+venue: a systematic meta-survey of explainable AI \citep{saeed2023explainab},
+logic-grounded metamorphic testing of reasoning reliability
+\citep{zhou2026lgmt}, and a benchmark plus evaluation framework for multi-step
+clinical diagnosis \citep{hou2025msdiagnos}. These contributions supply the
+vocabulary of reliability and graded evaluation; the distinction claimed here
+is narrower: HMRS reports the measured failure mode of its own evidence gate
+and turns that negative result into a configuration rule.
+
+\subsection{Research gap}
+\label{sec:gap}
+
+Supplementary Table S11 compares representative strands rather than every
+system in the literature. Prior work already studies selective question
+answering, citation verifiability and retrieval correction; the distinction
+here is not that abstention or evidence checks are absent from prior research.
+The gap this study addresses is therefore a systems question: how can a
+knowledge-document platform make the management state that precedes retrieval
+observable, maintainable and usable by an agent? HMRS examines the complete
+workflow from acquisition checks and automatic collection assignment through
+three-source consistency, lifecycle operations, catalogue-first access and
+answer-time evidence inspection. It reports where implementation and transport
+boundaries constrain the workflow and measures verifier admission separately
+from verifier ordering. The contribution is an auditable management--retrieval
+contract, not a claim that prior systems lack reusable verification or that one
+retrieval algorithm is universally superior.
+
+The study treats three design commitments as questions to test: whether
+content-based classification and lifecycle checks expose collection state;
+whether a retrieved document should be re-ranked by a verifier or retain its
+fusion order; and whether agent workflows can report absence while separating
+completed negative searches from execution failures. Its contribution is a
+knowledge document management workflow that connects and exposes stages from
+parse admission through answer-evidence reporting, a per-question account of
+answer-layer checks, and a same-pool diagnostic showing a loss under verifier-score ordering
+when the tested threshold admitted every recorded score. It
+proposes no new ranking algorithm and does not claim that the underlying
+retrieval problem is solved.
