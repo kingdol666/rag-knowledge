@@ -32,6 +32,9 @@ follow-up 532, floor 120; SHA256SUMS), the figure-source manifest, the
 case-anatomy provenance record and the redraw summaries produced by
 figure_scripts/build_results_20261116.py (kept in the repository, not required
 for compilation).
+Manifest semantics: every hash in revision-20261112.sha256 and
+experiment_data/SHA256SUMS is the SHA256 of the file bytes AS PACKAGED in
+this zip — verify by hashing the packaged files themselves.
 
 Notes
 -----
