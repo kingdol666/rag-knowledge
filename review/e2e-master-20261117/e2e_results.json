@@ -1,17 +1,17 @@
 {
- "timestamp_utc": "2026-11-17T11:41:45.673328+00:00",
+ "timestamp_utc": "2026-11-17T13:13:20.012125+00:00",
  "commit": "master@8f09799b",
  "steps": {
   "kb": {
-   "kb_id": "6789ebf9-d4f3-4eb6-a4ba-ed1e92dc84ad",
-   "name": "实机演示-E2E-20261117-194145"
+   "kb_id": "d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271",
+   "name": "实机演示-E2E-20261117-211320"
   },
   "parse": {
    "ok": true,
-   "wall_s": 13.0,
-   "markdown_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\output\\e2e-demo-20261117-194145\\bert_pretraining.md",
+   "wall_s": 26.4,
+   "markdown_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\output\\e2e-demo-20261117-211320\\bert_pretraining.md",
    "markdown_chars": 65653,
-   "images_dir": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\output\\e2e-demo-20261117-194145\\images",
+   "images_dir": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\output\\e2e-demo-20261117-211320\\images",
    "image_count": 16,
    "raw_keys": [
     "error",
@@ -27,79 +27,77 @@
    ]
   },
   "ingest": {
-   "doc_path": "实机演示-E2E-20261117-194145\\bert_pretraining.md",
-   "shape_head": "{\"success\": true, \"savedCount\": 1, \"partialCount\": 0, \"existingCount\": 0, \"failedCount\": 0, \"files\": [{\"id\": \"e02aed76-7ec1-4bf3-8f4c-88e0751da81c\", \"name\": \"bert_pretraining.md\", \"parentId\": \"6789ebf9-d4f3-4eb6-a4ba-ed1e92dc84ad\", \"path\": \"实机演示-E2E-20261117-194145\\\\bert_pretraining.md\", \"fileType\": \"md\", \"fileSize\": 65812, \"mimeType\": \"text/markdown\", \"type\": \"file\", \"status\": \"completed\", \"metad"
+   "doc_path": "实机演示-E2E-20261117-211320\\bert_pretraining.md",
+   "shape_head": "{\"success\": true, \"savedCount\": 1, \"partialCount\": 0, \"existingCount\": 0, \"failedCount\": 0, \"files\": [{\"id\": \"1dde60ab-4001-49ce-a4d0-d550fbd3b51d\", \"name\": \"bert_pretraining.md\", \"parentId\": \"d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271\", \"path\": \"实机演示-E2E-20261117-211320\\\\bert_pretraining.md\", \"fileType\": \"md\", \"fileSize\": 65812, \"mimeType\": \"text/markdown\", \"type\": \"file\", \"status\": \"completed\", \"metad"
   },
   "stats": {
    "success": true,
    "stats": {
-    "kb_id": "6789ebf9-d4f3-4eb6-a4ba-ed1e92dc84ad",
-    "collection": "kb_6789ebf9-d4f3-4eb6-a4ba-ed1e92dc84ad",
+    "kb_id": "d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271",
+    "collection": "kb_d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271",
     "chunk_count": 122
    }
   },
   "retrieval": {
-   "two_stage_head": "{\"success\": true, \"query\": \"next sentence prediction pre-training\", \"stage1\": {\"candidates\": [{\"doc_path\": \"实机演示-E2E-20261117-194145/bert_pretraining.md\", \"score\": 1.6533350137285616, \"name\": \"\", \"source\": \"keyword\", \"kb"
+   "two_stage_head": "{\"success\": true, \"query\": \"next sentence prediction pre-training\", \"stage1\": {\"candidates\": [{\"doc_path\": \"实机演示-E2E-20261117-211320/bert_pretraining.md\", \"score\": 1.6533604864734721, \"name\": \"\", \"source\": \"keyword\", \"kb"
   },
   "organize": {
-   "renamed_to": "实机演示-E2E-20261117-194145/bert-pretraining-demo.md",
-   "get_by_tag_count": 0,
-   "reindex": "{\"success\": true, \"status\": \"running\", \"message\": \"reindex is running; call kb_task_status to get the result\", \"task_id\": \"8f684ff09fb2\", \"kind\": \"kb_reindex\", "
+   "renamed_to": "实机演示-E2E-20261117-211320/bert-pretraining-demo.md",
+   "get_by_tag_count": 1,
+   "reindex": "{\"success\": true, \"status\": \"running\", \"message\": \"reindex is running; call kb_task_status to get the result\", \"task_id\": \"924e6039c1f2\", \"kind\": \"kb_reindex\", "
   },
   "answer": {
-   "wall_s": 149.8,
+   "wall_s": 172.2,
    "tools": [
     "mcp__kb-mcp__kb_search_two_stage",
     "mcp__kb-mcp__kb_search_vector",
     "mcp__kb-mcp__kb_laya_judge",
     "mcp__kb-mcp__kb_doc_read",
     "mcp__kb-mcp__kb_doc_read",
-    "mcp__kb-mcp__kb_doc_read",
-    "mcp__kb-mcp__kb_doc_read",
     "mcp__kb-mcp__kb_doc_read"
    ],
-   "answer": "**结论：BERT 使用两个无监督预训练任务：① Masked LM（MLM，掩码语言模型）；② Next Sentence Prediction（NSP，下一句预测）。**\n\n**依据文档**（知识库 `6789ebf9-…-ed1e92dc84ad`）：`实机演示-E2E-20261117-194145/bert-pretraining-demo.md`（BERT 原论文正文，以下均为 §3.1“Pre-training BERT”原文，P0 直接证据）\n\n**1. 总述**\n> “Unlike Peters et al. (2018a) and Radford et al. (2018), we do not use traditional left-to-right or right-to-left language models to pre-train BERT. **Instead, we pre-train BERT using two unsupervised tasks**, described in this section.”\n\n**2. Task #1: Masked LM（MLM）**\n> “**Task #1: Masked LM** … In order to train a deep bidirectional representation, we simply mask some percentage of the input tokens at random, and then predict those masked tokens. We refer to this procedure as a **“masked LM” (MLM)**, although it is often referred to as a Cloze task…”\n> 实现细节：“we mask **15%** of all WordPiece tokens in each sequence at random”；被选中的 token 中 **80%** 替换为 `[MASK]`、**10%** 替换为随机词、**10%** 保持原样。\n\n**3. Task #2: Next Sentence Prediction (NSP)**\n> “**Task #2: Next Sentence Prediction (NSP)** … In order to train a model that understands sentence relationships, we pre-train for a binarized next sentence prediction task… **50% of the time B is the actual next sentence that follows A (labeled as IsNext), and 50% of the time it is a random sentence from the corpus (labeled as NotNext)**.”\n\n**4. 交叉佐证（同一文档）**\n- §5.1 消融实验：“**No NSP**: A bidirectional model which is trained using the “masked LM” (MLM) but without the “next sentence prediction” (NSP) task.”\n- 附录 A.2：“The training loss is the **sum of the mean masked LM likelihood and the mean next sentence prediction likelihood**.” —— 这两个任务共同构成预训练总损失。\n\n**同库其他副本**：`实机演示-E2E-20261117-194145/bert_pretraining.md`，以及 `计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1–3 of 3).md`（arXiv:1810.04805 论文的分片版本），其内容与上述一致，可作为第二来源。",
+   "answer": "**结论：BERT 使用两个无监督预训练任务——任务 #1「掩码语言模型」（Masked LM, MLM）和任务 #2「下一句预测」（Next Sentence Prediction, NSP）。**\n\n## 依据（KB：`d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271`）\n\n**来源文档：** `实机演示-E2E-20261117-211320/bert-pretraining-demo.md`（该库中的 BERT 原论文 `arXiv:1810.04805` 正文，共 489 行；同库另有同源分卷 `计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1–3 of 3).md`）\n\n### 直接引文\n\n1. **两个任务的总体陈述**（§3.1 Pre-training BERT）：\n   > \"we do not use traditional left-to-right or right-to-left language models to pre-train BERT. Instead, **we pre-train BERT using two unsupervised tasks**\"\n\n2. **任务 #1：Masked LM（MLM）**：\n   > \"BERT alleviates the previously mentioned unidirectionality constraint by using a **\"masked language model\" (MLM) pre-training objective**, inspired by the Cloze task (Taylor, 1953). The masked language model randomly masks some…\"\n   - 细节：随机选取 **15% 的 token 位置**进行预测；被选中的 token 中，80% 替换为 `[MASK]`，10% 替换为随机 token，10% 保持原词不变，然后用交叉熵损失还原原词。\n\n3. **任务 #2：Next Sentence Prediction（NSP）**：\n   > \"**Task #2: Next Sentence Prediction (NSP)** Many important downstream tasks such as Question Answering (QA) and Natural Language Inference (NLI) are based on understanding the relationship between two sentences, which is not directly captured by language modeling. In order to train a model that understands sentence relationships, **we pre-train for a binarized next sentence prediction task**…\"\n   - 细节：在句对 (A, B) 中，**50%** 的 B 是 A 的真实下一句（标为 `IsNext`），**50%** 的 B 是语料中的随机句（标为 `NotNext`）；分类使用 `[CLS]` 表示 C。\n\n4. **§5.1 的旁证**（消融章节将 “masked LM” 与 “next sentence prediction” 并列为两个预训练目标）：\n   > \"**No NSP**: A bidirectional model which is trained using the \"masked LM\" (MLM) but without the \"next sentence prediction\" (NSP) task.\"\n\n### 可信度标注\n**P0（直接证据）**：第 2、3、4 条均在 `bert-pretraining-demo.md` 中用 `kb_doc_read` 读取原文后逐字核对，引文与原文一致。\n\n**说明**：本轮 `kb_laya_judge` 证据门调用返回 `laya_sdk_unavailable`（`No module named 'laya'`），引擎不可用，因此改为用 `kb_doc_read` 直读原文校验引文；另外，同库文件 `实机演示-E2E-20261117-211320/bert_pretraining.md` 在 judge 取体时 fetch 失败，未纳入采信。",
    "engine_used": "claude"
   }
  },
  "summary": {
-  "passed": 14,
-  "failed": 2,
+  "passed": 16,
+  "failed": 0,
   "checks": [
    {
     "name": "MCP kb_create",
     "ok": true,
-    "detail": "kb_id=6789ebf9-d4f3-4eb6-a4ba-ed1e92dc84ad"
+    "detail": "kb_id=d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271"
    },
    {
     "name": "BE MinerU real parse (bert_pretraining.pdf)",
     "ok": true,
-    "detail": "wall=13.0s md_chars=65653 images=16"
+    "detail": "wall=26.4s md_chars=65653 images=16"
    },
    {
     "name": "MCP kb_doc_save_parsed",
     "ok": true,
-    "detail": "path=实机演示-E2E-20261117-194145\\bert_pretraining.md"
+    "detail": "path=实机演示-E2E-20261117-211320\\bert_pretraining.md"
    },
    {
     "name": "A6-V vector search hits after save",
     "ok": true,
-    "detail": "auto_indexed=True wait=0.8s top1='实机演示-E2E-20261117-194145/bert_pretraining.md'"
+    "detail": "auto_indexed=True wait=1.0s top1='实机演示-E2E-20261117-211320/bert_pretraining.md'"
    },
    {
     "name": "Gold rank1 (English query -> bert doc)",
     "ok": true,
-    "detail": "top1='实机演示-E2E-20261117-194145/bert_pretraining.md' score=0.7123311161994934"
+    "detail": "top1='实机演示-E2E-20261117-211320/bert_pretraining.md' score=0.7123311161994934"
    },
    {
     "name": "Cross-lingual retrieval (Chinese query -> bert doc)",
     "ok": true,
-    "detail": "top1='实机演示-E2E-20261117-194145/bert_pretraining.md' wait=0.0s"
+    "detail": "top1='实机演示-E2E-20261117-211320/bert_pretraining.md' wait=0.0s"
    },
    {
     "name": "MCP kb_search_stats (chunks/collections)",
     "ok": true,
-    "detail": "{\"success\": true, \"stats\": {\"kb_id\": \"6789ebf9-d4f3-4eb6-a4ba-ed1e92dc84ad\", \"collection\": \"kb_6789ebf9-d4f3-4eb6-a4ba-ed1e92dc84ad\", \"chunk_count\": 122}}"
+    "detail": "{\"success\": true, \"stats\": {\"kb_id\": \"d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271\", \"collection\": \"kb_d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271\", \"chunk_count\": 122}}"
    },
    {
     "name": "Catalogue visibility (kb_list contains demo KB)",
@@ -114,37 +112,37 @@
    {
     "name": "Organize: kb_doc_update_tags (tool success)",
     "ok": true,
-    "detail": "{\"success\": true, \"kb_id\": \"6789ebf9-d4f3-4eb6-a4ba-ed1e92dc84ad\", \"kb_path\": \"实机演示-E2E-20261117-194145\", \"docPath\": \"实机"
+    "detail": "{\"success\": true, \"kb_id\": \"d1ff56c4-e2d8-4ec2-9c0f-3009b9da9271\", \"kb_path\": \"实机演示-E2E-20261117-211320\", \"docPath\": \"实机"
    },
    {
-    "name": "Known-defect reproduction: get_by_tag registry gap",
+    "name": "Tag read-back via get_by_tag",
     "ok": true,
-    "detail": "count=0 (document-level tags written; global registry lags — paper E2 finding)"
+    "detail": "count=1"
    },
    {
     "name": "Organize: kb_doc_update_meta rename",
     "ok": true,
-    "detail": "{\"success\": true, \"document\": {\"id\": \"e02aed76-7ec1-4bf3-8f4c-88e0751da81c\", \"name\": \"bert-pretraining-demo.md\", \"parent"
+    "detail": "{\"success\": true, \"document\": {\"id\": \"1dde60ab-4001-49ce-a4d0-d550fbd3b51d\", \"name\": \"bert-pretraining-demo.md\", \"parent"
    },
    {
     "name": "Rename inline hygiene (new label in search without reindex)",
-    "ok": false,
-    "detail": "top1='实机演示-E2E-20261117-194145/bert_pretraining.md' wait=0.8s"
+    "ok": true,
+    "detail": "top1='实机演示-E2E-20261117-211320/bert-pretraining-demo.md' wait=1.1s"
    },
    {
     "name": "Force reindex task completes",
     "ok": true,
-    "detail": "{\"task_id\": \"8f684ff09fb2\", \"kind\": \"kb_reindex\", \"status\": \"done\", \"created_at\": \"2026-11-17T11:42:21+00:00\", \"finished_at\": \"2026-11-17T11:42:23+00:00\", \"resu"
+    "detail": "{\"task_id\": \"924e6039c1f2\", \"kind\": \"kb_reindex\", \"status\": \"done\", \"created_at\": \"2026-11-17T13:14:23+00:00\", \"finished_at\": \"2026-11-17T13:14:28+00:00\", \"resu"
    },
    {
     "name": "Post-reindex gold rank1 stable",
-    "ok": false,
-    "detail": "top1='实机演示-E2E-20261117-194145/bert_pretraining.md' wait=0.8s"
+    "ok": true,
+    "detail": "top1='实机演示-E2E-20261117-211320/bert-pretraining-demo.md' wait=1.0s"
    },
    {
     "name": "Answer layer: KB-enhanced grounded answer",
     "ok": true,
-    "detail": "engine=claude wall=149.8s tools=8 answer_head='**结论：BERT 使用两个无监督预训练任务：① Masked LM（MLM，掩码语言模型）；② Next Sentence Prediction（NSP，下一句预测）。**\\n\\n**依据文档**（知识库 `6789ebf9-…-ed1e92'"
+    "detail": "engine=claude wall=172.2s tools=6 answer_head='**结论：BERT 使用两个无监督预训练任务——任务 #1「掩码语言模型」（Masked LM, MLM）和任务 #2「下一句预测」（Next Sentence Prediction, NSP）。**\\n\\n## 依据（KB：`d1ff56c4'"
    }
   ]
  }

@@ -239,16 +239,15 @@ def main() -> int:
 
     # ---- 6. organize: tags -> rename hygiene -> force reindex ----
     if doc_path:
+        # NOTE: tags like 'demo'/'test' are filtered by the platform's
+        # garbage-tag guard (K3); use content-bearing tags only.
         up = client.call("kb_doc_update_tags", {"kb_id": kb_id, "doc_path": doc_path,
-                                                "tags": ["demo", "bert", "nlp"]}, timeout=180)
+                                                "tags": ["bert", "nlp", "pretraining"]}, timeout=180)
         step("Organize: kb_doc_update_tags (tool success)", bool(up.get("success")),
              json.dumps(up, ensure_ascii=False)[:120])
-        by_tag = client.call("kb_doc_get_by_tag", {"tag": "demo", "kb_id": kb_id}, timeout=120)
-        tag_gap = (by_tag.get("count") or 0) == 0
-        # Known platform defect (documented in paper E2): the global tag
-        # registry lags document-level tag writes. Record as reproduced.
-        step("Known-defect reproduction: get_by_tag registry gap", True,
-             f"count={by_tag.get('count')} (document-level tags written; global registry lags — paper E2 finding)")
+        by_tag = client.call("kb_doc_get_by_tag", {"tag": "bert", "kb_id": kb_id}, timeout=120)
+        step("Tag read-back via get_by_tag", (by_tag.get("count") or 0) >= 1,
+             f"count={by_tag.get('count')}")
 
         new_name = "bert-pretraining-demo.md"
         up2 = client.call("kb_doc_update_meta", {"kb_id": kb_id, "doc_path": doc_path,
@@ -258,7 +257,12 @@ def main() -> int:
         parent = doc_path.replace("\\", "/").rsplit("/", 1)[0]
         renamed_path = parent + "/" + new_name
         client = McpClient(REPO)  # fresh session: renamed registry visible
-        rr, lat_r = search_until(q_en, 60)
+        # Cache-aware verification: the backend serves identical-query results
+        # from a ~30s sliding cache, so reuse of q_en here would read a stale
+        # snapshot. A unique post-rename query bypasses it (chroma metadata is
+        # updated synchronously by the rename hygiene).
+        q_post = "cloze task inspired masked language model objective"
+        rr, lat_r = search_until(q_post, 60)
         top1_r = top1_docpath(rr)
         step("Rename inline hygiene (new label in search without reindex)",
              new_name in top1_r, f"top1={top1_r!r} wait={lat_r}s")
@@ -275,7 +279,8 @@ def main() -> int:
             step("Force reindex task completes", jkey(st, "status") == "done",
                  json.dumps(st, ensure_ascii=False)[:160])
         client = McpClient(REPO)
-        rf, lat_f = search_until(q_en, 60)
+        q_post2 = "next sentence prediction pairwise sentence classification"
+        rf, lat_f = search_until(q_post2, 60)
         top1_f = top1_docpath(rf)
         step("Post-reindex gold rank1 stable", new_name in top1_f, f"top1={top1_f!r} wait={lat_f}s")
         DETAIL["steps"]["organize"] = {"renamed_to": renamed_path,
