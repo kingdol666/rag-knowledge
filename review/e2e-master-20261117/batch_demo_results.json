@@ -1,0 +1,169 @@
+{
+ "timestamp_utc": "2026-11-17T15:23:20.073444+00:00",
+ "steps": {
+  "kb": {
+   "kb_id": "19d9dc0c-6b63-4cae-b782-e0a2500ebc52",
+   "name": "实机演示-多路入库-20261117-232320"
+  },
+  "batch_parse": {
+   "ok": true,
+   "wall_s": 38.7,
+   "total": 3,
+   "successful": 3,
+   "failed": 0,
+   "results": [
+    {
+     "filename": "attention_is_all_you_need.pdf",
+     "success": true,
+     "markdown_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\output\\batch-demo-20261117-232320\\attention_is_all_you_need.md",
+     "chars": 42545,
+     "image_count": 14
+    },
+    {
+     "filename": "rag_lewis2020.pdf",
+     "success": true,
+     "markdown_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\output\\batch-demo-20261117-232320\\rag_lewis2020.md",
+     "chars": 72610,
+     "image_count": 16
+    },
+    {
+     "filename": "llama.pdf",
+     "success": true,
+     "markdown_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\output\\batch-demo-20261117-232320\\llama.md",
+     "chars": 96133,
+     "image_count": 20
+    }
+   ],
+   "event_count": 5
+  },
+  "direct": {
+   "平台架构说明-ARCHITECTURE.md": "实机演示-多路入库-20261117-232320\\平台架构说明-ARCHITECTURE.md",
+   "平台总览-README.md": "实机演示-多路入库-20261117-232320\\平台总览-README.md"
+  },
+  "stats": {
+   "kb_id": "19d9dc0c-6b63-4cae-b782-e0a2500ebc52",
+   "collection": "kb_19d9dc0c-6b63-4cae-b782-e0a2500ebc52",
+   "chunk_count": 479
+  },
+  "rag_RAG-EN": {
+   "wall_s": 249.7,
+   "tools": [
+    "mcp__kb-mcp__kb_search_two_stage",
+    "mcp__kb-mcp__kb_search_vector",
+    "mcp__kb-mcp__kb_laya_judge",
+    "mcp__kb-mcp__kb_doc_read"
+   ],
+   "answer": "**结论：Lewis et al. (2020) 的 RAG 将「参数化记忆（parametric memory，预训练 seq2seq 模型 BART）」与「非参数化记忆（non-parametric memory，Wikipedia 稠密向量索引，经预训练神经检索器 DPR 访问）」结合；其两种变体是 RAG-Sequence 与 RAG-Token。**\n\n### 1. 两种记忆类型（P0 · 原文 Abstract）\n> \"We explore a general-purpose fine-tuning recipe for retrieval-augmented generation (RAG) — models which **combine pre-trained parametric and non-parametric memory** for language generation. … the **parametric memory is a pre-trained seq2seq model** and the **non-parametric memory is a dense vector index of Wikipedia**, accessed with a pre-trained neural retriever.\"\n\n§1 Introduction 进一步指明具体组件：\n> \"The retriever (**Dense Passage Retriever [26], henceforth DPR**) provides latent documents conditioned on the input, and the **seq2seq model (BART [32])** then conditions on these latent documents together with the input to generate the output.\"\n\n即：参数化记忆 = BART（seq2seq transformer，知识固化在权重中）；非参数化记忆 = Wikipedia 的稠密向量索引（检索式外部记忆，可修订、可溯源）。\n\n### 2. 两种 RAG 变体（P0 · §2.1 Models / §2.5 Decoding）\n| 变体 | 机制 | 原文 |\n|---|---|---|\n| **RAG-Sequence** | 整个输出序列使用**同一批**检索文档；把检索文档作为**单个隐变量**，按 per-output（整体）边缘化 | \"The RAG-Sequence model uses the **same retrieved document to generate the complete sequence**. Technically, it treats the retrieved document as a single latent variable…\" |\n| **RAG-Token** | 每个目标 token 可基于**不同**文档；按 per-token 边缘化 | \"The second approach, **RAG-Token**, can predict **each target token based on a different document**.\" |\n\n§2 总述亦印证：\n> \"We marginalize the latent documents with a top-K approximation either on a **per-output basis** (assuming the same document is responsible for all tokens) or a **per-token basis** (where different documents are responsible for different tokens).\"\n\n### 出处\n- 文档：`rag_lewis2020.md` —《Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks》(Lewis, Perez, Piktus, … Kiela, 2020)\n- 所在库：`19d9dc0c-6b63-4cae-b782-e0a2500ebc52`，路径 `实机演示-多路入库-20261117-232320/rag_lewis2020.md`\n\n**可信度说明：** 证据为原文 Abstract / §1 / §2 / §2.1 正文直读（P0 直接证据）。检索路径：`kb_search_two_stage` + `kb_search_vector`（chunk 3/10/17/18/21/29 命中，分值 0.51–0.64）→ `kb_doc_read` 原文核验；`kb_laya_judge` 因后端 Laya SDK 未安装（`No module named 'laya'`）不可用，已改用原文直读完成验证。"
+  },
+  "rag_ARCH-ZH": {
+   "wall_s": 566.2,
+   "tools": [
+    "mcp__kb-mcp__kb_search_two_stage",
+    "mcp__kb-mcp__kb_search_vector",
+    "mcp__kb-mcp__kb_laya_judge",
+    "mcp__kb-mcp__kb_doc_read",
+    "mcp__kb-mcp__kb_doc_read",
+    "mcp__kb-mcp__kb_doc_read",
+    "mcp__kb-mcp__kb_doc_read"
+   ],
+   "answer": "**结论：本平台由「3 个长驻服务 + 1 个 MCP 工具层」组成——Nuxt 3 Web（UI+服务端代理）、FastAPI 后端（解析/向量/图谱/经验/SOUL）、MinerU OCR（子进程，临时端口），外加 kb-mcp（stdio，94 个工具）；存储侧另用 Neo4j 与内嵌 ChromaDB。**\n\n依据文档（同一 KB 目录 `实机演示-多路入库-20261117-232320/`）：**`平台架构说明-ARCHITECTURE.md`**、**`平台总览-README.md`**。\n\n| 组件 | 职责（原文） | 端口 |\n|---|---|---|\n| **Nuxt 3 Web UI** | \"server-to-server proxy: the browser never hits FastAPI directly (no CORS). It also owns the on-disk KB store (`.tree-fs.json` + `.knowledge-base.yml`)\"；README：\"UI + server-side proxy\" | \"dev 6789 / prod 3000\"（ARCHITECTURE §1）；README 只列 `6789` |\n| **FastAPI Backend** | \"owns parse scheduling, MinerU subprocess lifecycle, vector index (ChromaDB + BGE-M3), Neo4j graph, experience store, SOUL training/evaluation, and the meditation scheduler\" | \"dev 8765 / prod 8001\"（ARCHITECTURE）；README 表列 `8770` |\n| **MinerU OCR** | \"runs as a hidden subprocess on an **ephemeral port** (`MineruApiManager(port=None)` auto-picks a free port). Never hardcode a port — read `manager.port` / `manager.api_url`\" | **ephemeral**（README：remote mineru-api 或本地自动选空闲端口） |\n| **kb-mcp（FastMCP）** | \"exposes **94 tools** over stdio; `server.py` contains zero HTTP code — all HTTP lives in `kb_client/client.py`\"；parse/graph/reindex/training 均非阻塞，返回 `task_id` | 无监听端口（MCP **stdio**，由 `.mcp.json` 拉起） |\n| Neo4j | \"Document graph, cross-KB bridges\" | `7687` |\n| ChromaDB | \"Chunk embeddings, one collection per knowledge base\" | 内嵌，无端口 |\n\n补充原文：\"Three long-running services plus one MCP layer, all configured from a single root `config.yml`\"（ARCHITECTURE §1）；\"Three services and a tool layer, all reading their ports and paths from one `config.yml`\"（README「Architecture」）。\n\n⚠️ **端口口径差异（两文档不一致，需知悉）**：ARCHITECTURE 写后端 8765(dev)/8001(prod)，README 架构表与配置示例写后端默认 `8770`（且注明 \"both READMEs document the default `8770`/`6789` pair… check `config.yml`, `.env` (`BACKEND_PORT`), and the settings page banner, which reads the running values\"）。**以运行中 `config.yml`/`BACKEND_PORT` 为准**，文档值为默认示例。\n\n*可信度：P0（两份文档原文直读，服务-职责-端口逐项对齐）；本轮的 Laya 证据门因后端 `laya` 模块缺失返回 unavailable，故改用原文直读核验，结论不受影响。*"
+  },
+  "rag_CROSS": {
+   "wall_s": 311.0,
+   "tools": [
+    "mcp__kb-mcp__kb_search_two_stage",
+    "mcp__kb-mcp__kb_search_two_stage",
+    "mcp__kb-mcp__kb_laya_judge",
+    "mcp__kb-mcp__kb_doc_read",
+    "mcp__kb-mcp__kb_doc_read"
+   ],
+   "answer": "**两者不在同一层面：自注意力解决的是「序列内部如何建模任意距离依赖并实现并行计算」的架构效率问题；RAG 的检索解决的是「模型参数内固化的知识无法更新、无法溯源、容易幻觉」的知识供给问题。**\n\n## 一、Transformer 自注意力：解决 RNN/CNN 的顺序性与长程依赖代价\n\n- **替掉循环结构，换取并行**：RNN 的“inherently sequential nature precludes parallelization within training examples”，序列越长越致命；Transformer “dispensing with recurrence and convolutions entirely”，结果“superior in quality while being more parallelizable and requiring significantly less time to train”。\n- **任意两位置之间的运算数降为常数**：ConvS2S/ByteNet 需关联两位置的操作数随距离线性/对数增长，“This makes it more difficult to learn dependencies between distant positions”；“In the Transformer this is reduced to a constant number of operations”。\n- **注意力本身就是跨距离建模**：attention “allowing modeling of dependencies without regard to their distance in the input or output sequences”。\n  > 出处：《Attention Is All You Need》(Vaswani et al.)，KB `实机演示-多路入库-20261117-232320/attention_is_all_you_need.md`（Abstract / §1 Introduction / §2 Background）— **P0 原文直接证据**\n\n## 二、RAG 的检索机制：解决参数化知识的三项结构性缺陷\n\n- **问题定位（三项缺陷）**：预训练模型把知识存在参数中，但 “They cannot easily expand or revise their memory, can't straightforwardly provide insight into their predictions, and may produce 'hallucinations'”。\n- **检索如何解决**：混合“参数记忆 + 非参数记忆”，因为 “knowledge can be directly revised and expanded, and accessed knowledge can be inspected and interpreted”；非参数记忆是“a dense vector index of Wikipedia, accessed with a pre-trained neural retriever”(DPR)，用 MIPS 取 top-K 文档后注入生成器。\n- **量化收益**：“RAG models hallucinate less and generate factually correct text more often than BART”；且“the non-parametric memory can be replaced to update the models' knowledge as the world changes”——知识更新变成换索引，而非重训。\n  > 出处：Lewis et al. 2020, *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*，KB `实机演示-多路入库-20261117-232320/rag_lewis2020.md`（Abstract / §1 Introduction / §2 Methods）— **P0 原文直接证据**\n\n## 一句话对比\n\n自注意力换的是“**计算图**”（用注意力替代循环，使长程依赖和并行训练成为可能）；RAG 检索换的是“**知识源**”（用可替换、可检视的外部向量索引补齐参数中不可更新、不可溯源的知识）。\n\n---\n检索说明：`kb_search_two_stage` 两路检索（命中 attention_is_all_you_need.md、rag_lewis2020.md 等 5 篇），`kb_laya_judge` 因引擎缺失（`No module named 'laya'`）返回 unavailable，故改用 `kb_doc_read` 直读两份原文核验引文；平台架构类文档（ARCHITECTURE/README）未包含本问题的概念性论述，未作依据。"
+  }
+ },
+ "summary": {
+  "passed": 16,
+  "failed": 0,
+  "checks": [
+   {
+    "name": "kb_create",
+    "ok": true,
+    "detail": "kb_id=19d9dc0c-6b63-4cae-b782-e0a2500ebc52"
+   },
+   {
+    "name": "BE batch parse SSE (3 PDFs concurrent)",
+    "ok": true,
+    "detail": "wall=38.7s successful=3/3 events=5"
+   },
+   {
+    "name": "save_parsed attention_is_all_you_need.pdf",
+    "ok": true,
+    "detail": "path=实机演示-多路入库-20261117-232320\\attention_is_all_you_need.md"
+   },
+   {
+    "name": "save_parsed rag_lewis2020.pdf",
+    "ok": true,
+    "detail": "path=实机演示-多路入库-20261117-232320\\rag_lewis2020.md"
+   },
+   {
+    "name": "save_parsed llama.pdf",
+    "ok": true,
+    "detail": "path=实机演示-多路入库-20261117-232320\\llama.md"
+   },
+   {
+    "name": "retrieve parsed doc: attention_is_all_you_need.pdf",
+    "ok": true,
+    "detail": "top1='实机演示-多路入库-20261117-232320/attention_is_all_you_need.md' score=0.707"
+   },
+   {
+    "name": "retrieve parsed doc: rag_lewis2020.pdf",
+    "ok": true,
+    "detail": "top1='实机演示-多路入库-20261117-232320/rag_lewis2020.md' score=0.702"
+   },
+   {
+    "name": "retrieve parsed doc: llama.pdf",
+    "ok": true,
+    "detail": "top1='实机演示-多路入库-20261117-232320/llama.md' score=0.652"
+   },
+   {
+    "name": "direct ingest ARCHITECTURE.md (15329 chars, no parsing)",
+    "ok": true,
+    "detail": "path=实机演示-多路入库-20261117-232320\\平台架构说明-ARCHITECTURE.md"
+   },
+   {
+    "name": "direct ingest README.md (28692 chars, no parsing)",
+    "ok": true,
+    "detail": "path=实机演示-多路入库-20261117-232320\\平台总览-README.md"
+   },
+   {
+    "name": "retrieve direct doc: 平台架构说明-ARCHITECTURE.md",
+    "ok": true,
+    "detail": "top1='实机演示-多路入库-20261117-232320/平台架构说明-ARCHITECTURE.md' score=0.717"
+   },
+   {
+    "name": "retrieve direct doc: 平台总览-README.md",
+    "ok": true,
+    "detail": "top1='实机演示-多路入库-20261117-232320/平台总览-README.md' score=0.633"
+   },
+   {
+    "name": "KB totals (kb_search_stats)",
+    "ok": true,
+    "detail": "chunk_count=479"
+   },
+   {
+    "name": "RAG query RAG-EN",
+    "ok": true,
+    "detail": "wall=249.7s tools=4 answer_head='**结论：Lewis et al. (2020) 的 RAG 将「参数化记忆（parametric memory，预训练 seq2seq 模型 BART）」与「非参数化记忆（non-parametric memory，W'"
+   },
+   {
+    "name": "RAG query ARCH-ZH",
+    "ok": true,
+    "detail": "wall=566.2s tools=7 answer_head='**结论：本平台由「3 个长驻服务 + 1 个 MCP 工具层」组成——Nuxt 3 Web（UI+服务端代理）、FastAPI 后端（解析/向量/图谱/经验/SOUL）、MinerU OCR（子进程，临时端口），外加 '"
+   },
+   {
+    "name": "RAG query CROSS",
+    "ok": true,
+    "detail": "wall=311.0s tools=5 answer_head='**两者不在同一层面：自注意力解决的是「序列内部如何建模任意距离依赖并实现并行计算」的架构效率问题；RAG 的检索解决的是「模型参数内固化的知识无法更新、无法溯源、容易幻觉」的知识供给问题。**\\n\\n## 一、Transf'"
+   }
+  ]
+ }
+}
