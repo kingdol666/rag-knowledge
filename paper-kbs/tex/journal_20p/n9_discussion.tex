@@ -13,7 +13,10 @@ The 33-part consistency sample and selected passing lifecycle checks show
 that the management loop is exercisable, not that it is transactionally
 complete. The failed task-status/update checks and stale-index rename are
 important system results because they show why reconciliation and post-operation
-probes are part of the design rather than optional diagnostics.
+probes are part of the design rather than optional diagnostics. This failure
+visibility is the management-side counterpart of the metadata-quality and
+governance concerns raised in the tagging and enterprise-content-management
+literature \citep{park-metadata-quality-2009,paivarinta-ecm-2005}.
 
 The access results then show how managed state is consumed. The frozen route-card
 audit selected the gold collection in 72/72 full-card cases and 37/72 nominally

@@ -12,8 +12,10 @@ and E5) and answer/deployment (E6--E7), with E8 diagnosing verifier
 placement and E9 bounding stability, concurrency, gate and scope behaviour.
 E3 tests scripted collection choice and E5 measures retrieved text on the
 same question set; E6 uses separate questions to inspect answers and traces.
-In research-question terms, E1, E2 and E4 answer RQ1; E3 answers the
-collection-selection part of RQ2; E5 answers RQ3; E8 answers RQ4; E6 and E7
+In research-question terms, E1 and E2 answer RQ1, with E4 reporting the
+operational experience store; E3 answers the collection-selection part of
+RQ2, and E5's containment measure carries RQ2's document-narrowing clause;
+E5 answers RQ3; E8 answers RQ4; E6 and E7
 answer RQ5; E9 bounds all five questions. Table~S17 records the design and
 provenance of each campaign; Tables~S9--S10 group the management
 observations and retrieval designs with their limits.
@@ -116,7 +118,7 @@ changed four tag edges (4,675 to 4,679) on a 658-node graph, which is a
 navigation record, not evidence. These results motivate reconciliation
 without establishing its completeness.
 
-\subsection{E3: Paired route-card audit: the description-layer ablation}
+\subsection{E3: Paired route-card audit: the description-layer contrast}
 \label{sec:routing-audit}
 The collection tier is audited as a paired description-layer contrast: route
 cards carrying derived descriptions (A0) against nominally name-only cards
@@ -149,9 +151,9 @@ which the tiered chunk-window arm A0h reaches 51--52/72 containment, are
 reported in Section~\ref{sec:ladder-opt}; the 37/72 figure above is this
 audit's own route-card evidence-pack containment.
 
-\begin{figure*}[t]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=\textwidth]{fig_opt_route}
+\includegraphics[width=\columnwidth]{fig_opt_route}
 \caption{Route-card diagnostic on 72 in-domain questions. (a) Gold-domain
 selection: A0 72/72, A3 37/72; Wilson 95\% intervals; 35 A0-only routes, exact
 McNemar $p=5.82\times10^{-11}$. (b) Exact annotated target-string containment in the returned pack: A0 37/72,
@@ -166,4 +168,4 @@ evaluation scope; tool time excludes answer generation. These are routing,
 substring and text-volume diagnostics, not answer quality or an isolated
 description effect.}
 \label{fig:routing}
-\end{figure*}
+\end{figure}

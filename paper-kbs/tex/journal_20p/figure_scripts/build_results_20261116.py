@@ -164,6 +164,11 @@ def validate_sources() -> dict[str, str]:
     hashes: dict[str, str] = {}
     for relative, expected in manifest["sources_sha256"].items():
         source = ROOT / Path(relative)
+        # The manifest mixes repository-relative archives with sources kept
+        # beside the manuscript.  Resolve the latter from TARGET so the
+        # reproducible builder works from a clean checkout as well.
+        if not source.is_file():
+            source = TARGET / Path(relative)
         if not source.is_file():
             raise FileNotFoundError(f"Manifest source is missing: {source}")
         actual = sha256(source)
@@ -278,11 +283,20 @@ def draw_route(frozen: dict[str, list[dict[str, str]]]) -> None:
     assert hits(a3, "route_correct") == 37
     assert hits(a0) == 37 and hits(a3) == 33 and hits(read_all) == 72
 
-    fig = plt.figure(figsize=(7.15, 3.45))
-    grid = fig.add_gridspec(2, 2, width_ratios=[1, 1], height_ratios=[0.82, 1.18], left=0.09, right=0.985, bottom=0.22, top=0.96, wspace=0.34, hspace=0.72)
+    # The route audit is used in the main text as a single-column figure.  A
+    # vertical stack preserves legible labels at \columnwidth; the panels are
+    # kept compact (narrow hspace, shared axis limits) so the column is not
+    # dominated by inter-panel whitespace.
+    fig = plt.figure(figsize=(3.38, 5.30))
+    grid = fig.add_gridspec(
+        3, 1,
+        height_ratios=[0.62, 0.92, 1.12],
+        left=0.18, right=0.99, bottom=0.155, top=0.99,
+        hspace=0.30,
+    )
     ax_route = fig.add_subplot(grid[0, 0])
-    ax_contain = fig.add_subplot(grid[0, 1])
-    ax_volume = fig.add_subplot(grid[1, :])
+    ax_contain = fig.add_subplot(grid[1, 0])
+    ax_volume = fig.add_subplot(grid[2, 0])
     records: list[dict] = []
 
     for ax, values, title, field, labels in [
@@ -293,13 +307,30 @@ def draw_route(frozen: dict[str, list[dict[str, str]]]) -> None:
             k = hits(rows, field)
             lo, hi = wilson(k, 72)
             color = ARM_COLOR["A1-readall"] if arm == "Read-all" else ARM_COLOR[arm]
-            ax.errorbar(k / 72 * 100, y, xerr=[[(k / 72 - lo) * 100], [(hi - k / 72) * 100]], fmt="o", ms=5.6, mfc=color, mec=INK, ecolor=INK, elinewidth=0.9, capsize=2.5, capthick=0.9, linestyle="none", zorder=3)
-            ax.annotate(f"{k}/72", (k / 72 * 100, y), xytext=(0, -7 if y == len(values) - 1 else 7), textcoords="offset points", ha="center", va="top" if y == len(values) - 1 else "bottom", fontsize=8.0)
-            records.append({"panel": "route" if field == "route_correct" else "containment", "arm": arm, "n": 72, "hits": k, "percent": round(k / 72 * 100, 4), "wilson_low": round(lo * 100, 4), "wilson_high": round(hi * 100, 4)})
+            ax.errorbar(
+                k / 72 * 100, y,
+                xerr=[[(k / 72 - lo) * 100], [(hi - k / 72) * 100]],
+                fmt="o", ms=5.6, mfc=color, mec=INK, ecolor=INK,
+                elinewidth=0.9, capsize=2.5, capthick=0.9,
+                linestyle="none", zorder=3,
+            )
+            ax.annotate(
+                f"{k}/72", (k / 72 * 100, y),
+                xytext=(0, -7 if y == len(values) - 1 else 7),
+                textcoords="offset points", ha="center",
+                va="top" if y == len(values) - 1 else "bottom", fontsize=7.6,
+            )
+            records.append({
+                "panel": "route" if field == "route_correct" else "containment",
+                "arm": arm, "n": 72, "hits": k,
+                "percent": round(k / 72 * 100, 4),
+                "wilson_low": round(lo * 100, 4),
+                "wilson_high": round(hi * 100, 4),
+            })
         ax.set_yticks(range(len(values)), labels)
-        ax.set_xlim(0, 116)
+        ax.set_xlim(0, 108)
         ax.set_xticks([0, 25, 50, 75, 100])
-        ax.set_xlabel(title)
+        ax.set_xlabel(title, fontsize=7.6, labelpad=2)
         ax.set_ylim(-0.6, len(values) - 0.4)
         decorate(ax, "x")
     panel(ax_route, "(a)")
@@ -320,7 +351,7 @@ def draw_route(frozen: dict[str, list[dict[str, str]]]) -> None:
         offset_x, offset_y = point_offsets.get(arm, (0, 0))
         point_transform = ax_volume.transData + ScaledTranslation(offset_x / 72, offset_y / 72, fig.dpi_scale_trans)
         ax_volume.scatter(x, y, s=48, marker=marker, transform=point_transform, facecolor=color, edgecolor=INK, linewidth=0.7, zorder=3)
-        legend_handles.append(Line2D([0], [0], marker=marker, color=color, markerfacecolor=color, markeredgecolor=INK, linestyle="none", markersize=6, label=ARM_LABEL.get(arm, arm)))
+        legend_handles.append(Line2D([0], [0], marker=marker, color=color, markerfacecolor=color, markeredgecolor=INK, linestyle="none", markersize=5.3, label=ARM_LABEL.get(arm, arm)))
         records.append({"panel": "volume", "arm": arm, "n": 72, "hits": FROZEN_COUNTS[arm], "percent": round(y, 4), "mean_mb": round(x, 6), "display_offset_pt_x": offset_x, "display_offset_pt_y": offset_y})
     ax_volume.set_xscale("log")
     ax_volume.set_xlim(0.001, 80)
@@ -329,11 +360,15 @@ def draw_route(frozen: dict[str, list[dict[str, str]]]) -> None:
     ax_volume.xaxis.set_minor_locator(NullLocator())
     ax_volume.set_ylim(0, 108)
     ax_volume.set_yticks([0, 25, 50, 75, 100])
-    ax_volume.set_xlabel("Recorded text (MB/question; log)")
-    ax_volume.set_ylabel("Gold-string containment (%)")
+    ax_volume.set_xlabel("Recorded text (MB/question; log)", fontsize=7.6, labelpad=2)
+    ax_volume.set_ylabel("Gold-string containment (%)", fontsize=7.6)
     decorate(ax_volume, "y")
     panel(ax_volume, "(c)")
-    ax_volume.legend(handles=legend_handles, loc="upper center", bbox_to_anchor=(0.5, -0.30), ncol=4, frameon=False, handletextpad=0.35, columnspacing=1.2, fontsize=8.0)
+    ax_volume.legend(
+        handles=legend_handles, loc="upper center", bbox_to_anchor=(0.5, -0.30),
+        ncol=4, frameon=False, handletextpad=0.25, columnspacing=0.5,
+        fontsize=6.4, borderaxespad=0.0,
+    )
     write_csv("redraw_route_summary.csv", records, ["panel", "arm", "n", "hits", "percent", "wilson_low", "wilson_high", "mean_mb", "display_offset_pt_x", "display_offset_pt_y"])
     save_figure(fig, "fig_opt_route")
 

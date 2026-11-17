@@ -1,8 +1,5 @@
 {
   "builder": "figure_scripts/build_results_20261116.py",
-  "additional_builders": {
-    "fig_opt_case": "figure_scripts/build_fig_case_anatomy.py"
-  },
   "style": {
     "font_family": [
       "Arial",
@@ -19,7 +16,6 @@
     "fig_opt_content",
     "fig_opt_answer",
     "fig_opt_verifier",
-    "fig_opt_case",
     "fig_opt_s_answer",
     "fig_exp_s3",
     "fig_opt_s_margin",
@@ -34,6 +30,8 @@
     "benchmark-suite/results/exp_rerun5_grade.json": "d715ce68b9573b76b5ecb8d9140cc0238ad06e846bfc2b2547151a53435a0d74",
     "paper-kbs/experiments/results/exp1_retrieval.json": "0a6b56eece0db237ecdc6e0685dc78de88c4a8d7d68494526e06496a6f5b68d1",
     "paper-kbs/experiments/results/exp5_judge_filter.json": "25c049ed5ba38c0cd0815bbf18f857bf32d36a47f3eb2cb799effe8e53da5b24",
+    "experiment_data/case-anatomy-provenance.json": "58d85a31a4ebe76b23d6f1a7caeace86b10d722eab3f67c69d46f04ad444e39b",
+    "experiment_data/figure-redraw-manifest-20261116.json": "3bc421ffc0ba1655319056e01171386b1490671085158b7c7a36806edf2a38c9",
     "review/_exp_rerun_20261114/answers_fresh_summary.json": "c2fa7dfd23f0bde941823962874356fa868dd4bb4faa3f599e97e93a93d29db2",
     "review/_exp_rerun_20261114/desc_audit.json": "6783db9958466961a417accd6242e37a354c49d5878ced36b690bf0cea16480d",
     "review/_exp_rerun_20261114/probe5_final.json": "2969af837a349ace85d6fdf61fd126bb81864b54d685b94d3c7ce83f1c0517a6",
@@ -42,23 +40,21 @@
     "experiment_data/supp_traces_floor.csv": "944c0fb90580c06a10e79f6bb28b159877e30db8a1d4cb4cb4cfde0c1de67c33"
   },
   "output_sha256": {
-    "figs/fig_opt_case.pdf": "4fc27f755bbf8a89c08665b87cbf93ce4b96494c6c628cf310224a4bd434de08",
-    "figs/fig_opt_case.png": "dadf8e07ab2273457ab69ee3b30ccf58ba9cfd9ae111d22c7cbe22e96b86bf00",
-    "figs/fig_opt_route.pdf": "c84132a49b257cda0252cca0fc8407ab3b07cb3637d54dc5d7138fe78a01009c",
-    "figs/fig_opt_route.png": "0cd3b6aab34055c6fc9a765a68e24a9f75d4f12d4692e9aed8460b6f8c3e562b",
-    "figs/fig_opt_content.pdf": "ded67402fa9a0899ee69855f380b6bcf7ca266f1a9d2d6d8be8fb8f2d8131abf",
+    "figs/fig_opt_route.pdf": "2280cc7832e9f67e5e96421fcd7647b4ffd72fc3e273ef360ab78a37e04e1b3d",
+    "figs/fig_opt_route.png": "aa5e13c9c4364a35df27e98d8fb0e87f58e793a235d0a1516a65622fdb293661",
+    "figs/fig_opt_content.pdf": "73b623f81a4aff0210d34950e7dc4e8b07886233553df06faf2ad638ae51e2ba",
     "figs/fig_opt_content.png": "b50296359a394eb46844a69afb3982653770e28edc80603cd53b390b62ae9888",
-    "figs/fig_opt_answer.pdf": "182149f89e91abd0403b27e217be9eeb610da64b86807ffc1c59ba707bb08f52",
-    "figs/fig_opt_answer.png": "d3e29d0bff2354337f667b4e23bf7c84b7487e4cc8f39b52f9e3c5fc552baa37b",
-    "figs/fig_opt_verifier.pdf": "35c50e1c3940e5ab1c041cc560ccb67aa10f518d6e9ab00acf000bcff821c062",
+    "figs/fig_opt_answer.pdf": "28dfcc85b5ae08459c9b8d7ff15bbac6abcb2115512a8443e87a3d8c1965195e",
+    "figs/fig_opt_answer.png": "d3e29d0bff2354337f667b4e23bf7c84b7487e4cc8f39b52f9e3c5fc552baa37",
+    "figs/fig_opt_verifier.pdf": "35dccbf353da126bee6c64cfd99a6277357d25b747dee64e66d4a15c9fc4ebde",
     "figs/fig_opt_verifier.png": "b5593893c35b97fd5a377b101468c41648241fbf9e02e838551ba8fa53484e4f",
-    "figs/fig_opt_s_answer.pdf": "87f2954479c971bc9880927f738708105cc0c4f6b52c0e3cd125a524ee69bdf0",
+    "figs/fig_opt_s_answer.pdf": "47e2186ce811f442219669eed80e565542c73ecac9e681e7d42eb544df28d51d",
     "figs/fig_opt_s_answer.png": "53de47d0e28502b44f7bf4ee91699505711792400bc33ef0cfeb6afb21cb6ddb",
-    "figs/fig_exp_s3.pdf": "0ade2dbc35bb282aaa1897a88b18d6722a1df6f4c27e290d896dac68805757d1",
+    "figs/fig_exp_s3.pdf": "460ae7a40f7d4c39b71b168e15847caa65b48982cf29364387877435bf9a4dc7",
     "figs/fig_exp_s3.png": "1d30892ec2422ad5311b0a5efa1ec6213a94aa2fe75350c0e951d8857b08dee9",
-    "figs/fig_opt_s_margin.pdf": "5766c261b801ce91bbb068a258a7433d25c0eca102e0996a567327574fbbcf1b",
+    "figs/fig_opt_s_margin.pdf": "03db9b820f5e924ea863e234b3ecd5b63a690aed400e68f628f66d45920689ca",
     "figs/fig_opt_s_margin.png": "046077097428526557a0ce721a5fd868890dbc93845b213697c3d64f6bba16ce",
-    "figs/fig_exp_s5.pdf": "ae3bf0ed97bccd481d4cee74c7db84984b02532b008f1cde3f5b88fce375bd91",
+    "figs/fig_exp_s5.pdf": "02656284b937e50b0a32cef5179eeca14e0839bd40a00894a8326ce34b1d3fc1",
     "figs/fig_exp_s5.png": "ab21873875e0f6a97affe8272a5e186a054ac43d01868e789aacefe79bb75efb"
   },
   "units": {
