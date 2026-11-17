@@ -1,12 +1,13 @@
-﻿import { readFile } from 'fs/promises'
-import { existsSync } from 'fs'
+﻿import { constants } from 'fs'
+import { lstat, open, realpath } from 'fs/promises'
+import { isAbsolute, join, relative, resolve, sep } from 'path'
 import type {
   ParsePDFVTResponse,
   BatchParsePDFFileVTResponse,
   BatchParsePDFFileVTItem,
   MineruParseResult,
 } from '~/types/pdf-parse'
-import { getPdfParserApiUrl } from '~/server/utils/runtime-paths'
+import { getPdfParserApiUrl, getTreeStorageAbsolutePath, resolveProjectPath } from '~/server/utils/runtime-paths'
 import { getDynamicAuthConfig } from '~/server/utils/dynamic-config'
 // undici Agent with bodyTimeout disabled: MinerU OCR can be silent for
 // minutes between chunks; the default ~5min body timeout kills the stream.
@@ -38,15 +39,131 @@ interface BackendBatchEnvelope {
  * (a) preview content and (b) write it into the tree-fs / knowledge-base store.
  * Falls back to undefined when the path is missing or unreadable.
  */
-async function backFillMarkdown(markdownPath?: string): Promise<string | undefined> {
-  if (!markdownPath || !existsSync(markdownPath)) {
-    return undefined
+export interface ParseArtifactRoots {
+  project: string
+  output: string
+  storage: string
+}
+
+function getParseArtifactRoots(): ParseArtifactRoots {
+  return {
+    project: resolveProjectPath('.'),
+    output: resolveProjectPath('./backend/output'),
+    // This is the one explicitly configured external root permitted for parse
+    // artifacts. No path supplied by a request is ever promoted to an allowed root.
+    storage: getTreeStorageAbsolutePath(),
   }
+}
+
+function isWithin(path: string, root: string): boolean {
+  const rel = relative(root, path)
+  return rel === '' || (rel !== '..' && !rel.startsWith(`..${sep}`) && !isAbsolute(rel))
+}
+
+function sameFileIdentity(a: { dev: number; ino: number; size: number; mtimeMs: number; ctimeMs: number }, b: { dev: number; ino: number; size: number; mtimeMs: number; ctimeMs: number }): boolean {
+  return a.dev === b.dev && a.ino === b.ino && a.size === b.size && a.mtimeMs === b.mtimeMs && a.ctimeMs === b.ctimeMs
+}
+
+function samePath(a: string, b: string): boolean {
+  return process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b
+}
+
+/** Match the backend policy: never trust a redirected implicit backend/output root. */
+async function resolveDefaultOutputRoot(project: string, output: string): Promise<string | null> {
   try {
-    return await readFile(markdownPath, 'utf-8')
+    const canonicalProject = await realpath(project)
+    if (!samePath(resolve(output), resolve(canonicalProject, 'backend', 'output'))) return null
+
+    let current = canonicalProject
+    for (const segment of ['backend', 'output']) {
+      current = join(current, segment)
+      const info = await lstat(current)
+      if (info.isSymbolicLink() || !info.isDirectory() || !samePath(await realpath(current), current)) return null
+    }
+    return current
   } catch {
-    return undefined
+    return null
   }
+}
+
+/** Canonicalize an artifact beneath backend/output or the configured storage root.
+ * The configured storage root may intentionally be external to the checkout; it is
+ * still the only external path trusted here. Artifact paths must be absolute.
+ */
+export async function resolveParseArtifact(
+  candidate?: string,
+  roots: ParseArtifactRoots = getParseArtifactRoots(),
+): Promise<string | null> {
+  if (!candidate || !isAbsolute(candidate) || candidate.includes('\0') || candidate.startsWith('\\\\') || (process.platform === 'win32' && candidate.startsWith('//'))) return null
+  if (candidate.split(process.platform === 'win32' ? /[\\/]/ : /\//).includes('..')) return null
+  try {
+    const target = await realpath(candidate)
+    // A lexical request under the implicit root must never fall back to storage,
+    // even when its redirected target is also the configured storage root.
+    const defaultCandidate = isWithin(resolve(candidate), resolve(roots.output))
+    const [output, storage] = await Promise.all([
+      resolveDefaultOutputRoot(roots.project, roots.output),
+      realpath(roots.storage).catch(() => null),
+    ])
+    if (defaultCandidate) return output && isWithin(target, output) ? target : null
+    if (output && isWithin(target, output)) return target
+    if (storage && isWithin(target, storage)) return target
+  } catch { /* missing, inaccessible, or changed paths are not parse artifacts */ }
+  return null
+}
+
+/** Open a validated artifact and read from the descriptor, not the checked path.
+ * Re-resolve immediately before open, refuse links/non-files, and compare identity
+ * before and after the read. This also prevents a path replacement from changing
+ * the file that is consumed after validation. Node core does not expose a
+ * Windows handle-relative/no-reparse open primitive for every path component;
+ * a hostile parent-junction swap in the tiny interval between the final recheck
+ * and open therefore remains a platform-level TOCTOU limitation. The opened
+ * descriptor identity is still checked before any bytes are accepted.
+ */
+export async function readParseArtifact(
+  candidate?: string,
+  roots: ParseArtifactRoots = getParseArtifactRoots(),
+  hooks: { beforeOpen?: (path: string) => Promise<void> } = {},
+): Promise<{ path: string; buffer: Buffer } | null> {
+  const safePath = await resolveParseArtifact(candidate, roots)
+  if (!safePath) return null
+  let handle: Awaited<ReturnType<typeof open>> | undefined
+  try {
+    // The canonical target is the path actually opened; O_NOFOLLOW is available
+    // on POSIX. Windows lacks a portable openat/no-follow directory traversal API.
+    const before = await lstat(safePath)
+    if (!before.isFile() || before.isSymbolicLink()) return null
+    await hooks.beforeOpen?.(safePath)
+    // Re-resolve immediately before open. Compare the canonical path to the one
+    // selected above, and compare opened descriptor identity below.
+    const revalidated = await resolveParseArtifact(candidate, roots)
+    if (!revalidated || !samePath(revalidated, safePath)) return null
+    const noFollow = typeof constants.O_NOFOLLOW === 'number' ? constants.O_NOFOLLOW : 0
+    handle = await open(safePath, constants.O_RDONLY | noFollow)
+    const opened = await handle.stat()
+    if (!opened.isFile() || !sameFileIdentity(before, opened)) return null
+
+    // Check the name again after opening. If a parent directory/junction changed,
+    // do not trust a descriptor whose name no longer resolves to this artifact.
+    const afterOpenPath = await realpath(safePath)
+    const current = await lstat(safePath)
+    if (!samePath(afterOpenPath, safePath) || current.isSymbolicLink() || !sameFileIdentity(opened, current)) return null
+
+    const buffer = await handle.readFile()
+    const afterRead = await handle.stat()
+    if (!sameFileIdentity(opened, afterRead) || afterRead.size !== buffer.length) return null
+    return { path: safePath, buffer }
+  } catch {
+    return null
+  } finally {
+    await handle?.close().catch(() => undefined)
+  }
+}
+
+async function backFillMarkdown(markdownPath?: string): Promise<string | undefined> {
+  const artifact = await readParseArtifact(markdownPath)
+  return artifact?.buffer.toString('utf-8')
 }
 
 /** Flatten one MineruParseResult into the v1-aligned item + back-fill markdown. */
@@ -170,7 +287,9 @@ export class PDFParseService {
       formData.append('files', blob, file.filename)
     }
     if (options?.output_dir) {
-      formData.append('output_dir', options.output_dir)
+      // The backend non-stream batch endpoint accepts one batch fallback under
+      // `default_output` (unlike the single-file endpoint's `output_dir`).
+      formData.append('default_output', options.output_dir)
     }
     if (options?.use_ocr !== undefined) {
       formData.append('use_ocr', String(options.use_ocr))

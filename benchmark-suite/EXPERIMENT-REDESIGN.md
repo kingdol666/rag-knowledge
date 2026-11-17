@@ -57,7 +57,7 @@
 | 因子 | A | B | C |
 |---|---|---|---|
 | 语料组织 | 平台五门类库（内容路由，322 docs） | 扁平目录 100 文件 | 扁平 Chunks800 |
-| 检索方式 | QDCVR 全流程 | Grep/Read | 纯向量 |
+| 检索方式 | HMRS 全流程 | Grep/Read | 纯向量 |
 | 文件工具 | **有（Read/Grep/Glob）** | 有 | 无 |
 
 `chat_tracks.py:84-90` 里 `A_TOOLS` 末尾就是 `+ ["Read", "Grep", "Glob"]`。

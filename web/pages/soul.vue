@@ -640,7 +640,7 @@
         </a-form>
         <div class="ask-row">
           <a-button :loading="searchingKb" @click="doPreSearch">{{ t('soul.ask.preSearch') }}</a-button>
-          <a-button type="primary" ghost :loading="asking" @click="doQdcvrAsk">{{ t('soul.ask.qdcvrAsk') }}</a-button>
+          <a-button type="primary" ghost :loading="asking" @click="doHmrsAsk">{{ t('soul.ask.hmrsAsk') }}</a-button>
           <a-button type="primary" :loading="asking" @click="doAsk">{{ t('soul.identity.ask') }}</a-button>
         </div>
         <div v-if="preSearchChunks.length" class="pre-search-list">
@@ -2075,7 +2075,7 @@ async function doPreSearch() {
     searchingKb.value = false
   }
 }
-async function doQdcvrAsk() {
+async function doHmrsAsk() {
   if (!askForm.value.query.trim()) { message.warning(t('soul.ask.enterQuestion')); return }
   asking.value = true
   askResult.value = null
@@ -2086,7 +2086,7 @@ async function doQdcvrAsk() {
       const hit = kbCatalog.value.find((kb: any) => kb.kbId === scope[0] || kb.name === scope[0])
       kbId = hit?.kbId || scope[0]
     }
-    const res = await $fetch<any>('/api/soul/qdcvr-ask', {
+    const res = await $fetch<any>('/api/soul/hmrs-ask', {
       method: 'POST',
       body: {
         query: askForm.value.query,
@@ -2104,7 +2104,7 @@ async function doQdcvrAsk() {
       showToast(t('soul.ask.personaAnswered', { n: ev }))
     }
   } catch (e: any) {
-    askResult.value = { answer: t('soul.ask.qdcvrFailed', { error: e.message }) }
+    askResult.value = { answer: t('soul.ask.hmrsFailed', { error: e.message }) }
   } finally {
     asking.value = false
   }

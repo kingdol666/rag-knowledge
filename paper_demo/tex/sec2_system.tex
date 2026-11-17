@@ -1,106 +1,114 @@
-% sec2_system.tex — 2026-09-30 rewrite: the retrieval ladder (逐级检索) is the
-% core subsection. Contract facts cross-checked against the current packaged
-% skills (knowledgebase-search / knowledgebase-librarian / knowledgebase-hybrid)
-% and the live MCP inventory (42 kb_* tools in a 95-tool inventory).
 \section{System and Agent Workflow}
 \label{sec:system}
 
-\subsection{Services and Interfaces}
-\sys{} binds Section~\ref{sec:intro}'s decisions to one platform: a web
-console, a FastAPI backend, a \texttt{ragctl} CLI, and an MCP
-server~\cite{mcp} exposing 42 \texttt{kb\_*} tools inside a 95-tool
-inventory. Console, CLI, and MCP clients operate the same resources;
-only the packaged skills add policy. ChromaDB stores BGE-M3 vectors~\cite{bge-m3}, Neo4j
-holds optional document relations, and Markdown plus JSON/YAML metadata
-keep the collection inspectable.
+\subsection{Interfaces and Shared Data Model}
+Figure~\ref{fig:arch} summarizes the platform. The Nuxt web console
+supports collection browsing, document management, preview, parsing, and
+search; a FastAPI backend schedules MinerU parsing jobs~\cite{mineru}.
+The \texttt{ragctl} CLI and MCP server expose the same resources to
+operators and agents. The current MCP inventory contains 42
+\texttt{kb\_*} tools within 95 tools; packaged skills combine them into
+reusable ingest, search, management, graph, experience, and persona
+workflows. Skills add workflow policy, while the clients share the same
+underlying collections.
 
-\subsection{Organization: From PDF to Addressable Parts}
-MinerU converts PDFs to structured Markdown~\cite{mineru}; texts
-beyond a 30,000-character ceiling split into parts with line-offset
-reads. The organization skill inspects the parsed
-content, selects among existing bases, proposing a new one only when
-none fits, and places and tags the document. Each placement ends in a
-final check --- three of the nine per-paper checks recorded in
-Table~\ref{tab:pipeline} --- so a misroute is flagged at ingest, not at
-answer time. Administrators keep
-control of bases; five bases is a demonstration configuration, not a
-limit.
+Each collection is a hierarchy of bases, documents, parts, and sections.
+Markdown files are paired with two inspectable registries:
+\path{.tree-fs.json} stores the tree, while \path{.knowledge-base.yml}
+stores document descriptions, tags, source addresses, and index state.
+ChromaDB stores BGE-M3 vectors~\cite{bge-m3};
+an optional Neo4j index stores document relations. The file-backed
+registries remain inspectable, and derived indexes are checked against
+their recorded base identifiers.
 
-% Pipeline audit table — declared early so the column float lands on p3,
-% keeping page 4 for Figure 3 plus the evaluation and conclusion text.
+\subsection{Gated Ingestion}
+The ingest workflow converts PDFs to structured Markdown, checks parse
+quality, detects exact and near duplicates, and splits oversized files
+at structural boundaries (30k--60k characters, depending on
+configuration). Content analysis routes each document or part to an
+appropriate base or sub-base. The workflow adds 2--5 normalized tags and
+a description covering five query dimensions: domain, method, object,
+answerable problem, and conclusion. Each description is checked against
+the stored source. Indexing follows supported write paths automatically.
+The final C1--C9 checklist checks completeness, description and tag
+quality, base attribution, vector and graph indexing, parsed images,
+registry-to-disk consistency, and retrieval through the description.
+An indexing or consistency failure blocks completion.
+
+Table~\ref{tab:pipeline} reports a saved audit of the 100-paper
+demonstration collection. The audit sampled the first 1{,}000 characters
+of each part for its content check; it is not a full semantic audit of
+every character.
+
 \begin{table}[t]
-\caption{Pipeline audit on the 100-paper corpus. Every value is
-script-asserted from saved artifacts, not hand-counted; the content audit
-samples the first 1{,}000 characters per part, and the audits cover 322
-parts and 33 storage units.}
+\caption{Ingest audit on the 100-paper demonstration collection. Values
+are script-asserted from saved artifacts. The content check samples the
+first 1{,}000 characters per part; storage checks cover 33 units.}
 \label{tab:pipeline}
-\small
-\setlength{\tabcolsep}{4pt}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{@{}lc@{}}
 \toprule
 \textbf{Stage / check} & \textbf{Result} \\
 \midrule
-Papers parsed, routed by content & 100/100, 5 bases \\
-Stored parts after 30k split ceiling & 322 \\
-Per-paper ingest checks (nine recorded checks) & 100/100 pass \\
-True duplicates & 0 (35 near-pairs) \\
-Descriptions upgraded & 165/165 \\
-Content + storage audits & 322/322 \,\textbullet\, 33/33 \\
+Parsed and content-routed papers & 100/100 across 5 bases \\
+Stored parts after the 30k split ceiling & 322 \\
+Per-paper C1--C9 checks & 100/100 pass \\
+True duplicates & 0 (35 near-pairs flagged) \\
+Descriptions upgraded and read back & 165/165 \\
+Part-content / storage audits & 322/322; 33/33 \\
 Retrieval regression probes & 15/15 \\
-Dense replica index (800-char chunks) & 4{,}528 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Retrieval: The Layered Ladder}
+The same registries support document and collection CRUD, tag
+administration, optional relation-graph construction, and reusable
+experience entries extracted from resolved cases. The MCP inventory
+also exposes SOUL persona operations; these are available in the
+platform but are outside the retrieval ablation below.
+
+\subsection{Layered Retrieval and Evidence Judgment}
 \label{sec:ladder}
-The retrieval skills run one layered spine (Figure~\ref{fig:arch},
-bottom), and any harness may delegate it to a single retrieval subagent
-that returns document identifiers and evidence notes while the main agent
-answers.
-\emph{L0 catalog.} One call reads every base's name, description, and
-document count; a base is pruned only when its description is present,
-judged trustworthy, and clearly unable to cover the query.
-\emph{L1 descriptions.} One call per candidate base (shelf) collects
-document identifiers with their descriptions. Descriptions are treated
-as claims, not facts --- they narrow the candidates but never decide
-acceptance.
-\emph{L2 recall.} The query is rewritten as a declarative sentence with
-keywords; the fast lane recalls with wide vector nets, and literal
-enumeration questions take a deterministic exact-match scan (semantic
-recall under-recalls exact mentions).
-\emph{L3 judgment.} Candidates are passed to the judgment layer \emph{by
-reference}: a locally hosted engine --- a compact judgment model on the
-platform's GPU, about 50--80\,ms per verdict warm --- fetches
-each document, segments it, and scores every segment against the
-rewritten query; topical similarity alone does not earn a positive
-verdict. The design is fail-closed: an unavailable engine stops the lane
-rather than inviting similarity-only acceptance
-(Section~\ref{sec:eval} discloses the cells that fell back to
-confirming reads), and every positive segment survives. A
-0.95-similarity hit whose segments all fail is discarded; a 0.40 hit with
-one positive segment survives.
-\emph{L4 reading.} Only survivors are read at their recorded addresses
-(base, document, part, section), with key numbers quoted verbatim.
-\emph{L5 answer.} The answer cites what it read; the record keeps the
-search path, backend and threshold, confidence, and blind spots.
+The retrieval strategy, \sys{} (query-driven, content-verified retrieval),
+uses the shared address model and separates candidate recall from
+evidence acceptance. As Figure~\ref{fig:arch} shows, the workflow has
+six steps:
+\emph{L0, catalog}. A lightweight call reads base names, descriptions,
+and document counts. A base is pruned only when its description is
+present and clearly irrelevant.
+\emph{L1, descriptions}. The agent reads document cards in the remaining
+bases; descriptions narrow the search but do not establish evidence.
+\emph{L2, recall}. The query is rewritten as a declarative statement
+with key terms. A wide vector search (top-$k=30$, threshold 0.35, with
+one retry at 0.30) proposes candidates; literal enumeration questions
+also use an exact-match scan.
+\emph{L3, judgment}. The local multilingual Laya engine scores each
+candidate's 3{,}000-character segments for answerable evidence. A
+segment is retained when its positive-evidence probability
+(\texttt{noul}) is at least 0.5. Topical similarity alone is
+insufficient. Missing or invalid scores fail closed, so the lane never
+falls back to similarity-only acceptance.
+\emph{L4, reading}. The agent reads surviving evidence by its recorded
+base/document/part/section address and checks key values against the
+source.
+\emph{L5, answer}. The answer cites the inspected source; the trace
+records the search path, retrieval backend, gate threshold, and
+blind spots. The returned evidence pack is subject to a configured
+context cap.
 
-Early exit is part of the spine: if L0--L1 surface no plausible candidate
---- or a literal scan hits nothing on a kept shelf --- the search stops
-and returns a scoped not-found report; minutes of doomed re-searching are
-a contract violation, not thoroughness.
+If the catalog and descriptions reveal no plausible source, or an exact
+scan finds no requested item, the workflow returns a scoped not-found
+report. It records the searched bases and retrieval stages rather than
+continuing with unbounded retries.
 
-\subsection{Lanes: Fast Recall, Full Recall, Fusion}
-The ladder is the contract; three lanes trade breadth against latency.
-The \emph{fast lane} rewrites the query, casts a wide vector net (high
-$k$, balanced across bases, snippets only), cross-checks the top
-candidates with a second, BM25-style pass~\cite{bm25}, and feeds the
-deduplicated candidates to the same judgment layer --- ranking proposes,
-the engine still disposes. The \emph{librarian lane} is the ladder above
-with no vector calls, for unknown bases or complete-recall questions.
-The \emph{fusion lane} runs both concurrently and merges on normalized
-(base, document) identity. Judgment is by reference, so document text
-stays server-side and the context receives one merged evidence pack.
-\emph{Content-verified} denotes this engine judgment, not guaranteed
-correctness; saved artifacts keep excerpts, verdicts, and answer
-records.
+\subsection{Retrieval Lanes}
+\sys{} defines a shared contract; three lanes trade breadth and latency.
+The \emph{fast lane} rewrites the query, runs wide vector recall and a
+BM25-style cross-check, then sends deduplicated candidates to the same
+evidence gate. The \emph{librarian lane} navigates base and document
+descriptions and uses exact scans when the relevant shelf is unknown or
+complete recall is requested; it does not use vector recall. The
+\emph{fusion lane} runs both lanes concurrently and merges candidates
+by normalized base/document identity before judgment. All lanes return
+source references and evidence notes to the answering agent.

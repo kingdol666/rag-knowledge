@@ -1,6 +1,5 @@
 ﻿import { defineEventHandler, readMultipartFormData, createError } from 'h3'
 import { getPDFParseService } from '~/server/services/pdf-parse-service'
-import { resolveTreeStorageOutputPath } from '~/server/utils/runtime-paths'
 import type { ParsePDFVTResponse } from '~/types/pdf-parse'
 
 /**
@@ -35,7 +34,7 @@ export default defineEventHandler(async (event): Promise<ParsePDFVTResponse> => 
     const useOcrField = formData.find(field => field.name === 'use_ocr')
 
     const options = {
-      output_dir: resolveTreeStorageOutputPath(outputDirField?.data?.toString()),
+      output_dir: outputDirField?.data?.toString(),
       use_ocr: useOcrField?.data?.toString() === 'true'
     }
 

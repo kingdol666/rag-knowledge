@@ -122,7 +122,7 @@ class Settings:
 
     @property
     def project_search_url(self) -> str:
-        """The platform's own vector-search endpoint (the QDCVR baseline)."""
+        """The platform's own vector-search endpoint (the HMRS baseline)."""
         return f"{self.backend_url}/api/v1/search/vector"
 
 

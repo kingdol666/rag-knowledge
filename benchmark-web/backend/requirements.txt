@@ -1,4 +1,4 @@
-# QDCVR Benchmark API — runtime dependencies
+# HMRS Benchmark API — runtime dependencies
 #
 # Install into the benchmark-web venv:
 #   uv pip install --python benchmark-web/backend/.venv/Scripts/python.exe -r requirements.txt
@@ -15,7 +15,7 @@ sentence-transformers>=2.7.0  # BGE-M3 embedder + ms-marco cross-encoder
 # --- web service ---
 fastapi>=0.110.0
 uvicorn[standard]>=0.27.0
-httpx>=0.27.0                 # calls the platform's own QDCVR search API
+httpx>=0.27.0                 # calls the platform's own HMRS search API
 pydantic>=2.0
 
 # --- document loaders (upload endpoint) ---

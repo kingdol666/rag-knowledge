@@ -1,0 +1,382 @@
+{
+  "count": 95,
+  "names": [
+    "kb_list",
+    "kb_create",
+    "kb_update",
+    "kb_delete",
+    "kb_search",
+    "kb_get_documents",
+    "kb_doc_read",
+    "kb_doc_create",
+    "kb_doc_update_meta",
+    "kb_doc_update_content",
+    "kb_doc_delete",
+    "kb_doc_batch_delete",
+    "kb_doc_move",
+    "fs_get_tree",
+    "fs_get_children",
+    "fs_upload_file",
+    "parse_doc",
+    "parse_doc_batch",
+    "parse_task_status",
+    "kb_task_status",
+    "kb_doc_save_parsed",
+    "kb_tags_list",
+    "kb_doc_update_tags",
+    "kb_tags_cleanup",
+    "kb_doc_get_by_tag",
+    "kb_find_duplicates",
+    "experience_create",
+    "experience_read",
+    "experience_list",
+    "experience_update",
+    "experience_delete",
+    "experience_apply",
+    "experience_review",
+    "experience_summary",
+    "experience_search_global",
+    "experience_search_smart",
+    "experience_rerank",
+    "experience_extract",
+    "experience_drafts_list",
+    "experience_draft_read",
+    "experience_draft_approve",
+    "experience_draft_reject",
+    "experience_check_stale",
+    "experience_sync_kb",
+    "experience_dashboard",
+    "experience_apply_decay",
+    "experience_meditation_status",
+    "experience_meditation_run",
+    "experience_meditation_task_status",
+    "experience_meditation_config_get",
+    "experience_meditation_config_update",
+    "experience_meditation_history",
+    "backend_status",
+    "kb_project_status",
+    "kb_project_start",
+    "kb_project_update",
+    "kb_search_vector",
+    "kb_search_two_stage",
+    "kb_reindex",
+    "kb_index_document",
+    "kb_batch_index",
+    "kb_search_stats",
+    "kb_cleanup_orphan_collections",
+    "kb_graph_search",
+    "kb_graph_stats",
+    "kb_graph_document",
+    "kb_graph_document_related",
+    "kb_graph_kb_overview",
+    "kb_graph_build",
+    "kb_graph_cross_kb_documents",
+    "kb_graph_document_paths",
+    "kb_graph_central_documents",
+    "kb_graph_delete_document",
+    "kb_graph_delete_kb",
+    "kb_laya_judge",
+    "soul_ask",
+    "soul_qdcvr_ask",
+    "soul_status",
+    "soul_list",
+    "soul_router",
+    "soul_init",
+    "soul_config_update",
+    "soul_delete",
+    "soul_learn",
+    "soul_eval",
+    "soul_checkpoint",
+    "soul_review_drafts",
+    "soul_calibrate",
+    "soul_learn_all",
+    "soul_reflect",
+    "soul_train_rl",
+    "soul_evaluate",
+    "soul_gen_cognition_drafts",
+    "soul_rollback",
+    "soul_export"
+  ],
+  "used_schemas": {
+    "kb_list": {
+      "properties": {
+        "lightweight": {
+          "default": false,
+          "title": "Lightweight",
+          "type": "boolean"
+        },
+        "parent_id": {
+          "default": "",
+          "title": "Parent Id",
+          "type": "string"
+        }
+      },
+      "title": "kb_listArguments",
+      "type": "object"
+    },
+    "kb_create": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "parent_id": {
+          "default": "",
+          "title": "Parent Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "kb_createArguments",
+      "type": "object"
+    },
+    "kb_delete": {
+      "properties": {
+        "kb_id": {
+          "title": "Kb Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kb_id"
+      ],
+      "title": "kb_deleteArguments",
+      "type": "object"
+    },
+    "kb_get_documents": {
+      "properties": {
+        "kb_id": {
+          "title": "Kb Id",
+          "type": "string"
+        },
+        "lightweight": {
+          "default": false,
+          "title": "Lightweight",
+          "type": "boolean"
+        },
+        "view": {
+          "default": "docs",
+          "title": "View",
+          "type": "string"
+        },
+        "group": {
+          "default": "",
+          "title": "Group",
+          "type": "string"
+        },
+        "page": {
+          "default": 0,
+          "title": "Page",
+          "type": "integer"
+        },
+        "page_size": {
+          "default": 0,
+          "title": "Page Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kb_id"
+      ],
+      "title": "kb_get_documentsArguments",
+      "type": "object"
+    },
+    "kb_doc_delete": {
+      "properties": {
+        "kb_id": {
+          "title": "Kb Id",
+          "type": "string"
+        },
+        "doc_path": {
+          "title": "Doc Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kb_id",
+        "doc_path"
+      ],
+      "title": "kb_doc_deleteArguments",
+      "type": "object"
+    },
+    "parse_doc_batch": {
+      "properties": {
+        "file_paths": {
+          "items": {},
+          "title": "File Paths",
+          "type": "array"
+        },
+        "use_ocr": {
+          "default": true,
+          "title": "Use Ocr",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "file_paths"
+      ],
+      "title": "parse_doc_batchArguments",
+      "type": "object"
+    },
+    "parse_task_status": {
+      "properties": {
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id"
+      ],
+      "title": "parse_task_statusArguments",
+      "type": "object"
+    },
+    "kb_doc_save_parsed": {
+      "properties": {
+        "parent_id": {
+          "title": "Parent Id",
+          "type": "string"
+        },
+        "task_id": {
+          "default": "",
+          "title": "Task Id",
+          "type": "string"
+        },
+        "markdown": {
+          "default": "",
+          "title": "Markdown",
+          "type": "string"
+        },
+        "markdown_path": {
+          "default": "",
+          "title": "Markdown Path",
+          "type": "string"
+        },
+        "images_dir": {
+          "default": "",
+          "title": "Images Dir",
+          "type": "string"
+        },
+        "source_filename": {
+          "default": "",
+          "title": "Source Filename",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "parse_method": {
+          "default": "",
+          "title": "Parse Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "parent_id"
+      ],
+      "title": "kb_doc_save_parsedArguments",
+      "type": "object"
+    },
+    "kb_search_vector": {
+      "properties": {
+        "query": {
+          "title": "Query",
+          "type": "string"
+        },
+        "kb_id": {
+          "default": "",
+          "title": "Kb Id",
+          "type": "string"
+        },
+        "top_k": {
+          "default": 5,
+          "title": "Top K",
+          "type": "integer"
+        },
+        "score_threshold": {
+          "default": 0.0,
+          "title": "Score Threshold",
+          "type": "number"
+        },
+        "balance_kbs": {
+          "default": false,
+          "title": "Balance Kbs",
+          "type": "boolean"
+        },
+        "slim": {
+          "default": false,
+          "title": "Slim",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "kb_search_vectorArguments",
+      "type": "object"
+    },
+    "kb_reindex": {
+      "properties": {
+        "kb_id": {
+          "default": "",
+          "title": "Kb Id",
+          "type": "string"
+        },
+        "force": {
+          "default": false,
+          "title": "Force",
+          "type": "boolean"
+        }
+      },
+      "title": "kb_reindexArguments",
+      "type": "object"
+    },
+    "kb_laya_judge": {
+      "properties": {
+        "query": {
+          "title": "Query",
+          "type": "string"
+        },
+        "documents": {
+          "title": "Documents",
+          "type": "string"
+        },
+        "criterion": {
+          "default": "auto",
+          "title": "Criterion",
+          "type": "string"
+        },
+        "threshold": {
+          "default": 0.5,
+          "title": "Threshold",
+          "type": "number"
+        },
+        "max_evidence_chars": {
+          "default": 40000,
+          "title": "Max Evidence Chars",
+          "type": "integer"
+        },
+        "include_text": {
+          "default": false,
+          "title": "Include Text",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "query",
+        "documents"
+      ],
+      "title": "kb_laya_judgeArguments",
+      "type": "object"
+    }
+  }
+}

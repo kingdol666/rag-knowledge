@@ -1,13 +1,13 @@
 % Table 4: Feature Matrix — System Comparison
 % CIKM 2026 Submission — booktabs format
-% Feature comparison: QDCVR vs. RAGFlow, Dify, LightRAG
+% Feature comparison: HMRS vs. RAGFlow, Dify, LightRAG
 % \fullcirc = full support, \halfcirc = partial support, \emptycirc = no support
 
 \begin{table*}[t]
 \centering
-\caption{Feature comparison of QDCVR Knowledge Platform with existing RAG systems.
+\caption{Feature comparison of HMRS Knowledge Platform with existing RAG systems.
 \CIRCLE{} = full support, \LEFTcircle{} = partial/limited support, \Circle{} = not supported.
-QDCVR uniquely combines domain-organized KBs, content verification,
+HMRS uniquely combines domain-organized KBs, content verification,
 experience lifecycle, and agent-native architecture.}
 \label{tab:system-comparison}
 \resizebox{\textwidth}{!}{%
@@ -22,7 +22,7 @@ RAGFlow    & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \Circle & \Ci
 Dify       & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \Circle & \Circle & \LEFTcircle \\
 LightRAG   & \Circle & \Circle & \Circle & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle \\
 \midrule
-QDCVR (Ours) & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+HMRS (Ours) & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
 \bottomrule
 \end{tabular}%
 }
@@ -41,7 +41,7 @@ content-based attribution (A0--A9 pipeline).
 \textbf{Agent Native} --- MCP tools for full lifecycle (76 tools, 14 skills).
 
 \emph{Key differentiators:}
-QDCVR is the only system with (1) content-based KB attribution that prevents
+HMRS is the only system with (1) content-based KB attribution that prevents
 cross-domain false positives at ingestion time, (2) multi-step content verification
 that eliminates residual false positives at retrieval time, and (3) an experience
 lifecycle enabling structured accumulation of operational knowledge.

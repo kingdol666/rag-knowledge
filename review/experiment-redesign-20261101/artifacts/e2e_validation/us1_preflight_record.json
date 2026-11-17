@@ -1,0 +1,9 @@
+{
+  "run_date": "2026-11-10",
+  "status_codes": {"backend_8771": 200, "web_6789": 200, "kb_mcp_sse_8000": "alive (SSE curl timeout 28 is expected for an open stream)"},
+  "backend_listener": "fresh venv backend was started after removing stale anaconda owner",
+  "auth": "loop-auth credentials login succeeded; new token persisted to .env and storage/loop-auth.json",
+  "kb_catalog": {"md_evaluation_kbs": 10, "tree_registry_md_entries": 10, "scope_probe": "10/10 PASS"},
+  "question_validation": {"total": 78, "gold": 72, "refusal": 4, "cross": 0, "needs_expansion": 2, "mechanical_anchor_validation": "PASS"},
+  "qualification": "The 72 gold and 4 refusal probes passed; the two cross placeholders remain intentionally excluded from the five-arm main run and are not claimed as validated."
+}

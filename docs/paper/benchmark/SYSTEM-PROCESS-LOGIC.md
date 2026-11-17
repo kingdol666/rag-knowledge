@@ -146,5 +146,5 @@ E12: Auto Health Check        → cleanup stale/orphan experiences
 | MinerU as subprocess | Isolated lifecycle, crash-safe |
 | ChromaDB for vectors | Lightweight, embedded, no separate server |
 | Neo4j for graph | Rich relationship queries, path discovery |
-| QDCVR over pure vector | Content verification prevents hallucination |
+| HMRS over pure vector | Content verification prevents hallucination |
 | MCP-first architecture | Any agent can interface with the system |

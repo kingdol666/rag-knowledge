@@ -1,0 +1,38 @@
+{
+  "qid": "AG4",
+  "seconds": 350.5,
+  "final": {
+    "success": true,
+    "task_id": "kbt_mvzzns9h_c737ad14",
+    "status": "completed",
+    "mode": "async",
+    "prompt": "基于知识库回答（限定范围提示：优先在「科学」相关知识库中检索）：Which paper introduced deep residual learning for image recognition? 要求：按 QDCVR 流程（改写→kb_search_vector 宽网→kb_laya_judge 引用式判卷→kb_doc_read 逐字核验），答案给出引用文档 doc_path 并逐字引用关键句，标注可信度。",
+    "engine": "claude",
+    "permission": "bypassPermissions",
+    "created_at": "2026-11-03T01:07:54.965Z",
+    "finished_at": "2026-11-03T01:13:38.787Z",
+    "result": {
+      "success": true,
+      "reply": "# QDCVR 检索结论\n\n**问题**：Which paper introduced deep residual learning for image recognition?\n**范围决策**：按提示优先检索「科学」库 → 命中 `MD语料-科学-英文`（kb_id `12dfd50b-f29c-4669-8ee1-62f9007e36e5`，15 篇 AI/ML 全文论文），该库即含目标论文的正本，无需扩大范围。\n\n## 流程执行记录\n\n| 阶段 | 动作 | 结果 |\n|---|---|---|\n| Phase 0 改写 | 改写为声明式查询：*Deep Residual Learning for Image Recognition / ResNet / residual connections / Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun* | — |\n| Phase 1 向量宽网 | `kb_search_vector(kb_id=科学库, top_k=30, score_threshold=0.35, slim=true)` | 30 条 chunk 命中，去重后 **7 篇文档**；首名 `resnet.md` **0.8201** |\n| Phase 2 判卷 | `kb_laya_judge`（引用式，服务端自行取正文；6 篇 + 1 篇两批） | `status=ok, real_engine=true (laya_sdk), criterion=evidence, threshold=0.5`；共判 **93 个 segment**，7 篇均有 yes（79+14 survivors） |\n| Phase 3 逐字核验 | `kb_doc_read(MD语料-科学-英文/resnet.md)` | 标题页/作者/摘要原文确认（全文 431 行） |\n| 质量复核 | 人工判断哪些 survivor 真正回答问题 | **仅 1 篇直接回答**（论文正本）；其余 6 篇为参考文献列表中的顺带引用，标注保留不采信 |\n\n## 答案（P0 · 强证据）\n\n**该论文就是《Deep Residual Learning for Image Recognition》本身**（即 ResNet 原始论文），作者 Kaiming He、Xiangyu Zhang、Shaoqing Ren、Jian Sun（Microsoft Research）。\n\n- **引用文档 doc_path**：`MD语料-科学-英文/resnet.md`\n- **KB 元数据（逐字）**：description = `Deep Residual Learning（arXiv:1512.03385 整篇论文）`\n\n**逐字引用关键句**（`kb_doc_read` 原文，未改动）：\n\n> \\# Deep Residual Learning for Image Recognition\n>\n> Kaiming He\n>\n> Xiangyu Zhang\n>\n> Shaoqing Ren Jian Sun\n>\n> Microsoft Research\n\n> \"Deeper neural networks are more difficult to train. We present a residual learning framework to ease the training of networks that are substantially deeper than those used previously.\"\n\n> \"In this paper, we address the degradation problem by introducing a deep residual learning framework.\"\n\n**可信度判定：P0（直接强证据）** — 依据为论文**正本全文**（非二手转述）：标题/作者/摘要/引言逐字可核；向量相似度 0.8201；引擎对 `resnet.md` 的 segment 评分 0.879–0.936。\n\n## 附带命中（不采信，仅审计留痕）\n\n以下文档的命中均为**参考文献列表**中的顺带引用（He et al. 被引条目），不构成直接答案：\n\n| doc_path | 向量分 | 性质 |\n|---|---|---|\n| `MD语料-科学-英文/attention_is_all_you_need.md` | 0.7105 | 参考文献 [11] 引 He et al. |\n| `MD语料-科学-英文/gan.md` | 0.6607 | 参考文献列表 |\n| `MD语料-科学-英文/bert_pretraining.md` | 0.6442 | 参考文献列表 |\n| `MD语料-科学-英文/rag_lewis2020.md` | 0.6324 | 参考文献列表 |\n| `MD语料-科学-英文/ddpm.md` | 0.6254 | 参考文献列表 |\n| `MD语料-科学-英文/vae.md` | 0.6139 | 参考文献列表 |\n\n## 盲点声明\n\n1. 本文档正文与元数据中**只有 arXiv 编号（1512.03385）**；\"CVPR 2016\" 属于通用背景知识，**不在本库可核证据内**，故未作为检索依据陈述。\n2. 引擎 `evidence` 判据较宽松（7 篇全部有 yes segment），最终精度由「质量复核 + 正本逐字读取」保证，而非仅依赖引擎 yes。\n3. 未检索 `计算机与人工智能`、`自然科学与地球科学` 等其他库——目标论文正本已在指定「科学」库中直接命中（P0），无需扩网。\n\n## Result\n\n- **Answer**: The paper is *\"Deep Residual Learning for Image Recognition\"* by Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun (Microsoft Research); arXiv:1512.03385 per KB metadata.\n- **Cited doc_path**: `MD语料-科学-英文/resnet.md` (kb_id `12dfd50b-f29c-4669-8ee1-62f9007e36e5`)\n- **Verbatim key sentence**: \"Deeper neural networks are more difficult to train. We present a residual learning framework to ease the training of networks that are substantially deeper than those used previously.\" — plus title/authors block \"# Deep Residual Learning for Image Recognition / Kaiming He / Xiangyu Zhang / Shaoqing Ren Jian Sun / Microsoft Research\"\n- **Credibility**: P0 strong (primary-source full text; vector 0.8201; engine segment scores 0.879–0.936)\n- **Pipeline**: rewrite → kb_search_vector (30 hits / 7 deduped docs) → kb_laya_judge (93 segments, real_engine=true) → kb_doc_read verbatim verification → quality re-check (1 direct answer, 6 incidental citation hits)",
+      "engine": "claude",
+      "permission": "bypassPermissions",
+      "tools_used": [
+        "WaitForMcpServers",
+        "Skill",
+        "mcp__kb-mcp__kb_project_status",
+        "mcp__kb-mcp__kb_list",
+        "mcp__kb-mcp__kb_search_vector",
+        "mcp__kb-mcp__kb_laya_judge",
+        "mcp__kb-mcp__kb_laya_judge",
+        "PowerShell",
+        "mcp__kb-mcp__kb_doc_read",
+        "mcp__kb-mcp__kb_get_documents"
+      ],
+      "session_id": "388620a7-d4bb-4cba-84a9-d5e69068edc6",
+      "duration_ms": 340520,
+      "total_cost_usd": 0.8153448000000001,
+      "num_turns": 12,
+      "stop_reason": "end_turn"
+    }
+  }
+}

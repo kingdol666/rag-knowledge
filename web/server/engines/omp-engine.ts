@@ -8,17 +8,28 @@
  */
 import { OmpRpcClient } from './omp-rpc-client'
 import { AsyncQueue } from './async-queue'
+import { resolveOmpXdMcpToolName } from '~/server/utils/kb-mcp-tools'
 import type {
   ChatEngine,
   QueryRequest,
   StandardMessage,
 } from './types'
 
+/**
+ * OMP 18.12.2 executes MCP tools through native read/write calls against
+ * `xd://mcp__...` virtual devices, so rpc frames carry the native tool name.
+ * Surface the REAL MCP tool name on the standardized tool_use block so tool
+ * cards and `tools_used` telemetry identify kb-mcp calls (frame name is kept
+ * when the arguments carry no xd:// MCP path).
+ */
+const ompToolDisplayName = (name: unknown, args: unknown): string =>
+  resolveOmpXdMcpToolName(name, args) || String(name || 'Tool')
+
 export class OmpEngine implements ChatEngine {
   readonly name = 'omp' as const
 
   async *query(req: QueryRequest): AsyncIterable<StandardMessage> {
-    const client = new OmpRpcClient(req.cwd, req.model, req.resume, req.reasoningEffort)
+    const client = new OmpRpcClient(req.cwd, req.model, req.resume, req.reasoningEffort, req.requireKbMcp)
     const queue = new AsyncQueue<StandardMessage>()
 
     // All mutable state in one object — safe to capture in closures
@@ -72,6 +83,7 @@ export class OmpEngine implements ChatEngine {
       if (err) {
         enqueue({
           type: 'result',
+          subtype: 'error_during_execution',
           result: '',
           is_error: true,
           total_cost_usd: 0,
@@ -149,7 +161,7 @@ export class OmpEngine implements ChatEngine {
                   content: [{
                     type: 'tool_use',
                     id: toolUseId,
-                    name: String(tc.name || 'Tool'),
+                    name: ompToolDisplayName(tc.name, tc.arguments),
                     input: (tc.arguments && typeof tc.arguments === 'object') ? tc.arguments : {},
                   }],
                 },
@@ -181,7 +193,7 @@ export class OmpEngine implements ChatEngine {
                 content.push({
                   type: 'tool_use',
                   id: bid,
-                  name: String(b.name || 'Tool'),
+                  name: ompToolDisplayName(b.name, (b.arguments && typeof b.arguments === 'object') ? b.arguments : b.input),
                   input: (b.arguments && typeof b.arguments === 'object') ? b.arguments : (b.input || {}),
                 })
               }
@@ -276,6 +288,7 @@ export class OmpEngine implements ChatEngine {
           const emitResult = (sid: string) => {
             enqueue({
               type: 'result',
+              subtype: stopReason === 'error' ? 'error_during_execution' : 'success',
               result: resultText,
               is_error: stopReason === 'error',
               total_cost_usd: cost,
@@ -306,6 +319,7 @@ export class OmpEngine implements ChatEngine {
       }
     }
 
+    client.onError((err) => finish(err))
     client.onEvent((frame: any) => {
       try {
         handleEvent(frame)
@@ -319,11 +333,25 @@ export class OmpEngine implements ChatEngine {
       req.signal.addEventListener('abort', () => {
         client.abort()
         finish()
+        client.kill()
       }, { once: true })
+      if (req.signal.aborted) {
+        finish()
+        client.kill()
+      }
     }
 
     try {
+      const readinessStarted = Date.now()
       await client.waitReady()
+      if (req.requireKbMcp && req.signal?.aborted) {
+        throw new Error('OMP kb-mcp readiness aborted')
+      }
+      if (req.requireKbMcp) {
+        // RPC ready only means command handling is available; MCP discovery is
+        // asynchronous and may not have registered any kb-mcp tools yet.
+        await client.waitForKbMcp(Math.max(1, 180_000 - (Date.now() - readinessStarted)), req.signal)
+      }
 
       // ⭐ Session id MUST be captured BEFORE prompting: this is the one
       // moment the RPC loop is guaranteed idle, so get_state answers fast

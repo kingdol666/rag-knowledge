@@ -1,0 +1,34 @@
+{
+ "qid": "BQ02",
+ "arxiv": "1801.00862",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "http": 200,
+ "error": "",
+ "wall_s": 91.1,
+ "latency_s": 89.521,
+ "turns": 4,
+ "cost_usd": 0.22606486,
+ "success": true,
+ "answer": "**结论：NISQ（Noisy Intermediate-Scale Quantum，含噪中等规模量子）指量子比特数约 50 到几百个、且门操作有噪声、未被量子纠错保护的一代量子处理器；其核心限制是门噪声会随线路规模累积，使可靠执行的线路最多只有约 1000 个双比特门，从而给算力设下硬上限。**\n\n**定义（P0 直接证据）**\n- Preskill 原文：“‘intermediate scale’ refers to the size of quantum computers which will be available in the next few years, with a number of qubits ranging from **50 to a few hundred**”；50 比特是里程碑，因为它超出最强经典超级计算机的暴力模拟能力。\n- “‘Noisy’ emphasizes that we'll have imperfect control over those qubits; **the noise will place serious limitations on what quantum devices can achieve in the near term**.”\n- 明确定义边界：“When I speak of the NISQ era, I'm imagining quantum computers with noisy gates **unprotected by quantum error correction**.”\n- 另一篇论文给出同构表述：NISQ 特征为 “restrictive qubit topologies, short coherence times and imperfect quantum gates”。\n\n**核心限制（P0）**\n- 门错误率目前“above the .1% level（常常更差）”，因此“we don't expect to be able to execute a circuit that contains many more than about **1000 gates** — 1000 fundamental two-qubit operations — because the noise will overwhelm the signal in a circuit much larger than that.”\n- 原文点题：“That limitation on circuit size **imposes a ceiling on the computational power of NISQ technology**.” 近期的实验尺度是“of order 100 qubits, and with circuit depth less than 100, maybe much less.”\n- 出路是量子纠错，但其在比特数与门数上有“heavy overhead cost”，所以容错机仍较远；100 比特机器“will not change the world right away”，只是通往更强量子技术的台阶。\n\n**出处**\n1. John Preskill, *Quantum Computing in the NISQ era and beyond*（arXiv:1801.00862），KB「自然科学与地球科学」，`quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md`（第 1/3 部分，§4.1–4.2、§6.2）— P0，定义与限制均由原文直引。\n2. *Benchmarking noisy intermediate-scale quantum…*（arXiv:2303.00445），同 KB，`quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu.md`（第 1/4 部分，§I Introduction）— P0，佐证 NISQ 的噪声/拓扑/相干时间刻画。",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 2,
+  "kw_total": 2,
+  "kw_list_hit": [
+   "noisy intermediate-scale",
+   "error correction"
+  ],
+  "cited": true,
+  "n_markers": 6,
+  "markers_head": [
+   "1801.00862",
+   "1801.00862",
+   "§4.1",
+   "§6.2",
+   "2303.00445",
+   "2303.00445"
+  ],
+  "false_abstain": false,
+  "chars": 1816
+ }
+}

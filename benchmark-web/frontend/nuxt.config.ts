@@ -1,4 +1,4 @@
-// Nuxt config for the QDCVR benchmark dashboard.
+// Nuxt config for the HMRS benchmark dashboard.
 //
 // The backend base URL is a runtime setting, not a build-time constant, so the
 // same build works whether the API runs on the default port or not:
@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   css: ['~/assets/main.css'],
   app: {
     head: {
-      title: 'QDCVR Benchmark — CIKM 2027',
+      title: 'HMRS Benchmark — CIKM 2027',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },

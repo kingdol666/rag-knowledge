@@ -78,7 +78,7 @@
           <SearchOutlined />
           <div>
             <strong>{{ $t('search.title') }}</strong>
-            <span>{{ $t('search.qdcvr') }}</span>
+            <span>{{ $t('search.hmrs') }}</span>
           </div>
           <RightOutlined class="ql-arrow" />
         </div>

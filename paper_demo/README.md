@@ -1,6 +1,6 @@
 # paper_demo — CIKM Demo Track 论文工作区
 
-目标：把 rag-knowledge 平台（系统名 **QDCVR**）写成 CIKM Demo 论文
+目标：把 rag-knowledge 平台（系统名 **HMRS**）写成 CIKM Demo 论文
 （**正文 ≤4 页**，参考文献不计页；GenAI 披露不计页）。
 
 **当前状态：可提交草稿完成。** `tex/main.pdf` = 5 页 = 正文 4 页（含结论与致谢，
@@ -35,7 +35,7 @@ python build_fig2.py               # 裁切 4 个面板 → HTML 拼版 → 渲�
 
 | 产物 | 说明 |
 |---|---|
-| `fig1_protocols.png` | 图 1（p2，**现用**）：同一问题喂给两个栈——dense RAG 的无溯源回答 vs. QDCVR 的引用回答+诚实 not-found（DeepRead/PolyUQuest 粉彩分区风，去 benchmark 条）。源 `fig1_protocols.html` |
+| `fig1_protocols.png` | 图 1（p2，**现用**）：同一问题喂给两个栈——dense RAG 的无溯源回答 vs. HMRS 的引用回答+诚实 not-found（DeepRead/PolyUQuest 粉彩分区风，去 benchmark 条）。源 `fig1_protocols.html` |
 | `fig2_architecture_v2.png` | 图 2（p3，**现用**）：Offline ingestion / Online answering 双括号架构。源 `fig2_architecture_v2.html` |
 | `fig3_answers.png` | 图 3（p4，**现用**）：BQ01 三栈逐字回答并列 + 陷阱问题 NOT_FOUND 报告（纯"问题与回答"，无分数/时延条）。源 `fig3_answers.html` |
 | `fig1_rag_vs_kb*.png` / `fig3_benchmark.png` 等 | 历史版本（HTML 渲染旧版、gpt-image 试验版），保留可回退 |
@@ -103,6 +103,6 @@ python ../verify_refs.py           # 参考文献 arXiv 核验
 ## 提交前必做（人工）
 
 1. **作者信息**：Demo 是**单盲**，`main.tex` 中 `Author Name` / `Affiliation` 为占位符，须替换为真实姓名与单位。
-2. **演示视频**：`https://example.org/qdcvr-demo` 为占位 URL（摘要、§3、结论各一处），须替换为真实 3 分钟视频链接。
+2. **演示视频**：`https://example.org/hmrs-demo` 为占位 URL（摘要、§3、结论各一处），须替换为真实 3 分钟视频链接。
 3. **致谢/资助**：`Acknowledgments` 仍是占位文本。
 4. **会议信息**：`\acmConference` 中的 2027 城市/日期为占位，camera-ready 时补齐。

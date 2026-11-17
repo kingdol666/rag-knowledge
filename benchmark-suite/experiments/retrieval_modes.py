@@ -1,7 +1,7 @@
 """Three retrieval modes as first-class experiment arms (added 2026-09-27).
 
 Modes (the ONLY variable between arms — same live library, same questions):
-  A  QDCVR vector-first   knowledgebase-search/scripts/vector_jev_search.py
+  A  HMRS vector-first   knowledgebase-search/scripts/vector_jev_search.py
      wide-net recall (top_k=30) -> doc dedup -> reread -> segment -> real
      Laya/Jev verdict on EVERY segment (fail-closed) -> all yes kept.
   B  Librarian catalog lane  (ported verbatim from review/three-mode-20260926

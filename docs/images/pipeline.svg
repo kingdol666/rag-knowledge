@@ -11,7 +11,7 @@
   </defs>
 
   <!-- Title -->
-  <text x="470" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">From document to verified answer — the QDCVR pipeline</text>
+  <text x="470" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">From document to verified answer — the HMRS pipeline</text>
 
   <!-- Stage 1: Document -->
   <g>
@@ -51,11 +51,11 @@
   </g>
   <line x1="532" y1="116" x2="558" y2="116" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#parrow)"/>
 
-  <!-- Stage 4: QDCVR Retrieval -->
+  <!-- Stage 4: HMRS Retrieval -->
   <g>
     <rect x="560" y="70" width="150" height="92" rx="16" fill="url(#p4)"/>
     <text x="635" y="108" text-anchor="middle" font-size="24">⚡</text>
-    <text x="635" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">QDCVR Retrieval</text>
+    <text x="635" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">HMRS Retrieval</text>
     <text x="635" y="154" text-anchor="middle" font-size="10.5" fill="#cffafe">content-scored 0–8</text>
   </g>
   <line x1="712" y1="116" x2="738" y2="116" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#parrow)"/>

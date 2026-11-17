@@ -135,6 +135,18 @@ class KbClient:
                 if "json" in ct:
                     return resp.json()
                 return {"success": True, "content_type": ct, "content_length": len(resp.content)}
+            except httpx.TimeoutException as e:
+                # Preserve timeout identity across the client boundary. MCP
+                # callers need to distinguish an HTTP deadline from an empty
+                # result or an ordinary request failure; do not expose the URL
+                # or arbitrary exception text in this response.
+                return {
+                    "success": False,
+                    "error": "HTTP request timed out",
+                    "status": 504,
+                    "error_kind": "timeout",
+                    "timeout_type": type(e).__name__,
+                }
             except Exception as e:
                 return {"success": False, "error": f"{type(e).__name__}: {e}"}
         return {"success": False, "error": "429 rate limit exceeded after retries", "status": 429}
@@ -382,9 +394,14 @@ class KbClient:
                 - description: document description (optional)
                 - success: must be True
                 - parse_method: parse method used (optional)
+                - recoveryReceipt: opaque Web bearer receipt for retrying the
+                  identical failed item (optional; never log it)
 
         Returns:
-            {success, savedCount, files: [{id, name, path, ...}]}
+            {success, savedCount, failedCount, files, items}. A failed item
+            may contain partial files and an opaque recoveryReceipt; a deduped
+            file without a receipt is not proof of a complete save. Receipts
+            expire after one hour, are process-local, and are consumed on success.
         """
         body = {
             "parentId": parent_id,
@@ -531,9 +548,11 @@ class KbClient:
     # VECTOR & TWO-STAGE SEARCH
     # ================================================================
 
-    async def vector_search(self, query, kb_id="", top_k=5, score_threshold=0.0, balance_kbs=False):
+    async def vector_search(self, query, kb_id="", top_k=5, score_threshold=0.0,
+                            balance_kbs=False, timeout=None, wait_budget_ms=None):
         """Vector semantic search. score_threshold<=0 uses backend default.
-        balance_kbs=True balances across KBs to prevent large-KB dominance."""
+        balance_kbs=True balances across KBs to prevent large-KB dominance.
+        timeout is an optional per-request HTTP timeout in seconds."""
         body = {"query": query, "top_k": top_k}
         if kb_id:
             body["kb_id"] = kb_id
@@ -541,7 +560,9 @@ class KbClient:
             body["score_threshold"] = score_threshold
         if balance_kbs:
             body["balance_kbs"] = True
-        return await self._post_backend_json("/api/v1/search/vector", body)
+        if wait_budget_ms is not None:
+            body["wait_budget_ms"] = wait_budget_ms
+        return await self._post_backend_json("/api/v1/search/vector", body, timeout=timeout)
 
     async def batch_vector_search(self, query_doc_paths, kb_id="", top_k=5, score_threshold=0.3):
         """Batch vector similarity query: find similar documents for multiple source documents."""
@@ -556,9 +577,14 @@ class KbClient:
 
     async def two_stage_search(self, query, kb_id="", stage1_top_k=20,
                                 stage2_top_k=5, enable_graph_expansion=True,
-                                score_threshold=0.0, balance_kbs=False):
-        """Two-stage precision search. score_threshold<=0 uses backend default.
-        balance_kbs=True balances across KBs to prevent large-KB dominance."""
+                                score_threshold=0.0, balance_kbs=False,
+                                graph_budget_ms=None, vector_budget_ms=None,
+                                timeout=None):
+        """Two-stage search with optional stage wait budgets and HTTP timeout.
+
+        Stage budgets are milliseconds and do not cancel backend synchronous
+        work. timeout applies only to this MCP client's HTTP request.
+        """
         body = {
             "query": query,
             "stage1_top_k": stage1_top_k,
@@ -571,7 +597,11 @@ class KbClient:
             body["score_threshold"] = score_threshold
         if balance_kbs:
             body["balance_kbs"] = True
-        return await self._post_backend_json("/api/v1/search/two-stage", body)
+        if graph_budget_ms is not None:
+            body["graph_budget_ms"] = graph_budget_ms
+        if vector_budget_ms is not None:
+            body["vector_budget_ms"] = vector_budget_ms
+        return await self._post_backend_json("/api/v1/search/two-stage", body, timeout=timeout)
 
     async def reindex(self, kb_id="", force=False):
         """Rebuild index."""
@@ -868,7 +898,7 @@ class KbClient:
     async def experience_search_global(self, query: str, top_k: int = 10,
                                         score_threshold: float = None,
                                         verify_content: bool = True) -> dict:
-        """Cross-KB global experience search — QDCVR pipeline (vector + content verification)."""
+        """Cross-KB global experience search — HMRS pipeline (vector + content verification)."""
         body: dict = {"query": query, "top_k": top_k, "verify_content": verify_content}
         if score_threshold is not None:
             body["score_threshold"] = score_threshold
@@ -963,14 +993,17 @@ class KbClient:
         }
         return await self._post_backend_json("/api/v1/soul/ask", body, timeout=SOUL_TIMEOUT + 15)
 
-    async def soul_qdcvr_ask(self, query: str, soul_kb_id: str = "", task_goal: str = "",
+    async def soul_hmrs_ask(self, query: str, soul_kb_id: str = "", task_goal: str = "",
                              task_type: str = "", top_k: int = 5) -> dict:
-        """QDCVR+SOUL 组合问答(先检索后人格, 后端编排)。"""
+        """HMRS+SOUL 组合问答(先检索后人格, 后端编排)。"""
         body = {
             "query": query, "soul_kb_id": soul_kb_id, "task_goal": task_goal,
             "task_type": task_type, "top_k": top_k,
         }
-        return await self._post_backend_json("/api/v1/soul/qdcvr-ask", body, timeout=SOUL_TIMEOUT + 15)
+        return await self._post_backend_json("/api/v1/soul/hmrs-ask", body, timeout=SOUL_TIMEOUT + 15)
+
+    # Deprecated alias: the tool was renamed to soul_hmrs_ask with the system rename.
+    soul_qdcvr_ask = soul_hmrs_ask
 
     async def soul_status(self, soul_kb_id: str, summary_window: int = 30) -> dict:
         if (err := self._require_kb_id(soul_kb_id)): return err

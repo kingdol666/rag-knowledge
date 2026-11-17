@@ -93,7 +93,7 @@ def main(exp_dir_arg: str) -> int:
         gold = meta.get("gold_keywords", [])
         field = meta.get("field", "")
         blocks = []
-        for t, label in (("a", "A · Platform KB (QDCVR, external API)"),
+        for t, label in (("a", "A · Platform KB (HMRS, external API)"),
                          ("b", "B · Bare agent (file tools)"),
                          ("c", "C · Dense RAG (agent-executed vector search)")):
             r = by_q[qid].get(t)
@@ -217,7 +217,7 @@ def main(exp_dir_arg: str) -> int:
 </style></head><body>
 <header class="page">
   <h1>Retrieval Benchmark — Three-Track Interactive Report</h1>
-  <p>Platform KB (QDCVR via external chat API) vs bare agent vs agent-executed dense RAG
+  <p>Platform KB (HMRS via external chat API) vs bare agent vs agent-executed dense RAG
      · identical 50-paper corpus · 10 English questions · 30 monitored runs</p>
   <p style="margin-top:10px"><span class="badge">KB system uninterrupted · backend PID 58020→58020</span>
      <span class="badge">0 restarts · 0 failed runs</span>

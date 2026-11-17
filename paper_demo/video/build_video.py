@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the QDCVR demonstration video (CIKM Demo, ~3 minutes, 1920x1080).
+"""Build the HMRS demonstration video (CIKM Demo, ~3 minutes, 1920x1080).
 
 Pipeline
   1. edge-tts renders one English narration clip per segment (neural voice).
@@ -149,7 +149,7 @@ h1{{font-size:46px;line-height:1.22;font-weight:700;max-width:1500px;
 def card_html(kind: str) -> str:
     if kind == "title":
         body = f"""<div class="title-wrap">
-          <div class="big">QDCVR</div>
+          <div class="big">HMRS</div>
           <div class="sub">A deployable knowledge-base management platform</div>
           <div class="sub2">Documents are organized by what they say, and every
           retrieval is verified by reading it &mdash; with an explicit not-found
@@ -160,7 +160,7 @@ def card_html(kind: str) -> str:
         </div>"""
     elif kind == "title_end":
         body = f"""<div class="title-wrap">
-          <div class="big">QDCVR</div>
+          <div class="big">HMRS</div>
           <div class="sub">Content decides where documents live.<br>
           Reading decides what answers.</div>
           <div class="sub2">Code and run artifacts:
@@ -379,7 +379,7 @@ def main() -> int:
     run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0",
          "-i", str(alist), "-c", "copy", str(full_audio)])
 
-    final = HERE / "qdcvr-demo.mp4"
+    final = HERE / "hmrs-demo.mp4"
     run(["ffmpeg", "-y", "-v", "error", "-i", str(silent), "-i",
          str(full_audio), "-map", "0:v", "-map", "1:a",
          "-c:v", "libx264", "-preset", "slow", "-crf", "20",

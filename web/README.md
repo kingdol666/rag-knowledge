@@ -47,7 +47,7 @@ Full Claude Code SDK integration with streaming responses, permission approval U
 Drag-and-drop file browser with tree navigation, multi-format upload (PDF/Word/Excel/PPT/images), one-click parse triggers, file preview (markdown + images), and folder CRUD operations.
 
 **🔍 Knowledge Base Search**
-QDCVR (Query-Driven Content-Verified Retrieval) pipeline UI — semantic + keyword two-stage search with 0–8 content scoring, cross-KB enterprise search, tag-based filtering, and result ranking with source citations.
+HMRS (Hierarchical Management Retrieval System) pipeline UI — semantic + keyword two-stage search with 0–8 content scoring, cross-KB enterprise search, tag-based filtering, and result ranking with source citations.
 
 **🕸️ Knowledge Graph**
 Neo4j-powered interactive visualization of document relationships — KB overview graphs, document-centric entity networks, cross-KB discovery paths, centrality analysis, and tag-based document clustering.
@@ -206,7 +206,7 @@ The Nuxt server acts as a **proxy layer** between the browser and the FastAPI ba
 | **Claude Chat** | `/claude-chat` | Full Claude Code SDK chat with streaming, KB-enhanced mode, multimodal input |
 | **File System** | `/file-system` | Drag-and-drop file browser, upload, parse triggers, preview |
 | **Knowledge Base** | `/knowledge-base` | KB management — create, edit, delete KBs + document list |
-| **KB Search** | `/knowledge-search` | QDCVR search interface with filtering, ranking, and source display |
+| **KB Search** | `/knowledge-search` | HMRS search interface with filtering, ranking, and source display |
 | **Knowledge Graph** | `/knowledge-graph` | Neo4j-powered interactive graph visualization |
 | **Settings** | `/settings` | Environment configuration with hot-reload |
 
@@ -235,7 +235,7 @@ web/
 │   ├── claude-chat.vue              # Claude Code SDK streaming chat
 │   ├── file-system.vue              # Visual file tree browser + upload
 │   ├── knowledge-base.vue           # KB management + document list
-│   ├── knowledge-search.vue         # QDCVR search interface
+│   ├── knowledge-search.vue         # HMRS search interface
 │   ├── knowledge-graph.vue          # Neo4j graph visualization
 │   └── settings.vue                 # Configuration editor
 ├── composables/                     # Vue composables

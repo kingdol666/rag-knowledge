@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""模块 B — 内容检索机制评测(经 kb-mcp MCP 真链路, 确定性 QDCVR 管线).
+"""模块 B — 内容检索机制评测(经 kb-mcp MCP 真链路, 确定性 HMRS 管线).
 
 链路: 本脚本 → MCP stdio (uv run kb-mcp server.py) → KbClient → backend.
-这是 Agent 实际使用的工具层; 确定性策略=QDCVR 规程的程序化展开:
+这是 Agent 实际使用的工具层; 确定性策略=HMRS 规程的程序化展开:
   1  kb_project_status                    (skill 强制门)
   2  kb_list(lightweight)                 选库上下文
   3  kb_search_two_stage(balance_kbs)     两阶段召回     ← 工程加速项
@@ -81,7 +81,7 @@ def eval_ranking(ranked_docs: list[str], golden: set[str], k_list=(1, 5, 10)) ->
 
 
 def staged_retrieval(client: McpClient, query: str, kb: str) -> tuple[dict, list[dict]]:
-    """确定性 QDCVR: 返回 (指标, 逐级记录). 受控检索限定在指定对照库内."""
+    """确定性 HMRS: 返回 (指标, 逐级记录). 受控检索限定在指定对照库内."""
     t0 = time.perf_counter()
     stages = {"stage1": 0, "stage2": 0, "stage3": 0}
     tool_calls = 0
@@ -210,7 +210,7 @@ def main() -> int:
         "n_queries": len(items),
         "generated": datetime.now(timezone.utc).isoformat(),
         "mcp_command": "uv run --directory kb-mcp python server.py (stdio JSON-RPC)",
-        "policy": "QDCVR deterministic: status→kb_list→two_stage→thr0.35+dedup→doc_read×3",
+        "policy": "HMRS deterministic: status→kb_list→two_stage→thr0.35+dedup→doc_read×3",
         "baseline": {"name": "vector top-k (Chroma + BAAI/bge-m3)", "k": 10,
                      "tool": "kb_search_vector"},
     }}

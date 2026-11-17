@@ -6,10 +6,15 @@ and structured metadata return.
 from __future__ import annotations
 
 import base64
+import errno
 import inspect
 import logging
+import os
 import re
-import shutil
+import stat
+import time
+import uuid
+from contextlib import contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
@@ -19,6 +24,198 @@ if TYPE_CHECKING:
 from app.models.schemas import MineruParseResult
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_filename(name: str) -> str:
+    """Accept a single portable filename, never a path or Windows device name."""
+    if (not isinstance(name, str) or not name or name in {".", ".."}
+            or any(ord(c) < 32 or c in '/\\<>:"|?*' for c in name)
+            or name.endswith((" ", "."))
+            or re.match(r"^(?:CON|PRN|AUX|NUL|COM[1-9¹²³]|LPT[1-9¹²³]) *(?:\.|$)", name, re.I)):
+        raise ValueError("filename must be a safe basename")
+    return name
+
+
+def _ensure_directory(path: Path, parent: Path | None = None, *, create: bool = True) -> Path:
+    """Create and verify an output directory, rejecting links and junctions."""
+    raw = str(path)
+    if not raw or "\x00" in raw or raw.startswith("\\\\") or (os.name == "nt" and raw.startswith("//")):
+        raise ValueError("unsafe output directory")
+    # Do not normalize away parent components before checking for links.
+    if ".." in path.parts:
+        raise ValueError("parent traversal not allowed in output directory")
+    path = Path(os.path.abspath(path))
+    if parent is not None:
+        parent = Path(os.path.abspath(parent))
+        if path.parent != parent:
+            raise ValueError("invalid output subdirectory")
+        _ensure_directory(parent, create=create)
+
+    # Walk each component so mkdir never knowingly traverses a symlink/junction.
+    current = Path(path.anchor)
+    for component in path.parts[1:] if path.anchor else path.parts:
+        current = current / component
+        try:
+            info = current.lstat()
+        except FileNotFoundError:
+            if not create:
+                raise ValueError(f"missing output directory: {current}")
+            try:
+                current.mkdir()
+            except FileExistsError:
+                pass
+            info = current.lstat()
+        if stat.S_ISLNK(info.st_mode) or not stat.S_ISDIR(info.st_mode) or (hasattr(current, "is_junction") and current.is_junction()):
+            raise ValueError(f"unsafe output directory: {current}")
+
+    try:
+        resolved = path.resolve(strict=True)
+        lexical = Path(os.path.normcase(os.path.normpath(str(path))))
+        canonical = Path(os.path.normcase(os.path.normpath(str(resolved))))
+        if lexical != canonical:
+            raise ValueError(f"output directory traverses a symlink or junction: {path}")
+        if parent is not None and resolved.parent != parent.resolve(strict=True):
+            raise ValueError(f"output directory escapes its parent: {path}")
+        return resolved
+    except OSError as exc:
+        raise ValueError(f"unsafe output directory: {path}") from exc
+
+
+@contextmanager
+def _output_directory_handle(directory: Path):
+    """Pin a directory on POSIX so a renamed parent cannot redirect a write."""
+    if os.name != "nt" and os.open in os.supports_dir_fd:
+        fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            info = os.fstat(fd)
+            checked = directory.stat()
+            if (info.st_dev, info.st_ino) != (checked.st_dev, checked.st_ino):
+                raise ValueError(f"output directory changed: {directory}")
+            _ensure_directory(directory, create=False)
+            yield fd
+        finally:
+            os.close(fd)
+    else:
+        yield None
+
+
+def _reuse_identical_image(directory: Path, name: str, data: bytes, dir_fd: int | None) -> Path:
+    """Check an existing leaf through its descriptor; never modify it.
+
+    A concurrent publisher briefly has two links (its temp and the published
+    name). Allow it time to unlink the temp, but reject persistent hardlinks.
+    """
+    dest = directory / name
+    deadline = time.monotonic() + 2.0
+    while True:
+        if dir_fd is None:
+            _ensure_directory(directory, create=False)
+        try:
+            before = os.stat(name, dir_fd=dir_fd, follow_symlinks=False) if dir_fd is not None else dest.lstat()
+        except FileNotFoundError:
+            raise ValueError(f"output file changed during image reuse: {dest}")
+        if not stat.S_ISREG(before.st_mode) or (hasattr(dest, "is_junction") and dest.is_junction()):
+            raise ValueError(f"unsafe output file: {dest}")
+        if before.st_nlink != 1:
+            if before.st_nlink == 2 and time.monotonic() < deadline:
+                time.sleep(0.01)
+                continue
+            raise ValueError(f"unsafe output file: {dest}")
+
+        flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+        try:
+            fd = os.open(name if dir_fd is not None else dest, flags, dir_fd=dir_fd)
+        except OSError as exc:
+            raise ValueError(f"unsafe or changed output file: {dest}") from exc
+        with os.fdopen(fd, "rb") as stream:
+            opened = os.fstat(stream.fileno())
+            if (not stat.S_ISREG(opened.st_mode) or opened.st_nlink != 1
+                    or (opened.st_dev, opened.st_ino) != (before.st_dev, before.st_ino)):
+                raise ValueError(f"unsafe or changed output file: {dest}")
+            identical = opened.st_size == len(data) and stream.read() == data
+            after = os.fstat(stream.fileno())
+        try:
+            current = os.stat(name, dir_fd=dir_fd, follow_symlinks=False) if dir_fd is not None else dest.lstat()
+        except FileNotFoundError as exc:
+            raise ValueError(f"output file changed during image reuse: {dest}") from exc
+        if (not stat.S_ISREG(current.st_mode) or current.st_nlink != 1 or after.st_nlink != 1
+                or (current.st_dev, current.st_ino) != (opened.st_dev, opened.st_ino)
+                or (after.st_size, after.st_mtime_ns, after.st_ctime_ns)
+                != (opened.st_size, opened.st_mtime_ns, opened.st_ctime_ns)):
+            raise ValueError(f"output file changed during image reuse: {dest}")
+        if not identical:
+            raise FileExistsError(errno.EEXIST, f"image name collision with different content: {dest}", str(dest))
+        return dest
+
+
+def _atomic_write(directory: Path, name: str, data: bytes, *, replace_existing: bool = True) -> Path:
+    """Atomically replace a leaf without ever opening a destination symlink.
+
+    POSIX writes are relative to an O_NOFOLLOW directory descriptor. On Windows
+    exclusive temp creation plus replace avoids following the destination leaf;
+    directory validation is repeated but cannot pin parent directories. Windows
+    ACLs remain the boundary against namespace races by other permitted writers.
+    """
+    name = _safe_filename(name)
+    directory = _ensure_directory(directory, create=False)
+    dest = directory / name
+    with _output_directory_handle(directory) as dir_fd:
+        # Exclusive creation defeats pre-existing symlinks and hardlinks.
+        tmp_name = f".mineru-{uuid.uuid4().hex}.tmp"
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+        temp = directory / tmp_name
+        fd = os.open(tmp_name if dir_fd is not None else temp, flags, 0o600, dir_fd=dir_fd)
+        try:
+            with os.fdopen(fd, "wb") as stream:
+                stream.write(data)
+            # Never overwrite a link or a hard-linked destination. A regular
+            # file created by an earlier parse is the only accepted existing leaf.
+            try:
+                info = os.stat(name, dir_fd=dir_fd, follow_symlinks=False) if dir_fd is not None else dest.lstat()
+            except FileNotFoundError:
+                info = None
+            if info is not None and (not stat.S_ISREG(info.st_mode) or (replace_existing and info.st_nlink != 1) or (hasattr(dest, "is_junction") and dest.is_junction())):
+                raise ValueError(f"unsafe output file: {dest}")
+            if not replace_existing:
+                # Publish the complete temporary file without replacing any
+                # existing name. The link operation is atomic across writers.
+                if dir_fd is None:
+                    _ensure_directory(directory, create=False)
+                try:
+                    if dir_fd is None:
+                        os.link(temp, dest)
+                    else:
+                        os.link(tmp_name, name, src_dir_fd=dir_fd, dst_dir_fd=dir_fd, follow_symlinks=False)
+                except FileExistsError:
+                    return _reuse_identical_image(directory, name, data, dir_fd)
+                return dest
+            if dir_fd is not None:
+                current = os.stat(name, dir_fd=dir_fd, follow_symlinks=False) if info is not None else None
+                if info is not None and (current.st_ino, current.st_dev) != (info.st_ino, info.st_dev):
+                    raise ValueError(f"output file changed during write: {dest}")
+            else:
+                _ensure_directory(directory, create=False)
+                try:
+                    current = dest.lstat()
+                except FileNotFoundError:
+                    current = None
+                if info is not None and (current is None or (current.st_ino, current.st_dev) != (info.st_ino, info.st_dev)):
+                    raise ValueError(f"output file changed during write: {dest}")
+            if (info is None) != (current is None):
+                raise ValueError(f"output file changed during write: {dest}")
+            if dir_fd is None:
+                os.replace(temp, dest)
+            else:
+                os.replace(tmp_name, name, src_dir_fd=dir_fd, dst_dir_fd=dir_fd)
+        finally:
+            try:
+                if dir_fd is None:
+                    temp.unlink(missing_ok=True)
+                else:
+                    os.unlink(tmp_name, dir_fd=dir_fd)
+            except FileNotFoundError:
+                pass
+    return dest
 
 
 class MineruParseService:
@@ -101,15 +298,16 @@ class MineruParseService:
             poll_interval: Seconds between status polls.
             poll_timeout: Hard ceiling for the whole wait (seconds).
         """
-        output_path = Path(output_dir)
-        output_path.mkdir(parents=True, exist_ok=True)
-
-        stem = Path(filename).stem
+        safe_filename = _safe_filename(filename)
+        output_path = _ensure_directory(Path(output_dir))
+        stem = Path(safe_filename).stem
 
         # 0. Bind one engine for this whole session (remote-first w/ fallback).
-        engine = self._bind_engine()
-        if inspect.isawaitable(engine):
-            engine = await engine
+        awaitable_engine = self._bind_engine()
+        if inspect.isawaitable(awaitable_engine):
+            engine = await awaitable_engine
+        else:
+            engine = awaitable_engine
 
         # 1. Persist uploaded file ──────────────────────────────────────
         source_file = self._save_upload(file_content, filename, output_path)
@@ -178,22 +376,14 @@ class MineruParseService:
                 metadata={"task_id": task_id, "submission": submission},
             )
 
-        # 5. Persist markdown under output_dir ──────────────────────────
-        md_path: Optional[Path] = None
-        if markdown_text:
-            md_path = output_path / f"{stem}.md"
-            md_path.write_text(markdown_text, encoding="utf-8")
-            logger.info("Wrote markdown -> %s", md_path)
-
-        # 6. Decode images into output_dir/images/ ──────────────────────
-        images_dir = output_path / "images"
-        images_dir.mkdir(parents=True, exist_ok=True)
+        # Publish images first: a conflicting name fails explicitly, without
+        # publishing markdown that refers to an older parse's image.
+        images_dir = _ensure_directory(output_path / "images", output_path)
         written = self._decode_images(images_meta, images_dir)
         image_count = len(written)
-
-        # 7. Rewrite any embedded data-URIs in the markdown to relative paths
-        if md_path and written:
-            self._rewrite_image_links(md_path, written)
+        markdown_text = self._rewrite_image_links(markdown_text, output_path, written)
+        md_path = _atomic_write(output_path, f"{stem}.md", markdown_text.encode("utf-8"))
+        logger.info("Wrote markdown -> %s", md_path)
 
         return MineruParseResult(
             success=True,
@@ -231,10 +421,9 @@ class MineruParseService:
         Returns:
             :class:`MineruParseResult` with success/failure, paths, and metadata.
         """
-        output_path = Path(output_dir)
-        output_path.mkdir(parents=True, exist_ok=True)
-
-        stem = Path(filename).stem
+        safe_filename = _safe_filename(filename)
+        output_path = _ensure_directory(Path(output_dir))
+        stem = Path(safe_filename).stem
 
         # 0. Bind one engine for this session (sync path).
         engine = self._bind_engine_sync()
@@ -287,16 +476,11 @@ class MineruParseService:
                 metadata={"raw_response": raw},
             )
 
-        md_path: Optional[Path] = None
-        if markdown_text:
-            md_path = output_path / f"{stem}.md"
-            md_path.write_text(markdown_text, encoding="utf-8")
-            logger.info("Extracted markdown -> %s", md_path)
-
-        # 5. Extract & copy images ──────────────────────────────────────
-        images_dir = output_path / "images"
-        images_dir.mkdir(parents=True, exist_ok=True)
+        # Do not publish markdown if any image name conflicts.
+        images_dir = _ensure_directory(output_path / "images", output_path)
         copied = self._copy_images(raw, images_dir)
+        md_path = _atomic_write(output_path, f"{stem}.md", markdown_text.encode("utf-8"))
+        logger.info("Extracted markdown -> %s", md_path)
 
         # 6. Assemble metadata ──────────────────────────────────────────
         image_count = copied
@@ -324,10 +508,10 @@ class MineruParseService:
         content: bytes, filename: str, output_dir: Path
     ) -> Path:
         """Write the uploaded file to ``output_dir/uploads/{filename}``."""
-        uploads_dir = output_dir / "uploads"
-        uploads_dir.mkdir(parents=True, exist_ok=True)
-        dest = uploads_dir / filename
-        dest.write_bytes(content)
+        safe_name = _safe_filename(filename)
+        output_dir = _ensure_directory(output_dir)
+        uploads_dir = _ensure_directory(output_dir / "uploads", output_dir)
+        dest = _atomic_write(uploads_dir, safe_name, content)
         logger.info("Saved upload -> %s (%d bytes)", dest, len(content))
         return dest
 
@@ -357,7 +541,7 @@ class MineruParseService:
 
     @staticmethod
     def _copy_images(raw: dict, target_dir: Path) -> int:
-        """Copy images from the MinerU output directory (if provided)."""
+        """Copy images from the trusted MinerU output directory (if provided)."""
         images_dir_key = (
             raw.get("images_dir")
             or (raw.get("data") or {}).get("images_dir")
@@ -373,9 +557,7 @@ class MineruParseService:
         count = 0
         for img in src.iterdir():
             if img.is_file():
-                dst = target_dir / img.name
-                if not dst.exists():
-                    shutil.copy2(img, dst)
+                _atomic_write(target_dir, _safe_filename(img.name), img.read_bytes(), replace_existing=False)
                 count += 1
 
         if count:
@@ -441,7 +623,7 @@ class MineruParseService:
         written: list[tuple[Path, bytes]] = []
         if not images_meta:
             return written
-        target_dir.mkdir(parents=True, exist_ok=True)
+        target_dir = _ensure_directory(target_dir)
 
         for name, data_uri in images_meta.items():
             blob, ext = MineruParseService._decode_data_uri(data_uri)
@@ -449,12 +631,12 @@ class MineruParseService:
                 logger.warning("Could not decode image %r from task result", name)
                 continue
 
-            # Preserve the original key as the filename; ensure a sane suffix.
-            stem = Path(name).stem or f"image_{len(written) + 1}"
-            suffix = Path(name).suffix or ext
-            dst = target_dir / f"{stem}{suffix}"
-            if not dst.exists():
-                dst.write_bytes(blob)
+            # Treat MinerU keys as untrusted, including Windows separators and
+            # device names even when the backend is running on Linux.
+            safe_name = _safe_filename(name)
+            if not Path(safe_name).suffix:
+                safe_name = f"{safe_name}{ext}"
+            dst = _atomic_write(target_dir, safe_name, blob, replace_existing=False)
             written.append((dst, blob))
 
         if written:
@@ -492,29 +674,17 @@ class MineruParseService:
 
     @staticmethod
     def _rewrite_image_links(
-        md_path: Path, written: list[tuple[Path, bytes]]
-    ) -> None:
-        """
-        Rewrite inline ``![](data:...;base64,...)`` image refs in the markdown
-        to ``images/{name}`` relative paths, so the .md resolves to the files
-        we just wrote under *output_dir/images/*.
-
-        A data-URI is matched to a written file by comparing the decoded bytes.
-        Anything that doesn't match (or that's already a path) is left alone.
-        Best-effort — a write failure never invalidates the markdown file.
-        """
+        text: str, output_dir: Path, written: list[tuple[Path, bytes]]
+    ) -> str:
+        """Rewrite matching inline data URIs using the actual published paths."""
         if not written:
-            return
-        try:
-            text = md_path.read_text(encoding="utf-8")
-        except Exception:
-            return
+            return text
 
         # Map decoded-bytes-identity -> relative path, so we only rewrite URIs
         # whose image we actually persisted.
         by_blob: dict[bytes, str] = {}
         for path, blob in written:
-            rel = path.relative_to(md_path.parent).as_posix()
+            rel = path.relative_to(output_dir).as_posix()
             by_blob.setdefault(blob, rel)
 
         def _replace(match: re.Match[str]) -> str:
@@ -530,13 +700,28 @@ class MineruParseService:
         pattern = re.compile(
             r"!\[(?P<alt>[^\]]*)\]\((?P<data>data:[^)]+)\)"
         )
-        new_text, n = pattern.subn(_replace, text)
-        if n > 0:
-            try:
-                md_path.write_text(new_text, encoding="utf-8")
-                logger.info("Rewrote %d inline image link(s) in %s", n, md_path)
-            except Exception:
-                logger.warning("Failed to rewrite image links in %s", md_path)
+        text = pattern.sub(_replace, text)
+
+        # MinerU sometimes omits the image extension in Markdown while the
+        # image map key gets an extension inferred from its MIME type.
+        by_stem: dict[str, list[str]] = {}
+        for path, _blob in written:
+            by_stem.setdefault(path.stem, []).append(path.relative_to(output_dir).as_posix())
+
+        def _fix_extensionless_reference(match: re.Match[str]) -> str:
+            relative = match.group("path")
+            name = Path(relative).name
+            if Path(name).suffix:
+                return match.group(0)
+            matches = by_stem.get(name, [])
+            if len(matches) != 1:
+                return match.group(0)
+            return f"![{match.group('alt')}]({matches[0]})"
+
+        path_pattern = re.compile(
+            r"!\[(?P<alt>[^\]]*)\]\((?P<path>images/[^)]+)\)"
+        )
+        return path_pattern.sub(_fix_extensionless_reference, text)
 
 
 def mimetypes_extension(mime: str) -> str:

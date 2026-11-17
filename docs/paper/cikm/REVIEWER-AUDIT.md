@@ -179,7 +179,7 @@ favourable run of a module that yields a different answer on re-execution.
 | **Introduction** | Four-part structure (scene → problem → gap → method → contributions). Motivating case de-risked (F9). **Adequate.** |
 | **Related Work** | Now covers 5 axes + enterprise/agentic KBs + CIKM-native lineage + capability table. **Adequate.** |
 | **System Overview** | Five-layer model, write–read asymmetry, hierarchy. Scale table no longer mixes snapshots. **Adequate**, but see F11. |
-| **Method (QDCVR)** | 7 stages, 2 equations, pipeline figure, algorithm, rubric table. Domain scoping and content adjudication are each given a mechanism-level explanation. **Adequate.** |
+| **Method (HMRS)** | 7 stages, 2 equations, pipeline figure, algorithm, rubric table. Domain scoping and content adjudication are each given a mechanism-level explanation. **Adequate.** |
 | **Agent interface** | 94 tools / 14 skills, verified by count. **Adequate but thin** — one paragraph. If the track is Applied, expand: the deployment evidence is precisely what Applied rewards. |
 | **Evaluation** | Statistics paragraph added; ablation inconsistency flagged; author-evaluation bias added to threats. **Structurally adequate, evidentially incomplete** (see below). |
 | **Discussion / Limitations** | Honest, specific, includes the strongest threat. **Adequate.** |

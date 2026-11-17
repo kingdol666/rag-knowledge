@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-VIDEO = HERE / "qdcvr-demo.mp4"
+VIDEO = HERE / "hmrs-demo.mp4"
 WORK = HERE / "build"
 FRAME = WORK / "thumb_frame.png"
 OUT = HERE / "thumbnail.png"
@@ -65,7 +65,7 @@ def build_html() -> Path:
     </head><body>
       <div class="rule"></div>
       <div class="left">
-        <div class="brand">QDCVR</div>
+        <div class="brand">HMRS</div>
         <div class="sub">Content decides where documents live.<br>
         Reading decides what answers.</div>
         <div class="pts">

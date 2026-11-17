@@ -1,0 +1,10 @@
+Command: cd D:/codes/ClaudeGPT/rag_project/rag-knowledge && python -X utf8 scripts/ensure_stack.py
+Date: 2026-11-12
+Exit code: 0
+--- BEGIN OUTPUT (verbatim) ---
+[check] backend=False web=False mcp_kblist=False catalog=0
+[backend] healthy=True
+[web] healthy=True
+[verify] e2e_vector_search=True
+STACK-READY
+--- END OUTPUT ---

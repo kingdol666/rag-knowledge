@@ -1,15 +1,12 @@
-import { isAbsolute, join, normalize, resolve, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { isAbsolute, join, normalize, resolve } from 'path'
+import { getMonorepoRoot } from './project-root'
+export { getMonorepoRoot } from './project-root'
 import {
   getDynamicBackendUrl,
   getDynamicTreeStoragePath,
 } from '~/server/utils/dynamic-config'
 
-// -- monorepo project root (rag-knowledge/) --
-// web/server/utils/runtime-paths.ts  ->  web/server/  ->  web/  ->  rag-knowledge/
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const MONOREPO_ROOT = resolve(__dirname, '../../..')
+// Shared root discovery is kept separate to avoid a dynamic-config ↔ runtime-paths cycle.
 
 // -- runtime defaults --
 export const DEFAULT_BACKEND_API_URL = 'http://localhost:8765'
@@ -22,7 +19,7 @@ function readEnv(name: string): string | undefined {
 
 export function resolveProjectPath(pathValue: string): string {
   return normalize(
-    isAbsolute(pathValue) ? pathValue : resolve(MONOREPO_ROOT, pathValue),
+    isAbsolute(pathValue) ? pathValue : resolve(getMonorepoRoot(), pathValue),
   )
 }
 

@@ -1,0 +1,16 @@
+[kbs] MD=10
+OK  医学-英文          q-hits=5
+OK  历史-中文          q-hits=5
+OK  哲学-英文          q-hits=5
+OK  技术-英文          q-hits=5
+OK  政务-中文          q-hits=5
+OK  文学-中文          q-hits=5
+OK  文学-英文          q-hits=5
+OK  法律-中文          q-hits=5
+OK  科学-英文          q-hits=5
+OK  经济-英文          q-hits=5
+SWEEP-BAD: none
+total=78 gold=72 refusal=4 cross=0 pending_expansion=2
+per-domain gold: {"law-zh": 4, "gov-zh": 3, "literature-zh": 3, "literature-en": 18, "history-zh": 2, "science-en": 14, "tech-en": 2, "medicine-en": 15, "philosophy-en": 7, "economics-en": 4}
+⚠ 2 占位题 needs_expansion=true：Agent 补齐证据锚后重跑本校验
+✅ 机械校验通过（证据锚全部实测命中 / 拒答锚全语料实测不存在）

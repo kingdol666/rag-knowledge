@@ -17,7 +17,7 @@ Each entry carries an ``implementation`` provenance tag:
 ``REAL-ALGO``
     A paper's algorithm implemented here from its published description.
 ``PROJECT``
-    The platform's own QDCVR retrieval path, called over its API.
+    The platform's own HMRS tiered retrieval path, called over its API.
 """
 from __future__ import annotations
 
@@ -380,10 +380,10 @@ def run_selfrag(query: str, params: dict[str, Any], store: DocumentStore,
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PROJECT — the platform's own QDCVR path, over HTTP
+# PROJECT — the platform's own HMRS path, over HTTP
 # ─────────────────────────────────────────────────────────────────────────────
 def _project_search(query: str, kb_id: str, top_k: int, score_threshold: float) -> list[Hit]:
-    """Call the platform's vector-search API (the QDCVR baseline)."""
+    """Call the platform's vector-search API (the HMRS baseline)."""
     settings = get_settings()
     payload = {"query": query, "kb_id": kb_id, "top_k": top_k,
                "score_threshold": score_threshold}
@@ -412,22 +412,22 @@ def _project_search(query: str, kb_id: str, top_k: int, score_threshold: float) 
         title = re.split(r"[\\/]", str(path))[-1]
         hits.append(Hit(i + 1, item.get("chunk_id", f"{path}#{item.get('chunk_index', i)}"),
                         str(path), title, item.get("kb_id", kb_id), item.get("content", "") or "",
-                        float(item.get("score", 0.0)), "QDCVR [PROJECT: platform API]",
+                        float(item.get("score", 0.0)), "HMRS [PROJECT: platform API]",
                         {"collection": item.get("collection"),
                          "chunk_index": item.get("chunk_index")}))
     return hits
 
 
-def run_qdcvr_flat(query: str, params: dict[str, Any], store: DocumentStore,
+def run_hmrs_flat(query: str, params: dict[str, Any], store: DocumentStore,
                    domains: list[str] | None = None) -> list[Hit]:
     return _project_search(query, params["kb_id"], params["top_k"], params["score_threshold"])
 
 
-def run_qdcvr_domain(query: str, params: dict[str, Any], store: DocumentStore,
+def run_hmrs_domain(query: str, params: dict[str, Any], store: DocumentStore,
                      domains: list[str] | None = None) -> list[Hit]:
     if not params["kb_id"]:
         raise ParamError(
-            "algorithm 'qdcvr_domain' requires 'kb_id' — pass the knowledge base to "
+            "algorithm 'hmrs_domain' requires 'kb_id' — pass the knowledge base to "
             "scope the search to (see GET /api/domains for the ones the platform exposes)."
         )
     return _project_search(query, params["kb_id"], params["top_k"], params["score_threshold"])
@@ -525,33 +525,34 @@ _ALGORITHMS: tuple[Algorithm, ...] = (
         runner=run_selfrag,
     ),
     Algorithm(
-        id="qdcvr_flat", label="QDCVR (all KBs)", family="project",
+        id="hmrs_flat", label="HMRS (all KBs)", family="project",
         implementation="PROJECT",
         component="platform API — /api/v1/search/vector across every knowledge base",
-        paper="This platform (QDCVR retrieval path)",
+        paper="This platform (HMRS tiered retrieval path)",
         description="The system under test, searched flat across all knowledge "
                     "bases. Requires the platform backend to be running.",
         params=(_top_k(), SCORE_FLOOR, Param("kb_id", "str", "",
                                              "optional knowledge-base id; empty = all")),
-        runner=run_qdcvr_flat,
+        runner=run_hmrs_flat,
     ),
     Algorithm(
-        id="qdcvr_domain", label="QDCVR (KB-scoped)", family="project",
+        id="hmrs_domain", label="HMRS (KB-scoped)", family="project",
         implementation="PROJECT",
         component="platform API — /api/v1/search/vector scoped to one knowledge base",
-        paper="This platform (QDCVR retrieval path)",
+        paper="This platform (HMRS tiered retrieval path)",
         description="The system under test, scoped to a single knowledge base so it "
                     "cannot answer from the wrong domain. kb_id is required.",
         params=(_top_k(), SCORE_FLOOR,
                 Param("kb_id", "str", "", "knowledge-base id to scope the search to")),
-        runner=run_qdcvr_domain,
+        runner=run_hmrs_domain,
     ),
 )
 
 ALGORITHMS: dict[str, Algorithm] = {a.id: a for a in _ALGORITHMS}
 
 #: Backwards-compatible spellings the old dashboard used.
-ALIASES: dict[str, str] = {"vector": "dense", "qdcvr": "qdcvr_flat",
+ALIASES: dict[str, str] = {"vector": "dense", "qdcvr": "hmrs_flat",
+                           "qdcvr_flat": "hmrs_flat", "qdcvr_domain": "hmrs_domain",
                            "self_rag": "selfrag", "cross_encoder": "ce_rerank"}
 
 DEFAULT_SELECTION: tuple[str, ...] = ("bm25", "dense", "hybrid", "crag", "selfrag")

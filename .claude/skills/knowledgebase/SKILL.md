@@ -8,6 +8,18 @@ description: "Knowledge-base dispatcher that routes ingest, search, complete-rec
 
 > **KB architecture mental model**: the KB is a 5-layer data model (disk .md ↔ .tree-fs.json ↔ .knowledge-base.yml ↔ ChromaDB vectors ↔ Neo4j graph) with 94 MCP tools classified by operation type. Before delegating, Archival **must first read** [kb-architecture.md](references/kb-architecture.md) — 5-layer consistency rules, which operations require manual `kb_index_document` (only `kb_doc_save_parsed`), hierarchical-KB pitfalls, path format conventions, and the post-fix invariants (update_content/delete/move are all auto-indexed).
 
+## Step 0 — 栈连接硬约束（先于一切作业步骤，强制）
+
+**任何检索/入库/管理操作开始前，必须先通过栈连接预检；未通过禁止继续。**
+
+1. 运行 `python -X utf8 scripts/ensure_stack.py`（工作目录 = 仓库根 D:/codes/ClaudeGPT/rag_project/rag-knowledge）。
+2. 退出码 0 且输出 `STACK-READY` 才允许进入后续步骤；否则**立即终止作业**，向调用方如实报告"平台栈不可达（已尝试自动拉起失败）"——禁止在不可达栈上继续，禁止编造结果。
+3. 该工具自动完成：MCP(8000)/backend(8771)/web(6789) 连通检查 → 缺失服务按 SOP 顺序自动拉起（backend venv → web → kb-mcp http）→ token 自愈（loop-auth 换新写回 .env）→ **端到端真实向量检索**验证（不只是端口探活）。
+4. 本步骤是硬约束：即使调用方声称"服务已在跑"，也必须以 ensure_stack 的实测为准（进程可能已死、端口可能被陈旧实例占用——历史实锤形态）。
+5. 路径注意：scripts/mcp_call.py 与 ensure_stack.py 均需仓库根为工作目录；不要在子目录下调用。
+
+（2026-11-12 新增。起因：skill 此前假定服务常驻；实机演练中栈宕机导致作业必败。）
+
 ## Sequential Workflow (Steps 1-7, in order)
 
 **Step 1 — Detect KB keywords**: scan user input against the frontmatter trigger list; use kb_list(lightweight=true) to confirm the KB catalog is reachable. No match → output the fuzzy fallback message and wait for clarification; no modification without explicit user intent.
@@ -25,7 +37,7 @@ description: "Knowledge-base dispatcher that routes ingest, search, complete-rec
 | ingest, upload, import, parse, store, save to, put document, add document, save to KB, add doc, 入库, 导入, 上传文档, 存入库, 大文档入库, 拆分入库, 解析PDF | **Ingest** | `Skill("knowledgebase-ingest")` |
 | move, rename, delete, merge, move, rename, delete, merge, update content, 更新文档内容, edit document, 编辑文档, modify description, 修改描述, create KB, create knowledge base, 新建知识库, 创建知识库 | **Manage** | `Skill("knowledgebase-manage")` |
 | organize, clean up, restructure, inventory, deep clean, full review, consolidate, categorize, organize, restructure, cleanup, reorganize, 整理, 归类, 重组, 重建目录结构 | **Organize** | `Skill("knowledgebase-organize")` |
-| search, query, retrieve, where, solution, how to fix, search, find, query, RAG, how to, explain, what is, search all KBs, cross-KB, cross knowledge base, enterprise, comprehensive, global search, 搜索, 检索, 查询, 查一下, 找答案, 问答 | **Search** | `Skill("knowledgebase-search")` (QDCVR v2: whole-library/cross-KB handled by the librarian fallback phase) |
+| search, query, retrieve, where, solution, how to fix, search, find, query, RAG, how to, explain, what is, search all KBs, cross-KB, cross knowledge base, enterprise, comprehensive, global search, 搜索, 检索, 查询, 查一下, 找答案, 问答 | **Search** | `Skill("knowledgebase-search")` (HMRS v2: whole-library/cross-KB handled by the librarian fallback phase) |
 | librarian, shelf scan, walk the stacks, which knowledge base, which KB holds, catalog-level search, coarse to fine, coarse retrieval, knowledge base routing, pick the right knowledge base, browse the catalog, 图书馆员, 书架扫描, 逐级检索, 粗检索到细检索, 全库粗检索, 哪个知识库, 目录级检索, 知识库路由, 长文档跨章检索, 穷尽召回, 完整召回, all documents about, every mention of | **Librarian** | `Skill("knowledgebase-librarian")` (hierarchical coarse→fine whole-library retrieval; also serves as `knowledgebase-search` Phase 2) |
 | parallel hybrid, dual-lane, both retrieval modes, vector plus catalog, 并行检索, 混合检索, 双通道检索, 向量加目录 | **Hybrid** | `Skill("knowledgebase-hybrid")` (vector lane + catalog lane concurrently, one shared engine gate) |
 | view, list, browse, content, list, show, overview, tree, 列出, 列出所有, 查看, 展示, 文档清单 | **List** | `Skill("knowledgebase-list")` |

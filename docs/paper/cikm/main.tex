@@ -56,7 +56,7 @@
 \setlength{\abovecaptionskip}{4pt}
 \setlength{\belowcaptionskip}{2pt}
 
-\newcommand{\sys}{\textsc{Qdcvr}}
+\newcommand{\sys}{\textsc{Hmrs}}
 \newcommand{\kbtool}[1]{\texttt{#1}}
 \newcommand{\sig}[1]{$^{#1}$}
 
@@ -117,7 +117,7 @@ a nine-base HotpotQA partition, and an experience-synthesis comparison. The
 boundary of the mechanism is precise: adjudication repairs rank-one errors
 and yields the best top-rank answerability on the multi-domain benchmark
 ($0.580$); when its own retrieval ranks the gold document first, its answers
-score \qdcvrJhit{} against the strongest baseline's \denseJhit{} ($0$--$10$
+score \hmrsJhit{} against the strongest baseline's \denseJhit{} ($0$--$10$
 judge) --- the residual gap traces to its evidence-assembly policy, not to
 adjudication itself. Distilled experiences beat raw retrieval and one-shot summarisation as
 answering material in \eFourFirsts{} of \eFourRuns{} recorded runs. We also
@@ -232,7 +232,7 @@ account of where it helps, and an honest account of where it stops helping.
   \emph{conditional attribution} analysis that separates retrieval-mechanism
   failures from evidence-assembly failures. It locates \sys{}'s answer-quality
   gap on SciFact in the excerpt policy, not in adjudication: with the gold
-  ranked first, \sys{} answers score \qdcvrJhit{} vs the strongest baseline's
+  ranked first, \sys{} answers score \hmrsJhit{} vs the strongest baseline's
   \denseJhit{} (\S\ref{sec:main}).
   \item \textbf{C4 (experience lifecycle).} An end-to-end lifecycle for
   operational knowledge --- extraction, credibility tiering, temporal decay,
@@ -408,7 +408,7 @@ SQuAD v1.1 subset & 8 docs, 16 queries & \S\ref{sec:honest} \\
 % =====================================================================
 \section{\sys{}: Content-Adjudicated Retrieval}\label{sec:method}
 
-\sys{} stands for \emph{Query-Driven Content-Verified Retrieval} --- the
+\sys{} stands for \emph{Hierarchical Management Retrieval System} --- the
 ``content verification'' of the name is the content-adjudication stage
 (\S\ref{sec:adjudication}); the two terms are interchangeable below. The pipeline
 has seven stages (Fig.~\ref{fig:pipeline} summarised in
@@ -781,19 +781,19 @@ retrieval latency (log) vs nDCG@10; marker area = mean judge score. Producer:
 Table~\ref{tab:ansqual} locates the deficit by conditioning each system's
 judge scores on its \emph{own} rank-one success --- separating what is
 retrieved from what is handed to the answerer. \emph{When a gold document is
-ranked first}, \sys{} answers score \qdcvrJhit{} against dense's \denseJhit{}
+ranked first}, \sys{} answers score \hmrsJhit{} against dense's \denseJhit{}
 --- the residual $0.7$ is excerpt truncation, not retrieval failure: on
 \texttt{sf-028} the gold paper \emph{is} the retrieved top-1, but the GATA3
 detail sits below the head-of-document excerpt horizon and the agent
 cautiously declares insufficiency (judge $5$); on \texttt{sf-016}, whose
 evidence fits the excerpt, the answer is graded $10$ with verdict, citation
 and paraphrase matching the gold text. \emph{When rank one is missed},
-\sys{} scores \qdcvrJmiss{} against dense's \denseJmiss{}: dense misses
+\sys{} scores \hmrsJmiss{} against dense's \denseJmiss{}: dense misses
 ``softly'' --- its ten excerpts ($67\%$ claim-word coverage) usually still
 contain the gold --- whereas \sys{}'s verification reads keep $2$ excerpts
 ($60\%$ coverage). Abstention quality follows the same lever: \sys{} declares
-insufficient evidence on \qdcvrAbstain\% of questions (dense $37\%$) but
-scores \qdcvrJabs{} on them against dense's \denseJabs{}. The motivating
+insufficient evidence on \hmrsAbstain\% of questions (dense $37\%$) but
+scores \hmrsJabs{} on them against dense's \denseJabs{}. The motivating
 query \texttt{sf-002} shows the coupling in both directions: adjudication
 \emph{repairs} the rank-one error (\S\ref{sec:intro}), and the answer then
 declares insufficiency anyway (judge $7$ vs dense's $9$) --- the repaired

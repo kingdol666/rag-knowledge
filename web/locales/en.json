@@ -47,7 +47,7 @@
       {
         "icon": "🔍",
         "title": "Smart Search",
-        "desc": "QDCVR retrieval: intent analysis → KB selection → vector recall → content verification"
+        "desc": "HMRS tiered retrieval: intent analysis → KB selection → vector recall → content verification"
       },
       {
         "icon": "🕸️",
@@ -188,7 +188,17 @@
     "folderNameRequired": "Please enter folder name",
     "parseCompleteMsg": "PDF parsing complete: {success} succeeded, {failed} failed",
     "parseFailed": "Parse failed",
-    "savedToFolder": "Saved {count} parsed results to current folder"
+    "savedToFolder": "Saved {count} parsed results to current folder",
+    "savedWithFailures": "Saved {saved} results; {failed} could not be saved",
+    "saveFailed": "Could not save parsed results: {error}",
+    "saveOutcomeUnknown": "Save outcome unknown; inspect the target folder before retrying",
+    "saveBreakdown": "Incomplete document records: {partial}; existing duplicates not changed: {existing}",
+    "recoveryNotice": "Incomplete saves can be retried below while this page remains open. Recovery expires after one hour or a server restart; otherwise inspect the destination manually.",
+    "retrySave": "Retry save",
+    "discardRecovery": "Discard retry",
+    "recoveryStillIncomplete": "Save is still incomplete; resolve the reported problem before retrying again.",
+    "recoveryUnavailable": "Recovery is unavailable or expired. Inspect the destination manually; existing documents were not overwritten.",
+    "recoveryUnknown": "Retry outcome is unknown. Inspect the destination; an explicit retry will use the same receipt, which may already be consumed."
   },
   "kb": {
     "title": "Knowledge Base Manager",
@@ -323,7 +333,7 @@
     "relevance": "Relevance",
     "documentMatch": "Document Match",
     "semanticMatch": "Semantic Match",
-    "qdcvr": "QDCVR Precision Search",
+    "hmrs": "HMRS Tiered Retrieval",
     "subKbTitle": "Sub-KBs ({n})",
     "docCount": "{n} doc(s)",
     "docTitle": "Documents ({n})",
@@ -1274,7 +1284,7 @@
       "contextLabel": "Context override context_override (optional, from pre-search)",
       "contextPlaceholder": "Inject retrieved snippets; persona processes based on this",
       "preSearch": "Pre-search KB",
-      "qdcvrAsk": "One-click search + persona answer",
+      "hmrsAsk": "One-click search + persona answer",
       "ask": "Ask",
       "answer": "Answer",
       "route": "Route",
@@ -1287,7 +1297,7 @@
       "searchFailed": "Search failed: {error}",
       "personaAnswered": "Retrieved {n} evidence items and persona-styled answer",
       "askFailed": "Q&A failed: {error}",
-      "qdcvrFailed": "Search + answer failed: {error}",
+      "hmrsFailed": "Search + answer failed: {error}",
       "enterQuestionSearch": "Please enter a question before searching"
     },
     "review": {

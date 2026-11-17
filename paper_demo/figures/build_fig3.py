@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build Fig. 3 — one question, three answering tracks, real recorded answers.
 
-Left column is the QDCVR protocol, middle the bare agent, right the dense
+Left column is the HMRS protocol, middle the bare agent, right the dense
 baseline. The answer text in each column is quoted verbatim from
 benchmark-suite/results/ (skill_track_answers.json + track_bc.json); only
 elisions are marked. Nothing is paraphrased or invented.
@@ -36,7 +36,7 @@ TRACKS = [
                  ('mean latency', '2.4 s retrieval'),
                  ('provenance', 'base > doc > part > section'),
                  ('judge score', 'self-adjudicated')],
-        key="A", name="QDCVR protocol", tag="this system",
+        key="A", name="HMRS protocol", tag="this system",
         accent=True,
         metrics=[("content gate", "7/8 \u00b7 fast exit"),
                  ("retrieval", "2.4 s"),
@@ -222,7 +222,7 @@ def html_doc() -> str:
     <h1>One question, three answering tracks &mdash; recorded answers, quoted verbatim</h1>
     <div class="q"><b>Q.</b> {html.escape(QUESTION)}
       &nbsp;<span style="color:#8a8a94">(BQ01, gold: <i>Attention Is All You Need</i>)</span></div>
-    <div class="note">Track&nbsp;A is the QDCVR protocol; Track&nbsp;B a bare agent with no
+    <div class="note">Track&nbsp;A is the HMRS protocol; Track&nbsp;B a bare agent with no
       index that reads whole files; Track&nbsp;C a dense baseline over 800-character fixed
       chunks. Answer text is reproduced from
       <span style="font-family:Consolas,monospace">benchmark-suite/results/</span> with

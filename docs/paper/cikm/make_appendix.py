@@ -42,10 +42,10 @@ OUT = OUTDIR / "appendix.tex"
 
 # Method order: proposed system first, then reproduced baselines (main-table
 # order). Labels match Table 2 of the main paper.
-ORDER = ["qdcvr", "dense_rag", "dense_rag_rerank", "itrg_refresh", "itrg_refine",
+ORDER = ["hmrs", "dense_rag", "dense_rag_rerank", "itrg_refresh", "itrg_refine",
          "raptor", "search_o1", "deepread"]
 LABEL = {
-    "qdcvr": "\\textbf{\\textsc{Qdcvr}} (two-stage + content adjudication)",
+    "hmrs": "\\textbf{\\textsc{Hmrs}} (two-stage + content adjudication)",
     "dense_rag": "Dense RAG (chunk 800/400, top-10)",
     "dense_rag_rerank": "Dense RAG + reranker (30$\\to$10)",
     "itrg_refresh": "ITRG (refresh, 4 rounds $\\times$ top-6)",
@@ -111,7 +111,7 @@ qhead = " & ".join(q.replace("sf-", "") for q in qids)
 # ── A.3 per-question transcripts ─────────────────────────────────────
 blocks = []
 for idx, qid in enumerate(qids, start=1):
-    row0 = qa[qid]["qdcvr"]
+    row0 = qa[qid]["hmrs"]
     claim = tidy(row0["claim"])
     gold = ", ".join(row0["golden_ids"])
     means = sum(judge_rows[m][idx - 1]["score"] for m in ORDER) / len(ORDER)
@@ -173,7 +173,7 @@ doc = r"""% ====================================================================
 \setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
 \setlength{\floatsep}{6pt plus 2pt minus 2pt}
 \setlength{\abovecaptionskip}{4pt}
-\newcommand{\sys}{\textsc{Qdcvr}}
+\newcommand{\sys}{\textsc{Hmrs}}
 \setlength{\emergencystretch}{2.2em}
 \tolerance=1400
 

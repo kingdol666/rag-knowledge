@@ -237,7 +237,7 @@ BACKEND_PORT=9000 APP_MODE=dev uv run python main.py
 | `POST` | `/api/v1/soul/init` | Soul Init |
 | `POST` | `/api/v1/soul/learn-all` | Learn All Global |
 | `GET` | `/api/v1/soul/list` | Soul List |
-| `POST` | `/api/v1/soul/qdcvr-ask` | Soul Qdcvr Ask |
+| `POST` | `/api/v1/soul/hmrs-ask` | Soul Hmrs Ask |
 | `POST` | `/api/v1/soul/router` | Router Route |
 | `GET` | `/api/v1/soul/router/status` | Router Status |
 | `GET` | `/api/v1/soul/settings` | Soul Settings |

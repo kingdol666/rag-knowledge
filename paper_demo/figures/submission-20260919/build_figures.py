@@ -66,7 +66,7 @@ def concept():
         if e.tag.endswith('rect') and e.get('x') == '512' and e.get('y') == '94':
             e.set('height', '468')
         if e.tag.endswith('text'):
-            e.text = {'QDCVR': 'QDCVR (agent-executed skill)',
+            e.text = {'HMRS': 'HMRS (agent-executed skill)',
                       '800-char chunks': '≈800-character windows',
                       'Dense retrieval → top 2': 'Dense retrieval → pack 2 excerpts',
                       '4,000-char evidence window': '≤4,000-character evidence window'}.get(e.text, e.text)
@@ -88,7 +88,7 @@ def concept():
         text(40,470,'Compared configurations,',20,600),
         text(40,497,'not a claim of accuracy superiority.',19),
         text(20,582,'0–8 rubric: ≥6 direct; usable P1 =5 may support an attributed answer after fallback. Scores are agent judgments.',16),
-        # lane accent bars (visual polish: blue = dense baseline, teal = QDCVR)
+        # lane accent bars (visual polish: blue = dense baseline, teal = HMRS)
         node('rect', x=20, y=94, width=468, height=4, fill='#6c86a8'),
         node('rect', x=512, y=94, width=468, height=4, fill='#2f7d5f'),
     ]
@@ -96,23 +96,23 @@ def concept():
     root.find(f'{{{NS}}}desc').text = (
         'BQ02 shared NISQ query. Left: current reproduction scripts use approximately 800-character windows, '
         'retrieve ten candidates, then pack two excerpts within a 4,000-character budget for single generation; provenance is not logged '
-        'by this harness. Right: an agent executes QDCVR, reads candidates and self-assesses them on a 0–8 '
+        'by this harness. Right: an agent executes HMRS, reads candidates and self-assesses them on a 0–8 '
         'rubric. Initial score ≥6 yields a direct cited answer; score 5 is retained as a P1 backstop and scores ≤4 are discarded while fallback runs. '
         'After librarian fallback and read/recheck, P0 ≥6 supports a cited answer; usable P1 score 5 supports a qualified answer with attribution, including a retained backstop. '
-        'Only no usable P0/P1 evidence yields a scoped not-found report. All QDCVR outcomes remain within the right-hand lane. This is not an accuracy comparison.')
+        'Only no usable P0/P1 evidence yields a scoped not-found report. All HMRS outcomes remain within the right-hand lane. This is not an accuracy comparison.')
     return root
 
 
 def architecture():
     root = load('direction-b.svg')
     resize(root, 590)
-    root.find(f'{{{NS}}}title').text = 'Platform services and agent-executed QDCVR workflow'
+    root.find(f'{{{NS}}}title').text = 'Platform services and agent-executed HMRS workflow'
     root.find(f'{{{NS}}}desc').text = (
         'Web search uses HTTP, ragctl handles setup and services, and agents use an MCP adapter to shared backend primitives. '
-        'The packaged agent skills execute content classification, the QDCVR gate and retry policy; these are '
+        'The packaged agent skills execute content classification, the HMRS gate and retry policy; these are '
         'not automatically enforced on every web or HTTP search. Web uploads use a selected destination; this diagram shows agent-assisted ingestion, not automatic routing of all uploads. Offline: MinerU parses PDFs into section '
         'Markdown; an agent reads and routes content into five demo bases and selects or propagates tags, with deterministic split, index and store primitives. This is not a guarantee that every MCP-created part is tagged. Evidence is stored '
-        'using ChromaDB/BGE-M3, Neo4j and YAML metadata. Online agent-executed QDCVR: query rewrite, '
+        'using ChromaDB/BGE-M3, Neo4j and YAML metadata. Online agent-executed HMRS: query rewrite, '
         'vector-first cross-base recall, candidate reading, and a 0–8 rubric. Initial ≥6 supports direct answering; initial score 5 is retained as a P1 backstop, while ≤4 is discarded; both trigger fallback. '
         'After reading and rechecking, P0 ≥6 supports a cited answer, usable P1 score 5 supports an attributed qualified answer, and only no usable P0/P1 supports not-found. Tools/backend supply the capabilities, not automatic policy enforcement.')
     replacements = {
@@ -158,7 +158,7 @@ def architecture():
         text(572,458,'5 retained; ≤4 discarded',16),
     ])
     root.append(body)
-    root.append(text(295,119,'Agent-executed QDCVR skill',18,600))
+    root.append(text(295,119,'Agent-executed HMRS skill',18,600))
     root.append(text(30,119,'Demo: five category bases',16))
     root.append(text(20,586,'Skills execute gate / retry / classification; web or HTTP search does not automatically enforce this policy.',16))
     return root

@@ -76,10 +76,37 @@ export interface BatchParsePDFFileVTResponse {
   error?: string
 }
 
+export interface SaveParsedFilesRequest {
+  parentId: string
+  split?: boolean
+  agentPlan?: Record<string, unknown>
+  results: Array<BatchParsePDFFileVTItemWithDescription & { recoveryReceipt?: string }>
+}
+
 export interface SaveParsedFilesResponse {
   success: boolean
+  /** Fully confirmed document records only. */
   savedCount: number
   files: Array<Record<string, any>>
+  /** Incomplete records that may have been written before an item failed. */
+  partialCount: number
+  partialFiles: Array<Record<string, any>>
+  /** Existing content duplicates, reported without modifying their metadata/images. */
+  existingCount: number
+  existingFiles: Array<Record<string, any>>
+  /** Number of input items not fully saved (including parse failures). */
+  failedCount: number
+  items: Array<{
+    index: number
+    filename: string
+    success: boolean
+    files: Array<Record<string, any>>
+    /** Newly published images, including images retained on failure. */
+    createdImages: Array<{ path: string; identity: { dev: number; ino: number } }>
+    error?: string
+    /** Opaque, process-local bearer capability. Keep in volatile memory only. */
+    recoveryReceipt?: string
+  }>
 }
 
 // Request options

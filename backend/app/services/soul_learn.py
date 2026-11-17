@@ -23,6 +23,7 @@ from app.utils.safe_paths import resolve_within
 from app.services.agent_harness_manager import agent_harness
 from app.services.storage_reader_service import storage_reader
 from app.services.two_stage_search_service import two_stage_search_service
+from app.services.soul_profile import require_usable_search_result
 from app.services.graph_service import graph_service
 from app.services.experience_service import experience_service
 from app.services.kb_meditation_config import (
@@ -458,11 +459,9 @@ async def self_answer(
             # 多库: 每个 scope 库单独检索,按 score 降序合并去重
             merged_raw: list[dict] = []
             for kid in scope_ids:
-                try:
-                    rr = two_stage_search_service.search(
-                        query=q_text, kb_id=kid, **search_kwargs)
-                except Exception:
-                    continue
+                rr = await two_stage_search_service.search_async(
+                    query=q_text, kb_id=kid, **search_kwargs)
+                require_usable_search_result(rr, kid)
                 merged_raw.extend(rr.get("stage2", {}).get("results", []))
             seen_pairs: set[tuple] = set()
             results_raw = []
@@ -473,11 +472,12 @@ async def self_answer(
                 seen_pairs.add(key)
                 results_raw.append(r)
         else:
-            search_result = two_stage_search_service.search(query=q_text, **search_kwargs)
+            search_result = await two_stage_search_service.search_async(query=q_text, **search_kwargs)
+            require_usable_search_result(search_result, search_kwargs.get("kb_id"))
             results_raw = search_result.get("stage2", {}).get("results", [])
     except Exception as e:
         logger.error("self_answer: search failed: %s", e)
-        return {"retrieval_pass": False}
+        return {"retrieval_pass": False, "error": "search_failed", "detail": str(e)[:300]}
 
     # 归一化为统一 chunk 格式含 chunk_text
     chunks: list[dict] = []
@@ -1417,6 +1417,9 @@ async def _learn_incremental_once(soul_kb_id: str, round_idx: int = 1) -> dict:
             # 自答
             sa_result = await self_answer(q_item, soul_kb_id, kb_scope)
             total_calls += 1
+            if sa_result.get("error") == "search_failed":
+                deduct_cost(soul_kb_id, total_cost)
+                return {"success": False, "error": "search_failed", "detail": sa_result.get("detail", "")}
             if not sa_result.get("retrieval_pass"):
                 total_gaps += 1
                 continue
@@ -1554,6 +1557,7 @@ async def learn_incremental(soul_kb_id: str, rounds: int = 1,
             return {
                 "success": False,
                 "error": first_error,
+                "detail": per_round[-1].get("detail", ""),
                 "rounds_completed": len(per_round),
                 "per_round": per_round,
                 "questions_generated": int(totals.get("questions_generated", 0)),
@@ -1749,9 +1753,13 @@ async def learn_all(
                 "soul_kb_id": sid,
                 "questions": 0, "memories": 0, "docs": 0,
                 "error": result.get("error"),
+                "detail": result.get("detail") or (result.get("per_round") or [{}])[-1].get("detail", ""),
             })
 
+    search_failure = next((item for item in soul_results if item.get("error") == "search_failed"), None)
     return {
+        **({"success": False, "error": "search_failed", "detail": search_failure.get("detail", "")}
+           if search_failure else {}),
         "souls": soul_results,
         "total_questions": total_questions,
         "total_memories": total_memories,
@@ -1837,6 +1845,7 @@ async def learn_docs(
             return {
                 "success": False,
                 "error": first_error,
+                "detail": per_round[-1].get("detail", ""),
                 "rounds_completed": len(per_round),
                 "per_round": per_round,
                 "questions_generated": int(totals.get("questions_generated", 0)),
@@ -1973,6 +1982,9 @@ async def _learn_docs_once(
 
                 sa_result = await self_answer(q_item, soul_kb_id, kb_scope)
                 total_calls += 1
+                if sa_result.get("error") == "search_failed":
+                    deduct_cost(soul_kb_id, total_cost)
+                    return {"success": False, "error": "search_failed", "detail": sa_result.get("detail", "")}
                 if not sa_result.get("retrieval_pass"):
                     total_gaps += 1
                     continue
@@ -2130,6 +2142,7 @@ async def learn_incremental_parallel(
 
         if first_error:
             return {"success": False, "error": first_error,
+                    "detail": per_round[-1].get("detail", ""),
                     "rounds_completed": len(per_round), "per_round": per_round,
                     "questions_generated": int(totals.get("questions_generated", 0)),
                     "memories_created": int(totals.get("memories_created", 0)),
@@ -2249,6 +2262,11 @@ async def _learn_incremental_parallel_once(
             calls_count += len(batch)
             total_calls += len(batch)
             total_cost += 0.005 * len(batch)
+            search_failure = next((r for r in batch_results
+                                   if isinstance(r, dict) and r.get("error") == "search_failed"), None)
+            if search_failure is not None:
+                deduct_cost(soul_kb_id, total_cost)
+                return {"success": False, "error": "search_failed", "detail": search_failure.get("detail", "")}
 
         # 事件: 自答结果
         if progress_cb:

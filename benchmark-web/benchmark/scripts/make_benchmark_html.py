@@ -120,7 +120,7 @@ def html_template(data_json: str, chartjs: str, generated: str) -> str:
  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 </style></head><body>
 <h1>rag-knowledge 基准报告：知识入库 · 内容检索（主线） · 冥想经验</h1>
-<p class="meta">生成时间 __GENERATED__ · 研究主张：<b>基于内容的逐级检索</b>（Agent 按 QDCVR 规程
+<p class="meta">生成时间 __GENERATED__ · 研究主张：<b>基于内容的逐级检索</b>（Agent 按 HMRS 规程
 kb_list 选库 → kb_search_two_stage 召回 → kb_doc_read 内容裁决，content-overrides-vector）优于
 一次性向量 top-k；两阶段检索为<b>工程加速项</b>；跨语言（en/zh/ja）检验稳健性。</p>
 
@@ -137,7 +137,7 @@ kb_list 选库 → kb_search_two_stage 召回 → kb_doc_read 内容裁决，con
 <h2>模块 B · 内容检索（主线）vs 传统向量 baseline</h2>
 <div class="card"><canvas id="chartB" height="120"></canvas></div>
 <div class="fig-explain"><b>图 B1 解读：</b>同一 MCP 工具层、同一受控对照库（每语言 400 页）下的对比。
-"内容检索(确定性 QDCVR)"= 程序化展开 knowledgebase-search 规程（两阶段召回 → 阈值 0.35 去重 →
+"内容检索(确定性 HMRS)"= 程序化展开 knowledgebase-search 规程（两阶段召回 → 阈值 0.35 去重 →
 top-3 kb_doc_read 内容验证并提升命中文档），"向量 baseline" = kb_search_vector 一次性 top-10。
 若内容检索 Recall@5 高于向量 baseline，说明<b>逐级检索+内容裁决</b>把"真正含答案的文档"提前，
 这正是论文的核心主张；两者差距即内容裁决层的净贡献（verification_boost_delta）。</div>
@@ -148,7 +148,7 @@ stage3 占比越高，说明<b>内容验证层</b>对最终命中的贡献越大
 的直接证据，支撑论文方法设计（Step3 content-overrides-vector）。</div>
 <div class="card"><canvas id="chartB3" height="110"></canvas></div>
 <div class="fig-explain"><b>图 B3 解读（Agent 真链路）：</b>由 harness(omp) 驱动的真实 Agent
-（加载 QDCVR skill 与 .omp/mcp.json 的 kb-mcp 工具）自主逐级检索，金标页出现在其引用文档中计命中。
+（加载 HMRS skill 与 .omp/mcp.json 的 kb-mcp 工具）自主逐级检索，金标页出现在其引用文档中计命中。
 因 LLM 非确定性，报告 mean±std（transcript 全部存档于 results/benchmark/agent-transcripts/ 可审计）。
 Agent 的 hit 高于确定性管线时，说明 LLM 的查询改写与逐级浏览能覆盖单查询相似度的盲区——
 即"Agent 基于内容的检索"相对"一次性 top-k"的完整优势。</div>
@@ -159,7 +159,7 @@ Agent 的 hit 高于确定性管线时，说明 LLM 的查询改写与逐级浏�
 harness Agent 总结经验）。<b>运行成功率</b>与<b>KB 覆盖</b>度量自动化机制的可靠性；
 <b>结构完整率</b>检查经验的 title/scenario/category 字段；<b>检索接地率</b>把经验正文当作查询
 在其源库做向量检索（≥0.45 记接地），验证"经验确实源自库内内容"而非幻觉；
-<b>消融 Δ</b>（exp_hit3）在经验源问题上对比经验层 QDCVR 检索与纯 KB 向量检索，
+<b>消融 Δ</b>（exp_hit3）在经验源问题上对比经验层 HMRS 检索与纯 KB 向量检索，
 度量经验自动总结对后续检索的增益。该图支撑论文中"经验闭环有效且可复现"的声明。</div>
 <table id="tableC"><thead><tr><th>KB</th><th>运行成功</th><th>经验数</th><th>结构完整率</th><th>检索接地率</th><th>消融 exp_hit@3</th></tr></thead><tbody></tbody></table>
 
@@ -175,7 +175,7 @@ harness Agent 总结经验）。<b>运行成功率</b>与<b>KB 覆盖</b>度量�
 sha256 见 data/benchmarks/kb_split/crosslang-manifest-*.json）；查询=确定性 cloze 协议（年份 span 置换）。</li>
 <li>链路：全部经 kb-mcp（MCP stdio, uv run --directory kb-mcp python server.py）→ backend :8771。</li>
 <li>嵌入 BAAI/bge-m3（本地 GPU）· 向量库 ChromaDB · BM25 jieba · 随机性：无随机数（确定性管线）；Agent 通道 mean±std。</li>
-<li>基线参数：kb_search_vector（Chroma, bge-m3, top_k=10, 阈值 0.35 仅用于 QDCVR Step2.5）。</li>
+<li>基线参数：kb_search_vector（Chroma, bge-m3, top_k=10, 阈值 0.35 仅用于 HMRS Step2.5）。</li>
 <li>复现命令与容忍度见 Skill: rag-cikm-benchmark。</li>
 </ul>
 <p class="meta">脚本: benchmark-web/benchmark/scripts/{benchmark_ingestion,benchmark_content_mcp,benchmark_content_agent,benchmark_meditation,make_benchmark_html}.py</p>
@@ -211,7 +211,7 @@ bar('chartA', langs.map(l=>({en:'English',zh:'中文',ja:'日本語'}[l])), [
 const con = DATA.content;
 const ds = (key,label) => ({label, data: langs.map(l=>con[l][key])});
 bar('chartB', langs.map(l=>({en:'English',zh:'中文',ja:'日本語'}[l])), [
-  {label:'内容检索 R@5 (QDCVR)', data: langs.map(l=>con[l].staged_r5)},
+  {label:'内容检索 R@5 (HMRS)', data: langs.map(l=>con[l].staged_r5)},
   {label:'向量 baseline R@5', data: langs.map(l=>con[l].vector_r5)},
   {label:'内容检索 R@1', data: langs.map(l=>con[l].staged_r1)},
   {label:'向量 baseline R@1', data: langs.map(l=>con[l].vector_r1)},

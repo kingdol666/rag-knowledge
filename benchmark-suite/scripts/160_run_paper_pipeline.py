@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-r"""QDCVR 论文终测总流水线 —— 一条命令跑完全部阶段并产出可写入论文的证据与可视化报告。
+r"""HMRS 论文终测总流水线 —— 一条命令跑完全部阶段并产出可写入论文的证据与可视化报告。
 
 阶段（每阶段独立、可单独跑、fail-closed）
     S0 平台与语料体检   scripts/150_final_pipeline.py --check
@@ -66,7 +66,7 @@ def newest_run(min_cells: int = 10) -> Path | None:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="QDCVR 论文终测总流水线")
+    ap = argparse.ArgumentParser(description="HMRS 论文终测总流水线")
     ap.add_argument("--stages", default="", help=f"逗号分隔子集，默认 {' '.join(ALL_STAGES)}")
     ap.add_argument("--live", action="store_true", help="真的执行三轨实验（S2，约 30 分钟 / ~$17）")
     ap.add_argument("--stability", action="store_true", help="跑稳定性套件（S5，约 30 分钟）")

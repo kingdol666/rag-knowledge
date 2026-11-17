@@ -47,3 +47,37 @@ Task: design review + skills/API verification + non-paper test-result cleanup + 
 - Full-function: dev_smoke 21/21; MCP tools/list 95; chat API librarian lane gold hit 47.8s zero off-lane; agent/chat (web 6789 NOT backend!) native harness 35s lists 21 KBs; mgmt smoke 7/7 incl. rename hygiene (run-4 fix holds).
 - verify.py PASS; manifest 3 pre-existing drifts unexpanded.
 - Pushed 6 commits: 41044dd fix(rename hygiene), 57b4fb3 fix(platform skill-audit+mock+dev_smoke+kb-mcp), d0d291f paper workspace, f7de88e test(runs1-5 evidence+skills-archive), 2335060 test(run5 probe endpoint fix), 8ecea8e dev_smoke artifact. Reviewer APPROVE 6/6.
+
+## 2026-11-14 修复轮（US-001/002/003）
+- US-001: backend lifespan 增加后台 BM25 预热（asyncio.to_thread + create_task，非阻塞）；
+  /api/v1/health 新增 keyword_index{ready,building}（真实状态）。
+  陷阱实录: _build_keyword_index 用 self._keyword_built=True 发布（实例属性），
+  classmethod 版 keyword_index_status 读类属性 → 永远 ready=false（00:06 冷启动实测抓到），
+  已改为实例方法。冷重启实测: T+24s ready=true（00:11:13 built 2287 docs），首调 two-stage success=true。
+  上一轮基线: 无预热时首调 504 degraded=true（BM25 构建 79s）。warm jieba 缓存后构建 24-75s 不等。
+- US-002: web chat.post.ts DEFAULT_TIMEOUT_MS 420000→600000（=MAX）。理由: OOD 全覆盖扫描实测 452.8s。
+- US-003: mojibake 未复现（6 次 move × 3 通道: MCP/直连HTTP/改名序，响应+Chroma chunk 全部正确 UTF-8）。
+  固定路径全部验证 utf-8 安全（mcp_call utf-8 / kb_client httpx json / web readFileSync 'utf-8' / backend read_text utf-8）。
+  结论=一次性瞬态（数据层已被 move 卫生重索引自愈），无代码级根因可修；保留 repro_mojibake.py 作为回归脚本。
+  测试库全部清理，kb_list 恢复 53。
+- 测试: backend tests/test_keyword_index_status.py 3 passed; test_unit.py 全绿; web npm run build 零错误;
+  ensure_stack --check ready:true（STACK-READY 语义保持）。
+
+## 2026-11-14 评审轮（architect REJECTED → 闭环）
+- 教训1: keyword_index_status 原实现取 _keyword_lock——该锁被整个 BM25 构建持有（71-79s），
+  async 健康端点会冻结整个事件循环且 building:true 不可观测（评审用 2s 模拟锁实证 probe 阻塞 1.69s）。
+  修复=无锁读 bool（CPython 原子读，健康提示字段）；新增 test_status_read_never_blocks_on_builder_lock。
+- 教训2: repro_mojibake.py 用 -X utf8 跑 mcp_call 固定了其 stdout 编码 → MCP 通道复现是循环论证。
+  修复=mcp_call.py main() 入口 reconfigure utf-8（不再依赖调用方环境），并补无 -X utf8 直调验证。
+- 实测闭环: 冷重启 poll2-7 building:true 连续可观测 + 构建期间 mineru 端点 401 正常应答 + poll10 ready:true；
+  无 -X utf8 kb_list 中文正确；repro round 干净；首调 two-stage success。
+
+== 2026-11-17 bench reproduction round (ralph) ==
+- Clean restart: killed anaconda-orphan stack (incl. zombie spawn worker on :8771), restarted backend(venv)→kb-mcp→web, loop-auth refreshed (12h expiry confirmed again).
+- S0i/S0c preflight green (judge fail-closed alive, 10 KB probes, 72/72 gold-in-library).
+- S4 rerun 7 arms into artifacts/repro_20261117/ (532 rows). Order & gaps reproduced: A0h 48 > PD 42 > A0f 41 > A0 36 ≈ A1b 36 > A2 23; A3 26 (route 49/72 = follow-up exactly). Paired McNemar: 4 of 6 contrasts bit-identical to paper follow-up.
+- Pollution audit 4/4 PASS; final_bench SHA256 unchanged (d1379a54...).
+- Incident: A3 first attempt hung in --prepare-a3 twin-library rebuild (same fingerprint as R3 attempt1_aborted_route_card_death); retry without prepare ran at frozen pace. Learning: use existing twins; avoid prepare-a3 during reproductions.
+- readall not rerun (deterministic script scan ~5h; rationale documented, architect-approved).
+- Verdict: REPRODUCED. Report: review/experiment-redesign-20261101/artifacts/repro_20261117/REPRO-REPORT-20261117.md
+- Paper review (US-101): A−/B+/B+; two blockers fixed (S1–S8 inventory note; intro arm gloss), rebuilt 20/7 pages CLEAN, Overleaf zip refreshed.

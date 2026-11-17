@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Narration script for the QDCVR demonstration video (CIKM Demo, ~3 minutes).
+"""Narration script for the HMRS demonstration video (CIKM Demo, ~3 minutes).
 
 Every figure spoken here traces to benchmark-suite/results/ artifacts or to what
 the recorded session shows on screen:
@@ -27,7 +27,7 @@ SEGMENTS = [
         text=(
             "Every organization sits on a pile of documents, and nobody can tell "
             "whether a retrieved passage actually answers the question. "
-            "QDCVR is a deployable knowledge-base platform that organizes documents "
+            "HMRS is a deployable knowledge-base platform that organizes documents "
             "by what they say, and verifies every retrieval by reading it."
         ),
     ),
@@ -95,7 +95,7 @@ SEGMENTS = [
         id="s5a_agent", visual="clip:chat", min_seconds=17,
         clip_mode="timelapse", clip_span="head",
         text=(
-            "QDCVR is also the layer an AI agent retrieves through. Here the same "
+            "HMRS is also the layer an AI agent retrieves through. Here the same "
             "question is asked in the Claude chat console with knowledge-base mode "
             "on. The agent invokes the retrieval skill by name, then works the "
             "protocol itself: vector recall across every base, then document reads "
@@ -117,14 +117,14 @@ SEGMENTS = [
         id="s6_close", visual="title_end", min_seconds=12,
         text=(
             "At the booth: bring a PDF, watch it classified, ask a question, inspect "
-            "the score and the citation, and then try to make it lie. QDCVR. Content "
+            "the score and the citation, and then try to make it lie. HMRS. Content "
             "decides where documents live, and reading decides what answers."
         ),
     ),
 ]
 
 CAPTIONS = {
-    "s1_opening": "QDCVR \u2014 a deployable knowledge-base platform",
+    "s1_opening": "HMRS \u2014 a deployable knowledge-base platform",
     "s2_organization": "50 real papers \u00b7 3.8M characters \u00b7 5 content-classified bases",
     "s3a_retrieval": "BM25 + vector recall over all five bases",
     "s3b_gate": "0\u20138 content gate \u2192 five-section answer with base \u00b7 doc \u00b7 part \u00b7 section",
@@ -137,7 +137,7 @@ CAPTIONS = {
 
 # ── Card content: real artifact text, trimmed for legibility ─────────────────
 CARD_ANSWER = dict(
-    kicker="QDCVR protocol \u00b7 Track A \u00b7 recorded benchmark answer",
+    kicker="HMRS protocol \u00b7 Track A \u00b7 recorded benchmark answer",
     title="BQ02 \u2014 What defines NISQ technology and what is its central limitation?",
     badge="content gate 7/8 \u00b7 fast exit",
     body=[
@@ -160,7 +160,7 @@ CARD_ANSWER = dict(
 )
 
 CARD_NOTFOUND = dict(
-    kicker="QDCVR protocol \u00b7 honest-failure probe P2",
+    kicker="HMRS protocol \u00b7 honest-failure probe P2",
     title="\u201cWhat did \u2018Spectral Tuning for Low-Resource Odor Recognition\u2019 "
           "report about training epochs?\u201d",
     badge="content gate 1/8 \u00b7 NOT FOUND",

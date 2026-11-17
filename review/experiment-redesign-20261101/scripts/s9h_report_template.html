@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>逐级检索内容层优化实验 · 终版报告（2026-11-11）</title>
+<style>
+:root{--teal:#0f766e;--ink:#111827;--mut:#6b7280;--bg:#f8fafc;--card:#fff;--line:#e5e7eb;
+      --ok:#059669;--bad:#dc2626;--amber:#d97706;--violet:#7c3aed;}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
+header{background:linear-gradient(135deg,#0f766e,#134e4a);color:#fff;padding:28px 36px}
+header h1{margin:0 0 6px;font-size:22px}
+header .sub{opacity:.85;font-size:13px}
+main{max-width:1180px;margin:0 auto;padding:20px 28px 60px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:18px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+.card .k{font-size:12px;color:var(--mut)}
+.card .v{font-size:24px;font-weight:700;color:var(--teal)}
+.card .d{font-size:12px;color:var(--mut)}
+h2{font-size:17px;margin:34px 0 10px;border-left:4px solid var(--teal);padding-left:10px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{background:#f1f5f9;font-size:12.5px;color:#334155}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.hl td{background:#f0fdfa;font-weight:600}
+.badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11.5px;font-weight:600}
+.b-hit{background:#d1fae5;color:#065f46}.b-miss{background:#fee2e2;color:#991b1b}
+.b-ref{background:#fef3c7;color:#92400e}.b-na{background:#f1f5f9;color:#64748b}
+.star{color:var(--bad);font-weight:700}
+details{margin:6px 0}
+details summary{cursor:pointer;color:var(--teal);font-weight:600}
+img.chart{width:100%;max-width:980px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.toolbar input,.toolbar select{padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px;background:#fff}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin:8px 0}
+.tab{padding:5px 14px;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;background:#e2e8f0;cursor:pointer;font-size:13px}
+.tab.on{background:var(--teal);color:#fff;font-weight:600}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:8px 0;overflow:hidden}
+.qhead{display:flex;gap:10px;align-items:center;padding:9px 14px;cursor:pointer}
+.qhead:hover{background:#f8fafc}
+.qhead .qid{font-family:Consolas,monospace;font-size:12px;color:var(--mut);min-width:230px}
+.qhead .qq{flex:1;font-size:13px}
+.qbody{display:none;border-top:1px solid var(--line);padding:12px 16px;background:#fcfcfd}
+.qbody.open{display:block}
+pre.ev{white-space:pre-wrap;background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-size:12.5px;max-height:340px;overflow:auto}
+.meta{font-size:12.5px;color:var(--mut);margin:4px 0}
+.loadfull{color:var(--teal);cursor:pointer;font-size:12.5px;text-decoration:underline}
+.note{font-size:12.5px;color:var(--mut)}
+footer{padding:18px 36px;color:var(--mut);font-size:12px}
+.pill{font-size:11px;border:1px solid var(--line);border-radius:8px;padding:0 6px;color:var(--mut)}
+</style>
+</head>
+<body>
+<header>
+  <h1>逐级检索内容层优化实验 · 终版结果报告</h1>
+  <div class="sub">rag-knowledge · 语料 10 库 / 138 卷 / 23.9MB · 72 gold + 4 拒答探针 · 判卷 = 本地 Laya 引擎（fail-closed） · 2026-11-11</div>
+</header>
+<main>
+<div id="cards" class="cards"></div>
+
+<h2>① 主对比表（gold n=72/臂，Wilson 95% CI，McNemar qid 配对 vs A0）</h2>
+<div id="mainTable"></div>
+<p class="note">★ p&lt;0.05（精确双侧）。A0h=逐级导航+chunk窗口并集（论文主臂）；PD=放弃导航的精确逐文档检索（对照）；零回归（base_only=0）。</p>
+
+<h2>② 传统检索 floor（sanity 下限，n=40）</h2>
+<div id="floorTable"></div>
+
+<h2>③ 分析图表</h2>
+<div id="charts"></div>
+
+<h2>④ A0 基线 35 缺口归因（磁盘逐题定位）</h2>
+<div id="attrBlock"></div>
+
+<h2>⑤ 逐题明细与各模式回复原文</h2>
+<p class="note">每题展开可查看：题目 / 金标证据 / 各模式命中状态 / 检索 top1 / 该模式回复（证据）原文。原文前 1500 字符内嵌；
+完整原文由 <code>responses/*.json</code> 同文件夹提供，点击“加载完整原文”按相对路径读取（整文件夹共享时可用）。</p>
+<div class="toolbar">
+  <input id="qsearch" type="text" placeholder="搜索题号/题目…" style="flex:1;min-width:240px">
+  <select id="statusSel">
+    <option value="all">全部状态</option>
+    <option value="hit">有命中</option>
+    <option value="miss">未命中</option>
+  </select>
+</div>
+<div id="tabs" class="tabs"></div>
+<div id="qlist"></div>
+
+<h2>⑥ 口径注记</h2>
+<div id="notes"></div>
+</main>
+<footer>生成：scripts/s9h_build_html_report.py · 数据源：final_bench/（s6_stats / s4_traces_final / s5_floor / attribution / viz / responses）· 论文引用请以 s6_stats.json 为准。</footer>
+<script>
+const D = __DATA__;
+const esc = s => (s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct = x => (100*x).toFixed(1)+"%";
+
+// ── 概览卡片 ──
+const S = D.armStats;
+const g = a => S[a]||{};
+const card = (k,v,d)=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`;
+document.getElementById("cards").innerHTML =
+  card("A0h 逐级检索（主臂）", pct(g("A0h").gold_rate), `52/72 · vs A0 p=${(D.paired["A0h"]||{}).p_exact_two_sided?.toExponential(1)}`)
++ card("PD 精确逐文档（对照）", pct(g("PD")?.gold_rate??0), `46/72 · vs A0 p=${(D.paired["PD"]||{}).p_exact_two_sided}`)
++ card("A0 基线逐级", pct(g("A0").gold_rate), `37/72 · 路由 72/72`)
++ card("通读上界", pct(g("A1-readall").gold_rate), `24.3MB/题 · 非问答基线`)
++ card("A0h 读入/题", Math.round(g("A0h").avg_bytes_gold/1000)+" KB", `= 通读上界的 1/80 · 工具 ${g("A0h").avg_tool_s_gold}s`)
++ card("基线缺口归因", D.attribution.length+" 题", `窗口截断 5 · 判卷未命中 30 · 路由 0`);
+
+// ── 主表 ──
+const desc = {A0h:"逐级：路由→架→宽网→全窗判卷 ∪ chunk top-8（帽60K）",
+  PD:"精确逐文档：十库并集 top-6 → 全窗判卷（无导航）",
+  A0f:"同 A0 导航；判卷全窗 inline（消融中间臂）",
+  A0:"逐级基线：判卷引用模式 40K 窗",
+  A1b:"十库向量并集 top-6 → 判卷（参考窗 40K）",
+  A2:"无证据门（消融）", "A1-readall":"逐篇通读（上界，非问答基线）"};
+let mt = "<table><tr><th>臂</th><th>检索方式</th><th class='num'>命中</th><th class='num'>rate</th><th>95% CI</th><th>vs A0 (p)</th><th class='num'>bytes/题</th><th class='num'>工具s</th><th>路由</th></tr>";
+for (const a of ["A0h","PD","A0f","A0","A1b","A2","A1-readall"]) {
+  const s = g(a); if (!s.n_gold) continue;
+  const p = D.paired[a];
+  const pTxt = a==="A0" ? "baseline" : (p ? (p.p_exact_two_sided<0.0001? p.p_exact_two_sided.toExponential(1): p.p_exact_two_sided.toFixed(4)) + (p.p_exact_two_sided<0.05?' <span class="star">*</span>':'') : "—");
+  const rc = a==="A0"||a==="A0f"||a==="A0h" ? "72/72" : (a==="A3"?"37/72":"n/a");
+  mt += `<tr${a==="A0h"?' class="hl"':''}><td>${a}</td><td style="white-space:normal">${desc[a]||""}</td>
+    <td class="num">${s.gold_hits}/${s.n_gold}</td><td class="num">${pct(s.gold_rate)}</td>
+    <td class="num">[${s.gold_ci95[0].toFixed(3)}, ${s.gold_ci95[1].toFixed(3)}]</td>
+    <td class="num">${pTxt}</td><td class="num">${s.avg_bytes_gold.toLocaleString()}</td>
+    <td class="num">${s.avg_tool_s_gold}</td><td>${rc}</td></tr>`;
+}
+document.getElementById("mainTable").innerHTML = mt+"</table>";
+
+// ── floor ──
+let ft = "<table><tr><th>floor</th><th class='num'>命中</th><th class='num'>n</th><th class='num'>rate</th></tr>";
+for (const [k,h,n] of D.floor) ft += `<tr><td>${k}</td><td class="num">${h}</td><td class="num">${n}</td><td class="num">${pct(h/n)}</td></tr>`;
+document.getElementById("floorTable").innerHTML = ft+"</table><p class='note'>floor 仅描述性下限：无证据门/溯源/拒答，不替代内容认知基线。</p>";
+
+// ── 图表 ──
+document.getElementById("charts").innerHTML = Object.entries(D.charts).map(([k,b64])=>
+  `<details open><summary>${k}</summary><img class="chart" src="data:image/png;base64,${b64}"></details>`).join("");
+
+// ── 归因 ──
+const clsCnt = {};
+D.attribution.forEach(r=>clsCnt[r.class]=(clsCnt[r.class]||0)+1);
+document.getElementById("attrBlock").innerHTML =
+  `<p>${Object.entries(clsCnt).map(([k,v])=>`<span class="pill">${k}: ${v}</span>`).join(" ")}</p>
+   <details><summary>展开 35 行明细（qid / 类别 / 卷 / 偏移）</summary>
+   <table><tr><th>qid</th><th>类别</th><th>库</th><th>卷</th><th class="num">字符偏移</th><th class="num">行</th></tr>
+   ${D.attribution.map(r=>`<tr><td>${esc(r.qid)}</td><td>${esc(r.class)}</td><td>${esc(r.routed_kb||"")}</td><td style="white-space:normal">${esc(r.volume||"")}</td><td class="num">${r.char_offset??""}</td><td class="num">${r.line??""}</td></tr>`).join("")}
+   </table></details>`;
+
+// ── 逐题浏览器 ──
+const qs = Object.values(D.questions);
+let curArm = "A0h";
+const tabsEl = document.getElementById("tabs");
+function renderTabs(){
+  tabsEl.innerHTML = D.arms.map(a=>`<div class="tab${a===curArm?" on":""}" data-a="${a}">${a}${a==="A0h"?" ★":""}</div>`).join("");
+  tabsEl.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{curArm=t.dataset.a;renderTabs();renderList();});
+}
+function statusOf(q){const h=q.arms[curArm];if(q.is_refusal)return "ref";return h&&h.gold_hit?"hit":"miss";}
+function renderList(){
+  const kw = document.getElementById("qsearch").value.trim().toLowerCase();
+  const st = document.getElementById("statusSel").value;
+  const list = qs.filter(q=>{
+    if(st!=="all" && statusOf(q)!==st) return false;
+    if(kw && !(q.qid.toLowerCase().includes(kw)||q.question.toLowerCase().includes(kw))) return false;
+    return true;
+  });
+  document.getElementById("qlist").innerHTML = list.map(q=>{
+    const h = q.arms[curArm]||{};
+    const stt = statusOf(q);
+    const badge = stt==="ref"?'<span class="badge b-ref">拒答探针</span>':h.gold_hit?'<span class="badge b-hit">HIT</span>':'<span class="badge b-miss">MISS</span>';
+    return `<div class="qcard" data-qid="${esc(q.qid)}">
+      <div class="qhead"><span class="qid">${esc(q.qid)}</span><span class="qq">${esc(q.question)}</span>${badge}</div>
+      <div class="qbody">
+        <div class="meta"><b>金标文档</b> ${esc(h.top1||"—")} · <b>耗时</b> ${h.tool_s??"—"}s · <b>读入</b> ${h.bytes?h.bytes.toLocaleString():"—"}B ·
+          ${h.response_note?`<span class="pill">${esc(h.response_note)}</span>`:""}</div>
+        <div class="meta"><b>金标证据</b> <code>${esc(q.arms["A0"]?q.arms["A0"].preview.slice(0,0):"")}</code>${esc(goldEvOf(q))}</div>
+        <div class="meta"><b>该模式回复原文</b>（前 1500 字符${h.full_len?`，完整 ${h.full_len} 字符`:""}）</div>
+        <pre class="ev">${esc(h.preview||"(无证据文本——该模式/探针未产生证据包)")}</pre>
+        ${h.has_full?`<span class="loadfull" data-arm="${curArm}" data-qid="${esc(q.qid)}">▸ 加载完整原文</span>`:""}
+        <div class="fullbox"></div>
+        ${h.survivors&&h.survivors.length?`<div class="meta"><b>判卷存活卷</b> ${esc([...new Set(h.survivors)].join("；"))}</div>`:""}
+      </div></div>`;
+  }).join("") || "<p class='note'>（无匹配）</p>";
+  document.querySelectorAll(".qhead").forEach(el=>el.onclick=()=>el.nextElementSibling.classList.toggle("open"));
+  document.querySelectorAll(".loadfull").forEach(el=>el.onclick=()=>loadFull(el));
+}
+function goldEvOf(q){
+  for (const a of D.arms){const h=q.arms[a];if(h&&h.preview){/*gold ev not stored per-arm here*/break;}}
+  return (window.__gold && window.__gold[q.qid]) || "";
+}
+async function loadFull(el){
+  const arm=el.dataset.arm, qid=el.dataset.qid;
+  const box=el.nextElementSibling;
+  box.innerHTML="<span class='note'>加载中…</span>";
+  try{
+    if(!window.__respCache[arm]) window.__respCache[arm]= await (await fetch(`./responses/${arm}.json`)).json();
+    const txt = (window.__respCache[arm][qid]||{}).response_text || "(无)";
+    box.innerHTML = `<pre class="ev" style="max-height:520px">${esc(txt)}</pre>`;
+    el.style.display="none";
+  }catch(e){ box.innerHTML = "<span class='note'>加载失败：请保持 report.html 与 responses/ 文件夹在同一目录。</span>"; }
+}
+window.__respCache = {};
+// gold evidence injection (embedded separately to keep preview table lean)
+window.__gold = D.goldEvidence || {};
+renderTabs(); renderList();
+document.getElementById("qsearch").oninput = renderList;
+document.getElementById("statusSel").onchange = renderList;
+
+// ── 注记 ──
+document.getElementById("notes").innerHTML =
+  `<ul class="note"><li>${esc(D.notes.metric||"")}</li><li>${esc(D.notes.ood||"")}</li><li>${esc(D.notes.scope||"")}</li>
+   <li>回复原文来自 2026-11-11 复现跑（--capture-responses），其命中模式与晋升终版逐臂核对一致（见 RESULTS.md §4）。</li>
+   <li>响应原文完整版：responses/ 目录（每臂一份 JSON）。</li></ul>`;
+</script>
+</body>
+</html>

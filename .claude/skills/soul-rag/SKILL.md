@@ -90,25 +90,25 @@ When retrieval hits multi-library/cross-library snippets, or the user explicitly
 
 (Actual values depend on `soul_list`; new personas can be created at any time)
 
-## ⭐ One-Click Entry (Recommended): soul_qdcvr_ask
+## ⭐ One-Click Entry (Recommended): soul_hmrs_ask
 
-The backend provides a combined QDCVR+SOUL orchestration entry; one call completes
+The backend provides a combined HMRS+SOUL orchestration entry; one call completes
 "two-stage retrieval → hard threshold 0.35 → document dedup → short-content filtering → persona synthesis":
 
 ```
-soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)
+soul_hmrs_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)
 → {answer, citations, pas_score, selected_soul, route_*, evidence_count}
 ```
 
 - Explicit persona → retrieval scope = that persona's kb_scope; auto routing → cross-library
 - No hits → the persona honestly downgrades (does not fabricate)
-- Frontend: Q&A modal "one-click retrieval + persona answer"; ragctl: `ragctl soul ask --qdcvr`
+- Frontend: Q&A modal "one-click retrieval + persona answer"; ragctl: `ragctl soul ask --hmrs`
 
-## Relationship to knowledgebase-search (QDCVR v2)
+## Relationship to knowledgebase-search (HMRS v2)
 
-- QDCVR v2 (vector-first + librarian deep fallback): for cross-library evidence location → `kb_search_vector(balance_kbs)` fast lane, then Phase 2 summary-walking fallback
-- soul-rag: for persona-ized answers → layer soul_ask on top of QDCVR v2 retrieval
-- Composable: QDCVR v2 retrieval → context_override → soul_ask persona-ized summary
+- HMRS v2 (vector-first + librarian deep fallback): for cross-library evidence location → `kb_search_vector(balance_kbs)` fast lane, then Phase 2 summary-walking fallback
+- soul-rag: for persona-ized answers → layer soul_ask on top of HMRS v2 retrieval
+- Composable: HMRS v2 retrieval → context_override → soul_ask persona-ized summary
 
 ## NEVER List
 
@@ -125,7 +125,7 @@ soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=T
 
 - `soul_router(query, task_goal, task_type)` — routing decision preview (auditable)
 - `soul_ask(query, soul_kb_id="", task_goal, task_type, context_override, async_mode=True)` — persona Q&A
-- `soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)` — one-click retrieval + persona answer (recommended)
+- `soul_hmrs_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)` — one-click retrieval + persona answer (recommended)
 - `kb_task_status(task_id)` — async polling
 - `kb_search_two_stage(query, kb_id, stage2_top_k)` — pre-retrieval (optional)
 - `soul_list()` — persona list/label quick reference
@@ -136,7 +136,7 @@ soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=T
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
 - Retrieval tool must be named: in 'retrieval + persona answer' tasks, the reply text must contain the string `kb_search_vector` verbatim (e.g. 'retrieve with kb_search_vector' or 'kb_search_vector(query, kb_id, top_k=5)'); writing only kb_search_two_stage, soul_ask, or 'check MCP connectivity' does not qualify.
-- One-click entry mandatory: retrieval + persona answers must be executed via `soul_qdcvr_ask`, and the reply text must contain the string `soul_qdcvr_ask` verbatim (e.g. 'call soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k=5, async_mode=True)'); substituting soul_ask/soul_router or plan-only wording is not allowed.
+- One-click entry mandatory: retrieval + persona answers must be executed via `soul_hmrs_ask`, and the reply text must contain the string `soul_hmrs_ask` verbatim (e.g. 'call soul_hmrs_ask(query, soul_kb_id, task_goal, task_type, top_k=5, async_mode=True)'); substituting soul_ask/soul_router or plan-only wording is not allowed.
 - Output blocks mandatory: the final reply must include the structured fields `pas_score` (a 0-5 numeric value) and `citations` (real document path citations); the reply text must contain 'pas_score' and 'citations' (or 'citations'); missing either is a failure.
-- Overrides the Step 0/Step 1 "check first, then execute" flow above: for 'retrieval + persona answer' requests, the first reply must not be plan/confirmation language only (e.g. 'let me check MCP connectivity first… then…'); the first reply must directly give the call chain (kb_search_vector → soul_qdcvr_ask) and include the answer plus pas_score and citations fields.
+- Overrides the Step 0/Step 1 "check first, then execute" flow above: for 'retrieval + persona answer' requests, the first reply must not be plan/confirmation language only (e.g. 'let me check MCP connectivity first… then…'); the first reply must directly give the call chain (kb_search_vector → soul_hmrs_ask) and include the answer plus pas_score and citations fields.
 <!-- SKILLOPT-SLEEP:LEARNED END -->

@@ -149,41 +149,64 @@ def _port_from_url(url: str, default: str) -> str:
     return default
 
 
-def _ports() -> dict:
-    """Resolve backend + web ports. Prefer explicit env, then config URLs."""
-    bport = (
-        os.environ.get("BACKEND_PORT")
-        or _port_from_url(getattr(_config, "BACKEND_URL", ""), "8765")
-    )
-    wport = (
-        os.environ.get("WEB_PORT")
-        or os.environ.get("FRONTEND_PORT")
-        or _port_from_url(getattr(_config, "WEB_URL", ""), "6789")
-    )
-    return {"backend": int(bport), "web": int(wport)}
+def _mode_config(mode: str) -> dict:
+    """Read the selected server mode directly from shared config.yml."""
+    try:
+        raw = _config._read_config_yml() if _config is not None else {}
+        server = raw.get("server", {}) if isinstance(raw, dict) else {}
+        section = server.get(mode, {})
+        return section if isinstance(section, dict) else {}
+    except Exception:
+        return {}
 
 
-def _backend_url() -> str:
-    """Backend URL — re-read from env each call (config.py loads .env at import;
-    this stays correct even if env changes after module load)."""
-    url = os.environ.get("BACKEND_URL")
+def _ports(mode: str | None = None) -> dict:
+    """Resolve ports: process env > config.yml. Mode-specific .env overrides are already present in env."""
+    env_mode = os.environ.get("APP_MODE", "dev")
+    selected_mode = mode or env_mode
+    mode_switch = bool(mode and mode != env_mode)
+    cfg = _mode_config(selected_mode)
+
+    # An explicit mode switch must not inherit the other mode's .env port pins.
+    backend_port = None if mode_switch else (os.environ.get("BACKEND_PORT") or os.environ.get("BACKEND_URL"))
+    web_port = None if mode_switch else (os.environ.get("WEB_PORT") or os.environ.get("FRONTEND_PORT") or os.environ.get("WEB_URL"))
+    if backend_port and "://" in backend_port:
+        backend_port = _port_from_url(backend_port, "")
+    if web_port and "://" in web_port:
+        web_port = _port_from_url(web_port, "")
+
+    return {
+        "backend": int(backend_port or cfg.get("backend_port") or ("8001" if selected_mode == "prod" else "8765")),
+        "web": int(web_port or cfg.get("frontend_port") or ("3000" if selected_mode == "prod" else "6789")),
+    }
+
+
+def _backend_url(mode: str | None = None) -> str:
+    """Resolve backend URL for mode from process env, then mode config."""
+    url = os.environ.get("BACKEND_URL") if not mode or mode == app_mode() else None
     if url:
         return url
-    port = os.environ.get("BACKEND_PORT")
+    port = os.environ.get("BACKEND_PORT") if not mode or mode == app_mode() else None
     if port:
         return f"http://localhost:{port}"
-    return getattr(_config, "BACKEND_URL", f"http://localhost:{_ports()['backend']}")
+    selected_mode = mode or app_mode()
+    cfg = _mode_config(selected_mode)
+    return cfg.get("backend_url") or f"http://localhost:{_ports(selected_mode)['backend']}"
 
 
-def _web_url() -> str:
-    """Web URL — re-read from env each call."""
-    url = os.environ.get("WEB_URL")
+def _web_url(mode: str | None = None) -> str:
+    """Resolve web URL for mode from process env, then mode config."""
+    same_mode = not mode or mode == app_mode()
+    url = os.environ.get("WEB_URL") if same_mode else None
     if url:
         return url
-    port = os.environ.get("WEB_PORT") or os.environ.get("FRONTEND_PORT")
+    port = (os.environ.get("WEB_PORT") or os.environ.get("FRONTEND_PORT")) if same_mode else None
+    host = os.environ.get("WEB_HOST", "localhost") if same_mode else "localhost"
     if port:
-        return f"http://localhost:{port}"
-    return getattr(_config, "WEB_URL", f"http://localhost:{_ports()['web']}")
+        return f"http://{host}:{port}"
+    selected_mode = mode or app_mode()
+    cfg = _mode_config(selected_mode)
+    return cfg.get("frontend_url") or f"http://{host}:{_ports(selected_mode)['web']}"
 
 
 # ── Probes ───────────────────────────────────────────────────────────────
@@ -365,7 +388,7 @@ def start_service(name: str, mode: str | None = None) -> dict:
 
     # Double-checked locking: in-process lock first, then cross-process file lock.
     with _start_lock:
-        ports = _ports()
+        ports = _ports(mode)
         target_port = ports["web"] if name == "web" else ports["backend"]
 
         # Cross-process lock — blocks ragctl + MCP racing on the same service/mode.
@@ -538,7 +561,7 @@ def start_project(
         }
 
     m = mode or app_mode()
-    ports = _ports()
+    ports = _ports(m)
     launched = []
 
     def _already(svc: str, port: int) -> bool:
@@ -559,22 +582,22 @@ def start_project(
         else:
             launched.append(start_neo4j())
 
-    waited = _wait_ready(timeout=timeout) if wait else None
+    waited = _wait_ready(timeout=timeout, mode=m) if wait else None
     return {
         "success": True,
         "mode": m,
         "headless": True,
         "launched": launched,
         "wait": waited,
-        "status": project_status(),
+        "status": project_status(m),
     }
 
 
 # ── Readiness wait + full status ─────────────────────────────────────────
-def _wait_ready(timeout: int = 45) -> dict:
+def _wait_ready(timeout: int = 45, mode: str | None = None) -> dict:
     """Poll backend+web health until both ok or timeout. Blocking."""
     deadline = time.time() + timeout
-    b_url, w_url = _backend_url(), _web_url()
+    b_url, w_url = _backend_url(mode), _web_url(mode)
     start = time.time()
     while time.time() < deadline:
         b_ok, _ = _http_ok(f"{b_url}/api/v1/health", timeout=2)
@@ -585,11 +608,11 @@ def _wait_ready(timeout: int = 45) -> dict:
     return {"ready": False, "timeout_s": timeout, "elapsed_s": round(time.time() - start)}
 
 
-def project_status() -> dict:
+def project_status(mode: str | None = None) -> dict:
     """Full project service status — ports listening + HTTP health + pids + log paths + MinerU."""
-    ports = _ports()
-    b_url, w_url = _backend_url(), _web_url()
-    mode = app_mode()
+    mode = mode or app_mode()
+    ports = _ports(mode)
+    b_url, w_url = _backend_url(mode), _web_url(mode)
 
     # backend
     b_listen = port_listening(ports["backend"])

@@ -1,4 +1,4 @@
-"""QDCVR Benchmark API — backend for the paper-replication dashboard.
+"""HMRS Benchmark API — backend for the paper-replication dashboard.
 
 Ground rules this API follows
 -----------------------------
@@ -50,7 +50,7 @@ from store import store
 settings = get_settings()
 
 app = FastAPI(
-    title="QDCVR Benchmark API",
+    title="HMRS Benchmark API",
     version="5.0.0",
     description=__doc__,
 )
@@ -213,7 +213,7 @@ def _comparison(runs: list, relevant: list[str] | None) -> dict[str, Any]:
 async def index() -> dict[str, Any]:
     """Self-describing API index."""
     return {
-        "service": "QDCVR Benchmark API",
+        "service": "HMRS Benchmark API",
         "version": app.version,
         "docs": "/docs",
         "config": {
@@ -505,7 +505,7 @@ async def compare(request: CompareRequest) -> dict[str, Any]:
     shared answer agent under one prompt and one budget, so the replies can be
     compared the same way the retrieval can.
     """
-    if not store.chunks and not any(resolve_id(m).startswith("qdcvr")
+    if not store.chunks and not any(resolve_id(m).startswith(("hmrs", "hmrs"))
                                     for m in (request.methods or list(DEFAULT_SELECTION))):
         return JSONResponse(
             status_code=409,

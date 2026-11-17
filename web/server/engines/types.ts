@@ -51,6 +51,8 @@ export interface QueryRequest {
   reasoningEffort?: string
   /** Full prompt text after KB instruction + path hints (pre-built by caller). */
   fullPromptText: string
+  /** Require an OMP kb-mcp tool to be registered before sending the prompt. */
+  requireKbMcp?: boolean
   /**
    * Server-side conversation history (oldest first). Required for transports
    * without native cross-request sessions (oneshot/acp): the adapter replays

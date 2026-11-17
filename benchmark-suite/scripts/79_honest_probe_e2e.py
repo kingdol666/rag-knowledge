@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """WRITING-PLAN v2.0 步骤②/②′ 产证:
-(a) honest-failure probe: 3 个语料外问题实跑 QDCVR 协议 Phase1(向量+门控读取)
+(a) honest-failure probe: 3 个语料外问题实跑 HMRS 协议 Phase1(向量+门控读取)
     + Phase2(图书管理员=逐库摘要核查), 全程计时, 证据落盘供执行者判定;
 (b) Track A e2e spot: 4 道库内题(BQ02/BQ04/BQ08/BQ10) 同一 scripted 段计时,
     回答段由执行者(agent)撰写并另录时间戳(补入 artifacts 的 judge 字段);

@@ -1,0 +1,36 @@
+{
+ "qid": "BQ03",
+ "arxiv": "2212.13138",
+ "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+ "http": 200,
+ "error": "",
+ "wall_s": 108.9,
+ "latency_s": 106.809,
+ "turns": 6,
+ "cost_usd": 0.25302356,
+ "success": true,
+ "answer": "**结论：MultiMedQA 是 Singhal 等人（arXiv 2212.13138，Google Research/DeepMind）提出的医学问答基准，整合了 6 个既有数据集，并新增 HealthSearchQA；Flan-PaLM 540B 在其 MedQA（USMLE 四选一）子集上取得 67.6% 准确率，超越此前 SOTA 逾 17%。**\n\n**1. MultiMedQA 是什么（P0 直接证据）**\n- 定义（摘要原文）：「we present MultiMedQA, a benchmark combining six existing open question answering datasets spanning professional medical exams, research, and consumer queries; and HealthSearchQA, a new free-response dataset of medical questions searched online.」\n- 七个组成部分（引言）：「MedQA [33], MedMCQA [64], PubMedQA [34], LiveQA [1], MedicationQA [2], and MMLU clinical topics [29]」＋新引入的第七个「HealthSearchQA, which consists of commonly searched health questions」，规模为「a dataset of 3375 commonly searched consumer medical questions」。\n- 除准确率外，还配套人工评估框架：「a framework for human evaluation of model answers along multiple axes including factuality, precision, possible harm, and bias」（Table 2 共 12 个轴；Table 3 为外行用户 2 轴）。\n\n**2. Flan-PaLM 在 MedQA 上的表现（P0 直接证据）**\n- 摘要：「including 67.6% accuracy on MedQA (US Medical License Exam questions), surpassing prior state-of-the-art by over 17%」。\n- 第 4.1 节原文：「On the MedQA dataset consisting of USMLE style questions with 4 options, our Flan-PaLM 540B model achieved a multiple-choice question (MCQ) accuracy of 67.6% surpassing the DRAGON model [94] by 20.1%」——即 67.6 vs. 前 SOTA 50.3 的差距被表述为 17.3 个百分点（另一处正文：「Flan-PaLM 540B exceeded this by 17.3%」）。\n- 同批结果（贡献列表）：「67.6% accuracy on MedQA (more than 17% above prior SOTA), 57.6% on MedMCQA, and 79.0% on PubMedQA」。\n- 方法：few-shot + chain-of-thought + self-consistency 组合提示；模型规模覆盖 8B / 62B / 540B。\n\n**3. 重要限定（P1）**\n高分≠可临床使用：作者明确指出人工评估暴露短板——clinician 判定 Flan-PaLM 长答仅 61.9% 符合科学共识（Med-PaLM 92.6%，临床医生 92.9%），29.7% 可能致害（Med-PaLM 5.8%）。原文：「human evaluation reveals key gaps in Flan-PaLM responses」，并据此提出 instruction prompt tuning 得到 Med-PaLM。\n\n**出处**\n- 《Large Language Models Encode Clinical Knowledge》（clinical-medicine__2212.13138），KB：生命科学与医学（`b28f0a25-…`），part 1（摘要/引言）与 part 2（§3.3、§4.1）。\n- 同文另有 chunk 副本：`Corpus-Chunks800/…__k00–k33.md`（KB `ce642f28-…`），内容一致，可交叉核对。\n- 检索：`kb_search_two_stage`（KB `b1199132-…` 无相关命中，返回 CoT/Flan-UL2 等邻近文档）＋跨库 `kb_search_vector`（top 命中 0.759）＋`kb_laya_judge`（35 段评分，20 段存活，3 篇文档均有 yes）。",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 2,
+  "kw_total": 2,
+  "kw_list_hit": [
+   "multimedqa",
+   "67.6"
+  ],
+  "cited": true,
+  "n_markers": 13,
+  "markers_head": [
+   "2212.13138",
+   "[33]",
+   "[64]",
+   "[34]",
+   "[1]",
+   "[2]",
+   "[29]",
+   "Table 2"
+  ],
+  "false_abstain": false,
+  "chars": 2204
+ }
+}

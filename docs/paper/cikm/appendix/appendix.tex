@@ -33,7 +33,7 @@
 \setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
 \setlength{\floatsep}{6pt plus 2pt minus 2pt}
 \setlength{\abovecaptionskip}{4pt}
-\newcommand{\sys}{\textsc{Qdcvr}}
+\newcommand{\sys}{\textsc{Hmrs}}
 \setlength{\emergencystretch}{2.2em}
 \tolerance=1400
 
@@ -116,7 +116,7 @@ main paper Table~2.
 \toprule
 System & 001 & 002 & 003 & 004 & 005 & 006 & 007 & 008 & 009 & 010 & 011 & 012 & 013 & 014 & 015 & 016 & 017 & 018 & 019 & 020 & 021 & 022 & 023 & 024 & 025 & 026 & 027 & 028 & 029 & 030 & Mean & ok\% \\
 \midrule
-\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) & 2 & 7 & 9 & 9 & 1 & 9 & 9 & 8 & 10 & 7 & 10 & 10 & 10 & 9 & 9 & 10 & 8 & 8 & 10 & 9 & 9 & 10 & 4 & 3 & 9 & 9 & 8 & 5 & 5 & 5 & 7.70 & 77\% \\
+\textbf{\textsc{Hmrs}} (two-stage + content adjudication) & 2 & 7 & 9 & 9 & 1 & 9 & 9 & 8 & 10 & 7 & 10 & 10 & 10 & 9 & 9 & 10 & 8 & 8 & 10 & 9 & 9 & 10 & 4 & 3 & 9 & 9 & 8 & 5 & 5 & 5 & 7.70 & 77\% \\
 Dense RAG (chunk 800/400, top-10) & 7 & 9 & 10 & 9 & 8 & 10 & 9 & 8 & 10 & 7 & 10 & 10 & 10 & 8 & 9 & 9 & 9 & 9 & 10 & 9 & 9 & 10 & 9 & 8 & 10 & 9 & 9 & 9 & 9 & 6 & 8.93 & 100\% \\
 Dense RAG + reranker (30$\to$10) & 8 & 7 & 9 & 10 & 7 & 10 & 10 & 7 & 10 & 9 & 9 & 10 & 10 & 7 & 9 & 9 & 9 & 10 & 10 & 9 & 9 & 10 & 7 & 8 & 9 & 9 & 10 & 5 & 8 & 6 & 8.67 & 97\% \\
 ITRG (refresh, 4 rounds $\times$ top-6) & 9 & 8 & 9 & 8 & 6 & 10 & 9 & 7 & 10 & 3 & 9 & 10 & 10 & 10 & 9 & 9 & 8 & 10 & 10 & 9 & 9 & 9 & 7 & 7 & 9 & 9 & 8 & 6 & 6 & 6 & 8.30 & 93\% \\
@@ -161,7 +161,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q1 (sf-001, mean judge 7.2): ``0-dimensional biomaterials lack inductive properties.''}
 \label{app:q1}
 \noindent Gold document(s): 31715818. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 2/10, verdict: insufficient, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 2/10, verdict: insufficient, rank-1 hit: no}
 \noindent Neither retrieved excerpt addresses biomaterials or their inductive properties: the first concerns mortality trends amenable to medical care in eastern Europe, and the second concerns meiotic recombination hotspots in the mouse MHC Ebeta gene. With no evidence on 0-dimensional biomaterials or inductive capacity, the claim cannot be supported or refuted from the supplied corpus.
 \noindent\small\textit{Judge: Answer declared insufficiency while citing unrelated documents (mortality trends, MHC recombination) rather than engaging the gold nanotech review, so the verdict contradicts the expected support for the claim and shows no grounding in the gold evidence.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 7/10, verdict: insufficient, rank-1 hit: no}
@@ -189,7 +189,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q2 (sf-002, mean judge 8.4): ``4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.''}
 \label{app:q2}
 \noindent Gold document(s): 32587939. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 7/10, verdict: insufficient, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 7/10, verdict: insufficient, rank-1 hit: yes}
 \noindent The two provided excerpts discuss ER stress biology (WFS1/AC8 complex formation and VAP-dependent endosome-ER contacts) but neither mentions 4-PBA (4-phenylbutyrate) treatment nor reports effects on general ER stress markers. No data on 4-PBA administration or marker changes (e.g., CHOP, BiP/GRP78, ATF4, XBP1) is present, so the claim cannot be evaluated from this evidence.
 \noindent\small\textit{Judge: Correctly identifies absence of 4-PBA data in the gold evidence, but fabricates a second excerpt ('VAP-dependent endosome-ER contacts') not present anywhere in the ground-truth document.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: insufficient, rank-1 hit: no}
@@ -217,7 +217,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q3 (sf-003, mean judge 9.0): ``Pyridostatin stabilizes the G - quadruplex in the telomeric region.''}
 \label{app:q3}
 \noindent Gold document(s): 16472469. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
 \noindent Source [16472469] explicitly identifies pyridostatin (PDS) as a "G4-stabilizing compound" and describes G-quadruplex (G4)-forming genomic sequences as including telomeres, with G-rich telomeric repeats. Treatment with PDS increased telomere fragility, indicating that it stabilizes G4 structures in the telomeric region. The claim is therefore directly supported by this evidence.
 \noindent\small\textit{Judge: Verdict and quotes are accurate; minor inferential leap from PDS-induced telomere fragility to direct telomeric G4 stabilization, though consistent with the gold evidence.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: supported, rank-1 hit: yes}
@@ -245,7 +245,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q4 (sf-004, mean judge 8.4): ``R2D2 stops miRNA production by increasing the selectivity of Dcr2 for long dsRNA.''}
 \label{app:q4}
 \noindent Gold document(s): 5702790. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
 \noindent Source [5702790] reports that Dicer-2 can efficiently cleave pre-miRNA, but that its partner protein R2D2 inhibits pre-miRNA cleavage, which is consistent with R2D2 blocking miRNA production. The same study frames R2D2 (with inorganic phosphate) as restricting Dicer-2's substrate specificity toward its biological substrate, long dsRNA. Source [13923140] is unrelated (IL-2/autoimmunity) and provides no relevant evidence.
 \noindent\small\textit{Judge: Verdict 'supported' correctly matches the gold abstract (R2D2 inhibits pre-miRNA cleavage and restricts Dicer-2 specificity to long dsRNA); grounding is accurate, only minor noise from citing an unrelated source.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: supported, rank-1 hit: yes}
@@ -273,7 +273,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q5 (sf-005, mean judge 4.5): ``RA activation of DIF2 and NB4 cells induces hallmarks of transcriptionally active promoters.''}
 \label{app:q5}
 \noindent Gold document(s): 13639330. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 1/10, verdict: insufficient, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 1/10, verdict: insufficient, rank-1 hit: no}
 \noindent The provided excerpts are unrelated to the claim: one concerns Ca2+-permeable AMPA receptor signaling via Akt in glioblastoma, and the other concerns NuA4/Esa1 acetyltransferase recruitment to coding regions in yeast. Neither excerpt mentions retinoic acid (RA), the cell lines DIF2 or NB4, nor transcriptional activation specifically in those cells. No evidence bearing on the claim is present.
 \noindent\small\textit{Judge: Answer returned 'insufficient' and cited AMPA-receptor and NuA4/Esa1 sources absent from the gold evidence, whereas the ground-truth document on nuclear-receptor ligand-dependent gene activation supports the claim.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 8/10, verdict: insufficient, rank-1 hit: no}
@@ -301,7 +301,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q6 (sf-006, mean judge 9.4): ``RAD52 is involved in break-induced DNA replication (BIR).''}
 \label{app:q6}
 \noindent Gold document(s): 14332945, 4319844, 4899981. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
 \noindent Both evidence sources directly link RAD52 to break-induced replication (BIR). Source 14332945 shows mammalian RAD52 localizes to DNA replication stress foci and is required to restart collapsed forks via BIR repair, while source 4899981 demonstrates that mitotic DNA synthesis at telomeres and common fragile sites requires a RAD52-dependent form of break-induced replication. Together they establish RAD52 as a factor involved in BIR.
 \noindent\small\textit{Judge: Verdict correct and core claim fully grounded in gold evidence; second source's telomere/fragile-site details extend beyond the gold document but are plausible and don't affect the verdict.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: supported, rank-1 hit: yes}
@@ -329,7 +329,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q7 (sf-007, mean judge 9.0): ``RANK-RANKL pathway signalling has no known association with development of Aire-expressing medullary thymic epithelial cells.''}
 \label{app:q7}
 \noindent Gold document(s): 2734421, 301838, 3952288. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: refuted, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: refuted, rank-1 hit: yes}
 \noindent The claim is contradicted by both retrieved sources, which directly establish that RANK-RANKL signalling drives the development of Aire-expressing mTECs. Source 3952288 shows RANKL signals from CD4+3- inducer cells promote maturation of RANK-expressing CD80-Aire- mTEC progenitors into CD80+Aire+ mTECs, with RANK-deficient thymic stroma inducing autoimmunity. Source 301838 independently reports that emergence of the first Aire+ mTEC cohorts is jointly directed by Rankl+ lymphoid tissue inducer cells and V\$\textbackslash\{\}gamma\$5+ DETC progenitors, describing a Rank-mediated link to Aire+ mTEC maturation.
 \noindent\small\textit{Judge: Verdict and core grounding correct (gold shows RANK signalling is essential for Aire-expressing mTEC development); minor cited details (CD80 markers, LTi/DETC sources) come from retrieved sources beyond the gold text but do not contradict it.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: refuted, rank-1 hit: yes}
@@ -357,7 +357,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q8 (sf-008, mean judge 6.5): ``RANK-RANKL pathway signalling is linked to development of Aire-expressing medullary thymic epithelial cells.''}
 \label{app:q8}
 \noindent Gold document(s): 2734421, 301838, 3952288. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 8/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 8/10, verdict: supported, rank-1 hit: yes}
 \noindent Both retrieved sources directly link RANK/RANKL signalling to the development of Aire-expressing medullary thymic epithelial cells. Source 3952288 shows RANKL signals from CD4+3- inducer cells promote maturation of RANK-expressing CD80-Aire- mTEC progenitors into CD80+Aire+ mTECs, and source 301838 shows Rankl+ lymphoid tissue inducer cells jointly direct the emergence of Aire+ mTECs in a Rank-mediated reciprocal link. The claim is therefore corroborated by the evidence.
 \noindent\small\textit{Judge: Verdict correctly supported by gold evidence's RANK-driven mTEC/Aire development, but cited details (CD80+Aire+ progenitor maturation, lymphoid tissue inducer cells) go beyond the gold evidence and omit its CD40-cooperation finding.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 8/10, verdict: supported, rank-1 hit: yes}
@@ -385,7 +385,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q9 (sf-009, mean judge 10.0): ``RTEL1 interacts with TRF2 through a C4C4 motif''}
 \label{app:q9}
 \noindent Gold document(s): 4926049. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: yes}
 \noindent Source [4926049] directly establishes that the shelterin protein TRF2 recruits RTEL1 to telomeres in S phase, and that this TRF2-RTEL1 interaction is mediated by a metal-coordinating C4C4 motif in RTEL1. The same study identifies the HHS mutation RTEL1(R1264H) as compromising this motif and TRF2(I124D) as eliminating RTEL1 binding, confirming the C4C4 motif's role in the interaction. Source [13964633] is irrelevant (versican 3'UTR/miRNA) and provides no bearing on the claim.
 \noindent\small\textit{Judge: None; answer accurately restates the gold evidence (TRF2-RTEL1 interaction mediated by a metal-coordinating C4C4 motif, RTEL1(R1264H) and TRF2(I124D) mutants) with no fabricated details.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: supported, rank-1 hit: yes}
@@ -413,7 +413,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q10 (sf-010, mean judge 7.5): ``RUNX is not expressed in skin tissue.''}
 \label{app:q10}
 \noindent Gold document(s): 2547636. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 7/10, verdict: insufficient, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 7/10, verdict: insufficient, rank-1 hit: no}
 \noindent Neither retrieved excerpt addresses RUNX or its expression in skin tissue. Source 28230867 concerns insect telomerase activity and 12486491 concerns Rpl38-mediated Hox mRNA translation in mice; no RUNX expression data, skin-tissue assay, or negative expression result is reported. The claim therefore cannot be evaluated from the provided evidence.
 \noindent\small\textit{Judge: The 'insufficient' verdict is correct since the gold evidence (circadian epidermal paper) never mentions RUNX, but the answer grounds its reasoning in unrelated sources (28230867/12486491) instead of the gold document itself.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 7/10, verdict: insufficient, rank-1 hit: no}
@@ -441,7 +441,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q11 (sf-011, mean judge 9.4): ``RUNX1 is downregulated or mutated in TLX1 T-ALL.''}
 \label{app:q11}
 \noindent Gold document(s): 1982286. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: no}
 \noindent Evidence [1982286] identifies RUNX1 as a key mediator of TLX1/TLX3-driven T-ALL and predicts a tumor-suppressor role for it in T-cell transformation, and reports recurrent somatic loss-of-function mutations in RUNX1 in human T-ALL. This directly supports RUNX1 being inactivated (loss-of-function mutated) in the TLX1 T-ALL context. The other excerpt [3113630] concerns ATM/HDAC4 in ataxia-telangiectasia and is irrelevant.
 \noindent\small\textit{Judge: Verdict and facts fully grounded in the gold evidence (loss-of-function mutations in RUNX1 in TLX1/TLX3 T-ALL satisfy the 'or mutated' clause); no fabrication.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: supported, rank-1 hit: yes}
@@ -469,7 +469,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q12 (sf-012, mean judge 10.0): ``Radioiodine treatment of non-toxic multinodular goitre increases thyroid volume.''}
 \label{app:q12}
 \noindent Gold document(s): 9745001. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 10/10, verdict: refuted, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 10/10, verdict: refuted, rank-1 hit: yes}
 \noindent The claim is contradicted by the retrieved evidence. In 45 patients with non-toxic multinodular goitre treated with a single dose of 131I, median thyroid volume fell from 73 ml (IQR 50-106) to 29 ml (IQR 23-48) at 24 months, a median reduction of 40 ml (60\%, p < 0.0001), with half the reduction occurring within three months. Patients receiving two doses and those developing hypo- or hyperthyroidism also showed significant volume reduction, so radioiodine decreases rather than increases thyroid volume.
 \noindent\small\textit{Judge: Verdict 'refuted' is correct and all cited statistics (7329 ml, 60\% reduction, p<0.0001) match the gold evidence exactly with no fabrication.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: refuted, rank-1 hit: yes}
@@ -497,7 +497,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q13 (sf-013, mean judge 8.9): ``Rapamycin delays aging in fruit flies.''}
 \label{app:q13}
 \noindent Gold document(s): 6277638. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: yes}
 \noindent Feeding rapamycin to adult Drosophila melanogaster extended life span, producing the longevity effect seen in some TOR mutants. The extension was mediated specifically through the TORC1 branch of the TOR pathway via altered autophagy and translation, and was accompanied by increased resistance to starvation and paraquat.
 \noindent\small\textit{Judge: None; answer verdict and facts fully match the gold evidence with no fabrication.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: supported, rank-1 hit: yes}
@@ -525,7 +525,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q14 (sf-014, mean judge 8.2): ``Rapamycin increases the concentration of triacylglycerols in fruit flies.''}
 \label{app:q14}
 \noindent Gold document(s): 6277638. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: insufficient, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: insufficient, rank-1 hit: yes}
 \noindent The retrieved evidence establishes that feeding rapamycin to adult Drosophila extends life span via the TORC1 branch, with increased resistance to starvation and paraquat and alterations in autophagy and translation, but it never reports triacylglycerol (fat) concentrations. The second excerpt concerns histone H3(T118) phosphorylation and nucleosome dynamics and is unrelated to rapamycin or lipid levels in flies. Therefore the corpus excerpts neither support nor refute the claim that rapamycin increases triacylglycerol concentration in fruit flies.
 \noindent\small\textit{Judge: Gold abstract never reports triacylglycerol levels, so 'insufficient' is the correct verdict; grounding is faithful with a minor irrelevant aside about the second excerpt.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 8/10, verdict: insufficient, rank-1 hit: yes}
@@ -553,7 +553,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q15 (sf-015, mean judge 9.1): ``Rapid phosphotransfer rates are correlated with histidine kinase regulator specificity.''}
 \label{app:q15}
 \noindent Gold document(s): 11603066. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
 \noindent Source 11603066 shows that specificity determinants in the CheA(3)-CheY(6) chemotaxis two-component system directly govern phosphotransfer: a cognate methionine finger on CheY(6) nestling into a hydrophobic pocket of CheA(3) is required for binding and phosphotransfer, its mutation abolished phosphotransfer, and introducing that methionine plus an adjacent alanine into noncognate CheYs dramatically changed their specificity to permit rapid phosphotransfer from CheA(3)-P. Thus rapid phosphotransfer is coupled to histidine kinase/response-regulator recognition specificity. Source 18987782 (Myc/ribosomal protein) is unrelated and provides no evidence on this claim.
 \noindent\small\textit{Judge: Accurate, non-fabricated and well-grounded; slight interpretive stretch in framing specificity determinants as a strict correlation with rapid phosphotransfer, but faithful to the reengineering result.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: supported, rank-1 hit: yes}
@@ -581,7 +581,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q16 (sf-016, mean judge 9.2): ``Recognition of start codons depends on the translation initiation factor IF3.''}
 \label{app:q16}
 \noindent Gold document(s): 16927286. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: yes}
 \noindent Evidence from cryoEM reconstructions of the bacterial 30S initiation complex shows that IF3, together with initiator tRNA, undergoes large conformational changes that facilitate accommodation of fMet-tRNA(fMet) into the P site for start codon recognition, indicating IF3 is directly involved in this process. The claim is therefore supported by source 16927286. Source 18987782 concerns Myc-driven translation initiation and ribosomal protein haploinsufficiency and provides no information on start codon recognition or IF3.
 \noindent\small\textit{Judge: None; verdict, evidence citation, and paraphrase of the IF3/tRNA conformational role all match the gold text exactly.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: supported, rank-1 hit: yes}
@@ -609,7 +609,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q17 (sf-017, mean judge 9.1): ``Reduced levels of lipolysis leads to higher P38 phosphorylation in adipose tissue.''}
 \label{app:q17}
 \noindent Gold document(s): 32408470. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 8/10, verdict: insufficient, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 8/10, verdict: insufficient, rank-1 hit: yes}
 \noindent The retrieved evidence (32408470) describes the opposite causal direction: nicotine-driven AMPK\$\textbackslash\{\}alpha\$2 activation degrades MKP1, which aberrantly activates p38 MAPK and JNK, and this p38 activation leads to IRS1 degradation and loss of insulin-mediated inhibition of lipolysis, i.e., increased lipolysis. No excerpt tests whether reduced lipolysis raises p38 phosphorylation, and source 3113630 concerns HDAC4/ATM in neurons and is irrelevant. The claim's stated direction is therefore neither demonstrated nor directly refuted by the provided evidence.
 \noindent\small\textit{Judge: Verdict 'insufficient' is defensible since the gold evidence describes p38 activation  increased lipolysis (opposite/orthogonal direction), though it could have noted this counters the claim's causality rather than being strictly untested.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: refuted, rank-1 hit: no}
@@ -637,7 +637,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q18 (sf-018, mean judge 9.5): ``Reduced phosphorylation of PP2A increases HDAC4 dephosphorylation by enhancing PP2A-HDAC4 interaction.''}
 \label{app:q18}
 \noindent Gold document(s): 3113630. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 8/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 8/10, verdict: supported, rank-1 hit: yes}
 \noindent Source [3113630] states that PP2A activity is downregulated by ATM-mediated phosphorylation, and that in ATM deficiency (i.e., loss of that inhibitory phosphorylation) enhanced PP2A activity leads to HDAC4 dephosphorylation and nuclear accumulation. This supports the core claim that reduced PP2A phosphorylation increases HDAC4 dephosphorylation. However, the evidence attributes this to increased PP2A catalytic activity, not specifically to enhanced PP2A-HDAC4 interaction, which is not addressed. Source [19966976] concerns HP1/Swi6 phosphorylation in heterochromatin and is irrelevant.
 \noindent\small\textit{Judge: Answer text accurately notes the gold evidence attributes increased HDAC4 dephosphorylation to enhanced PP2A catalytic activity rather than enhanced PP2A-HDAC4 interaction, yet still labels the full claim (which asserts that unsupported mechanism) as clean 'supported'.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: insufficient, rank-1 hit: yes}
@@ -665,7 +665,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q19 (sf-019, mean judge 10.0): ``Reduced phosphorylation of PP2A suppresses HDAC4 dephosphorylation.''}
 \label{app:q19}
 \noindent Gold document(s): 3113630. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 10/10, verdict: refuted, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 10/10, verdict: refuted, rank-1 hit: yes}
 \noindent The evidence indicates PP2A activity is downregulated by ATM-mediated phosphorylation, so reduced PP2A phosphorylation would enhance, not suppress, PP2A activity. In ATM deficiency, enhanced PP2A activity leads to HDAC4 dephosphorylation and nuclear accumulation; thus reduced PP2A phosphorylation promotes rather than suppresses HDAC4 dephosphorylation, inverting the claim.
 \noindent\small\textit{Judge: Reasoning faithfully tracks the gold evidence (ATM-mediated phosphorylation downregulates PP2A; enhanced PP2A activity dephosphorylates HDAC4), correctly inverting the claim.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: refuted, rank-1 hit: yes}
@@ -693,7 +693,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q20 (sf-020, mean judge 8.6): ``Reduced responsiveness to interleukin-2 in regulatory T cells is associated with autoimmune diseases such as Type 1 Diabetes.''}
 \label{app:q20}
 \noindent Gold document(s): 11899391, 13923140. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
 \noindent Source [11899391] directly supports the claim: an autoimmune disease-associated IL2RA haplotype (linked to type 1 diabetes) correlates with diminished IL-2 responsiveness in CD4+ T cells (reduced STAT5a phosphorylation), lower FOXP3 expression in Tregs, and reduced suppressive function, while Tregs from type 1 diabetes and other autoimmune patients are deficient in controlling autologous proinflammatory responses. Source [13923140] corroborates the broader link between impaired IL-2/IL-2 pathway and reduced CD4+CD25+ Treg function causing autoimmunity, though it concerns reduced IL-2 production rather than Treg responsiveness specifically.
 \noindent\small\textit{Judge: Verdict and core grounding match the gold document (IL2RA haplotype, reduced STAT5a phosphorylation, lower FOXP3, impaired Treg suppression), but the second cited source [13923140] is absent from the gold evidence and the diminished IL-2 responsiveness is in Ag-experienced CD4+ T cells rather than Tregs specifically.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: supported, rank-1 hit: yes}
@@ -721,7 +721,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q21 (sf-021, mean judge 9.0): ``Reducing H3k4me3 methylation induces mouse epiblast stem cells to naive pluripotency efficiently.''}
 \label{app:q21}
 \noindent Gold document(s): 6441369. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: yes}
 \noindent Evidence [6441369] shows that blocking the H3K4 methyltransferase MLL1 with MM-401 --- thereby reducing H3K4 methylation --- reprograms mouse epiblast stem cells (EpiSCs) to naive pluripotency, with more than 50\% of treated cells acquiring naive ESC features within 3 days, an efficiency the authors describe as highly efficient and synchronized. The reverted cells reactivate the silenced X chromosome and generate germline-competent chimeras, and the authors conclude that discrete perturbation of H3K4 methylation suffices to drive reprogramming to naive pluripotency. The excerpt specifically reports H3K4me1 redistribution at enhancers rather than H3K4me3 levels, but MLL1 is an H3K4 methyltransferase, consistent with the claim's mechanism. Source [8185080] concerns HDAC/DNMT inhibitors in somatic-cell reprogramming and is irrelevant.
 \noindent\small\textit{Judge: Accurate, grounded verdict; correctly flags that the excerpt shows H3K4me1 redistribution rather than H3K4me3, but infers MLL1/H3K4me3 linkage without direct textual support.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: supported, rank-1 hit: yes}
@@ -749,7 +749,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q22 (sf-022, mean judge 9.8): ``Reduction of Rpl38 alters the composition of the Hox gene mRNAs translation in mice without lowering overall protein synthesis.''}
 \label{app:q22}
 \noindent Gold document(s): 12486491. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 10/10, verdict: supported, rank-1 hit: yes}
 \noindent Evidence [12486491] directly confirms the claim: in Rpl38 mutant mouse embryos, global protein synthesis is unchanged while translation of a select subset of Homeobox (Hox) mRNAs is perturbed, with RPL38 acting as a regulatory component facilitating 80S complex formation on these transcripts to confer transcript-specific translational control. This establishes that reduced Rpl38 alters the translational composition of Hox mRNAs without lowering overall protein synthesis. The Myc study [18987782] concerns ribosomal protein haploinsufficiency and general translation in oncogenesis and is not needed to support the claim.
 \noindent\small\textit{Judge: Correct verdict fully grounded in the gold evidence; only minor noise from citing an unrelated Myc study absent from the ground truth.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: supported, rank-1 hit: yes}
@@ -777,7 +777,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q23 (sf-023, mean judge 7.1): ``Reduction of purity of cytoplasmic membranes isolated from overexpressors is indicated by stronger spots for OmpA in 2D BN-PAGE gels.''}
 \label{app:q23}
 \noindent Gold document(s): 6836086. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 4/10, verdict: insufficient, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 4/10, verdict: insufficient, rank-1 hit: no}
 \noindent The provided evidence is unrelated to the claim: both excerpts concern cytoplasmic Ca2+ oscillations/CRAC channel signaling and WFS1-AC8 interaction at the plasma membrane, with no mention of OmpA, 2D BN-PAGE, membrane purity, or overexpression. No excerpt reports spot intensity for OmpA or any membrane-purity marker, so the claim cannot be evaluated. Additional source material on OmpA detection in BN-PAGE of cytoplasmic membrane preparations is required.
 \noindent\small\textit{Judge: The 'insufficient' verdict is defensible on the thin gold excerpt, but the answer grossly fabricates the evidence content (claims Ca2+/CRAC/WFS1-AC8 material) when the gold document is about E. coli outer-membrane biogenesis involving OM proteins like OmpA.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: insufficient, rank-1 hit: no}
@@ -805,7 +805,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q24 (sf-024, mean judge 6.5): ``Reduction of purity of cytoplasmic membranes isolated from overexpressors is indicated by stronger spots for OmpF in 2D BN-PAGE gels.''}
 \label{app:q24}
 \noindent Gold document(s): 6836086. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 3/10, verdict: insufficient, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 3/10, verdict: insufficient, rank-1 hit: no}
 \noindent The retrieved excerpts concern WFS1/adenylyl cyclase 8 signaling at the plasma membrane and spatial Ca2+ oscillations driving gene expression, respectively. Neither excerpt mentions OmpF, 2D BN-PAGE, cytoplasmic membrane isolation, or overexpressor purity, so the claim cannot be evaluated from this evidence.
 \noindent\small\textit{Judge: Answer declares 'insufficient' while the gold document is the source supporting the OmpF/BN-PAGE purity claim, and it cites WFS1/adenylyl cyclase 8 excerpts absent from the gold evidence (fabricated retrieval description).}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 8/10, verdict: insufficient, rank-1 hit: no}
@@ -833,7 +833,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q25 (sf-025, mean judge 9.2): ``Removal of H3K9me3 by ectopic expression of other H3K9 demethylases decreases reprogramming efficiency in SCNT experiments.''}
 \label{app:q25}
 \noindent Gold document(s): 4547102. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: refuted, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: refuted, rank-1 hit: no}
 \noindent The corpus evidence directly contradicts the claim: overexpression (ectopic expression) of the H3K9 demethylase KDM4E in bovine SCNT embryos reduced the H3K9me3/2 barrier and increased cloning efficiency, blastocyst formation, and transcriptome restoration. Thus removal of H3K9me3 by an ectopic H3K9 demethylase improved, rather than decreased, reprogramming efficiency. The only other excerpt concerns HDAC inhibition via valproic acid and does not address H3K9 demethylases.
 \noindent\small\textit{Judge: Verdict correctly refuted and core facts grounded in the gold evidence; only minor extraneous mention of an HDAC/VPA excerpt not present in the gold evidence.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 10/10, verdict: refuted, rank-1 hit: yes}
@@ -861,7 +861,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q26 (sf-026, mean judge 8.9): ``Removal of H3K9me3 by ectopic expression of other H3K9 demethylases improves reprogramming efficiency in SCNT experiments.''}
 \label{app:q26}
 \noindent Gold document(s): 4547102. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 9/10, verdict: supported, rank-1 hit: no}
 \noindent Evidence [4547102] shows that the H3K9 demethylases KDM4D and KDM4E are deficiently expressed in bovine SCNT embryos and that ectopic overexpression of KDM4E restores the global transcriptome, improves blastocyst formation, and increases SCNT cloning efficiency, indicating that removing the persistent H3K9me3/2 barrier improves reprogramming. Evidence [8185080] on VPA/HDAC inhibitors is about iPSC induction, not H3K9 demethylases or SCNT, so it does not bear on the claim.
 \noindent\small\textit{Judge: Verdict and grounding are accurate for KDM4E overexpression, but the answer does not address the claim's plural 'other H3K9 demethylases' wording, which the gold evidence only supports for KDM4E.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: supported, rank-1 hit: yes}
@@ -889,7 +889,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q27 (sf-027, mean judge 8.1): ``Removal of H3K9me3 improves reprogramming efficiency in human somatic cell nuclear transfer experiments.''}
 \label{app:q27}
 \noindent Gold document(s): 4547102. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 8/10, verdict: insufficient, rank-1 hit: no}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 8/10, verdict: insufficient, rank-1 hit: no}
 \noindent The corpus shows that H3K9me3/2 hypermethylation acts as a barrier to SCNT-mediated reprogramming and that overexpressing the H3K9 demethylase KDM4E improves blastocyst formation and cloning efficiency, but this was demonstrated only in bovine embryos, not human cells. The other excerpt concerns small-molecule enhancement of factor-based iPSC induction, not H3K9me3 removal or SCNT. No evidence addresses human SCNT, so the claim is not established by the provided excerpts.
 \noindent\small\textit{Judge: Verdict 'insufficient' is defensible and the bovine-vs-human distinction is correctly drawn, but the answer references a second corpus excerpt (small-molecule iPSC induction) not present in the gold evidence.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: insufficient, rank-1 hit: no}
@@ -917,7 +917,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q28 (sf-028, mean judge 7.0): ``Replacement of OCT4 and SOX2 genes with GATA3 has the ability to reprogram human cells.''}
 \label{app:q28}
 \noindent Gold document(s): 16287725. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 5/10, verdict: insufficient, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 5/10, verdict: insufficient, rank-1 hit: yes}
 \noindent The corpus evidence confirms that lineage specifiers can replace OCT4 and SOX2 simultaneously to reprogram human fibroblasts [16287725], and that OCT4 had not previously been replaced in human cells. However, no excerpt names GATA3 specifically as the replacing factor, so the claim's identification of GATA3 with this capability is not directly corroborated. The second excerpt concerns small-molecule enhancement of standard factor reprogramming and is irrelevant to the claim.
 \noindent\small\textit{Judge: Gold document is the very paper that replaced OCT4/SOX2 with lineage specifiers (GATA3), so the claim is supported; the 'insufficient' verdict is overly cautious, and it also cites a 'second excerpt' absent from the gold evidence.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: insufficient, rank-1 hit: yes}
@@ -945,7 +945,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q29 (sf-029, mean judge 7.8): ``Replacement of OCT4 and SOX2 genes with GATA3 is not capable of reprogramming human cells.''}
 \label{app:q29}
 \noindent Gold document(s): 16287725. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 5/10, verdict: insufficient, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 5/10, verdict: insufficient, rank-1 hit: yes}
 \noindent The retrieved evidence [16287725] reports that OCT4 and SOX2 can be replaced simultaneously by unidentified 'lineage specifiers' in human fibroblast reprogramming, which runs counter to the claim's general direction, but the excerpt never names GATA3 and provides no data on GATA3-containing factor combinations. Source [8185080] concerns small-molecule enhancement of standard factor reprogramming and says nothing about GATA3 or factor replacement. Therefore the specific claim about GATA3 cannot be confirmed or refuted from the given excerpts.
 \noindent\small\textit{Judge: Answer's 'insufficient' verdict is wrong: gold evidence affirmatively shows lineage specifiers replace OCT4/SOX2 in human cells, refuting the claim, and the answer even notes it 'runs counter to the claim' yet declines to reach the refuted verdict from the missing GATA3 name alone.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 9/10, verdict: refuted, rank-1 hit: yes}
@@ -973,7 +973,7 @@ truncated or edited; the only normalisation is whitespace collapsing.
 \subsection{Q30 (sf-030, mean judge 7.1): ``Allogeneic mechanical circulatory support is not as effective as autologous mechanical circulatory support for treating acute myocardial infarction.''}
 \label{app:q30}
 \noindent Gold document(s): 40164383. Evidence budgets, prompts and the judge protocol are identical across systems (Appendix~A).
-\paragraph{\textbf{\textsc{Qdcvr}} (two-stage + content adjudication) --- judge 5/10, verdict: insufficient, rank-1 hit: yes}
+\paragraph{\textbf{\textsc{Hmrs}} (two-stage + content adjudication) --- judge 5/10, verdict: insufficient, rank-1 hit: yes}
 \noindent The retrieved evidence does not test mechanical circulatory support at all; the POSEIDON trial [40164383] compared transendocardial injections of allogeneic vs autologous bone marrow-derived mesenchymal stem cells in ischemic cardiomyopathy, not devices for acute myocardial infarction. Its finding that autologous but not allogeneic MSC therapy improved 6-minute walk test and MLHFQ score is cell-therapy-specific and cannot establish anything about mechanical circulatory support efficacy. The second excerpt [11899391] concerns IL2RA/Treg biology in type 1 diabetes and is irrelevant.
 \noindent\small\textit{Judge: The answer's factual description of the POSEIDON trial is accurate and non-fabricated, but its 'insufficient' verdict is wrong: the gold evidence directly contains the allogeneic-vs-autologous comparison (autologous but not allogeneic improved 6MWT and MLHFQ), which supports the claim; the answer took the claim's 'mechanical circulatory support' wording literally and thus refused the very comparison the ground-truth document provides.}
 \paragraph{Dense RAG (chunk 800/400, top-10) --- judge 6/10, verdict: insufficient, rank-1 hit: yes}

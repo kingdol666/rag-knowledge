@@ -1,0 +1,8 @@
+# ensure_stack.py --json 原文（含 stderr）
+# captured: 2026-11-13 01:09:15
+# exit_code=0
+
+[check] backend=False web=False mcp_kblist=False catalog=0
+[backend] healthy=True
+[web] healthy=True
+{"checks": {"backend": false, "web": false, "mcp_kblist": true, "catalog_n": 50, "e2e_vector_search": true}, "actions": ["start_backend", "start_web", "start_kbmcp"], "ready": true}

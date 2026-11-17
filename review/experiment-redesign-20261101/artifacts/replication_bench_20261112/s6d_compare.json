@@ -1,0 +1,573 @@
+{
+ "per_arm": {
+  "A0": {
+   "n_paired": 72,
+   "old_hits": 37,
+   "new_hits": 39,
+   "old_rate": 0.5139,
+   "new_rate": 0.5417,
+   "old_ci": [
+    0.4007,
+    0.6257
+   ],
+   "new_ci": [
+    0.4274,
+    0.6517
+   ],
+   "ci_overlap": true,
+   "delta_pp": 2.8,
+   "agree": 68,
+   "agree_rate": 0.9444,
+   "flips": [
+    {
+     "qid": "F-hlm-2",
+     "old": false,
+     "new": true,
+     "old_top1": "MD语料-文学-中文/红楼梦第01回.md",
+     "new_top1": "MD语料-文学-中文/红楼梦第03回.md"
+    },
+    {
+     "qid": "F-hlm-3",
+     "old": false,
+     "new": true,
+     "old_top1": "MD语料-文学-中文/红楼梦第01回.md",
+     "new_top1": "MD语料-文学-中文/红楼梦第05回.md"
+    },
+    {
+     "qid": "G-fyp-1",
+     "old": false,
+     "new": true,
+     "old_top1": "MD语料-政务-中文/政府工作报告2024 (part 1 of 1).md",
+     "new_top1": "MD语料-政务-中文/十四五规划纲要 (part 1 of 3).md"
+    },
+    {
+     "qid": "G-gwr-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-政务-中文/政府工作报告2024 (part 1 of 1).md",
+     "new_top1": "MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md"
+    }
+   ],
+   "discordant": {
+    "old1_new0": 1,
+    "old0_new1": 3
+   },
+   "mcnemar_cross_run_p": 1.0
+  },
+  "A0f": {
+   "n_paired": 72,
+   "old_hits": 45,
+   "new_hits": 44,
+   "old_rate": 0.625,
+   "new_rate": 0.6111,
+   "old_ci": [
+    0.5095,
+    0.7278
+   ],
+   "new_ci": [
+    0.4956,
+    0.7153
+   ],
+   "ci_overlap": true,
+   "delta_pp": -1.4,
+   "agree": 71,
+   "agree_rate": 0.9861,
+   "flips": [
+    {
+     "qid": "A-philosophy-en-walden",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-哲学-英文/walden (part 1 of 23).md",
+     "new_top1": "MD语料-哲学-英文/zarathustra (part 20 of 23).md"
+    }
+   ],
+   "discordant": {
+    "old1_new0": 1,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 1.0
+  },
+  "A0h": {
+   "n_paired": 72,
+   "old_hits": 52,
+   "new_hits": 51,
+   "old_rate": 0.7222,
+   "new_rate": 0.7083,
+   "old_ci": [
+    0.6095,
+    0.8124
+   ],
+   "new_ci": [
+    0.5949,
+    0.8006
+   ],
+   "ci_overlap": true,
+   "delta_pp": -1.4,
+   "agree": 71,
+   "agree_rate": 0.9861,
+   "flips": [
+    {
+     "qid": "A-philosophy-en-walden",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-哲学-英文/walden (part 1 of 23).md",
+     "new_top1": "MD语料-哲学-英文/zarathustra (part 20 of 23).md"
+    }
+   ],
+   "discordant": {
+    "old1_new0": 1,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 1.0
+  },
+  "PD": {
+   "n_paired": 72,
+   "old_hits": 46,
+   "new_hits": 45,
+   "old_rate": 0.6389,
+   "new_rate": 0.625,
+   "old_ci": [
+    0.5235,
+    0.7402
+   ],
+   "new_ci": [
+    0.5095,
+    0.7278
+   ],
+   "ci_overlap": true,
+   "delta_pp": -1.4,
+   "agree": 71,
+   "agree_rate": 0.9861,
+   "flips": [
+    {
+     "qid": "A-philosophy-en-walden",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-哲学-英文/walden (part 1 of 23).md",
+     "new_top1": "MD语料-哲学-英文/zarathustra (part 20 of 23).md"
+    }
+   ],
+   "discordant": {
+    "old1_new0": 1,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 1.0
+  },
+  "A1b": {
+   "n_paired": 72,
+   "old_hits": 39,
+   "new_hits": 39,
+   "old_rate": 0.5417,
+   "new_rate": 0.5417,
+   "old_ci": [
+    0.4274,
+    0.6517
+   ],
+   "new_ci": [
+    0.4274,
+    0.6517
+   ],
+   "ci_overlap": true,
+   "delta_pp": 0.0,
+   "agree": 72,
+   "agree_rate": 1.0,
+   "flips": [],
+   "discordant": {
+    "old1_new0": 0,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 1.0
+  },
+  "A2": {
+   "n_paired": 72,
+   "old_hits": 25,
+   "new_hits": 25,
+   "old_rate": 0.3472,
+   "new_rate": 0.3472,
+   "old_ci": [
+    0.2475,
+    0.4624
+   ],
+   "new_ci": [
+    0.2475,
+    0.4624
+   ],
+   "ci_overlap": true,
+   "delta_pp": 0.0,
+   "agree": 72,
+   "agree_rate": 1.0,
+   "flips": [],
+   "discordant": {
+    "old1_new0": 0,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 1.0
+  },
+  "A3": {
+   "n_paired": 72,
+   "old_hits": 33,
+   "new_hits": 25,
+   "old_rate": 0.4583,
+   "new_rate": 0.3472,
+   "old_ci": [
+    0.3483,
+    0.5726
+   ],
+   "new_ci": [
+    0.2475,
+    0.4624
+   ],
+   "ci_overlap": true,
+   "delta_pp": -11.1,
+   "agree": 54,
+   "agree_rate": 0.75,
+   "flips": [
+    {
+     "qid": "A-literature-en-sense_and_sensibility",
+     "old": true,
+     "new": false,
+     "old_top1": "A3无描述-literature-en/sense_and_sensibility (part 1 of 26).md",
+     "new_top1": "A3无描述-literature-zh/红楼梦第11回.md"
+    },
+    {
+     "qid": "A-medicine-en-cancer_immunotherapy_rev",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-医学-英文/mrna_vaccine_review_oa (part 5 of 8).md",
+     "new_top1": "A3无描述-medicine-en/mrna_vaccine_review (part 5 of 8).md"
+    },
+    {
+     "qid": "A-medicine-en-gut_microbiome_review",
+     "old": true,
+     "new": false,
+     "old_top1": "A3无描述-medicine-en/gut_microbiome_review (part 1 of 7).md",
+     "new_top1": "A3无描述-medicine-en/sepsis_biomarkers_review (part 5 of 12).md"
+    },
+    {
+     "qid": "A-philosophy-en-common_sense",
+     "old": false,
+     "new": true,
+     "old_top1": "MD语料-哲学-英文/common_sense (part 5 of 5).md",
+     "new_top1": "A3无描述-philosophy-en/common_sense (part 5 of 5).md"
+    },
+    {
+     "qid": "A-philosophy-en-walden",
+     "old": false,
+     "new": true,
+     "old_top1": "MD语料-哲学-英文/zarathustra (part 20 of 23).md",
+     "new_top1": "A3无描述-philosophy-en/walden (part 1 of 23).md"
+    },
+    {
+     "qid": "A-science-en-ddpm.pdf",
+     "old": true,
+     "new": false,
+     "old_top1": "A3无描述-science-en/ddpm.md",
+     "new_top1": ""
+    },
+    {
+     "qid": "A-science-en-resnet.pdf",
+     "old": true,
+     "new": false,
+     "old_top1": "Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k22.md",
+     "new_top1": ""
+    },
+    {
+     "qid": "A-science-en-word2vec.pdf",
+     "old": true,
+     "new": false,
+     "old_top1": "Corpus-Chunks800/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre__k15.md",
+     "new_top1": "A3无描述-gov-zh/十四五规划纲要 (part 1 of 3).md"
+    },
+    {
+     "qid": "F-hlm-1",
+     "old": false,
+     "new": true,
+     "old_top1": "",
+     "new_top1": "A3无描述-literature-zh/红楼梦第01回.md"
+    },
+    {
+     "qid": "F-hlm-3",
+     "old": false,
+     "new": true,
+     "old_top1": "",
+     "new_top1": "A3无描述-literature-zh/红楼梦第05回.md"
+    },
+    {
+     "qid": "G-fyp-1",
+     "old": true,
+     "new": false,
+     "old_top1": "A3无描述-gov-zh/十四五规划纲要 (part 1 of 3).md",
+     "new_top1": "A3无描述-economics-en/wealth_of_nations (part 33 of 88).md"
+    },
+    {
+     "qid": "G-gwr-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md",
+     "new_top1": "A3无描述-economics-en/wealth_of_nations (part 25 of 88).md"
+    },
+    {
+     "qid": "H-sj-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-历史-中文/史记卷008高祖本纪 (part 1 of 1).md",
+     "new_top1": "A3无描述-literature-zh/红楼梦第01回.md"
+    },
+    {
+     "qid": "H-sj-2",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-历史-中文/史记陈涉世家.md",
+     "new_top1": "A3无描述-economics-en/wealth_of_nations (part 2 of 88).md"
+    },
+    {
+     "qid": "L-pipl-1",
+     "old": false,
+     "new": true,
+     "old_top1": "",
+     "new_top1": "A3无描述-law-zh/个人信息保护法.md"
+    },
+    {
+     "qid": "M-covid-1",
+     "old": true,
+     "new": false,
+     "old_top1": "A3无描述-medicine-en/covid_sequelae_review (part 1 of 6).md",
+     "new_top1": "A3无描述-medicine-en/asthma_biologics_review (part 1 of 6).md"
+    },
+    {
+     "qid": "S-attn-1",
+     "old": true,
+     "new": false,
+     "old_top1": "Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k03.md",
+     "new_top1": "A3无描述-philosophy-en/beyond_good_and_evil (part 7 of 14).md"
+    },
+    {
+     "qid": "T-k8s-2",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-技术-英文/k8s_pss.md",
+     "new_top1": ""
+    }
+   ],
+   "discordant": {
+    "old1_new0": 13,
+    "old0_new1": 5
+   },
+   "mcnemar_cross_run_p": 0.192505
+  },
+  "A1-readall": {
+   "n_paired": 3,
+   "old_hits": 3,
+   "new_hits": 3,
+   "old_rate": 1.0,
+   "new_rate": 1.0,
+   "old_ci": [
+    0.4385,
+    1.0
+   ],
+   "new_ci": [
+    0.4385,
+    1.0
+   ],
+   "ci_overlap": true,
+   "delta_pp": 0.0,
+   "agree": 3,
+   "agree_rate": 1.0,
+   "flips": [],
+   "discordant": {
+    "old1_new0": 0,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 1.0
+  }
+ },
+ "audit": {
+  "qid_unique": {
+   "A0": true,
+   "A0f": true,
+   "A0h": true,
+   "PD": true,
+   "A1b": true,
+   "A2": true,
+   "A3": true,
+   "A1-readall": true
+  },
+  "n_rows": {
+   "A0": {
+    "old": 76,
+    "new": 76
+   },
+   "A0f": {
+    "old": 76,
+    "new": 76
+   },
+   "A0h": {
+    "old": 76,
+    "new": 76
+   },
+   "PD": {
+    "old": 76,
+    "new": 76
+   },
+   "A1b": {
+    "old": 76,
+    "new": 76
+   },
+   "A2": {
+    "old": 76,
+    "new": 76
+   },
+   "A3": {
+    "old": 76,
+    "new": 76
+   },
+   "A1-readall": {
+    "old": 76,
+    "new": 3
+   }
+  },
+  "route_card_leak": {
+   "A0": {
+    "old": [],
+    "new": []
+   },
+   "A0f": {
+    "old": [],
+    "new": []
+   },
+   "A0h": {
+    "old": [],
+    "new": []
+   },
+   "PD": {
+    "old": [],
+    "new": []
+   },
+   "A1b": {
+    "old": [],
+    "new": []
+   },
+   "A2": {
+    "old": [],
+    "new": []
+   },
+   "A3": {
+    "old": [],
+    "new": []
+   },
+   "A1-readall": {
+    "old": [],
+    "new": []
+   }
+  },
+  "scoped_candidates": {
+   "PD": {
+    "new_top1_out_of_scope": [],
+    "n_bad": 0
+   },
+   "A1b": {
+    "new_top1_out_of_scope": [],
+    "n_bad": 0
+   },
+   "A2": {
+    "new_top1_out_of_scope": [],
+    "n_bad": 0
+   }
+  },
+  "gold_hit_paste_check": {
+   "A0": {
+    "gold_hit_rows": 39,
+    "paste_ok": 39,
+    "paste_fail": 0,
+    "fail_qids": []
+   },
+   "A0f": {
+    "gold_hit_rows": 44,
+    "paste_ok": 44,
+    "paste_fail": 0,
+    "fail_qids": []
+   },
+   "A0h": {
+    "gold_hit_rows": 51,
+    "paste_ok": 51,
+    "paste_fail": 0,
+    "fail_qids": []
+   },
+   "PD": {
+    "gold_hit_rows": 45,
+    "paste_ok": 45,
+    "paste_fail": 0,
+    "fail_qids": []
+   }
+  },
+  "route_correct": {
+   "A0": {
+    "old": 72,
+    "new": 72
+   },
+   "A0f": {
+    "old": 72,
+    "new": 72
+   },
+   "A0h": {
+    "old": 72,
+    "new": 72
+   },
+   "A3": {
+    "old": 37,
+    "new": 49
+   }
+  }
+ },
+ "verdict_inputs": {},
+ "refusal_probes": {
+  "A0": {
+   "old_refusal_ok": 2,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 4
+  },
+  "A0f": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 4
+  },
+  "A0h": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 4
+  },
+  "PD": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 4
+  },
+  "A1b": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 4
+  },
+  "A2": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 4
+  },
+  "A3": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 4,
+   "new_n": 4
+  },
+  "A1-readall": {
+   "old_refusal_ok": 4,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  }
+ }
+}

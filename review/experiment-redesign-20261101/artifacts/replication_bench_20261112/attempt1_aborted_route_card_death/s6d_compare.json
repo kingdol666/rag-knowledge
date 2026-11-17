@@ -1,0 +1,378 @@
+{
+ "per_arm": {
+  "A0": {
+   "n_paired": 28,
+   "old_hits": 20,
+   "new_hits": 17,
+   "old_rate": 0.7143,
+   "new_rate": 0.6071,
+   "old_ci": [
+    0.5294,
+    0.8475
+   ],
+   "new_ci": [
+    0.4241,
+    0.7643
+   ],
+   "ci_overlap": true,
+   "delta_pp": -10.7,
+   "agree": 19,
+   "agree_rate": 0.6786,
+   "flips": [
+    {
+     "qid": "A-literature-en-alice_in_wonderland",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-文学-英文/alice_in_wonderland (part 1 of 6).md",
+     "new_top1": "MD语料-经济-英文/theory_of_the_leisure_class (part 10 of 25).md"
+    },
+    {
+     "qid": "A-literature-en-sherlock_holmes_adventur",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-文学-英文/sherlock_holmes_adventures (part 1 of 22).md",
+     "new_top1": "MD语料-技术-英文/k8s_nodes.md"
+    },
+    {
+     "qid": "F-hlm-2",
+     "old": false,
+     "new": true,
+     "old_top1": "MD语料-文学-中文/红楼梦第01回.md",
+     "new_top1": "MD语料-文学-中文/红楼梦第03回.md"
+    },
+    {
+     "qid": "F-hlm-3",
+     "old": false,
+     "new": true,
+     "old_top1": "MD语料-文学-中文/红楼梦第01回.md",
+     "new_top1": "MD语料-文学-中文/红楼梦第05回.md"
+    },
+    {
+     "qid": "G-fyp-1",
+     "old": false,
+     "new": true,
+     "old_top1": "MD语料-政务-中文/政府工作报告2024 (part 1 of 1).md",
+     "new_top1": "MD语料-政务-中文/十四五规划纲要 (part 1 of 3).md"
+    },
+    {
+     "qid": "G-gwr-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-政务-中文/政府工作报告2024 (part 1 of 1).md",
+     "new_top1": "MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md"
+    },
+    {
+     "qid": "M-covid-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-医学-英文/covid_sequelae_review (part 1 of 6).md",
+     "new_top1": "MD语料-经济-英文/theory_of_the_leisure_class (part 5 of 25).md"
+    },
+    {
+     "qid": "M-sep-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-医学-英文/sepsis_biomarkers_review (part 4 of 12).md",
+     "new_top1": "MD语料-哲学-英文/zarathustra (part 1 of 23).md"
+    },
+    {
+     "qid": "S-attn-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-科学-英文/attention_is_all_you_need.md",
+     "new_top1": "MD语料-技术-英文/volume-attributes-classes.md"
+    }
+   ],
+   "discordant": {
+    "old1_new0": 6,
+    "old0_new1": 3
+   },
+   "mcnemar_cross_run_p": 1.0
+  },
+  "A0f": {
+   "n_paired": 28,
+   "old_hits": 23,
+   "new_hits": 18,
+   "old_rate": 0.8214,
+   "new_rate": 0.6429,
+   "old_ci": [
+    0.6441,
+    0.9212
+   ],
+   "new_ci": [
+    0.4583,
+    0.7929
+   ],
+   "ci_overlap": true,
+   "delta_pp": -17.9,
+   "agree": 23,
+   "agree_rate": 0.8214,
+   "flips": [
+    {
+     "qid": "A-literature-en-alice_in_wonderland",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-文学-英文/alice_in_wonderland (part 1 of 6).md",
+     "new_top1": "MD语料-经济-英文/theory_of_the_leisure_class (part 10 of 25).md"
+    },
+    {
+     "qid": "A-literature-en-sherlock_holmes_adventur",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-文学-英文/sherlock_holmes_adventures (part 1 of 22).md",
+     "new_top1": "MD语料-技术-英文/k8s_nodes.md"
+    },
+    {
+     "qid": "M-covid-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-医学-英文/covid_sequelae_review (part 1 of 6).md",
+     "new_top1": "MD语料-经济-英文/theory_of_the_leisure_class (part 5 of 25).md"
+    },
+    {
+     "qid": "M-sep-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-医学-英文/sepsis_biomarkers_review (part 4 of 12).md",
+     "new_top1": "MD语料-哲学-英文/zarathustra (part 1 of 23).md"
+    },
+    {
+     "qid": "S-attn-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-科学-英文/attention_is_all_you_need.md",
+     "new_top1": "MD语料-技术-英文/volume-attributes-classes.md"
+    }
+   ],
+   "discordant": {
+    "old1_new0": 5,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 0.125
+  },
+  "A0h": {
+   "n_paired": 27,
+   "old_hits": 24,
+   "new_hits": 18,
+   "old_rate": 0.8889,
+   "new_rate": 0.6667,
+   "old_ci": [
+    0.7194,
+    0.9615
+   ],
+   "new_ci": [
+    0.4782,
+    0.8136
+   ],
+   "ci_overlap": true,
+   "delta_pp": -22.2,
+   "agree": 21,
+   "agree_rate": 0.7778,
+   "flips": [
+    {
+     "qid": "A-literature-en-alice_in_wonderland",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-文学-英文/alice_in_wonderland (part 1 of 6).md",
+     "new_top1": "MD语料-经济-英文/theory_of_the_leisure_class (part 10 of 25).md"
+    },
+    {
+     "qid": "A-literature-en-sherlock_holmes_adventur",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-文学-英文/sherlock_holmes_adventures (part 1 of 22).md",
+     "new_top1": "MD语料-技术-英文/k8s_nodes.md"
+    },
+    {
+     "qid": "F-pp-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-文学-英文/pride_and_prejudice (part 2 of 27).md",
+     "new_top1": "MD语料-技术-英文/volume-populators-and-data-sources.md"
+    },
+    {
+     "qid": "M-covid-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-医学-英文/covid_sequelae_review (part 1 of 6).md",
+     "new_top1": "MD语料-经济-英文/theory_of_the_leisure_class (part 5 of 25).md"
+    },
+    {
+     "qid": "M-sep-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-医学-英文/sepsis_biomarkers_review (part 4 of 12).md",
+     "new_top1": "MD语料-哲学-英文/zarathustra (part 1 of 23).md"
+    },
+    {
+     "qid": "S-attn-1",
+     "old": true,
+     "new": false,
+     "old_top1": "MD语料-科学-英文/attention_is_all_you_need.md",
+     "new_top1": "MD语料-技术-英文/volume-attributes-classes.md"
+    }
+   ],
+   "discordant": {
+    "old1_new0": 6,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 0.0625
+  },
+  "PD": {
+   "n_paired": 27,
+   "old_hits": 23,
+   "new_hits": 23,
+   "old_rate": 0.8519,
+   "new_rate": 0.8519,
+   "old_ci": [
+    0.6752,
+    0.9408
+   ],
+   "new_ci": [
+    0.6752,
+    0.9408
+   ],
+   "ci_overlap": true,
+   "delta_pp": 0.0,
+   "agree": 27,
+   "agree_rate": 1.0,
+   "flips": [],
+   "discordant": {
+    "old1_new0": 0,
+    "old0_new1": 0
+   },
+   "mcnemar_cross_run_p": 1.0
+  },
+  "A1b": {
+   "n_paired": 0,
+   "note": "no common gold rows"
+  },
+  "A2": {
+   "n_paired": 0,
+   "note": "no common gold rows"
+  },
+  "A3": {
+   "n_paired": 0,
+   "note": "no common gold rows"
+  },
+  "A1-readall": {
+   "n_paired": 0,
+   "note": "no common gold rows"
+  }
+ },
+ "audit": {
+  "qid_unique": {
+   "A0": true,
+   "A0f": true,
+   "A0h": true,
+   "PD": true
+  },
+  "n_rows": {
+   "A0": {
+    "old": 76,
+    "new": 28
+   },
+   "A0f": {
+    "old": 76,
+    "new": 28
+   },
+   "A0h": {
+    "old": 76,
+    "new": 27
+   },
+   "PD": {
+    "old": 76,
+    "new": 27
+   }
+  },
+  "route_card_leak": {
+   "A0": {
+    "old": [],
+    "new": []
+   },
+   "A0f": {
+    "old": [],
+    "new": []
+   },
+   "A0h": {
+    "old": [],
+    "new": []
+   },
+   "PD": {
+    "old": [],
+    "new": []
+   }
+  },
+  "scoped_candidates": {
+   "PD": {
+    "new_top1_out_of_scope": [],
+    "n_bad": 0
+   }
+  },
+  "route_correct": {
+   "A0": {
+    "old": 72,
+    "new": 20
+   },
+   "A0f": {
+    "old": 72,
+    "new": 20
+   },
+   "A0h": {
+    "old": 72,
+    "new": 19
+   }
+  }
+ },
+ "verdict_inputs": {},
+ "refusal_probes": {
+  "A0": {
+   "old_refusal_ok": 2,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  },
+  "A0f": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  },
+  "A0h": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  },
+  "PD": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  },
+  "A1b": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  },
+  "A2": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  },
+  "A3": {
+   "old_refusal_ok": 0,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  },
+  "A1-readall": {
+   "old_refusal_ok": 4,
+   "old_n": 4,
+   "new_refusal_ok": 0,
+   "new_n": 0
+  }
+ }
+}

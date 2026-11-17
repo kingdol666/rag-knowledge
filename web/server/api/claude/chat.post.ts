@@ -40,6 +40,7 @@ import { resolve } from 'path'
 import { readFileSync, statSync, existsSync } from 'fs'
 import { resolveWithinAnyRoot } from '~/server/utils/safe-paths'
 import { getTreeStorageAbsolutePath } from '~/server/utils/runtime-paths'
+import { evaluateKbRetrieval, isKbMcpTool, requestsKbMcp } from '~/server/utils/kb-mcp-tools'
 
 interface Attachment {
   name: string
@@ -427,18 +428,17 @@ export default defineEventHandler(async (event) => {
   const kbLaneNote = kbIds.length > 0
     ? '[通道提示：本轮为指定库快速通道——直接用 kb_search_two_stage / kb_search_vector 宽网起步；判定幸存证据已足够作答时立即作答。不要加载任何 Skill 文档，不要委派 subagent，禁止以相同参数重复调用任何工具。若未找到，只陈述检索事实（库名、已执行的检索、命中数），严禁编造或猜测库的内容。]'
     : '[通道提示：本轮为全库逐级检索通道——向量/经验检索工具不可用（调用会被直接拒绝，不要尝试）。固定顺序：kb_list → kb_get_documents(lightweight=true) 描述层拿 doc_id → kb_laya_judge(refs 每批≤6、串行) → kb_doc_read 幸存者 → 作答。效率优先：若 kb_list 的目录描述已表明没有任何库覆盖问题领域，立即如实回答「知识库中无对应内容」并停止，不要逐库扫描文档层——但描述含 random/杂项/通用/真实世界内容等泛化字样的库不算「已表明无关」，必须抽查其文档描述层后再判定（实测 2026-09-30：demo 杂项库里就有 Voyager 1 文档，目录层早退造成漏检）；禁止以相同参数重复调用任何工具；禁止加载任何 Skill 文档。若 kb 工具调用失败或不可用，必须如实回答「KB 工具不可用」——严禁没有任何检索就凭记忆作答。]'
-  // allowedTools-only callers that demand mcp__* tools (benchmark chat
+  // allowedTools-only callers that demand kb-mcp tools (benchmark chat
   // tracks / external harnesses). Must be computed BEFORE fullPromptText —
   // the tool-readiness protocol below is appended for these sessions only.
-  const requestMcpMount = Array.isArray(allowedTools) &&
-    allowedTools.some((t) => typeof t === 'string' && t.startsWith('mcp__'))
+  const requestMcpMount = Array.isArray(allowedTools) && requestsKbMcp(allowedTools)
   const fullPromptText = kbInstruction + soulInstruction + prompt + pathNote
     + (kbEnhanced
       ? '\n\n[回答格式要求：第一句必须是最终结论，不要以「检索完成」等过程汇报开头；默认总长 ≤800 字（要点 + 关键引文 + 出处）；仅当问题明确要求穷尽列举/完整表格/详细教程时才允许长答。]'
       + kbLaneNote
       : '')
     + (requestMcpMount
-      ? '\n\n[执行协议：先用 1-2 句话陈述你的检索计划（查什么、用哪个工具、预期命中什么），然后再调用工具执行——不要跳过计划直接报工具状态。若执行时工具列表中没有任何 mcp__kb-mcp__ 开头的工具，不要凭记忆作答也不要长篇解释，立即以字面量 KB_TOOLS_NOT_READY 结束本轮，系统会自动重试。]'
+      ? '\n\n[执行协议：先用 1-2 句话陈述你的检索计划（查什么、用哪个工具、预期命中什么），然后再调用工具执行——不要跳过计划直接报工具状态。若执行时工具列表中没有任何 kb-mcp 工具（Claude 格式 mcp__kb-mcp__* 或 OMP 格式 mcp__kb_mcp_*），不要凭记忆作答也不要长篇解释，立即以字面量 KB_TOOLS_NOT_READY 结束本轮，系统会自动重试。]'
       : '')
 
   const res = event.node.res
@@ -618,7 +618,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // ══════ 引擎查询（kbEnhanced 非流式带挂载闪失败自动重试） ══════
-    // MCP mount 说明：requestMcpMount（allowedTools 里点名 mcp__* 工具的调用方
+    // MCP mount 说明：requestMcpMount（allowedTools 里点名 kb-mcp 工具的调用方
     // 也挂 kb-mcp）已在 fullPromptText 之前计算——挂载以工具需求为准，而不是
     // kbEnhanced 指令开关（2026-09-30 回归：allowedTools-only 请求什么都不挂，
     // 会话凭参数记忆/网页绕路作答）。
@@ -640,6 +640,7 @@ export default defineEventHandler(async (event) => {
       : 1
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       sawKbTool = false
+      toolCalls.length = 0 // telemetry and final guard describe this attempt only
       const q = engine.query({
         prompt,
         cwd: workCwd,
@@ -650,6 +651,7 @@ export default defineEventHandler(async (event) => {
         maxTurns: maxTurns || (kbEnhanced ? 18 : 50),
         reasoningEffort: effectiveEffort,
         fullPromptText,
+        requireKbMcp: kbEnhanced || soulEnhanced || requestMcpMount,
         // Engines without native cross-request sessions get the prior
         // transcript replayed into the prompt (multi-turn continuity).
         ...(replayHistory.length ? { history: replayHistory } : {}),
@@ -744,7 +746,7 @@ export default defineEventHandler(async (event) => {
             for (const b of content) {
               if (b?.type === 'tool_use' && b?.name) {
                 toolCalls.push(String(b.name))
-                if (String(b.name).startsWith('mcp__kb-mcp__')) sawKbTool = true
+                if (isKbMcpTool(b.name)) sawKbTool = true
               }
             }
           }
@@ -774,7 +776,7 @@ export default defineEventHandler(async (event) => {
       // retrieval result — re-run. Non-stream only (the SSE stream is
       // already on the wire in stream mode). Applies to BOTH kbEnhanced
       // lanes and allowedTools-only callers (benchmark tracks / external
-      // harnesses): their sessions demand mcp__* tools, and a zero-tool
+      // harnesses): their sessions demand kb-mcp tools, and a zero-tool
       // answer is always the async-SSE-mount race (SDK init reports kb-mcp
       // "pending"; whether the tool list lands before the model's first
       // tool-seeking turn is a coin flip on short prompts).
@@ -799,22 +801,11 @@ export default defineEventHandler(async (event) => {
         const answer = typeof fr.result === 'string' && fr.result
           ? fr.result
           : extractText(fr.message?.content)
-        let success = fr.subtype === 'success'
-        let guardCode: string | null = null
-        // Honest-failure guard: an allowedTools-only session that demanded
-        // mcp__* tools but ended with ZERO kb tool calls never retrieved —
-        // its answer would be parametric memory dressed as retrieval.
-        // Demote to success:false so callers (benchmark runner, external
-        // harnesses) can fail the unit instead of scoring a fabrication.
-        if (requestMcpMount && !sawKbTool && success) {
-          success = false
-          guardCode = answer.includes('KB_TOOLS_NOT_READY')
-            ? 'KB_TOOLS_NOT_READY'
-            : 'KB_NO_RETRIEVAL'
-        }
+        // Both supported adapter spellings are normalized by one shared guard:
+        // OMP's underscore-joined MCP names count exactly like Claude SDK names.
+        const retrieval = evaluateKbRetrieval(toolCalls, answer, fr.subtype === 'success', requestMcpMount)
         return {
-          success,
-          ...(guardCode ? { code: guardCode } : {}),
+          ...retrieval,
           engine: engineName,
           sessionId,
           model: fr.model || model || 'default',
@@ -825,8 +816,6 @@ export default defineEventHandler(async (event) => {
           num_turns: fr.num_turns ?? null,
           total_cost_usd: fr.total_cost_usd ?? null,
           // 车道合规复算依据：本轮的 kb 工具调用序（含 0 次的情形，用于证明「未检索」）
-          toolCalls: toolCalls.filter(n => n.startsWith('mcp__kb-mcp__')),
-          toolCallCount: toolCalls.filter(n => n.startsWith('mcp__kb-mcp__')).length,
           elapsed_ms: Date.now() - t0,
         }
       }

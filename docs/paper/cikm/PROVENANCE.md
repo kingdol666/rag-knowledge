@@ -26,7 +26,7 @@ The one benchmark runner present in that tree, `benchmark-web/backend/run_benchm
 is not the source either. It is a standalone script that:
 
 * hard-codes ~30 synthetic document abstracts in Python (`add(...)` calls),
-* declares itself *"Standalone benchmark runner — BM25 + QDCVR comparison. No
+* declares itself *"Standalone benchmark runner — BM25 + HMRS comparison. No
   BGE-M3 dependency. Uses rank_bm25 directly."*,
 * computes **only BM25** (`bm25.get_scores`) — there is no vector index, no
   content adjudication and no LLM anywhere in it,
@@ -187,7 +187,7 @@ Deviations from the reproduced paper's settings are enumerated in
 * 新增派生表 `tab:ansqual`（producer: `make_assets.py`，读冻结
   `deepread_matrix.json` 的 per-question judge/retrieval/verdict 行）：
   按自身 rank-1 命中与否条件化的 judge 均值 + 弃答行为 ——
-  qdcvr 8.48/5.89、dense 9.18/8.25，qdcvr 弃答率 40%、弃答均分 5.33。
+  hmrs 8.48/5.89、dense 9.18/8.25，hmrs 弃答率 40%、弃答均分 5.33。
 * `make_assets.py` 同时新增宏 `macros/e4.tex`、`macros/ansqual.tex`，
   论文内联数字（8.48/9.18、6/7、4.89/3.07/3.39 等）全部由宏注入，
   无手抄。

@@ -33,7 +33,7 @@ INK = '#253745'
 SUB = '#526472'
 STYLE = {
     'a': {'fill': '#e6f3ec', 'box': '#f4faf7', 'dot': '#1f7a5c',
-          'label': 'A · QDCVR platform', 'route': 'answers with addressable sources'},
+          'label': 'A · HMRS platform', 'route': 'answers with addressable sources'},
     'b': {'fill': '#eef2f6', 'box': '#f7f9fb', 'dot': '#52615c',
           'label': 'B · Bare agent', 'route': 'file tools over exported papers'},
     'c': {'fill': '#f6f1e4', 'box': '#fbf8f0', 'dot': '#a07d3a',

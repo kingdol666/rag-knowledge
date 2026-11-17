@@ -1,7 +1,7 @@
-# 《QDCVR》论文评估报告 —— 面向 Knowledge-Based Systems 的写作、架构与发表适配性分析
+# 《HMRS》论文评估报告 —— 面向 Knowledge-Based Systems 的写作、架构与发表适配性分析
 
 - **评估对象**：`paper-kbs/tex/main.tex`（KBS 版手稿，elsarticle，32 页）
-- **论文标题**：*QDCVR: content-verified multi-lane retrieval for trustworthy agentic question answering — a deployed industrial case study*
+- **论文标题**：*HMRS: content-verified multi-lane retrieval for trustworthy agentic question answering — a deployed industrial case study*
 - **目标期刊**：Knowledge-Based Systems（Elsevier, ISSN 0950-7051）
 - **同一工作另有版本**：`paper-kbs/tex-ieee/main_tii.pdf`（IEEE TII，双栏 9 页，双盲）
 - **评估日期**：2026-10-12
@@ -11,7 +11,7 @@
 
 ## 一、一句话概括
 
-QDCVR 是一个自托管的企业知识库平台，其核心主张是：把"内容验证门"（一个本地部署的判卷模型）提升为平台级原语 —— **任何相似度分数都不能把文档"晋升"为答案，必须由判卷模型读取候选正文并投票**；三条检索车道（Search / Librarian / Hybrid）全部终止于同一道验证门，并以"零验证证据即显式 not-found"作为终态契约。论文用两层实验（工具层 + Agent 层）加上一个稳健性层，量化了这道门"买到了什么、没买到什么"。
+HMRS 是一个自托管的企业知识库平台，其核心主张是：把"内容验证门"（一个本地部署的判卷模型）提升为平台级原语 —— **任何相似度分数都不能把文档"晋升"为答案，必须由判卷模型读取候选正文并投票**；三条检索车道（Search / Librarian / Hybrid）全部终止于同一道验证门，并以"零验证证据即显式 not-found"作为终态契约。论文用两层实验（工具层 + Agent 层）加上一个稳健性层，量化了这道门"买到了什么、没买到什么"。
 
 ---
 
@@ -121,7 +121,7 @@ QDCVR 是一个自托管的企业知识库平台，其核心主张是：把"内�
 
 ### 4.1 主题范围匹配度 —— 基本契合，但存在定位张力
 
-KBS 的定位是**国际性、跨学科、应用导向的人工智能期刊**，收录机器学习、知识表示与推理、智能系统/决策支持、自然语言处理及其应用等。QDCVR 属于"知识库管理 + 检索 + 可信问答"，落在 **knowledge-based systems / 智能系统应用** 的范围内，且带有明确的知识层（内容路由组织、claims-not-facts 描述、经验库），**范围上是契合的**。
+KBS 的定位是**国际性、跨学科、应用导向的人工智能期刊**，收录机器学习、知识表示与推理、智能系统/决策支持、自然语言处理及其应用等。HMRS 属于"知识库管理 + 检索 + 可信问答"，落在 **knowledge-based systems / 智能系统应用** 的范围内，且带有明确的知识层（内容路由组织、claims-not-facts 描述、经验库），**范围上是契合的**。
 
 但需要指出张力：KBS 通常期待**方法论或知识层面的新意**，而本文最扎实的贡献（验证门角色分解 + 部署级负结果量化）偏**经验/系统工程**。论文已经通过"贡献 3 的自我降级"（不宣称发现现象，只宣称操作化量化与角色分解）和"case study"副标题来管理这个风险——这是**正确且必要**的应对，但也意味着它的录用会更依赖审稿人对"系统+量化负结果"这一文体的接受度。
 
@@ -140,7 +140,7 @@ KBS 的定位是**国际性、跨学科、应用导向的人工智能期刊**，
 | 生成式 AI 使用声明                    | ✅                 | 已列，且与 Elsevier 政策一致                      |
 | 图形摘要（Graphical Abstract）       | ⚠️ 可选             | 未提供（KBS 为可选鼓励项，非阻断）                      |
 | **作者姓名 / 单位 / ORCID / 基金**     | ❌ **占位符**         | `main.tex` 内多处 `AUTHOR ACTION`，**提交阻断项** |
-| CIKM demo 引用的作者名单              | ❌ 占位              | `qdcvr-demo` 条目按 "to appear" 处理，待补真实作者   |
+| CIKM demo 引用的作者名单              | ❌ 占位              | `hmrs-demo` 条目按 "to appear" 处理，待补真实作者   |
 | 匿名化要求                          | 不适用（KBS 为单盲，作者可见） | 与 IEEE TII 版的双盲匿名化不同，KBS 版无需匿名           |
 
 ### 4.3 学术质量门槛对照
@@ -166,7 +166,7 @@ KBS 的定位是**国际性、跨学科、应用导向的人工智能期刊**，
 3. **端到端部署视角 + 生产教训。** turn economics（时延 ≈ 轮次 × 12–15s）、失败模式目录（HNSW 静默丢索引、GPU OOM 假成功、WDDM 争用、判卷冷启动、非白名单工具绕行）对工业读者价值极高。
 4. **"诚实需要强制层而非提示词"的论证新颖有力。** 库外探针下：阈值层"来者不拒"（12 个候选保留 9–11），而阅读-作答层 6/6 显式 not-found、零伪造引用——把 honesty 定位为**管线形状的属性**。
 5. **稳健性层回应了主要质疑。** 改述集、第二信号（NLI）、span 级 NLI、符号规则、分级探针、第二语料（79 篇 arXiv），把"判卷塌陷"的归因收敛到 confuser density 这一个变量。
-6. **写作与图表水准高，定位表（Table 1）清晰。** 明确把 QDCVR 与 Vanilla RAG / GraphRAG / RAPTOR / RankGPT / Self-RAG / CRAG / DeepRead 做了能力对照。
+6. **写作与图表水准高，定位表（Table 1）清晰。** 明确把 HMRS 与 Vanilla RAG / GraphRAG / RAPTOR / RankGPT / Self-RAG / CRAG / DeepRead 做了能力对照。
 
 ## 六、不足
 
@@ -186,7 +186,7 @@ KBS 的定位是**国际性、跨学科、应用导向的人工智能期刊**，
 **P0 —— 提交前必做（阻断项）**
 
 1. 补齐作者姓名、单位、ORCID、CRediT 真名、基金（或 no-funding 声明）。
-2. 补齐 `qdcvr-demo`（CIKM 2026 demo）引用的真实作者名单。
+2. 补齐 `hmrs-demo`（CIKM 2026 demo）引用的真实作者名单。
 3. 若投 KBS：确认单盲要求即可（无需匿名化）；同时**核对页数策略**——32 页偏长，考虑把稳健性层的次要实验压缩或移入补充材料。
 
 **P1 —— 提升录用概率（建议在返修中做）**  

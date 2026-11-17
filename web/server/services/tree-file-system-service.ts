@@ -8,6 +8,7 @@ import { mkdir, writeFile, readFile, unlink, rmdir, rm, readdir, stat, rename, c
 import { existsSync } from 'fs'
 import { v4 as uuidv4 } from 'uuid'
 import { createHash } from 'crypto'
+import { isDeepStrictEqual } from 'util'
 import type {
   BaseNode,
   FolderNode,
@@ -22,15 +23,52 @@ import type {
   DeleteResponse
 } from '~/types/tree-file-system'
 import { KnowledgeBaseYamlService } from './knowledge-base-yaml-service'
-import { getServerConfig } from '~/utils/paths.mjs'
+import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
 import { writeJsonAtomic } from '~/server/utils/atomic-write'
 import { withTreeLock } from '~/server/utils/kb-mutex'
+import { assertSafeFilename } from '~/server/utils/safe-filename'
 
 const METADATA_FILE = '.tree-fs.json'
 
 interface FileSystemMetadata {
   folders: FolderResponse[]
   files: FileResponse[]
+}
+
+/**
+ * A successful updateFile response carries an explicit persistence receipt.
+ * The extra field is additive for existing callers, while save-parsed-files
+ * can refuse to claim success from a merely-shaped FileResponse.
+ */
+export interface FilePersistenceStatus {
+  tree: true
+  yaml: true
+}
+
+export type PersistedFileResponse = FileResponse & {
+  persistence: FilePersistenceStatus
+}
+
+/** Raised when a file update cannot prove YAML and tree metadata were saved. */
+export class MetadataPersistenceError extends Error {
+  readonly code = 'METADATA_PERSISTENCE_FAILED'
+  readonly phase: 'yaml' | 'tree' | 'verification'
+  override readonly cause?: unknown
+  override readonly name = 'MetadataPersistenceError'
+
+  constructor(message: string, phase: 'yaml' | 'tree' | 'verification', cause?: unknown) {
+    super(message)
+    this.phase = phase
+    this.cause = cause
+  }
+}
+
+function persistedValue(value: unknown): unknown {
+  return value === undefined ? undefined : JSON.parse(JSON.stringify(value))
+}
+
+function samePersistedValue(a: unknown, b: unknown): boolean {
+  return isDeepStrictEqual(persistedValue(a), persistedValue(b))
 }
 
 async function ensureDirectory(dirPath: string): Promise<void> {
@@ -157,6 +195,15 @@ export class TreeFileSystemService {
 
   private async saveMetadata(): Promise<void> {
     await writeJsonAtomic(this.metadataPath, this.metadata)
+  }
+
+  private async verifyTreeFilePersisted(file: FileResponse): Promise<void> {
+    const content = await readFile(this.metadataPath, 'utf-8')
+    const persisted = JSON.parse(content) as FileSystemMetadata
+    const stored = persisted.files?.find(candidate => candidate.id === file.id)
+    if (!stored || !samePersistedValue(stored, file)) {
+      throw new Error(`Tree metadata did not match the requested update: ${file.path}`)
+    }
   }
 
   async createFolder(request: CreateFolderRequest): Promise<FolderResponse> {
@@ -383,6 +430,8 @@ export class TreeFileSystemService {
     originalFilename: string,
     description: string = ''
   ): Promise<FileResponse> {
+    // Validate before deduplication, reads, or any filesystem mutations.
+    assertSafeFilename(originalFilename)
     return withTreeLock(async () => {
     const id = uuidv4()
     const now = new Date()
@@ -602,8 +651,12 @@ export class TreeFileSystemService {
   /**
    * Synchronize the KB YAML index update.
    * First match by path, then traverse parentId chain upward for sub-KBs.
+   *
+   * Existing callers retain the historical best-effort behavior. The strict
+   * updateFile path opts into a typed failure and a read-back verification so
+   * a resolved promise never implies that YAML was persisted when it was not.
    */
-  private async updateYamlForFile(file: FileNode, preservedTags?: string[], preservedIndex?: { vector_index?: Record<string, any>; graph_index?: Record<string, any> }): Promise<void> {
+  private async updateYamlForFile(file: FileNode, preservedTags?: string[], preservedIndex?: { vector_index?: Record<string, any>; graph_index?: Record<string, any> }, strict = false): Promise<boolean> {
     try {
       // First match by path
       let knowledgeBaseId = this.getKnowledgeBaseId(file.path)
@@ -617,7 +670,7 @@ export class TreeFileSystemService {
             : undefined
         }
       }
-      if (!knowledgeBaseId) return
+      if (!knowledgeBaseId) return true
 
       await this.yamlService.addDocument(knowledgeBaseId, {
         id: file.id,
@@ -633,8 +686,53 @@ export class TreeFileSystemService {
         vector_index: preservedIndex?.vector_index,
         graph_index: preservedIndex?.graph_index,
       })
+
+      if (strict) {
+        await this.verifyYamlFilePersisted(knowledgeBaseId, file, preservedTags, preservedIndex)
+      }
+      return true
     } catch (error) {
       console.error('Failed to update knowledge base YAML:', error)
+      if (strict) {
+        if (error instanceof MetadataPersistenceError) throw error
+        throw new MetadataPersistenceError(
+          `Failed to persist knowledge base YAML for ${file.path}`,
+          'yaml',
+          error,
+        )
+      }
+      return false
+    }
+  }
+
+  /** Verify the document entry by reading the YAML back from disk. */
+  private async verifyYamlFilePersisted(
+    knowledgeBaseId: string,
+    file: FileNode,
+    preservedTags?: string[],
+    preservedIndex?: { vector_index?: Record<string, any>; graph_index?: Record<string, any> },
+  ): Promise<void> {
+    const data = await this.yamlService.read(knowledgeBaseId)
+    const norm = (p: string) => (p || '').replace(/\\/g, '/')
+    const document = data?.documents?.find(doc => norm(doc.path || '') === norm(file.path))
+    if (!document) {
+      throw new Error(`YAML document entry was not found after write: ${file.path}`)
+    }
+
+    const matches = (
+      document.id === file.id
+      && document.name === file.name
+      && document.description === file.description
+      && norm(document.path || '') === norm(file.path)
+      && document.file_type === file.fileType
+      && samePersistedValue(document.file_size, file.fileSize)
+      && samePersistedValue(document.metadata, file.metadata)
+      && (preservedTags === undefined || samePersistedValue(document.tags, preservedTags))
+      && (preservedIndex?.vector_index === undefined || samePersistedValue(document.vector_index, preservedIndex.vector_index))
+      && (preservedIndex?.graph_index === undefined || samePersistedValue(document.graph_index, preservedIndex.graph_index))
+    )
+    if (!matches) {
+      throw new Error(`YAML document entry did not match the requested update: ${file.path}`)
     }
   }
 
@@ -677,7 +775,7 @@ export class TreeFileSystemService {
     }
   }
 
-  private async removeFileFromYaml(file: FileResponse): Promise<void> {
+  private async removeFileFromYaml(file: FileResponse, strict = false): Promise<void> {
     try {
       let knowledgeBaseId = this.getKnowledgeBaseId(file.path)
       // Fallback: walk the parentId chain up to the nearest KB ancestor.
@@ -695,6 +793,13 @@ export class TreeFileSystemService {
       await this.yamlService.removeDocument(knowledgeBaseId, file.path)
     } catch (error) {
       console.error('Failed to remove file from knowledge base YAML:', error)
+      if (strict) {
+        throw new MetadataPersistenceError(
+          `Failed to persist knowledge base YAML while removing ${file.path}`,
+          'yaml',
+          error,
+        )
+      }
     }
   }
 
@@ -903,7 +1008,7 @@ export class TreeFileSystemService {
   /**
    * Update file metadata and sync with KB YAML index.
    */
-  async updateFile(id: string, request: UpdateFileRequest): Promise<FileResponse> {
+  async updateFile(id: string, request: UpdateFileRequest): Promise<PersistedFileResponse> {
     const fileIndex = this.metadata.files.findIndex(f => f.id === id)
     if (fileIndex === -1) {
       throw new Error(`File not found: ${id}`)
@@ -945,11 +1050,24 @@ export class TreeFileSystemService {
     const preservedTags = await this.readYamlDocTags(file.path)
     const preservedIndex = await this.readYamlDocIndexes(file.path)
     // Remove old entry from KB YAML, then add the updated one (path may have changed).
-    await this.removeFileFromYaml(file)
-    await this.updateYamlForFile(updatedFile, preservedTags, preservedIndex)
+    // strict=true makes YAML failure observable to callers and verifies the entry by
+    // reading it back before this method can report success.
+    await this.removeFileFromYaml(file, true)
+    await this.updateYamlForFile(updatedFile, preservedTags, preservedIndex, true)
 
     this.metadata.files[fileIndex] = updatedFile
-    await this.saveMetadata()
+    try {
+      await this.saveMetadata()
+      await this.verifyTreeFilePersisted(updatedFile)
+    } catch (error) {
+      this._dirty = true
+      console.error('Failed to persist tree metadata:', error)
+      throw new MetadataPersistenceError(
+        `Failed to persist tree metadata for ${updatedFile.path}`,
+        'tree',
+        error,
+      )
+    }
 
     // Rename (path change) must sync indexes the same way a move does:
     // delete old-path vector chunks + graph node, index the new path.
@@ -961,8 +1079,12 @@ export class TreeFileSystemService {
       })
     }
 
-    return updatedFile
+    return {
+      ...updatedFile,
+      persistence: { tree: true, yaml: true },
+    }
   }
+
 
   async deleteFolder(id: string): Promise<DeleteResponse> {
     const folder = this.metadata.folders.find(f => f.id === id)
@@ -1023,8 +1145,7 @@ export class TreeFileSystemService {
       // Fire-and-forget: clean vector collection + graph data for this KB.
       // Backend auto-cleans both kb_<uuid> and kb_<path> naming conventions.
       const kbId = folder.id || folder.path
-      const config = getServerConfig()
-      const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
+      const backendUrl = getDynamicBackendUrl()
       backendFetch(backendUrl, `/api/v1/search/kb/${encodeURIComponent(kbId)}`, {
         method: 'DELETE',
       }).then(() => {
@@ -1115,8 +1236,7 @@ export class TreeFileSystemService {
    */
   private async cleanupIndexOnDelete(file: FileResponse): Promise<void> {
     try {
-      const config = getServerConfig()
-      const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
+      const backendUrl = getDynamicBackendUrl()
       const kbId = this.getKnowledgeBaseUuid(file.path)
       const docPath = file.path
 
@@ -1438,8 +1558,7 @@ export class TreeFileSystemService {
    */
   private async triggerReindexAfterMove(sourceFile: FileResponse, movedFile: FileResponse): Promise<void> {
     try {
-      const config = getServerConfig()
-      const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
+      const backendUrl = getDynamicBackendUrl()
       const sourceKbId = this.getKnowledgeBaseUuid(sourceFile.path)
       const targetKbId = this.getKnowledgeBaseUuid(movedFile.path)
       const oldDocPath = sourceFile.path
@@ -1515,8 +1634,7 @@ export class TreeFileSystemService {
   }
 
   private async _doIndexDocument(file: FileResponse): Promise<void> {
-    const config = getServerConfig()
-    const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
+    const backendUrl = getDynamicBackendUrl()
     const kbId = this.getKnowledgeBaseUuid(file.path)
     if (!kbId) {
       console.warn(`[indexDocument] cannot resolve KB for ${file.path} — skip`)

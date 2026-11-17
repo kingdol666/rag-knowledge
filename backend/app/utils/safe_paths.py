@@ -22,11 +22,12 @@ def _is_within(resolved: str, root: str) -> bool:
 
     ``resolved == root`` 或 ``resolved`` 以 ``root + sep`` 开头。
     """
-    r = os.path.normcase(os.path.normpath(root)).rstrip("\\/")
+    r = os.path.normcase(os.path.normpath(root))
     c = os.path.normcase(os.path.normpath(resolved))
-    if c == r:
-        return True
-    return c.startswith(r + os.sep)
+    try:
+        return os.path.commonpath((r, c)) == r
+    except ValueError:  # different drives on Windows
+        return False
 
 
 def is_path_within(path: PathLike, root: PathLike) -> bool:
@@ -37,6 +38,44 @@ def is_path_within(path: PathLike, root: PathLike) -> bool:
     后的安全收敛，避免改变相对路径的基准。
     """
     return _is_within(str(path), str(root))
+
+
+def is_path_within_real(path: PathLike, root: PathLike) -> bool:
+    """Check containment after resolving existing symlinks in both paths."""
+    try:
+        resolved_path = Path(path).resolve(strict=False)
+        resolved_root = Path(root).resolve(strict=False)
+    except (OSError, RuntimeError, ValueError):
+        return False
+    return _is_within(str(resolved_path), str(resolved_root))
+
+
+def resolve_within_real(candidate: PathLike, root: PathLike) -> str:
+    """Resolve a path (including existing symlinks) and enforce containment.
+
+    Relative candidates are based at ``root``. Unlike ``resolve_within``, this
+    helper canonicalizes both paths so a symlink beneath a trusted root cannot
+    redirect writes outside it. This helper is intentionally separate to avoid
+    changing the semantics of unrelated legacy ``resolve_within`` callers.
+    """
+    s = str(candidate)
+    if not s or "\x00" in s:
+        raise ValueError("invalid path")
+    if s.startswith("\\\\") or (os.name == "nt" and s.startswith("//")):
+        raise ValueError("UNC and verbatim paths not allowed")
+    # Windows resolves some symlink/.. combinations lexically, obscuring a
+    # traversal through a link. Deny parent traversal rather than normalize it.
+    if ".." in Path(s).parts:
+        raise ValueError("parent traversal not allowed")
+    try:
+        resolved_root = Path(root).resolve(strict=False)
+        path = Path(s)
+        resolved = (path if path.is_absolute() else resolved_root / path).resolve(strict=False)
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise ValueError(f"invalid path: {candidate!r}") from exc
+    if not _is_within(str(resolved), str(resolved_root)):
+        raise ValueError(f"path outside allowed root: {candidate!r}")
+    return str(resolved)
 
 
 def resolve_within(candidate: PathLike, root: PathLike) -> str:

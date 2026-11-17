@@ -182,7 +182,7 @@ ragctl soul learn-all soul-<name> --rounds 2
 ragctl soul review soul-<name> --action approve --all   # approve memory drafts
 
 # 3) Persona-augmented retrieval Q&A
-ragctl soul ask "question" --soul soul-<name> --qdcvr
+ragctl soul ask "question" --soul soul-<name> --hmrs
 ```
 
 Evolution loop: training produces drafts → approval registers → profile refresh → better routing → scheduled training

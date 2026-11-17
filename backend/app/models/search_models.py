@@ -1,6 +1,6 @@
 """Pydantic models for search API."""
 from typing import Any, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class VectorSearchRequest(BaseModel):
@@ -10,6 +10,7 @@ class VectorSearchRequest(BaseModel):
     doc_paths: Optional[list[str]] = None
     score_threshold: Optional[float] = None  # None=用 config 默认；显式传值则覆盖
     balance_kbs: bool = False  # 跨库搜索时均衡结果，防大KB主导
+    wait_budget_ms: Optional[float] = Field(default=None, ge=0, allow_inf_nan=False)
 
 
 class TwoStageSearchRequest(BaseModel):
@@ -20,6 +21,14 @@ class TwoStageSearchRequest(BaseModel):
     enable_graph_expansion: bool = True
     score_threshold: Optional[float] = None  # None=用 config 默认；影响 stage2 fallback 的向量过滤
     balance_kbs: bool = False  # 跨库搜索时均衡结果，防大KB主导
+    graph_budget_ms: Optional[float] = Field(
+        default=None, ge=0, allow_inf_nan=False,
+        description="Graph expansion wait budget in milliseconds; zero skips it. Not a request deadline.",
+    )
+    vector_budget_ms: Optional[float] = Field(
+        default=None, ge=0, allow_inf_nan=False,
+        description="Vector stage wait budget in milliseconds; zero skips it. Not a request deadline.",
+    )
 
 
 class IndexDocumentRequest(BaseModel):

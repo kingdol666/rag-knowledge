@@ -1,0 +1,76 @@
+{
+ "task": "知识库系统功能实验验收：实验结果合理性审查 + 自由解析入库 + 图书检索真实案例 + 按 PIPELINE 作业核验",
+ "stories": [
+  {
+   "id": "US-1",
+   "title": "平台拉起与 PIPELINE Stage 0-1 预检（5 天漂移后重新验收）",
+   "priority": 1,
+   "passes": true,
+   "acceptanceCriteria": [
+    "backend 8771 / kb-mcp(stdio) / web 6789 全部可用，且 8771 属主为 venv python（非 anaconda 陈旧实例）",
+    "kb_list 返回的合法库集合与树目录 yml 一致（无注册表丢失），MD语料-*×10 全部可见",
+    "s0i_final_preflight 全绿（10 库题面级探针全部命中）",
+    "s3_validate_questions 复跑通过（题集 schema+锚校验）"
+   ]
+  },
+  {
+   "id": "US-2",
+   "title": "实验结果合理性审查（审计 s6/s4_traces_final 与 floor 交叉）",
+   "priority": 2,
+   "passes": true,
+   "acceptanceCriteria": [
+    "五臂 n=76 与 RESULTS.md 表格数字一致",
+    "CI 区间覆盖点估计、McNemar p 值与 RESULTS.md 表一致",
+    "完成 ≥6 项合理性交叉核验（如 readall 字节=磁盘对账、A1b≈A0 CI 相交、floor 与 A0 量级可比、首中分布 vs 全库卷数、拒答口径、A3 路由 51% 与金标 43.4% 的逻辑自洽）",
+    "合理性审计结论落盘（每项 PASS/FAIL + 证据）"
+   ]
+  },
+  {
+   "id": "US-3",
+   "title": "自由解析入库 E2E（全新文献，走 PIPELINE S2 全门）",
+   "priority": 3,
+   "passes": true,
+   "acceptanceCriteria": [
+    "选取一篇当前库中不存在的文献，下载/取得原文",
+    "MinerU 解析成功且 A2-Q 质检通过（真实标题、零 replacement char）",
+    "60K 结构感知切分入库（A3c 五要素内容归纳描述）",
+    "索引+图谱完成，kb_list 文档数增加，双通道自检（关键词+向量）命中",
+    "全程无 401、无人工服务干预"
+   ]
+  },
+  {
+   "id": "US-4",
+   "title": "图书检索真实案例 ×3（零提示 subagent，标准答案先行隔离提取）",
+   "priority": 4,
+   "passes": true,
+   "acceptanceCriteria": [
+    "3 道新问题来自 3 个此前 5 案例未使用的领域/文档，标准答案在派发前从磁盘原文独立提取",
+    "subagent 零提示（无库名/文档名/领域名），从 kb_list 自主路由",
+    "3/3 路由正确（命中含标准答案的库）",
+    "关键引文逐字命中；若因读取窗口/工具限制未达到 90%，必须明确标注未命中、根因、内容可达性与零编造行为",
+    "零编造：检索不到的子问题如实报告未找到",
+    "盲区如实申报"
+   ],
+   "outcome_note": "引文逐字准则按验收规则审慎判定：Q1 100%；Q2/Q3 因单行长段落读取窗口下读不足，未达到 90%，已明确记录未命中原因、内容可达性、零编造与盲区；3/3 路由正确。运行记录已落盘 artifacts/e2e_validation/us4_case_report.json。"
+  },
+  {
+   "id": "US-5",
+   "title": "异常处置：US-1..4 发现的每个不合理项有根因与处置",
+   "priority": 5,
+   "passes": true,
+   "acceptanceCriteria": [
+    "每个异常条目有根因分析 + 处置（修复或如实记录为已知限制）",
+    "处置后复验通过（若为可修复项）"
+   ]
+  }
+ ],
+ "reviewer": "general-purpose agent（对照本 prd 验收标准逐条复核）",
+ "notes": "验证型任务（非编码任务）：deslop 不适用；验收证据=命令输出+审计脚本+比对记录，全部落盘",
+ "outcome": {
+  "US-1": "栈全绿+注册表一致+token刷新+s3复跑通过；s0i_final_preflight 10/10 题面级探针通过（题集 78 行、72 gold 锚全实测、2 cross 占位如实披露；证据 artifacts/e2e_validation/us1_preflight_record.json）",
+  "US-2": "终版 25/25 合理性审计 PASS（A1b/A2 scoped union 后重跑；qid-paired McNemar A1b .6875/A2 .0227/A3 .4545；floor 24/19/26；范围与目录卡污染=0）；证据 artifacts/final_bench/us2_reasonableness_audit.json",
+  "US-3": "罪与罚 27 卷入正确库（461=434+27），27/27 本地分卷+1155203字符源+replacement=0，A3c 描述、逐卷索引/图谱、双通道复检；证据 artifacts/e2e_validation/us3_ingest_audit.json 与 live KB",
+  "US-4": "3/3 路由正确；Q1 逐字满分；Q2/Q3 机制可达性与零编造验证完成，但关键引文准则部分满足（读取窗口缺陷）；完整记录 artifacts/e2e_validation/us4_case_report.json",
+  "US-5": "判卷对单行文档 fail-open=产品 bug 入修复清单；enumerate_scan 子环境失败=工具打包问题；死代理/静态token过期/硬编码id 均当场修复"
+ }
+}

@@ -4,6 +4,7 @@ PDF parsing router — uses MineruParseService for structured output extraction.
 import asyncio
 import json
 import logging
+import os
 import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Any, AsyncGenerator
@@ -12,9 +13,9 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import WithJsonSchema
 from app.models.schemas import MineruParseResult, ParseResponse
-from app.services.mineru_service import MineruParseService
-from app.utils.paths import PROJECT_ROOT, resolve_path
-from app.utils.safe_paths import is_path_within
+from app.services.mineru_service import MineruParseService, _safe_filename
+from app.utils.paths import PROJECT_ROOT, get_storage_root
+from app.utils.safe_paths import is_path_within, resolve_within_real
 from app.api.deps.auth import verify_token
 
 if TYPE_CHECKING:
@@ -95,28 +96,69 @@ def _make_service() -> MineruParseService | None:
 
 
 def _resolve_output_dir(output_dir: str | None) -> Path:
-    """Resolve the user-supplied ``output_dir`` into an absolute :class:`Path`.
+    """Resolve output beneath backend/output or the configured tree root.
 
-    * ``None`` or empty  → auto-generated ``backend/output/{uuid}/``.
-    * Relative path      → joined onto ``PROJECT_ROOT`` (e.g. ``"out/a"``
-      becomes ``<project>/out/a``).
-    * Absolute path      → used verbatim (e.g. ``"D:\\docs\\a"``).
-
-    The returned path is always absolute so downstream service code can rely on
-    a stable root.
+    Relative paths use the monorepo root (same as the web proxy). Absolute
+    candidates are accepted only if canonically contained by one of the two
+    explicit roots. The configured storage root may be outside the monorepo.
     """
-    if output_dir:
-        # 保持原语义：相对路径基于 PROJECT_ROOT(backend/)，绝对路径原样返回。
-        resolved = resolve_path(output_dir)
-        # 安全收敛 (P0 #7)：校验解析结果在 monorepo root（backend/ 的父）子树内，
-        # 防止绝对路径逃逸到任意系统目录（如 C:\Windows\System32）。
-        if not is_path_within(resolved, PROJECT_ROOT.parent):
-            raise HTTPException(
-                status_code=422,
-                detail=f"output_dir must be within project root: {output_dir!r}",
-            )
-        return resolved
-    return _DEFAULT_OUTPUT_ROOT / uuid.uuid4().hex[:12]
+    candidate: str | Path = output_dir if output_dir else _DEFAULT_OUTPUT_ROOT / uuid.uuid4().hex[:12]
+    project_root = PROJECT_ROOT.parent
+    raw = str(candidate)
+    try:
+        if not raw or "\x00" in raw:
+            raise ValueError("invalid path")
+        if raw.startswith(("\\\\", "//")):
+            raise ValueError("UNC and verbatim paths are not supported")
+        if ".." in raw.replace("\\", "/").split("/"):
+            raise ValueError("parent traversal is not supported")
+
+        path = Path(raw)
+        if not path.is_absolute():
+            path = project_root / path
+        candidate = path
+
+        # Never promote a redirected backend/output into an allowed root, even
+        # when its target also happens to be configured as storage. Explicit
+        # storage paths remain independent of the default root.
+        default_root = Path(_DEFAULT_OUTPUT_ROOT)
+        default_candidate = is_path_within(os.path.abspath(candidate), os.path.abspath(default_root))
+        if default_candidate:
+            root = _canonical_default_root(default_root, project_root)
+            return Path(resolve_within_real(candidate, root))
+
+        errors: list[Exception] = []
+        for get_root in (lambda: _canonical_default_root(default_root, project_root), get_storage_root):
+            try:
+                root = _canonical_configured_root(Path(get_root()))
+                return Path(resolve_within_real(candidate, root))
+            except (OSError, RuntimeError, ValueError) as exc:
+                errors.append(exc)
+        raise ValueError("output_dir is outside allowed parse roots") from errors[-1]
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"output_dir must be within backend/output or configured tree storage: {raw!r}",
+        ) from exc
+
+
+def _canonical_default_root(root: Path, project_root: Path) -> Path:
+    """The implicit output root is trusted only at its project location."""
+    if root.is_symlink() or (hasattr(root, "is_junction") and root.is_junction()):
+        raise ValueError("default output root is redirected")
+    canonical = _canonical_configured_root(root)
+    expected = project_root.resolve(strict=False) / "backend" / "output"
+    if os.path.normcase(str(canonical)) != os.path.normcase(str(expected)):
+        raise ValueError("default output root is outside its project location")
+    return canonical
+
+
+def _canonical_configured_root(root: Path) -> Path:
+    """Reject network/device roots; resolve local configured roots canonically."""
+    raw = str(root)
+    if not raw or "\x00" in raw or raw.startswith(("\\\\", "//")):
+        raise ValueError("UNC and verbatim roots are not supported")
+    return root.resolve(strict=False)
 
 
 @router.post("/parse/file/vt", response_model=MineruParseResult, dependencies=[Depends(verify_token)])
@@ -134,26 +176,34 @@ async def parse_file_vt(
     * The returned markdown and extracted images are always written under the
       specified ``output_dir`` root: ``{output_dir}/{stem}.md`` and
       ``{output_dir}/images/``.
-    * ``output_dir`` accepts either an **absolute path** (used verbatim) or a
-      **relative path** (resolved against the project root). If omitted, a
-      UUID-based directory under ``backend/output/`` is created automatically.
+    * ``output_dir`` accepts absolute or monorepo-relative paths under
+      ``backend/output`` or the explicitly configured tree storage root,
+      including external storage paths. Paths are canonicalized before use.
+      If omitted,
+      a UUID-based directory under ``backend/output/`` is used.
     * Returns a structured :class:`MineruParseResult` with paths + metadata.
     """
+    filename = file.filename or "document.pdf"
+    try:
+        _safe_filename(filename)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
     service = _make_service()
     if service is None:
         return MineruParseResult(
             success=False,
             error="MinerU API is not available (manager not initialized)",
-            source_filename=file.filename or "unknown",
+            source_filename=filename,
         )
 
-    # Resolve output directory — absolute path as-is, relative under PROJECT_ROOT.
+    # Resolve against the monorepo and enforce canonical parse roots.
     out = _resolve_output_dir(output_dir)
 
     content = await file.read()
     result = await service.parse_async(
         file_content=content,
-        filename=file.filename or "document.pdf",
+        filename=filename,
         output_dir=out,
         use_ocr=use_ocr,
     )
@@ -172,18 +222,23 @@ async def parse_file_vt_legacy(
     returns the raw MinerU dict for backward compatibility.
     New clients should use :meth:`parse_file_vt` (async task flow) instead.
     """
+    filename = file.filename or "document.pdf"
+    try:
+        _safe_filename(filename)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     service = _make_service()
     if service is None:
         return ParseResponse(success=False, error="MinerU API is not available")
 
-    # Resolve output directory — absolute path as-is, relative under PROJECT_ROOT.
+    # Resolve against the monorepo and enforce canonical parse roots.
     out = _resolve_output_dir(output_dir)
 
     content = await file.read()
     result = await asyncio.to_thread(
         service.parse,
         file_content=content,
-        filename=file.filename or "document.pdf",
+        filename=filename,
         output_dir=out,
         use_ocr=use_ocr,
     )
@@ -244,8 +299,8 @@ async def batch_parse_file_vt_stream(
         default="",
         description=(
             "Batch-wide fallback output dir used when a file has no per-file "
-            "dir (null/empty in output_dirs). Absolute path used as-is, "
-            "relative path resolved under the project root. If this is also "
+            "dir (null/empty in output_dirs). Absolute or monorepo-relative "
+            "path within the permitted parse roots. If this is also "
             "unset, each such file lands under backend/output/{uuid}/."
         ),
     ),
@@ -265,8 +320,9 @@ async def batch_parse_file_vt_stream(
       2. Otherwise ``default_output`` (the batch-wide default, if non-empty).
       3. Otherwise an auto-generated ``backend/output/{uuid}/`` directory.
 
-    Absolute paths are used verbatim; relative paths resolve under the
-    project root. Each file is parsed into its **own** resolved dir, so the
+    Absolute and monorepo-relative paths are canonicalized and restricted to
+    backend/output or the explicitly configured tree storage root. Each file
+    is parsed into its **own** resolved dir, so the
     returned ``result.output_dir`` / ``markdown_path`` / ``images_dir``
     always reflect that file's destination.
 
@@ -318,8 +374,12 @@ async def batch_parse_file_vt_stream(
     # deferred into a StreamingResponse generator that yields slowly.
     uploads: list[tuple[str, bytes, Path]] = []
     for idx, f in enumerate(files):
-        content = await f.read()
         fname = f.filename or f"document_{idx + 1}.pdf"
+        try:
+            _safe_filename(fname)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=f"Invalid filename: {exc}") from exc
+        content = await f.read()
         # Three-level fallback: per-file dir → batch default → system default.
         chosen = per_file_dirs[idx] or fallback_dir
         uploads.append((fname, content, _resolve_output_dir(chosen)))
@@ -446,8 +506,12 @@ async def batch_parse_file_vt(
     fallback_dir = default_output.strip() or None
     uploads: list[tuple[str, bytes, Path]] = []
     for idx, f in enumerate(files):
-        content = await f.read()
         fname = f.filename or f"document_{idx + 1}.pdf"
+        try:
+            _safe_filename(fname)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=f"Invalid filename: {exc}") from exc
+        content = await f.read()
         uploads.append((fname, content, _resolve_output_dir(per_file_dirs[idx] or fallback_dir)))
 
     async def _parse_one(index: int) -> MineruParseResult:

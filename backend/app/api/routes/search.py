@@ -17,7 +17,9 @@ from app.models.search_models import (
     VectorSearchRequest,
 )
 from app.services.storage_reader_service import storage_reader, StorageReaderService
-from app.services.two_stage_search_service import two_stage_search_service
+from app.services.two_stage_search_service import (
+    PrimarySearchUnavailable, _vector_runner, two_stage_search_service,
+)
 from app.services.vector_service import vector_service as _vs
 from app.api.deps.auth import verify_token
 
@@ -100,19 +102,30 @@ async def debug_paths(kb_id: str = "", doc_path: str = "") -> dict[str, Any]:
 
 @router.post("/vector")
 async def vector_search(req: VectorSearchRequest) -> dict[str, Any]:
-    """纯向量检索。"""
+    """Pure vector search. Optional wait budgets do not cancel backend work."""
     if not config.vector_enabled:
         raise HTTPException(503, "Vector search is disabled")
     vs = _get_vs()
     if not vs:
-        return {"success": True, "results": [], "count": 0, "note": "vector service not ready"}
-    results = await asyncio.to_thread(
-        vs.search,
-        query=req.query, kb_id=req.kb_id,
-        top_k=req.top_k, doc_paths=req.doc_paths,
-        score_threshold=req.score_threshold,
-        balance_kbs=req.balance_kbs,
-    )
+        return {"success": True, "results": [], "count": 0, "note": "vector service not ready",
+                "retrieval": {"degraded": True, "status": "unavailable",
+                              "degraded_reasons": ["vector_unavailable"]}}
+    kwargs = dict(
+        query=req.query, kb_id=req.kb_id, top_k=req.top_k, doc_paths=req.doc_paths,
+        score_threshold=req.score_threshold, balance_kbs=req.balance_kbs)
+    if req.wait_budget_ms is None:
+        results = await asyncio.to_thread(vs.search, **kwargs)
+    else:
+        status, results = await asyncio.to_thread(
+            _vector_runner.run, lambda: vs.search(**kwargs), req.wait_budget_ms)
+        if status != "completed":
+            return {"success": True, "results": [], "count": 0,
+                    "retrieval": {"degraded": True,
+                                  "degraded_reasons": [f"vector_{status}"],
+                                  "status": status,
+                                  "note": "wait ended; synchronous vector work may continue"}}
+        return {"success": True, "results": results, "count": len(results),
+                "retrieval": {"degraded": False, "status": "completed"}}
     return {"success": True, "results": results, "count": len(results)}
 
 
@@ -152,14 +165,22 @@ async def two_stage_search(req: TwoStageSearchRequest) -> dict[str, Any]:
     """两阶段精准检索：广搜索 → 文档向量精筛。"""
     if not config.vector_enabled:
         raise HTTPException(503, "Vector search is disabled")
-    result = await asyncio.to_thread(
-        two_stage_search_service.search,
-        query=req.query, kb_id=req.kb_id,
-        stage1_top_k=req.stage1_top_k, stage2_top_k=req.stage2_top_k,
-        enable_graph_expansion=req.enable_graph_expansion,
-        score_threshold=req.score_threshold,
-        balance_kbs=req.balance_kbs,
-    )
+    try:
+        result = await two_stage_search_service.search_async(
+            query=req.query, kb_id=req.kb_id,
+            stage1_top_k=req.stage1_top_k, stage2_top_k=req.stage2_top_k,
+            enable_graph_expansion=req.enable_graph_expansion,
+            score_threshold=req.score_threshold,
+            balance_kbs=req.balance_kbs,
+            graph_budget_ms=req.graph_budget_ms,
+            vector_budget_ms=req.vector_budget_ms,
+        )
+    except PrimarySearchUnavailable as exc:
+        if exc.status == "capacity_exhausted":
+            raise HTTPException(429, "Primary search queue is full; retry later",
+                                headers={"Retry-After": "1"}) from exc
+        raise HTTPException(503, "Primary search wait timed out; synchronous work may still be running",
+                            headers={"Retry-After": "1"}) from exc
     return {"success": True, **result}
 
 

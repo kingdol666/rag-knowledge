@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/images/readme-hero.svg" alt="QDCVR — 可部署的知识库管理平台：基于内容的组织与内容核验的检索" width="100%" />
+<img src="./docs/images/readme-hero.svg" alt="HMRS — 可部署的知识库管理平台：基于内容的组织与内容核验的检索" width="100%" />
 
 <br><br>
 
@@ -9,7 +9,7 @@
 
 <a href="#快速开始"><img src="https://img.shields.io/badge/快速开始-3_条命令-B24422?style=for-the-badge" alt="快速开始" /></a>
 <a href="#mcp-工具"><img src="https://img.shields.io/badge/kb_*_MCP_工具-41_个-2E5D7F?style=for-the-badge" alt="41 个 kb_* MCP 工具" /></a>
-<a href="#工作原理"><img src="https://img.shields.io/badge/检索协议-QDCVR_v2-B24422?style=for-the-badge" alt="QDCVR" /></a>
+<a href="#工作原理"><img src="https://img.shields.io/badge/检索协议-HMRS_v2-B24422?style=for-the-badge" alt="HMRS" /></a>
 <a href="#publications"><img src="https://img.shields.io/badge/CIKM_%2726_Demo-论文-9E7A38?style=for-the-badge" alt="CIKM Demo 论文" /></a>
 
 <br>
@@ -29,17 +29,27 @@
 
 一个自托管平台：把一个装满 PDF、Office 文档和扫描件的文件夹，变成 **AI Agent 真正可以信赖作答的知识库**——按文档*说了什么*来组织，而不是按它躺在哪个文件夹；并以四种方式对外提供能力：Web 界面、HTTP API、命令行，以及任何支持 MCP 的 Agent 都能驱动的 MCP 工具。
 
-检索层是最有意思的部分。多数 RAG 栈按向量相似度排序然后祈祷。这一个运行一套查询协议——**QDCVR（Query-Driven Content-Verified Retrieval，查询驱动·内容核验检索）**——**真正阅读候选文档，并按一套可解释的 0–8 内容评分细则打分**，门控失败升级到图书管理员兜底，证据不足时返回明确的"未找到"报告而不是编造答案：
+管理层才是有意思的部分。多数 RAG 栈默认语料已经组织好，然后在其中给段落排序。这一个管理的是集合本身——**HMRS（Hierarchical Management Retrieval System，逐级管理检索系统）**——并在三个层次上治理文档：
+
+| 层次 | 管理什么 | 对应的检索层 |
+|---|---|---|
+| **集合层** | 文档依据解析后的正文、而不是文件名，被归类到与其主题范围相符的知识库；描述与标签由正文推导 | 知识库目录（catalogue） |
+| **文档层** | 重复审阅、描述/标签修正、移动、重命名、删除、强制重建索引——每一步都同时写文件与两份登记表，使状态可被对账 | 文档清单（shelf） |
+| **片段层** | 结构化切分、稠密/词法索引、可选的服务端证据门控 | 文档本身，再到承载证据的片段 |
+
+提问于是**逐级下钻**：目录 → 文档清单 → 文档 → 片段。每一级都收窄下一级需要考察的范围，每一级也都能报告自己没覆盖到什么。检索算法位于较低两层，只是支撑组件；真正的贡献是决定*该查哪个知识库*的管理结构，而不是一个新的排序函数。
+
+在路径最底端，系统依然拒绝猜测：它**真正阅读候选文档，并按一套可解释的 0–8 内容评分细则打分**，门控失败升级到图书管理员兜底，证据不足时返回明确的"未找到"报告而不是编造答案：
 
 > **向量负责快，内容负责准。**
 > 一份余弦相似度 **0.95** 的文档，若正文评分 **≤ 4**，会被**直接丢弃**——不是降权，是丢弃。
 
-这就是我们 CIKM '26 Demo 论文所演示的系统：*QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval*（[论文 + 演示视频](#publications)）。
+这就是我们 CIKM '26 Demo 论文所演示的系统：*HMRS: A Hierarchical Management Retrieval System for Tiered Knowledge Document Organisation*（[论文 + 演示视频](#publications)）。
 
 <br>
 
 <div align="center">
-<img src="./docs/images/readme-pipeline.svg" alt="入库管线：文件 → MinerU 解析 → 按内容路由的门类知识库 → 索引 → QDCVR 检索 → 核验后的回答" width="100%" />
+<img src="./docs/images/readme-pipeline.svg" alt="入库管线：文件 → MinerU 解析 → 按内容路由的门类知识库 → 索引 → HMRS 检索 → 核验后的回答" width="100%" />
 </div>
 
 ---
@@ -49,7 +59,7 @@
 | | |
 |---|---|
 | [**界面截图**](#界面截图) | 浅色/深色、桌面/移动端的真实界面 |
-| [**工作原理**](#工作原理) | QDCVR v2 协议与 0–8 评分细则 |
+| [**工作原理**](#工作原理) | HMRS v2 协议与 0–8 评分细则 |
 | [**Agent 对话，任意 Harness**](#agent-对话任意-harness) | 14 个 Harness、按 Harness 选模型、统一 HITL |
 | [**系统架构**](#系统架构) | 服务、端口、存储引擎 |
 | [**快速开始**](#快速开始) | 克隆 → 安装 → 启动 |
@@ -78,10 +88,10 @@
 
 <br>
 
-**QDCVR 检索** —— 向量优先检索、范围控制，以及一条真实反映语料内容的标签栏。
+**HMRS 检索** —— 向量优先检索、范围控制，以及一条真实反映语料内容的标签栏。
 
 <div align="center">
-<img src="./docs/screenshots/app/desktop-knowledge-search.jpg" alt="QDCVR 检索界面" width="100%" />
+<img src="./docs/screenshots/app/desktop-knowledge-search.jpg" alt="HMRS 检索界面" width="100%" />
 </div>
 
 **知识图谱** —— 基于 Neo4j 的文档关系、跨库桥接与路径发现。
@@ -160,7 +170,7 @@
 
 ## 工作原理
 
-`QDCVR`——**查询驱动·内容核验检索**。每次查询按顺序走一遍协议：
+`HMRS`——**查询驱动·内容核验检索**。每次查询按顺序走一遍协议：
 
 ```
 查询
@@ -294,7 +304,7 @@ cd rag-knowledge
 
 ### 1 · Web 界面
 
-十一个页面：仪表盘、文件系统、知识库管理、QDCVR 检索、图谱浏览器、SOUL 人格工作室、Agent 对话、Harness 总览、系统设置、API Token、登录。浅色深色俱全，桌面到手机自适应。
+十一个页面：仪表盘、文件系统、知识库管理、HMRS 检索、图谱浏览器、SOUL 人格工作室、Agent 对话、Harness 总览、系统设置、API Token、登录。浅色深色俱全，桌面到手机自适应。
 
 ### 2 · HTTP API
 
@@ -347,7 +357,7 @@ MCP 服务器由你的客户端通过仓库根目录的 `.mcp.json` 以 stdio �
 | 分组 | 数量 | 覆盖 |
 |---|:---:|---|
 | **经验** | 26 | E0–E12 完整生命周期 · search-global · search-smart · rerank · extract · drafts（列表/读取/批准/驳回）· stale-check · sync · dashboard · decay · meditation（run/status/history/config） |
-| **SOUL 人格** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · cognition drafts · review · reflect · checkpoint · rollback · ask · qdcvr-ask · router · export (LoRA) |
+| **SOUL 人格** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · cognition drafts · review · reflect · checkpoint · rollback · ask · hmrs-ask · router · export (LoRA) |
 | **项目生命周期** | 4 | status · start · update · backend-status |
 | **文件系统** | 3 | get-tree · get-children · upload-file |
 | | **53** | |
@@ -362,7 +372,7 @@ MCP 服务器由你的客户端通过仓库根目录的 `.mcp.json` 以 stdio �
 
 <br>
 
-`knowledgebase` 分发技能把自然语言请求（中英文皆可）路由到对应子技能（ingest、search、manage、organize、update、verify、graph、experience……），并委派给 Archival 子 Agent 执行，保证质量门控不可绕过。QDCVR v2 检索技能与基准测评中 Track A 执行的是同一套协议。
+`knowledgebase` 分发技能把自然语言请求（中英文皆可）路由到对应子技能（ingest、search、manage、organize、update、verify、graph、experience……），并委派给 Archival 子 Agent 执行，保证质量门控不可绕过。HMRS v2 检索技能与基准测评中 Track A 执行的是同一套协议。
 
 </details>
 
@@ -388,7 +398,7 @@ curl -s -X POST http://localhost:6789/api/kb/documents/create \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
   -d '{"kbId":"<kbId>","name":"pump-failure.md","content":"# 泵故障\n\n轴承温度超过 90°C……"}'
 
-# 3 · 向量检索（QDCVR Phase 1 的召回工具）
+# 3 · 向量检索（HMRS Phase 1 的召回工具）
 curl -s -X POST http://localhost:6789/api/v1/search/vector \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
   -d '{"query":"轴承温度上限","limit":5}'
@@ -470,7 +480,7 @@ web/storage/tree-file-system/
 
 ## 基准测评
 
-所有测评从**一条可复现流水线**出发：[`benchmark-suite/PIPELINE.md`](./benchmark-suite/PIPELINE.md) —— 下载 50 篇真实 arXiv 论文（26 个领域）→ 经生产链 MinerU 解析 → 按内容路由进 5 个门类库（该步是 Agent 判断件，依据逐篇导出的摘要）→ 每个 part 打内容标签 → 建三个复刻分块库（固定 800 字 / 结构化 / 段落）→ 重启 → 跑 10 题脚本化回归 → 同样 10 题在三条轨道上作答（QDCVR v2 skill 流程 vs 裸 Agent vs dense 基线）→ 生成报告。**一条红线：严禁编造——判断工件必须能追溯至导出的证据。**
+所有测评从**一条可复现流水线**出发：[`benchmark-suite/PIPELINE.md`](./benchmark-suite/PIPELINE.md) —— 下载 50 篇真实 arXiv 论文（26 个领域）→ 经生产链 MinerU 解析 → 按内容路由进 5 个门类库（该步是 Agent 判断件，依据逐篇导出的摘要）→ 每个 part 打内容标签 → 建三个复刻分块库（固定 800 字 / 结构化 / 段落）→ 重启 → 跑 10 题脚本化回归 → 同样 10 题在三条轨道上作答（HMRS v2 skill 流程 vs 裸 Agent vs dense 基线）→ 生成报告。**一条红线：严禁编造——判断工件必须能追溯至导出的证据。**
 
 **本轮提交的数字**（均可追溯至 `benchmark-suite/results/`）：
 
@@ -481,7 +491,7 @@ web/storage/tree-file-system/
 | 内容标签 | 165/165 part 打标，0 失败 |
 | 复刻库 | 2 366 / 1 385 / 10 219 chunks |
 | 脚本化 10 题回归（向量优先） | **9/10 = 90%** —— 唯一未过是长文分块窗口未含核验词组（`doc_hit=true`），跨运行一致 |
-| **实答三轨**，同样 10 题 | **A · QDCVR v2：10/10 命中所问**（门控 6–8/8，一次图书管理员挽救，top-1 金标召回 10/10，向量召回均 ≈1.6 s + 读取 0.8 s）· **B · 裸 Agent：金标 10/10**，溯源止步文件名，均时 78.8 s · **C · dense 基线：内容匹配**，2/10 弃答，无来源路径，均时 12.2 s |
+| **实答三轨**，同样 10 题 | **A · HMRS v2：10/10 命中所问**（门控 6–8/8，一次图书管理员挽救，top-1 金标召回 10/10，向量召回均 ≈1.6 s + 读取 0.8 s）· **B · 裸 Agent：金标 10/10**，溯源止步文件名，均时 78.8 s · **C · dense 基线：内容匹配**，2/10 弃答，无来源路径，均时 12.2 s |
 | 诚实失败探针 | 3 个语料外问题 → 全部给出明确"未找到"报告，零编造 |
 
 CIKM Demo 论文的配图（`paper_demo/figures/`）即由这些工件生成。
@@ -495,7 +505,7 @@ CIKM Demo 论文的配图（`paper_demo/figures/`）即由这些工件生成。
 ## Publications
 
 - **设计版 README 展示页** —— 本 README 的艺术化单页呈现：[`docs/readme-showcase/index.html`](./docs/readme-showcase/index.html)（截图：[`README-showcase.png`](./docs/readme-showcase/README-showcase.png)）。
-- **QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval** —— CIKM '26 Demo 投稿。正文：[`paper_demo/tex/`](./paper_demo/tex/)，配图：[`paper_demo/figures/`](./paper_demo/figures/)，演示视频：[paper_demo/video/qdcvr-demo.mp4](./paper_demo/video/qdcvr-demo.mp4)。
+- **HMRS: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval** —— CIKM '26 Demo 投稿。正文：[`paper_demo/tex/`](./paper_demo/tex/)，配图：[`paper_demo/figures/`](./paper_demo/figures/)，演示视频：[paper_demo/video/hmrs-demo.mp4](./paper_demo/video/hmrs-demo.mp4)。
 
 ---
 

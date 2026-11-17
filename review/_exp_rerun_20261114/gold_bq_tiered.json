@@ -1,0 +1,190 @@
+[
+ {
+  "qid": "BQ01",
+  "arxiv": "1706.03762",
+  "field": "artificial-intelligence",
+  "lib": "计算机与人工智能",
+  "query": "How does the Transformer compute attention, and why does it ",
+  "n_vector": 5,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"计算机与人工智能/artificial-intelligence",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ },
+ {
+  "qid": "BQ02",
+  "arxiv": "1801.00862",
+  "field": "quantum-physics",
+  "lib": "自然科学与地球科学",
+  "query": "What defines NISQ technology and what is its central limitat",
+  "n_vector": 5,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md",
+   "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"自然科学与地球科学/quantum-physics__1801.",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ },
+ {
+  "qid": "BQ03",
+  "arxiv": "2212.13138",
+  "field": "clinical-medicine",
+  "lib": "",
+  "query": "What is MultiMedQA and how did Flan-PaLM perform on the MedQ",
+  "n_vector": 5,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k01.md",
+   "/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md",
+   "/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k02.md",
+   "/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k04.md",
+   "/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k31.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"/clinical-medicine__2212.13138__",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ },
+ {
+  "qid": "BQ04",
+  "arxiv": "1602.01876",
+  "field": "genomics",
+  "lib": "",
+  "query": "Which three independent ontologies subdivide the Gene Ontolo",
+  "n_vector": 5,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "/genomics__1602.01876__primer-on-the-gene-ontology__k00.md",
+   "/genomics__1602.01876__primer-on-the-gene-ontology__k01.md",
+   "/genomics__1602.01876__primer-on-the-gene-ontology.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"/genomics__1602.01876__primer-on",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ },
+ {
+  "qid": "BQ05",
+  "arxiv": "1512.08067",
+  "field": "economics",
+  "lib": "经济与社会",
+  "query": "Why does historical European economic growth contradict Unif",
+  "n_vector": 5,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"results\": [{\"doc_path\": \"经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md\"}, {\"doc_path\": \"经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-e",
+  "gold_in_survivors": true,
+  "gold_in_pack": false,
+  "gold_hit_tiered": true
+ },
+ {
+  "qid": "BQ06",
+  "arxiv": "1503.07557",
+  "field": "climate-science",
+  "lib": "自然科学与地球科学",
+  "query": "Which physical factor primarily controls the response of pre",
+  "n_vector": 6,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"自然科学与地球科学/climate-science__1503.",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ },
+ {
+  "qid": "BQ07",
+  "arxiv": "2608.05850",
+  "field": "nlp",
+  "lib": "",
+  "query": "What is MameLoshnLM and what parameter scale does it have?",
+  "n_vector": 5,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md",
+   "/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k13.md",
+   "/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md",
+   "/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k24.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"/nlp__2608.05850__mameloshnlm-yi",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ },
+ {
+  "qid": "BQ08",
+  "arxiv": "2408.09942",
+  "field": "materials",
+  "lib": "",
+  "query": "How does oxygen redox contribute to the capacity of battery ",
+  "n_vector": 5,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md",
+   "/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie__k23.md",
+   "/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie__k22.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"/materials__2408.09942__oxygen-r",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ },
+ {
+  "qid": "BQ09",
+  "arxiv": "2410.10669",
+  "field": "robotics",
+  "lib": "",
+  "query": "What problem of visual SLAM in dynamic environments does MLP",
+  "n_vector": 5,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md",
+   "/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md",
+   "/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k22.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"/robotics__2410.10669__mlp-slam-",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ },
+ {
+  "qid": "BQ10",
+  "arxiv": "2604.01385",
+  "field": "immunology",
+  "lib": "",
+  "query": "What strategies for tumor control emerge under immune evasio",
+  "n_vector": 6,
+  "vector_gold_rank": 1,
+  "top_refs": [
+   "/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md",
+   "/immunology__2604.01385__strategies-for-tumor-elimination-and-control__k00.md",
+   "/immunology__2604.01385__strategies-for-tumor-elimination-and-control__k37.md",
+   "/immunology__2604.01385__strategies-for-tumor-elimination-and-control__k28.md",
+   "/immunology__2604.01385__strategies-for-tumor-elimination-and-control__k38.md"
+  ],
+  "judge_called": true,
+  "judge_raw_head": "{\"status\": \"unavailable\", \"real_engine\": false, \"survivors\": [], \"evidence_pack\": \"\", \"errors\": [{\"error\": \"all reference fetches failed (fail-closed)\"}, {\"doc_path\": \"/immunology__2604.01385__strateg",
+  "gold_in_survivors": false,
+  "gold_in_pack": false,
+  "gold_hit_tiered": false
+ }
+]

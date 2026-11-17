@@ -100,7 +100,7 @@ Stage 4 Health checks (drift guard):
   soul_checkpoint / soul_rollback   # safety net
 
 Stage 5 Usage (persona-augmented retrieval):
-  soul_qdcvr_ask(query, soul_kb_id)   # one click: QDCVR retrieval → persona synthesis
+  soul_hmrs_ask(query, soul_kb_id)   # one click: HMRS retrieval → persona synthesis
   # or ragctl soul ask "..." --soul soul-<name>
   # or the frontend Q&A modal "one-click retrieval + persona answer"
 ```
@@ -112,7 +112,7 @@ Stage 5 Usage (persona-augmented retrieval):
 | Distill-create | — (ragctl recommended) | `soul distill` | soul_init + document overwrite | ✅ |
 | Training | Training modal (rounds/documents/whole library) | `soul learn/learn-all` | soul_learn/learn_all | ✅ |
 | Approval | Approval modal | `soul review` | soul_review_drafts | ✅ |
-| Q&A | One-click retrieval + persona answer | `soul ask --soul` | soul_qdcvr_ask / soul_ask | ✅ |
+| Q&A | One-click retrieval + persona answer | `soul ask --soul` | soul_hmrs_ask / soul_ask | ✅ |
 | Schedule | Config modal (interval/rounds) | `meditation config` | experience_meditation_config_update | ✅ |
 | harness | Config modal | `harness` / `soul harness` | soul_init harness / config | ✅ |
 

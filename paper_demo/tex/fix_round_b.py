@@ -44,7 +44,7 @@ abs_old = (
     "addressable evidence. Attendees organize a document, inspect an answer's\n"
     "evidence, and\n"
     "examine a failure report. Demo video:\n"
-    "\\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}."
+    "\\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/hmrs-demo.mp4}."
 )
 abs_new = (
     "Research administrators must organize shared paper collections and inspect\n"
@@ -69,7 +69,7 @@ abs_new = (
     "the bare agent's cost per question for this inspectable, addressable\n"
     "evidence. Attendees organize a document, inspect an answer's evidence, and\n"
     "examine a failure report. Demo video:\n"
-    "\\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}."
+    "\\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/hmrs-demo.mp4}."
 )
 
 # ---- intro ----

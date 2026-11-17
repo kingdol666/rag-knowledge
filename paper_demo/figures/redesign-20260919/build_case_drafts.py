@@ -51,7 +51,7 @@ def svg(title, desc, height, content):
 
 
 CAPTIONS = {
-    'fig1-concept-draft': 'Draft Figure 1. Process comparison for the same NISQ query (BQ02). Dense RAG denotes our reproduction: 800-character fixed chunks, top-2 retrieval, a 4,000-character evidence window and one generation call. Missing provenance is a harness logging limitation, not an intrinsic property of dense retrieval. QDCVR recalls organized, section-addressed evidence, reads candidates against a 0–8 rubric, and passes at ≥6; failure invokes librarian fallback and rechecking before a cited answer or a scoped not-found report. The diagram describes control flow, not measured superiority. Gate scores are execution-LLM self-assessments. Original manuscript caption must be corrected after approval; the manuscript is unchanged.',
+    'fig1-concept-draft': 'Draft Figure 1. Process comparison for the same NISQ query (BQ02). Dense RAG denotes our reproduction: 800-character fixed chunks, top-2 retrieval, a 4,000-character evidence window and one generation call. Missing provenance is a harness logging limitation, not an intrinsic property of dense retrieval. HMRS recalls organized, section-addressed evidence, reads candidates against a 0–8 rubric, and passes at ≥6; failure invokes librarian fallback and rechecking before a cited answer or a scoped not-found report. The diagram describes control flow, not measured superiority. Gate scores are execution-LLM self-assessments. Original manuscript caption must be corrected after approval; the manuscript is unchanged.',
     'fig3-evidence-draft': 'Draft Figure 3. Current 30k-run BQ01 evidence trace and P2 rejection probe; all prose is shorthand or paraphrase, not a verbatim answer quotation. A: Trace evidence maps current document parts 1/2 and 2/2 to §3.2.3 and §7 using skill_track_evidence.json, not verbatim answer citations; the current recorded gate is 8/8. Current blind spots concern the positional-encoding formula, training hyperparameters and benchmark scores, not an unread scaled-dot-product formula. B: the recorded answer gives more complete formula prose, but files_used is self-reported and does not demonstrate file reads. C: the generated answer reports parsing experiments and Table 4 and declares insufficient evidence; those input contents were not independently inspected, and the logged evidence_docs array is empty; chunking is only a hypothesis, since ranks and chunk-to-document provenance were not logged. P2 rejects BERT training-epoch text belonging to a different paper and reports a scan of 5 bases, 50 papers and 165 indexed documents. Gate scores: LLM self-assessments, not accuracy. This selected case illustrates traceability, not independent or universal accuracy. Archived-run distinctions are documented only in SOURCE-AUDIT.md. Original manuscript caption must be corrected after approval; the manuscript is unchanged.'
 }
 
@@ -62,7 +62,7 @@ def fig1():
     s += arrow('M500 64V79H254V92')+arrow('M500 79H746V92')
     s += rect(20,94,468,324,'#fafbfc')+rect(512,94,468,324,'#fbfdfb')
     s += text(36,123,'Dense RAG (our reproduction)',23,700)
-    s += text(528,123,'QDCVR',23,700)
+    s += text(528,123,'HMRS',23,700)
     s += doc(40,140,57,85,BLUE)
     for x,y in [(120,146),(132,172),(115,198)]:
         s += rect(x,y,65,17,BLUE)+f'<path d="M{x+8} {y+8}h42" stroke="#7590a6"/>'
@@ -90,13 +90,13 @@ def fig1():
     s += rect(528,464,452,77,SAND)+text(544,494,'Librarian fallback → read + recheck',21,600)
     s += text(544,522,'Pass → cited answer; fail → not-found',20)
     s += arrow('M528 503H493')
-    return svg('NISQ retrieval-process comparison','BQ02 shared query. Reproduced dense RAG uses fixed chunks, top-two retrieval and single generation; its harness does not log provenance. QDCVR reads section-addressed evidence and passes at six of eight or performs librarian fallback and rechecking.',560,s)
+    return svg('NISQ retrieval-process comparison','BQ02 shared query. Reproduced dense RAG uses fixed chunks, top-two retrieval and single generation; its harness does not log provenance. HMRS reads section-addressed evidence and passes at six of eight or performs librarian fallback and rechecking.',560,s)
 
 
 def fig3():
     s = text(20,26,'BQ01 · How is attention computed, and why replace recurrence and convolution?',21,600)
     s += text(20,49,'Current run · answer summaries and trace labels are paraphrases.',17,400,'#526472')
-    for x,fill,label,sub in [(20,GREEN,'A  QDCVR','Trace evidence'),(344,BLUE,'B  Bare agent','Self-reported file source'),(668,SAND,'C  Dense RAG','Our reproduction')]:
+    for x,fill,label,sub in [(20,GREEN,'A  HMRS','Trace evidence'),(344,BLUE,'B  Bare agent','Self-reported file source'),(668,SAND,'C  Dense RAG','Our reproduction')]:
         s += rect(x,62,312,327,'white')+rect(x,62,312,58,fill,'none')
         s += text(x+14,87,label,22,700)+text(x+14,110,sub,19)
     s += doc(34,132,52,85,GREEN,True)+doc(98,132,52,85,GREEN,True)
@@ -134,7 +134,7 @@ def fig3():
     s += rect(817,468,163,86,GREEN)+text(829,501,'NOT FOUND',21,700)
     s += text(829,530,'Scope reported',18)
     s += text(20,578,'Gate scores: LLM self-assessments, not accuracy.',14)
-    return svg('Current Transformer evidence trace and fabricated-paper probe','Current BQ01 only: QDCVR trace evidence maps parts one and two of two, sections 3.2.3 and seven, gate eight of eight. Its declared unread material is the positional formula, training details and benchmark scores. Bare agent self-reports the source file and a more complete formula. The generated answer of the dense reproduction reports parsing and Table 4, then abstains; the logged evidence_docs array is empty. P2 rejects BERT at one of eight, scans five bases and 165 documents, and reports not-found.',594,s)
+    return svg('Current Transformer evidence trace and fabricated-paper probe','Current BQ01 only: HMRS trace evidence maps parts one and two of two, sections 3.2.3 and seven, gate eight of eight. Its declared unread material is the positional formula, training details and benchmark scores. Bare agent self-reports the source file and a more complete formula. The generated answer of the dense reproduction reports parsing and Table 4, then abstains; the logged evidence_docs array is empty. P2 rejects BERT at one of eight, scans five bases and 165 documents, and reports not-found.',594,s)
 
 
 def verify_sources():

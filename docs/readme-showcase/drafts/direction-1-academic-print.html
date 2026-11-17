@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <!-- Direction 1 · Academic Print — ivory paper, ink serif, teal accent.
      form 母题: 0–8 gate scale rendered as a print-grade ruler + five-section numbering.
-     Content: QDCVR platform showcase (numbers traceable to benchmark-suite/results/). -->
+     Content: HMRS platform showcase (numbers traceable to benchmark-suite/results/). -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>QDCVR — Direction 1 · Academic Print</title>
+<title>HMRS — Direction 1 · Academic Print</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -57,7 +57,7 @@
 <body>
 <div class="wrap">
 <header>
-  <div class="kicker">QDCVR · Knowledge-Base Management Platform · CIKM '26 Demo</div>
+  <div class="kicker">HMRS · Knowledge-Base Management Platform · CIKM '26 Demo</div>
   <h1>Read first.<br>Then <em>answer.</em></h1>
   <p class="sub">A deployable platform that organizes documents by what they say and verifies every retrieval by reading it — vector recall is only the shortlist; the 0–8 content gate is the verdict.</p>
   <div class="meta-row">
@@ -68,7 +68,7 @@
 
 <section>
   <h2><span class="no">§1</span>The gate is the protocol</h2>
-  <p class="lede">Vector recall produces a shortlist. The QDCVR content gate reads each candidate and scores it 0–8 — topic, scenario, evidence — before anything reaches the answer. Fails escalate to a librarian; nothing passes, the system says <em>not found</em>.</p>
+  <p class="lede">Vector recall produces a shortlist. The HMRS content gate reads each candidate and scores it 0–8 — topic, scenario, evidence — before anything reaches the answer. Fails escalate to a librarian; nothing passes, the system says <em>not found</em>.</p>
   <div class="scale">
     <div class="rail"></div>
     <div class="cursor" style="left:81%">this run · live gates 6–8</div>
@@ -87,7 +87,7 @@
   <h2><span class="no">§2</span>Three tracks, one corpus, ten questions</h2>
   <p class="lede">Same 50 papers, same questions, three ways to answer. The protocol's edge is provenance to document part and section — and an honest not-found when evidence is absent.</p>
   <div class="tracks">
-    <div class="track a"><div class="tag">Track A · QDCVR v2</div><h3>KB protocol</h3><div class="big">10/10</div><p>on-target · top-1 gold 10/10 · citations to part &amp; section · ≈1.6 s vector recall + 0.8 s reads · gates 6–8/8, one librarian rescue</p></div>
+    <div class="track a"><div class="tag">Track A · HMRS v2</div><h3>KB protocol</h3><div class="big">10/10</div><p>on-target · top-1 gold 10/10 · citations to part &amp; section · ≈1.6 s vector recall + 0.8 s reads · gates 6–8/8, one librarian rescue</p></div>
     <div class="track"><div class="tag">Track B · Bare agent</div><h3>Whole-file tools</h3><div class="big">10/10 <small>gold</small></div><p>provenance stops at file names · no section trace · 78.8 s average — it reads everything</p></div>
     <div class="track"><div class="tag">Track C · Dense baseline</div><h3>Fixed 800-char chunks</h3><div class="big">2/10 <small>abstained</small></div><p>content matches but no source paths · evidence window misses the passage · 12.2 s average</p></div>
   </div>
@@ -97,9 +97,9 @@
   <h2><span class="no">§3</span>Organization is the other half</h2>
   <p class="lede">Ingestion parses with MinerU, routes each paper into a category base by reading its content, keeps section headers on every part, and propagates tags to all of them. 50/50 parse-verified · 50/50 content-routed · 165/165 parts tagged.</p>
   <div class="figure">
-    <img src="../../../paper_demo/figures/fig2_architecture.png" alt="QDCVR architecture">
+    <img src="../../../paper_demo/figures/fig2_architecture.png" alt="HMRS architecture">
   </div>
-  <div class="caption"><b>Fig.</b> Platform architecture — ingestion, content-routed category bases, QDCVR retrieval protocol, and the agent/MCP surface.</div>
+  <div class="caption"><b>Fig.</b> Platform architecture — ingestion, content-routed category bases, HMRS retrieval protocol, and the agent/MCP surface.</div>
 </section>
 
 <section>
@@ -108,7 +108,7 @@
 </section>
 
 <footer>
-  <div>QDCVR · CIKM '26 demo · paper_demo/tex + benchmark-suite/results</div>
+  <div>HMRS · CIKM '26 demo · paper_demo/tex + benchmark-suite/results</div>
   <div><a href="#">paper</a> · <a href="#">video</a> · <a href="#">pipeline</a></div>
 </footer>
 </div>

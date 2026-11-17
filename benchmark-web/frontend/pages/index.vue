@@ -1,10 +1,10 @@
 <template>
   <div>
     <header>
-      <h1>QDCVR Knowledge Platform — Benchmark Dashboard</h1>
+      <h1>HMRS Knowledge Platform — Benchmark Dashboard</h1>
       <p>Upload your own documents, then compare RAG retrieval algorithms with per-algorithm parameters</p>
       <div class="row" style="justify-content:center;margin-top:12px">
-        <span class="badge badge-project">Project · QDCVR</span>
+        <span class="badge badge-project">Project · HMRS</span>
         <span class="badge badge-real-code">Real-code · BM25 / FAISS / Cross-Encoder</span>
         <span class="badge badge-real-algo">Real-algo · CRAG / Self-RAG</span>
       </div>
@@ -17,7 +17,7 @@
         <div class="kpi-card"><div class="kpi-value">{{ health.chunks ?? '--' }}</div><div class="kpi-label">Chunks</div></div>
         <div class="kpi-card"><div class="kpi-value">{{ algorithms.length || '--' }}</div><div class="kpi-label">Algorithms</div></div>
         <div class="kpi-card"><div class="kpi-value">{{ avgLatency }}</div><div class="kpi-label">Avg latency (ms)</div></div>
-        <div class="kpi-card qdcvr">
+        <div class="kpi-card hmrs">
           <div class="kpi-value"><span class="status-dot" :class="connected ? 'status-ok' : 'status-err'"></span>{{ connected ? 'Up' : 'Down' }}</div>
           <div class="kpi-label">Backend</div>
         </div>
@@ -170,7 +170,7 @@
           <h3 class="subhead">Sources cited</h3>
           <div v-if="!askResult.answer.citations.length" class="muted">No sources cited.</div>
           <div v-for="c in askResult.answer.citations" :key="c.source_id" class="result-row">
-            <div class="result-rank rank-qdcvr">{{ c.source_id }}</div>
+            <div class="result-rank rank-hmrs">{{ c.source_id }}</div>
             <div class="result-content">
               <div><strong>{{ c.title }}</strong> <span class="doc-meta">{{ c.domain }}</span></div>
               <div class="result-snippet">{{ c.snippet }}</div>
@@ -379,7 +379,7 @@
             </div>
             <div v-if="payload.error" class="alert alert-warn" style="margin:0">{{ payload.error }}</div>
             <div v-for="r in payload.results" :key="r.chunk_id" class="result-row">
-              <div class="result-rank" :class="isProject(id) ? 'rank-qdcvr' : 'rank-other'">{{ r.rank }}</div>
+              <div class="result-rank" :class="isProject(id) ? 'rank-hmrs' : 'rank-other'">{{ r.rank }}</div>
               <div class="result-content">
                 <div><strong>{{ r.title }}</strong> <span class="doc-meta">{{ r.domain }}</span></div>
                 <div class="result-snippet">{{ r.content_preview }}</div>
@@ -470,7 +470,7 @@
           <div class="doc-row"><span class="doc-title">Base URL</span><span class="doc-meta mono">http://127.0.0.1:8800</span></div>
           <div class="doc-row"><span class="doc-title">Interactive docs (OpenAPI)</span>
             <a class="doc-meta" href="http://127.0.0.1:8800/docs" target="_blank" rel="noreferrer">/docs ↗</a></div>
-          <div class="doc-row"><span class="doc-title">Platform API used by the QDCVR baselines</span>
+          <div class="doc-row"><span class="doc-title">Platform API used by the HMRS baselines</span>
             <span class="doc-meta mono">{{ service.platform_api || '—' }}</span></div>
           <div class="doc-row"><span class="doc-title">Embedding model</span>
             <span class="doc-meta mono">{{ service.embedding_model || '—' }}</span></div>
@@ -498,7 +498,7 @@
     </div>
 
     <footer>
-      QDCVR Benchmark Dashboard · CIKM 2027 · FastAPI + sentence-transformers + FAISS + rank_bm25 + ChromaDB
+      HMRS Benchmark Dashboard · CIKM 2027 · FastAPI + sentence-transformers + FAISS + rank_bm25 + ChromaDB
     </footer>
   </div>
 </template>
@@ -625,7 +625,7 @@ curl -s -X POST ${API}/api/answer \\
     "verify": true
   }'`);
 
-function isProject (id) { return id.startsWith('qdcvr'); }
+function isProject (id) { return id.startsWith('hmrs') || id.startsWith('hmrs'); }
 function compactParams (params) {
   if (!params) return '';
   return Object.entries(params)
@@ -900,7 +900,7 @@ async function renderChart (comp) {
       datasets: [{
         label: 'Latency (ms)',
         data: ids.map(id => comp.per_method[id].latency_ms),
-        backgroundColor: ids.map(id => id.startsWith('qdcvr') ? '#10b981' : '#6366f1'),
+        backgroundColor: ids.map(id => id.startsWith('hmrs') || id.startsWith('hmrs') ? '#10b981' : '#6366f1'),
         borderRadius: 6,
       }],
     },

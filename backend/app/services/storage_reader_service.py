@@ -204,15 +204,24 @@ class StorageReaderService:
                 return f["id"]
         return ""
 
-    def list_documents(self, kb_path: str) -> list[dict[str, Any]]:
+    def list_documents(self, kb_path: str, *, strict: bool = False) -> list[dict[str, Any]]:
+        """Enumerate KB documents; strict callers must not mistake read errors for emptiness."""
         yml_path = self.root / kb_path / ".knowledge-base.yml"
-        if not yml_path.exists():
+        if not strict and not yml_path.exists():
             return []
         try:
             data = yaml.safe_load(yml_path.read_text(encoding="utf-8"))
+            if strict:
+                if not isinstance(data, dict) or not isinstance(data.get("documents"), list):
+                    raise ValueError("KB YAML must contain a documents list")
+                if not all(isinstance(doc, dict) for doc in data["documents"]):
+                    raise ValueError("KB YAML documents must be mappings")
+                return data["documents"]
             return data.get("documents", []) if data else []
         except Exception as e:
             logger.warning("Failed to read %s: %s", yml_path, e)
+            if strict:
+                raise
             return []
 
     def read_document_content(self, doc_path: str, max_chars: int = 50000) -> str:

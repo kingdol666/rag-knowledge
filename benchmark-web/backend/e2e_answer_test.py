@@ -112,7 +112,7 @@ def main() -> int:
     base = args.base
 
     print("=" * 78)
-    print("QDCVR answer layer — end-to-end test (grounding proof)")
+    print("HMRS answer layer — end-to-end test (grounding proof)")
     print("=" * 78)
 
     status, health = request(base, "GET", "/api/health")

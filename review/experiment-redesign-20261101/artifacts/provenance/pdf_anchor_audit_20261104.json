@@ -1,0 +1,93 @@
+{
+  "method": "Poppler pdftotext -layout; casefold + whitespace-normalized exact substring",
+  "scope_note": "Validates source-PDF anchor presence only; does not validate MinerU output or indexed-part provenance.",
+  "n_pending": 14,
+  "n_source_matches": 14,
+  "n_source_misses": 0,
+  "rows": [
+    {
+      "qid": "S-attn-1",
+      "source_pdf": "science-en/attention_is_all_you_need.pdf",
+      "gold_evidence": "Attention Is All You Need",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "S-bert-1",
+      "source_pdf": "science-en/bert_pretraining.pdf",
+      "gold_evidence": "Masked Language Model",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-clip.pdf",
+      "source_pdf": "science-en/clip.pdf",
+      "gold_evidence": "Natural Language Supervision",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-ddpm.pdf",
+      "source_pdf": "science-en/ddpm.pdf",
+      "gold_evidence": "Denoising Diffusion",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-gan.pdf",
+      "source_pdf": "science-en/gan.pdf",
+      "gold_evidence": "Generative Adversarial",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-gpt3.pdf",
+      "source_pdf": "science-en/gpt3.pdf",
+      "gold_evidence": "Few-Shot Learners",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-instructgpt.pdf",
+      "source_pdf": "science-en/instructgpt.pdf",
+      "gold_evidence": "human feedback",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-llama.pdf",
+      "source_pdf": "science-en/llama.pdf",
+      "gold_evidence": "LLaMA",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-resnet.pdf",
+      "source_pdf": "science-en/resnet.pdf",
+      "gold_evidence": "Deep Residual Learning",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-roberta.pdf",
+      "source_pdf": "science-en/roberta.pdf",
+      "gold_evidence": "RoBERTa",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-swin_transformer.pdf",
+      "source_pdf": "science-en/swin_transformer.pdf",
+      "gold_evidence": "Swin Transformer",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-t5.pdf",
+      "source_pdf": "science-en/t5.pdf",
+      "gold_evidence": "Text-to-Text",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-vae.pdf",
+      "source_pdf": "science-en/vae.pdf",
+      "gold_evidence": "Variational Bayes",
+      "whitespace_normalized_exact_match": true
+    },
+    {
+      "qid": "A-science-en-word2vec.pdf",
+      "source_pdf": "science-en/word2vec.pdf",
+      "gold_evidence": "word representations",
+      "whitespace_normalized_exact_match": true
+    }
+  ]
+}

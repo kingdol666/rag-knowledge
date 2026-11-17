@@ -19,7 +19,7 @@ from app.services import soul_config
 from app.services.agent_harness_manager import agent_harness
 from app.services.kb_meditation_config import get_meditation_config
 from app.services.storage_reader_service import storage_reader
-from app.services.two_stage_search_service import two_stage_search_service
+from app.services.two_stage_search_service import PrimarySearchUnavailable, two_stage_search_service
 from app.utils.atomic_io import atomic_write_text
 
 logger = logging.getLogger(__name__)
@@ -33,6 +33,23 @@ _DOC_MEMORY_CONVENTIONS = "memory-conventions.md"
 _REPORT_PROFILE_SUMMARY = "reports/profile-summary.md"
 
 _FALLBACK_CHARS = 500
+
+
+class SoulSearchUnavailable(PrimarySearchUnavailable):
+    """Primary retrieval completed, but its mandatory BM25 stage failed."""
+
+    def __init__(self, scope: str | None, reasons: list[str]) -> None:
+        self.status = "bm25_failed"
+        detail = ", ".join(str(reason) for reason in reasons) or "bm25_failed"
+        RuntimeError.__init__(self, f"Primary search failed for scope {scope or '*'}: {detail}")
+
+
+def require_usable_search_result(result: dict[str, Any], scope: str | None) -> dict[str, Any]:
+    """Reject failed primary retrieval before treating an empty response as no match."""
+    retrieval = result.get("retrieval") or {}
+    if retrieval.get("bm25_status") == "failed":
+        raise SoulSearchUnavailable(scope, retrieval.get("degraded_reasons") or [])
+    return result
 
 
 # ── 文件读取辅助 ────────────────────────────────────────────────────────────
@@ -110,11 +127,13 @@ async def build_persona_bundle(
         raise ValueError(f"Not a soul KB (soul- prefix required): {soul_kb_id!r}")
 
     # ── 两阶段检索（限定 SOUL KB 自身） ──
-    search_result = two_stage_search_service.search(
+    search_result = await two_stage_search_service.search_async(
         query=query,
         kb_id=resolved,
         stage2_top_k=10,
     )
+
+    require_usable_search_result(search_result, resolved)
 
     persona_docs: list[dict[str, Any]] = []
     doc_names: list[str] = []
@@ -123,7 +142,7 @@ async def build_persona_bundle(
     # BUGFIX: two_stage_search_service.search() 返回 {"stage2": {"results": [...]}},
     # 且 results 为扁平 chunk 列表 [{"content", "doc_path", "score", ...}]（非
     # 嵌套 {"chunks": [...]} 结构）。原代码: ①键路径读错(顶层 results) ②按嵌套结构
-    # 遍历 → persona_docs/doc_names 恒空（soul_qdcvr_ask/soul_ask 的 persona_bundle
+    # 遍历 → persona_docs/doc_names 恒空（soul_hmrs_ask/soul_ask 的 persona_bundle
     # 恒为空, PAS 人格注入失效）
     results = search_result.get("stage2", {}).get("results", [])
     if not results:
@@ -191,9 +210,10 @@ async def build_persona_bundle(
 
         # 向量检索: 在 SOUL KB 内搜索, 会命中 memories/ 路径的文档
         try:
-            mem_search = two_stage_search_service.search(
+            mem_search = await two_stage_search_service.search_async(
                 query=query, kb_id=resolved, stage2_top_k=max_memories * 2,
             )
+            require_usable_search_result(mem_search, resolved)
             mem_results = mem_search.get("stage2", {}).get("results", [])
             for item in mem_results:
                 doc_path = item.get("doc_path", "")
@@ -204,6 +224,8 @@ async def build_persona_bundle(
                     "content": item.get("content", "")[:300],
                     "path": doc_path,
                 })
+        except PrimarySearchUnavailable:
+            raise
         except Exception as e:
             logger.warning("memory vector search failed for %s: %s", soul_kb_id, e)
 

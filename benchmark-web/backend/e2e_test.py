@@ -1,4 +1,4 @@
-"""End-to-end test for the QDCVR Benchmark API.
+"""End-to-end test for the HMRS Benchmark API.
 
 Exercises the whole surface against a **running** backend, in the order a real
 user would: describe -> upload -> list -> search (per-algorithm params) ->
@@ -140,7 +140,7 @@ def main() -> int:
     base = args.base
 
     print("=" * 78)
-    print(f"QDCVR Benchmark API — end-to-end test against {base}")
+    print(f"HMRS Benchmark API — end-to-end test against {base}")
     print("=" * 78)
 
     # ── 1. meta ─────────────────────────────────────────────────────────────
@@ -165,7 +165,7 @@ def main() -> int:
     check("every algorithm declares a parameter schema",
           all(isinstance(a.get("params"), list) and a["params"] for a in algorithms.values()))
     expected = {"bm25", "dense", "hybrid", "ce_rerank", "crag", "selfrag",
-                "qdcvr_flat", "qdcvr_domain"}
+                "hmrs_flat", "hmrs_domain"}
     check("all eight paper baselines are registered",
           expected <= set(algorithms), f"missing: {sorted(expected - set(algorithms))}")
     check("bm25 exposes k1 and b",
@@ -406,26 +406,26 @@ def main() -> int:
           str(reindexed.get("dense_error") or "no error") if isinstance(reindexed, dict) else "")
 
     # ── 10. platform-backed algorithms ──────────────────────────────────────
-    print("\n[10] Platform-backed algorithms (QDCVR)")
-    status, qdcvr = request(base, "POST", "/api/search",
+    print("\n[10] Platform-backed algorithms (HMRS)")
+    status, hmrs = request(base, "POST", "/api/search",
                             body={"query": "pyridostatin G-quadruplex telomere",
-                                  "methods": ["qdcvr_flat"], "top_k": 3})
+                                  "methods": ["hmrs_flat"], "top_k": 3})
     if status == 200:
-        result = qdcvr["results"]["qdcvr_flat"]
+        result = hmrs["results"]["hmrs_flat"]
         if result.get("error"):
-            check("qdcvr_flat reports a clear reason when the platform is unavailable",
+            check("hmrs_flat reports a clear reason when the platform is unavailable",
                   "platform" in result["error"].lower(), result["error"][:100])
         else:
-            check("qdcvr_flat reached the platform API", result["count"] > 0,
+            check("hmrs_flat reached the platform API", result["count"] > 0,
                   f"{result['count']} hits")
     else:
-        check("qdcvr_flat did not crash the request", False, f"HTTP {status}")
+        check("hmrs_flat did not crash the request", False, f"HTTP {status}")
 
     status, needs_kb = request(base, "POST", "/api/search",
-                               body={"query": "x", "methods": ["qdcvr_domain"]})
-    check("qdcvr_domain explains that kb_id is required",
-          "kb_id" in str(needs_kb.get("results", {}).get("qdcvr_domain", {}).get("error", "")),
-          str(needs_kb.get("results", {}).get("qdcvr_domain", {}).get("error"))[:90])
+                               body={"query": "x", "methods": ["hmrs_domain"]})
+    check("hmrs_domain explains that kb_id is required",
+          "kb_id" in str(needs_kb.get("results", {}).get("hmrs_domain", {}).get("error", "")),
+          str(needs_kb.get("results", {}).get("hmrs_domain", {}).get("error"))[:90])
 
     # ── 11. empty-corpus guard ──────────────────────────────────────────────
     print("\n[11] Guards")

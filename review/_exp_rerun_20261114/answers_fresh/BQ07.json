@@ -1,0 +1,34 @@
+{
+ "qid": "BQ07",
+ "arxiv": "2608.05850",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "http": 200,
+ "error": "",
+ "wall_s": 147.0,
+ "latency_s": 144.785,
+ "turns": 5,
+ "cost_usd": 0.24502056000000003,
+ "success": true,
+ "answer": "**MameLoshnLM is the first open-source large language model built specifically for Yiddish, and it has 8B parameters.** It was produced by continued pretraining of Llama‑3.1‑8B on a Yiddish corpus.\n\n**What it is**\n- The abstract states: *\"the first open-source 8B-parameter language model built specifically for Yiddish.\"*\n- The paper introduces *\"MAMELOSHNLM, an open-source 8B-parameter LM for Yiddish, together with two supporting resources: Oytser, a new Yiddish pretraining corpus, and Kashes, a benchmark for evaluating Yiddish LMs.\"*\n- Name: *\"We name the model Mame-Loshn … 'mother tongue'\"* (Section 5, first open-source LLM for Yiddish).\n\n**Parameter scale / training**\n- 8B parameters — *\"MAMELOSHNLM was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus using a causal language modeling objective\"*, trained in bfloat16 with the 8-bit AdamW optimizer.\n- Compared against open models of similar scale (Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma‑2 9B, EuroLLM 9B), it *\"outperforms open models of similar scale, with strong gains on Yiddish-centered tasks such as translation, linguistic analysis, and named entity recognition\"* — notably **>11 COMET points** over its closest competitor on English→Yiddish translation, and it better captures Yiddish lexical/morphological patterns than general multilingual models.\n\n**Sources (P0 — direct verbatim evidence, Laya-verified survivors)**\n- KB **计算机与人工智能** → `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` (Abstract, §1, §5) and `(part 4 of 4).md` (§7.2, Appendix F); mirrored chunks in KB **Corpus-Chunks800** (`..._k00/_k12/_k17.md`).",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 2,
+  "kw_total": 2,
+  "kw_list_hit": [
+   "yiddish",
+   "8b"
+  ],
+  "cited": true,
+  "n_markers": 6,
+  "markers_head": [
+   "2608.05850",
+   "part 1 of 4",
+   "§1",
+   "§5",
+   "part 4 of 4",
+   "§7.2"
+  ],
+  "false_abstain": false,
+  "chars": 1657
+ }
+}

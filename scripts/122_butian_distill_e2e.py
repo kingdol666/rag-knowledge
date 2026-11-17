@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""butian 链路闭环实测: musk 种子 → ragctl soul distill 落地 → qdcvr 问答 → 清理.
+"""butian 链路闭环实测: musk 种子 → ragctl soul distill 落地 → hmrs 问答 → 清理.
 
 对应 butian SKILL.md Step 3(转换,已由 nuwa_to_seed 验证) → Step 4(落地) → Step 6(使用).
 种子包: review/skill-fulltest-20260927/distill/musk-seed (来自真实 musk-perspective).
@@ -62,8 +62,8 @@ def main() -> int:
         # 3) 等索引任务结束 (落地时异步)
         time.sleep(6)
 
-        # 4) soul_qdcvr_ask 人格作答 (butian Step 6; 显式 soul_kb_id, 不依赖路由)
-        r = mc.call("soul_qdcvr_ask",
+        # 4) soul_hmrs_ask 人格作答 (butian Step 6; 显式 soul_kb_id, 不依赖路由)
+        r = mc.call("soul_hmrs_ask",
                     {"query": "用你自己的思维方式回答: 面对一个成本高昂的复杂系统, 你的第一步是什么?",
                      "soul_kb_id": SOUL, "top_k": 3, "async_mode": True}, timeout=120)
         tid = r.get("task_id", "")
@@ -78,7 +78,7 @@ def main() -> int:
                     ans_ok = len(answer) > 40
                     break
                 time.sleep(5)
-        print(("PASS" if ans_ok else "FAIL"), f"qdcvr 人格作答({len(answer)}字):", answer[:100].replace("\n", " "))
+        print(("PASS" if ans_ok else "FAIL"), f"hmrs 人格作答({len(answer)}字):", answer[:100].replace("\n", " "))
         ok_all &= ans_ok
 
         # 5) 清理

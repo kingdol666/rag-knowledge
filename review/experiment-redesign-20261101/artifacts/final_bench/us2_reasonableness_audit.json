@@ -1,0 +1,132 @@
+{
+  "total": 25,
+  "passed": 25,
+  "results": [
+    {
+      "check": "RESULTS 表一致 [A0] n=76 gold=37",
+      "verdict": "PASS",
+      "detail": "n=76 gold=37"
+    },
+    {
+      "check": "RESULTS 表一致 [A1-readall] n=76 gold=72",
+      "verdict": "PASS",
+      "detail": "n=76 gold=72"
+    },
+    {
+      "check": "RESULTS 表一致 [A1b] n=76 gold=39",
+      "verdict": "PASS",
+      "detail": "n=76 gold=39"
+    },
+    {
+      "check": "RESULTS 表一致 [A2] n=76 gold=25",
+      "verdict": "PASS",
+      "detail": "n=76 gold=25"
+    },
+    {
+      "check": "RESULTS 表一致 [A3] n=76 gold=33",
+      "verdict": "PASS",
+      "detail": "n=76 gold=33"
+    },
+    {
+      "check": "CI covers point [A0]",
+      "verdict": "PASS",
+      "detail": "[0.401,0.626] pt=0.514"
+    },
+    {
+      "check": "CI covers point [A1-readall]",
+      "verdict": "PASS",
+      "detail": "[0.949,1.000] pt=1.000"
+    },
+    {
+      "check": "CI covers point [A1b]",
+      "verdict": "PASS",
+      "detail": "[0.427,0.652] pt=0.542"
+    },
+    {
+      "check": "CI covers point [A2]",
+      "verdict": "PASS",
+      "detail": "[0.248,0.462] pt=0.347"
+    },
+    {
+      "check": "CI covers point [A3]",
+      "verdict": "PASS",
+      "detail": "[0.348,0.573] pt=0.458"
+    },
+    {
+      "check": "McNemar qid-paired 一致 [A1-readall]",
+      "verdict": "PASS",
+      "detail": "recompute=0.0000 s6=0.0000 (base_only=0 arm_only=35)"
+    },
+    {
+      "check": "McNemar qid-paired 一致 [A1b]",
+      "verdict": "PASS",
+      "detail": "recompute=0.6875 s6=0.6875 (base_only=2 arm_only=4)"
+    },
+    {
+      "check": "McNemar qid-paired 一致 [A2]",
+      "verdict": "PASS",
+      "detail": "recompute=0.0227 s6=0.0227 (base_only=18 arm_only=6)"
+    },
+    {
+      "check": "McNemar qid-paired 一致 [A3]",
+      "verdict": "PASS",
+      "detail": "recompute=0.4545 s6=0.4545 (base_only=10 arm_only=6)"
+    },
+    {
+      "check": "readall bytes≈disk (<5%, 剔除后入库罪与罚)",
+      "verdict": "PASS",
+      "detail": "avg=24,314,014 disk=25,091,161 dev=3.10%（行尾规范化）"
+    },
+    {
+      "check": "A1b CI∩A0（无显著差声明成立）",
+      "verdict": "PASS",
+      "detail": "overlap=True p=0.6875"
+    },
+    {
+      "check": "A2 显著劣于 A0（证据门价值新发现）",
+      "verdict": "PASS",
+      "detail": "p=0.0227"
+    },
+    {
+      "check": "A3 route 51% (37/72)",
+      "verdict": "PASS",
+      "detail": "37/72"
+    },
+    {
+      "check": "readall 拒答诚实 4/4",
+      "verdict": "PASS",
+      "detail": "4/4"
+    },
+    {
+      "check": "floor F-bm25=24/40（卫生平台复跑）",
+      "verdict": "PASS",
+      "detail": "24/40"
+    },
+    {
+      "check": "floor F-dense=19/40（卫生平台复跑）",
+      "verdict": "PASS",
+      "detail": "19/40"
+    },
+    {
+      "check": "floor F-rrf=26/40（卫生平台复跑）",
+      "verdict": "PASS",
+      "detail": "26/40"
+    },
+    {
+      "check": "readall 首中 ∈[1,879] 中位≈470",
+      "verdict": "PASS",
+      "detail": "median=470.5 max=867"
+    },
+    {
+      "check": "范围越界+目录卡污染=0（全臂）",
+      "verdict": "PASS",
+      "detail": "oos=0 cards=0"
+    },
+    {
+      "check": "全臂 qid 无重复",
+      "verdict": "PASS",
+      "detail": "dups=0"
+    }
+  ],
+  "note": "11-09 终版：qid 配对 McNemar；readall 字节对账剔除后入库罪与罚；范围+目录卡+重复三项污染审计纳入"
+}

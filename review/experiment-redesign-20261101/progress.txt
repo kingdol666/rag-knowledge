@@ -1,0 +1,46 @@
+R3 replication run progress log (2026-11-12)
+=============================================
+[setup] PRD created (.omc/prd.json), replication out dir + e2e_validation_r3 dir created
+[01:10-01:40] US-1 S0 preflight
+- token 12h expiry trap: login_refresh OK, .env MCP_AUTH_TOKEN synced
+- 8771 dual-instance: netstat owner exe=anaconda is a MISLEADING discriminator (venv-from-anaconda launcher child shows anaconda exe); real discriminator = scoped search hits
+- ghost supervisor: dead PID 76400 held 8771 via orphan worker 70560 (2.5GB) -> killed -> port freed
+- literature-zh chroma segment failure recurred ("Nothing found on disk") mid-preflight; s0j2_rebuild_scoped.py (NEW param variant of s0j) -> delete_collection + per-volume index 12 docs -> +30s/+150s decay probes ALL-STABLE
+- s0c PASS (judge liveness + 10/10 probes + 72/72 anchors); s0i SWEEP-BAD none
+- inventory: eval libs intact except literature-en 461=434+27 (crime_and_punishment, US-3 11-10, confound for readall/A0h comparisons); A3 twins: 6 stale alive (science-en=0, medicine=57, literature-en=434) -> must purge + rebuild before A3 arm
+- artifacts/questions.jsonl + s2_ingest_report_v2.json restored from provenance/ (cleanup had removed artifacts/ copies; diff-identical)
+[01:39-02:10] US-2 attempt1 ABORTED (incident, quarantined to replication_bench_20261112/attempt1_aborted_route_card_death/)
+- route card KB 92b23b7b created 01:39 (gate: cards_visible=10); intermittent hnsw "Nothing found on disk" from its FIRST minute (backend log timeline); routing degraded from ~q15 (6/21 misroute: science/medicine/literature-en -> bigram fallback), card KB fully dead ~01:56
+- root-cause picture: chronic chroma segment flakiness on this machine (5 libs fragile since 11-03 deletion storm; memory-pressure + async hnsw persistence; files written once at creation, queries served from memory, re-read fails intermittently)
+- note: exe-path discriminator for "anaconda stale backend" is WRONG on this box (venv-from-anaconda launcher children show anaconda exe); true test = scoped search hits
+- killed 5 stale omp RPC sessions (bun --mode rpc) that kept respawning kb-mcp stdio children; web layer respawns as needed
+- cleanup: dead card KB kb_delete + orphan chroma collection verified gone (downtime direct check); backend restarted (r3c); token refreshed; s0i 10/10 green
+- attempt2 launched 02:13 with same protocol; monitoring route_correct live per poll
+[02:13-03:16] US-2a attempt2 COMPLETE: group1 (A0,A0f,A0h,PD) 304 rows = 76x4 exact, gold-route 216/216, zero card-KB errors
+- headline: A0 39/72(54.2%) vs final 37/72(51.4%), agreement 68/72=94.4%, flips 1up/3down, cross McNemar p=1
+- A0f 44/72(61.1%) vs 45/72, agree 71/72=98.6% | A0h 51/72(70.8%) vs 52/72, agree 98.6% | PD 45/72(62.5%) vs 46/72, agree 98.6%
+- per-arm agreement rates EXACTLY match the 11-11 capture reproduction (94.4%/98.6%/98.6%/98.6%) — third independent run, same signature
+- attempt1 dry-run: PD (no navigation) 27/27 identical even during the card-KB outage -> damage confined to route-dependent arms
+[03:18] serial chain launched: A2 -> A1b -> floor -> purge A3 twins -> prepare-a3 -> A3 -> A1-readall (logs/r3_serial_chain.log)
+[11:00-11:20] morning recovery: stack had died overnight (machine likely slept; shell died with 0xC00001202); SOP restart backend->web->kb-mcp OK; note: post-restart collections show a ~3min cold-open failure window then self-heal (10/10 green on re-probe)
+- chain resumed: A1b completed 76/76; floor rerun: BM25 24/40 = final exact; dense 17/40 vs final 19/40 (-2); RRF 24/40 vs 26/40 (-2) — dense/RRF -2 flip attribution pending (candidates: global-search exposure to crime_and_punishment + chroma flap windows)
+- SIX-ARM comparison (R3 vs final_bench): A1b 54.2%=54.2% agree 72/72 ZERO flips; A2 34.7%=34.7% agree 72/72 ZERO flips; A0f/A0h/PD agree 71/72 each; A0 68/72 — all CI overlap, cross-run McNemar all p=1
+- bash bug fixed in run_r3_serial.sh (unbound $proc in ensure_backend powershell string); corpus_spec_final.json copied from provenance
+- STEP-4 twins purged (0 remaining); STEP-5 prepare-a3 rebuilding 10 twins
+[11:49-13:45] US-3 COMPLETE: A3 arm 76 rows (11 min); rebuilt twins (prep-a3 854 creates rc=0)
+- A3 R3: gold 25/72 (34.7%) vs final 33/72 (45.8%); route 49/72 vs 37/72; gate 4/4 vs 0/4
+- root cause: old A3 ran while card-KB was flapping (old traces show empty route_slug fallbacks); R3 cards healthy -> thin-card noise dominated; 41/72 route reshuffle cascaded to gold
+- A0 vs A3 cross-run McNemar FLIPPED: final p=.4545 (ns) -> R3 p=0.0026 (A3 significantly worse) = H3's end-to-end effect is platform-health-sensitive; qualitative conclusion (descriptions are the backbone of routing: 72/72 vs 51-68% scattered) stable across all 3 runs
+[12:00-] US-4 readall running: 12/76 rows, gold 12/12=100%, 25.5MB/q, shelf 906 (confound visible as predicted); skip-done protected
+[12:41-13:40] US-5b COMPLETE: omp harness (ustc/deepseek-flash) 7/7 PASS; AG7-ood = honest NOT_FOUND (verifier regex false-positive fixed; parametric leak in rewrite phase disclosed, answer layer grounded)
+[12:50-13:30] floor hygiene saga: kb_delete left 5 orphan chroma collections (2 today-twins + 3 old-gen/stale incl kb_445db9b2 from deletion-storm era); full reconciliation chroma(31) vs tree yml ids -> zero orphans; route cards auto-cleaned by s4
+- floor 3-state story: BM25 24/40 EXACT all states; dense/rrf = platform-composition fingerprint (17/17/14 dense across states); final floor's "hygiene" was broken-twins-invisible by accident
+[13:0x] R3 LOOP CLOSE: reviewer APPROVE (7/7 story PASS, independent recomputation all-match); A3 flip direction corrected 13/5; s6d regenerated with A3 pairing; PRD all passes:true; readall chain continues (15/76 gold 15/15, skip-done protected)
+VERDICT SIGNED: 主结论可信复现成立。详见 RESULTS-REPLICATION-20261112.md §0
+[13:1x-15:0x] afternoon task set (US-8..13):
+- US-8 consolidation: EXPERIMENT-RESULTS-MASTER.md at repo root (5 result families + citation red lines)
+- US-9 cleanup: review/archive-20261112-cleanup/ (MANIFEST + 2 tarballs); root junk/NUL/tmp/old-console-logs removed; services+checkpoint(548)+final_bench verified intact
+- US-10/11 demo: DeepSeek-R1 (2501.12948, not in corpus) via omp harness agent/chat in 3 turns (600s turn cap discovered, incremental resume works); 5 parts/552 chunks/57 images/A3c descs; dual-channel verify BM25 0.604 + vector 0.741; QA 8/8 completed omp+claude (170-551s), quality 8/8 four-dim correct, 0 hallucination; Q4-ood both harnesses refused to fabricate electricity cost and honestly surfaced $294K training cost (verified in PDF gold text)
+- US-12 organize 14/14 PASS (tags/subkb/move/rename-hygiene/recursive-search/reindex-probe/three-source)
+- US-13 DEMO-REPORT.md + all raw JSONs in artifacts/demo-20261112/
+[15:2x] FINAL: reviewer re-verdict APPROVE (6/6 PASS; US-9 correction independently verified via timestamp anchor - RESULTS.md Stage-9 record predates cleanup session, chaos logs were deleted 11-10 not by this session). PRD 13/13. Demo artifacts complete.

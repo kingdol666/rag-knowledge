@@ -1,0 +1,41 @@
+{
+  "qid": "AG4",
+  "harness": "omp",
+  "seconds": 300.4,
+  "final": {
+    "success": true,
+    "task_id": "kbt_mwd1mlzv_9c6c4e61",
+    "status": "completed",
+    "mode": "async",
+    "prompt": "基于知识库回答（限定范围提示：优先在「科学」相关知识库中检索）：Which paper introduced deep residual learning for image recognition? 要求：按 QDCVR 流程（改写→kb_search_vector 宽网→kb_laya_judge 引用式判卷→kb_doc_read 逐字核验），答案给出引用文档 doc_path 并逐字引用关键句，标注可信度。若知识库中不存在答案，如实报告未找到，禁止编造。",
+    "engine": "omp",
+    "permission": "bypassPermissions",
+    "created_at": "2026-11-12T04:23:59.707Z",
+    "finished_at": "2026-11-12T04:28:55.406Z",
+    "result": {
+      "success": true,
+      "reply": "## 回答\n\n**《Deep Residual Learning for Image Recognition》**（即 ResNet）——作者：Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun（Microsoft Research）。这就是引入 deep residual learning 的论文。\n\n### 证据（逐字引用）\n\n`doc_path`: **`MD语料-科学-英文/resnet.md`**（KB `MD语料-科学-英文`，kb_id `12dfd50b-f29c-4669-8ee1-62f9007e36e5`）\n\n- 标题与作者（doc 行 1–9，Laya segment-0000，score 0.8821）：\n  > `# Deep Residual Learning for Image Recognition`\n  > `Kaiming He`\n  > `Xiangyu Zhang`\n  > `Shaoqing Ren Jian Sun`\n  > `Microsoft Research`\n- 方法自述（Abstract，doc 行 11–38，segment-0001，score 0.8426）：\n  > \"Deeper neural networks are more difficult to train. **We present a residual learning framework to ease the training of networks that are substantially deeper than those used previously.** We explicitly reformulate the layers as learning residual functions with reference to the layer inputs, instead of learning unreferenced functions.\"\n- 结果自述（同一 Abstract）：\n  > \"An ensemble of these residual nets achieves **3.57% error on the ImageNet test set**. This result won the **1st place on the ILSVRC 2015 classification task**.\"\n- 正文方法章节标题（doc 行 171 附近，segment-0011，score 0.7024）：\n  > `## 3. Deep Residual Learning`\n\n### 可信度\n\n**P0（直接命中）**：库内文档本身即该论文全文（标题、四位作者、Microsoft Research 署名、摘要与第 3 节 \"Deep Residual Learning\" 一致，431 行），非二手转述。\n\n一条限定：该 KB 版本的正文只给出 `Microsoft Research` 机构署名，**未出现会议/出版行（如 \"CVPR 2016\"）**，故本回答不把发表会议作为库内证据陈述；库内可证的是 ILSVRC 2015 分类任务第 1 名这一结果。\n\n### QDCVR 执行轨迹\n\n| 阶段 | 动作 | 结果 |\n|---|---|---|\n| Query 改写 | 口语问句 → 声明式：`Deep Residual Learning for Image Recognition paper: ResNet title, authors Kaiming He Xiangyu Zhang Shaoqing Ren Jian Sun, CVPR 2016, arXiv 2015, residual connections` | 避免裸问句直接检索 |\n| 宽网 | `kb_search_vector(kb_id=12dfd50b…, top_k=30, score_threshold=0.35, slim=true)` | 30 chunks → 去重 8 篇文档，top 命中 `resnet.md` **0.7876** |\n| 引用式判卷 | `kb_laya_judge`（reference 模式，criterion=evidence，threshold=0.5） | `status=ok, real_engine=true (laya_sdk)`，109 segments 全判，87 survivors / 8 docs；`resnet.md` part-0 segment-0000 **0.8821** 为最高 |\n| 逐字核验 | `kb_doc_read(resnet.md, offset=0, limit=45)` | 标题/作者/摘要逐字一致，`totalLines=431` |\n\n判卷偏宽（lookup 问句下 8 篇文档全部有 yes），质量复核后仅 `resnet.md` 真正回答本题；其余 7 篇（`attention_is_all_you_need.md`、`bert_pretraining.md`、`gan.md`、`ddpm.md`、`rag_lewis2020.md`、`vae.md`、`word2vec.md`）均为参考文献里引用 \"Kaiming He, Xiangyu Zhang, Shaoqing Ren, and J…\" 的附带词面命中，未据此作答。\n\n## Result\n\n- **答案**：该论文是 **《Deep Residual Learning for Image Recognition》**，作者 Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun（Microsoft Research），即 ResNet。\n- **引用 doc_path**：`MD语料-科学-英文/resnet.md`（KB: `MD语料-科学-英文`，kb_id `12dfd50b-f29c-4669-8ee1-62f9007e36e5`；doc 行 1–9 / 11–38）。\n- **关键句（逐字）**：`# Deep Residual Learning for Image Recognition` … `Kaiming He` / `Xiangyu Zhang` / `Shaoqing Ren Jian Sun` / `Microsoft Research`；\"We present a residual learning framework to ease the training of networks that are substantially deeper than those used previously.\"\n- **可信度**：P0（库内论文全文直证）。发表会议未在库内文中出现，未作库外断言。\n- **检索统计**：queries=1（改写后），candidates=8 文档（30 chunks，向量 0.6384–0.7876），judged_segments=109，survivors=87（8 docs），fallback=none。",
+      "engine": "omp",
+      "permission": "bypassPermissions",
+      "tools_used": [
+        "read",
+        "mcp__kb-mcp__kb_list",
+        "mcp__kb-mcp__kb_project_status",
+        "mcp__kb-mcp__kb_list",
+        "mcp__kb-mcp__kb_project_status",
+        "mcp__kb-mcp__kb_search_vector",
+        "mcp__kb-mcp__kb_laya_judge",
+        "mcp__kb-mcp__kb_search_vector",
+        "mcp__kb-mcp__kb_laya_judge",
+        "mcp__kb-mcp__kb_doc_read",
+        "mcp__kb-mcp__kb_doc_read",
+        "glob"
+      ],
+      "session_id": "01a1cdff-91cd-7000-852c-c92fb20e4ded",
+      "duration_ms": 295618,
+      "total_cost_usd": 0.05329919999999999,
+      "num_turns": 9,
+      "stop_reason": "stop"
+    }
+  }
+}

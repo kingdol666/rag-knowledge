@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""模块 B-Agent — Agent(harness omp)+QDCVR Skill+MCP 真链路检索评测.
+"""模块 B-Agent — Agent(harness omp)+HMRS Skill+MCP 真链路检索评测.
 
-链路: omp CLI(cwd=仓库根, 加载 .omp/mcp.json → kb-mcp 工具) + QDCVR 规程提示词
+链路: omp CLI(cwd=仓库根, 加载 .omp/mcp.json → kb-mcp 工具) + HMRS 规程提示词
       → Agent 自主逐级调用 MCP 工具(kb_list/kb_search_two_stage/kb_doc_read...)
       → 最终输出 FINAL_DOCS 行(引用的文档路径).
 LLM 非确定性 → 每查询 R 次运行, 报 mean±std; 全部 transcript 存档可审计.
@@ -27,7 +27,7 @@ DATA_DIR = SCRIPTS_DIR.parent / "data" / "benchmarks"
 OUT_DIR = SCRIPTS_DIR.parent / "results" / "benchmark" / "agent-transcripts"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-SKILL_BRIEF = """You are a knowledge-base retrieval agent. Follow the QDCVR protocol
+SKILL_BRIEF = """You are a knowledge-base retrieval agent. Follow the HMRS protocol
 (knowledgebase-search skill):
  Step1 kb_list to see available KBs; Step2 kb_search_two_stage(query, balance_kbs=true);
  Step2.5 drop score<0.35 and deduplicate by document; Step3 kb_doc_read on the top
@@ -126,7 +126,7 @@ def main() -> int:
     out = OUT_DIR.parent / f"benchmark_content_agent_{args.lang}_r{args.round}.json"
     out.write_text(json.dumps({"meta": {
         "generated": datetime.now(timezone.utc).isoformat(),
-        "chain": "omp CLI(+.omp/mcp.json→kb-mcp) + QDCVR skill prompt",
+        "chain": "omp CLI(+.omp/mcp.json→kb-mcp) + HMRS skill prompt",
         "model": "omp profile (见 .omp/config; 固定版本)",
     }, "summary": summary, "rows": rows}, ensure_ascii=False, indent=1),
         encoding="utf-8")

@@ -90,7 +90,7 @@ Top-level KB (高分子双向拉伸文献库)
 | **Experience** | 20 | `experience_search_smart` `experience_search_global` `experience_create` `experience_rerank` ... | Experience-KB full lifecycle (E0–E12) |
 | **Meditation** | 6 | `experience_meditation_status` `experience_meditation_run` `experience_meditation_task_status` `experience_meditation_config_get/update` `experience_meditation_history` | Automatic experience synthesis (the experience subsystem's scheduler) |
 | **Project** | 4 | `backend_status` `kb_project_status` `kb_project_start` `kb_project_update` | Service lifecycle |
-| **🧠 SOUL persona** | **17** | `soul_init` `soul_learn` `soul_ask` `soul_qdcvr_ask` `soul_router` `soul_list` ... | Persona creation/training/Q&A/evaluation/export |
+| **🧠 SOUL persona** | **17** | `soul_init` `soul_learn` `soul_ask` `soul_hmrs_ask` `soul_router` `soul_list` ... | Persona creation/training/Q&A/evaluation/export |
 | **Health** | — | (merged into Project) | Pre-checks (`backend_status`) |
 
 > 94 tools in total (77 KB core + 17 SOUL persona; per the measured `grep -c '@mcp.tool' kb-mcp/server.py`, calibrated 2026-09-09). `kb_doc_save_parsed` spans parsing + writing (parsed output is written to disk and ingested) and is classified under document writes to avoid double counting. The 6 Meditation tools (status/run/task_status/config_get/config_update/history) are the automatic synthesis subsystem of Experience. `kb_find_duplicates` is classified under vector indexing (vector-similarity-based duplicate detection). The SOUL persona system provides a complete distill (Butian) → train → Q&A → evaluate → export (LoRA) persona lifecycle.

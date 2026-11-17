@@ -131,7 +131,7 @@ def main() -> int:
 
     out = {
         "protocol": (
-            "QDCVR v2: Phase 0 query normalisation -> Phase 1 vector-first "
+            "HMRS v2: Phase 0 query normalisation -> Phase 1 vector-first "
             "recall over the five category bases (BGE-M3, threshold 0.35) -> "
             "content gate (read the candidate text; 0-8 rubric, topic 0-3 / "
             "scenario 0-3 / evidence 0-2, pass at >=6) -> Phase 2 librarian "

@@ -125,8 +125,8 @@ ragctl soul harness soul-<name> omp               # training engine (optional)
 ### Step 6 — Usage (Persona-Augmented Retrieval Q&A)
 ```
 ragctl soul ask "question" --soul soul-<name>           # persona Q&A
-ragctl soul ask "question" --soul soul-<name> --qdcvr   # one click: KB retrieval → persona synthesis (recommended)
-# Or MCP: soul_qdcvr_ask(query, soul_kb_id="soul-<name>", task_goal, task_type, async_mode=True)
+ragctl soul ask "question" --soul soul-<name> --hmrs   # one click: KB retrieval → persona synthesis (recommended)
+# Or MCP: soul_hmrs_ask(query, soul_kb_id="soul-<name>", task_goal, task_type, async_mode=True)
 ```
 - Auto routing (no persona specified) → `soul_router` picks the best via domain_labels
 - Frontend: SOUL page → Q&A modal "one-click retrieval + persona answer"
@@ -137,7 +137,7 @@ ragctl soul ask "question" --soul soul-<name> --qdcvr   # one click: KB retrieva
 
 ```
 Requirement → distill (nuwa/dot-skill) → convert (nuwa_to_seed.py) → land (ragctl soul distill)
-     → train (learn-all --rounds 2) → approve (review approve) → Q&A (soul_qdcvr_ask)
+     → train (learn-all --rounds 2) → approve (review approve) → Q&A (soul_hmrs_ask)
 ```
 
 ---
@@ -178,8 +178,8 @@ requires `Authorization: Bearer <token>`; same data as MCP).
 - `ragctl soul distill <seed-dir> [--name] [--scope] [--labels] [--values] [--harness]` — seed → SOUL (recommended entry)
 - `ragctl soul distill-text <name> --req R --material M` / `distill-files <name> <files>` — direct source material distillation
 - `ragctl soul learn-all <soul> --rounds N` / `soul review` / `soul harness` — acquired evolution
-- `ragctl soul ask <q> --soul <soul> [--qdcvr]` — persona-augmented Q&A
-- `soul_list()` / `soul_qdcvr_ask()` / `soul_learn_all()` / `soul_review_drafts()` — MCP equivalents
+- `ragctl soul ask <q> --soul <soul> [--hmrs]` — persona-augmented Q&A
+- `soul_list()` / `soul_hmrs_ask()` / `soul_learn_all()` / `soul_review_drafts()` — MCP equivalents
 - `Skill("nuwa-skill")` / `Skill("dot-skill")` / `Skill("soul")` — engine and lifecycle details
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->

@@ -204,11 +204,11 @@ def main() -> int:
                       "reasoning": "e2e: diagnose report references its own resolution"},
                      svc)
 
-    # ══ B2. 原生检索（v1.2 契约：一次调用，服务端跑完 QDCVR 全流程） ══
+    # ══ B2. 原生检索（v1.2 契约：一次调用，服务端跑完 HMRS 全流程） ══
     # 契约级断言：端点存在、envelope 合形（success 布尔 + 失败带 stage/error 或
     # 成功带 answer）。引擎不可用（无 SDK key 等）按 SKIP 记录——那是环境问题
     # 而非契约破坏；成功路径则顺带证明 answer 非空、带 tools_used。
-    print("── B2. native retrieval (one-shot QDCVR pipeline) ──")
+    print("── B2. native retrieval (one-shot HMRS pipeline) ──")
     code, body = call("POST", f"{WEB}/api/kb/native-search",
                       {"query": "伺服回零相关经验", "kb_id": kb_id, "timeout_ms": 170000},
                       svc, timeout=200)

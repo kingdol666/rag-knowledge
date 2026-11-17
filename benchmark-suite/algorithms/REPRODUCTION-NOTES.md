@@ -30,7 +30,7 @@ Agent 判分。任何与本论文设置不一致之处都在此显式登记; 未
    通道同嵌入源, 方法间公平; 与论文绝对数不可直接对比。
 2. **重排器**: 论文 Qwen3-reranker-8b(交叉编码器)。本环境无该权重, 以 omp
    Agent 的 listwise 重排替代(一次调用对 30 候选输出 JSON 序)。这是重排质量
-   的下界近似, 若该基线因此偏低, 方向对本系统(QDCVR)不利 — 保守偏差。
+   的下界近似, 若该基线因此偏低, 方向对本系统(HMRS)不利 — 保守偏差。
 3. **RAPTOR 聚类**: 论文(沿 RAPTOR 原文)用 GMM 软分配。本实现以互为 top-5
    相似关系的 union-find 硬聚类近似, 摘要 ≤150 词由 omp Agent 生成。树落盘
    `cache/raptor_tree.json` 可完整审计。
@@ -76,7 +76,7 @@ Agent 判分。任何与本论文设置不一致之处都在此显式登记; 未
 SciFact 语料移植到**任意用户上传文档**, 与 E16 完全解耦:
 
 - **生产 KB**: `kb_doc_create`(平台真实用户路径: tree-fs + 后台向量/图索引,
-  大文档自动按 "(part N of M)" 拆分) → `qdcvr` 直接在该库上两阶段+内容裁决。
+  大文档自动按 "(part N of M)" 拆分) → `hmrs` 直接在该库上两阶段+内容裁决。
 - **基线 KB**: 各论文自己的分块方案(suite 侧复现) `UserDemo-{Chunks800,Struct,
   Paras,Raptor}` — `index_kb.items_*/build_kb` 与 `raptor.build_tree` 已参数化
   (默认值不变, E16 行为逐位保留)。
@@ -93,14 +93,14 @@ KB **名**)存入倒排, 而检索侧 `resolve_kb_ids_with_children()` 归一化
 stage1 恒为 0(静默)。全量重建路径存的是规范 UUID, 故 KB-SciFact 等老库
 不受影响 — 该缺陷只咬"后端启动后新上传"的真实用户。已修复: 增量更新改存
 `owner_kb_id`(UUID) + 路径统一正斜杠(修复与 ChromaDB 元数据不对齐)。
-验证: KB-UserDemo 限定检索 stage1 0→13, 中文题 qdcvr hit@1 0→1。
+验证: KB-UserDemo 限定检索 stage1 0→13, 中文题 hmrs hit@1 0→1。
 
 ### 首轮实测要点(2 文档: 英文架构指南 15.3KB + 中文投稿规划 6.9KB)
 
 - 生产 KB 上传+后台索引可查: 7.2s; 四基线索引全探针通过。
 - **真实困难案例**: "HARD DISCARD 阈值"英文题 — 生产库将 ARCHITECTURE 拆成
-  15 个 part(≈1KB/片, 上下文稀释), 且中文文档的 QDCVR 描述块与问题语义
-  更近, BM25 与向量双双把竞争文档排前; qdcvr 的内容裁决只能在召回候选内
+  15 个 part(≈1KB/片, 上下文稀释), 且中文文档的 HMRS 描述块与问题语义
+  更近, BM25 与向量双双把竞争文档排前; hmrs 的内容裁决只能在召回候选内
   重排(recall-bounded), 无法无中生有。suite 侧 dense_rag(整文档 3200 字符
   块)答对该题 — 生产分块粒度 vs suite 分块粒度是真实差异轴, 如实入报告。
 
@@ -112,11 +112,11 @@ F/R 两轨按 pipeline 重跑并与历史 run 逐项对比(compare_runs.py), 结
 - **功能轨(F)**: 经验套件 884/887 一致(唯一差异是 E3 首轮 reset.deleted 3→0,
   为运行前遗留状态不同, 两轮均收敛 remaining=0); ops/e2e/scale/E4/判分一致性
   五对产物聚合层 0 差异, 差异全部落在溯源字段/环境清单/LLM 评审逐条方差。
-- **检索轨(R)活检阶段**: R1 SciFact qdcvr hit@1 0.7667 与历史一致; R1b 曾因
+- **检索轨(R)活检阶段**: R1 SciFact hmrs hit@1 0.7667 与历史一致; R1b 曾因
   并发执行污染下滑 0.25, 串行重跑恢复至会话方差内(陷阱⑭ Δ≤0.05-0.1)。
 - **R3(HotpotQA) 修复链**: retrieval_track.sh 缺 RAG_BENCH_WEB_URL 导出(已修)
   + 遗留实验 KB 挤占 balance 候选池 + 重复构建累积 497 个 "(1)" 副本(含反斜杠
-  路径) → stage2 doc_path $in 全失配 → two_stage/qdcvr 静默归零。平台修复:
+  路径) → stage2 doc_path $in 全失配 → two_stage/hmrs 静默归零。平台修复:
   two_stage_search_service 在 BM25 构建与候选产出统一正斜杠。
 - **新陷阱速查**: ㉕compare_runs 只匹配 module_*.json, 对新产物是空对比假
   PASS(已修: 回退到双方共有顶层 JSON, 溯源字段跳过); ㉖两轨并发共享单后端
@@ -126,7 +126,7 @@ F/R 两轨按 pipeline 重跑并与历史 run 逐项对比(compare_runs.py), 结
 - **遗留待修(平台 P1, E8 通道)**: tree-fs 创建层对同名冲突自动改名 "(N)" 后,
   向量元数据仍记**改名前**请求名(BM25/YAML 世界 = "(1).md", ChromaDB 世界 =
   "X.md") → 全局 two_stage 的 stage2 `doc_path $in` 对该库**永久静默失配**
-  (61 号脚本的 two_stage/qdcvr 通道 0, 而 dense/KB 限定/oracle 正常)。
+  (61 号脚本的 two_stage/hmrs 通道 0, 而 dense/KB 限定/oracle 正常)。
   kb_get_documents 与磁盘清单亦不同步(YAML 与 tree-fs 双世界)。修法方向:
   改名同步向量元数据, 或 create 前做含不可见注册项的查重; 修复前 E8 的
   全局两阶段协议不可在干净重建语料上复现(09-14 历史数字产生于失配发生前)。

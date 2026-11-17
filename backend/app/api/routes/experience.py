@@ -22,7 +22,7 @@ router = APIRouter(prefix="/api/v1/experience", tags=["Experience"])
 
 @router.post("/global-search")
 async def global_search_experiences(body: dict = None):
-    """跨 KB 全局经验检索 — QDCVR 流程（向量召回→硬阈值→内容验证→可信度定级→诚实空返回）。
+    """跨 KB 全局经验检索 — HMRS 流程（向量召回→硬阈值→内容验证→可信度定级→诚实空返回）。
 
     body 字段:
         query: 自然语言查询（中英文均可）

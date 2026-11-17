@@ -1,95 +1,66 @@
-% sec4_eval.tex — 2026-10-13 rewrite: the experiment section now reports the
-% three-arm run run-20261013T094350Z-5f9faac (30 cells, zero aborts) and the
-% 27-cell stability suite review/stability-multiround-20261013. Every number
-% re-derives from saved artifacts via one command
-% (scripts/107_exp_grade.py --qfile data/papers/qa_questions.json;
-%  scripts/161_final_evidence.py; 19/19 gates, 18/18 macro checks pass).
-% Superseded sources: run-20260930T150453Z-3ec2174 and the 2026-09 stability
-% suite, both retired because their environment (dense replica empty, kb tools
-% racing the SDK mount) no longer exists.
 \section{Evaluation}
 \label{sec:eval}
 
 \textbf{Setup.}
-The ingest loop built the corpus, leaving records for every stage
-(Table~\ref{tab:pipeline}). Ten fixed questions
-(BQ01--BQ10), frozen before the run, each answerable only from its
-designated paper, ran through three modes sharing one harness, one
-model, and one neutral prompt template, and differing only in the
-retrieval affordance and permissions: the platform answers through the
-full kb\_* read surface (Section~\ref{sec:ladder}); the bare agent is
-the same model with file tools over the exported papers; dense retrieval
-answers through a single vector-search tool over the 4{,}528-chunk
-replica (Table~\ref{tab:pipeline}).
-Metrics: \emph{grounded} (strict arXiv-id citation of the designated
-paper), \emph{keyword-verified} ($\ge$60\% of fixed gold key facts at
-word boundaries), \emph{cited} (part/section/table markers present).
+The corpus spans ten domains and bases, with 138 documents, 879 parts,
+and 23.9 MB of source text. We ran 72 in-domain gold questions and four
+out-of-domain probes intended to exercise evidence rejection; two
+cross-domain placeholders were not run.
+Each arm has one trace per question. \emph{A0} is the full retrieval
+ladder with description-based routing and the Laya gate; \emph{A1}
+mechanically reads all 879 parts without answering; \emph{A1b} uses
+global vector recall plus the gate; \emph{A2} removes the gate; and
+\emph{A3} removes catalog descriptions. A1b and A2 used an unscoped
+global index whose top results include the A3 twin and other external
+collections. We report them as exploratory, not controlled baselines.
 
-\textbf{Execution, not simulation.}
-Every cell is a real retrieval session: the harness posts each
-question to the platform's own chat endpoint, which runs the Claude
-Agent SDK with the KB tools mounted over stdio, the model choosing each
-tool call and reading each returned document inside the session. No
-mode is scripted and no answer is templated. Each cell records the
-evidence needed to check that claim: the ordered tool calls with their
-arguments, the retrieved texts, token counts, wall-clock, cost, and the
-git commit, config hash, prompt version, seed, and model. In this run
-the three arms are cleanly separated at the tool surface --- the
-platform arm made 60 kb\_* calls (vector and two-stage search, document
-reads, 12 judgment-engine gates) and zero file calls; the bare arm made
-64 file calls and zero KB-tool calls; the dense arm made 37 vector
-calls and nothing else. Answers rest on what was read: the platform
-answer to BQ01, for instance, reports ``8/8 segments pass, scores
-0.81--0.89'' from the judgment engine before it states the attention
-formula.
+The primary metric is exact containment of the gold string in packed
+text, a retrieval proxy rather than answer correctness. Table
+~\ref{tab:ablation} reports gold-only rates with Wilson 95\% intervals,
+mean read volume, and evidence-gate rejections. We use exact, qid-paired McNemar
+tests only for same-scope comparisons, without multiple-test correction.
+The 380 saved traces record tool calls, routing, evidence bytes, gate
+outcomes, and elapsed tool time.
 
-\textbf{Findings.}
-The platform grounds \NUMgroundedA/10 designated-paper answers and
-keyword-verifies \NUMkwA/10 --- a clean sweep under conservative grading;
-the bare agent grounds \NUMgroundedB/10 and verifies \NUMkwB/10; dense
-retrieval grounds \NUMgroundedC/10 and verifies \NUMkwC/10, so grounding
-alone does not separate the three modes. Citations naming part,
-section, or table do: they reach \NUMciteA/10 versus \NUMciteB{} (bare)
-and \NUMciteC{} (dense) (Figure~\ref{fig:threeway}). The bare agent
-always locates the designated paper, yet its answers name files where
-the platform names checkable addresses: locating, synthesizing, and
-citing are different skills --- the split this demo exists to show. We
-also record a deviation: the judgment engine returned usable per-segment
-verdicts in eight of the ten platform cells, and in the remaining two
-its output came back too large to read, so those answers rest on direct
-full-text reads instead.
+\textbf{Containment and cost.}
+A1 contained all 72 gold strings; A0 contained 37/72 (51.4\%). A1 read
+24.3 MB per question, about 774 times A0's 31.4 KB, and took 253.7 s
+of tool time versus 16.3 s. A1 is a mechanical full-corpus reference,
+not an answering system. The unscoped A1b and A2 runs contained gold
+strings in 42/72 (58.3\%) and 35/72 (48.6\%); their scope prevents a
+fair comparison with A0. A3 contained 33/72 (45.8\%). No controlled
+end-to-end result establishes retrieval superiority.
 
-\textbf{Honest failure and stability.}
-In a 27-run stability suite --- three task types (answerable: an
-attention formula; not-covered: seismic-wave classification;
-out-of-corpus: a pickle request) $\times$ fast, librarian,
-and fusion lanes $\times$ three rounds --- on the live multi-base
-instance: the answerable task produced the correct attention formula in
-9/9 runs, the not-covered task answered 9/9 that the library holds no
-such content, and the out-of-corpus task refused 9/9 (the librarian
-lane stopping at the catalog layer). Session-trace replay confirms
-27/27 lane-contract compliance, with per-cell wall-clock spanning
-15--182\,s (median 52\,s): the tail is the not-covered task, where an
-honest negative costs a full library sweep. Three scripted
-out-of-corpus probes against the
-audited instance all return scoped not-found reports
-(Section~\ref{sec:demo} shows one).
+The LLM-free BM25 floor contained the gold string in 24/40 questions;
+A0 contained it in 23/40 on the same subset. This is descriptive
+containment only: BM25 uses non-PDF 2,000-character windows, lowercase
+word/CJK tokenization, Okapi $k_1{=}1.2$, $b{=}0.75$, average length
+400 tokens, and top-10 packing; it has no evidence gate. Dense and RRF
+floors are omitted because their global index returned external
+collections.
 
-\textbf{Costs and limitations.}
-The platform is the slowest mode (\NUMlatA{} per question versus
-\NUMlatB{} bare and \NUMlatC{} dense), and here it is also the costliest
-(\NUMcostA{} per question against \NUMcostB{} bare and \NUMcostC{} dense;
-median \$0.72, and the platform exceeds the bare agent on 9 of 10
-questions), because it is the only mode whose latency and spend buy
-multi-step reading and graded judgment. We report this as a real cost
-of the design rather than a rounding artifact. Grading is conservative:
-word-boundary matching drops one bare row for the single word
-``dynamic'' and one dense row for ``chemotherapy'', both discussed under
-a paraphrase. Correctness calls are the authors' trace readings; cache
-state was uncontrolled, and the suite's latency spread (median 52\,s,
-90th percentile 112\,s, maximum 182\,s) sits in the answer-generation
-window. One environment caveat travels with these numbers: the run
-followed two infrastructure repairs (the dense replica index rebuilt
-from empty, and the KB tool mount pinned so sessions cannot start
-without it), so the figures describe the system as it runs today rather
-than the state recorded in earlier snapshots.
+\textbf{Routing and evidence-gate outcomes.}
+Description-based routing was correct for 72/72 questions, versus
+37/72 (51\%) for name-only A3. On matched questions, descriptions
+corrected 35 routes with no reverse case (exact McNemar $p<.0001$).
+Legacy cards scored 34/66 (52\%) in a separate run. On four
+out-of-domain probes, A0's evidence gate returned no survivors on 2/4;
+A1b and A3 did so on 0/4. A1 has no gate or answer decision, and A2
+disables the gate. These are retrieval-stage outcomes, not measured
+assistant abstentions; the ablation does not generate answers.
+
+Six hinted native-agent runs completed with correct citations and key
+facts; separate verbatim audits checked 23/23 citations, 18/18 quotes,
+and 14/14 quotes. These are illustrative runs, not unhinted routing
+estimates.
+
+\textbf{Limitations.}
+This is a single run on one domain-skewed corpus. Containment does not
+measure answer completeness, semantic correctness, or citation
+correctness; only four out-of-domain probes were used. A source-PDF audit
+found the exact strings for all 14 PDF-backed gold rows after whitespace
+normalization; their parsed and indexed parts were not independently
+audited. The corpus is domain-skewed, and 52/72 questions were
+automatically expanded. A clean, evaluation-scoped dense baseline with
+the same evidence gate remains to be run. The results support a
+description-sensitive routing effect, not general retrieval superiority.

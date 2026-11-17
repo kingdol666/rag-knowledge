@@ -392,7 +392,7 @@ def render(p: dict) -> str:
     return f"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>QDCVR 检索评测报告 · {_e(meta.get('run_id'))}</title>
+<title>HMRS 检索评测报告 · {_e(meta.get('run_id'))}</title>
 <style>
 :root{{--bg:#F7F6F2;--card:#FFFFFF;--ink:#1B1B18;--mut:#6B6B63;--line:#E3E1D9;
 --accent:#0F6E56;--accent2:#4C6EF5;--warn:#D97706;--bad:#DC2626;
@@ -485,7 +485,7 @@ footer{{margin-top:44px;color:var(--mut);font-size:12.5px;border-top:1px solid v
 padding-top:14px}}
 </style></head><body><div class="wrap">
 <header class="top"><div>
-<h1>QDCVR · 检索与证据链评测报告</h1>
+<h1>HMRS · 检索与证据链评测报告</h1>
 <div class="sub">三轨固定题集 · 同一 harness／模型／中性提示词 · 判分器可复算</div>
 <div class="chips">
 <span class="chip">run {_e(meta.get('run_id'))}</span>

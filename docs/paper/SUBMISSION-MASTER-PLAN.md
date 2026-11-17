@@ -21,7 +21,7 @@
 知识图谱 (Neo4j, build-kb)                             ← 第 4 层
    │
    ├─ 检索四路: BM25 / 向量 / 图谱 / 标签 → 两阶段融合 (stage1 粗排→stage2 精排)
-   ├─ QDCVR: 意图分类→KB 路由→两阶段召回→内容验证(0-8 rubric)→置信度分级→盲点声明
+   ├─ HMRS: 意图分类→KB 路由→两阶段召回→内容验证(0-8 rubric)→置信度分级→盲点声明
    ├─ 经验系统: E0-E12 生命周期 + P0/P1/P2 可信度 + 时效衰减 + 冥想自动归纳
    ├─ SOUL 人格: 蒸馏→记忆→训练(RL+好奇心)→人格问答(435s 实测可用)→评估→LoRA 导出
    └─ Agent 接入: 94 MCP 工具 + 19 技能 + 令牌鉴权(2026-09-09 上线)
@@ -43,7 +43,7 @@ benchmark-web/ 计划 v3.0(410 行) + baselines.py/run_benchmark.py 骨架 + das
 | 目标 | 截稿（预测） | 距今 | 可行性 | 说明 |
 |---|---|---|---|---|
 | 🥇 **CIKM 2027** Full Paper | **~2027-05-23**（2026 模式：abstract 5/16，全文 5/23） | 8.5 个月 | ⭐⭐⭐⭐⭐ | 悉尼 2027-10-25；IR+KM+DM 完美匹配；Systems & Applications track 接受系统论文 |
-| 🥈 SIGIR 2027 AP Track | ~2027-01-22（按 2026 惯例） | 4.5 个月 | ⭐⭐⭐ | Applied Research track 专为系统论文；若 QDCVR 算法贡献做深可冲 |
+| 🥈 SIGIR 2027 AP Track | ~2027-01-22（按 2026 惯例） | 4.5 个月 | ⭐⭐⭐ | Applied Research track 专为系统论文；若 HMRS 算法贡献做深可冲 |
 | 🥉 KBS 期刊 | 随时 | — | ⭐⭐⭐⭐ | 审稿 2-3 月，IF≈8.8，年内可见刊的保底 |
 | WWW 2027 | **2026-10-18**（已确认） | 5 周 | ❌ 放弃 | 时间不足以完成标注+baseline+消融 |
 | TKDE 期刊 | 随时 | — | 长线 | CIKM 被拒后的升级转投 |
@@ -80,7 +80,7 @@ benchmark-web/ 计划 v3.0(410 行) + baselines.py/run_benchmark.py 骨架 + das
 1 Introduction            1.0p  场景→问题(向量误召回证据)→3 句不足→方案→4 条贡献
 2 Related Work            0.8p  四小节: Dense Retrieval / Retrieval Verification /
                                 KM & Graph-RAG / Agent Tool-Use + 对比表(Table 1)
-3 QDCVR Methodology       2.5p  Stage 0 意图→1 KB 选择→2 两阶段召回→3 内容验证⭐→5 置信度+盲点
+3 HMRS Methodology       2.5p  Stage 0 意图→1 KB 选择→2 两阶段召回→3 内容验证⭐→5 置信度+盲点
 4 Experience Lifecycle    1.2p  E0-E12 表 + P0/P1/P2 公式 + 时效衰减 + 多路经验检索
 5 System Implementation   0.5p  94 MCP 工具/鉴权/技术栈（短，细节进 artifact）
 6 Evaluation              2.0p  RQ1-6 → 主表(Table 2) + 消融(Table 3) + 经验表 + 散点分析图
@@ -150,7 +150,7 @@ References + (附录进 artifact)
 
 1. **FPR/blind-spot 是独家指标**——所有对手都没报"该拒答时的拒答率"，把它放主表最右列并加粗
 2. **对比表（Table 1）必须显式引 MCP-Pyserini 并划清边界**（工具包 vs 生命周期平台），否则创新性一击即溃
-3. **经验生命周期（E0-E12）是最干净的创新**（无等价系统）——摘要与贡献列表把它放第 1 条，QDCVR 放第 2 条
+3. **经验生命周期（E0-E12）是最干净的创新**（无等价系统）——摘要与贡献列表把它放第 1 条，HMRS 放第 2 条
 4. 主表 baseline 至少含 **CRAG 式与 Self-RAG 式**两个复现（审稿人必查）
 5. Latency 分析单独小节（内容验证 2-5s 开销 vs 收益）——系统论文审稿人必问
 6. Failure case 分析配真实例子（人格问答"诚实拒答"案例现成：双拉薄膜问题 435s 拒答+引导）

@@ -2,18 +2,15 @@ import { defineEventHandler, readBody } from 'h3'
 import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
 
 /**
- * POST /api/soul/qdcvr-ask — QDCVR + SOUL 组合问答(一键)
+ * POST /api/soul/qdcvr-ask — deprecated alias for /api/soul/hmrs-ask
  *
- * 先按 knowledgebase-search skill 流程检索(两阶段+硬阈值+文档去重+短内容过滤),
- * 再把检索证据注入 SOUL 人格做增强回答。返回 answer + citations + pas_score + route_*。
- * Body: { query, soul_kb_id?, task_type?, task_goal?, top_k? }
- *
- * v2: 原生 fetch + text() + JSON.parse(与 ask 同源修复, 规避全局 $fetch 解码差异)。
+ * The system was renamed from QDCVR to HMRS; this route is kept so existing
+ * clients keep working. New callers should use /api/soul/hmrs-ask.
  */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const backendUrl = getDynamicBackendUrl()
-  const res = await fetch(`${backendUrl}/api/v1/soul/qdcvr-ask`, {
+  const res = await fetch(`${backendUrl}/api/v1/soul/hmrs-ask`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

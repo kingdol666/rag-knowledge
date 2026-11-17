@@ -1,4 +1,4 @@
-# QDCVR / rag-knowledge 平台：系统功能全景、设计逻辑、创新点与投稿建议
+# HMRS / rag-knowledge 平台：系统功能全景、设计逻辑、创新点与投稿建议
 
 > 生成：2026-09-24 · 分支 `feat/soul-persona-system` · 全部数字回源码核对（非引用文档）
 > 核对对象：`kb-mcp/server.py`（工具面）、`backend/app/`（服务面）、`web/pages/`（页面面）、
@@ -23,7 +23,7 @@
 |---|---|---|
 | **① 接入与解析** | PDF/Word/Excel/PPT/图片 → Markdown（MinerU OCR，双模式：远程 mineru-api 或本地子进程自动选空闲端口） | `backend/app/services/mineru_service.py`、`mineru_manager.py`（Windows Job Object / Linux `PR_SET_PDEATHSIG` / macOS 进程组） |
 | **② 内容驱动组织** | A0–A9 入库管线：去重 → 解析 → 质量门 → 结构化分析 → **A3d 内容归属决策** → 打标 → 四要素描述 → 归档 → 向量+图索引 → 索引终检 | `kb-mcp` 工具链 + `.claude/skills/knowledgebase-*` |
-| **③ QDCVR 检索** | 查询改写 → KB 路由 → 两阶段召回（BM25→向量 + balance_kbs）→ **0–8 内容裁决** → 馆员兜底 → not-found 契约 → 五段式回答 | `backend/app/services/two_stage_search_service.py`、`vector_service.py`、`keyword_index_service.py` |
+| **③ HMRS 检索** | 查询改写 → KB 路由 → 两阶段召回（BM25→向量 + balance_kbs）→ **0–8 内容裁决** → 馆员兜底 → not-found 契约 → 五段式回答 | `backend/app/services/two_stage_search_service.py`、`vector_service.py`、`keyword_index_service.py` |
 | **④ 知识对象** | 文档（分层/父子 KB）· 标签 · 知识图谱（Neo4j）· **经验（E0–E12 生命周期）** · **SOUL 人格** | `experience_service.py`、`graph_service.py`、`soul_*.py`（20 个 soul 服务模块） |
 | **⑤ 治理与工程** | 94 MCP 工具 · 令牌鉴权 · 限流 600/60s · 审计 · hash-pinned 数据快照 · 溯源门禁 | `backend/app/api/routes/auth.py`、`middleware/`、`docs/paper/cikm/provenance_audit.py` |
 
@@ -42,7 +42,7 @@
 |---|:--:|---|
 | `kb_*` 知识库域 | **41** | 图谱 11 · 文档 CRUD 9 · 向量/索引 6 · KB CRUD 4 · 检索 4 · 标签 4 · 通用任务轮询 1 · 项目生命周期 3（含 kb_project_*） |
 | `experience_*` 经验 | **26** | E0–E12 全生命周期 + search_global/search_smart/rerank + 草稿池审批 + 陈旧检测 + 衰减 + 冥想（Agent 自动归纳） |
-| `soul_*` 人格 | **20** | 蒸馏/初始化 · 学习 · RL 训练 · 四维评估 · 认知草稿 · 反思 · 检查点回滚 · 人格问答 · QDCVR 集成 · LoRA 导出 |
+| `soul_*` 人格 | **20** | 蒸馏/初始化 · 学习 · RL 训练 · 四维评估 · 认知草稿 · 反思 · 检查点回滚 · 人格问答 · HMRS 集成 · LoRA 导出 |
 | `fs_*` / `parse_*` / `backend_status` | 7 | 文件树、上传、解析（**非阻塞**，返回 task_id）、健康探针 |
 
 > 设计红线：**写走 HTTP API（原子、可审计），读直连 `.tree-fs.json` / `.knowledge-base.yml`（零后端负载）**。
@@ -87,7 +87,7 @@
 现有 RAG 系统把语料当**扁平池**，靠向量在 O(N) 里找语义近邻。本平台在检索**之前**把文档按内容路由进领域库。
 主张：**检索质量的上界不是嵌入精度，而是语料组织结构**。
 
-### 创新 2 · QDCVR 内容裁决（Content-overrides-Vector）⭐核心
+### 创新 2 · HMRS 内容裁决（Content-overrides-Vector）⭐核心
 `c(d) ≤ 4 ⇒ discard(d)`，**与向量分 s(d) 独立**。0–8 = 主题(0–3) + 场景(0–3) + 证据(0–2)。
 `=5` 保留为后备并触发**馆员兜底**（定向再检索 + 续读），全部不过 → **not-found 契约**。
 
@@ -112,7 +112,7 @@ hash-pinned 数据快照 + 溯源门禁（`provenance_audit.py`，摘要不符�
 | **Self-RAG** (ICLR'24) | ✓ | reflection token（**需训练**） | ✗ | ✗ | ✗ | ✓ |
 | **MCP-Pyserini** (SIGIR'26) | ✓ | ✗ | ✗（仅 ~10 个 IR 工具） | ✗ | ✓（工具包） | ✓ |
 | RAGFlow / Dify | ✓ | ✗ | 手动 | ✗ | 部分 | ✓ |
-| **本平台 (QDCVR)** | ✓ | **✓ 0–8 三维可解释 rubric** | **✓ 自动归档** | **✓ E0–E12** | **✓ 94 工具全生命周期** | ✓ |
+| **本平台 (HMRS)** | ✓ | **✓ 0–8 三维可解释 rubric** | **✓ 自动归档** | **✓ E0–E12** | **✓ 94 工具全生命周期** | ✓ |
 
 ---
 

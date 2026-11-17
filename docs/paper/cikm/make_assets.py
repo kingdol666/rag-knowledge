@@ -198,7 +198,7 @@ SF = MB_STD["scifact"]
 METHODS = [("bm25", "BM25 (sparse)"),
            ("twostage", "Two-stage hybrid"),
            ("dense", "Dense (BGE-M3)"),
-           ("qdcvr", "\\textbf{QDCVR (ours)}")]
+           ("hmrs", "\\textbf{HMRS (ours)}")]
 rows = []
 for key, label in METHODS:
     m = SF[key]
@@ -295,7 +295,7 @@ P@5 = Precision@5 in percent.}
 # ──────────────────────────────────────────────────────────────────────
 # E16 — DeepRead-style baseline matrix (30 SciFact queries x 8 systems).
 # Producer: benchmark-suite/algorithms/run_matrix.py (+ api_server.py for
-# E16b). The qdcvr rows come from the production MCP tool chain.
+# E16b). The hmrs rows come from the production MCP tool chain.
 # ──────────────────────────────────────────────────────────────────────
 DR = load("deepread_matrix.json")
 DR_REPLAY = load("deepread_matrix_replay.json")
@@ -303,7 +303,7 @@ API = load("api_matrix.json")
 OPSJ = load("platform_ops_eval.json")
 
 DR_ORDER = ["dense_rag", "dense_rag_rerank", "itrg_refresh", "itrg_refine",
-            "raptor", "search_o1", "deepread", "qdcvr"]
+            "raptor", "search_o1", "deepread", "hmrs"]
 DR_LABEL = {
     "dense_rag": "Dense RAG (chunk 800/400, top-10)",
     "dense_rag_rerank": "Dense RAG + reranker (30$\\to$10)",
@@ -312,7 +312,7 @@ DR_LABEL = {
     "raptor": "RAPTOR (collapsed tree, top-10)",
     "search_o1": "Search-o1 (agentic, 2 chunks/turn, cap 8)",
     "deepread": "DeepRead (locate-then-read, cap 8)",
-    "qdcvr": "\\sys{} (two-stage + content adjudication)",
+    "hmrs": "\\sys{} (two-stage + content adjudication)",
 }
 
 
@@ -325,7 +325,7 @@ def _dr_mean(method, key):
 SF_SUM = load("module_b_std2_r2.json")["summary"]["scifact"]
 
 DR_ORDER = ["dense_rag", "dense_rag_rerank", "itrg_refresh", "itrg_refine",
-            "raptor", "search_o1", "deepread", "qdcvr"]
+            "raptor", "search_o1", "deepread", "hmrs"]
 DR_LABEL = {
     "dense_rag": "Dense RAG (chunk 800/400, top-10)",
     "dense_rag_rerank": "Dense RAG + reranker (30$\\to$10)",
@@ -334,7 +334,7 @@ DR_LABEL = {
     "raptor": "RAPTOR (collapsed tree, top-10)",
     "search_o1": "Search-o1 (agentic, 2 chunks/turn, cap 8)",
     "deepread": "DeepRead (locate-then-read, cap 8)",
-    "qdcvr": "\sys{} (two-stage + content adjudication)",
+    "hmrs": "\sys{} (two-stage + content adjudication)",
 }
 
 
@@ -368,13 +368,13 @@ for m in DR_ORDER:
                    + f" & {jcell} & {mrp:.2f} & {wins} \\\\")
 dr_replay_same = json.dumps(DR["summary"]["retrieval"], sort_keys=True) ==     json.dumps(DR_REPLAY["summary"]["retrieval"], sort_keys=True)
 
-# Suite-channel reference rows (BM25 / Two-stage / QDCVR, from Module B std2):
+# Suite-channel reference rows (BM25 / Two-stage / HMRS, from Module B std2):
 # these channels were answered with the same agent but carry no middle-agent
 # ranking, so their Judge/Rank/Wins cells are dashes.
 suite_rows = []
 for key, label in (("bm25", "BM25 (sparse stage-1)"),
                    ("twostage", "Two-stage (recall stage of \sys{})"),
-                   ("qdcvr", "\sys{} (suite channel, global balanced pool)")):
+                   ("hmrs", "\sys{} (suite channel, global balanced pool)")):
     m = SF_SUM[key]
     suite_rows.append(
         f"{label} & {m['hit@1']:.3f} & {m['hit@3']:.3f} & {m['hit@5']:.3f} & "
@@ -430,12 +430,12 @@ plt.rcParams.update({
     "ytick.major.width": 0.6,
 })
 FIG_M = ["dense_rag", "dense_rag_rerank", "itrg_refresh", "itrg_refine",
-         "raptor", "search_o1", "deepread", "qdcvr"]
+         "raptor", "search_o1", "deepread", "hmrs"]
 FIG_LBL = {"dense_rag": "Dense", "dense_rag_rerank": "Dense+rr",
            "itrg_refresh": "ITRG-r", "itrg_refine": "ITRG-f",
            "raptor": "RAPTOR", "search_o1": "Search-o1",
-           "deepread": "DeepRead", "qdcvr": "QDCVR"}
-FIG_COL = {m: ("#c0392b" if m == "qdcvr" else "#2c5f8a") for m in FIG_M}
+           "deepread": "DeepRead", "hmrs": "HMRS"}
+FIG_COL = {m: ("#c0392b" if m == "hmrs" else "#2c5f8a") for m in FIG_M}
 
 # Fig. A — per-question judge-score strip (8 systems x 30 questions):
 # shows grade compression, the proposed system's last-place mean, and the
@@ -488,7 +488,7 @@ for m in FIG_M:
                color=FIG_COL[m], zorder=3, alpha=0.9)
     off = {"dense_rag": (0, 7), "search_o1": (-2, 7), "deepread": (6, -8),
            "dense_rag_rerank": (-14, 5), "itrg_refresh": (8, -8),
-           "itrg_refine": (6, 4), "raptor": (7, -1), "qdcvr": (8, -1),
+           "itrg_refine": (6, 4), "raptor": (7, -1), "hmrs": (8, -1),
            }.get(m, (5, 3))
     ax.annotate(FIG_LBL[m], (lat, nd), textcoords="offset points", xytext=off,
                 fontsize=6.2,
@@ -676,12 +676,12 @@ def _cond_judge(m):
             sum(j_abs) / len(j_abs) if j_abs else None)
 
 ansq = {m: _cond_judge(m) for m in DR_ORDER}
-_q = ansq["qdcvr"]; _d = ansq["dense_rag"]
+_q = ansq["hmrs"]; _d = ansq["dense_rag"]
 AQ_SHORT = {"dense_rag": "Dense RAG", "dense_rag_rerank": "Dense RAG + rerank",
             "itrg_refresh": "ITRG (refresh)", "itrg_refine": "ITRG (refine)",
             "raptor": "RAPTOR", "search_o1": "Search-o1",
             "deepread": "DeepRead",
-            "qdcvr": "\\sys{} (ours)"}
+            "hmrs": "\\sys{} (ours)"}
 best_jh2 = max(v[0] for v in ansq.values() if v[0] is not None)
 best_jm2 = max(v[1] for v in ansq.values() if v[1] is not None)
 best_ja2 = max(v[4] for v in ansq.values() if v[4] is not None)
@@ -720,14 +720,14 @@ verdict rows).}
 \end{table}
 """)
 w("macros/ansqual.tex",
-  "\\newcommand{\\qdcvrJhit}{" + f"{_q[0]:.2f}" + "}\n"
-  "\\newcommand{\\qdcvrJmiss}{" + f"{_q[1]:.2f}" + "}\n"
+  "\\newcommand{\\hmrsJhit}{" + f"{_q[0]:.2f}" + "}\n"
+  "\\newcommand{\\hmrsJmiss}{" + f"{_q[1]:.2f}" + "}\n"
   "\\newcommand{\\denseJhit}{" + f"{_d[0]:.2f}" + "}\n"
   "\\newcommand{\\denseJmiss}{" + f"{_d[1]:.2f}" + "}\n"
-  "\\newcommand{\\qdcvrAbstain}{" + f"{_q[3]:.0f}" + "}\n"
-  "\\newcommand{\\qdcvrJabs}{" + f"{_q[4]:.2f}" + "}\n"
+  "\\newcommand{\\hmrsAbstain}{" + f"{_q[3]:.0f}" + "}\n"
+  "\\newcommand{\\hmrsJabs}{" + f"{_q[4]:.2f}" + "}\n"
   "\\newcommand{\\denseJabs}{" + f"{_d[4]:.2f}" + "}\n")
-print(f"  Answer-quality: qdcvr J|hit={_q[0]:.2f} J|miss={_q[1]:.2f} "
+print(f"  Answer-quality: hmrs J|hit={_q[0]:.2f} J|miss={_q[1]:.2f} "
       f"abstain={_q[3]:.1f}% J|abstain={_q[4]:.2f}; "
       f"dense J|hit={_d[0]:.2f} J|miss={_d[1]:.2f} J|abstain={_d[4]:.2f}")
 

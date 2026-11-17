@@ -27,7 +27,7 @@ def main() -> int:
     for q in qs:
         results = []
         for kb in KB_CATEGORIES:
-            # 向量优先 = QDCVR v2 skill Phase 1 的规定工具。KB 限定 two_stage
+            # 向量优先 = HMRS v2 skill Phase 1 的规定工具。KB 限定 two_stage
             # 在多代重建后实测作用域失效(4/10), 整库 two_stage 会被 Corpus-*
             # 重复分块污染(7/10) —— 均不适合作为回归验证通道。
             r = mc.call("kb_search_vector",

@@ -25,7 +25,7 @@
 
 | 方法 | 论文对应 | 实现通道 |
 |---|---|---|
-| `qdcvr` | 本系统 knowledgebase-search skill(真链路) | kb-mcp MCP → 后端 two-stage |
+| `hmrs` | 本系统 knowledgebase-search skill(真链路) | kb-mcp MCP → 后端 two-stage |
 | `dense_rag` | Dense RAG(chunk 800/400, top-10) | chunk KB + 后端 bge-m3 嵌入 |
 | `dense_rag_rerank` | Dense RAG w/ Reranker(30→重排→10) | + omp listwise 重排 |
 | `raptor` | RAPTOR Collapsed Tree(≤800 tok/节点, 5 层, cluster top-5) | 树 KB + omp 摘要 |
@@ -46,7 +46,7 @@
 ```
 语料      : 148 篇 (expect 148)
 冻结查询  : 30 条 (expect 30)
-算法注册表: 8 个 -> qdcvr, dense_rag, dense_rag_rerank, raptor,
+算法注册表: 8 个 -> hmrs, dense_rag, dense_rag_rerank, raptor,
                     itrg_refresh, itrg_refine, search_o1, deepread
 缓存 ev_* : 264 个     缓存 ans_*: 264 个     缓存 judge_*: 240 个
 ```
@@ -71,7 +71,7 @@ GET /questions → 30 条冻结查询
 
 | 方法 | ndcg@10 | hit@1 | evidence | answer |
 |---|---|---|---|---|
-| qdcvr | 0.0 | 0 | 2 | 464ch |
+| hmrs | 0.0 | 0 | 2 | 464ch |
 | dense_rag | 0.0 | 0 | 3 | 425ch |
 | dense_rag_rerank | 0.0 | 0 | 3 | 453ch |
 | raptor | 0.0 | 0 | 3 | 555ch |
@@ -100,7 +100,7 @@ GET /questions → 30 条冻结查询
 
 ```json
 {"qid":"sf-001","question":"...","golden_ids":["31715818"],
- "results":{"qdcvr":{"metrics":{...},"evidence_sources":[...],
+ "results":{"hmrs":{"metrics":{...},"evidence_sources":[...],
                      "answer":{"verdict":"insufficient",...},
                      "judge":{"score":2,"verdict_ok":false,"issues":"..."}},
             "dense_rag":{...}, ... "deepread":{...}},
@@ -134,7 +134,7 @@ top-1 : score 0.6910  doc_path KB-SciFact/Targeting BRCA1 and BRCA2 Deficiencies
 `[16472469]` 正是查询 **sf-003 的官方 qrels 金标文档** ⇒ 文档入库 → 向量化 → 语义检索
 → 命中金标, 全链路成立。
 
-**two-stage 检索实测**(QDCVR 主路径, `POST /api/search/two-stage`):
+**two-stage 检索实测**(HMRS 主路径, `POST /api/search/two-stage`):
 `total_results: 83`, top-3 全部来自同一金标文档 `[16472469]`(score 0.691 / 0.521 / 0.500)。
 
 ---

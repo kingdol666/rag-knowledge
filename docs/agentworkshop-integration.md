@@ -18,7 +18,7 @@
 |---|---|---|
 | 健康检查 | `GET :8770/api/v1/health` | `{"status":"healthy"}` |
 | 图谱可用性 | `GET :8770/api/v1/graph/health` | `health.available` |
-| **Agent 对话(推荐,2026-09-30 起)** | `POST :6789/api/kb/agent/chat` | `{prompt, harness?, permission?, mode?, timeout_ms?}` → KB 系统原生 Agent 自主执行**全部技能**(检索 QDCVR/文档入库/经验沉淀/图谱关联),sync 模式阻塞返回完整结果 `{success, reply, tools_used, duration_ms, num_turns, stop_reason}`;`mode:"async"` 立即返回 `{task_id, poll}`,后台执行完后 `GET :6789/api/kb/agent/tasks/:taskId` 取结果。鉴权 `Authorization: Bearer <token>`。旧 `/api/kb/native-search` 已删除 |
+| **Agent 对话(推荐,2026-09-30 起)** | `POST :6789/api/kb/agent/chat` | `{prompt, harness?, permission?, mode?, timeout_ms?}` → KB 系统原生 Agent 自主执行**全部技能**(检索 HMRS/文档入库/经验沉淀/图谱关联),sync 模式阻塞返回完整结果 `{success, reply, tools_used, duration_ms, num_turns, stop_reason}`;`mode:"async"` 立即返回 `{task_id, poll}`,后台执行完后 `GET :6789/api/kb/agent/tasks/:taskId` 取结果。鉴权 `Authorization: Bearer <token>`。旧 `/api/kb/native-search` 已删除 |
 | 检索(chunk 级兜底) | `POST :8770/api/v1/search/two-stage` | `{query, kb_id?, stage2_top_k?}`;**断言 `body.success`**;`body.stage2.results` 为分块命中 |
 | 文档写盘 | `POST :6789/api/kb/documents/create` | `{kbId, name, content, description?}` → 返回文档 path,作下一步 doc_path |
 | 向量索引 | `POST :8770/api/v1/search/index-document` | `{kb_id, doc_path, content, tags}`(content 直传) |

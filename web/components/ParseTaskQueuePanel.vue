@@ -57,7 +57,7 @@
                   </div>
 
                   <!-- Result summary for completed tasks -->
-                  <div v-if="item.status === 'done' && item.result" class="task-result">
+                  <div v-if="(item.status === 'done' || item.status === 'error') && item.result" class="task-result">
                     <span :class="item.result.success ? 'result-ok' : 'result-fail'">
                       {{ $t('parseQueue.successful', { n: item.result.successfulFiles, total: item.result.totalFiles }) }}
                       <template v-if="item.result.failedFiles > 0">
@@ -206,6 +206,7 @@ function elapsed(start: number, end: number): string {
   font-size: 13px;
   margin-bottom: 4px;
   word-break: break-word;
+  white-space: pre-wrap;
 }
 .task-meta {
   display: flex;

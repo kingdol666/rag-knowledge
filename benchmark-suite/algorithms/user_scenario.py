@@ -2,7 +2,7 @@
 """真实场景画像 — 把论文复现检索算法矩阵移植到任意用户上传文档.
 
 与 E16 冻结矩阵(KB-SciFact + DR-*)完全解耦, 同一套算法实现换语料即用:
-  生产 KB   kb_doc_create(平台真实用户路径: tree-fs + 后台向量/图索引) → qdcvr
+  生产 KB   kb_doc_create(平台真实用户路径: tree-fs + 后台向量/图索引) → hmrs
   基线 KB   各论文自己的分块方案(suite 侧复现): Chunks800/Struct/Paras/Raptor
   问题      omp Agent 从文档内容生成(非人工挑选), 附逐字支持引文与期望答案
   作答      同一 omp Harness 同一模型, 统一证据预算(与 E16 对称)

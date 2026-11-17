@@ -5,7 +5,7 @@
 **允许的工具集**与**流程指令**：
 
   车道 A · 向量 + 内容   工具集 = 平台完整 kb 工具（含 kb_search_vector / kb_search_two_stage）
-                         → 系统自带的 QDCVR 流程（向量优先 → 0-8 内容门控）
+                         → 系统自带的 HMRS 流程（向量优先 → 0-8 内容门控）
   车道 B · 纯内容（无向量）工具集 = 上述**去掉** kb_search_vector / kb_search_two_stage
                          → 强制走逐级检索（kb_list 库描述 → kb_get_documents 文档描述
                            → kb_doc_read 读正文），不允许相似度排序

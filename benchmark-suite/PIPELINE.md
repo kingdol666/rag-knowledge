@@ -124,7 +124,7 @@
 > 会自动拉起）。验证轮推荐顺序：
 > `117 selfcheck → exp.py --check → exp.py --chatmodes → exp.py --questions qa_quick10.json --baselines … → 116 --run <run_id>`。
 
-> **三模式检索臂 + 检索任务矩阵（2026-09-27 新增）**：QDCVR 向量优先(A) / 图书管理员(B) /
+> **三模式检索臂 + 检索任务矩阵（2026-09-27 新增）**：HMRS 向量优先(A) / 图书管理员(B) /
 > 混合并行(C) 三种检索模式已是 exp 项目一等公民臂。**判决引擎 Laya 已 GPU 化**——宿主为
 > `backend/.venv`（MinerU 环境，torch 2.12.1+cu130，device 自动选 cuda，单段判决 ~0.05s），
 > 历史结论「Laya CPU 逐段判决是时间瓶颈」已消除（C 全臂 64-70s）。两条入口：
@@ -310,7 +310,7 @@ harness 统一为 **claude**，同一份 50 篇外部语料，三模式定义：
 
 | 轨道 | 入口 | 协议 |
 |---|---|---|
-| **A · 当前系统** | **对外暴露的正式接口** `POST /api/claude/chat` + `engine:"claude"`（外部调用方获取系统回答的唯一入口），无工具限制 | 系统自带 QDCVR 全流程 |
+| **A · 当前系统** | **对外暴露的正式接口** `POST /api/claude/chat` + `engine:"claude"`（外部调用方获取系统回答的唯一入口），无工具限制 | 系统自带 HMRS 全流程 |
 | **B · 裸 Agent** | 同一 chat API，`cwd=corpus_md`，`allowedTools=["Read","Grep","Glob"]` | 全文阅读 + 全文件搜索 |
 | **C · RAG 向量** | 同一 chat API，`allowedTools=["mcp__kb-mcp__kb_search_vector"]` | **Agent 亲自执行**稠密向量检索（Corpus-Chunks800），仅凭检索块作答 |
 

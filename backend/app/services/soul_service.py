@@ -29,7 +29,10 @@ from app.services import soul_learn
 from app.services import soul_memory
 from app.services.agent_harness_manager import agent_harness
 from app.services.storage_reader_service import storage_reader
-from app.services.two_stage_search_service import two_stage_search_service
+from app.services.two_stage_search_service import (
+    PrimarySearchUnavailable,
+    two_stage_search_service,
+)
 from app.services.graph_service import graph_service
 
 _PROMPTS_DIR = Path(__file__).parent / "prompts"
@@ -121,6 +124,15 @@ def _merge_graph_neighbors(chunks: list[dict], doc_paths: list[str], limit: int 
     return merged
 
 
+async def _search_soul_scope(query: str, kb_id: str | None = None,
+                             balance_kbs: bool = False) -> dict[str, Any]:
+    """Use the same bounded async admission as the primary search route."""
+    result = await two_stage_search_service.search_async(
+        query=query, kb_id=kb_id, stage2_top_k=8,
+        enable_graph_expansion=True, balance_kbs=balance_kbs)
+    return soul_profile.require_usable_search_result(result, kb_id)
+
+
 async def _retrieve_knowledge(soul_kb_id: str, query: str, kb_scope: list[str]) -> dict:
     """检索范围=所选 SOUL 的 kb_scope(空 → 仅人格库自身)。
 
@@ -129,23 +141,14 @@ async def _retrieve_knowledge(soul_kb_id: str, query: str, kb_scope: list[str]) 
     scope = _search_scope(soul_kb_id, kb_scope)
     if scope is None:
         # 全库(通配符 *): 跨库均衡检索
-        r = two_stage_search_service.search(
-            query=query, stage2_top_k=8, enable_graph_expansion=True,
-            balance_kbs=True)
+        r = await _search_soul_scope(query=query, balance_kbs=True)
     elif len(scope) == 1:
-        r = two_stage_search_service.search(
-            query=query, kb_id=scope[0], stage2_top_k=8, enable_graph_expansion=True)
+        r = await _search_soul_scope(query=query, kb_id=scope[0])
     else:
         # 多库: 逐库检索后按 score 合并去重(库间无污染)
         merged_raw: list[dict] = []
         for kid in scope:
-            try:
-                rr = two_stage_search_service.search(
-                    query=query, kb_id=kid, stage2_top_k=8,
-                    enable_graph_expansion=True)
-            except Exception as e:
-                logger.debug("scope search failed for %s: %s", kid, e)
-                continue
+            rr = await _search_soul_scope(query=query, kb_id=kid)
             if isinstance(rr, dict):
                 merged_raw.extend(rr.get("stage2", {}).get("results", []))
         seen_pairs: set[tuple] = set()
@@ -281,9 +284,9 @@ async def _pas_score(answer: str, persona: dict, ctx: AskRunContext, kb_config: 
 
 # ── soul_ask 编排 ──────────────────────────────────────────────────────
 
-async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
+async def soul_hmrs_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
                          task_type: str = "", top_k: int = 5) -> dict:
-    """QDCVR + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识,
+    """HMRS + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识,
     再注入人格做增强回答。
 
     检索侧(与 skill Step 2/2.5 对齐):
@@ -306,23 +309,20 @@ async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
             scope = None
 
     # 2. 两阶段检索(knowledgebase-search skill Step 2 同引擎)
-    if scope is None:
-        r = two_stage_search_service.search(
-            query=query, stage2_top_k=8, enable_graph_expansion=True, balance_kbs=True)
-    elif len(scope) == 1:
-        r = two_stage_search_service.search(
-            query=query, kb_id=scope[0], stage2_top_k=8, enable_graph_expansion=True)
-    else:
-        merged_raw: list[dict] = []
-        for kid in scope:
-            try:
-                rr = two_stage_search_service.search(
-                    query=query, kb_id=kid, stage2_top_k=8, enable_graph_expansion=True)
-            except Exception:
-                continue
-            if isinstance(rr, dict):
-                merged_raw.extend(rr.get("stage2", {}).get("results", []))
-        r = {"stage2": {"results": merged_raw}}
+    try:
+        if scope is None:
+            r = await _search_soul_scope(query=query, balance_kbs=True)
+        elif len(scope) == 1:
+            r = await _search_soul_scope(query=query, kb_id=scope[0])
+        else:
+            merged_raw: list[dict] = []
+            for kid in scope:
+                rr = await _search_soul_scope(query=query, kb_id=kid)
+                if isinstance(rr, dict):
+                    merged_raw.extend(rr.get("stage2", {}).get("results", []))
+            r = {"stage2": {"results": merged_raw}}
+    except PrimarySearchUnavailable as e:
+        return {"success": False, "error": "search_unavailable", "detail": str(e)}
     results = r.get("stage2", {}).get("results", []) if isinstance(r, dict) else []
 
     # 3. 展开为片段 + 文档级去重 + 硬阈值 + 短内容过滤(skill Step 2.5)
@@ -374,6 +374,10 @@ async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
     return result
 
 
+# Deprecated alias: the tool was renamed to soul_hmrs_ask with the system rename.
+soul_qdcvr_ask = soul_hmrs_ask
+
+
 async def soul_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
                    task_type: str = "", context_override: str = "",
                    conversation_id: str = "") -> dict:
@@ -390,6 +394,8 @@ async def soul_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
             _soul_ask_inner(query, soul_kb_id, task_goal, task_type, context_override, ctx),
             timeout=soul_config.SYNTHESIS_TIMEOUT_SECONDS + 5,
         )
+    except PrimarySearchUnavailable as e:
+        return {"success": False, "error": "search_unavailable", "detail": str(e)}
     except asyncio.TimeoutError:
         return {"success": False, "error": "timeout",
                 "detail": "同步超时,请用 async_mode=true 重试"}

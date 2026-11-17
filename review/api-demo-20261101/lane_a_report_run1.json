@@ -1,0 +1,122 @@
+{
+  "lane": "A 实机演示（MCP 工具面 SSE:8000）",
+  "steps": [
+    {
+      "step": "00 tools/list",
+      "ok": true,
+      "detail": "95 tools (expect >=90, memory says 95)"
+    },
+    {
+      "step": "01 health_check",
+      "ok": false,
+      "detail": "{\"_raw\": [\"Unknown tool: health_check\"], \"isError\": true}"
+    },
+    {
+      "step": "02 kb_create",
+      "ok": true,
+      "detail": "kb_id=8c1dd76c-ed7f-4afc-bd4e-739102e17447"
+    },
+    {
+      "step": "03 parse_doc_batch submit",
+      "ok": true,
+      "detail": "task_id=d452ec1fc34e"
+    },
+    {
+      "step": "04 parse poll done",
+      "ok": true,
+      "detail": "files=['01_aurora_borealis.png', '02_giant_sequoia.png', '03_golden_record.png'] chars={'01_aurora_borealis.png': 199, '02_giant_sequoia.png': 194, '03_golden_record.png': 179}"
+    },
+    {
+      "step": "05 save 01_aurora_borealis.png",
+      "ok": false,
+      "detail": "doc_path="
+    },
+    {
+      "step": "05 save 02_giant_sequoia.png",
+      "ok": false,
+      "detail": "doc_path="
+    },
+    {
+      "step": "05 save 03_golden_record.png",
+      "ok": false,
+      "detail": "doc_path="
+    },
+    {
+      "step": "06 kb_reindex",
+      "ok": true,
+      "detail": "indexed=None"
+    },
+    {
+      "step": "07a catalog L1",
+      "ok": false,
+      "detail": "found=0 of 24 KBs"
+    },
+    {
+      "step": "07b shelf L2 descriptions",
+      "ok": true,
+      "detail": "3 docs with descriptions"
+    },
+    {
+      "step": "08 vector q1 (01)",
+      "ok": true,
+      "detail": "top1=图库演示-20261101-MCP车道/01_aurora_borealis.md score=0.6964"
+    },
+    {
+      "step": "08 vector q2 (02)",
+      "ok": true,
+      "detail": "top1=图库演示-20261101-MCP车道/02_giant_sequoia.md score=0.6899"
+    },
+    {
+      "step": "08 vector q3 (03)",
+      "ok": true,
+      "detail": "top1=图库演示-20261101-MCP车道/03_golden_record.md score=0.7448"
+    },
+    {
+      "step": "09 laya judge q1",
+      "ok": false,
+      "detail": "survivors=[] docs_with_yes=0"
+    },
+    {
+      "step": "09 laya judge q2",
+      "ok": false,
+      "detail": "survivors=[] docs_with_yes=0"
+    },
+    {
+      "step": "09 laya judge q3",
+      "ok": false,
+      "detail": "survivors=[] docs_with_yes=0"
+    },
+    {
+      "step": "10 delete 01",
+      "ok": false,
+      "detail": "no doc_path"
+    },
+    {
+      "step": "10 delete 02",
+      "ok": false,
+      "detail": "no doc_path"
+    },
+    {
+      "step": "10 delete 03",
+      "ok": false,
+      "detail": "no doc_path"
+    },
+    {
+      "step": "11 verify empty",
+      "ok": false,
+      "detail": "count=3"
+    },
+    {
+      "step": "12 kb_delete",
+      "ok": true,
+      "detail": "{'success': True, 'deletedId': '8c1dd76c-ed7f-4afc-bd4e-739102e17447', 'message': 'Folder \"图库演示-20261101-MCP车道\" deleted "
+    },
+    {
+      "step": "12b verify KB gone from catalog",
+      "ok": true,
+      "detail": "catalog clean"
+    }
+  ],
+  "started": "2026-11-01 14:12:06",
+  "summary": "11/23 PASS"
+}

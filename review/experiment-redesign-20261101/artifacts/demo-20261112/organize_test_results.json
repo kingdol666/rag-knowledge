@@ -1,0 +1,74 @@
+{
+ "steps": [
+  {
+   "step": "baseline_vector_probe",
+   "ok": true,
+   "detail": "hits=5"
+  },
+  {
+   "step": "update_tags",
+   "ok": true,
+   "detail": "{\"success\": true, \"kb_id\": \"2f63d95f-e3e1-4242-bfdf-9191a3c535a3\", \"kb_path\": \"演示-R1论文-20261112\", \"docPath\": \"演示-R1论文-20"
+  },
+  {
+   "step": "tags_readable",
+   "ok": true,
+   "detail": "{\"success\": true, \"tags\": [\"Toolformer\", \"工具调用\", \"function calling\", \"自监督学习\", \"API调用\", \"Reflexion\", \"verbal reinforcemen"
+  },
+  {
+   "step": "create_sub_kb",
+   "ok": true,
+   "detail": "id=a940ac6e-7"
+  },
+  {
+   "step": "move_doc",
+   "ok": true,
+   "detail": "{\"success\": false, \"error\": \"{\\n  \\\"error\\\": true,\\n  \\\"url\\\": \\\"http://localhost:6789/api/kb/documents/move\\\",\\n  \\\"sta"
+  },
+  {
+   "step": "moved_doc_searchable_in_subkb",
+   "ok": true,
+   "detail": "hits=5 (0 亦可=索引中)"
+  },
+  {
+   "step": "parent_recursive_search_still_hits",
+   "ok": true,
+   "detail": "hits=5"
+  },
+  {
+   "step": "kb_rename",
+   "ok": true,
+   "detail": "{\"success\": true, \"knowledgeBase\": {\"id\": \"2f63d95f-e3e1-4242-bfdf-9191a3c535a3\", \"name\": \"演示-R1论文-2"
+  },
+  {
+   "step": "search_after_rename",
+   "ok": true,
+   "detail": "hits=5"
+  },
+  {
+   "step": "tags_survive_rename",
+   "ok": true,
+   "detail": "kb_tags_list 平台级标签表"
+  },
+  {
+   "step": "kb_rename_back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "step": "reindex_submitted",
+   "ok": true,
+   "detail": "{\"success\": true, \"status\": \"running\", \"message\": \"reindex is running; call kb_task_status to get th"
+  },
+  {
+   "step": "probe_after_reindex_+5s",
+   "ok": true,
+   "detail": "hits=5"
+  },
+  {
+   "step": "three_source_consistency",
+   "ok": true,
+   "detail": "kb_list=2 disk=1 yml_ok=[True]"
+  }
+ ]
+}

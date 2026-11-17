@@ -1,0 +1,42 @@
+{
+  "generated": "2026-11-01",
+  "note": "图库演示素材：3 张 PNG，每张含唯一金标事实，供 OCR 解析→入库→图书管理员检索→删除全链路验证",
+  "images": [
+    {
+      "file": "01_aurora_borealis.png",
+      "doc_title": "北极光（Aurora Borealis）观测要点",
+      "description": "北极光观测要点卡片：太阳风带电粒子成因、100-500公里发光高度、氧原子557.7纳米绿光、氮分子蓝紫光。",
+      "query": "北极光的绿色光主要来自哪种原子？发光高度范围大约是多少公里？",
+      "expect_doc": "01_aurora_borealis.png",
+      "gold_keywords": [
+        "氧原子",
+        "100",
+        "太阳风"
+      ]
+    },
+    {
+      "file": "02_giant_sequoia.png",
+      "doc_title": "巨杉与谢尔曼将军树（General Sherman）",
+      "description": "巨杉与谢尔曼将军树卡片：世界体积最大树木、加州内华达山脉、83.8米高、1487立方米、树龄2200-2700年。",
+      "query": "世界上现存体积最大的树是哪一棵？它位于什么地方？",
+      "expect_doc": "02_giant_sequoia.png",
+      "gold_keywords": [
+        "谢尔曼",
+        "加利福尼亚",
+        "83.8"
+      ]
+    },
+    {
+      "file": "03_golden_record.png",
+      "doc_title": "旅行者金唱片（Voyager Golden Record）",
+      "description": "旅行者金唱片卡片：1977年发射、镀金铜唱片直径30厘米、115张图像、90分钟音乐、55种语言问候。",
+      "query": "旅行者号金唱片收录了多少张图像和大约多少分钟的音乐？",
+      "expect_doc": "03_golden_record.png",
+      "gold_keywords": [
+        "115",
+        "90",
+        "1977"
+      ]
+    }
+  ]
+}

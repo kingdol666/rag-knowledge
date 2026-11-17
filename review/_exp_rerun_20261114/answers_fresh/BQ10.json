@@ -1,0 +1,31 @@
+{
+ "qid": "BQ10",
+ "arxiv": "2604.01385",
+ "question": "What strategies for tumor control emerge under immune evasion and chemotherapy resistance?",
+ "http": 200,
+ "error": "",
+ "wall_s": 133.0,
+ "latency_s": 130.887,
+ "turns": 6,
+ "cost_usd": 0.37732136,
+ "success": true,
+ "answer": "**Bottom line: in the retrieved corpus, tumor control under immune evasion + chemoresistance is not achieved by any single modality — the paper's central result is that control emerges from *phenotype-guided combination immuno-chemotherapy*, delivered in a sequence matched to which resistant subpopulation dominates, with \"control rather than elimination\" (adaptive therapy) as the fallback when elimination is not reachable.**\n\nThe only relevant match across the pinned KBs is one modeling study — Mokari & Morsky, *Strategies for tumor elimination and control under immune evasion and chemotherapy resistance* (immunology__2604.01385, 3 parts, KB 生命科学与医学 / `b28f0a25…`). Evidence grade: **P0 as direct evidence of what the paper argues**, but note it is an ODE/mathematical-oncology model (B-cell lymphoma, two tumor subpopulations T1 immune-resistant, T2 immune-sensitive/possibly chemo-resistant), not clinical trial data.\n\n**1. Combination is the enabling condition.** \"Immune dynamics alone are generally insufficient to fully eliminate the tumor\"; adding chemotherapy \"significantly enlarges the parameter region corresponding to tumor control or tumor-free equilibria,\" and \"combination immuno-chemotherapy provides greater flexibility and improved tumor control compared to single-therapy approaches\" (part 3, §3.3, Discussion).\n\n**2. Adaptive therapy — control over eradication.** From part 1: adaptive therapy \"seeks to control rather than eliminate the tumor by maintaining a balance between drug-sensitive and drug-resistant cells,\" unlike maximum-tolerated-dose (MTD) strategies; combination therapy \"can reduce the likelihood that any single clone can survive,\" but \"success… depends heavily on timing, dosing, and sequence.\"\n\n**3. Phenotype-guided selection (which evasion mechanism dominates).**\n- *Immune checkpoint regulation dominant:* \"tumor control is primarily achieved by decreasing immune exhaustion (μ) or increasing immune activation (ρ and σ). In this case, checkpoint inhibitors combined with moderate chemotherapy provide the most effective control strategy.\" Control is \"highly sensitive to the immune exhaustion rate.\"\n- *Reduced antigen presentation dominant:* stability \"depends more strongly on effector activation and exhaustion,\" supporting \"checkpoint inhibitors, CAR-T therapy, or cancer vaccines\"; this phenotype is \"more robust against relatively weak chemotherapy.\"\n- *Immune-sensitive (T2) phenotype dominant:* \"boosting effector recruitment and persistence becomes critical. Adoptive T-cell transfer or cytotoxic therapy are then the preferred therapies.\"\n\n**4. Sequential protocols by tumor composition (part 3, Discussion).**\n- T1-dominant: chemotherapy first to reduce burden → immunotherapy to maintain control; or immunotherapy first → chemotherapy to \"eliminate residual resistant cells.\"\n- T2-dominant: chemotherapy reduces burden but \"can also lead to resistant escape; therefore, immunotherapy is typically applied afterward to stabilize the system.\"\n- Predicted coexistence: \"first… apply a chemotherapy thereby eliminating T1 cells,\" leaving a low T2-only equilibrium, then immunotherapy may eliminate the tumor — with the caveat that \"if the tumor is only controlled, the emergence of T1 mutants could result in resurgence.\"\n\n**5. The elimination threshold.** Proposition 1 (part 2, §3.1): the tumor-free equilibrium is stable iff effective immune strength exceeds maximal effective tumor growth, σ/(δ+ωχ) > max{α₂−θ₂χ, (α₁−χ)/θ₁}. Practically: raise effector recruitment σ, lower effector death δ, or raise activation ρ.\n\n**6. Why uniform treatment fails.** Efficacy \"depends on both the immune evasion mechanism and dominant tumor phenotype,\" and \"modest parameter changes can induce qualitative transitions between immune control and tumor escape\" — hence bistability and the paper's call for marker/composition-guided therapy.\n\nNot found: no clinical-trial or drug-level protocols in the pinned KBs (AI, quantum, power-systems, economics KBs returned no relevant hits); the remaining hits were duplicate chunks of this same document.",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 2,
+  "kw_total": 2,
+  "kw_list_hit": [
+   "immune evasion",
+   "chemotherapy"
+  ],
+  "cited": true,
+  "n_markers": 3,
+  "markers_head": [
+   "2604.01385",
+   "§3.3",
+   "§3.1"
+  ],
+  "false_abstain": false,
+  "chars": 4094
+ }
+}

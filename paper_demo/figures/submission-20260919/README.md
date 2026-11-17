@@ -4,7 +4,7 @@ All authored files are contained in this directory. Original drafts, manuscript 
 
 ## Deliverables
 
-- `fig1-concept.svg`, `.pdf`, `.png`: corrected reproduction configuration and unambiguous QDCVR-only outcome lane.
+- `fig1-concept.svg`, `.pdf`, `.png`: corrected reproduction configuration and unambiguous HMRS-only outcome lane.
 - `fig2-architecture.svg`, `.pdf`, `.png`: approved direction B with the audited separation between client surfaces, backend primitives, and agent-executed policy.
 - `fig3-evidence.svg`, `.pdf`, `.png`: current saved BQ01 evidence and P2 rejection case, preserving paraphrase, provenance, and self-assessment caveats.
 - `CAPTIONS.md`: proposed captions and integration caveats; no manuscript changes.
@@ -33,8 +33,8 @@ The required PDFs are browser-printed vector SVGs with selectable embedded-font 
 ## Audit-driven corrections / integration learnings
 
 1. Figure 1 now uses **≈800-token windows**, **pack 2 excerpts**, and **≤4,000-character evidence window**. The current script requests ten dense candidates; two excerpts are the saved packing result, not a top-2 retrieval setting. Source: `benchmark-suite/algorithms/corpus.py`, `methods.py`, `scripts/77_tracks_bc.py`, and the evidence audit.
-2. Every Figure 1 gate outcome is inside the QDCVR lane. Initial ≥6 answers directly; initial 5 is retained as a P1 backstop, while ≤4 is discarded and fallback runs. Post-fallback branches explicitly distinguish P0 cited answers, usable P1 =5 attributed qualified answers, and no usable P0/P1 not-found reports. No arrow lands beneath the baseline.
-3. Figure 2 explicitly labels **Agent-executed QDCVR skill**. Web HTTP and CLI setup/service management are not shown passing through MCP or through the gate. Agent routing/tag propagation is separated from deterministic split/index/store capabilities. Five bases are the demo configuration, not a fixed universal taxonomy.
+2. Every Figure 1 gate outcome is inside the HMRS lane. Initial ≥6 answers directly; initial 5 is retained as a P1 backstop, while ≤4 is discarded and fallback runs. Post-fallback branches explicitly distinguish P0 cited answers, usable P1 =5 attributed qualified answers, and no usable P0/P1 not-found reports. No arrow lands beneath the baseline.
+3. Figure 2 explicitly labels **Agent-executed HMRS skill**. Web HTTP and CLI setup/service management are not shown passing through MCP or through the gate. Agent routing/tag propagation is separated from deterministic split/index/store capabilities. Five bases are the demo configuration, not a fixed universal taxonomy.
 4. Storage is **File tree + YAML metadata**, not an append-only audit log. No every-query logging claim, all-part tagging guarantee, or live-upload automatic-classification claim is made. The system audit reports a first-part-only MCP tagging/indexing issue; the diagram states the instructed agent workflow, not universal endpoint enforcement.
 5. The diagram depicts the packaged skill's **0–8** rubric, **≥6 direct-answer** threshold, and **usable P1 =5 qualified-answer** option after fallback. The system audit's conflicting chat prompt threshold is not silently normalized into an implementation guarantee. Main should keep its distinction in the caption/body.
 6. Figure 3 retains current BQ01 **8/8** and P2 **1/8**, current parts 1/2 (§3.2.3) and 2/2 (§7), declared unread positional formula/training details/benchmark scores, B's self-reported file source, and C's **2 chunks / 2,854 characters** with absent usable source metadata. These are selected saved-case records, not matched efficacy or independently judged accuracy.

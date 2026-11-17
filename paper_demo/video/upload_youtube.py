@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Upload qdcvr-demo.mp4 to YouTube via the YouTube Data API v3.
+"""Upload hmrs-demo.mp4 to YouTube via the YouTube Data API v3.
 
 One-time setup (about 4 minutes, all in your browser):
 
@@ -17,7 +17,7 @@ cached in `token.json` so later runs do not prompt again.
 
 Flags:
   --privacy  unlisted | private | public     (default: unlisted)
-  --video    path to the mp4                 (default: ./qdcvr-demo.mp4)
+  --video    path to the mp4                 (default: ./hmrs-demo.mp4)
   --thumbnail ./thumbnail.png                (default: auto if the file exists)
 """
 from __future__ import annotations
@@ -34,11 +34,11 @@ CLIENT_SECRET = HERE / "client_secret.json"
 TOKEN = HERE / "token.json"
 
 # ── metadata ────────────────────────────────────────────────────────────────
-TITLE = ("QDCVR: Content-Verified Retrieval for Knowledge-Base Management "
+TITLE = ("HMRS: Content-Verified Retrieval for Knowledge-Base Management "
          "(CIKM Demo)")
 
 DESCRIPTION = """\
-QDCVR is a deployable knowledge-base management platform that organizes
+HMRS is a deployable knowledge-base management platform that organizes
 documents by what they say, and verifies every retrieval by reading it.
 
 Documents are parsed to structured text and filed into a category base by
@@ -126,7 +126,7 @@ def build_service():
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--video", default=str(HERE / "qdcvr-demo.mp4"))
+    ap.add_argument("--video", default=str(HERE / "hmrs-demo.mp4"))
     ap.add_argument("--privacy", default="unlisted",
                     choices=["unlisted", "private", "public"])
     ap.add_argument("--thumbnail", default=str(HERE / "thumbnail.png"))
@@ -189,7 +189,7 @@ def main() -> int:
                     "title": TITLE}, indent=1), encoding="utf-8")
     print("\nPut this URL into the paper (3 places):")
     print("  paper_demo/tex/sec0_abstract.tex, sec3_demo.tex, sec4_backmatter.tex")
-    print("  replacing https://example.org/qdcvr-demo")
+    print("  replacing https://example.org/hmrs-demo")
     return 0
 
 

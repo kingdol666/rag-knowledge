@@ -1,5 +1,5 @@
 """
-Standalone benchmark runner — BM25 + QDCVR comparison.
+Standalone benchmark runner — BM25 + HMRS comparison.
 No BGE-M3 dependency. Uses rank_bm25 directly.
 """
 import json, os, re, time, requests

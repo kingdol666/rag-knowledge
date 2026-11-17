@@ -24,7 +24,7 @@
 1. **数据集全部来自公开 benchmark + 可选的自建集**；自建集必须：人工标注、附录给统计表（文档数/token 数/查询分布）、说明标注流程与一致性
 2. **按任务形式分组选数据集**（短/长/判断/选择——CRAG；单跳/多跳——Adaptive-RAG），每组一个 RQ 一张表
 3. **指标与任务严格绑定**：QA=EM/F1/Acc；检索=Recall@k/nDCG@k/P@k；长文=FactScore/Rouge/MAUVE；主观对比=win-rate
-4. **评估器/验证模块单独评测**（CRAG Table 4）——本系统 QDCVR 内容验证的直接对应写法
+4. **评估器/验证模块单独评测**（CRAG Table 4）——本系统 HMRS 内容验证的直接对应写法
 5. **效率必须报**：time-per-query vs 性能的权衡曲线（Adaptive-RAG Fig.5 是范本）
 
 ---
@@ -38,7 +38,7 @@ PIKE-RAG、Search-R1 等均用），**预处理好的评测集 + 对应 Wikipedi
 
 | 数据集 | 任务 | Test 规模 | 对本系统的适配方式 |
 |---|---|---|---|
-| **PopQA** | 单跳事实（长尾实体） | 14,267 | ① 检索质量主实验 ② **挑长尾实体子集构造"检索无益"样本 → 评测 QDCVR 拒答/盲点声明（PopQA 自带 golden wiki title = 现成相关性标签）** |
+| **PopQA** | 单跳事实（长尾实体） | 14,267 | ① 检索质量主实验 ② **挑长尾实体子集构造"检索无益"样本 → 评测 HMRS 拒答/盲点声明（PopQA 自带 golden wiki title = 现成相关性标签）** |
 | **HotpotQA** | 2 跳，带句级 supporting facts | 7,405 dev | **按 supporting docs 的主题标题拆入不同 KB → 天然强制跨库检索**，直接测 KB 路由(Smart KB Selection)与 balance_kbs |
 | **2WikiMultiHopQA** | 2-3 跳，带推理类型标注(comparison/inference/compositional/bridge) | 12,576 dev | comparison 类问题 = 两实体各在一库 → 跨库对比推理；推理类型 → 分难度报告 |
 | **MuSiQue** | 2-4 跳组合推理 | 2,417 dev | 高难度多跳，压测两阶段召回 |

@@ -1,0 +1,119 @@
+[001] HIT  agriculture            1311.6857
+[002] HIT  agriculture            2508.05896
+[003] HIT  artificial-intelligence 1706.03762
+[004] HIT  artificial-intelligence 1706.05261
+[005] HIT  artificial-intelligence 2303.14061
+[006] MISS artificial-intelligence 2412.06333
+[007] HIT  artificial-intelligence 2504.16021
+[008] MISS artificial-intelligence 2510.13343
+[009] MISS astronomy              1105.1887
+[010] HIT  astronomy              1207.3189
+[011] HIT  astronomy              1210.0979
+[012] HIT  astronomy              2304.12442
+[013] HIT  chemistry              1911.02792
+[014] HIT  chemistry              2011.07200
+[015] MISS chemistry              2109.05887
+[016] MISS chemistry              physics-0105075
+[017] HIT  climate-science        1503.07557
+[018] HIT  climate-science        1805.00397
+[019] MISS climate-science        2007.10574
+[020] HIT  climate-science        2012.10385
+[021] HIT  climate-science        2409.09639
+[022] HIT  climate-science        2409.13934
+[023] HIT  clinical-medicine      1809.08199
+[024] HIT  clinical-medicine      1904.11280
+[025] HIT  clinical-medicine      1909.03801
+[026] MISS clinical-medicine      2110.08918
+[027] HIT  clinical-medicine      2201.03675
+[028] HIT  clinical-medicine      2212.13138
+[029] HIT  databases              1706.06697
+[030] HIT  databases              2005.03328
+[031] HIT  databases              2009.10669
+[032] HIT  databases              2102.02440
+[033] HIT  economics              1512.08067
+[034] MISS economics              1609.00415
+[035] HIT  economics              1807.09475
+[036] HIT  economics              1901.03951
+[037] HIT  economics              1911.06206
+[038] HIT  economics              2011.14424
+[039] HIT  finance                1412.5558
+[040] HIT  finance                1909.07748
+[041] MISS genomics               1602.01876
+[042] HIT  genomics               2110.07787
+[043] MISS genomics               2301.08436
+[044] HIT  genomics               2401.06823
+[045] MISS genomics               2508.18304
+[046] HIT  genomics               2602.10156
+[047] HIT  gravitational-physics  0706.3294
+[048] HIT  gravitational-physics  gr-qc-9805045
+[049] MISS immunology             2604.01385
+[050] HIT  immunology             q-bio-0408016
+[051] HIT  large-language-models  2005.14165
+[052] HIT  large-language-models  2312.10793
+[053] MISS large-language-models  2402.11690
+[054] HIT  large-language-models  2402.12317
+[055] HIT  large-language-models  2411.18583
+[056] HIT  large-language-models  2502.00306
+[057] HIT  materials              1606.00335
+[058] MISS materials              1712.01369
+[059] HIT  materials              2211.04977
+[060] HIT  materials              2408.09942
+[061] HIT  mathematics            1405.4980
+[062] HIT  mathematics            1810.09292
+[063] HIT  mathematics            2211.12700
+[064] HIT  mathematics            2402.07064
+[065] HIT  medical-imaging        2306.01022
+[066] HIT  medical-imaging        2412.15058
+[067] HIT  neuroscience           1301.6357
+[068] HIT  neuroscience           1404.4184
+[069] HIT  neuroscience           1906.10015
+[070] HIT  neuroscience           2001.10696
+[071] HIT  nlp                    1802.09426
+[072] HIT  nlp                    1810.04805
+[073] HIT  nlp                    2110.07844
+[074] HIT  nlp                    2310.10981
+[075] HIT  nlp                    2503.21676
+[076] HIT  nlp                    2608.05850
+[077] MISS oceanography           1104.2730
+[078] HIT  oceanography           physics-0703220
+[079] HIT  power-systems          2207.08146
+[080] HIT  power-systems          2607.03098
+[081] HIT  quantum-physics        1311.2485
+[082] HIT  quantum-physics        1610.04013
+[083] HIT  quantum-physics        1801.00862
+[084] HIT  quantum-physics        2201.00752
+[085] HIT  quantum-physics        2303.00445
+[086] HIT  quantum-physics        2311.00487
+[087] HIT  robotics               1709.02924
+[088] HIT  robotics               1809.03210
+[089] HIT  robotics               2410.10669
+[090] HIT  robotics               2509.14191
+[091] HIT  seismology             1308.1846
+[092] HIT  seismology             2606.10843
+[093] HIT  social-networks        1001.3181
+[094] HIT  social-networks        2203.15752
+[095] HIT  speech                 1811.04224
+[096] MISS speech                 2109.14357
+[097] HIT  speech                 2209.15032
+[098] HIT  speech                 2509.05359
+[099] MISS statistics             1506.03880
+[100] HIT  statistics             2604.22320
+
+PROBE2 SUMMARY hit=83/100 miss=17
+  MISS artificial-intelligence 2412.06333 | q: augmenting action space conventions
+  MISS artificial-intelligence 2510.13343 | q: aoad mat transformer multi agent deep
+  MISS astronomy 1105.1887 | q: corot exoplanet program status results
+  MISS chemistry 2109.05887 | q: autonomous reaction network exploration h
+  MISS chemistry physics-0105075 | q: theory laser catalysis pulses
+  MISS climate-science 2007.10574 | q: impacts madden julian oscillation
+  MISS clinical-medicine 2110.08918 | q: clinical drug representations impr
+  MISS economics 1609.00415 | q: does infrastructure investment lead econo
+  MISS genomics 1602.01876 | q: primer gene ontology
+  MISS genomics 2301.08436 | q: spacetx roadmap benchmarking spatial t
+  MISS genomics 2508.18304 | q: sci2cl effectively integrating single cell m
+  MISS immunology 2604.01385 | q: strategies tumor elimination control
+  MISS large-language-models 2402.11690 | q: vision flan scaling human labeled tasks v
+  MISS materials 1712.01369 | q: ch3nh3pbi3 gese bilayer heterojunction solar
+  MISS oceanography 1104.2730 | q: approximate deconvolution large eddy simulat
+  MISS speech 2109.14357 | q: comparison self supervised speech pre tra
+  MISS statistics 1506.03880 | q: causal inference algebraic geometry feas

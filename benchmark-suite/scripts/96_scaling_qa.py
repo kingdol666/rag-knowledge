@@ -8,7 +8,7 @@
   new50 = round-2 新增 50 篇: FAMOUS2 内容问题 + 标题问题(仅在 t1/t05 快照可用)。
 
 检索通道(两通道同测, 与 2026-09-19 回归口径一致):
-  vec  = QDCVR v2 Phase 1 规定工具 kb_search_vector, 5 门类库逐库 top_k=10 合并去重 [主通道]
+  vec  = HMRS v2 Phase 1 规定工具 kb_search_vector, 5 门类库逐库 top_k=10 合并去重 [主通道]
   ts   = kb_search_two_stage 整库(kb_id="") stage1=20/stage2=5, balance_kbs  [对照通道]
 
 判分: dedup 后按 doc_path 取最高分; gold = doc_path 含 arxiv_id;

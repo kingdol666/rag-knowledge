@@ -47,7 +47,7 @@
       {
         "icon": "🔍",
         "title": "智能检索",
-        "desc": "QDCVR 检索：意图分析→智能选库→向量召回→内容验证，确保精准"
+        "desc": "HMRS 逐级检索：意图分析→智能选库→向量召回→内容验证，确保精准"
       },
       {
         "icon": "🕸️",
@@ -188,7 +188,17 @@
     "folderNameRequired": "请输入文件夹名称",
     "parseCompleteMsg": "PDF 解析完成：{success} 成功，{failed} 失败",
     "parseFailed": "解析失败",
-    "savedToFolder": "已保存 {count} 个解析结果到当前文件夹"
+    "savedToFolder": "已保存 {count} 个解析结果到当前文件夹",
+    "savedWithFailures": "已保存 {saved} 个结果；{failed} 个保存失败",
+    "saveFailed": "解析结果保存失败：{error}",
+    "saveOutcomeUnknown": "保存结果未知，请在重试前检查目标文件夹",
+    "saveBreakdown": "未完成的文档记录：{partial}；未修改的已有重复文档：{existing}",
+    "recoveryNotice": "页面保持打开时可重试未完成的保存。恢复凭据将在一小时后或服务器重启后失效；否则请手动检查目标文件夹。",
+    "retrySave": "重试保存",
+    "discardRecovery": "放弃重试",
+    "recoveryStillIncomplete": "保存仍未完成；请解决报错后再重试。",
+    "recoveryUnavailable": "恢复凭据不可用或已过期，请手动检查目标文件夹；已有文档未被覆盖。",
+    "recoveryUnknown": "重试结果未知，请检查目标文件夹；再次手动重试仍使用原凭据，该凭据可能已被使用。"
   },
   "kb": {
     "title": "知识库管理",
@@ -323,7 +333,7 @@
     "relevance": "相关度",
     "documentMatch": "文档匹配",
     "semanticMatch": "语义匹配",
-    "qdcvr": "QDCVR 精准召回",
+    "hmrs": "HMRS 逐级召回",
     "subKbTitle": "子知识库 ({n})",
     "docCount": "{n} 篇文档",
     "docTitle": "文档 ({n})",
@@ -1274,7 +1284,7 @@
       "contextLabel": "上下文注入 context_override（可选，来自预检索）",
       "contextPlaceholder": "注入检索到的片段，人格基于此加工",
       "preSearch": "预检索知识库",
-      "qdcvrAsk": "一键检索+人格回答",
+      "hmrsAsk": "一键检索+人格回答",
       "ask": "提问",
       "answer": "回答",
       "route": "路由",
@@ -1287,7 +1297,7 @@
       "searchFailed": "检索失败: {error}",
       "personaAnswered": "已检索 {n} 条证据并人格化回答",
       "askFailed": "问答失败: {error}",
-      "qdcvrFailed": "检索+回答失败: {error}",
+      "hmrsFailed": "检索+回答失败: {error}",
       "enterQuestionSearch": "请先输入问题再检索"
     },
     "review": {

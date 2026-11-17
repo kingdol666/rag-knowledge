@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""共享 kb-mcp stdio 客户端 + QDCVR Step2.5 工具 — 供基准脚本复用.
+"""共享 kb-mcp stdio 客户端 + HMRS Step2.5 工具 — 供基准脚本复用.
 
 链路: 本客户端 → MCP stdio (uv run --directory kb-mcp python server.py) → KbClient → backend。
 这是 Agent 实际使用的工具层(与 .zcode/mcp.json 同款启动命令)。
@@ -63,7 +63,7 @@ class McpClient:
         self._id += 1
         self._send({"jsonrpc": "2.0", "id": self._id, "method": "initialize",
                     "params": {"protocolVersion": "2024-11-05", "capabilities": {},
-                               "clientInfo": {"name": "qdcvr-bench", "version": "1.0"}}})
+                               "clientInfo": {"name": "hmrs-bench", "version": "1.0"}}})
         self._recv(self._id)
         self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
 

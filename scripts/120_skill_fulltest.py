@@ -9,7 +9,7 @@ success=False 判定拒绝(结构化拒绝是正确行为, 不抛 MCP 异常).
 覆盖: kb_create → ingest(save/tags/index) → list/read → search(vector/two_stage)
 → librarian(complete_recall) → organize(duplicates) → manage(rename/move) →
 batch(batch_index) → verify(stats) → graph(build/search/central) →
-experience(CRUD) → soul(init/qdcvr_ask/ask-routing/train_rl/drafts/checkpoint/
+experience(CRUD) → soul(init/hmrs_ask/ask-routing/train_rl/drafts/checkpoint/
 rollback/reflect/export/delete) → 规范边界用例 → 清理.
 
 只触碰本次新建的沙盒: KB s-audit-a/b-20260927 + soul-skillaudit, 结束全部删除.
@@ -387,8 +387,8 @@ def main() -> int:
         return bool(r), f"cost≈{ctx['cost']}", json.dumps(r, ensure_ascii=False)[:150]
     ok_all &= step(mc, "soul_status(预算面)", s_soul_status, timeout=70)
 
-    def s_qdcvr(m):
-        r = m.call("soul_qdcvr_ask",
+    def s_hmrs(m):
+        r = m.call("soul_hmrs_ask",
                    {"query": "What is the coolant capacity of the Zephyr-7?",
                     "soul_kb_id": ctx.get("soul_kb", SOUL), "top_k": 3,
                     "async_mode": True}, timeout=120)
@@ -403,7 +403,7 @@ def main() -> int:
         okans = ("42" in ans) and bool(cits) and res.get("success", True) is not False
         return okans, f"pas={ctx['pas']} citations={len(cits)} answer[:60]={ans[:60]!r}", \
             json.dumps(res, ensure_ascii=False)[:300]
-    ok_all &= step(mc, "soul_qdcvr_ask(检索+人格作答 42+citations)", s_qdcvr, timeout=420)
+    ok_all &= step(mc, "soul_hmrs_ask(检索+人格作答 42+citations)", s_hmrs, timeout=420)
 
     def s_route(m):
         r = m.call("soul_ask",

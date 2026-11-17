@@ -1,9 +1,9 @@
-# YouTube upload sheet — QDCVR demo
+# YouTube upload sheet — HMRS demo
 
 Everything below is copy-paste ready. Two ways to use it:
 
 - **Manual (2 minutes):** open <https://studio.youtube.com> → Create → Upload video,
-  drop in `qdcvr-demo.mp4`, then paste the fields below and set the thumbnail to
+  drop in `hmrs-demo.mp4`, then paste the fields below and set the thumbnail to
   `thumbnail.png`.
 - **API:** follow the setup at the top of `upload_youtube.py`, then
   `python upload_youtube.py --privacy unlisted` — it fills every field below
@@ -18,13 +18,13 @@ Everything below is copy-paste ready. Two ways to use it:
 ## Title
 
 ```
-QDCVR: Content-Verified Retrieval for Knowledge-Base Management (CIKM Demo)
+HMRS: Content-Verified Retrieval for Knowledge-Base Management (CIKM Demo)
 ```
 
 ## Description
 
 ```
-QDCVR is a deployable knowledge-base management platform that organizes
+HMRS is a deployable knowledge-base management platform that organizes
 documents by what they say, and verifies every retrieval by reading it.
 
 Documents are parsed to structured text and filed into a category base by
@@ -85,7 +85,7 @@ CIKM demo, vector search, BM25, hallucination
 ## After uploading
 
 Put the resulting URL (e.g. `https://youtu.be/XXXXXXXXXXX`) into all three places
-in the paper, replacing the placeholder `https://example.org/qdcvr-demo`:
+in the paper, replacing the placeholder `https://example.org/hmrs-demo`:
 
 - `paper_demo/tex/sec0_abstract.tex` (last line of the abstract)
 - `paper_demo/tex/sec3_demo.tex` (Demo setup paragraph)
@@ -101,5 +101,5 @@ pdflatex main && bibtex main && pdflatex main && pdflatex main
 Sanity check that no placeholder survives anywhere:
 
 ```bash
-grep -rn "example.org/qdcvr-demo" paper_demo/tex/     # should print nothing
+grep -rn "example.org/hmrs-demo" paper_demo/tex/     # should print nothing
 ```

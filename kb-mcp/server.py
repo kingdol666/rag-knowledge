@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
 import os
 import re
 import sys
@@ -106,6 +107,13 @@ def _j(data) -> str:
     return json.dumps(data, ensure_ascii=False)
 
 
+def _is_http_timeout(result: object) -> bool:
+    """Recognize the timeout contract returned by KbClient or an HTTP 504."""
+    return (isinstance(result, dict) and not result.get("success") and
+            (result.get("error_kind") == "timeout" or
+             result.get("status") in (504, "504")))
+
+
 def _require_kb(kb_id: str) -> str | None:
     """MCP tool input validation: return error JSON if kb_id is empty, None otherwise.
 
@@ -124,15 +132,98 @@ def _require_param(name: str, value: str) -> str | None:
     return None
 
 
-async def _auto_index_doc(kb_id: str, doc_path: str) -> None:
-    """Fire-and-forget: index a document (vector + graph) after create/update.
+async def _auto_index_doc(kb_id: str, doc_path: str) -> dict:
+    """Index in the background and let the registry record the actual outcome."""
+    result = await _client().index_document(kb_id, doc_path)
+    if not isinstance(result, dict) or result.get("success") is not True:
+        raise RuntimeError(f"index request failed: {_j(result)}")
+    # The backend currently returns success=True even if the vector service is
+    # unavailable, throws, or produces no chunks. Do not call that indexed.
+    vector = result.get("vector_index")
+    if (not isinstance(vector, dict) or not vector.get("collection") or
+            not isinstance(vector.get("total_chunks"), int) or
+            isinstance(vector.get("total_chunks"), bool) or vector["total_chunks"] < 1):
+        raise RuntimeError(f"index request did not confirm vector chunks: {_j(result)}")
+    return result
 
-    Runs in background via task_registry.submit(). Silently catches errors
-    so a failed index never blocks the create/update response."""
-    try:
-        await _client().index_document(kb_id, doc_path)
-    except Exception as exc:
-        print(f"[auto-index] WARNING: index failed for {kb_id}/{doc_path}: {exc}", file=sys.stderr)
+
+def _auto_index_saved(parent_id: str, result: object) -> object:
+    """Fire-and-forget: background-index every file a save_parsed call wrote.
+
+    kb_doc_create auto-indexes; until 2026-11-03 kb_doc_save_parsed did NOT,
+    so any caller that skipped the manual kb_index_document step left the
+    document "saved but invisible" to the vector lane (measured: 0 hits
+    pre-index). This closes that gap at the mechanism level. Graph indexing
+    stays at organize stage (kb_graph_build), matching backend skip_graph=True.
+    """
+    if not isinstance(result, dict):
+        return result
+
+    def path_key(path: str) -> str:
+        return path.replace("\\", "/")
+
+    # The top-level files list also includes partially written files from
+    # failed items. If item receipts are present, they are authoritative.
+    if "items" in result:
+        items = result["items"]
+        if not isinstance(items, list):
+            return result
+        files = []
+        excluded = set()
+        for item in items:
+            if not isinstance(item, dict) or not isinstance(item.get("files"), list):
+                continue
+            for f in item["files"]:
+                if not isinstance(f, dict):
+                    continue
+                path = f.get("path")
+                if not isinstance(path, str) or not path.strip():
+                    continue
+                if item.get("success") is not True:
+                    # Web reports an untouched ordinary duplicate as a failed
+                    # item with deduped=True. It did not modify this path, so
+                    # it must not veto a successful write in the same batch.
+                    # Non-deduped failed files may be incomplete writes.
+                    if item.get("success") is not False or f.get("deduped") is not True:
+                        excluded.add(path_key(path))
+                elif not f.get("deduped"):
+                    files.append(f)
+    elif result.get("success") is True and isinstance(result.get("files"), list):
+        # Older web versions only return a top-level success and files list.
+        files = result["files"]
+        excluded = {path_key(f["path"]) for f in files
+                    if isinstance(f, dict) and f.get("deduped") and
+                    isinstance(f.get("path"), str)}
+    else:
+        return result
+
+    existing = result.get("_auto_index")
+    indexed = list(existing.get("documents", [])) if isinstance(existing, dict) and isinstance(existing.get("documents"), list) else []
+    seen = {path_key(entry["path"]) for entry in indexed
+            if isinstance(entry, dict) and isinstance(entry.get("path"), str)}
+    for f in files:
+        doc_path = f.get("path") if isinstance(f, dict) else None
+        if not isinstance(doc_path, str) or not doc_path.strip() or f.get("deduped"):
+            continue
+        key = path_key(doc_path)
+        if key in seen or key in excluded:
+            continue
+        task_id = task_registry.submit(
+            _auto_index_doc(parent_id, doc_path),
+            kind="auto-index",
+            meta={"kb_id": parent_id, "doc_path": doc_path, "action": "save_parsed"},
+        )
+        seen.add(key)
+        indexed.append({"path": doc_path, "task_id": task_id})
+    if indexed:
+        result["_auto_index"] = {
+            "triggered": True,
+            "documents": indexed,
+            "note": ("Background vector indexing started; poll kb_task_status per "
+                     "task_id, then verify (A6-V: collection == kb_<uuid>, chunks >= 1, "
+                     "vector search hits). Graph via kb_graph_build at organize stage."),
+        }
+    return result
 
 async def _auto_unindex_doc(kb_id: str, doc_path: str) -> None:
     """Fire-and-forget: clean graph + vectors for a deleted document.
@@ -599,7 +690,9 @@ async def kb_doc_read(kb_id: str = "", doc_path: str = "", path: str = "", doc_i
     - kb_id+doc_path (bare filename or relative, e.g. kb_id="uuid" doc_path="readme.md")
     - path (full relative path, e.g. "test/readme.md")
 
-    max_chars limits response size."""
+    Pagination: offset = starting LINE number (0-based), limit = number of
+    lines to return (default 200) — NOT character offsets. max_chars then
+    caps the returned text size on top of the line slice."""
     return _j(await _client().kb_doc_read(kb_id, doc_path, path, max_chars, offset, limit, doc_id))
 
 
@@ -984,6 +1077,8 @@ async def kb_doc_save_parsed(
     source_filename: str = "",
     description: str = "",
     parse_method: str = "",
+    recovery_receipt: str = "",
+    recovery_receipts: dict[str, str] | None = None,
 ) -> str:
     """Save parsed markdown (FULL content + images) into a knowledge base.
 
@@ -1007,13 +1102,38 @@ async def kb_doc_save_parsed(
         source_filename: Original filename, e.g. "paper.pdf" (manual mode).
         description: Document description (from content analysis).
         parse_method: Parse method used (auto, ocr, etc.).
+        recovery_receipt: Opaque items[0].recoveryReceipt for a single-result retry.
+        recovery_receipts: Batch retry map from Web items[].index (as a string)
+            to that item's recoveryReceipt. Only mapped items are retried; indices
+            refer to the original save response, after failed parses were filtered.
 
     Returns:
-        {success, savedCount, files: [{id, name, path, fileSize, imageCount, ...}]}
+        {success, savedCount, failedCount, files, items: [{index, success, files,
+        error?, recoveryReceipt?}]}. A failed item can contain partial files.
 
-    After saving, call kb_index_document(kb_id, doc_path) to build vector+graph index,
-    then kb_doc_update_tags(kb_id, doc_path, tags) to assign tags.
+    Recovery receipts are bearer secrets: do not log or share them. Retry with
+    the same parent_id, task_id or manual inputs, description and parse_method;
+    Web binds the receipt to the exact original result and destination. Receipts
+    expire after one hour, are local to the same Web process, and are consumed on
+    success. A missing, expired or invalid receipt requires manual inspection;
+    ordinary dedup does not prove completeness and is not a recovery receipt.
+    Batch retry response indices refer to the selected retry items, in original
+    order. `_recovery_batch_indices` maps them back to original save indices;
+    use those original indices when retrying the same parse task again.
+
+    **Auto-indexing**: fully saved, non-deduplicated files are background-indexed
+    (vector + BM25), including successful items in a partially failed batch.
+    The response's `_auto_index.documents[]` carries one
+    task_id per file (kind="auto-index"); poll kb_task_status to confirm, and
+    verify with a vector search (A6-V: collection == kb_<uuid>, chunks >= 1).
+    kb_index_document remains available to force a re-index. Graph indexing is
+    NOT part of this step (backend index_document defaults skip_graph=True) —
+    the graph is built at organize stage via kb_graph_build(force=true).
     """
+    if not isinstance(recovery_receipt, str) or (recovery_receipt and not recovery_receipt.strip()):
+        return _j({"success": False, "error": "Invalid recovery_receipt"})
+    if recovery_receipt and recovery_receipts is not None:
+        return _j({"success": False, "error": "Use either recovery_receipt or recovery_receipts, not both"})
     # If task_id is provided, extract full parse result from task registry
     if task_id:
         rec = task_registry.get(task_id)
@@ -1045,7 +1165,27 @@ async def kb_doc_save_parsed(
                 })
             if not batch_results:
                 return _j({"success": False, "error": "No successful parse results in batch task"})
-            return _j(await _client().save_parsed_files(parent_id, batch_results))
+            if recovery_receipt:
+                return _j({"success": False, "error": "Batch tasks require recovery_receipts keyed by item index"})
+            if recovery_receipts is not None:
+                if (not isinstance(recovery_receipts, dict) or not recovery_receipts or
+                        any(not isinstance(k, str) or not k.isascii() or not k.isdecimal() or
+                            len(k) > len(str(len(batch_results) - 1)) or
+                            str(int(k)) != k or int(k) >= len(batch_results) or
+                            not isinstance(v, str) or not v.strip()
+                            for k, v in recovery_receipts.items())):
+                    return _j({"success": False, "error": "Invalid recovery_receipts index map"})
+                selected_indices = sorted(int(k) for k in recovery_receipts)
+                selected = []
+                for index in selected_indices:
+                    item = dict(batch_results[index])
+                    item["recoveryReceipt"] = recovery_receipts[str(index)]
+                    selected.append(item)
+                saved = await _client().save_parsed_files(parent_id, selected)
+                if isinstance(saved, dict):
+                    saved["_recovery_batch_indices"] = selected_indices
+                return _j(_auto_index_saved(parent_id, saved))
+            return _j(_auto_index_saved(parent_id, await _client().save_parsed_files(parent_id, batch_results)))
 
         # Single parse result
         if not markdown:
@@ -1059,6 +1199,8 @@ async def kb_doc_save_parsed(
         if not parse_method:
             parse_method = inner.get("parse_method", "")
 
+    if recovery_receipts is not None:
+        return _j({"success": False, "error": "recovery_receipts is only valid for batch tasks"})
     if not markdown and not markdown_path:
         return _j({"success": False, "error": "No markdown content: provide task_id or markdown/markdown_path"})
 
@@ -1073,8 +1215,10 @@ async def kb_doc_save_parsed(
         "description": description,
         "parse_method": parse_method,
     }
+    if recovery_receipt:
+        parse_result["recoveryReceipt"] = recovery_receipt
 
-    return _j(await _client().save_parsed_files(parent_id, [parse_result]))
+    return _j(_auto_index_saved(parent_id, await _client().save_parsed_files(parent_id, [parse_result])))
 
 
 # ============================================================
@@ -1680,7 +1824,7 @@ async def experience_summary(kb_id: str) -> str:
 async def experience_search_global(query: str, top_k: int = 10,
                                      score_threshold: float = None,
                                      verify_content: bool = True) -> str:
-    """Cross-KB global experience search -- QDCVR pipeline (isomorphic with document search).
+    """Cross-KB global experience search -- HMRS pipeline (isomorphic with document search).
 
     Vector recall -> hard threshold -> experience-level dedup -> content verification -> credibility tiering -> honest empty return.
     Vector handles "speed", content handles "accuracy"; no confirmed experience means honest declaration, no bluffing.
@@ -2253,7 +2397,8 @@ async def kb_project_update(check_only: bool = False, force: bool = False,
 async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
                             score_threshold: float = 0.0,
                             balance_kbs: bool = False,
-                            slim: bool = False) -> str:
+                            slim: bool = False,
+                            wait_budget_ms: float = 5000.0) -> str:
     """Vector semantic search for document chunks.
 
     Args:
@@ -2266,16 +2411,20 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
               full chunk — the verification gate (kb_laya_judge reference mode)
               fetches real content server-side anyway, so screening runs keep
               the agent context small
+        wait_budget_ms: Max time to wait on backend vector stage (default 5000ms); sync work may continue after timeout.
 
     Returns:
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
     """
     if not query.strip():
         return _j({"success": False, "error": "query must not be empty"})
+    if not isinstance(wait_budget_ms, (int, float)) or not math.isfinite(wait_budget_ms) or wait_budget_ms < 0:
+        return _j({"success": False, "status": 400, "error": "wait_budget_ms must be finite and non-negative"})
     client = _client()
     if kb_id and kb_id.strip() and not await _kb_exists(client, kb_id):
         return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
-    result = await client.vector_search(query, kb_id, top_k, score_threshold, balance_kbs)
+    result = await client.vector_search(query, kb_id, top_k, score_threshold, balance_kbs,
+                                        wait_budget_ms=wait_budget_ms)
     # Normalize doc_path separators and deduplicate (backend may return backslash/forward-slash variants)
     if isinstance(result, dict) and result.get("success"):
         raw_results = result.get("results", [])
@@ -2306,6 +2455,10 @@ async def kb_search_two_stage(
     score_threshold: float = 0.0,
     balance_kbs: bool = False,
     slim: bool = False,
+    graph_budget_ms: float | None = None,
+    vector_budget_ms: float | None = None,
+    supplement_budget_ms: float = 2000.0,
+    response_budget_ms: float = 15000.0,
 ) -> str:
     """Two-stage precision search: first broad search to locate candidate documents, then vector fine-search for chunks.
 
@@ -2320,6 +2473,9 @@ async def kb_search_two_stage(
         score_threshold: Vector similarity threshold (0~1); <=0 uses backend default (0.35)
         balance_kbs: Whether to balance results across KBs in cross-KB search (default False). True prevents large KBs from dominating
         slim: true → stage2 hits carry only a 240-char snippet (verification gate kb_laya_judge reference mode fetches real content server-side)
+        graph_budget_ms/vector_budget_ms: Optional backend stage budgets (milliseconds); omitted values use backend defaults of 1000/5000ms. Not hard request deadlines.
+        supplement_budget_ms: Maximum wait for optional cross-KB vector supplement in milliseconds.
+        response_budget_ms: Approximate MCP HTTP wait budget; supplement only receives the remaining time after primary retrieval.
 
     Returns:
         {success, stage1: {candidates}, stage2: {results}, total_results}
@@ -2328,13 +2484,57 @@ async def kb_search_two_stage(
     """
     if not query.strip():
         return _j({"success": False, "error": "query must not be empty"})
+    budgets = {
+        "graph_budget_ms": graph_budget_ms,
+        "vector_budget_ms": vector_budget_ms,
+        "supplement_budget_ms": supplement_budget_ms,
+        "response_budget_ms": response_budget_ms,
+    }
+    for name, value in budgets.items():
+        if value is None and name in {"graph_budget_ms", "vector_budget_ms"}:
+            continue
+        if not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+            return _j({"success": False, "error": f"{name} must be a finite non-negative number",
+                       "status": 400})
+    if response_budget_ms <= 0:
+        return _j({"success": False, "error": "response_budget_ms must be greater than zero",
+                   "status": 400})
+
+    tool_started = time.monotonic()
+    deadline = tool_started + response_budget_ms / 1000
     client = _client()
-    if kb_id and kb_id.strip() and not await _kb_exists(client, kb_id):
-        return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
-    result = await client.two_stage_search(
-        query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion,
-        score_threshold, balance_kbs
-    )
+    try:
+        async with asyncio.timeout(response_budget_ms / 1000):
+            if kb_id and kb_id.strip() and not await _kb_exists(client, kb_id):
+                return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
+            # Give initial retrieval the remaining response budget. Supplement
+            # consumes only whatever is left after this call actually returns.
+            initial_wait = max(0.001, deadline - time.monotonic())
+            async with asyncio.timeout(initial_wait):
+                result = await client.two_stage_search(
+                    query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion,
+                    score_threshold, balance_kbs,
+                    graph_budget_ms=budgets["graph_budget_ms"],
+                    vector_budget_ms=budgets["vector_budget_ms"],
+                    timeout=initial_wait,
+                )
+    except TimeoutError:
+        return _j({"success": False, "status": 504, "error_kind": "timeout",
+                   "error": "two-stage search exceeded response wait budget",
+                   "degraded": True, "degraded_reason": "two_stage_http_timeout",
+                   "note": "The retrieval wait ended; synchronous backend work may still be running; stage budgets are not a total deadline."})
+    # KbClient converts httpx.TimeoutException into this structured result
+    # instead of raising it. Handle that contract before treating failures as
+    # ordinary backend errors or (worse) empty search results.
+    if _is_http_timeout(result):
+        timeout_error = ("two-stage search HTTP request timed out"
+                         if result.get("error_kind") == "timeout"
+                         else "two-stage search returned HTTP 504")
+        return _j({"success": False, "status": 504, "error_kind": "timeout",
+                   "error": timeout_error,
+                   "degraded": True, "degraded_reason": "two_stage_http_timeout",
+                   "timeout_type": result.get("timeout_type"),
+                   "note": "The HTTP wait ended; synchronous backend work may still be running; stage budgets are not a total deadline."})
     # Normalize paths and deduplicate stage2 results (keyword+graph sources may produce separator variants)
     if isinstance(result, dict) and result.get("success"):
         stage2 = result.get("stage2", {})
@@ -2372,17 +2572,63 @@ async def kb_search_two_stage(
         results = stage2.get("results", []) if isinstance(stage2, dict) else []
         distinct_kbs = set(r.get("kb_id") for r in results if r.get("kb_id"))
         if len(distinct_kbs) < 2 and results:
-            supplement = await _client().vector_search(
-                query, kb_id="", top_k=max(stage2_top_k, 5),
-                score_threshold=score_threshold, balance_kbs=True
-            )
-            if supplement.get("success") and supplement.get("count", 0) > 0:
+            remaining_ms = (deadline - time.monotonic()) * 1000
+            wait_ms = min(supplement_budget_ms, remaining_ms)
+            if wait_ms > 0 and remaining_ms > 0:
+                try:
+                    async with asyncio.timeout(wait_ms / 1000):
+                        supplement = await _client().vector_search(
+                            query, kb_id="", top_k=max(stage2_top_k, 5),
+                            score_threshold=score_threshold, balance_kbs=True,
+                            timeout=wait_ms / 1000, wait_budget_ms=wait_ms,
+                        )
+                    if _is_http_timeout(supplement):
+                        result["_cross_kb_fallback"] = {
+                            "triggered": False, "degraded": True,
+                            "reason": "supplement_http_timeout",
+                            "status": 504, "error_kind": "timeout",
+                            "timeout_type": supplement.get("timeout_type"),
+                            "budget_ms": wait_ms,
+                        }
+                    elif supplement.get("success") and supplement.get("retrieval", {}).get("degraded"):
+                        result["_cross_kb_fallback"] = {
+                            "triggered": False, "degraded": True,
+                            "reason": supplement["retrieval"].get("degraded_reasons", ["supplement_degraded"]),
+                            "budget_ms": wait_ms,
+                        }
+                    elif supplement.get("success") and supplement.get("count", 0) > 0:
+                        result["_cross_kb_fallback"] = {
+                            "triggered": True,
+                            "reason": f"BM25 stage1 returned results from only {len(distinct_kbs)} KB(s); supplementing with balanced vector search",
+                            "supplement_count": supplement.get("count", 0),
+                            "supplement": supplement.get("results", []),
+                            "budget_ms": wait_ms,
+                        }
+                    elif not supplement.get("success"):
+                        result["_cross_kb_fallback"] = {
+                            "triggered": False, "degraded": True,
+                            "reason": "supplement_failed",
+                            "budget_ms": wait_ms,
+                        }
+                except TimeoutError:
+                    result["_cross_kb_fallback"] = {
+                        "triggered": False, "degraded": True,
+                        "reason": "supplement_wait_budget_exhausted",
+                        "status": 504, "error_kind": "timeout",
+                        "budget_ms": wait_ms,
+                    }
+            else:
                 result["_cross_kb_fallback"] = {
-                    "triggered": True,
-                    "reason": f"BM25 stage1 returned results from only {len(distinct_kbs)} KB(s); supplementing with balanced vector search",
-                    "supplement_count": supplement.get("count", 0),
-                    "supplement": supplement.get("results", []),
+                    "triggered": False, "degraded": True,
+                    "reason": "supplement_budget_exhausted",
+                    "status": 504, "error_kind": "timeout", "budget_ms": 0,
                 }
+            if result.get("_cross_kb_fallback", {}).get("degraded"):
+                retrieval = result.setdefault("retrieval", {})
+                retrieval["degraded"] = True
+                reasons = retrieval.setdefault("degraded_reasons", [])
+                if "cross_kb_supplement_incomplete" not in reasons:
+                    reasons.append("cross_kb_supplement_incomplete")
     return _j(result)
 
 
@@ -2426,7 +2672,12 @@ async def kb_reindex(kb_id: str = "", force: bool = False) -> str:
 
 @mcp.tool()
 async def kb_index_document(kb_id: str = "", doc_path: str = "", doc_id: str = "", doc_name: str = "", description: str = "", content: str = "") -> str:
-    """Index a single document (vector + graph). Stores document content (or existing document) into the vector database and records vector_index in metadata.
+    """Index a single document (vector + BM25 by default). Stores document content (or existing document) into the vector database and records vector_index in metadata.
+
+    Graph note: the backend index_document endpoint defaults to skip_graph=True
+    for this tool, so graph_stats comes back EMPTY here — the document graph is
+    built at organize stage via kb_graph_build(kb_id, force=true). The
+    `graph_doc_id` field in vector_index is only the prospective node id.
 
     Two invocation modes:
     1. Provide doc_id (document UUID) -> auto-resolves kb_id and doc_path
@@ -2436,7 +2687,7 @@ async def kb_index_document(kb_id: str = "", doc_path: str = "", doc_id: str = "
     After indexing, records vector_index information (collection, chunks, etc.) in .knowledge-base.yml for the corresponding document.
     Also rebuilds BM25 keyword index so subsequent two-stage search can locate this document.
 
-    **Atomic**: ONLY indexes (vector + graph + YAML metadata writeback).
+    **Atomic**: ONLY indexes (vector + BM25 + YAML metadata writeback).
     Does NOT create or modify the document file itself.
 
     Args:
@@ -2860,7 +3111,7 @@ _laya_judge_lock = asyncio.Lock()
 
 
 @mcp.tool()
-async def kb_laya_judge(query: str, documents: str, criterion: str = "auto",
+async def kb_laya_judge(query: str, documents: "list | str", criterion: str = "auto",
                         threshold: float = 0.5,
                         max_evidence_chars: int = 40000,
                         include_text: bool = False) -> str:
@@ -2897,15 +3148,43 @@ async def kb_laya_judge(query: str, documents: str, criterion: str = "auto",
     fetch_errors[], errors[]} — the engine verdict is final. result_list
     (every scored segment, with text) only with include_text=true.
     """
-    try:
-        docs = json.loads(documents)
-        if not isinstance(docs, list):
-            raise ValueError("documents must be a JSON array of objects")
-        docs = [d for d in docs if isinstance(d, dict)]
-    except Exception as exc:
-        return _j({"status": "error", "real_engine": False, "survivors": [],
-                   "evidence_pack": "",
-                   "errors": [{"error": f"bad documents: {exc}"}]})
+    # documents accepts a native list OR a JSON-encoded array string (double
+    # encoding was a measured agent trap: single-backslash Windows paths die
+    # in the inner json.loads and the generic error read as "engine down").
+    criterion_in = (criterion or "auto").strip().lower()
+    if criterion_in not in {"auto", "evidence", "instance"}:
+        return _j({"status": "bad_request", "error_kind": "bad_request",
+                   "real_engine": False, "survivors": [], "evidence_pack": "",
+                   "errors": [{"error": f"invalid criterion: {criterion!r}",
+                               "error_kind": "bad_request",
+                               "hint": "criterion must be auto, evidence, or instance"}]})
+    criterion = criterion_in
+    if isinstance(documents, str):
+        try:
+            docs = json.loads(documents)
+        except Exception as exc:
+            return _j({"status": "bad_request", "error_kind": "bad_request",
+                       "real_engine": False, "survivors": [],
+                       "evidence_pack": "",
+                       "errors": [{"error": f"bad documents: {exc}",
+                                   "error_kind": "bad_request",
+                                   "hint": ("documents must be a JSON array of "
+                                            "{kb_id, doc_path} objects; use forward "
+                                            "slashes in doc_path (Windows backslashes "
+                                            "are illegal JSON escapes when unescaped)")}]})
+    else:
+        docs = documents
+    if not isinstance(docs, list):
+        return _j({"status": "bad_request", "error_kind": "bad_request",
+                   "real_engine": False, "survivors": [], "evidence_pack": "",
+                   "errors": [{"error": "documents must be a JSON array of objects",
+                               "error_kind": "bad_request"}]})
+    docs = [d for d in docs if isinstance(d, dict)]
+    # Normalize Windows backslash separators so the web-layer doc resolver and
+    # JSON round-trips both accept the path (forward slashes resolve identically).
+    for d in docs:
+        if isinstance(d.get("doc_path"), str) and "\\" in d["doc_path"]:
+            d["doc_path"] = d["doc_path"].replace("\\", "/")
 
     # ── Reference mode ──────────────────────────────────────────────────────
     # Entries may carry {kb_id, doc_path} (or doc_id) WITHOUT content: the
@@ -2921,9 +3200,16 @@ async def kb_laya_judge(query: str, documents: str, criterion: str = "auto",
         async def _fetch(d: dict):
             async with sem:
                 try:
-                    r = await _client().kb_doc_read(
-                        kb_id=d.get("kb_id", ""), doc_path=d.get("doc_path", ""),
-                        doc_id=d.get("doc_id", ""), max_chars=40000)
+                    dp = d.get("doc_path", "")
+                    if dp and "/" in dp:
+                        # Web layer resolves prefixed paths via `path`; the
+                        # kb_id+doc_path combo 400s there (param drift, 2026-11-15).
+                        r = await _client().kb_doc_read(
+                            path=dp, max_chars=40000)
+                    else:
+                        r = await _client().kb_doc_read(
+                            kb_id=d.get("kb_id", ""), doc_path=dp,
+                            doc_id=d.get("doc_id", ""), max_chars=40000)
                 except Exception as exc:  # noqa: BLE001
                     return d, None, str(exc)[:160]
                 if isinstance(r, dict) and r.get("success") and (r.get("content") or "").strip():
@@ -3213,10 +3499,10 @@ async def soul_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
 
 
 @mcp.tool()
-async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
-                         task_type: str = "", top_k: int = 5,
-                         async_mode: bool = False) -> str:
-    """QDCVR + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识,
+async def soul_hmrs_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
+                        task_type: str = "", top_k: int = 5,
+                        async_mode: bool = False) -> str:
+    """HMRS + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识,
     再注入人格增强回答(不是直接 soul_ask, 而是先检索后人格)。
 
     检索侧与 skill Step 2/2.5 对齐: 两阶段检索 → 硬阈值 0.35 → 文档级去重
@@ -3236,12 +3522,20 @@ async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
     if not query.strip():
         return _j({"success": False, "error": "query must not be empty"})
     async def _work():
-        return await _client().soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k)
+        return await _client().soul_hmrs_ask(query, soul_kb_id, task_goal, task_type, top_k)
     if async_mode:
         task_id = task_registry.submit(
-            _work(), "soul_qdcvr_ask", {"query": query[:80], "soul_kb_id": soul_kb_id})
-        return _running_payload(task_id, "soul_qdcvr_ask", {"soul_kb_id": soul_kb_id})
-    return _j(await _client().soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k))
+            _work(), "soul_hmrs_ask", {"query": query[:80], "soul_kb_id": soul_kb_id})
+        return _running_payload(task_id, "soul_hmrs_ask", {"soul_kb_id": soul_kb_id})
+    return _j(await _client().soul_hmrs_ask(query, soul_kb_id, task_goal, task_type, top_k))
+
+
+@mcp.tool()
+async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
+                         task_type: str = "", top_k: int = 5,
+                         async_mode: bool = False) -> str:
+    """Deprecated alias for soul_hmrs_ask, kept for existing clients."""
+    return await soul_hmrs_ask(query, soul_kb_id, task_goal, task_type, top_k, async_mode)
 
 
 @mcp.tool()

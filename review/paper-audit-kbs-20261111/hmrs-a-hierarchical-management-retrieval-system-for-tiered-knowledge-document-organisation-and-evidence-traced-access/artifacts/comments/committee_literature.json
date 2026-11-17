@@ -1,0 +1,119 @@
+[
+  {
+    "title": "最近邻先行工作 DeepRead 仅一句带过，且在定位表中被压平为'接口稳定性'问题",
+    "quote": "DeepRead demonstrates structure-aware navigation for agentic search \\citep{deepread}; HMRS similarly exposes a catalogue-first librarian lane, alongside dense and hybrid alternatives, under explicit call and tool policies.",
+    "explanation": "DeepRead（文档结构感知的 agentic 检索推理）是本论文最近邻的先行工作：其结构与 HMRS 的 catalogue/shelf/document 层级导航高度重叠。但 related work 仅给一句、且用 'similarly' 断言亲缘而无任何差异对比句；定位表（tab:positioning）把它与 ReAct、MCP 并入 'Agentic tool use' 行，'What it optimises' 列写作 'Access to retrieval tools behind a stable interface'，这是对 DeepRead 实际贡献的压平式刻画。同段对 GraphRAG/LightRAG/RAPTOR 各有一句准确刻画并做了正面对比，唯独最强对手没有获得同等剖析，导致集成性 gap 未在 closest prior work 上经受检验。建议仿照 RAPTOR 的三句式（它做什么→层级管辖对象差异→剩余问题）补一段，并修正定位表该行。",
+    "comment_type": "literature_gap",
+    "severity": "major",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "对检索式层级的性质断言'usually produced once and left unchanged'无任何引用支持",
+    "quote": "Its hierarchy is a management structure over collections and documents---which collection exists, which document belongs to it, which description explains it---and it is written to and reconciled after every lifecycle operation, whereas a retrieval-time hierarchy is an index over content that is usually produced once and left unchanged.",
+    "explanation": "HMRS 与 RAPTOR/GraphRAG 的差异化主张全部压在'检索时层级通常一次性生成、之后不再更新'这一断言上，但该断言没有任何引用支撑（RAPTOR/GraphRAG 原文是否如此需要证据，且增量构建/更新是相关系统的活跃议题）。这是对被比较对象的性质刻画缺少文献佐证，属于以未验证的对比前提支撑 novelty 的典型模式。建议要么补引用并限定范围，要么把对比改写为'本文所测配置下'的可查事实。",
+    "comment_type": "selective_citation",
+    "severity": "major",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "'research has largely treated them separately'前提与自引综述 modular-rag/gao-ragsurvey 相互抵触，矛盾被定位表抹平",
+    "quote": "The two capabilities required for this operate on different parts of the lifecycle, and research has largely treated them separately.",
+    "explanation": "引言的核心前提是检索研究与知识管理研究'大体各自为政'，但参考文献中的 modular-rag（'Modular RAG: Transforming RAG Systems into LEGO-like Reconfigurable Frameworks', ACM TOIS 2026）与 gao-ragsurvey 恰恰把数据摄取/索引（data indexing、pre-retrieval）作为 RAG 管线的一等模块讨论——n2 自己也引用它们为 'Modular RAG and agentic-retrieval surveys describe reconfigurable retrieval pipelines'。定位表将 Retrieval 线索的刻画写作 'Rank quality over a corpus that is assumed indexed'，与自引综述的内容冲突且全文从未正面调和。建议把集成贡献收窄到自引综述确实未覆盖的部分：集合生命周期治理（move/rename/delete/forced re-index 后的三源对账）。",
+    "comment_type": "selective_citation",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "核心动机句依赖'集合选择'文献线，但参考文献中该线索完全缺席（federated IR resource selection 传统）",
+    "quote": "A collection can be perfectly indexed and still answer wrongly, because the first decision a question requires---which collection should be consulted---is made without consulting the collection structure at all.",
+    "explanation": "'先选集合再检索'正是分布式/联邦式 IR 中 resource selection（database selection）研究的经典问题，而 refs.bib 与 refs_new_verified.bib 中没有任何一条该传统的条目。引言以'前人未咨询集合结构'的全称式断言开题，却在参考文献中看不到支撑或反驳该断言的文献，gap 存在被选择性引用制造的风险。由于本审阅为离线审阅、不得点名 bib 外论文，建议启用 --literature-search 核实该传统与 HMRS 集合层（catalogue 路由、E2b 路由审计）的重叠程度，再决定 gap 措辞是否需要收窄。",
+    "comment_type": "missing_citation",
+    "severity": "major",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "\\cite{graphrag} 被错挂到系统自身弱图检索工具的结果句上",
+    "quote": "This single miss coincides with a crowded candidate set but cannot isolate its cause; graph search \\cite{graphrag}, limited to node-name and tag matching, is the weakest standalone signal.",
+    "explanation": "该句描述的是 HMRS 自己的 kb_graph_search 工具（n8b 同节定义为 'a keyword match over node names, paths and tags in the document graph'），与 n2 对 GraphRAG 的准确刻画（'GraphRAG adds entity-relation graphs and community summaries'）完全不同。把 GraphRAG 的引用直接附在'受限的节点名/标签匹配'后面，既误传了 GraphRAG 的方法内容，又会让读者误以为评测对象是 GraphRAG 类系统，从而把负面结果外溢到文献上（对原论文作者不公平的刻画）。建议改为引用系统自身实现（Neo4j 文档图谱的构建描述）或降格为 '(cf.~\\cite{graphrag})' 的体裁对比。",
+    "comment_type": "citation_quality",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "文本分块/结构切分文献线缺失，而结构切分是系统的核心机制之一",
+    "quote": "At the segment level a document is split at recognised structural markers and its parts are indexed for dense and lexical search",
+    "explanation": "结构化切分（structural-marker split、30,000 字符档位、800 字符 chunk 复现）贯穿采集与评估（E1/E4/E5），但两份 bib 中没有任何分块/切分策略文献条目。面向 KBS 读者的 RAG 系统论文通常需要引用切分文献来定位自己的切分选择（哪些标记、什么粒度、对检索的影响），否则该设计显得无文献坐标。离线审阅不点名 bib 外论文，建议启用 --literature-search 补齐该线索并在 n4/n5 或 related work 中定位切分决策。",
+    "comment_type": "missing_citation",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "索引维护/增量更新文献线缺失，而'生命周期后对账'恰是论文宣称的关键区分轴",
+    "quote": "which is the sharpest illustration of why an explicit re-index operation belongs in the management contract rather than in an implicit side effect of renaming.",
+    "explanation": "E2 的重命名-索引失步缺陷（rename 后向量索引保留旧名 chunks，仅 force re-index 可修复）是论文最强的管理层发现之一，n2 也把 'written to and reconciled after every lifecycle operation' 作为与检索式层级的核心区分。但参考文献中没有任何索引维护/增量更新/陈旧索引检测的文献条目，区分轴落在一个未被引用的文献线上，'usually produced once and left unchanged' 的对比因此显得是为制造差异而设。建议启用 --literature-search 检索该线索（增量索引维护、索引一致性），并在 Sec. 2.2 或 E2 中给出文献坐标。",
+    "comment_type": "missing_citation",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "核心验证器 Laya 仅有模型卡出处，related work 的 judge 可靠性文献从未反观这一具体选择",
+    "quote": "The gate is the local Laya evidence classifier \\cite{laya}, exposed as \\path{kb_laya_judge}.",
+    "explanation": "Laya（E4–E6 的主角）唯一出处是 HuggingFace 模型卡（bib 注明 'Model card'）。n2 的 2.3 节专门综述了 LLM-as-a-judge 的偏好偏差、自偏好与验证器 gaming（zheng-llmjudge、sun-urara、panickssery-selfpref、lightman-verify），但从未把这些警告与'选择 Laya 作为 0-1 判分器'这一具体设计决策连接起来——这层呼应直到 E6 失败分析才隐式出现。对 KBS 读者而言，论文的核心机制建立在一个无同行评审评估的组件上，related work 应当显式承认该选择落在其引用的 judge 可靠性警告的覆盖范围内，并说明为何仍值得一测。",
+    "comment_type": "literature_gap",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "hmrs-demo 条目作者仍为占位符 'Author Name'（bib 内含未完成的 AUTHOR ACTION 注释）",
+    "quote": "%% AUTHOR ACTION: fill real author list before submission. @inproceedings{hmrs-demo, title     = {{HMRS}: Content-Routed Organization and Layered Agent Retrieval with Inspectable Evidence}, ... author    = {Author Name},",
+    "explanation": "hmrs-demo 是本文的先行演示版引用（n1：'A prior demonstration version introduced the organisation and retrieval layers \\cite{hmrs-demo}'），是 novelty 定位的基线锚点，但 bib 条目的 author 字段仍是 'Author Name' 占位符，且条目上方保留着 'AUTHOR ACTION: fill real author list before submission' 的待办注释。'To appear'（CIKM '26 Demo Track）本身可接受，但投稿前必须补齐真实作者与确认卷期，否则该条目不可核验。",
+    "comment_type": "citation_quality",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "评估章节形成'权威背书式'引用模式：综述被用来支撑对自身系统的观察",
+    "quote": "so the 21 cannot be attributed to parsing alone \\cite{missier-prov-2013}.",
+    "explanation": "同类问题多处出现：(1) n8a 用 W3C PROV 综述为'本文管线无逐阶段记录故无法归因'背书；(2) n8a 'Descriptions and tags are checked against content before storage~\\cite{park-metadata-quality-2009}' 用 metadata 质量综述为系统自身操作背书（综述描述的是问题，不是本系统的核查方法）；(3) n8c E5 'consistent with model turns dominating latency \\cite{singh-agentic-rag}' 用 agentic RAG 综述支撑延迟构成观察。单条均可辩解，但合起来是把文献用作自身观察的权威背书，而非对话。建议将这类引用移到能被文献主张直接对应的句子（如相关工作的挑战陈述处），或删除。",
+    "comment_type": "citation_quality",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "E6 把四篇 judge 可靠性文献挂在对本文自身跨语料对比的谨慎限定句上",
+    "quote": "These studies also differ in domain, language and corpus size, so they do not isolate confuser density as the cause; the cross-corpus pattern is descriptive, not causal \\cite{zheng-llmjudge,panickssery-selfpref,lightman-verify,yin-knowwhat}.",
+    "explanation": "该句限定的对象是本文自己两个语料（工业语料 vs arXiv 语料）之间的不可归因性，与所引四篇文献（MT-Bench judge 偏差、自偏好、Let's Verify、LLM 自知之明）的主张没有直接支持关系——四篇文献谈的是 judge/验证器的可靠性，不是跨语料因果推断的方法学。引用被用作给一个 hedge 加权威。建议删除该处引用，或将其移到本小节确实对应文献主张的句子（如 'The verdict is a model' 对 judge 局限的讨论处）。",
+    "comment_type": "citation_quality",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "\\cite{siren,gao-ragsurvey} 对'相似度≠证据'的概念区分支撑力偏弱",
+    "quote": "Semantic similarity measures topical relatedness, not whether a passage contains evidence for the requested claim \\cite{siren,gao-ragsurvey}.",
+    "explanation": "两篇引用均为综述（幻觉综述、RAG 综述），它们支持'检索无关性导致幻觉'一类宏观命题，但并不直接给出'语义相似度只测量题旨相关、不测量证据包含'这一概念区分本身。该区分是证据门（evidence gate）的全部动机，值得更精确的文献支撑（如相关性/效用与证据性的区分研究），或在措辞上降格为'见综述中的失败模式讨论'。当前写法把强主张挂在了弱支撑上。",
+    "comment_type": "citation_quality",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "cyberbot（CIKM'25 五页短文）被用作 ontology-grounded retrieval 线索的代表，分量不足",
+    "quote": "Other work studies selective prediction under domain shift, ontology-grounded retrieval and citation verification \\citep{kamath,cyberbot,liu-verifiability,gao-citations}.",
+    "explanation": "四个引用簇中，kamath（ACL 2020 长文）、liu-verifiability 与 gao-citations（EMNLP 2023 长文）分量相当，而 cyberbot 是 CIKM 2025 的 5 页短文（pp. 6752–6756，应用领域为网络安全教育）。用它代表 ontology-grounded retrieval 这一与本文集合/本体结构直接相关的线索，为期刊级 gap 定位作支撑，代表性偏薄；且该簇的压缩（三个话题四个引用一条子句）使读者无法分辨每篇到底支撑哪个主张。建议扩充该线索或改用更核心的代表作（若经 --literature-search 确认），并在行文中一一对应话题与引用。",
+    "comment_type": "citation_quality",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "medium"
+  }
+]

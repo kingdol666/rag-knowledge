@@ -10,7 +10,7 @@ from neo4j.exceptions import ServiceUnavailable
 from pydantic import BaseModel
 
 from app.config import config
-from app.services.graph_service import graph_service
+from app.services.graph_service import AmbiguousDocumentPath, graph_service
 from app.api.deps.auth import verify_token
 
 logger = logging.getLogger(__name__)
@@ -57,6 +57,8 @@ def _handle_graph_unavailable(func):
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return await func(*args, **kwargs)
+        except AmbiguousDocumentPath as exc:
+            raise HTTPException(409, str(exc)) from exc
         except ServiceUnavailable as exc:
             logger.warning("Graph endpoint %s unavailable: %s", func.__name__, exc)
             raise HTTPException(
@@ -122,7 +124,8 @@ async def graph_search_tags(keyword: str = Query(..., min_length=1),
 async def graph_for_document(doc_path: str, limit: int = 50) -> dict[str, Any]:
     """文档中心图谱视图：文档信息 + 关联文档 + 跨 KB 连接。"""
     _guard_graph_enabled()
-    return {"success": True, "graph": graph_service.get_document_graph(doc_path, limit)}
+    graph = graph_service.get_document_graph(doc_path, limit)
+    return {"success": True, "found": graph.get("document_found", bool(graph.get("document"))), "graph": graph}
 
 
 @router.get("/document/related")
@@ -131,7 +134,8 @@ async def graph_related_documents(doc_path: str, limit: int = 20) -> dict[str, A
     """返回与某文档真正关联的其他文档（质量过滤后的 RELATED_TO 边）。"""
     _guard_graph_enabled()
     related = graph_service.get_related_documents(doc_path, limit)
-    return {"success": True, "related": related, "count": len(related)}
+    found = graph_service.document_exists(doc_path)
+    return {"success": True, "found": found, "related": related, "count": len(related)}
 
 
 @router.get("/document/enhanced")
@@ -200,7 +204,7 @@ async def add_agent_relation(req: AgentRelationRequest) -> dict[str, Any]:
             "reasoning": req.reasoning,
         }],
     )
-    return {"success": True, "result": result}
+    return {"success": result.get("success", not bool(result.get("error"))), "result": result}
 
 
 @router.post("/agent-relations/batch", dependencies=[Depends(verify_token)])
@@ -224,7 +228,7 @@ async def batch_add_agent_relations(req: BatchAgentRelationRequest) -> dict[str,
             "target": rel.target_doc_path,
             "result": r,
         })
-    return {"success": True, "results": results}
+    return {"success": all(item["result"].get("success", not bool(item["result"].get("error"))) for item in results), "results": results}
 
 
 # ── 批量构建 ──────────────────────────────────────────────────
@@ -250,7 +254,7 @@ async def graph_build_all(req: BuildAllGraphsRequest) -> dict[str, Any]:
     """
     _guard_graph_enabled()
     result = graph_service.build_all_graphs(req.force, req.enable_vector_similarity)
-    return {"success": True, "result": result}
+    return {"success": result.get("success", False), "result": result}
 
 
 # ── 跨 KB 分析 ────────────────────────────────────────────────

@@ -8,7 +8,7 @@ on the same corpus. Every algorithm is tagged with its provenance:
 |---|---|
 | `REAL-CODE` | an actual open-source library (rank_bm25, FAISS, sentence-transformers) |
 | `REAL-ALGO` | a published paper's algorithm implemented here from its description |
-| `PROJECT` | this platform's own QDCVR retrieval path, called over its API |
+| `PROJECT` | this platform's own HMRS retrieval path, called over its API |
 
 ![dashboard](dashboard.png)
 
@@ -33,7 +33,7 @@ Open <http://127.0.0.1:3001>. Upload files on the **Corpus** tab, ask questions 
 the **Ask** tab, compare algorithms on the **Benchmark** tab. The API's own
 interactive docs are at <http://127.0.0.1:8800/docs>.
 
-The `qdcvr_*` baselines additionally need the **platform** running
+The `hmrs_*` baselines additionally need the **platform** running
 (`ragctl up` in the repo root); answer generation needs the **`omp`** CLI. Both
 are optional — retrieval works without either, and `/api/health` reports what is
 available.
@@ -65,11 +65,11 @@ request validation *and* the UI's parameter panel, so the two can never drift.
 | `ce_rerank` | rerank | `REAL-CODE` FAISS → ms-marco cross-encoder | `top_k`, `candidate_k`, `score_threshold` |
 | `crag` | corrective | `REAL-ALGO` Yan et al., NAACL 2024 | `top_k`, `candidate_k`, `upper_threshold`, `lower_threshold`, `expand_trigger`, `expand_k`, `w_overlap`, `w_dense` |
 | `selfrag` | self-reflective | `REAL-ALGO` Asai et al., 2023 | `top_k`, `candidate_k`, `threshold`, `w_rel`, `w_sup`, `w_use`, `support_gain` |
-| `qdcvr_flat` | project | `PROJECT` platform API, all KBs | `top_k`, `score_threshold`, `kb_id` |
-| `qdcvr_domain` | project | `PROJECT` platform API, one KB | `top_k`, `score_threshold`, `kb_id` (required) |
+| `hmrs_flat` | project | `PROJECT` platform API, all KBs | `top_k`, `score_threshold`, `kb_id` |
+| `hmrs_domain` | project | `PROJECT` platform API, one KB | `top_k`, `score_threshold`, `kb_id` (required) |
 
 Aliases accepted for backwards compatibility: `vector` → `dense`,
-`qdcvr` → `qdcvr_flat`, `self_rag` → `selfrag`, `cross_encoder` → `ce_rerank`.
+`hmrs` → `hmrs_flat`, `self_rag` → `selfrag`, `cross_encoder` → `ce_rerank`.
 
 Example — three algorithms, three different parameter sets:
 

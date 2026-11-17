@@ -1,0 +1,206 @@
+{
+  "per_arm": {
+    "A0": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 37,
+      "gold_rate": 0.513889,
+      "gold_ci95": [
+        0.400698,
+        0.625673
+      ],
+      "n_probe": 4,
+      "gate_rejections": 2,
+      "gate_rejection_rate": 0.5,
+      "gate_rejection_ci95": [
+        0.150039,
+        0.849961
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 31409,
+      "avg_tool_s_gold": 16.3,
+      "avg_digest_s_gold": 7.9
+    },
+    "A1-readall": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 72,
+      "gold_rate": 1.0,
+      "gold_ci95": [
+        0.949349,
+        1.0
+      ],
+      "n_probe": 4,
+      "gate_rejections": null,
+      "gate_rejection_rate": null,
+      "gate_rejection_ci95": null,
+      "gate_evaluable": false,
+      "avg_bytes_gold": 24313972,
+      "avg_tool_s_gold": 253.7,
+      "avg_digest_s_gold": 6078.5
+    },
+    "A1b": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 39,
+      "gold_rate": 0.541667,
+      "gold_ci95": [
+        0.427399,
+        0.651714
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 38464,
+      "avg_tool_s_gold": 10.8,
+      "avg_digest_s_gold": 9.6
+    },
+    "A2": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 25,
+      "gold_rate": 0.347222,
+      "gold_ci95": [
+        0.247534,
+        0.462387
+      ],
+      "n_probe": 4,
+      "gate_rejections": null,
+      "gate_rejection_rate": null,
+      "gate_rejection_ci95": null,
+      "gate_evaluable": false,
+      "avg_bytes_gold": 1787,
+      "avg_tool_s_gold": 0.8,
+      "avg_digest_s_gold": 0.5
+    },
+    "A3": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 33,
+      "gold_rate": 0.458333,
+      "gold_ci95": [
+        0.348286,
+        0.572601
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 23461,
+      "avg_tool_s_gold": 7.8,
+      "avg_digest_s_gold": 5.9
+    },
+    "A0f": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 45,
+      "gold_rate": 0.625,
+      "gold_ci95": [
+        0.509529,
+        0.727808
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 303449,
+      "avg_tool_s_gold": 13.0,
+      "avg_digest_s_gold": 75.9
+    },
+    "A0h": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 52,
+      "gold_rate": 0.722222,
+      "gold_ci95": [
+        0.609536,
+        0.812397
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 309143,
+      "avg_tool_s_gold": 13.8,
+      "avg_digest_s_gold": 77.3
+    },
+    "PD": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 46,
+      "gold_rate": 0.638889,
+      "gold_ci95": [
+        0.523525,
+        0.740183
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 308166,
+      "avg_tool_s_gold": 13.6,
+      "avg_digest_s_gold": 77.0
+    }
+  },
+  "paired_mcnemar_vs_baseline": {
+    "A1-readall": {
+      "base_only": 0,
+      "arm_only": 35,
+      "p_exact_two_sided": 5.820766091346741e-11
+    },
+    "A1b": {
+      "base_only": 2,
+      "arm_only": 4,
+      "p_exact_two_sided": 0.6875
+    },
+    "A2": {
+      "base_only": 18,
+      "arm_only": 6,
+      "p_exact_two_sided": 0.022655844688415527
+    },
+    "A3": {
+      "base_only": 10,
+      "arm_only": 6,
+      "p_exact_two_sided": 0.454498291015625
+    },
+    "A0f": {
+      "base_only": 0,
+      "arm_only": 8,
+      "p_exact_two_sided": 0.0078125
+    },
+    "A0h": {
+      "base_only": 0,
+      "arm_only": 15,
+      "p_exact_two_sided": 6.103515625e-05
+    },
+    "PD": {
+      "base_only": 0,
+      "arm_only": 9,
+      "p_exact_two_sided": 0.00390625
+    }
+  },
+  "metric_note": "Gold containment is a retrieval proxy, not answer correctness.",
+  "ood_probe_note": "Gate rejection counts are retrieval-stage outcomes, not final-answer abstentions; A1 and A2 have no applicable gate outcome.",
+  "scope_note": "A1b/A2 are the final 2026-11-10 scoped-union re-runs (per-KB directed search merged by score); A0f/A0h/PD are the 2026-11-11 content-layer optimization arms (full-window judge; A0h adds a chunk-window union; PD drops navigation). New-arm traces were pollution-audited (top1/survivors all within the ten MD语料-* eval KBs, zero route-card leakage) before promotion."
+}

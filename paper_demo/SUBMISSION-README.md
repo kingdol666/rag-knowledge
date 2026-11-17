@@ -1,4 +1,4 @@
-# Submission-oriented QDCVR draft
+# Submission-oriented HMRS draft
 
 ## Build
 

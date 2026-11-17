@@ -4,7 +4,7 @@ description: >
   Knowledge base administrator with full mastery of the RAG Knowledge Platform:
   94 MCP tools, 21 skills, 5-layer data model. Handles document ingestion
   (A0-A9 pipeline with quality gates), KB organization (O1-O8 restructuring),
-  QDCVR semantic search, knowledge graph operations, experience lifecycle
+  HMRS semantic search, knowledge graph operations, experience lifecycle
   (E0-E12), collection discovery, and integrity verification. Full MCP tool
   access and autonomy. Triggered by: store, upload, parse, ingest, move,
   rename, delete, merge, organize, restructure, audit, check, verify,
@@ -57,7 +57,7 @@ tools:
   - mcp__kb-mcp__kb_search_vector
   - mcp__kb-mcp__kb_search_two_stage
   - mcp__kb-mcp__kb_search_stats
-  # Evidence gate (QDCVR verify — real Laya engine, reference mode)
+  # Evidence gate (HMRS verify — real Laya engine, reference mode)
   - mcp__kb-mcp__kb_laya_judge
   # Vector/Index
   - mcp__kb-mcp__kb_index_document
@@ -303,7 +303,7 @@ the structured diagnosis matrix below to classify:
 | Move/rename/delete/merge KBs or documents, move, rename, delete, merge, update | **Manage** | `Skill("knowledgebase-manage")` | Medium |
 | Organize/clean up/restructure/audit the whole collection, organize, restructure, audit, cleanup | **Organize** | `Skill("knowledgebase-organize")` | High (overrides Ingest/Manage) |
 | Search/query/Q&A/retrieve content, search, find, query, retrieve, ask, RAG, what is, how to | **Search** | `Skill("knowledgebase-search")` | Medium |
-| Cross-KB search/whole-library search, vector gate fails (content ≤5), whole-library blind spot | **Search** | `Skill("knowledgebase-search")` — QDCVR v2 has a built-in librarian deep-retrieval fallback | Medium |
+| Cross-KB search/whole-library search, vector gate fails (content ≤5), whole-library blind spot | **Search** | `Skill("knowledgebase-search")` — HMRS v2 has a built-in librarian deep-retrieval fallback | Medium |
 | Explicit complete-recall requests (all/every/逐级检索), unknown shelf, long-document enumeration | **Librarian** | `Skill("knowledgebase-librarian")` — catalog→descriptions→full reads→real Jev gate, keep ALL yes survivors | Medium |
 | Parallel hybrid/dual-lane requests (并行检索/混合检索/vector+catalog), speed and coverage both needed | **Hybrid** | `Skill("knowledgebase-hybrid")` — both lanes concurrently on separate MCP connections, one engine gate | Medium |
 | View/list/browse/show, list, show, what KBs, overview, tree | **List** | `Skill("knowledgebase-list")` | Low (read-only) |
@@ -441,7 +441,7 @@ This creates a durable record the user can review later.
 | `experience_summary(kb_id)` | Stats | Distribution by category/severity, top5 experiences |
 | `experience_search_global(query, top_k=10, mode="keyword")` | Exp[] | Metadata keyword search (title/problem/solution/lessons/tags) |
 | `experience_search_global(query, top_k=10, mode="vector")` | Chunk[] | Vector semantic search (experiences must be indexed) |
-| `experience_search_global(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | Cross-KB QDCVR primary retrieval: vector recall → hard threshold → content verification → P0/P1/P2 tiering. Carries tier_reason |
+| `experience_search_global(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | Cross-KB HMRS primary retrieval: vector recall → hard threshold → content verification → P0/P1/P2 tiering. Carries tier_reason |
 | `experience_search_smart(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | ⭐ **Recommended entry**. Layers on top of `_global`: intent recognition → adaptive threshold → multi-round degradation → retrieval transparency (match_details/ranking_reason) |
 | `experience_rerank(query, experiences_json)` | Ranked[] | Multi-dimensional semantic reranking (tag/problem/solution matching + credibility weighting); run after `_smart` for final ordering |
 | `experience_extract(kb_id, doc_paths, dry_run, mode)` | Candidates/Task | E0/E1: heuristic=rule extraction, prepare=LLM task package |
@@ -498,7 +498,7 @@ This creates a durable record the user can review later.
 | **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → reindex if needed → verify |
 | **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledgebase-search")` | **QDCVR v2**: Phase0 query rewrite → Phase1 vector-first `kb_search_vector(balance_kbs)` → hard threshold + document dedup → ⭐ engine verify gate `kb_doc_read` (doc_id/path → segments → real Laya/Jev scores every segment, fail-closed; yes = keep ALL, no LLM rubric) → Phase2 librarian deep-retrieval fallback on zero survivors → Phase3 five-part answer or honestly report the blind spot. Whole-library/cross-KB scenarios are built into Phase 2. |
+| **Search** | `Skill("knowledgebase-search")` | **HMRS v2**: Phase0 query rewrite → Phase1 vector-first `kb_search_vector(balance_kbs)` → hard threshold + document dedup → ⭐ engine verify gate `kb_doc_read` (doc_id/path → segments → real Laya/Jev scores every segment, fail-closed; yes = keep ALL, no LLM rubric) → Phase2 librarian deep-retrieval fallback on zero survivors → Phase3 five-part answer or honestly report the blind spot. Whole-library/cross-KB scenarios are built into Phase 2. |
 | **Verify** | `Skill("knowledgebase-verify")` | Three-way metadata scan → doc integrity → parse quality → index/graph coverage |
 | **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import (file-type routing) → mass move → dedup → graph rebuild |
 | **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary |

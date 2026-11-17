@@ -76,7 +76,7 @@ async def _finish_run_with_metrics(run_id: str, rep: dict) -> None:
         cost_usd=rep.get("cost_estimate"),
         reward=reward,
     )
-    soul_training_db.finish_run(run_id, "done", rep)
+    soul_training_db.finish_run(run_id, "error" if rep.get("success") is False else "done", rep)
 
 
 def backend_output_tmp() -> str:
@@ -93,13 +93,13 @@ def backend_output_tmp() -> str:
 
 
 
-@router.post("/qdcvr-ask")
-async def soul_qdcvr_ask(req: dict[str, Any]):
-    """QDCVR + SOUL 组合问答: 先检索知识库(两阶段+去重+硬阈值), 再注入人格增强回答。"""
+@router.post("/hmrs-ask")
+async def soul_hmrs_ask(req: dict[str, Any]):
+    """HMRS + SOUL 组合问答: 先检索知识库(两阶段+去重+硬阈值), 再注入人格增强回答。"""
     query = (req.get("query") or "").strip()
     if not query or len(query) > 4000:
         raise _err(400, "invalid_query", "query 长度 1-4000")
-    result = await soul_service.soul_qdcvr_ask(
+    result = await soul_service.soul_hmrs_ask(
         query=query,
         soul_kb_id=req.get("soul_kb_id") or "",
         task_goal=req.get("task_goal") or "",
@@ -108,9 +108,15 @@ async def soul_qdcvr_ask(req: dict[str, Any]):
     )
     if not result.get("success"):
         code = result.get("error", "internal")
-        status = 408 if code == "timeout" else (404 if code == "kb_not_found" else 400)
+        status = 503 if code == "search_unavailable" else (408 if code == "timeout" else (404 if code == "kb_not_found" else 400))
         raise _err(status, code, result.get("detail", ""))
     return result
+
+
+@router.post("/qdcvr-ask", include_in_schema=False)
+async def soul_qdcvr_ask(req: dict[str, Any]):
+    """Deprecated alias for /hmrs-ask, kept for existing clients."""
+    return await soul_hmrs_ask(req)
 
 
 @router.post("/ask")
@@ -129,7 +135,7 @@ async def soul_ask(req: dict[str, Any]):
     )
     if not result.get("success"):
         code = result.get("error", "internal")
-        status = 408 if code == "timeout" else (404 if code == "kb_not_found" else 400)
+        status = 503 if code == "search_unavailable" else (408 if code == "timeout" else (404 if code == "kb_not_found" else 400))
         raise _err(status, code, result.get("detail", ""))
     return result
 
@@ -517,6 +523,8 @@ async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_t
             {"soul_kb_id": soul_kb_id, "doc_paths": len(doc_paths), "rounds": rounds})
         return {"success": True, "task_id": task_id, "status": "running"}
     report = await asyncio.shield(soul_learn.learn_docs(soul_kb_id, doc_paths, limit=limit, rounds=rounds))
+    if report.get("error") == "search_failed":
+        raise _err(503, "search_unavailable", report.get("detail", ""))
     return {"success": True, "task_id": None, "report": report}
 
 
@@ -551,6 +559,8 @@ async def learn_all_global(req: dict[str, Any], _: None = Depends(verify_token))
             _task, "soul_learn_all", {"soul_kb_id": "*", "max_docs": max_docs, "rounds": rounds})
         return {"success": True, "task_id": task_id, "status": "running"}
     report = await asyncio.shield(soul_learn.learn_all(soul_kb_id="", max_docs=max_docs, dry_run=dry_run, rounds=rounds))
+    if report.get("error") == "search_failed":
+        raise _err(503, "search_unavailable", report.get("detail", ""))
     return {"success": True, "task_id": None, "report": report}
 
 
@@ -587,6 +597,8 @@ async def learn_all(soul_kb_id: str, req: dict[str, Any], _: None = Depends(veri
             {"soul_kb_id": soul_kb_id or "", "max_docs": max_docs, "rounds": rounds})
         return {"success": True, "task_id": task_id, "status": "running"}
     report = await asyncio.shield(soul_learn.learn_all(soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run, rounds=rounds))
+    if report.get("error") == "search_failed":
+        raise _err(503, "search_unavailable", report.get("detail", ""))
     return {"success": True, "task_id": None, "report": report}
 
 

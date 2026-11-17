@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """八种检索方法 — DeepRead 论文对比集(Table 1)在本语料上的复现.
 
-  qdcvr            本系统真链路: knowledgebase-search skill Step1-3(MCP 两阶段 +
+  hmrs            本系统真链路: knowledgebase-search skill Step1-3(MCP 两阶段 +
                    0.35 阈值 + kb_doc_read 内容验证重排, content-overrides-vector)
   dense_rag        论文 Dense RAG: 定窗 800/400 分块, 稠密检索 top-10
   dense_rag_rerank : 稠密 top-30 → LLM listwise 重排 → top-10
@@ -84,9 +84,9 @@ class Ctx:
         return out
 
 
-# ── 1. QDCVR(真 skill 链路) ──────────────────────────────────────────────────
+# ── 1. HMRS(真 skill 链路) ──────────────────────────────────────────────────
 
-def qdcvr(ctx: Ctx, claim: str, allow_global_fallback: bool = True) -> dict:
+def hmrs(ctx: Ctx, claim: str, allow_global_fallback: bool = True) -> dict:
     t0 = time.perf_counter()
     res = ctx.mc.call("kb_search_two_stage",
                       {"query": claim, "kb_id": KB_SCIFACT,
@@ -463,8 +463,8 @@ def deepread(ctx: Ctx, claim: str) -> dict:
 
 
 METHODS = {
-    "qdcvr": {"fn": lambda ctx, q: qdcvr(ctx, q),
-              "paper": "this system (knowledgebase-search skill QDCVR)"},
+    "hmrs": {"fn": lambda ctx, q: hmrs(ctx, q),
+              "paper": "this system (knowledgebase-search skill HMRS)"},
     "dense_rag": {"fn": lambda ctx, q: dense(ctx, q, rerank=False),
                   "paper": "Dense RAG (chunk 800/400, top-10)"},
     "dense_rag_rerank": {"fn": lambda ctx, q: dense(ctx, q, rerank=True),

@@ -13,7 +13,7 @@
 
 | 创新点 | 学术价值 | 涉及领域 |
 |--------|---------|---------|
-| **QDCVR 检索管线** — 内容独立验证的检索方法，"向量快召回，内容真裁决" | 解决 RAG 向量误召回问题 | IR / NLP |
+| **HMRS 检索管线** — 内容独立验证的检索方法，"向量快召回，内容真裁决" | 解决 RAG 向量误召回问题 | IR / NLP |
 | **经验可信度模型 (P0/P1/P2 + E0-E12 生命周期)** — 结构化运维知识管理 + 时效衰减 | 首个面向 Agent 的经验生命周期框架 | KM / AI |
 | **Agent 优先架构 (76 MCP 工具 + 14 技能)** — LLM Agent 原生知识库交互范式 | 新型人机知识管理交互 | AI Systems |
 | **多策略跨库检索** — BM25 + 向量 + 图谱 + 标签四路径融合 + 盲点声明 | 解决跨域检索的大库主导问题 | IR |
@@ -30,7 +30,7 @@
 | 会议 | 全称 | CCF | 领域匹配 | 录取率 | 适配度 | 分析 |
 |------|------|-----|---------|--------|--------|------|
 | **CIKM** | ACM Int'l Conf. on Information and Knowledge Management | **B** (CORE A*) | ★★★★★ | ~22% | ⭐ **首选** | 知识管理 + 应用 IR 的顶级会议，专设 Systems & Applications track，接受系统论文 |
-| **SIGIR** | ACM Int'l Conf. on Research and Development in Information Retrieval | **A** | ★★★★☆ | ~20% | ⭐ 次选 | IR 顶会，2025 起有 IR-RAG Workshop。纯系统论文偏吃力，但 QDCVR 算法层面可投 |
+| **SIGIR** | ACM Int'l Conf. on Research and Development in Information Retrieval | **A** | ★★★★☆ | ~20% | ⭐ 次选 | IR 顶会，2025 起有 IR-RAG Workshop。纯系统论文偏吃力，但 HMRS 算法层面可投 |
 | **EMNLP/ACL** | Empirical Methods in NLP / ACL | **A** | ★★★☆☆ | ~22% | 备选 | NLP 顶会，适合强调 LLM Agent + RAG 的角度。但系统论文非其核心偏好 |
 | **WWW** | The Web Conference | **A** | ★★★☆☆ | ~20% | 备选 | Web 系统与应用，适合强调多模态文档处理 + Web 界面角度 |
 | **KDD** | Knowledge Discovery and Data Mining | **A** | ★★★☆☆ | ~20% | 备选 | Applied Data Science Track 适合系统论文 |
@@ -72,7 +72,7 @@
 
 ### 🥈 备选：SIGIR 2027 Full Paper
 
-如果 QDCVR 的算法贡献做深（超越系统论文层面，有形式化分析/理论保证），可投 SIGIR。SIGIR 的 AP (Applied Research) Track 专为系统论文设立。
+如果 HMRS 的算法贡献做深（超越系统论文层面，有形式化分析/理论保证），可投 SIGIR。SIGIR 的 AP (Applied Research) Track 专为系统论文设立。
 
 ### 🥉 快速发表：KBS (Knowledge-Based Systems) 期刊
 
@@ -83,7 +83,7 @@
 ## 四、投稿策略路线图
 
 ```
-2026.08-09 ── 完成 QDCVR 检索精度的正式评测实验（建评测集 + 跑 baseline）
+2026.08-09 ── 完成 HMRS 检索精度的正式评测实验（建评测集 + 跑 baseline）
 2026.09-10 ── 完成经验系统消融实验 + 写论文初稿
 2026.10-11 ── 内部审稿 + 修改
 2026.11    ── 投递 CIKM 2027 Abstract（CIKM 2026 截稿已过，目标 CIKM 2027）
@@ -99,11 +99,11 @@
 
 同一系统可以有多种叙事角度，选择最利于发表的角度：
 
-### 角度 A（推荐）: 检索方法论 — QDCVR
+### 角度 A（推荐）: 检索方法论 — HMRS
 
 > **"Content-Verified Retrieval for Agent-Driven Knowledge Bases"**
 
-- 核心：QDCVR 的 0-8 内容验证评分机制如何解决 RAG 的向量误召回问题
+- 核心：HMRS 的 0-8 内容验证评分机制如何解决 RAG 的向量误召回问题
 - 实验：对比纯向量检索、BM25+向量融合、RAG-Fusion 等 baseline
 - 适合: CIKM / SIGIR / EMNLP
 

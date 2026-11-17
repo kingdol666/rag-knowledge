@@ -33,6 +33,15 @@
       </div>
     </header>
 
+    <div v-if="pendingSaveRecoveries.length" class="save-recovery-panel" role="status">
+      <p>{{ $t('fs.recoveryNotice') }}</p>
+      <div v-for="entry in pendingSaveRecoveries" :key="entry.id" class="save-recovery-row">
+        <span>{{ entry.filename }} — {{ entry.target }}</span>
+        <a-button size="small" type="primary" :loading="entry.busy" @click="retryParsedSave(entry.id)">{{ $t('fs.retrySave') }}</a-button>
+        <a-button size="small" :disabled="entry.busy" @click="discardParsedSave(entry.id)">{{ $t('fs.discardRecovery') }}</a-button>
+      </div>
+    </div>
+
     <!-- Main content area -->
     <main class="main-content">
       <div class="content-grid">
@@ -642,6 +651,8 @@ import { useFileSystem } from '~/composables/useFileSystem'
 import { useFilePreview } from '~/composables/useFilePreview'
 import { useParseTaskQueue } from '~/composables/useParseTaskQueue'
 import { useFileSystemUpload } from '~/composables/useFileSystemUpload'
+import { createParsedSaveRecoveries } from '~/composables/usePDFParser'
+import type { SaveParsedFilesRequest } from '~/types/pdf-parse'
 import type { TreeNode } from '~/composables/useTreeFileSystem'
 
 const { t } = useI18n()
@@ -664,10 +675,11 @@ const {
   uploadFile,
   uploadFiles,
   downloadFile,
-    saveParsedFiles,
-    findNodeById,
-    batchParseFilesVTStream,
-    treeStoragePath
+  retrySaveParsedFiles,
+  enrichParsedResultsWithDescriptions,
+  findNodeById,
+  batchParseFilesVTStream,
+  treeStoragePath
   } = useFileSystem()
 
 const {
@@ -680,6 +692,60 @@ const {
 } = useFilePreview()
 
 const queue = useParseTaskQueue()
+
+// Requests and bearer receipts remain in this component's volatile closure,
+// never in the reactive queue, browser storage, rendered markup, or logs.
+const retainedSaveRequests = new Map<number, SaveParsedFilesRequest>()
+const pendingSaveRecoveries = ref<Array<{ id: number; filename: string; target: string; busy: boolean }>>([])
+let nextRecoveryId = 0
+let pageActive = true
+
+const retainParsedSave = (request: SaveParsedFilesRequest, target: string) => {
+  if (!pageActive) return
+  const id = ++nextRecoveryId
+  retainedSaveRequests.set(id, request)
+  pendingSaveRecoveries.value.push({ id, filename: request.results[0].filename, target, busy: false })
+}
+
+const discardParsedSave = (id: number) => {
+  retainedSaveRequests.delete(id)
+  pendingSaveRecoveries.value = pendingSaveRecoveries.value.filter(entry => entry.id !== id)
+}
+
+const retryParsedSave = async (id: number) => {
+  const entry = pendingSaveRecoveries.value.find(item => item.id === id)
+  const request = retainedSaveRequests.get(id)
+  if (!entry || !request || entry.busy) return
+  entry.busy = true
+  try {
+    const response = await retrySaveParsedFiles(request)
+    const pending = createParsedSaveRecoveries(request, response)
+    if (response.items[0].success && response.success) {
+      discardParsedSave(id)
+      message.success(t('fs.savedToFolder', { count: response.savedCount }))
+    } else if (pending.length === 1) {
+      if (pageActive && retainedSaveRequests.has(id)) retainedSaveRequests.set(id, pending[0])
+      message.warning(t('fs.recoveryStillIncomplete'))
+    } else {
+      // Invalid, expired or consumed receipt (including server restart): never
+      // drop the token and retry as a fresh upload against a deduped document.
+      discardParsedSave(id)
+      message.error(t('fs.recoveryUnavailable'))
+    }
+    try {
+      await fetchChildren(request.parentId)
+      await handleRefresh()
+    } catch {
+      // Refresh failure does not change the save outcome.
+    }
+  } catch {
+    // A lost response may have consumed the receipt. A further explicit retry
+    // still uses that exact receipt and fails closed if it was consumed.
+    message.error(t('fs.recoveryUnknown'))
+  } finally {
+    entry.busy = false
+  }
+}
 
 // Dialog state
 const showCreateFolderDialog = ref(false)
@@ -777,6 +843,9 @@ onUnmounted(() => {
     refreshTimer = null
   }
   document.removeEventListener('visibilitychange', handleVisibilityChange)
+  pageActive = false
+  retainedSaveRequests.clear()
+  pendingSaveRecoveries.value = []
 })
 
 const handleRefresh = async () => {
@@ -1099,22 +1168,52 @@ const startCustomParse = async () => {
     }
 
     // success/fail counts read directly from finalSummary
-    message.success(t('fs.parseResultMsg', { success: finalSummary.successful, failed: finalSummary.failed }))
+    message.info(t('fs.parseCompleteMsg', { success: finalSummary.successful, failed: finalSummary.failed }))
     queue.markSaving(queueTaskId)
 
     let savedCount = 0
+    let saveOutcomeUnknown = false
+    let saveFailedCount = 0
+    let saveFailureDetails: string[] = []
+    let savedNames: string[] = []
     if (targetNodeId && finalSummary.results?.length > 0) {
       try {
-        const saveResult = await saveParsedFiles(
-          targetNodeId,
-          finalSummary.results as any[],
-          descriptions,
-        )
-        savedCount = saveResult?.savedCount ?? 0
-        if (saveResult.success)
+        const request: SaveParsedFilesRequest = {
+          parentId: targetNodeId,
+          split: true,
+          results: await enrichParsedResultsWithDescriptions(finalSummary.results, descriptions),
+        }
+        // Freeze the JSON representation before sending so retry uses the same
+        // values, including generated descriptions and split options.
+        const original = JSON.parse(JSON.stringify(request)) as SaveParsedFilesRequest
+        const saveResult = await retrySaveParsedFiles(original)
+        const pending = createParsedSaveRecoveries(original, saveResult)
+        for (const recovery of pending) retainParsedSave(recovery, targetNodeName || targetNodeId)
+        savedCount = saveResult.savedCount
+        savedNames = (saveResult.files || []).map((file: any) => `${file.name} (${file.id})`)
+        saveFailedCount = (saveResult.items || []).filter((item: any) => !item.success && finalSummary.results[item.index]?.success).length
+        saveFailureDetails = [
+          t('fs.saveBreakdown', { partial: saveResult.partialCount, existing: saveResult.existingCount }),
+          ...(saveResult.items || [])
+            .filter((item: any) => !item.success)
+            .map((item: any) => `${item.filename}: ${item.error || 'save failed'}${item.createdImages?.length ? `; retained images: ${item.createdImages.map((image: any) => image.path || image).join(', ')}` : ''}`.replaceAll(item.recoveryReceipt || '\0', '[redacted]')),
+        ]
+        if (!saveResult.success && saveFailedCount === 0 && !finalSummary.failed) {
+          saveFailedCount = 1
+          saveFailureDetails = ['Invalid save response; inspect the target folder before retrying']
+        }
+        if (saveFailedCount === 0 && finalSummary.failed === 0) {
           message.success(t('fs.savedToFolder', { count: savedCount }))
-      } catch (saveError) {
-        console.error("Save parsed files error:", saveError)
+        } else if (saveFailedCount === 0) {
+          message.warning(t('fs.savedWithFailures', { saved: savedCount, failed: finalSummary.failed }))
+        } else {
+          message.error(t('fs.savedWithFailures', { saved: savedCount, failed: saveFailedCount }))
+        }
+      } catch {
+        saveOutcomeUnknown = true
+        saveFailedCount = finalSummary.successful
+        saveFailureDetails = [t('fs.saveOutcomeUnknown')]
+        message.error(t('fs.saveOutcomeUnknown'))
       }
       try {
         await fetchChildren(targetNodeId)
@@ -1122,20 +1221,31 @@ const startCustomParse = async () => {
       } catch (refreshError) {
         console.error("Tree refresh error:", refreshError)
       }
+    } else {
+      saveFailedCount = finalSummary.successful || 1
+      saveFailureDetails = ['No target folder or parsed results were available for saving']
+      message.error(t('fs.saveFailed', { error: saveFailureDetails[0] }))
     }
     // Normalize summary to match the Queue result shape.
     // parsedChars: 解析后总字数（成功文件的 markdown 字符数之和）
     const parsedChars = (finalSummary.results || [])
       .filter((r: any) => r?.success || r?.result?.success)
-      .reduce((sum: number, r: any) => sum + (r?.result?.markdown?.length || 0), 0)
+      .reduce((sum: number, r: any) => sum + (r?.markdown?.length || r?.result?.markdown?.length || 0), 0)
     const queueSummary = {
-      success: finalSummary.failed === 0,
+      success: !saveOutcomeUnknown && finalSummary.failed === 0 && saveFailedCount === 0,
       total_files: finalSummary.total || 0,
-      successful_files: finalSummary.successful || 0,
-      failed_files: finalSummary.failed || 0,
+      successful_files: saveOutcomeUnknown ? 0 : Math.max(0, (finalSummary.successful || 0) - saveFailedCount),
+      failed_files: saveOutcomeUnknown ? (finalSummary.failed || 0) : (finalSummary.failed || 0) + saveFailedCount,
       results: finalSummary.results || [],
     }
-    queue.completeTask(queueTaskId, queueSummary, savedCount, parsedChars)
+    queue.completeTask(queueTaskId, queueSummary, saveOutcomeUnknown ? undefined : savedCount, parsedChars)
+    if (saveFailedCount > 0 || finalSummary.failed > 0) {
+      queue.failTask(queueTaskId, [
+        saveOutcomeUnknown ? t('fs.saveOutcomeUnknown') : t('fs.savedWithFailures', { saved: savedCount, failed: saveFailedCount + (finalSummary.failed || 0) }),
+        ...savedNames,
+        ...saveFailureDetails,
+      ].join('\n'))
+    }
   })().catch((error: any) => {
     console.error("Custom parse error:", error)
     message.error(t('fs.parseFailed') + `: ${error.message}`)

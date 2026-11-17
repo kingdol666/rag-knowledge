@@ -28,7 +28,7 @@ ET.register_namespace('', NS)
 INK = '#253745'
 SUB = '#526472'
 STYLE = {
-    'a': {'fill': '#e6f3ec', 'box': '#f4faf7', 'dot': '#1f7a5c', 'label': 'A · QDCVR platform',
+    'a': {'fill': '#e6f3ec', 'box': '#f4faf7', 'dot': '#1f7a5c', 'label': 'A · HMRS platform',
           'route': 'answers with addressable sources'},
     'b': {'fill': '#eef2f6', 'box': '#f7f9fb', 'dot': '#6a7a85', 'label': 'B · Bare agent',
           'route': 'file tools over exported papers'},
@@ -187,7 +187,7 @@ def build_svg(answers, timelines):
     desc.text = (
         'Verbatim answer excerpts, saved tool timelines, and source references for the '
         'shared GAN-downscaling question (R2Q10) from the saved three-mode run over the '
-        '100-paper corpus; all modes used the same agent harness and model. A, the QDCVR '
+        '100-paper corpus; all modes used the same agent harness and model. A, the HMRS '
         'platform, runs one two-stage search and one document read, then quotes the '
         'answer with base, document, and section references, confirmed by a '
         'direct read. B, a bare agent with file tools, globs '

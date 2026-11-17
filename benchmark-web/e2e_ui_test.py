@@ -1,4 +1,4 @@
-"""Browser end-to-end test for the QDCVR benchmark dashboard.
+"""Browser end-to-end test for the HMRS benchmark dashboard.
 
 Drives a real Chromium against the running Nuxt front end (default
 http://127.0.0.1:3001) and the FastAPI backend behind it, exercising what a
@@ -96,7 +96,7 @@ def main() -> int:
     args = parser.parse_args()
 
     print("=" * 78)
-    print(f"QDCVR dashboard — browser end-to-end test  ({args.ui} -> {args.api})")
+    print(f"HMRS dashboard — browser end-to-end test  ({args.ui} -> {args.api})")
     print("=" * 78)
 
     print("\n[0] Seed a known corpus through the API")
@@ -132,7 +132,7 @@ def main() -> int:
         check("KPI shows the seeded document count", doc_kpi == str(len(SEED)),
               f"documents={doc_kpi}")
 
-        status_text = page.locator(".kpi-card.qdcvr .kpi-value").inner_text()
+        status_text = page.locator(".kpi-card.hmrs .kpi-value").inner_text()
         check("backend status reads Up", "Up" in status_text, status_text.strip())
 
         page.click("button.tab:has-text('Benchmark')")

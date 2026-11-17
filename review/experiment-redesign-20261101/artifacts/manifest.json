@@ -1,0 +1,376 @@
+{
+  "name": "multi-domain-complete-docs-20261101",
+  "design": "8 域中英双语·完整文档（整部法律/整回小说/整篇论文/整章官方文档），支持解析入库+书架分组+逐级检索",
+  "corpus_root": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\corpus\\multi-domain-docs-20261101",
+  "docs": [
+    {
+      "path": "law-zh/pipl_full.txt",
+      "domain": "law-zh",
+      "bytes": 27410,
+      "sha256_head": "45db8a130b7432fa"
+    },
+    {
+      "path": "law-zh/dsl_full.txt",
+      "domain": "law-zh",
+      "bytes": 16500,
+      "sha256_head": "82cf1616b1b1bc1f"
+    },
+    {
+      "path": "law-zh/csl_full.txt",
+      "domain": "law-zh",
+      "bytes": 32361,
+      "sha256_head": "2d561abd10f56cfe"
+    },
+    {
+      "path": "gov-zh/gov_work_report_2024.txt",
+      "domain": "gov-zh",
+      "bytes": 51587,
+      "sha256_head": "311146e0b9b7e5a8"
+    },
+    {
+      "path": "gov-zh/14th_five_year_plan.txt",
+      "domain": "gov-zh",
+      "bytes": 192038,
+      "sha256_head": "a9a6576bcb86957c"
+    },
+    {
+      "path": "literature-zh/hongloumeng_hui01.txt",
+      "domain": "literature-zh",
+      "bytes": 21991,
+      "sha256_head": "b94d4e76cf2332aa"
+    },
+    {
+      "path": "literature-zh/hongloumeng_hui03.txt",
+      "domain": "literature-zh",
+      "bytes": 25170,
+      "sha256_head": "b8ed391f46b3659c"
+    },
+    {
+      "path": "literature-zh/hongloumeng_hui05.txt",
+      "domain": "literature-zh",
+      "bytes": 15834,
+      "sha256_head": "154a5a4721e59554"
+    },
+    {
+      "path": "literature-en/pride_and_prejudice_full.txt",
+      "domain": "literature-en",
+      "bytes": 738046,
+      "sha256_head": "813962e6bbcfc364"
+    },
+    {
+      "path": "literature-en/moby_dick_full.txt",
+      "domain": "literature-en",
+      "bytes": 1234646,
+      "sha256_head": "274c381c1d74df0c"
+    },
+    {
+      "path": "history-zh/shiji_xiangyu_benji.txt",
+      "domain": "history-zh",
+      "bytes": 33513,
+      "sha256_head": "6e6417e675d911fc"
+    },
+    {
+      "path": "history-zh/shiji_chanshe_shijia.txt",
+      "domain": "history-zh",
+      "bytes": 11469,
+      "sha256_head": "e4fd1d2a513afe68"
+    },
+    {
+      "path": "science-en/attention_is_all_you_need.pdf",
+      "domain": "science-en",
+      "bytes": 2215244,
+      "sha256_head": "1722de2cb69e7cc3"
+    },
+    {
+      "path": "science-en/bert_pretraining.pdf",
+      "domain": "science-en",
+      "bytes": 775166,
+      "sha256_head": "79eb0af13ab6432f"
+    },
+    {
+      "path": "tech-en/k8s_nodes.md",
+      "domain": "tech-en",
+      "bytes": 14892,
+      "sha256_head": "736cdb8a99621f80"
+    },
+    {
+      "path": "tech-en/k8s_pss.md",
+      "domain": "tech-en",
+      "bytes": 25236,
+      "sha256_head": "468430055152f267"
+    },
+    {
+      "path": "medicine-en/sepsis_biomarkers_review_oa.xml",
+      "domain": "medicine-en",
+      "bytes": 316133,
+      "sha256_head": "fb8905ed3ab87dae"
+    },
+    {
+      "path": "medicine-en/covid_sequelae_review_oa.xml",
+      "domain": "medicine-en",
+      "bytes": 153195,
+      "sha256_head": "f8f13b179a91afed"
+    }
+  ],
+  "gold_questions": [
+    {
+      "id": "L-pipl-1",
+      "domain": "law-zh",
+      "doc": "law-zh/pipl_full.txt",
+      "question": "我在 App 上注册时被强制同意提供通讯录，这种“不得过度收集”的原则写在第几条？",
+      "keywords": [
+        "个人信息保护法",
+        "最小范围"
+      ],
+      "evidence_substr": "处理个人信息应当具有明确、合理的目的",
+      "evidence_hit": true,
+      "doc_bytes": 27410
+    },
+    {
+      "id": "L-pipl-2",
+      "domain": "law-zh",
+      "doc": "law-zh/pipl_full.txt",
+      "question": "个人有权撤回同意吗？撤回之后处理者怎么办？",
+      "keywords": [
+        "撤回同意",
+        "便捷方式"
+      ],
+      "evidence_substr": "基于个人同意处理个人信息的，个人有权撤回其同意",
+      "evidence_hit": true,
+      "doc_bytes": 27410
+    },
+    {
+      "id": "L-dsl-1",
+      "domain": "law-zh",
+      "doc": "law-zh/dsl_full.txt",
+      "question": "数据安全法里“重要数据”的目录由谁来制定？",
+      "keywords": [
+        "重要数据目录",
+        "国家数据安全工作协调机制"
+      ],
+      "evidence_substr": "国家数据安全工作协调机制统筹协调有关部门制定重要数据目录",
+      "evidence_hit": true,
+      "doc_bytes": 16500
+    },
+    {
+      "id": "L-csl-1",
+      "domain": "law-zh",
+      "doc": "law-zh/csl_full.txt",
+      "question": "网络安全等级保护制度的第几条规定的？关键信息基础设施运营者的额外义务有哪些？",
+      "keywords": [
+        "等级保护制度",
+        "关键信息基础设施"
+      ],
+      "evidence_substr": "国家实行网络安全等级保护制度",
+      "evidence_hit": true,
+      "doc_bytes": 32361
+    },
+    {
+      "id": "G-gwr-1",
+      "domain": "gov-zh",
+      "doc": "gov-zh/gov_work_report_2024.txt",
+      "question": "2024 年政府工作报告设定的 GDP 增长目标是多少？",
+      "keywords": [
+        "国内生产总值增长",
+        "5%左右"
+      ],
+      "evidence_substr": "国内生产总值增长5%左右",
+      "evidence_hit": true,
+      "doc_bytes": 51587
+    },
+    {
+      "id": "G-gwr-2",
+      "domain": "gov-zh",
+      "doc": "gov-zh/gov_work_report_2024.txt",
+      "question": "报告里关于“新质生产力”要推进哪些具体产业方向？",
+      "keywords": [
+        "新质生产力"
+      ],
+      "evidence_substr": "大力推进现代化产业体系建设，加快发展新质生产力",
+      "evidence_hit": true,
+      "doc_bytes": 51587
+    },
+    {
+      "id": "G-fyp-1",
+      "domain": "gov-zh",
+      "doc": "gov-zh/14th_five_year_plan.txt",
+      "question": "十四五规划提出的 2035 年人均 GDP 达到什么水平的目标？",
+      "keywords": [
+        "人均国内生产总值达到中等发达国家水平"
+      ],
+      "evidence_substr": "人均国内生产总值达到中等发达国家水平",
+      "evidence_hit": true,
+      "doc_bytes": 192038
+    },
+    {
+      "id": "F-hlm-1",
+      "domain": "literature-zh",
+      "doc": "literature-zh/hongloumeng_hui01.txt",
+      "question": "甄士隐资助贾雨村进京赶考时给了多少银子和衣物？",
+      "keywords": [
+        "五十兩白銀",
+        "兩套冬衣"
+      ],
+      "evidence_substr": "五十兩白銀，并兩套冬衣",
+      "evidence_hit": true,
+      "doc_bytes": 21991
+    },
+    {
+      "id": "F-hlm-2",
+      "domain": "literature-zh",
+      "doc": "literature-zh/hongloumeng_hui03.txt",
+      "question": "林黛玉进贾府时，宝玉送给她什么字（表字）？",
+      "keywords": [
+        "顰顰"
+      ],
+      "evidence_substr": "莫若『顰顰』二字极妙",
+      "evidence_hit": true,
+      "doc_bytes": 25170
+    },
+    {
+      "id": "F-hlm-3",
+      "domain": "literature-zh",
+      "doc": "literature-zh/hongloumeng_hui05.txt",
+      "question": "贾宝玉梦游太虚幻境时喝的茶叫什么名字？",
+      "keywords": [
+        "千紅一窟"
+      ],
+      "evidence_substr": "此茶名曰『千紅一窟』",
+      "evidence_hit": true,
+      "doc_bytes": 15834
+    },
+    {
+      "id": "F-pp-1",
+      "domain": "literature-en",
+      "doc": "literature-en/pride_and_prejudice_full.txt",
+      "question": "What yearly income does Mrs Bennet attribute to the single man at the beginning?",
+      "keywords": [
+        "four or five thousand a year"
+      ],
+      "evidence_substr": "four or five thousand a year",
+      "evidence_hit": true,
+      "doc_bytes": 738046
+    },
+    {
+      "id": "F-md-1",
+      "domain": "literature-en",
+      "doc": "literature-en/moby_dick_full.txt",
+      "question": "What does Ishmael use as his substitute for a pillow at the Spouter-Inn?",
+      "keywords": [
+        "whale line",
+        "harpoon"
+      ],
+      "evidence_substr": "cannon-ball",
+      "evidence_hit": true,
+      "doc_bytes": 1234646
+    },
+    {
+      "id": "H-sj-1",
+      "domain": "history-zh",
+      "doc": "history-zh/shiji_xiangyu_benji.txt",
+      "question": "项羽垓下之围时作的绝命诗首句是什么？",
+      "keywords": [
+        "力拔山兮氣蓋世"
+      ],
+      "evidence_substr": "力拔山兮氣蓋世",
+      "evidence_hit": true,
+      "doc_bytes": 33513
+    },
+    {
+      "id": "H-sj-2",
+      "domain": "history-zh",
+      "doc": "history-zh/shiji_chanshe_shijia.txt",
+      "question": "陈胜说“燕雀安知鸿鹄之志”时他在做什么营生？",
+      "keywords": [
+        "傭耕",
+        "輟耕之壟上"
+      ],
+      "evidence_substr": "陳涉少時，嘗與人傭耕",
+      "evidence_hit": true,
+      "doc_bytes": 11469
+    },
+    {
+      "id": "S-attn-1",
+      "domain": "science-en",
+      "doc": "science-en/attention_is_all_you_need.pdf",
+      "question": "What self-attention mechanism does the Transformer use?",
+      "keywords": [
+        "multi-head self-attention"
+      ],
+      "evidence_substr": "Attention Is All You Need",
+      "evidence_pending": "pdf-parse",
+      "evidence_hit": null,
+      "doc_bytes": 2215244
+    },
+    {
+      "id": "S-bert-1",
+      "domain": "science-en",
+      "doc": "science-en/bert_pretraining.pdf",
+      "question": "What are the two pretraining strategies of BERT?",
+      "keywords": [
+        "masked language model",
+        "next sentence prediction"
+      ],
+      "evidence_substr": "Masked Language Model",
+      "evidence_pending": "pdf-parse",
+      "evidence_hit": null,
+      "doc_bytes": 775166
+    },
+    {
+      "id": "T-k8s-1",
+      "domain": "tech-en",
+      "doc": "tech-en/k8s_nodes.md",
+      "question": "What are the two main components running on a Kubernetes node?",
+      "keywords": [
+        "kubelet",
+        "container runtime"
+      ],
+      "evidence_substr": "container runtime",
+      "evidence_hit": true,
+      "doc_bytes": 14892
+    },
+    {
+      "id": "T-k8s-2",
+      "domain": "tech-en",
+      "doc": "tech-en/k8s_pss.md",
+      "question": "What are the three Pod Security Standards profiles?",
+      "keywords": [
+        "Privileged",
+        "Baseline",
+        "Restricted"
+      ],
+      "evidence_substr": "Baseline",
+      "evidence_hit": true,
+      "doc_bytes": 25236
+    },
+    {
+      "id": "M-sep-1",
+      "domain": "medicine-en",
+      "doc": "medicine-en/sepsis_biomarkers_review_oa.xml",
+      "question": "Which sepsis biomarker does the review highlight as most established for diagnosis?",
+      "keywords": [
+        "procalcitonin",
+        "PCT"
+      ],
+      "evidence_substr": "procalcitonin",
+      "evidence_hit": true,
+      "doc_bytes": 316133
+    },
+    {
+      "id": "M-covid-1",
+      "domain": "medicine-en",
+      "doc": "medicine-en/covid_sequelae_review_oa.xml",
+      "question": "What is the formal term for long-term symptoms after COVID-19?",
+      "keywords": [
+        "post-acute sequelae"
+      ],
+      "evidence_substr": "post-acute sequelae",
+      "evidence_hit": true,
+      "doc_bytes": 153195
+    }
+  ],
+  "external": {
+    "qasper": "external-datasets/qasper/（1585 篇完整 NLP 论文全文 + 5049 问答 + evidence 段落标注；dev 11MB/train 32MB）",
+    "usage": "消融与基线的现成金标源：qasper-dev 抽样 20-40 题（answerable + unanswerable 混合）"
+  }
+}

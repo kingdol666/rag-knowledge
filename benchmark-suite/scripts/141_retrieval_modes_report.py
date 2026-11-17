@@ -17,7 +17,7 @@ sys.path.insert(0, str(SUITE))
 sys.path.insert(0, str(SUITE / "experiments"))
 from experiments.retrieval_modes import QUESTIONS  # noqa: E402
 
-MODE_NAMES = {"A": "A · QDCVR 向量优先", "B": "B · Librarian 目录道", "C": "C · Hybrid 并行"}
+MODE_NAMES = {"A": "A · HMRS 向量优先", "B": "B · Librarian 目录道", "C": "C · Hybrid 并行"}
 MODE_DESC = {
     "A": "宽网向量召回（top_k=30）→ 文档去重 → 重读分段 → 真实 Laya 逐段判决（fail-closed）→ yes 全收",
     "B": "kb_list → 书架标签(L1) → 全量描述(L2) → 元数据信任(L3) → 预算读取(L4) → complete_recall 真实 Laya 判决 → 引擎裁决即终审",

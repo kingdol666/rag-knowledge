@@ -1,0 +1,15 @@
+{
+  "source": "artifacts/e2e_validation/us3-ingest/",
+  "source_file": "crime_punishment.md",
+  "source_chars": 1155203,
+  "replacement_char_count": 0,
+  "split": {"max_chars": 60000, "part_count": 27, "strategy": "structural_fallback", "planner": "deterministic"},
+  "parts_on_disk": 27,
+  "target_kb": {"name": "MD语料-文学-英文", "kb_id": "1c2f042d-4439-4cc2-95dd-b36a5c8daa46", "document_count_after": 461, "document_count_before": 434, "delta": 27},
+  "a3c": "Each part received an A3c content-derived description with part scope, answerable topics, and exclusions; descriptions are stored in the live KB YAML.",
+  "index": {"method": "kb_index_document per part", "reindex_used": false, "live_probe_part_27": {"nonempty": true, "chars": 800, "totalLines": 106}},
+  "graph": {"tool": "kb_graph_document", "part_27_success": true},
+  "dual_channel": {"keyword_hits": 5, "keyword_matched_crime_parts": 5, "vector_hits": 5, "vector_matched_crime_parts": 5},
+  "auth": "Fresh token was obtained before the run; no 401 occurred in the corrected run.",
+  "manual_intervention": "No manual document edits or service intervention during the corrected ingest run; the earlier wrong-KB write was cleaned before the corrected run."
+}

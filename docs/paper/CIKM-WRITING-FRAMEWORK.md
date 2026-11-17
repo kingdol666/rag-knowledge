@@ -58,7 +58,7 @@
 
 \begin{document}
 
-\title{QDCVR: Query-Driven Content-Verified Retrieval\\
+\title{HMRS: Hierarchical Management Retrieval System\\
        for Agentic Knowledge Bases}
 % 注意: 匿名期不写 \titlenote 致谢
 
@@ -91,7 +91,7 @@
 % 正文 9 页分配（含附录）
 % Sec1 引言        1.0
 % Sec2 相关工作    0.8
-% Sec3 方法 QDCVR  2.5  ← 核心
+% Sec3 方法 HMRS  2.5  ← 核心
 % Sec4 经验框架    1.2  ← 核心
 % Sec5 系统实现    0.5
 % Sec6 评测        2.0
@@ -105,7 +105,7 @@
 \section{Related Work}\label{sec:related}
 ...
 
-\section{The QDCVR Methodology}\label{sec:method}
+\section{The HMRS Methodology}\label{sec:method}
 ...
 
 \section{Experience Lifecycle Framework}\label{sec:experience}
@@ -162,11 +162,11 @@ were produced solely by the authors.
 > Existing mitigations either deploy black-box cross-encoder rerankers (uninterpretable, added latency) or rely on LLM self-assessment (FLARE, Self-RAG) that is opaque and costly. **No existing method performs content-level verification directly within the retrieval pipeline in a lightweight, interpretable manner.**
 
 #### ¶4 我们的方案（3-4句）
-> We propose **QDCVR** (Query-Driven Content-Verified Retrieval), whose guiding principle is *"Vectors are fast; content is accurate."* QDCVR decouples *recall* (vector + BM25 fusion) from *relevance adjudication* (independent content scoring). Candidates are read and scored on a 0–8 rubric; the principle **"content score overrides vector score"** ensures that high-similarity but content-irrelevant documents are discarded.
+> We propose **HMRS** (Hierarchical Management Retrieval System), whose guiding principle is *"Vectors are fast; content is accurate."* HMRS decouples *recall* (vector + BM25 fusion) from *relevance adjudication* (independent content scoring). Candidates are read and scored on a 0–8 rubric; the principle **"content score overrides vector score"** ensures that high-similarity but content-irrelevant documents are discarded.
 
 #### ¶5 贡献清单（编号，4条）
 > Our contributions are:
-> - **C1.** We propose QDCVR, a multi-stage retrieval methodology with a 0–8 content-verification scoring rubric and an adaptive query-understanding layer that decouples recall from relevance judgment (§3).
+> - **C1.** We propose HMRS, a multi-stage retrieval methodology with a 0–8 content-verification scoring rubric and an adaptive query-understanding layer that decouples recall from relevance judgment (§3).
 > - **C2.** We introduce an *experience lifecycle framework* with a P0/P1/P2 credibility model and temporal decay — the first structured management of operational knowledge for agentic KBs (§4).
 > - **C3.** We implement an agent-first knowledge-base platform exposing **76 Model Context Protocol (MCP) tools and 14 agent skills**, open-sourced and cross-platform (§5).
 > - **C4.** We conduct a rigorous evaluation on [N] queries demonstrating [X]% precision@5 improvement and [Y]% false-positive reduction over vector-only retrieval (§6).
@@ -183,7 +183,7 @@ were produced solely by the authors.
 DPR [Karpukhin 2020], Contriever [Izacard 2022], BGE-M3 [Chen 2024]. *Gap: optimize recall quality, but do not verify content relevance of recalled docs.*
 
 #### 2.2 Retrieval Verification & Reranking
-Cross-Encoder rerankers [Nogueira 2019], FLARE [Jiang 2023], Self-RAG [Asai 2023], Re2G [Glass 2022]. *Gap: black-box LLM judgment (uninterpretable) or standalone reranker (pipeline complexity). QDCVR embeds verification in-pipeline with interpretable 0–8 scoring.*
+Cross-Encoder rerankers [Nogueira 2019], FLARE [Jiang 2023], Self-RAG [Asai 2023], Re2G [Glass 2022]. *Gap: black-box LLM judgment (uninterpretable) or standalone reranker (pipeline complexity). HMRS embeds verification in-pipeline with interpretable 0–8 scoring.*
 
 #### 2.3 Knowledge Management & Graph-RAG
 GraphRAG [Edge 2024], LightRAG, RAGFlow. *Gap: focus on retrieval+generation, lack structured experience management with credibility tiers.*
@@ -199,17 +199,17 @@ ReAct [Yao 2022], Toolformer [Schick 2023], MCP [Anthropic 2024]. *Gap: we desig
 | Self-RAG | ✓ | LLM | ✗ | ✗ | ✗ | ✓ |
 | GraphRAG | ✓ | ✗ | partial | ✗ | ✗ | ✓ |
 | RAGFlow | ✓ | ✗ | ✓ | ✗ | ✗ | ✓ |
-| **QDCVR (ours)** | **✓** | **✓ 0–8** | **✓** | **✓ E0–E12** | **✓ 91 MCP** | **✓** |
+| **HMRS (ours)** | **✓** | **✓ 0–8** | **✓** | **✓ E0–E12** | **✓ 91 MCP** | **✓** |
 
 ---
 
-### Section 3 — QDCVR Methodology（2.5页）⭐核心
+### Section 3 — HMRS Methodology（2.5页）⭐核心
 
 **这是论文的灵魂，必须写得最扎实。**
 
 #### 3.1 Overview（含 Figure 2 管线总览）
 
-> QDCVR is a seven-stage pipeline (Figure 2): query understanding → smart KB selection → two-stage recall → dedup & threshold → **content verification** → confidence tiering → answer synthesis with blind-spot declaration.
+> HMRS is a seven-stage pipeline (Figure 2): query understanding → smart KB selection → two-stage recall → dedup & threshold → **content verification** → confidence tiering → answer synthesis with blind-spot declaration.
 
 #### 3.2 Stage 0: Adaptive Query Understanding
 
@@ -327,7 +327,7 @@ stale_unverified (>30d, 0 applied) → demote；表格列出规则。
 | BM25+Vec | [.] | [.] | [.] | [.] |
 | Vec+CE-Rerank | [.] | [.] | [.] | [.] |
 | RAG-Fusion | [.] | [.] | [.] | [.] |
-| **QDCVR (ours)** | **[.]** | **[.]** | **[.]** | **[.]** |
+| **HMRS (ours)** | **[.]** | **[.]** | **[.]** | **[.]** |
 
 > 所有数字加 †（显著 p<0.05）。底部注：*Significance tested via paired t-test over 5 runs.*
 
@@ -335,7 +335,7 @@ stale_unverified (>30d, 0 applied) → demote；表格列出规则。
 
 | Variant | P@5 | Δ |
 |---------|:---:|:---:|
-| QDCVR full | [.] | — |
+| HMRS full | [.] | — |
 | − Content Verify | [.] | −[.] |
 | − Query Rewrite | [.] | −[.] |
 | − KB Selection | [.] | −[.] |

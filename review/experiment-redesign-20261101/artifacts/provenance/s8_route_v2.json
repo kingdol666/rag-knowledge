@@ -1,0 +1,634 @@
+{
+  "enriched_route_acc": "72/72",
+  "old_route_acc": "34/66 (52%)",
+  "prev_wrong_n": 28,
+  "recovered": 16,
+  "detail": [
+    {
+      "qid": "G-gwr-1",
+      "route": "gov-zh",
+      "gold_hit": false,
+      "pack_bytes": 0
+    },
+    {
+      "qid": "G-gwr-2",
+      "route": "gov-zh",
+      "gold_hit": false,
+      "pack_bytes": 0
+    },
+    {
+      "qid": "G-fyp-1",
+      "route": "gov-zh",
+      "gold_hit": false,
+      "pack_bytes": 0
+    },
+    {
+      "qid": "F-hlm-3",
+      "route": "literature-zh",
+      "gold_hit": false,
+      "pack_bytes": 0
+    },
+    {
+      "qid": "F-pp-1",
+      "route": "literature-en",
+      "gold_hit": false,
+      "pack_bytes": 3073
+    },
+    {
+      "qid": "F-md-1",
+      "route": "literature-en",
+      "gold_hit": false,
+      "pack_bytes": 40760
+    },
+    {
+      "qid": "H-sj-1",
+      "route": "history-zh",
+      "gold_hit": true,
+      "pack_bytes": 107108
+    },
+    {
+      "qid": "H-sj-2",
+      "route": "history-zh",
+      "gold_hit": true,
+      "pack_bytes": 117887
+    },
+    {
+      "qid": "S-attn-1",
+      "route": "science-en",
+      "gold_hit": true,
+      "pack_bytes": 40231
+    },
+    {
+      "qid": "S-bert-1",
+      "route": "science-en",
+      "gold_hit": false,
+      "pack_bytes": 40260
+    },
+    {
+      "qid": "T-k8s-2",
+      "route": "tech-en",
+      "gold_hit": true,
+      "pack_bytes": 2695
+    },
+    {
+      "qid": "A-literature-en-frankenstein",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 889
+    },
+    {
+      "qid": "A-literature-en-jane_eyre",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 6163
+    },
+    {
+      "qid": "A-literature-en-alice_in_wonderland",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 7953
+    },
+    {
+      "qid": "A-literature-en-sherlock_holmes_adventur",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 13010
+    },
+    {
+      "qid": "A-literature-en-treasure_island",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 5767
+    },
+    {
+      "qid": "A-literature-en-time_machine",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 19154
+    },
+    {
+      "qid": "A-literature-en-great_gatsby",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 10338
+    },
+    {
+      "qid": "A-literature-en-metamorphosis",
+      "route": "literature-en",
+      "gold_hit": false,
+      "pack_bytes": 2497
+    },
+    {
+      "qid": "A-literature-en-war_of_the_worlds",
+      "route": "literature-en",
+      "gold_hit": false,
+      "pack_bytes": 8619
+    },
+    {
+      "qid": "A-literature-en-great_expectations",
+      "route": "literature-en",
+      "gold_hit": false,
+      "pack_bytes": 0
+    },
+    {
+      "qid": "A-literature-en-dorian_gray",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 6294
+    },
+    {
+      "qid": "A-literature-en-odyssey",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 4000
+    },
+    {
+      "qid": "A-literature-en-sense_and_sensibility",
+      "route": "literature-en",
+      "gold_hit": true,
+      "pack_bytes": 9872
+    },
+    {
+      "qid": "A-medicine-en-gut_microbiome_review",
+      "route": "medicine-en",
+      "gold_hit": true,
+      "pack_bytes": 28153
+    },
+    {
+      "qid": "A-medicine-en-obesity_pharmacotherapy_",
+      "route": "medicine-en",
+      "gold_hit": false,
+      "pack_bytes": 2073
+    },
+    {
+      "qid": "A-medicine-en-crispr_gene_editing_revi",
+      "route": "medicine-en",
+      "gold_hit": true,
+      "pack_bytes": 40069
+    },
+    {
+      "qid": "A-medicine-en-tuberculosis_treatment_r",
+      "route": "medicine-en",
+      "gold_hit": false,
+      "pack_bytes": 27552
+    }
+  ],
+  "per_q": [
+    {
+      "qid": "L-pipl-1",
+      "question": "我在 App 上注册时被强制同意提供通讯录，这种“不得过度收集”的原则写在第几条",
+      "route": "law-zh",
+      "correct": true
+    },
+    {
+      "qid": "L-pipl-2",
+      "question": "个人有权撤回同意吗？撤回之后处理者怎么办？",
+      "route": "law-zh",
+      "correct": true
+    },
+    {
+      "qid": "L-dsl-1",
+      "question": "数据安全法里“重要数据”的目录由谁来制定？",
+      "route": "law-zh",
+      "correct": true
+    },
+    {
+      "qid": "L-csl-1",
+      "question": "网络安全等级保护制度的第几条规定的？关键信息基础设施运营者的额外义务有哪些？",
+      "route": "law-zh",
+      "correct": true
+    },
+    {
+      "qid": "G-gwr-1",
+      "question": "2024 年政府工作报告设定的 GDP 增长目标是多少？",
+      "route": "gov-zh",
+      "correct": true
+    },
+    {
+      "qid": "G-gwr-2",
+      "question": "报告里关于“新质生产力”要推进哪些具体产业方向？",
+      "route": "gov-zh",
+      "correct": true
+    },
+    {
+      "qid": "G-fyp-1",
+      "question": "十四五规划提出的 2035 年人均 GDP 达到什么水平的目标？",
+      "route": "gov-zh",
+      "correct": true
+    },
+    {
+      "qid": "F-hlm-1",
+      "question": "甄士隐资助贾雨村进京赶考时给了多少银子和衣物？",
+      "route": "literature-zh",
+      "correct": true
+    },
+    {
+      "qid": "F-hlm-2",
+      "question": "林黛玉进贾府时，宝玉送给她什么字（表字）？",
+      "route": "literature-zh",
+      "correct": true
+    },
+    {
+      "qid": "F-hlm-3",
+      "question": "贾宝玉梦游太虚幻境时喝的茶叫什么名字？",
+      "route": "literature-zh",
+      "correct": true
+    },
+    {
+      "qid": "F-pp-1",
+      "question": "What yearly income does Mrs Bennet attri",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "F-md-1",
+      "question": "What does Ishmael use as his substitute ",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "H-sj-1",
+      "question": "项羽垓下之围时作的绝命诗首句是什么？",
+      "route": "history-zh",
+      "correct": true
+    },
+    {
+      "qid": "H-sj-2",
+      "question": "陈胜说“燕雀安知鸿鹄之志”时他在做什么营生？",
+      "route": "history-zh",
+      "correct": true
+    },
+    {
+      "qid": "S-attn-1",
+      "question": "What self-attention mechanism does the T",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "S-bert-1",
+      "question": "What are the two pretraining strategies ",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "T-k8s-1",
+      "question": "What are the two main components running",
+      "route": "tech-en",
+      "correct": true
+    },
+    {
+      "qid": "T-k8s-2",
+      "question": "What are the three Pod Security Standard",
+      "route": "tech-en",
+      "correct": true
+    },
+    {
+      "qid": "M-sep-1",
+      "question": "Which sepsis biomarker does the review h",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "M-covid-1",
+      "question": "What is the formal term for long-term sy",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-frankenstein",
+      "question": "Which novel in the corpus is Frankenstei",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-jane_eyre",
+      "question": "Which novel in the corpus is Jane Eyre?",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-alice_in_wonderland",
+      "question": "Which novel in the corpus is Alice's Adv",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-sherlock_holmes_adventur",
+      "question": "Which novel in the corpus is The Adventu",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-treasure_island",
+      "question": "Which novel in the corpus is Treasure Is",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-time_machine",
+      "question": "Which novel in the corpus is The Time Ma",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-great_gatsby",
+      "question": "Which novel in the corpus is The Great G",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-metamorphosis",
+      "question": "Which novel in the corpus is Metamorphos",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-war_of_the_worlds",
+      "question": "Which novel in the corpus is The War of ",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-tale_of_two_cities",
+      "question": "Which novel in the corpus is A Tale of T",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-great_expectations",
+      "question": "Which novel in the corpus is Great Expec",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-dorian_gray",
+      "question": "Which novel in the corpus is The Picture",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-huckleberry_finn",
+      "question": "Which novel in the corpus is Adventures ",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-odyssey",
+      "question": "Which novel in the corpus is The Odyssey",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-sense_and_sensibility",
+      "question": "Which novel in the corpus is Sense and S",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-literature-en-anna_karenina",
+      "question": "Which novel in the corpus is Anna Kareni",
+      "route": "literature-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-clip.pdf",
+      "question": "Which paper introduced CLIP (visual mode",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-ddpm.pdf",
+      "question": "Which paper introduced denoising diffusi",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-gan.pdf",
+      "question": "Which paper proposed generative adversar",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-gpt3.pdf",
+      "question": "Which paper showed language models are f",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-instructgpt.pdf",
+      "question": "Which paper trained language models to f",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-llama.pdf",
+      "question": "Which paper introduced LLaMA?",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-resnet.pdf",
+      "question": "Which paper introduced deep residual lea",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-roberta.pdf",
+      "question": "Which paper presented RoBERTa?",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-swin_transformer.pdf",
+      "question": "Which paper introduced the Swin Transfor",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-t5.pdf",
+      "question": "Which paper proposed the text-to-text tr",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-vae.pdf",
+      "question": "Which paper proposed the variational aut",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-science-en-word2vec.pdf",
+      "question": "Which paper proposed efficient word repr",
+      "route": "science-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-diabetes_management_revi",
+      "question": "What does the corpus say about diabetes ",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-cancer_immunotherapy_rev",
+      "question": "Which review in the corpus discusses can",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-alzheimer_biomarkers_rev",
+      "question": "What is known about Alzheimer disease bi",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-cardiovascular_imaging_r",
+      "question": "What does the corpus contain about cardi",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-gut_microbiome_review",
+      "question": "What does the corpus contain about gut m",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-mrna_vaccine_review",
+      "question": "What does the corpus contain about mRNA ",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-obesity_pharmacotherapy_",
+      "question": "What does the corpus contain about obesi",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-telemedicine_outcomes_re",
+      "question": "What does the corpus contain about telem",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-crispr_gene_editing_revi",
+      "question": "Which corpus review covers CRISPR gene e",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-tuberculosis_treatment_r",
+      "question": "What does the corpus contain about tuber",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-malaria_vaccine_review",
+      "question": "What does the corpus contain about malar",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-asthma_biologics_review",
+      "question": "What does the corpus contain about asthm",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-medicine-en-stroke_thrombolysis_revi",
+      "question": "What does the corpus contain about strok",
+      "route": "medicine-en",
+      "correct": true
+    },
+    {
+      "qid": "A-philosophy-en-meditations",
+      "question": "Which philosophy work in the corpus is M",
+      "route": "philosophy-en",
+      "correct": true
+    },
+    {
+      "qid": "A-philosophy-en-republic",
+      "question": "Which philosophy work in the corpus is T",
+      "route": "philosophy-en",
+      "correct": true
+    },
+    {
+      "qid": "A-philosophy-en-the_prince",
+      "question": "Which philosophy work in the corpus is T",
+      "route": "philosophy-en",
+      "correct": true
+    },
+    {
+      "qid": "A-philosophy-en-zarathustra",
+      "question": "Which philosophy work in the corpus is T",
+      "route": "philosophy-en",
+      "correct": true
+    },
+    {
+      "qid": "A-philosophy-en-beyond_good_and_evil",
+      "question": "Which philosophy work in the corpus is B",
+      "route": "philosophy-en",
+      "correct": true
+    },
+    {
+      "qid": "A-philosophy-en-walden",
+      "question": "Which philosophy work in the corpus is W",
+      "route": "philosophy-en",
+      "correct": true
+    },
+    {
+      "qid": "A-philosophy-en-common_sense",
+      "question": "Which philosophy work in the corpus is C",
+      "route": "philosophy-en",
+      "correct": true
+    },
+    {
+      "qid": "A-economics-en-wealth_of_nations",
+      "question": "Which economics classic in the corpus is",
+      "route": "economics-en",
+      "correct": true
+    },
+    {
+      "qid": "A-economics-en-theory_of_the_leisure_cl",
+      "question": "Which economics classic in the corpus is",
+      "route": "economics-en",
+      "correct": true
+    },
+    {
+      "qid": "A-economics-en-on_liberty",
+      "question": "Which economics classic in the corpus is",
+      "route": "economics-en",
+      "correct": true
+    },
+    {
+      "qid": "A-economics-en-malthus_population",
+      "question": "Which economics classic in the corpus is",
+      "route": "economics-en",
+      "correct": true
+    },
+    {
+      "qid": "R1",
+      "question": "意大利面最佳煮制时间是多少分钟？",
+      "route": "literature-en",
+      "correct": null
+    },
+    {
+      "qid": "R2",
+      "question": "量子计算机 Shor 算法的多项式时间分解复杂度是多少？",
+      "route": "science-en",
+      "correct": null
+    },
+    {
+      "qid": "R3",
+      "question": "红军长征在遵义会议之前的行军路线经过了哪些省份？",
+      "route": "history-zh",
+      "correct": null
+    },
+    {
+      "qid": "R4",
+      "question": "川菜回锅肉的正宗做法需要哪几步？",
+      "route": "history-zh",
+      "correct": null
+    }
+  ]
+}

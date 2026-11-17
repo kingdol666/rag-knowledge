@@ -5,8 +5,39 @@
   BatchParsePDFVTOptions,
   BatchParsePDFFileVTItem,
   BatchParsePDFFileVTItemWithDescription,
+  SaveParsedFilesRequest,
   SaveParsedFilesResponse,
 } from '~/types/pdf-parse'
+
+export function createParsedSaveRecoveries(request: SaveParsedFilesRequest, response: SaveParsedFilesResponse): SaveParsedFilesRequest[] {
+  if (!Array.isArray(response?.items) || !Array.isArray(response?.files)
+      || response.items.length !== request.results.length
+      || !Number.isInteger(response.savedCount) || response.savedCount !== response.files.length
+      || !Number.isInteger(response.partialCount) || !Number.isInteger(response.existingCount)
+      || !Array.isArray(response.partialFiles) || response.partialCount !== response.partialFiles.length
+      || !Array.isArray(response.existingFiles) || response.existingCount !== response.existingFiles.length) {
+    throw new Error('Incomplete save response; inspect the target folder before retrying')
+  }
+  const indices = new Set<number>()
+  const pending: SaveParsedFilesRequest[] = []
+  for (const item of response.items) {
+    if (!Number.isInteger(item.index) || item.index < 0 || item.index >= request.results.length || indices.has(item.index)
+        || typeof item.success !== 'boolean' || !Array.isArray(item.files)) {
+      throw new Error('Invalid save response; inspect the target folder before retrying')
+    }
+    indices.add(item.index)
+    if (!item.success && typeof item.recoveryReceipt === 'string' && item.recoveryReceipt) {
+      // Clone the original JSON request, preserving all fields and value order
+      // used by the server's fingerprint. Retry only the receipt-bearing item.
+      const original = JSON.parse(JSON.stringify(request)) as SaveParsedFilesRequest
+      const result = original.results[item.index]
+      result.recoveryReceipt = item.recoveryReceipt
+      original.results = [result]
+      pending.push(original)
+    }
+  }
+  return pending
+}
 
 function normalizeDescription(value?: string | null): string | undefined {
   const text = value?.trim()
@@ -85,33 +116,15 @@ export function usePDFParser() {
     return enrichedResults
   }
 
-  async function saveParsedFiles(
-    parentId: string,
-    results: BatchParsePDFFileVTItem[],
-    customDescriptions: string[] = []
-  ): Promise<SaveParsedFilesResponse> {
-    if (!parentId) {
-      throw new Error('parentId is required')
-    }
-
-    const resultsWithDescription = await enrichParsedResultsWithDescriptions(
-      results,
-      customDescriptions
-    )
-
+  async function postSaveParsedFiles(request: SaveParsedFilesRequest): Promise<SaveParsedFilesResponse> {
     const response = await fetch('/api/parse/save-parsed-files', {
       method: 'POST',
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
         ...authHeaders()
       },
-      // split: true — 解析直存 KB 场景显式启用大文档拆分（>ingestion.large_doc.
-      // max_chars 时拆为 part 文档）；中转/批量管线的保存不带此标志即整篇暂存。
-      body: JSON.stringify({
-        parentId,
-        split: true,
-        results: resultsWithDescription
-      })
+      body: JSON.stringify(request)
     })
 
     if (!response.ok) {
@@ -120,6 +133,22 @@ export function usePDFParser() {
     }
 
     return await response.json() as SaveParsedFilesResponse
+  }
+
+  async function saveParsedFiles(
+    parentId: string,
+    results: BatchParsePDFFileVTItem[],
+    customDescriptions: string[] = []
+  ): Promise<SaveParsedFilesResponse> {
+    if (!parentId) throw new Error('parentId is required')
+    const resultsWithDescription = await enrichParsedResultsWithDescriptions(results, customDescriptions)
+    // Never write request or receipts to browser storage, telemetry, or logs.
+    return postSaveParsedFiles({ parentId, split: true, results: resultsWithDescription })
+  }
+
+  async function retrySaveParsedFiles(request: SaveParsedFilesRequest): Promise<SaveParsedFilesResponse> {
+    if (!request?.parentId || !Array.isArray(request.results)) throw new Error('A retained save request is required')
+    return postSaveParsedFiles(request)
   }
 
   /**
@@ -294,6 +323,7 @@ export function usePDFParser() {
     parseFileVT,
     batchParseFilesVT,
     batchParseFilesVTStream,
-    saveParsedFiles
+    saveParsedFiles,
+    retrySaveParsedFiles
   }
 }

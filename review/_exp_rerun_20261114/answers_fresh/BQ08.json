@@ -1,0 +1,36 @@
+{
+ "qid": "BQ08",
+ "arxiv": "2408.09942",
+ "question": "How does oxygen redox contribute to the capacity of battery cathodes?",
+ "http": 200,
+ "error": "",
+ "wall_s": 143.0,
+ "latency_s": 140.189,
+ "turns": 6,
+ "cost_usd": 0.3455743600000001,
+ "success": true,
+ "answer": "**Conclusion: Oxygen (anionic) redox adds capacity that transition-metal redox alone cannot deliver — lattice O²⁻ donates electrons during charging, compensating for the absence of oxidizable transition metals and pushing cathodes past the transition-metal oxidation limit (\"overcapacity\").** The participating oxygen states are reversible O²⁻ ↔ (O₂)ⁿ⁻ peroxo-type species (or oxygen electron holes), which raises achievable capacity above what cationic redox would predict (Assadi & Hanaor, *Oxygen redox in battery cathodes: A brief overview*, arXiv:2408.09942, 工程与能源 KB; P0 direct evidence — this review is devoted to exactly this question).\n\n**What enables it**\n- Oxygen redox occurs when **orphaned/non-bonding O 2p states are lifted close to the Fermi level**, i.e. when O is coordinated by fewer than three transition metals: Li-/Na-excess layered oxides (e.g. Li₂MnO₃, where Mn stays +4), and ilmenite-type NaTMO₃ where O is under-coordinated by both alkali and TM (2 TM + 2 Na). In conventional LiTMO₂, O 2p sits ~10 eV below the Fermi level and is electrochemically inert (Part 1, §2; Part 2, §4).\n- Extra delithiation capacity is carried by oxygen oxidation, e.g. Li₄Mn₂O₅: Li₄⁺Mn₂³⁺O₅²⁻ → 4Li⁺ + 4e⁻ + Mnₓ⁴⁺Mn₂₋ₓ⁵⁺O₅₋ₓ²⁻Oₓ¹⁻, where **x quantifies the extent of oxygen participation** (Part 1, §3).\n\n**Quantified contribution**\n- Na₂₋ₓRuO₃ (0 < x < 1.5) shows **180 mAh g⁻¹, ≈1.4 electrons per formula unit; the additional ≈0.4 electron capacity is attributed to a reversible oxygen redox mechanism**, and once O redox initiates the voltage spikes from **2.2 V to 3.4 V** (Part 2, §4).\n- O redox is more dominant in **4d transition-metal oxides** (higher TM–O covalency); DFT labile O 2p populations: NaNbO₃ 2.58 e⁻, NaAgO₃ 2.51 e⁻ vs NaVO₃ only 0.17 e⁻ (Part 2, Tables 1–2).\n\n**The price of that extra capacity**\n- Reduced O ions bond to each other and leave the lattice as **O₂ gas** → fire/ignition hazard plus **rapid, permanent capacity fade**, large first-cycle loss, voltage fade, and layered→spinel transformation. Mitigation (e.g. surface fluorination strengthening TM–O bonds) is required if the extra capacity is to be used, with a trade-off between initial capacity and long-term retention (Part 1, §3.1; Part 2, §5).\n- Predicting it computationally requires DFT that correctly places O 2p vs TM d states: integrate O 2p weight within ~2.0–2.5 eV below E_F; plain GGA fails for these strongly correlated oxides — use HF hybrid or GGA+U (Part 1, §3.2).\n\n*Source: KB 8fa4db59 (工程与能源), doc `materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md` (parts 1 & 2). An identical copy exists in KB ce642f28 (Corpus-Chunks800).*",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 2,
+  "kw_total": 2,
+  "kw_list_hit": [
+   "oxygen redox",
+   "cathode"
+  ],
+  "cited": true,
+  "n_markers": 9,
+  "markers_head": [
+   "2408.09942",
+   "§2",
+   "§4",
+   "§3",
+   "§4",
+   "§3.1",
+   "§5",
+   "§3.2"
+  ],
+  "false_abstain": false,
+  "chars": 2662
+ }
+}

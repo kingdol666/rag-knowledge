@@ -1,11 +1,11 @@
 """Build fig1-core: the teaser figure (v2, nature-figure style).
 
 Figure contract:
-  Core conclusion: QDCVR couples autonomous knowledge-base management with
+  Core conclusion: HMRS couples autonomous knowledge-base management with
   librarian-style, layer-by-layer content-verified retrieval through one set
   of base/document/part/section addresses; conventional dense RAG cannot
   offer addressable sources.
-  Archetype: schematic-led composite; hero panel = the QDCVR two loops plus
+  Archetype: schematic-led composite; hero panel = the HMRS two loops plus
   the layered-address stack; the conventional baseline is subordinate gray.
 Run: python paper_demo/figures/submission-20260920/build_fig1_core.py
 All-English enforced; playwright (Chromium) + PyMuPDF; vector PDF with
@@ -111,7 +111,7 @@ def build():
                 aria_labelledby='title desc')
     root.append(node('title', id='title'))
     for t in root.findall('{' + NS + '}title'):
-        t.text = 'QDCVR at a glance'
+        t.text = 'HMRS at a glance'
     desc = node('desc', id='desc')
     desc.text = (
         'Left, subordinate gray: a conventional dense-RAG configuration - fixed '
@@ -119,7 +119,7 @@ def build():
         'context of at most 4,000 characters, single generation; the reader gets '
         'an answer without citations, sources it cannot address, and retrieval '
         'errors that pass through silently; provenance is not logged. Right, '
-        'hero: QDCVR, an agent-executed skill running two loops over one store. '
+        'hero: HMRS, an agent-executed skill running two loops over one store. '
         'Loop one manages the knowledge base autonomously: PDF, parse with '
         'MinerU, route by content, tag, index as parts - every part carries a '
         'layered address (base Computer Science and AI; document '
@@ -144,7 +144,7 @@ def build():
     defs.append(marker)
     root.append(defs)
 
-    g.append(text(20, 26, 'QDCVR at a glance: from raw PDFs to inspectable answers', 21, 600))
+    g.append(text(20, 26, 'HMRS at a glance: from raw PDFs to inspectable answers', 21, 600))
     g.append(text(20, 48, 'One store, two agent loops - content-guided management and '
                   'librarian-style retrieval share the same section addresses', 14.5, fill=SUB))
 
@@ -185,7 +185,7 @@ def build():
                   fill='#f7fbf9', stroke=TEAL, stroke_width=1.6))
     g.append(node('rect', x=RX, y=64, width=RW, height=44, rx=3, fill='#e7f3ec'))
     g.append(icon_library(RX + 12, 72, TEAL))
-    g.append(text(RX + 44, 80, 'QDCVR - agent-executed skill', 16, 700))
+    g.append(text(RX + 44, 80, 'HMRS - agent-executed skill', 16, 700))
     g.append(text(RX + 44, 98, 'manage and retrieve in one loop', 13.5, fill=SUB))
 
     # loop 1 manage

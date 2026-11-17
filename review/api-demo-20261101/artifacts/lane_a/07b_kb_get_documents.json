@@ -1,0 +1,42 @@
+{
+  "tool": "kb_get_documents",
+  "args": {
+    "kb_id": "60c73df6-4c2f-4506-82dd-a3cb8abcc714",
+    "lightweight": true
+  },
+  "seconds": 0.5,
+  "result": {
+    "success": true,
+    "kb_id": "60c73df6-4c2f-4506-82dd-a3cb8abcc714",
+    "view": "docs",
+    "count": 3,
+    "catalog": [
+      {
+        "doc_id": "170d2e45-7e4c-4656-81d4-82ee60a19325",
+        "file_id": "170d2e45-7e4c-4656-81d4-82ee60a19325",
+        "doc_path": "图库演示-20261101-MCP车道\\01_aurora_borealis.md",
+        "name": "01_aurora_borealis.md",
+        "description": "北极光观测要点卡片：太阳风带电粒子成因、100-500公里发光高度、氧原子557.7纳米绿光、氮分子蓝紫光。"
+      },
+      {
+        "doc_id": "ff83c743-f5a0-436f-a518-f5d0e4c4b2b4",
+        "file_id": "ff83c743-f5a0-436f-a518-f5d0e4c4b2b4",
+        "doc_path": "图库演示-20261101-MCP车道\\02_giant_sequoia.md",
+        "name": "02_giant_sequoia.md",
+        "description": "巨杉与谢尔曼将军树卡片：世界体积最大树木、加州内华达山脉、83.8米高、1487立方米、树龄2200-2700年。"
+      },
+      {
+        "doc_id": "9af11dda-de8a-45d3-b164-538f4eed6e49",
+        "file_id": "9af11dda-de8a-45d3-b164-538f4eed6e49",
+        "doc_path": "图库演示-20261101-MCP车道\\03_golden_record.md",
+        "name": "03_golden_record.md",
+        "description": "旅行者金唱片卡片：1977年发射、镀金铜唱片直径30厘米、115张图像、90分钟音乐、55种语言问候。"
+      }
+    ],
+    "total": 3,
+    "page": 1,
+    "page_count": 1,
+    "page_size": 3,
+    "has_more": false
+  }
+}

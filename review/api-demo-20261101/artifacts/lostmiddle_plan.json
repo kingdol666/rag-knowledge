@@ -1,0 +1,40 @@
+{
+  "source_sha256": "8c615a24428838c984c89b3a2f5fd0dbcac96010f8887724ea4dd5df3e90ad90",
+  "parts": [
+    {
+      "part_index": 1,
+      "unit_ids": ["u0001", "u0002", "u0003", "u0004", "u0005", "u0006", "u0007"],
+      "section_range": "Title–§2.3",
+      "boundary_reason": "论文题头、摘要、引言与第 2 节多文档问答实验构成完整论述单元；下一单元 u0008 开启第 3 节键值检索实验，是自然的论点切换点",
+      "description": "【论文】Lost in the Middle: How Language Models Use Long Contexts（arXiv 2307.03172）Part 1/3 · 题头至 §2.3：研究问题、多文档问答实验设计（20 篇维基文档、答案放在不同位置）、GPT-3.5/GPT-4/Claude/MPT-30B/Llama-2 对比，以及「性能在首尾最高、中段显著下降」的 U 形曲线发现。可答：研究动机、多文档 QA 方法与模型清单、位置效应的主要结论。不含：键值检索实验与附录。",
+      "evidence": [
+        "We find that performance can degrade significantly when changing the position of relevant information",
+        "performance is often highest when relevant information occurs at the beginning or end of the input context"
+      ]
+    },
+    {
+      "part_index": 2,
+      "unit_ids": ["u0008", "u0009", "u0010", "u0011", "u0012", "u0013", "u0014", "u0015", "u0016", "u0017", "u0018", "u0019", "u0020", "u0021"],
+      "section_range": "§3–Acknowledgments",
+      "boundary_reason": "第 3 节键值检索、第 4 节位置不稳健归因、第 5 节开放域 QA、第 6 节相关工作与第 7 节结论共同回答「为什么」与「是否更多上下文更好」，是论文论证主体；参考文献开启新的文献列表单元",
+      "description": "【论文】Lost in the Middle（arXiv 2307.03172）Part 2/3 · §3–§7：键值检索实验（合成键值对序列、位置效应）、位置不稳健的三类归因（模型架构、查询感知上下文化 query-aware contextualization、指令微调 instruction fine-tuning）、开放域 QA「更多上下文是否总是更好」、相关工作与结论。可答：KV 检索设置与结果、U 形曲线的成因解释、扩充上下文对开放域 QA 的影响。不含：参考文献条目与附录表格。",
+      "evidence": [
+        "key-value retrieval",
+        "query-aware contextualization",
+        "instruction fine-tuning"
+      ]
+    },
+    {
+      "part_index": 3,
+      "unit_ids": ["u0022", "u0023", "u0024", "u0025", "u0026", "u0027", "u0028", "u0029", "u0030", "u0031", "u0032"],
+      "section_range": "References–Appendix G.3",
+      "boundary_reason": "参考文献与附录 A–G（消歧干扰项、随机干扰项、顺序随机化、GPT-4/Llama-2 性能、token 计数、10/20/30 文档完整结果表）是同质的支撑材料，与正文论述分离",
+      "description": "【论文】Lost in the Middle（arXiv 2307.03172）Part 3/3 · 参考文献与附录 A–G：消歧干扰项实验、随机干扰项、干扰项顺序随机化、GPT-4 与 Llama-2 性能、token 计数统计，以及 10/20/30 篇检索文档下的完整多文档 QA 结果表。可答：附录实验设计与完整结果表数值；不含：正文的论证叙述。",
+      "evidence": [
+        "Random Distractors in Multi-Document QA",
+        "Token Counts",
+        "Full Multi-Document Question Answering Results"
+      ]
+    }
+  ]
+}

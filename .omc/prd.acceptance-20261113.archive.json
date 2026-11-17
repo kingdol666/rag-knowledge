@@ -1,0 +1,57 @@
+{
+ "task": "全功能验收轮（2026-11-13）：杀净栈 → skill Step 0 死栈自启 → 管理/入库/检索/整理/agent-harness 全功能 API+实机测试 → 验收报告",
+ "stories": [
+  {
+   "id": "AC-1",
+   "title": "测试文献与环境准备（新文献查重+金标隔离提取；杀净栈含 spawn 孤儿句柄持有者）",
+   "priority": 1,
+   "passes": true,
+   "acceptanceCriteria": [
+    "TinyBERT PDF（1909.10351，12页50.5K字符）与 Wikipedia QA 条目 MD（16.2K）下载落盘，金标（96.8%/7.5x/9.4x；closed/open-domain）派发前独立提取",
+    "语料查重通过（两文献不在任何评测库）",
+    "三端口全灭（8771/6789/8000 全 000），含 multiprocessing spawn 孤儿句柄持有者清除"
+   ],
+   "evidence": "TinyBERT+WikiQA 金标隔离提取并逐字验证；语料查重过；三端口全灭（2 个 spawn 孤儿击杀，8771 句柄继承形态第三次实锤）"
+  },
+  {
+   "id": "AC-2",
+   "title": "死栈上 skill Step 0 自启 + 管理功能 API 冒烟（F1）+ 双文献入库（F2）+ 三模式检索（F3）",
+   "priority": 2,
+   "passes": true,
+   "acceptanceCriteria": [
+    "ensure_stack 在死栈上自动检测三 False → 拉起 → e2e 向量验证 → STACK-READY，输出落盘",
+    "F1 管理：kb_list/kb_create×2/kb_update 改名卫生/tags 读写/get_documents 全通",
+    "F2 入库：TinyBERT PDF 走 MinerU 链 + wiki_qa.md 直入，均带归纳描述+索引+chunks>=1+向量回查命中",
+    "F3 检索：向量（scoped）、two_stage 关键词通道、跨库 balance_kbs 全局各一次命中验证",
+    "全程 trace 落盘 artifacts/demo-20261113/acceptance/"
+   ],
+   "evidence": "Step 0 死栈自启三 False→三服务拉起→e2e ready:true 零人工干预；F1 管理冒烟全通；F2 TinyBERT 121 chunks 0.654 / wiki_qa 37 chunks 0.651；F3 scoped 0.692/two_stage 0.920/全局 rank#1（reindex 修复后）"
+  },
+  {
+   "id": "AC-3",
+   "title": "整理功能全链（F4）+ agent/chat harness omp 检索与诚实拒答（F5）",
+   "priority": 3,
+   "passes": true,
+   "acceptanceCriteria": [
+    "F4：子库创建→文档移动→KB 改名卫生→tags 平台级读回→reindex 探针→三源一致性，全通且检索不破坏",
+    "F5：omp harness 经 agent/chat 完成 1 道跨库事实题（doc_path+逐字引用）+ 1 道 OOD 域外题诚实拒答",
+    "回答四维判定（正确/溯源/逐字/零编造）全过"
+   ],
+   "evidence": "F4 六步全 PASS（移动后父库递归命中子库路径；三源一致）；F5 omp 两题四维全 PASS（96.8/7.5x/9.4x 金标逐字；OOD NOT_FOUND 零编造）"
+  },
+  {
+   "id": "AC-4",
+   "title": "独立复核 + 验收报告",
+   "priority": 4,
+   "passes": true,
+   "acceptanceCriteria": [
+    "主席独立复核 subagent 产物（金标对齐、chunks 计数、双通道命中、trace 完整性）",
+    "ACCEPTANCE-REPORT-20261113.md 落盘，全部 AC 条目有 verdict 与证据路径",
+    "栈健康收尾状态确认"
+   ],
+   "evidence": "主席独立复核金标对齐+工件 10/10+D3 波及面日志实锤；ACCEPTANCE-REPORT-20261113.md 落盘；栈收尾 53 库健康"
+  }
+ ],
+ "reviewer": "general-purpose agent（对照本 prd 验收标准逐条复核）",
+ "notes": "延续 ralph 纪律：真实执行禁编造、产物只增不改、失败即停如实报告。红线：STACK-NOT-READY 时终止并如实报告。旧 PRD 归档为 prd.r3-20261112.archive.json。"
+}

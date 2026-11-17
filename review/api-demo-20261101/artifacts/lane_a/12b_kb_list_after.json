@@ -1,0 +1,198 @@
+{
+  "tool": "kb_list",
+  "args": {
+    "lightweight": true
+  },
+  "seconds": 0.6,
+  "result": {
+    "success": true,
+    "count": 23,
+    "parent_filter": "all",
+    "catalog": [
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "name": "计算机与人工智能",
+        "description": "Computer science and AI: algorithms, NLP/LLM, vision, robotics perception, data systems, speech, social computing",
+        "doc_count": 131,
+        "path": "计算机与人工智能",
+        "parent_id": null
+      },
+      {
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "name": "自然科学与地球科学",
+        "description": "Physical, chemical, mathematical, space and earth sciences: physics, quantum, climate, astronomy, chemistry, ocean, seismology",
+        "doc_count": 75,
+        "path": "自然科学与地球科学",
+        "parent_id": null
+      },
+      {
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "name": "生命科学与医学",
+        "description": "Life sciences and medicine: clinical knowledge, genomics, medical imaging, immunology, population genetics",
+        "doc_count": 53,
+        "path": "生命科学与医学",
+        "parent_id": null
+      },
+      {
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "name": "工程与能源",
+        "description": "Engineering and energy: power grids, battery and energy materials, control engineering applications",
+        "doc_count": 39,
+        "path": "工程与能源",
+        "parent_id": null
+      },
+      {
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "name": "经济与社会",
+        "description": "Economics and society: growth theory, inequality, infrastructure, finance",
+        "doc_count": 24,
+        "path": "经济与社会",
+        "parent_id": null
+      },
+      {
+        "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+        "name": "aw-industrial",
+        "description": "AgentWorkShop 工业知识库(诊断报告/经验教训/操作规范)",
+        "doc_count": 73,
+        "path": "aw-industrial",
+        "parent_id": null
+      },
+      {
+        "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+        "name": "e2e-demo-0923-022632",
+        "description": "E2E full-stack test KB (2026-09-22): real-doc ingestion, retrieval, experience, persona integration",
+        "doc_count": 3,
+        "path": "e2e-demo-0923-022632",
+        "parent_id": null
+      },
+      {
+        "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+        "name": "soul-e2e-tester-024115",
+        "description": "SOUL 人格 soul-e2e-tester-024115",
+        "doc_count": 4,
+        "path": "soul-e2e-tester-024115",
+        "parent_id": null
+      },
+      {
+        "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+        "name": "Novel-PridePrejudice",
+        "description": "Novel-PridePrejudice 知识库：《Pride and Prejudice》(Jane Austen, Project Gutenberg #1342) 英文小说全文，用于长文本检索测试。领域：文学/古典小说；语言 en。全书按 30000 字符窗口拆为 26 个 part。",
+        "doc_count": 28,
+        "path": "Novel-PridePrejudice",
+        "parent_id": null
+      },
+      {
+        "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+        "name": "AI 基础设施",
+        "description": "AI 基础设施域：承载模型服务链路与检索系统的建设、运维与调优知识。当前覆盖分布式追踪（TraceLens 部署、混合采样策略、span 告警与容量规划）与向量索引（HNSW 参数 M/ef_construction/ef_search、int8 量化、混合检索、分片路由、上线验收清单），可回答可观测性采样与断流排查、向量检索调优与召回率优化问题。",
+        "doc_count": 3,
+        "path": "AI 基础设施",
+        "parent_id": null
+      },
+      {
+        "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+        "name": "e2e-flow-20260926-022340",
+        "description": "E2E flow KB",
+        "doc_count": 1,
+        "path": "e2e-flow-20260926-022340",
+        "parent_id": null
+      },
+      {
+        "kb_id": "363ccb45-7a10-45b9-becb-0a3dbc156687",
+        "name": "soul-e2e-20260926-022340",
+        "description": "E2E soul persona",
+        "doc_count": 0,
+        "path": "soul-e2e-20260926-022340",
+        "parent_id": null
+      },
+      {
+        "kb_id": "b87f4dab-c83b-4a99-abe3-182773fc315a",
+        "name": "aw-industrial-e2e-20260926-022518",
+        "description": "AgentWorkShop 工业知识库(诊断报告/经验教训/操作规范)",
+        "doc_count": 1,
+        "path": "aw-industrial-e2e-20260926-022518",
+        "parent_id": null
+      },
+      {
+        "kb_id": "801c7549-103b-489f-9d7d-4864580d99be",
+        "name": "ZZ跨库复现库",
+        "description": "repro",
+        "doc_count": 1,
+        "path": "ZZ跨库复现库",
+        "parent_id": null
+      },
+      {
+        "kb_id": "a0db9ea9-5e1e-4c38-87ee-65f631335eb6",
+        "name": "ZZ跨库复现库2",
+        "description": "repro",
+        "doc_count": 1,
+        "path": "ZZ跨库复现库2",
+        "parent_id": null
+      },
+      {
+        "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+        "name": "demo-qa-20260927",
+        "description": "Demo QA library: random real-world content (wiki x3 + arXiv PDF)",
+        "doc_count": 5,
+        "path": "demo-qa-20260927",
+        "parent_id": null
+      },
+      {
+        "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+        "name": "soul-demo-qa",
+        "description": "",
+        "doc_count": 4,
+        "path": "soul-demo-qa",
+        "parent_id": null
+      },
+      {
+        "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+        "name": "soul-cs-library",
+        "description": "",
+        "doc_count": 4,
+        "path": "soul-cs-library",
+        "parent_id": null
+      },
+      {
+        "kb_id": "50b6c4be-cccd-494c-90b8-be55566b57bc",
+        "name": "玄鸟演示库-125906",
+        "description": "玄鸟-9 飞控试验报告演示库(全链路实机验收)",
+        "doc_count": 3,
+        "path": "玄鸟演示库-125906",
+        "parent_id": null
+      },
+      {
+        "kb_id": "2222261d-4bdc-4e75-b6f8-d810b9f9fee9",
+        "name": "引线键合-扎线工艺",
+        "description": "半导体封装引线键合（扎线）工艺域知识库：收录产线工艺参数调优经验、输入-响应实测传递证据、诊断报告与审计缺口记录。覆盖超声功率/键合压力/送线速度/焊头温度/线夹张力五参数及键合拉力、焊球直径、线弧高度响应指标。当前产线：扎线产线-mv62fqfo（line_id=ln-ea201ded）。语言：中文。",
+        "doc_count": 0,
+        "path": "引线键合-扎线工艺",
+        "parent_id": null
+      },
+      {
+        "kb_id": "ce642f28-e157-48af-b669-49862cd73b23",
+        "name": "Corpus-Chunks800",
+        "description": "DeepRead baseline reproduction index",
+        "doc_count": 0,
+        "path": "Corpus-Chunks800",
+        "parent_id": null
+      },
+      {
+        "kb_id": "f59cba1c-8dbb-431c-8aa6-eaa69a57d65d",
+        "name": "ralph-acc-kb-ralph20261029",
+        "description": "ralph 验收临时库",
+        "doc_count": 1,
+        "path": "ralph-acc-kb-ralph20261029",
+        "parent_id": null
+      },
+      {
+        "kb_id": "84e73245-8e93-4e16-86ae-93d7fbf8dce7",
+        "name": "final-acceptance-standalone",
+        "description": "�������ն������Կ�",
+        "doc_count": 0,
+        "path": "final-acceptance-standalone",
+        "parent_id": null
+      }
+    ]
+  }
+}

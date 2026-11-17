@@ -1,0 +1,197 @@
+[inv] 计算机与人工智能: 43
+[inv] 自然科学与地球科学: 44
+[inv] 生命科学与医学: 0
+[inv] 工程与能源: 0
+[inv] 经济与社会: 24
+[inv] pdfs=100 libs_docs=111
+[001/100] MISS agriculture            1311.6857
+[002/100] MISS agriculture            2508.05896
+[003/100] HIT  artificial-intelligence 1706.03762
+[004/100] MISS artificial-intelligence 1706.05261
+[005/100] MISS artificial-intelligence 2303.14061
+[006/100] MISS artificial-intelligence 2412.06333
+[007/100] MISS artificial-intelligence 2504.16021
+[008/100] MISS artificial-intelligence 2510.13343
+[009/100] MISS astronomy              1105.1887
+[010/100] MISS astronomy              1207.3189
+[011/100] MISS astronomy              1210.0979
+[012/100] MISS astronomy              2304.12442
+[013/100] MISS chemistry              1911.02792
+[014/100] MISS chemistry              2011.07200
+[015/100] MISS chemistry              2109.05887
+[016/100] MISS chemistry              physics-0105075
+[017/100] MISS climate-science        1503.07557
+[018/100] MISS climate-science        1805.00397
+[019/100] HIT  climate-science        2007.10574
+[020/100] MISS climate-science        2012.10385
+[021/100] HIT  climate-science        2409.09639
+[022/100] MISS climate-science        2409.13934
+[023/100] MISS clinical-medicine      1809.08199
+[024/100] MISS clinical-medicine      1904.11280
+[025/100] MISS clinical-medicine      1909.03801
+[026/100] MISS clinical-medicine      2110.08918
+[027/100] MISS clinical-medicine      2201.03675
+[028/100] MISS clinical-medicine      2212.13138
+[029/100] HIT  databases              1706.06697
+[030/100] MISS databases              2005.03328
+[031/100] MISS databases              2009.10669
+[032/100] MISS databases              2102.02440
+[033/100] MISS economics              1512.08067
+[034/100] MISS economics              1609.00415
+[035/100] MISS economics              1807.09475
+[036/100] HIT  economics              1901.03951
+[037/100] MISS economics              1911.06206
+[038/100] HIT  economics              2011.14424
+[039/100] MISS finance                1412.5558
+[040/100] MISS finance                1909.07748
+[041/100] MISS genomics               1602.01876
+[042/100] MISS genomics               2110.07787
+[043/100] MISS genomics               2301.08436
+[044/100] MISS genomics               2401.06823
+[045/100] MISS genomics               2508.18304
+[046/100] MISS genomics               2602.10156
+[047/100] MISS gravitational-physics  0706.3294
+[048/100] MISS gravitational-physics  gr-qc-9805045
+[049/100] MISS immunology             2604.01385
+[050/100] MISS immunology             q-bio-0408016
+[051/100] HIT  large-language-models  2005.14165
+[052/100] MISS large-language-models  2312.10793
+[053/100] MISS large-language-models  2402.11690
+[054/100] HIT  large-language-models  2402.12317
+[055/100] MISS large-language-models  2411.18583
+[056/100] MISS large-language-models  2502.00306
+[057/100] MISS materials              1606.00335
+[058/100] MISS materials              1712.01369
+[059/100] MISS materials              2211.04977
+[060/100] MISS materials              2408.09942
+[061/100] MISS mathematics            1405.4980
+[062/100] MISS mathematics            1810.09292
+[063/100] MISS mathematics            2211.12700
+[064/100] MISS mathematics            2402.07064
+[065/100] MISS medical-imaging        2306.01022
+[066/100] MISS medical-imaging        2412.15058
+[067/100] MISS neuroscience           1301.6357
+[068/100] MISS neuroscience           1404.4184
+[069/100] MISS neuroscience           1906.10015
+[070/100] MISS neuroscience           2001.10696
+[071/100] MISS nlp                    1802.09426
+[072/100] MISS nlp                    1810.04805
+[073/100] MISS nlp                    2110.07844
+[074/100] MISS nlp                    2310.10981
+[075/100] MISS nlp                    2503.21676
+[076/100] MISS nlp                    2608.05850
+[077/100] MISS oceanography           1104.2730
+[078/100] MISS oceanography           physics-0703220
+[079/100] MISS power-systems          2207.08146
+[080/100] MISS power-systems          2607.03098
+[081/100] MISS quantum-physics        1311.2485
+[082/100] MISS quantum-physics        1610.04013
+[083/100] MISS quantum-physics        1801.00862
+[084/100] HIT  quantum-physics        2201.00752
+[085/100] HIT  quantum-physics        2303.00445
+[086/100] MISS quantum-physics        2311.00487
+[087/100] MISS robotics               1709.02924
+[088/100] MISS robotics               1809.03210
+[089/100] MISS robotics               2410.10669
+[090/100] MISS robotics               2509.14191
+[091/100] MISS seismology             1308.1846
+[092/100] MISS seismology             2606.10843
+[093/100] MISS social-networks        1001.3181
+[094/100] MISS social-networks        2203.15752
+[095/100] MISS speech                 1811.04224
+[096/100] MISS speech                 2109.14357
+[097/100] MISS speech                 2209.15032
+[098/100] MISS speech                 2509.05359
+[099/100] MISS statistics             1506.03880
+[100/100] HIT  statistics             2604.22320
+
+PROBE SUMMARY: hit=11/100 miss=89
+  MISS agriculture 1311.6857 agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.pdf
+  MISS agriculture 2508.05896 agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz.pdf
+  MISS artificial-intelligence 1706.05261 artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.pdf
+  MISS artificial-intelligence 2303.14061 artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult.pdf
+  MISS artificial-intelligence 2412.06333 artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions.pdf
+  MISS artificial-intelligence 2504.16021 artificial-intelligence__2504.16021__navigating-the-state-of-cognitive-flow-conte.pdf
+  MISS artificial-intelligence 2510.13343 artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep.pdf
+  MISS astronomy 1105.1887 astronomy__1105.1887__the-corot-exoplanet-program-status-results.pdf
+  MISS astronomy 1207.3189 astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.pdf
+  MISS astronomy 1210.0979 astronomy__1210.0979__the-methanol-multibeam-survey.pdf
+  MISS astronomy 2304.12442 astronomy__2304.12442__enabling-exoplanet-demographics-studies-with.pdf
+  MISS chemistry 1911.02792 chemistry__1911.02792__machine-learning-for-molecular-simulation.pdf
+  MISS chemistry 2011.07200 chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.pdf
+  MISS chemistry 2109.05887 chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.pdf
+  MISS chemistry physics-0105075 chemistry__physics-0105075__theory-of-laser-catalysis-with-pulses.pdf
+  MISS climate-science 1503.07557 climate-science__1503.07557__precipitation-extremes-under-climate-change.pdf
+  MISS climate-science 1805.00397 climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.pdf
+  MISS climate-science 2012.10385 climate-science__2012.10385__large-scale-features-of-southwest-monsoon-du.pdf
+  MISS climate-science 2409.13934 climate-science__2409.13934__on-the-extrapolation-of-generative-adversari.pdf
+  MISS clinical-medicine 1809.08199 clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.pdf
+  MISS clinical-medicine 1904.11280 clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.pdf
+  MISS clinical-medicine 1909.03801 clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.pdf
+  MISS clinical-medicine 2110.08918 clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.pdf
+  MISS clinical-medicine 2201.03675 clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon.pdf
+  MISS clinical-medicine 2212.13138 clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.pdf
+  MISS databases 2005.03328 databases__2005.03328__bitvector-aware-query-optimization-for-decis.pdf
+  MISS databases 2009.10669 databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.pdf
+  MISS databases 2102.02440 databases__2102.02440__online-sketch-based-query-optimization.pdf
+  MISS economics 1512.08067 economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.pdf
+  MISS economics 1609.00415 economics__1609.00415__does-infrastructure-investment-lead-to-econo.pdf
+  MISS economics 1807.09475 economics__1807.09475__cap-and-monetary-policy.pdf
+  MISS economics 1911.06206 economics__1911.06206__bayesian-state-space-modeling-for-analyzing.pdf
+  MISS finance 1412.5558 finance__1412.5558__backtest-of-trading-systems-on-candle-charts.pdf
+  MISS finance 1909.07748 finance__1909.07748__stock-market-microstructure-inference-via-mu.pdf
+  MISS genomics 1602.01876 genomics__1602.01876__primer-on-the-gene-ontology.pdf
+  MISS genomics 2110.07787 genomics__2110.07787__analysis-and-visualization-of-spatial-transc.pdf
+  MISS genomics 2301.08436 genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.pdf
+  MISS genomics 2401.06823 genomics__2401.06823__interpretable-deep-learning-in-single-cell-o.pdf
+  MISS genomics 2508.18304 genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m.pdf
+  MISS genomics 2602.10156 genomics__2602.10156__strand-sequence-conditioned-transport-for-si.pdf
+  MISS gravitational-physics 0706.3294 gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.pdf
+  MISS gravitational-physics gr-qc-9805045 gravitational-physics__gr-qc-9805045__disturbing-the-black-hole.pdf
+  MISS immunology 2604.01385 immunology__2604.01385__strategies-for-tumor-elimination-and-control.pdf
+  MISS immunology q-bio-0408016 immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.pdf
+  MISS large-language-models 2312.10793 large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.pdf
+  MISS large-language-models 2402.11690 large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.pdf
+  MISS large-language-models 2411.18583 large-language-models__2411.18583__automated-literature-review-using-nlp-techni.pdf
+  MISS large-language-models 2502.00306 large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference.pdf
+  MISS materials 1606.00335 materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs.pdf
+  MISS materials 1712.01369 materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar.pdf
+  MISS materials 2211.04977 materials__2211.04977__design-of-battery-materials-via-defects-and.pdf
+  MISS materials 2408.09942 materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.pdf
+  MISS mathematics 1405.4980 mathematics__1405.4980__convex-optimization-algorithms-and-complexit.pdf
+  MISS mathematics 1810.09292 mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.pdf
+  MISS mathematics 2211.12700 mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.pdf
+  MISS mathematics 2402.07064 mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and.pdf
+  MISS medical-imaging 2306.01022 medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.pdf
+  MISS medical-imaging 2412.15058 medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio.pdf
+  MISS neuroscience 1301.6357 neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.pdf
+  MISS neuroscience 1404.4184 neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.pdf
+  MISS neuroscience 1906.10015 neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.pdf
+  MISS neuroscience 2001.10696 neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.pdf
+  MISS nlp 1802.09426 nlp__1802.09426__tone-biased-mmr-text-summarization.pdf
+  MISS nlp 1810.04805 nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.pdf
+  MISS nlp 2110.07844 nlp__2110.07844__modeling-endorsement-for-multi-document-abst.pdf
+  MISS nlp 2310.10981 nlp__2310.10981__instructive-dialogue-summarization-with-quer.pdf
+  MISS nlp 2503.21676 nlp__2503.21676__how-do-language-models-learn-facts-dynamics.pdf
+  MISS nlp 2608.05850 nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.pdf
+  MISS oceanography 1104.2730 oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.pdf
+  MISS oceanography physics-0703220 oceanography__physics-0703220__scientific-reticence-and-sea-level-rise.pdf
+  MISS power-systems 2207.08146 power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.pdf
+  MISS power-systems 2607.03098 power-systems__2607.03098__integrating-power-electronics-based-energy-s.pdf
+  MISS quantum-physics 1311.2485 quantum-physics__1311.2485__continuous-time-quantum-error-correction.pdf
+  MISS quantum-physics 1610.04013 quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.pdf
+  MISS quantum-physics 1801.00862 quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.pdf
+  MISS quantum-physics 2311.00487 quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e.pdf
+  MISS robotics 1709.02924 robotics__1709.02924__robust-object-manipulation-for-tactile-based.pdf
+  MISS robotics 1809.03210 robotics__1809.03210__intelligent-flat-and-textureless-object-mani.pdf
+  MISS robotics 2410.10669 robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.pdf
+  MISS robotics 2509.14191 robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.pdf
+  MISS seismology 1308.1846 seismology__1308.1846__developing-and-testing-the-automated-post-ev.pdf
+  MISS seismology 2606.10843 seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p.pdf
+  MISS social-networks 1001.3181 social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi.pdf
+  MISS social-networks 2203.15752 social-networks__2203.15752__information-consumption-and-boundary-spannin.pdf
+  MISS speech 1811.04224 speech__1811.04224__reinforcement-learning-based-speech-enhancem.pdf
+  MISS speech 2109.14357 speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.pdf
+  MISS speech 2209.15032 speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.pdf
+  MISS speech 2509.05359 speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre.pdf
+  MISS statistics 1506.03880 statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.pdf

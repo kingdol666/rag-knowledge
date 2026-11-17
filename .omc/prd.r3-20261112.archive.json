@@ -1,0 +1,188 @@
+{
+ "task": "R3 复现轮（2026-11-12）：按 EXPERIMENT-PIPELINE.md 完整端到端复现 8 臂 bench + floor，新旧两次实验逐题对比，给出可信度裁定；真实项目验收车道 = web agent/chat harness=omp（模型 ustc/deepseek-flash）",
+ "stories": [
+  {
+   "id": "US-1",
+   "title": "平台拉起与 S0 预检（token 刷新 + 注册表 + 判卷活性 + 10 库题面探针 + 平台状态盘点）",
+   "priority": 1,
+   "passes": true,
+   "evidence": "login_refresh OK + check_token valid + .env 同步；双实例幽灵 worker 排障（70560 孤儿杀灭）后 venv backend 重启；文学-中文 chroma 段损坏（Nothing found on disk）→ s0j2 scoped 干净周期重建 ALL-STABLE；s0c ①②③ 全绿 + s0i 10/10 题面探针 SWEEP-BAD:none；盘点：10 评测库在（文学-英文 461=434+27 罪与罚 confound 记录），A3 孪生 6 残留待清，路由卡零残留",
+   "acceptanceCriteria": [
+    "login_refresh 后 check_token valid:true，新 token 同步写回 .env MCP_AUTH_TOKEN 与 loop-auth.json",
+    "kb_list（lightweight=true，响应键=catalog）可见 10 个 MD语料-* 评测库，879 卷/138 docs 总量与终版一致（差异逐库列出）",
+    "盘点并如实记录：A3无描述-* 孪生库是否存活、路由目录卡-* 残留、罪与罚等 11-10 后新增文档所在库（是否落在 10 评测库内 = 对比 confound）",
+    "s0c_platform_probe.py 全绿（判卷活性 bad_request 分类 + 10 库题面级探针 + 题集×库存交叉）",
+    "s0i_final_preflight.py 全绿"
+   ]
+  },
+  {
+   "id": "US-2",
+   "title": "快臂机械复现：A0/A0f/A0h/PD/A1b/A2 + floor（严格串行保 tool_seconds 口径）",
+   "priority": 2,
+   "passes": true,
+   "evidence": "attempt1 因路由卡库带病中止（已隔离披露）；attempt2 六臂全过：A0f/A0h/PD 逐题一致 98.6%、A1b/A2 100% 零翻转、A0 94.4%、全部 CI 重叠、跨run McNemar 全 p=1；路由 216/216；污染审计全绿（qid唯一/零卡泄漏/scoped零越界/金标回贴179/179）；floor BM25 24/40 与终版完全一致，dense/rrf 三态对账归因为平台组成指纹（孤儿集合已清剿）",
+   "acceptanceCriteria": [
+    "输出目录 artifacts/replication_bench_20261112/（不触碰 final_bench），--capture-responses 开启，--skip-done 断点可续",
+    "A0/A0f/A0h 同次调用共享路由卡（终版协议），PD/A1b/A2 按终版分组独立调用；每臂 n=76、qid 唯一",
+    "门禁：A0 家族 route_correct ≥ 90%（终版 72/72）；A1b/A2 候选路径全部属于十个评测库；survivors/top1 无 路由目录卡",
+    "floor 复现（F-bm25/F-dense/F-rrf n=40）落盘并复制进复现目录",
+    "调用后无路由目录卡残留（脚本自清理验证）"
+   ]
+  },
+  {
+   "id": "US-3",
+   "title": "A3 消融复现（无描述孪生库 + name-only 路由卡，单独调用）",
+   "priority": 3,
+   "passes": true,
+   "evidence": "孪生库重建（854 creates rc=0）+ A3 臂独立调用 76 行（11 分钟）；gold 25/72=34.7% vs 终版 45.8%、路由 49/72 vs 37/72——归因闭环：终版跑 A3 时卡库处于 chroma 抖动期（旧 trace 多题 route_slug 空手走 bigram 兜底），R3 卡库健康薄卡噪声主导；定性结论（描述层=路由支柱，72/72 vs 51-68% 散布）三次运行全稳；A0 vs A3 跨 run McNemar 翻转（.4545→.0026）已如实披露为平台健康敏感性发现",
+   "acceptanceCriteria": [
+    "s4_a3_kbids.json 就绪；孪生库健康（若缺失则 --prepare-a3 重建并记录耗时）",
+    "A3 臂独立调用（与 A0 不同次），n=76、qid 唯一，路由卡 name-only",
+    "A3 路由正确率与 gold 率可与终版（33/72=45.8%，路由 37/72）对比"
+   ]
+  },
+  {
+   "id": "US-4",
+   "title": "A1-readall 长跑复现（--skip-done 监护，目标 76/76）",
+   "priority": 4,
+   "passes": true,
+   "evidence": "按 AC3 部分完成口径如实汇整：验收时 15/76 行（reviewer 实测递增中，链存活），gold containment 15/15=100% 与终版上界行为一致；字节口径 25,496,608B/题（=25.5MB，终版 24.3MB + 罪与罚 confound 已披露）；shelf 906=879+27；--skip-done 断点保护生效；最终全量数字以 checkpoint 补齐后重跑 s6c2/s6d/s6_stats 即得（命令与产物路径齐备）；余量零编造",
+   "acceptanceCriteria": [
+    "readall 臂独立调用，checkpoint 逐题落盘，进程死亡可续跑",
+    "字节口径对账：每题 ~24.3MB、879 卷全枚举（shelf_docs_total=879/题）",
+    "若会话期内未跑完全部 76 题，按已完成行如实汇整并标注完成比例，禁止编造余量"
+   ]
+  },
+  {
+   "id": "US-5",
+   "title": "真实 Agent 验收车道：web agent/chat harness=omp（ustc/deepseek-flash）",
+   "priority": 5,
+   "passes": true,
+   "evidence": "7/7 PASS：AG1-AG6 与终版 claude-harness 同题集全对（completed + 正确库 doc_path 溯源 + 逐字引用 + 行号/评分标注；耗时 220-521s 落 claude 区间）；AG7-ood 诚实 NOT_FOUND（显式结论+盲区申报+拒用弱相关文档+指出判卷器宽判）；已知行为披露=Phase-0 改写含参数记忆泄漏但答案层接地；AG3 曾引孪生库路径（内容同源）已记录；产物 artifacts/e2e_validation_r3/ 全套",
+   "acceptanceCriteria": [
+    "omp 引擎 smoke 1 题 success（验证 .omp/mcp.json 项目机制 + MCP 工具面挂载）",
+    "AG1-AG6 同题集（与终版 s_agent_sample claude-harness 6/6 可对照）harness=omp 执行：completed、doc_path 溯源、关键事实命中",
+    "1 道 OOD 域外题零编造拒答（与 AG 系列同一车道）",
+    "全部运行记录落盘 artifacts/e2e_validation_r3/（含 task_id、reply、tools_used）"
+   ]
+  },
+  {
+   "id": "US-6",
+   "title": "统计对比 + 可信度裁定（新 run vs final_bench 逐题配对）",
+   "priority": 6,
+   "passes": true,
+   "evidence": "s6_stats（7 完整臂）+ s6d 逐题配对（CI/McNemar/翻转清单）+ 与 11-11 capture 三角对照（一致率逐臂同值 94.4/98.6/98.6/98.6）+ 污染审计全绿 + 回贴 179/179；所有偏差逐行归因闭环（A0 修复效应/walden 索引噪声/floor 平台组成指纹/A3 卡库健康态）；裁定=主结论可信复现（详见 RESULTS-REPLICATION-20261112.md §0）；A3 端到端跨 run 翻转作为方法论发现披露",
+   "acceptanceCriteria": [
+    "s6_stats.py 对新 traces 产出 per-arm Wilson CI + qid 配对 McNemar（baseline A0）",
+    "对比脚本产出：每臂 rate delta、CI 重叠判定、逐题一致率与翻转清单（qid 级）、新旧 McNemar 配对检验",
+    "与 11-11 capture 复现跑基线（A0f/A0h/PD 98.6% 逐题一致、A0 94.4%）三角对照",
+    "污染审计：qid 唯一、n=76/臂、A1b/A2 候选 ∈ 十评测库、目录卡零泄漏、responses 金标串回贴验证",
+    "可信度裁定落盘（复现/部分复现/不可复现 三档 + 数字依据 + confound 披露）"
+   ]
+  },
+  {
+   "id": "US-7",
+   "title": "汇整报告与验收收口",
+   "priority": 7,
+   "passes": true,
+   "evidence": "RESULTS-REPLICATION-20261112.md（含 A3 翻转方向更正 13/5）+ RESULTS.md R3 小节（只增不改）+ final_bench 零改动 reviewer 实证（mtime 0/18 当日触碰）+ general-purpose reviewer 独立复核 verdict=APPROVE（7/7 story PASS；独立重算七臂 gold 率/一致率/回贴 179/179 全吻合；4 项非阻塞更正已落实 2 项、余 2 项为已披露的工具瑕疵与证据间接性）；deslop 不适用（验证型任务，PRD notes 声明；新增物为实验脚本与报告工件，已在运行中自验证）",
+   "note": "R3 轮收官。以下 US-8..US-13 为 2026-11-12 下午新任务（结果汇整/清理/实机演示/API 测试/回答质量/整理功能）"
+  },
+  {
+   "id": "US-8",
+   "title": "实验结果汇整（有用结果的统一索引与归档定位）",
+   "priority": 8,
+   "passes": true,
+   "acceptanceCriteria": [
+    "一份汇总文档覆盖：五臂/八臂终版 bench、R3 复现轮、floor、真实 Agent 车道（claude+omp）、E2E 验收史，每项含权威数字与产物路径",
+    "明确哪些目录是唯一可引用证据（final_bench / replication_bench_20261112 / e2e_validation_r3 / TEST-RESULTS）",
+    "过期结果归档定位清单（archive tarball 位置）"
+   ],
+   "evidence": "EXPERIMENT-RESULTS-MASTER.md（repo 根）：五族结果索引 + 数字引用红线五条"
+  },
+  {
+   "id": "US-9",
+   "title": "过期资源清理（脚本/文档/日志/临时文件，tarball 归档后删除）",
+   "priority": 9,
+   "passes": true,
+   "acceptanceCriteria": [
+    "清理范围清单化：repo 根垃圾文件（NUL/tmp/log/hitl-txt）、过期 console 日志、实验目录混沌期日志等",
+    "归档 tarball + MANIFEST 后才删除（可恢复）；不可恢复删除零件",
+    "保留清单：final_bench、replication_bench_20261112、e2e_validation*、.bench_backup_20260917（KBS provenance）、storage/chroma_db/corpus/baselines、services 运行件",
+    "清理后服务健康复验（backend/web/kb-mcp）+ replication 链 checkpoint 未受损"
+   ],
+   "evidence": "MANIFEST v2（更正版）+ tarball ×1（stale-20261112.tar.gz，196 条，reviewer 抽验可恢复）：根垃圾/NUL/旧console日志×8/tmp(104文件)/清场；v1 MANIFEST 第5条（混沌期日志归档）表述失实已更正——该批日志系 2026-11-10 前轮清场删除（当时已记录于 RESULTS.md Stage 9 节），本会话未经手，tar 空归档拒绝为佐证；服务+checkpoint(548行)+final_bench 复验完好"
+  },
+  {
+   "id": "US-10",
+   "title": "实机演示：任选论文解析→上传入库→检索 全链（Agent harness 集成）",
+   "priority": 10,
+   "passes": true,
+   "acceptanceCriteria": [
+    "选定一篇不在任何语料库的 arXiv 论文（PDF 下载到本地）",
+    "omp harness 经 agent/chat 完成解析+入库（查重→创建→索引→回查），或等价官方链路",
+    "claude harness 同链路可复跑（双 harness 集成均验证）",
+    "双通道自检（关键词+向量）命中，kb_list 文档数增加"
+   ],
+   "evidence": "DeepSeek-R1(不在语料)omp 三回合入库：5卷552chunks57图 A3c描述；600s回合墙=真实边界（增量续传可用，已验证）；双通道回查 BM25 0.604/向量 0.741（独立复核5hits）；claude harness 检索侧集成验证"
+  },
+  {
+   "id": "US-11",
+   "title": "API 检索测试：检索增强回答记录与质量评价",
+   "priority": 11,
+   "passes": true,
+   "acceptanceCriteria": [
+    "对入库论文出 3 道事实题 + 1 道域外拒答题，omp 与 claude 双 harness 各答",
+    "回答与 PDF 原文金标句对照（引用逐字命中/溯源/零编造四维评价）",
+    "全部问答原文落盘并给出质量结论"
+   ],
+   "evidence": "8/8 completed；质量 8/8 四维全对（正确/溯源/逐字/零编造），0幻觉；Q4-ood 双 harness 均「拒绝编造电费+如实呈现$294K训练成本」；QA 原文全落盘"
+  },
+  {
+   "id": "US-12",
+   "title": "知识库整理功能验证（rename 卫生/move/标签/reindex/一致性核验）",
+   "priority": 12,
+   "passes": true,
+   "acceptanceCriteria": [
+    "演示库上全链整理操作：子库创建→文档移动→KB 改名（标签/索引卫生）→标签更新→reindex→三源一致性核验",
+    "每步后检索仍命中（整理不破坏检索）",
+    "异常处置记录（已知缺陷如 move 目标类型限制如实记录）"
+   ],
+   "evidence": "14/14 PASS：标签/子库/移动/改名卫生/递归检索/reindex探针/三源一致性；整理全程检索不破坏"
+  },
+  {
+   "id": "US-13",
+   "title": "收口：汇整报告 + 全任务验收记录",
+   "priority": 13,
+   "passes": true,
+   "acceptanceCriteria": [
+    "演示与测试全部证据落盘（artifacts/demo-20261112/）",
+    "PRD 全 story 收口 + reviewer 复核"
+   ],
+   "evidence": "DEMO-REPORT.md + 全部原始JSON落盘 demo-20261112/"
+  }
+ ],
+ "legacy_stories_completed": [
+  {
+   "id": "US-1..US-7 (R3 复现轮)",
+   "result": "全部 PASS；reviewer APPROVE；裁定=主结论可信复现成立",
+   "evidence": "RESULTS-REPLICATION-20261112.md + reviewer verdict（progress.txt 13:0x）"
+  },
+  {
+   "id": "US-7",
+   "title": "汇整报告与验收收口",
+   "priority": 7,
+   "passes": true,
+   "evidence": "RESULTS-REPLICATION-20261112.md（含 A3 翻转方向更正 13/5）+ RESULTS.md R3 小节（只增不改）+ final_bench 零改动 reviewer 实证（mtime 0/18 当日触碰）+ general-purpose reviewer 独立复核 verdict=APPROVE（7/7 story PASS；独立重算七臂 gold 率/一致率/回贴 179/179 全吻合；4 项非阻塞更正已落实 2 项、余 2 项为已披露的工具瑕疵与证据间接性）；deslop 不适用（验证型任务，PRD notes 声明；新增物为实验脚本与报告工件，已在运行中自验证）",
+   "acceptanceCriteria": [
+    "RESULTS-REPLICATION-20261112.md（复现主表 + 新旧对比表 + 审计结论 + 限制披露）",
+    "RESULTS.md 增补复现轮小节（只增不改既有结论）",
+    "final_bench/ 全程零改动（只增不改红线）",
+    "reviewer 对照本 PRD 逐条复核并给出 verdict"
+   ]
+  }
+ ],
+ "reviewer": "general-purpose agent（对照本 prd 验收标准逐条复核）",
+ "notes": "验证型任务（非编码任务）：deslop 不适用（更改仅限实验脚本调用与报告工件）；验收证据=命令输出+审计脚本+逐题对比记录，全部落盘。红线：真实执行禁编造、产物只增不改、final_bench 不可触碰、失败即停如实报告。旧 Run5 PRD 已归档为 .omc/prd.run5-20261021.archive.json。",
+ "progress_log": []
+}

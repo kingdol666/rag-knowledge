@@ -47,7 +47,7 @@
 拖拽式文件浏览器，支持树状导航、多格式上传（PDF/Word/Excel/PPT/图片）、一键解析触发、文件预览（Markdown + 图片）以及文件夹增删改操作。
 
 **🔍 知识库搜索**
-QDCVR（查询驱动·内容验证检索）流水线界面 — 语义 + 关键词两阶段搜索，0–8 分内容评分，跨库企业搜索，标签过滤，带来源引用的结果排序。
+HMRS（查询驱动·内容验证检索）流水线界面 — 语义 + 关键词两阶段搜索，0–8 分内容评分，跨库企业搜索，标签过滤，带来源引用的结果排序。
 
 **🕸️ 知识图谱**
 基于 Neo4j 的交互式文档关系可视化 — KB 全局图谱、文档中心实体网络、跨库发现路径、中心度分析、标签文档聚类。
@@ -206,7 +206,7 @@ Nuxt server 作为浏览器与 FastAPI 后端之间的**代理层**。所有路�
 | **Claude 聊天** | `/claude-chat` | 完整 Claude Code SDK 聊天，支持流式、KB 增强、多模态 |
 | **文件系统** | `/file-system` | 拖拽文件浏览器、上传、解析触发、预览 |
 | **知识库** | `/knowledge-base` | KB 管理 — 创建、编辑、删除 KB + 文档列表 |
-| **KB 搜索** | `/knowledge-search` | QDCVR 搜索界面，支持过滤、排序和来源显示 |
+| **KB 搜索** | `/knowledge-search` | HMRS 搜索界面，支持过滤、排序和来源显示 |
 | **知识图谱** | `/knowledge-graph` | Neo4j 交互式图谱可视化 |
 | **设置** | `/settings` | 环境配置编辑，支持热重载 |
 
@@ -235,7 +235,7 @@ web/
 │   ├── claude-chat.vue              # Claude Code SDK 流式聊天
 │   ├── file-system.vue              # 可视化文件树浏览器 + 上传
 │   ├── knowledge-base.vue           # KB 管理 + 文档列表
-│   ├── knowledge-search.vue         # QDCVR 搜索界面
+│   ├── knowledge-search.vue         # HMRS 搜索界面
 │   ├── knowledge-graph.vue          # Neo4j 图谱可视化
 │   └── settings.vue                 # 配置编辑器
 ├── composables/                     # Vue 组合式函数

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f6f8fa">
+<title>HMRS Bench 复现 — 对照与实验臂的检索证据（2026-11-17）</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f2f5f8;
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --ink: #16222e;
+    --muted: #5a6b7c;
+    --line: #dde5ec;
+    --navy: #1f3a5c;
+    --steel: #35689a;
+    --msteel: #5b8db3;
+    --lsteel: #8fb3c9;
+    --ochre: #c58a2e;
+    --brick: #a9542f;
+    --slate: #8d98a4;
+    --good: #2f7a5c;
+    --good-bg: #e4f2ea;
+    --bad: #a9542f;
+    --bad-bg: #f7e9e4;
+    --navy-bg: #e8eef5;
+    --shadow: 0 1px 2px rgba(22, 34, 46, .06), 0 8px 24px -12px rgba(22, 34, 46, .18);
+    --radius: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #0e1620;
+      --surface: #16212c;
+      --surface-2: #1a2834;
+      --ink: #e6edf3;
+      --muted: #9db0c0;
+      --line: #273747;
+      --navy: #9ec1e6;
+      --steel: #6e9fc8;
+      --msteel: #5b8db3;
+      --lsteel: #41657f;
+      --ochre: #d0a153;
+      --brick: #c9775a;
+      --slate: #7f8d9c;
+      --good: #6fb391;
+      --good-bg: #17301f;
+      --bad: #c9775a;
+      --bad-bg: #341e18;
+      --navy-bg: #1b2b3c;
+      --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.65 system-ui, -apple-system, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+  .skip {
+    position: absolute; left: -9999px; top: 0;
+    background: var(--surface); color: var(--ink);
+    padding: .6rem 1rem; border-radius: 8px; z-index: 10;
+  }
+  .skip:focus { left: 1rem; top: 1rem; outline: 2px solid var(--steel); outline-offset: 2px; }
+  a { color: var(--steel); text-underline-offset: 3px; }
+  a:hover { color: var(--navy); }
+  :focus-visible { outline: 2px solid var(--steel); outline-offset: 2px; border-radius: 6px; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 2.2rem 1.25rem 3rem; }
+  header { padding: .4rem 0 1.6rem; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: .45rem;
+    font-size: .78rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin: 0 0 .75rem;
+  }
+  .eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--steel); border-radius: 2px; }
+  h1 { font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.15rem); line-height: 1.25; margin: 0 0 .7rem; text-wrap: balance; letter-spacing: -.01em; }
+  .lede { margin: 0; max-width: 62ch; color: var(--muted); }
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  .meta-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; align-items: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: .4rem;
+    border: 1px solid var(--line); background: var(--surface);
+    border-radius: 999px; padding: .28rem .8rem; font-size: .8rem; color: var(--muted);
+  }
+  .pill.ok { border-color: transparent; background: var(--good-bg); color: var(--good); font-weight: 700; letter-spacing: .02em; }
+  .pill svg { flex: none; }
+
+  nav.toc { margin: 1rem 0 0; display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-size: .85rem; }
+  nav.toc a { color: var(--muted); text-decoration: none; border-bottom: 1px dashed transparent; }
+  nav.toc a:hover, nav.toc a:focus-visible { color: var(--steel); border-bottom-color: var(--steel); }
+
+  main { display: grid; gap: 2.4rem; margin-top: 1.8rem; }
+  section > h2 { font-size: 1.18rem; margin: 0 0 .35rem; letter-spacing: -.005em; text-wrap: balance; }
+  .sub { color: var(--muted); margin: 0 0 1.1rem; max-width: 78ch; font-size: .92rem; }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .9rem; }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 1rem 1.1rem; box-shadow: var(--shadow);
+  }
+  .kpi .k-label { font-size: .78rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; margin: 0 0 .35rem; }
+  .kpi .k-value { font-size: 1.72rem; font-weight: 700; line-height: 1.1; letter-spacing: -.01em; }
+  .kpi .k-value small { font-size: .95rem; font-weight: 600; color: var(--muted); }
+  .kpi .k-note { font-size: .8rem; color: var(--muted); margin-top: .3rem; }
+  .kpi.hl { border-color: color-mix(in srgb, var(--steel) 42%, var(--line)); background: linear-gradient(180deg, color-mix(in srgb, var(--steel) 6%, var(--surface)), var(--surface)); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .table-scroll { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+  caption { text-align: left; padding: .8rem 1rem .6rem; color: var(--muted); font-size: .82rem; caption-side: top; }
+  th, td { padding: .5rem .7rem; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { font-size: .78rem; color: var(--muted); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; border-bottom-width: 2px; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--surface-2); }
+  td.num { font-variant-numeric: tabular-nums; }
+  .win { color: var(--good); font-weight: 700; }
+  .dim { color: var(--muted); }
+  .armtag { display: inline-block; min-width: 2.9rem; font-weight: 700; color: var(--navy); }
+
+  figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem 1rem .8rem; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { margin-top: .7rem; font-size: .82rem; color: var(--muted); max-width: 92ch; }
+  figcaption strong { color: var(--ink); font-weight: 600; }
+  .chart-legend { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; margin: .2rem 0 0; font-size: .8rem; color: var(--muted); list-style: none; padding: 0; }
+  .chart-legend li { display: inline-flex; align-items: center; gap: .4rem; }
+  .sw { width: .85rem; height: .85rem; border-radius: 3px; flex: none; }
+  svg text { font-family: inherit; }
+
+  .split { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .groupcard { padding: 1.05rem 1.15rem 1rem; }
+  .groupcard.control { border-top: 3px solid var(--ochre); }
+  .groupcard.experiment { border-top: 3px solid var(--steel); }
+  .g-head { display: flex; align-items: baseline; justify-content: space-between; gap: .8rem; flex-wrap: wrap; margin-bottom: .15rem; }
+  .g-title { font-size: 1.02rem; font-weight: 700; margin: 0; }
+  .g-role { font-size: .78rem; color: var(--muted); margin: 0 0 .65rem; }
+  .badge { display: inline-flex; align-items: center; gap: .32rem; font-size: .78rem; font-weight: 700; border-radius: 999px; padding: .2rem .62rem; letter-spacing: .02em; }
+  .badge.hit { color: var(--good); background: var(--good-bg); }
+  .badge.miss { color: var(--bad); background: var(--bad-bg); }
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(108px, 1fr)); gap: .55rem .8rem; margin: .8rem 0 .7rem; padding: 0; list-style: none; }
+  .metrics li { border-left: 2px solid var(--line); padding-left: .6rem; }
+  .metrics .m-label { display: block; font-size: .72rem; color: var(--muted); letter-spacing: .03em; }
+  .metrics .m-value { font-size: 1rem; font-weight: 700; }
+  .docs { margin: .55rem 0 0; padding: 0; list-style: none; font-size: .82rem; }
+  .docs li { display: flex; gap: .5rem; align-items: baseline; padding: .32rem 0; border-top: 1px dashed var(--line); color: var(--muted); }
+  .docs li:first-child { border-top: 0; }
+  .rank { flex: none; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--navy-bg); color: var(--navy); font-size: .72rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .docs code { font: .78rem/1.4 ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--ink); overflow-wrap: anywhere; }
+  .explain { margin-top: 1rem; padding: .9rem 1.05rem; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; font-size: .88rem; }
+  .explain p { margin: 0 0 .45rem; }
+  .explain p:last-child { margin-bottom: 0; }
+
+  .matrix { width: 100%; font-size: .84rem; }
+  .matrix td, .matrix th { padding: .42rem .55rem; }
+  .matrix td:first-child { white-space: nowrap; }
+  .matrix .mark { text-align: center; font-weight: 700; }
+  .matrix .yes { color: var(--good); }
+  .matrix .no { color: var(--slate); }
+  .matrix thead th { text-align: center; }
+  .matrix thead th:first-child { text-align: left; }
+
+  ul.checks { margin: 0; padding: 0; list-style: none; display: grid; gap: .55rem; }
+  ul.checks li { display: flex; gap: .6rem; align-items: baseline; font-size: .9rem; }
+  ul.checks svg { flex: none; transform: translateY(2px); }
+  details.notes { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 0; box-shadow: var(--shadow); }
+  details.notes summary { cursor: pointer; padding: .9rem 1.05rem; font-weight: 600; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  details.notes summary::-webkit-details-marker { display: none; }
+  details.notes summary .chev { transition: transform .18s ease; }
+  @media (prefers-reduced-motion: reduce) { details.notes summary .chev { transition: none; } }
+  details.notes[open] summary .chev { transform: rotate(180deg); }
+  details.notes .notes-body { padding: 0 1.05rem 1rem; border-top: 1px solid var(--line); font-size: .88rem; }
+  details.notes .notes-body p { margin: .7rem 0 0; }
+  details.notes .notes-body ul { margin: .55rem 0 0; padding-left: 1.15rem; }
+  details.notes .notes-body li { margin: .2rem 0; }
+
+  .callout { border-left: 3px solid var(--ochre); background: color-mix(in srgb, var(--ochre) 7%, var(--surface)); padding: .85rem 1rem; border-radius: 0 10px 10px 0; font-size: .88rem; }
+  .callout p { margin: 0; }
+
+  footer { margin-top: 2.6rem; padding-top: 1.1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; display: grid; gap: .4rem; }
+  footer code { font: .8rem/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--ink); overflow-wrap: anywhere; }
+  .foot-meta { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 1.4rem .9rem 2.2rem; }
+    th, td { padding: .42rem .5rem; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to Main Content</a>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Bench Pipeline · EXPERIMENT-PIPELINE.md</p>
+    <h1>HMRS 消融复跑：对照组与实验组的检索证据</h1>
+    <p class="lede">
+      <strong>2026-11-17</strong> 在干净重启的平台栈上，从零执行 S0 → S1 → S3 → S4 → S6。
+      七个臂（A0、A0f、A0h、PD、A1b、A2、A3）× 72 道 in-domain 题，共 <strong>532 条 trace</strong> 落入临时目录，
+      论文的冻结工件（<code>final_bench</code>）字节未动。
+    </p>
+    <div class="meta-row">
+      <span class="pill ok">
+        <svg width="13" height="13" viewBox="0 0 13 13" aria-hidden="true" focusable="false"><path d="M2.4 7.1 5 9.6l5.6-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        复现 REPRODUCED
+      </span>
+      <span class="pill">7 臂 × 72 题</span>
+      <span class="pill">配对 McNemar 6 组</span>
+      <span class="pill">污染审计 4/4 通过</span>
+    </div>
+    <nav class="toc" aria-label="页面导航">
+      <a href="#verdict">执行结论</a>
+      <a href="#results">七臂结果</a>
+      <a href="#charts">对比可视化</a>
+      <a href="#showcase">同题：对照 vs 试验</a>
+      <a href="#matrix">12 题转折</a>
+      <a href="#limits">判读与边界</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <section id="verdict" aria-labelledby="verdict-h">
+      <h2 id="verdict-h">执行结论：数字如何</h2>
+      <p class="sub">
+        复跑值 vs 论文值。配对差异是 McNemar 的两类不一致题数（后者胜 / 前者胜）；
+        整体水位 −1～−4 与论文已披露的语料状态漂移方向一致（冻结 879 卷 → follow-up 906 卷 → 当前更多）。
+      </p>
+      <div class="kpis">
+        <div class="kpi hl">
+          <p class="k-label">A0h 复跑</p>
+          <p class="k-value">48<small> / 72（66.7%）</small></p>
+          <p class="k-note">论文 52（冻结）· 51（follow-up）</p>
+        </div>
+        <div class="kpi">
+          <p class="k-label">A0 基线（对照）</p>
+          <p class="k-value">36<small> / 72（50.0%）</small></p>
+          <p class="k-note">论文 37（冻结）· 39（follow-up）</p>
+        </div>
+        <div class="kpi">
+          <p class="k-label">A0h − A0 头线差距</p>
+          <p class="k-value">+12</p>
+          <p class="k-note">论文冻结 +15 · follow-up +12（一致）</p>
+        </div>
+        <div class="kpi">
+          <p class="k-label">配对 A0h vs A0</p>
+          <p class="k-value">12–0</p>
+          <p class="k-note">p = 0.000488 ＝ follow-up 逐位相同</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="results" aria-labelledby="results-h">
+      <h2 id="results-h">七臂执行结果</h2>
+      <p class="sub">
+        对照组：A0 逐级基线、A1b 逐库 scoped 并集、A2 关闭证据门、A3 去描述层（name-only 路由卡）。
+        实验组：A0f 全窗、A0h 分层 + 块窗并集、PD 无导航精确逐文档。
+      </p>
+      <div class="table-scroll">
+        <table>
+          <caption>Gold-string containment，72 道 in-domain 题。<code>Δ</code> 为复跑减论文冻结值。</caption>
+          <thead>
+            <tr>
+              <th scope="col">臂</th>
+              <th scope="col">角色</th>
+              <th scope="col">复跑</th>
+              <th scope="col">论文冻结</th>
+              <th scope="col">论文 follow-up</th>
+              <th scope="col">Δ vs 冻结</th>
+              <th scope="col">路由正确</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="armtag">A0</span></td>
+              <td class="dim">基线 · 对照</td>
+              <td class="num">36/72</td>
+              <td class="num">37/72</td>
+              <td class="num">39/72</td>
+              <td class="num dim">−1</td>
+              <td class="num">72/72</td>
+            </tr>
+            <tr>
+              <td><span class="armtag">A0f</span></td>
+              <td class="dim">全窗 · 实验</td>
+              <td class="num">41/72</td>
+              <td class="num">45/72</td>
+              <td class="num">44/72</td>
+              <td class="num dim">−4</td>
+              <td class="num">72/72</td>
+            </tr>
+            <tr>
+              <td><span class="armtag">A0h</span></td>
+              <td><strong>分层 + 块窗 · 实验（头线）</strong></td>
+              <td class="num win">48/72</td>
+              <td class="num">52/72</td>
+              <td class="num">51/72</td>
+              <td class="num dim">−4</td>
+              <td class="num">72/72</td>
+            </tr>
+            <tr>
+              <td><span class="armtag">PD</span></td>
+              <td class="dim">无导航 · 实验</td>
+              <td class="num">42/72</td>
+              <td class="num">46/72</td>
+              <td class="num">45/72</td>
+              <td class="num dim">−4</td>
+              <td class="num dim">—</td>
+            </tr>
+            <tr>
+              <td><span class="armtag">A1b</span></td>
+              <td class="dim">逐库 scoped · 对照</td>
+              <td class="num">36/72</td>
+              <td class="num">39/72</td>
+              <td class="num">39/72</td>
+              <td class="num dim">−3</td>
+              <td class="num dim">—</td>
+            </tr>
+            <tr>
+              <td><span class="armtag">A2</span></td>
+              <td class="dim">关闭证据门 · 对照</td>
+              <td class="num">23/72</td>
+              <td class="num">25/72</td>
+              <td class="num">25/72</td>
+              <td class="num dim">−2</td>
+              <td class="num dim">—</td>
+            </tr>
+            <tr>
+              <td><span class="armtag">A3</span></td>
+              <td class="dim">去描述层 · 对照</td>
+              <td class="num">26/72</td>
+              <td class="num">33/72</td>
+              <td class="num">25/72</td>
+              <td class="num dim">−7</td>
+              <td class="num">49/72</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="charts" aria-labelledby="charts-h">
+      <h2 id="charts-h">对比可视化</h2>
+      <p class="sub">三张图：① 逐臂复跑与论文双记录的容器命中；② 配对不一致题数的方向与 p 值；③ 每题平均读入文本与工具耗时。</p>
+
+      <div style="display:grid; gap:1.1rem">
+
+        <figure>
+          <svg viewBox="0 0 660 402" role="img" aria-labelledby="c1t c1d">
+            <title id="c1t">逐臂 gold-string containment：复跑、论文冻结、论文 follow-up</title>
+            <desc id="c1d">七组横条。A0 36/37/39，A0f 41/45/44，A0h 48/52/51，PD 42/46/45，A1b 36/39/39，A2 23/25/25，A3 26/33/25（复跑/冻结/follow-up，满分 72）。A0h 三值最高，A2 最低。</desc>
+            <g font-size="11" fill="var(--muted)">
+              <text x="64" y="16" text-anchor="start">0</text>
+              <text x="224" y="16" text-anchor="start">25</text>
+              <text x="383" y="16" text-anchor="start">50</text>
+              <text x="524" y="16" text-anchor="start">72</text>
+            </g>
+            <g stroke="var(--line)" stroke-width="1">
+              <line x1="64" y1="22" x2="64" y2="386"></line>
+              <line x1="224" y1="22" x2="224" y2="386" stroke-dasharray="2 4"></line>
+              <line x1="383" y1="22" x2="383" y2="386" stroke-dasharray="2 4"></line>
+              <line x1="524" y1="22" x2="524" y2="386" stroke-dasharray="2 4"></line>
+            </g>
+
+            <g font-size="12.5" font-weight="700" fill="var(--ink)">
+              <text x="8" y="46">A0</text>
+              <text x="8" y="96">A0f</text>
+              <text x="8" y="146">A0h</text>
+              <text x="8" y="196">PD</text>
+              <text x="8" y="246">A1b</text>
+              <text x="8" y="296">A2</text>
+              <text x="8" y="346">A3</text>
+            </g>
+
+            <g fill="var(--steel)">
+              <rect x="64" y="34" width="230" height="11" rx="2"></rect>
+              <rect x="64" y="84" width="262" height="11" rx="2"></rect>
+              <rect x="64" y="134" width="307" height="11" rx="2"></rect>
+              <rect x="64" y="184" width="268" height="11" rx="2"></rect>
+              <rect x="64" y="234" width="230" height="11" rx="2"></rect>
+              <rect x="64" y="284" width="147" height="11" rx="2"></rect>
+              <rect x="64" y="334" width="166" height="11" rx="2"></rect>
+            </g>
+            <g fill="var(--lsteel)">
+              <rect x="64" y="47" width="236" height="11" rx="2"></rect>
+              <rect x="64" y="97" width="287" height="11" rx="2"></rect>
+              <rect x="64" y="147" width="332" height="11" rx="2"></rect>
+              <rect x="64" y="197" width="294" height="11" rx="2"></rect>
+              <rect x="64" y="247" width="249" height="11" rx="2"></rect>
+              <rect x="64" y="297" width="160" height="11" rx="2"></rect>
+              <rect x="64" y="347" width="211" height="11" rx="2"></rect>
+            </g>
+            <g fill="var(--ochre)">
+              <rect x="64" y="60" width="249" height="11" rx="2"></rect>
+              <rect x="64" y="110" width="281" height="11" rx="2"></rect>
+              <rect x="64" y="160" width="326" height="11" rx="2"></rect>
+              <rect x="64" y="210" width="287" height="11" rx="2"></rect>
+              <rect x="64" y="260" width="249" height="11" rx="2"></rect>
+              <rect x="64" y="310" width="160" height="11" rx="2"></rect>
+              <rect x="64" y="360" width="160" height="11" rx="2"></rect>
+            </g>
+
+            <g font-size="10.5" font-weight="700" fill="var(--ink)">
+              <text x="300" y="42">36</text>
+              <text x="332" y="92">41</text>
+              <text x="377" y="142">48</text>
+              <text x="338" y="192">42</text>
+              <text x="300" y="242">36</text>
+              <text x="217" y="292">23</text>
+              <text x="236" y="342">26</text>
+            </g>
+          </svg>
+          <ul class="chart-legend">
+            <li><span class="sw" style="background:var(--steel)"></span>复跑 2026-11-17</li>
+            <li><span class="sw" style="background:var(--lsteel)"></span>论文冻结（final_bench）</li>
+            <li><span class="sw" style="background:var(--ochre)"></span>论文 follow-up（R3）</li>
+          </ul>
+          <figcaption><strong>逐臂容器命中（/72）。</strong>三序列的相对次序全保持：A0h 最高，A2 最低。复跑序列在每个臂上都比论文冻结低 1～4 题、比 follow-up 低 0～1 题，与语料状态漂移一致，不是执行差异。</figcaption>
+        </figure>
+
+        <figure>
+          <svg viewBox="0 0 660 300" role="img" aria-labelledby="c2t c2d">
+            <title id="c2t">配对 McNemar：A0 与各臂的不一致题数</title>
+            <desc id="c2d">六行分岐条，左侧为 A0 独有、右侧为臂独有。A0h 0/12 p=0.000488；PD 0/6 p=0.03125；A0f 0/5 p=0.0625；A1b 1/1 p=1.0；A2 18/5 p=0.0106；A3 14/4 p=0.0309。</desc>
+            <g stroke="var(--line)" stroke-width="1">
+              <line x1="330" y1="18" x2="330" y2="276"></line>
+            </g>
+            <g font-size="11" fill="var(--muted)">
+              <text x="150" y="14" text-anchor="middle">A0 独有</text>
+              <text x="342" y="14" text-anchor="middle">该臂独有</text>
+              <text x="560" y="14" text-anchor="middle">精确双侧 p</text>
+            </g>
+
+            <g font-size="12.5" font-weight="700" fill="var(--ink)">
+              <text x="8" y="46">A0h</text>
+              <text x="8" y="86">PD</text>
+              <text x="8" y="126">A0f</text>
+              <text x="8" y="166">A1b</text>
+              <text x="8" y="206">A2</text>
+              <text x="8" y="246">A3</text>
+            </g>
+
+            <g fill="var(--brick)">
+              <rect x="318" y="154" width="12" height="14" rx="2"></rect>
+              <rect x="114" y="194" width="216" height="14" rx="2"></rect>
+              <rect x="162" y="234" width="168" height="14" rx="2"></rect>
+            </g>
+            <g fill="var(--steel)">
+              <rect x="330" y="34" width="144" height="14" rx="2"></rect>
+              <rect x="330" y="74" width="72" height="14" rx="2"></rect>
+              <rect x="330" y="114" width="60" height="14" rx="2"></rect>
+              <rect x="330" y="154" width="12" height="14" rx="2"></rect>
+              <rect x="330" y="194" width="60" height="14" rx="2"></rect>
+              <rect x="330" y="234" width="48" height="14" rx="2"></rect>
+            </g>
+
+            <g font-size="10.5" font-weight="700" fill="var(--ink)">
+              <text x="484" y="46">12</text>
+              <text x="412" y="86">6</text>
+              <text x="400" y="126">5</text>
+              <text x="310" y="166" text-anchor="end">1</text>
+              <text x="346" y="166">1</text>
+              <text x="110" y="206" text-anchor="end">18</text>
+              <text x="394" y="206">5</text>
+              <text x="158" y="246" text-anchor="end">14</text>
+              <text x="382" y="246">4</text>
+            </g>
+            <g font-size="10.5" fill="var(--muted)">
+              <text x="600" y="46" text-anchor="end">p=0.000488</text>
+              <text x="600" y="86" text-anchor="end">p=0.03125</text>
+              <text x="600" y="126" text-anchor="end">p=0.0625</text>
+              <text x="600" y="166" text-anchor="end">p=1.0</text>
+              <text x="600" y="206" text-anchor="end">p=0.0106</text>
+              <text x="600" y="246" text-anchor="end">p=0.0309</text>
+            </g>
+          </svg>
+          <ul class="chart-legend">
+            <li><span class="sw" style="background:var(--brick)"></span>A0 独有命中</li>
+            <li><span class="sw" style="background:var(--steel)"></span>该臂独有命中</li>
+          </ul>
+          <figcaption><strong>配对不一致（qid 配对，n=72）。</strong>A0h、PD、A0f、A1b 四项与论文 follow-up 逐位一致；A2 抢 18 题而丢 5 题，关闭证据门代价被隔离；A3 为 A0 占优 14:4，与去描述层劣化一致。</figcaption>
+        </figure>
+
+        <div class="split">
+          <figure>
+            <svg viewBox="0 0 660 246" role="img" aria-labelledby="c3t c3d">
+              <title id="c3t">每题平均读入文本（MB）</title>
+              <desc id="c3d">A0 0.033、A0f 0.294、A0h 0.299、PD 0.312、A1b 0.036、A2 0.002、A3 0.012 MB。</desc>
+              <g font-size="11.5" font-weight="600" fill="var(--muted)"><text x="64" y="16">MB / 题</text></g>
+              <g stroke="var(--line)"><line x1="64" y1="22" x2="520" y2="22"></line></g>
+              <g fill="var(--steel)">
+                <rect x="64" y="42" width="19" height="12" rx="2"></rect>
+                <rect x="64" y="70" width="168" height="12" rx="2"></rect>
+                <rect x="64" y="98" width="171" height="12" rx="2"></rect>
+                <rect x="64" y="126" width="178" height="12" rx="2"></rect>
+                <rect x="64" y="154" width="21" height="12" rx="2"></rect>
+                <rect x="64" y="182" width="4" height="12" rx="2"></rect>
+                <rect x="64" y="210" width="8" height="12" rx="2"></rect>
+              </g>
+              <g font-size="11.5" font-weight="700" fill="var(--ink)">
+                <text x="8" y="53">A0</text>
+                <text x="8" y="81">A0f</text>
+                <text x="8" y="109">A0h</text>
+                <text x="8" y="137">PD</text>
+                <text x="8" y="165">A1b</text>
+                <text x="8" y="193">A2</text>
+                <text x="8" y="221">A3</text>
+              </g>
+              <g font-size="10.5" fill="var(--ink)">
+                <text x="90" y="53">0.03</text>
+                <text x="240" y="81">0.29</text>
+                <text x="243" y="109">0.30</text>
+                <text x="250" y="137">0.31</text>
+                <text x="92" y="165">0.04</text>
+                <text x="74" y="193">0.00</text>
+                <text x="80" y="221">0.01</text>
+              </g>
+            </svg>
+            <figcaption>复跑均值。A0h 0.299 MB/题，与论文 0.309 MB 级同序。</figcaption>
+          </figure>
+
+          <figure>
+            <svg viewBox="0 0 660 246" role="img" aria-labelledby="c4t c4d">
+              <title id="c4t">每题平均工具耗时（秒）</title>
+              <desc id="c4d">A0 16.6、A0f 16.3、A0h 15.0、PD 16.7、A1b 11.9、A2 1.1、A3 6.3 秒。</desc>
+              <g font-size="11.5" font-weight="600" fill="var(--muted)"><text x="64" y="16">工具 s / 题</text></g>
+              <g stroke="var(--line)"><line x1="64" y1="22" x2="520" y2="22"></line></g>
+              <g fill="var(--steel)">
+                <rect x="64" y="42" width="166" height="12" rx="2"></rect>
+                <rect x="64" y="70" width="163" height="12" rx="2"></rect>
+                <rect x="64" y="98" width="150" height="12" rx="2"></rect>
+                <rect x="64" y="126" width="167" height="12" rx="2"></rect>
+                <rect x="64" y="154" width="119" height="12" rx="2"></rect>
+                <rect x="64" y="182" width="11" height="12" rx="2"></rect>
+                <rect x="64" y="210" width="63" height="12" rx="2"></rect>
+              </g>
+              <g font-size="11.5" font-weight="700" fill="var(--ink)">
+                <text x="8" y="53">A0</text>
+                <text x="8" y="81">A0f</text>
+                <text x="8" y="109">A0h</text>
+                <text x="8" y="137">PD</text>
+                <text x="8" y="165">A1b</text>
+                <text x="8" y="193">A2</text>
+                <text x="8" y="221">A3</text>
+              </g>
+              <g font-size="10.5" fill="var(--ink)">
+                <text x="238" y="53">16.6</text>
+                <text x="235" y="81">16.3</text>
+                <text x="222" y="109">15.0</text>
+                <text x="239" y="137">16.7</text>
+                <text x="191" y="165">11.9</text>
+                <text x="83" y="193">1.1</text>
+                <text x="135" y="221">6.3</text>
+              </g>
+            </svg>
+            <figcaption>工具耗时不含答案生成。A1b/A2/A3 更低是因为路由面更窄，不是更快回答问题。</figcaption>
+          </figure>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="showcase" aria-labelledby="show-h">
+      <h2 id="show-h">同一题：对照组与实验组的检索过程</h2>
+      <p class="sub">
+        题号 <code>G-gwr-1</code> ｜ “2024 年政府工作报告设定的 GDP 增长目标是多少？”
+        两个臂都先选中了正确库，但只有实验组把含金标的证据片段带进了证据包。
+      </p>
+
+      <div class="split">
+        <article class="card groupcard control" aria-labelledby="ctrl-h">
+          <div class="g-head">
+            <h3 class="g-title" id="ctrl-h">A0 · 基线对照组</h3>
+            <span class="badge miss">
+              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              证据未命中
+            </span>
+          </div>
+          <p class="g-role">逐级检索 · 40K 判卷窗 · 对照组</p>
+          <ul class="metrics">
+            <li><span class="m-label">含金标</span><span class="m-value">否</span></li>
+            <li><span class="m-label">路由正确</span><span class="m-value">是</span></li>
+            <li><span class="m-label">survivors</span><span class="m-value">22</span></li>
+            <li><span class="m-label">证据聚焦</span><span class="m-value">0.49%</span></li>
+            <li><span class="m-label">读入文本</span><span class="m-value">0.12 MB</span></li>
+            <li><span class="m-label">工具耗时</span><span class="m-value">12.4 s</span></li>
+            <li><span class="m-label">工具调用</span><span class="m-value">4</span></li>
+          </ul>
+          <p class="m-label" style="margin: .2rem 0 .1rem">检索到的文档（前 3）</p>
+          <ul class="docs">
+            <li><span class="rank">1</span><code>MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md</code></li>
+            <li><span class="rank">2</span><code>MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md</code></li>
+            <li><span class="rank">3</span><code>MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md</code></li>
+          </ul>
+        </article>
+
+        <article class="card groupcard experiment" aria-labelledby="exp-h">
+          <div class="g-head">
+            <h3 class="g-title" id="exp-h">A0h · 实验组（头线）</h3>
+            <span class="badge hit">
+              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.2 6.6 4.7 9l5.1-5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              证据命中
+            </span>
+          </div>
+          <p class="g-role">逐级 + 向量块窗并集 · 60K 证据帽 · 实验组</p>
+          <ul class="metrics">
+            <li><span class="m-label">含金标</span><span class="m-value" style="color:var(--good)">是</span></li>
+            <li><span class="m-label">路由正确</span><span class="m-value">是</span></li>
+            <li><span class="m-label">survivors</span><span class="m-value">27</span></li>
+            <li><span class="m-label">证据聚焦</span><span class="m-value">0.73%</span></li>
+            <li><span class="m-label">读入文本</span><span class="m-value">0.57 MB</span></li>
+            <li><span class="m-label">工具耗时</span><span class="m-value">12.9 s</span></li>
+            <li><span class="m-label">工具调用</span><span class="m-value">10</span></li>
+          </ul>
+          <p class="m-label" style="margin: .2rem 0 .1rem">检索到的文档（前 3）</p>
+          <ul class="docs">
+            <li><span class="rank">1</span><code>MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md</code></li>
+            <li><span class="rank">2</span><code>MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md</code></li>
+            <li><span class="rank">3</span><code>MD语料-政务-中文/政府工作报告2022 (part 1 of 1).md</code></li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="explain">
+        <p><strong>读法。</strong>两个臂都选对了库（路由 ✓），也检回了视线内的同一份文件。差别在证据集合：对照组 22 条 survivors 的证据聚焦 0.49%，金标串不在其中；实验组并上向量块窗后 27 条，证据聚焦 0.73%，金标串被带回。</p>
+        <p><strong>不是更会答</strong>。两臂在答案层的差异是<em>可追溯内容</em>（引用片段是否进入了证据集），不是答案质量。这份 trace 只落检索过程与判卷结果；回复全文未保存在 trace 中（论文亦然）。</p>
+        <p><strong>诚实提醒。</strong>同包里 A2 的 survivors 为 0 但 top1 仍命中，A3 的 survivors 25 而路由未对——这两处是异常样本，不要与本例的对照组/实验组归并。</p>
+      </div>
+    </section>
+
+    <section id="matrix" aria-labelledby="matrix-h">
+      <h2 id="matrix-h">12 题转折：A0 未命中 → A0h 命中</h2>
+      <p class="sub">这些题是头线证据的来源。表中标 ✓ 为该臂命中金标串，– 为未命中；A0h 一列全 ✓ 与 48/72 的头线一致。</p>
+      <div class="table-scroll">
+        <table class="matrix">
+          <caption>复跑轨迹逐题（in-domain）。A0 与 A1b 在这 12 题全部未命中；A0f/A0h/PD 各有不同覆盖。</caption>
+          <thead>
+            <tr>
+              <th scope="col">题号</th>
+              <th scope="col">A0</th>
+              <th scope="col">A0f</th>
+              <th scope="col">A0h</th>
+              <th scope="col">PD</th>
+              <th scope="col">A1b</th>
+              <th scope="col">A2</th>
+              <th scope="col">A3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>G-gwr-1</code></td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark yes">✓</td></tr>
+            <tr><td><code>F-pp-1</code></td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-literature-en-war_of_the_worlds</code></td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-literature-en-huckleberry_finn</code></td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-science-en-resnet.pdf</code></td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-science-en-roberta.pdf</code></td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-science-en-word2vec.pdf</code></td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-medicine-en-obesity_pharmacotherapy_</code></td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-medicine-en-telemedicine_outcomes_re</code></td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-medicine-en-tuberculosis_treatment_r</code></td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-medicine-en-asthma_biologics_review</code></td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark no">–</td></tr>
+            <tr><td><code>A-economics-en-on_liberty</code></td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td><td class="mark no">–</td><td class="mark yes">✓</td><td class="mark no">–</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sub" style="margin-top:.7rem">
+        读法：A0h 在这 12 题全中，恰好是它比 A0 多出的差距来源；A0f 与 PD 各有部分覆盖，说明“全窗”与“无导航”都不能替代分层库的选择。A2/A3 的零散命中不代表它们的总体更好。
+      </p>
+    </section>
+
+    <section id="limits" aria-labelledby="limits-h">
+      <h2 id="limits-h">判读与边界</h2>
+      <p class="sub">作为系统论文的复现实验，这里回答“实验做的是否可信”，同时明确不能宣称什么。</p>
+      <ul class="checks">
+        <li>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8.4 6.4 11.8 13 4.6" fill="none" stroke="var(--good)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>可复现：</strong>臂序（A0h &gt; PD &gt; A0f &gt; A0 ≈ A1b &gt; A2）、头线差距 +12、以及 A0h/PD/A0f/A1b 四项配对统计与论文 follow-up 逐位相同。</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8.4 6.4 11.8 13 4.6" fill="none" stroke="var(--good)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>可复现：</strong>逐题一致率 94.4–97.2%（A3 84.7%），落在论文自报的跨 run 稳定带 94.4–100% 内。</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8.4 6.4 11.8 13 4.6" fill="none" stroke="var(--good)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>可复现：</strong>污染审计 4/4（qid 唯一 76/臂；无路由目录卡 survivors/top1；A1b/A2 候选 1252 条全在十个评测库；final_bench 哈希 <code>d1379a54…</code> 未变）。</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8.4 6.4 11.8 13 4.6" fill="none" stroke="var(--slate)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>有限定：</strong>复跑整体水位 −1～−4（A3 −7）；follow-up 同题而非独立样本；McNemar 为探索性、未校正、双侧精确检验。</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8.4 6.4 11.8 13 4.6" fill="none" stroke="var(--slate)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>限定：</strong>复跑在临时目录（<code>repro_20261117</code>）；read-all 未重跑，72/72 是脚本的确定性属性，不是随机结果。</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8.4 6.4 11.8 13 4.6" fill="none" stroke="var(--slate)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>不能宣称：</strong>这些是逐级检索的配置对照与词面代理，不是语义回答质量、通用检索优越性或部署可靠性。</span>
+        </li>
+      </ul>
+
+      <details class="notes">
+        <summary>
+          方法与计数口径
+          <svg class="chev" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M3.2 5.2 7 9l3.8-3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <div class="notes-body">
+          <p><strong>数据来源。</strong>复跑 7 个 trace JSON、合并轨迹与统计落于 <code>artifacts/repro_20261117/</code>；对照口径为论文冻结工件 <code>artifacts/final_bench/</code>（哈希 d1379a54…，未改动）。</p>
+          <p><strong>计数。</strong>76 条 trace/臂：4 条为 R1–R4 语料级/域外探针，不计入统计；72 道 in-domain 金标题进入本页 7 臂分析；另有 2 条 cross 占位（X1/X2）不参与统计。72 条计数已独立复核。</p>
+        </div>
+      </details>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="foot-meta">
+      <span>生成：2026-11-17 · HMRS 复现轮</span>
+      <span>Pipeline：<code>EXPERIMENT-PIPELINE.md</code> S0 → S0i/S0c → S1 → S3 → S4 → S6</span>
+      <span>平台：backend 8771 → kb-mcp 8000 → web 6789（干净重启）</span>
+    </div>
+    <p>报告：<code>artifacts/repro_20261117/REPRO-REPORT-20261117.md</code> · 轨迹：<code>s4_traces_repro_merged.json</code> · 统计：<code>s6_stats.json</code></p>
+  </footer>
+</div>
+</body>
+</html>

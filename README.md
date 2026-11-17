@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/images/readme-hero.svg" alt="QDCVR — a deployable knowledge-base management platform with content-based organization and content-verified retrieval" width="100%" />
+<img src="./docs/images/readme-hero.svg" alt="HMRS — a deployable knowledge-base management platform with content-based organization and content-verified retrieval" width="100%" />
 
 <br><br>
 
@@ -8,8 +8,8 @@
 <br><br>
 
 <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-B24422?style=for-the-badge" alt="Quick Start" /></a>
-<a href="#mcp-tools"><img src="https://img.shields.io/badge/kb_*_MCP_Tools-41-2E5D7F?style=for-the-badge" alt="41 kb_* MCP tools" /></a>
-<a href="#how-it-works"><img src="https://img.shields.io/badge/Retrieval-QDCVR_v2-B24422?style=for-the-badge" alt="QDCVR" /></a>
+<a href="#mcp-tools"><img src="https://img.shields.io/badge/kb_*_MCP_Tools-42-2E5D7F?style=for-the-badge" alt="42 kb_* MCP tools" /></a>
+<a href="#how-it-works"><img src="https://img.shields.io/badge/Retrieval-HMRS_v2-B24422?style=for-the-badge" alt="HMRS" /></a>
 <a href="#publications"><img src="https://img.shields.io/badge/CIKM_%2726_Demo-Paper-9E7A38?style=for-the-badge" alt="CIKM Demo paper" /></a>
 
 <br>
@@ -29,17 +29,27 @@
 
 A self-hosted platform that turns a folder of PDFs, Office documents and scans into a **knowledge base an AI agent can actually be trusted to answer from** — organized by what documents *say*, not by which folder they sat in, and exposed four ways: a web UI, an HTTP API, a CLI, and MCP tools that any MCP-capable agent can drive.
 
-The retrieval layer is the interesting part. Most RAG stacks rank by vector similarity and hope. This one runs a query protocol — **QDCVR, Query-Driven Content-Verified Retrieval** — that **reads the candidate documents and scores them against an interpretable 0–8 content rubric**, escalates gate failures to a librarian fallback, and returns an explicit not-found report instead of a fabricated answer:
+The management layer is the interesting part. Most RAG stacks assume the corpus is already organised and then rank passages inside it. This one manages the collection itself — **HMRS, Hierarchical Management Retrieval System (逐级管理检索系统)** — at three levels:
+
+| level | what is managed | what the tier reads |
+|---|---|---|
+| **collection** | documents are classified into the library whose scope matches their parsed body, not their filename; descriptions and tags are derived from the content | the catalogue of collections |
+| **document** | duplicate review, description/tag correction, move, rename, delete, forced re-index — each writes the files and both registries so the state can be reconciled | the shelf of document descriptions |
+| **segment** | structural splitting, dense/lexical indices, optional server-side evidence gate | the document, then the segment that carries the evidence |
+
+A query is then served **tier by tier**: catalogue → shelf → document → segment. Each tier narrows the scope the next tier must consider, and each tier can report what it did not cover. Retrieval algorithms sit at the lower two tiers as supporting components; the contribution is the management structure that decides *which collection* is consulted, not a new ranking function.
+
+At the bottom of the path the system still refuses to guess: it **reads the candidate documents and scores them against an interpretable 0–8 content rubric**, escalates gate failures to a librarian fallback, and returns an explicit not-found report instead of a fabricated answer:
 
 > **Vectors are fast. Content is accurate.**
 > A document at cosine similarity **0.95** whose content scores **≤ 4** is **discarded** — not down-ranked, discarded.
 
-This is the system demonstrated in our CIKM '26 demo paper, *QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval* ([paper + demo video](#publications)).
+This is the system demonstrated in our CIKM '26 demo paper, *HMRS: A Hierarchical Management Retrieval System for Tiered Knowledge Document Organisation* ([paper + demo video](#publications)).
 
 <br>
 
 <div align="center">
-<img src="./docs/images/readme-pipeline.svg" alt="Ingestion pipeline: files → MinerU OCR → content-routed category knowledge bases → indexes → QDCVR retrieval → verified answer" width="100%" />
+<img src="./docs/images/readme-pipeline.svg" alt="Ingestion pipeline: files → MinerU OCR → content-routed category knowledge bases → indexes → HMRS retrieval → verified answer" width="100%" />
 </div>
 
 ---
@@ -49,7 +59,7 @@ This is the system demonstrated in our CIKM '26 demo paper, *QDCVR: A Deployable
 | | |
 |---|---|
 | [**Screenshots**](#screenshots) | What the interface actually looks like, light and dark |
-| [**How it works**](#how-it-works) | The QDCVR v2 protocol and the 0–8 rubric |
+| [**How it works**](#how-it-works) | The HMRS v2 protocol and the 0–8 rubric |
 | [**Agent chat, any harness**](#agent-chat-any-harness) | 14 harnesses, per-harness models, unified HITL |
 | [**Architecture**](#architecture) | Services, ports, storage engines |
 | [**Quick start**](#quick-start) | Clone → setup → up |
@@ -79,10 +89,10 @@ CRUD, cross-KB moves, tag management and in-place content editing.
 
 <br>
 
-**QDCVR search** — vector-first retrieval, scope control, and a tag rail that reflects what is actually in the corpus.
+**HMRS search** — vector-first retrieval, scope control, and a tag rail that reflects what is actually in the corpus.
 
 <div align="center">
-<img src="./docs/screenshots/app/desktop-knowledge-search.jpg" alt="QDCVR search interface" width="100%" />
+<img src="./docs/screenshots/app/desktop-knowledge-search.jpg" alt="HMRS search interface" width="100%" />
 </div>
 
 **Knowledge graph** — Neo4j-backed document relations, cross-KB bridges, and path discovery.
@@ -161,7 +171,7 @@ The layout is a container-query system, so it responds to the width of its own c
 
 ## How it works
 
-`QDCVR` — **Query-Driven, Content-Verified Retrieval**. One protocol per query, in order:
+`HMRS` — **Query-Driven, Content-Verified Retrieval**. One protocol per query, in order:
 
 ```
 query
@@ -298,7 +308,7 @@ Then open **http://localhost:6789**.
 
 ### 1 · Web UI
 
-Eleven pages: dashboard, file system, knowledge base manager, QDCVR search, graph explorer, SOUL persona studio, agent chat, harness hub, settings, API tokens, login. Light and dark, desktop to phone.
+Eleven pages: dashboard, file system, knowledge base manager, HMRS search, graph explorer, SOUL persona studio, agent chat, harness hub, settings, API tokens, login. Light and dark, desktop to phone.
 
 ### 2 · HTTP API
 
@@ -332,9 +342,9 @@ Then just talk to it — *"what do we know about biaxial stretching of PET films
 
 ## MCP tools
 
-Every tool is registered with FastMCP in `kb-mcp/server.py`: **94 tools in total, of which 41 are `kb_*` knowledge-base tools** — the domain surface the CIKM demo paper demonstrates. The partition below is exhaustive and disjoint.
+Every tool is registered with FastMCP in `kb-mcp/server.py`: **95 tools in total, of which 42 are `kb_*` knowledge-base tools** — the domain surface the CIKM demo paper demonstrates. The partition below is exhaustive and disjoint.
 
-**`kb_*` knowledge-base tools — 41** (the surface the paper's demo drives):
+**`kb_*` knowledge-base tools — 42** (the surface the paper's demo drives):
 
 | Category | Count | What it covers |
 |---|:---:|---|
@@ -351,7 +361,7 @@ Every tool is registered with FastMCP in `kb-mcp/server.py`: **94 tools in total
 | Category | Count | What it covers |
 |---|:---:|---|
 | **Experience** | 26 | Full E0–E12 lifecycle · search-global · search-smart · rerank · extract · drafts (list/read/approve/reject) · stale-check · sync · dashboard · decay · meditation (run/status/history/config) |
-| **SOUL persona** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · cognition drafts · review · reflect · checkpoint · rollback · ask · qdcvr-ask · router · export (LoRA) |
+| **SOUL persona** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · cognition drafts · review · reflect · checkpoint · rollback · ask · hmrs-ask · router · export (LoRA) |
 | **Project lifecycle** | 4 | status · start · update · backend-status |
 | **File system** | 3 | get-tree · get-children · upload-file |
 | | **53** | |
@@ -366,7 +376,7 @@ Two design rules worth knowing:
 
 <br>
 
-The `knowledgebase` dispatcher skill routes natural-language requests — in Chinese or English — to the right sub-skill (ingest, search, manage, organize, update, verify, graph, experience, …), and delegates execution to an Archival sub-agent so quality gates cannot be skipped. The QDCVR v2 search skill is the same protocol the benchmark's Track A executes.
+The `knowledgebase` dispatcher skill routes natural-language requests — in Chinese or English — to the right sub-skill (ingest, search, manage, organize, update, verify, graph, experience, …), and delegates execution to an Archival sub-agent so quality gates cannot be skipped. The HMRS v2 search skill is the same protocol the benchmark's Track A executes.
 
 </details>
 
@@ -392,7 +402,7 @@ curl -s -X POST http://localhost:6789/api/kb/documents/create \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
   -d '{"kbId":"<kbId>","name":"pump-failure.md","content":"# Pump failure\n\nBearing temperature exceeded 90°C..."}'
 
-# 3 · vector search   (QDCVR Phase 1's recall tool)
+# 3 · vector search   (HMRS Phase 1's recall tool)
 curl -s -X POST http://localhost:6789/api/v1/search/vector \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
   -d '{"query":"bearing temperature limit","limit":5}'
@@ -474,7 +484,7 @@ web/storage/tree-file-system/
 
 ## Benchmark
 
-Everything runs from **one reproducible pipeline**: [`benchmark-suite/PIPELINE.md`](./benchmark-suite/PIPELINE.md) — download 100 real arXiv papers across 26 fields → parse through the production MinerU chain → route into 5 category bases by content (an agent judgment step, grounded in per-paper excerpts) → tag every part → build the fixed-800 dense replica → run 15 retrieval-regression probes → answer 10 fixed questions on three tracks (the QDCVR platform flow vs a bare agent vs a dense baseline) → grade, audit and render the report. **One red line: nothing is fabricated — every number must re-derive from saved artifacts.**
+Everything runs from **one reproducible pipeline**: [`benchmark-suite/PIPELINE.md`](./benchmark-suite/PIPELINE.md) — download 100 real arXiv papers across 26 fields → parse through the production MinerU chain → route into 5 category bases by content (an agent judgment step, grounded in per-paper excerpts) → tag every part → build the fixed-800 dense replica → run 15 retrieval-regression probes → answer 10 fixed questions on three tracks (the HMRS platform flow vs a bare agent vs a dense baseline) → grade, audit and render the report. **One red line: nothing is fabricated — every number must re-derive from saved artifacts.**
 
 **Latest run: `run-20261013T094350Z-5f9faac`** (2026-10-13, commit `5f9faac`, 30 cells, 0 aborts, $17.03). Read it without running anything: **[`TEST-RESULTS/README.md`](./TEST-RESULTS/README.md)** — it explains what was measured, what it means, and ships `TEST-RESULTS/verify.py`, a stdlib-only checker that re-derives every headline number straight from the raw cells (`10/10/10 grounded · 10/9/9 keyword · 9/7/2 cited`).
 
@@ -500,7 +510,7 @@ The CIKM demo paper's figures (`paper_demo/figures/`) are generated from these a
 ## Publications
 
 - **Designed README showcase** — an art-directed single-page view of this README: [`docs/readme-showcase/index.html`](./docs/readme-showcase/index.html) (screenshot: [`README-showcase.png`](./docs/readme-showcase/README-showcase.png)).
-- **QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval** — CIKM '26 demo submission. Sources: [`paper_demo/tex/`](./paper_demo/tex/), figures: [`paper_demo/figures/`](./paper_demo/figures/), demo video: [paper_demo/video/qdcvr-demo.mp4](./paper_demo/video/qdcvr-demo.mp4).
+- **HMRS: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval** — CIKM '26 demo submission. Sources: [`paper_demo/tex/`](./paper_demo/tex/), figures: [`paper_demo/figures/`](./paper_demo/figures/), demo video: [paper_demo/video/hmrs-demo.mp4](./paper_demo/video/hmrs-demo.mp4).
 
 ---
 

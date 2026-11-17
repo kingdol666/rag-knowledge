@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""demo-qa 问答执行: 6 题走 soul_qdcvr_ask 真实链路, 结果存 JSON + MD 素材."""
+"""demo-qa 问答执行: 6 题走 soul_hmrs_ask 真实链路, 结果存 JSON + MD 素材."""
 import json
 import sys
 import time
@@ -38,7 +38,7 @@ def main():
     rows = []
     for qid, qtype, q in QUESTIONS:
         t0 = time.perf_counter()
-        r = mc.call("soul_qdcvr_ask",
+        r = mc.call("soul_hmrs_ask",
                     {"query": q, "soul_kb_id": SOUL, "task_goal": "知识问答演示",
                      "task_type": "qa", "top_k": 4, "async_mode": True}, timeout=120)
         tid = r.get("task_id", "")

@@ -87,7 +87,7 @@
 | Tab.2 Graph | 0.56 | 0.5625 | ✅ |
 | Tab.2 Two-stage | 1.00 / Recall 0.97 | 1.0000 / 0.9688 | ✅ |
 | Tab.2 Fusion-only | 0.94 | 0.9375 | ✅ |
-| Tab.2 QDCVR-Hybrid | 0.44 | 0.4375 | ✅ |
+| Tab.2 HMRS-Hybrid | 0.44 | 0.4375 | ✅ |
 | Tab.2 Judge-as-filter | 0.94 | `exp5_judge_filter.json` → 0.9375 | ✅ |
 | Tab.2 RRF-fuse | 0.88 | 0.875 | ✅ |
 | E6 第二判定器 Hit@5 | 0.3125 | `exp7_second_signal.json` → 0.3125 | ✅ |

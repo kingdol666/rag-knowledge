@@ -175,9 +175,36 @@ POST /parse/file/vt
 **Request (multipart/form-data):**
 ```
 file: <PDF file>
-output_dir: ./output_vt (optional)
+output_dir: ./backend/output/example (optional)
 use_ocr: true (optional, default: true)
 ```
+
+`output_dir` may be absolute or relative to the monorepo root, but must be
+inside `backend/output/` or the explicitly configured `storage.tree_fs_root`
+(or `TREE_STORAGE_PATH`) root. The configured tree root may be on an external
+volume. Unrelated external paths, traversal (`..`), UNC/verbatim Windows paths,
+and candidates that escape either root through symlinks are rejected. New
+child directories beneath an allowed root are permitted. The implicit
+`backend/output` root itself must not be a symlink or junction and must resolve
+inside the project. An image name that already exists causes the parse to fail
+rather than silently reference an older image; use a separate output directory
+for repeated parses with the same image names.
+
+**Deployment trust boundary:** Run the backend and its MinerU engine under
+trusted service identities. On Windows, protect `backend/output`, configured
+external storage, and all their ancestors with ownership and ACLs that prevent
+untrusted users from creating, replacing, renaming or deleting directories or
+reparse points. In particular, audit DELETE on objects, DELETE_CHILD on parent
+directories, ancestor ownership and rename rights, and inherited permissions;
+restrict who can change ACLs or ownership. Equivalent protections are needed
+on other platforms. Pathname checks do not eliminate parent-directory swap
+races on Windows. Deployments with hostile local writers require a native
+handle-relative implementation rather than relying on these checks.
+
+The legacy MinerU response may provide `md_path` and `images_dir`; the backend
+reads those paths using its own filesystem privileges without restricting them
+to the output root. The MinerU engine and its responses are therefore trusted:
+do not connect this legacy path to an untrusted or compromised engine.
 
 **Response:**
 ```json

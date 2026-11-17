@@ -45,7 +45,7 @@ flowchart TD
     RG --> SOUL[soul-&lt;name&gt; persona KB<br/>4 constitutional documents + soul-config.yml]
     SOUL --> TR[Curiosity training<br/>soul_learn_all → soul_review_drafts]
     SOUL --> SCH[Scheduled evolution<br/>meditation config]
-    TR --> QA[Retrieval-augmented Q&A<br/>soul_qdcvr_ask]
+    TR --> QA[Retrieval-augmented Q&A<br/>soul_hmrs_ask]
     SCH --> QA
 ```
 

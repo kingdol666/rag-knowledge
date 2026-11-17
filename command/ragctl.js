@@ -1431,27 +1431,17 @@ async function cmdMineruModel(args = []) {
 function getServicePorts(modeOverride) {
   const cfg = readYaml(CONFIG_YML);
   const env = readEnv(ENV_FILE);
-  const envMode = env.APP_MODE || 'dev';
+  const envMode = process.env.APP_MODE || env.APP_MODE || 'dev';
+  const envBackendUrl = process.env.BACKEND_URL || env.BACKEND_URL;
+  let envBackendUrlPort = 0;
+  try { if (envBackendUrl) envBackendUrlPort = Number(new URL(envBackendUrl).port || 0); } catch {}
   const mode = modeOverride || envMode;
   const server = cfg.server || {};
   const modeSection = server[mode] || {};
-  // When user EXPLICITLY forces a DIFFERENT mode than .env pins (e.g. `--appmode prod`
-  // while .env has APP_MODE=dev), use config.yml ports for that mode so .env's
-  // port pins don't silently override the runtime mode choice. Note: parseFlags
-  // always defaults flags.appmode to getAppMode() (reads .env APP_MODE), so when
-  // the user doesn't pass --appmode, modeOverride === envMode → .env ports win.
-  if (modeOverride && modeOverride !== envMode) {
-    return {
-      backend: parseInt(modeSection.backend_port || '8765'),
-      web: parseInt(modeSection.frontend_port || '6789'),
-      mode,
-    };
-  }
-  // Default (no explicit mode switch): .env is the single source of truth
-  // (env BACKEND_PORT/WEB_PORT win over config.yml defaults).
+  const switchedMode = Boolean(modeOverride && modeOverride !== envMode);
   return {
-    backend: parseInt(env.BACKEND_PORT || modeSection.backend_port || '8765'),
-    web: parseInt(env.WEB_PORT || env.FRONTEND_PORT || modeSection.frontend_port || '6789'),
+    backend: parseInt((switchedMode ? null : process.env.BACKEND_PORT || env.BACKEND_PORT || envBackendUrlPort) || modeSection.backend_port || (mode === 'prod' ? '8001' : '8765')),
+    web: parseInt((switchedMode ? null : process.env.WEB_PORT || process.env.FRONTEND_PORT || env.WEB_PORT || env.FRONTEND_PORT) || modeSection.frontend_port || (mode === 'prod' ? '3000' : '6789')),
     mode,
   };
 }
@@ -1779,7 +1769,7 @@ async function startWeb(mode, portOverride = null, opts = {}) {
         WEB_PORT: String(port),
         FRONTEND_PORT: String(port),
         BACKEND_PORT: String(backend),
-        BACKEND_URL: `http://localhost:${backend}`,
+        BACKEND_URL: process.env.BACKEND_URL || `http://localhost:${backend}`,
       },
       serviceName: 'web',
     });
@@ -3828,18 +3818,18 @@ async function cmdSoul(args) {
       break;
     }
     case 'ask': {
-      // ragctl soul ask <query> [--soul kb_id] [--type 文献综述] [--goal 研究] [--qdcvr]
+      // ragctl soul ask <query> [--soul kb_id] [--type 文献综述] [--goal 研究] [--hmrs]
       const query = rest.join(' ');
-      if (!query) { console.log('用法: ragctl soul ask <query> [--soul kb_id] [--type 任务类型] [--goal 目标] [--qdcvr 先检索后人格]'); break; }
+      if (!query) { console.log('用法: ragctl soul ask <query> [--soul kb_id] [--type 任务类型] [--goal 目标] [--hmrs 先检索后人格]'); break; }
       const soulKbId = flagVal('--soul');
       const taskType = flagVal('--type');
       const taskGoal = flagVal('--goal');
-      const qdcvr = flagOn('--qdcvr');
-      console.log(`\n🤖 人格问答中(约 1-2 分钟)…${soulKbId ? ` [人格: ${soulKbId}]` : ' [自动路由]'}${qdcvr ? ' [QDCVR 先检索后人格]' : ''}`);
-      const endpoint = qdcvr ? '/api/v1/soul/qdcvr-ask' : '/api/v1/soul/ask';
+      const hmrs = flagOn('--hmrs') || flagOn('--qdcvr');
+      console.log(`\n🤖 人格问答中(约 1-2 分钟)…${soulKbId ? ` [人格: ${soulKbId}]` : ' [自动路由]'}${hmrs ? ' [HMRS 先检索后人格]' : ''}`);
+      const endpoint = hmrs ? '/api/v1/soul/hmrs-ask' : '/api/v1/soul/ask';
       const res = await apiPost(endpoint, {
         query, soul_kb_id: soulKbId, task_type: taskType, task_goal: taskGoal,
-        top_k: qdcvr ? 5 : undefined,
+        top_k: hmrs ? 5 : undefined,
       });
       console.log('════════════════════════');
       console.log(res.answer || JSON.stringify(res));

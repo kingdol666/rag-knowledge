@@ -73,6 +73,7 @@ export const KB_DISALLOWED_TOOLS = [
  */
 export const SOUL_READ_TOOLS = [
   'mcp__kb-mcp__soul_ask',
+  'mcp__kb-mcp__soul_hmrs_ask',
   'mcp__kb-mcp__soul_qdcvr_ask',
   'mcp__kb-mcp__soul_list',
   'mcp__kb-mcp__soul_router',

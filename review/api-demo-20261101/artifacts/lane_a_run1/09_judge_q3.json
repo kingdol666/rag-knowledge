@@ -1,0 +1,27 @@
+{
+  "tool": "kb_laya_judge",
+  "args": {
+    "query": "旅行者号金唱片收录了多少张图像和大约多少分钟的音乐？",
+    "documents": "[]",
+    "criterion": "auto",
+    "include_text": false
+  },
+  "seconds": 0.2,
+  "result": {
+    "status": "ok",
+    "real_engine": false,
+    "real_jev": false,
+    "engine": "laya",
+    "backend": "none",
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "candidate_count": 0,
+    "scored_count": 0,
+    "survivor_count": 0,
+    "docs_with_yes": 0,
+    "survivors": [],
+    "evidence_pack": "",
+    "errors": [],
+    "note": "compact verdict (include_text=false): segment text and per-segment result_list omitted; re-run with include_text=true or kb_doc_read the survivors for text"
+  }
+}

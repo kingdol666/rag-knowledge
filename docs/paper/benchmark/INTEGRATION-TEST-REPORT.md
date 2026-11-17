@@ -1,4 +1,4 @@
-# QDCVR Skill Integration Test Report
+# HMRS Skill Integration Test Report
 
 **Date**: 2026-07-29 05:27 UTC
 **Scenarios**: 8/8 completed

@@ -1,4 +1,4 @@
-# WRITING-PLAN — CIKM Demo Paper: QDCVR 平台演示论文
+# WRITING-PLAN — CIKM Demo Paper: HMRS 平台演示论文
 
 > 产出目标：`paper_demo/tex/main.tex` → `paper_demo/main.pdf`（≤4 页正文 + GenAI 披露不计页）
 > 撰写依据：academic-paper skill 规范 + 6 篇 CIKM Demo 范文实证研读 + 平台真实运行数据（严禁编造）
@@ -67,7 +67,7 @@ Abstract (180词) → §1 Introduction (0.9栏, 场景痛点+已有系统局限+
 
 ### 3.1 一句话定位（论文反复出现的 elevator pitch）
 
-> **QDCVR** is a deployable knowledge-base management platform whose organization and retrieval are driven by document **content** rather than filenames, fixed taxonomies, or bare vector similarity: documents are parsed, **classified into category bases by their actual text**, tagged, and served to human users and AI agents alike through a **query-driven, content-verified** retrieval protocol with an explicit honest-failure contract.
+> **HMRS** is a deployable knowledge-base management platform whose organization and retrieval are driven by document **content** rather than filenames, fixed taxonomies, or bare vector similarity: documents are parsed, **classified into category bases by their actual text**, tagged, and served to human users and AI agents alike through a **query-driven, content-verified** retrieval protocol with an explicit honest-failure contract.
 
 （英文论文全程用此口径：knowledge-base management platform；避免自称 RAG system。R1 补充：§1 需一句**预防性认亲**——"agentic RAG 方法可自证与弃答，但无协议化、可审计的 rubric 与失败契约"，把 Self-RAG/FLARE 划为近邻而非未知。）
 
@@ -77,8 +77,8 @@ Abstract (180词) → §1 Introduction (0.9栏, 场景痛点+已有系统局限+
 |---|---|---|
 | **F1 文档摄取与解析** | Web 控制台/CLI/MCP 三入口上传；MinerU 解析 PDF→结构化 Markdown；>12k 字符自动切分为 ≤10k 的 "(part k of N)" 分段并携带章节上下文头 | 50/50 篇论文解析成功；ingest_survey.json |
 | **F2 基于内容的组织** | 阅读文档**正文**（非文件名）分类入库；50 篇真实论文按内容分入 5 个门类库（人工智能 18/684 分段、自然科学与地学 15/230、生命与医学 10/301、经济与社会 5/74、工程与能源 2/32）；标签批量传播（1321 分段，0 失败）；含 3 次"内容推翻文件名"的判定记录（2001.10696 / 2604.01385 / 1311.6857） | classification.json（agent 判定工件）+ 61 脚本路由日志 + _pipe_tags2.log `ok=1321 fail=0` |
-| **F3 内容裁决检索（QDCVR 协议）** | Phase 0 查询改写 → Phase 1 向量召回（跨库平衡）→ 内容门控：实读候选原文按 0–8 可解释 rubric 打分（主题 0-3/场景 0-3/证据 0-2，≥6 快速通过）→ Phase 2 图书管理员兜底（通读库摘要、多路定向召回）→ Phase 3 五段式答案或**如实奉告未找到**。**R1 修正（勿再混写）**：10 题最终门控 7-8/8（5×7/8 + 5×8/8）；**BQ06** 初检 5/8（头窗止于摘要）→**长文续读条款**转 8/8；**BQ10** 初检 4/8（top chunk 为参考文献页）→**Phase 2 兜底**定位 §4 Discussion 转 8/8。初检低分不是丑闻而是卖点：证明门控有区分度、兜底真被触发 | skill_track_evidence.json + skill_threeway_replication.md 逐题记录 |
-| **F4 Agent 原生界面** | MCP server（stdio/uv）暴露 **40+ kb_\* 工具**（41 实测），任何 agent harness 可即插即用；knowledgebase-search skill 封装 QDCVR 协议 | kb-mcp/server.py |
+| **F3 内容裁决检索（HMRS 协议）** | Phase 0 查询改写 → Phase 1 向量召回（跨库平衡）→ 内容门控：实读候选原文按 0–8 可解释 rubric 打分（主题 0-3/场景 0-3/证据 0-2，≥6 快速通过）→ Phase 2 图书管理员兜底（通读库摘要、多路定向召回）→ Phase 3 五段式答案或**如实奉告未找到**。**R1 修正（勿再混写）**：10 题最终门控 7-8/8（5×7/8 + 5×8/8）；**BQ06** 初检 5/8（头窗止于摘要）→**长文续读条款**转 8/8；**BQ10** 初检 4/8（top chunk 为参考文献页）→**Phase 2 兜底**定位 §4 Discussion 转 8/8。初检低分不是丑闻而是卖点：证明门控有区分度、兜底真被触发 | skill_track_evidence.json + skill_threeway_replication.md 逐题记录 |
+| **F4 Agent 原生界面** | MCP server（stdio/uv）暴露 **40+ kb_\* 工具**（41 实测），任何 agent harness 可即插即用；knowledgebase-search skill 封装 HMRS 协议 | kb-mcp/server.py |
 | **F5 经验生命周期** | QA 日志→经验条目→可复用 playbook，回流检索 | knowledgebase-experience skill 链 |
 | **F6 生产可部署** | 单机全栈（FastAPI :8771 + Nuxt :6789 + ChromaDB/BGE-M3 + Neo4j + MinerU + MCP）；ragctl 一键停/起（**冷启动 ~20s 实测**；6s/19s 口径待补录计时日志） | PIPELINE.md Stage0 预检记录 |
 
@@ -86,7 +86,7 @@ Abstract (180词) → §1 Introduction (0.9栏, 场景痛点+已有系统局限+
 
 **R1 修正（防稻草人）**：对比维度改为"**默认开箱行为**"语义——表头/图注必须注明 *"as documented default behavior (accessed 2026-xx)"*；框架类"诚实契约"格写 **"—（不作为协议提供，需自行实现）"** 而非 ✗；措辞纪律 "commonly requires / by default" 保留。
 
-| 维度（默认行为） | 通用 RAG 框架 (LangChain/LlamaIndex) | 一体化平台 (Dify 等) | **QDCVR** |
+| 维度（默认行为） | 通用 RAG 框架 (LangChain/LlamaIndex) | 一体化平台 (Dify 等) | **HMRS** |
 |---|---|---|---|
 | 内容级分类入库 | 需手工建库 | 规则/metadata 为主 | ✓（读正文自动分类+可审计判定工件） |
 | 可解释内容门控 | 需自行实现 | 需自行实现 | ✓（0-8 rubric，逐条留痕分数与通过路径） |
@@ -130,27 +130,27 @@ Abstract (180词) → §1 Introduction (0.9栏, 场景痛点+已有系统局限+
 ## 4. 论文逐节写作方案（含页预算与"怎么写"）
 
 **标题（草案）**
-> **QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval**
+> **HMRS: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval**
 
 （不用 "RAG" 一词进标题；两关键词=用户指定主线。）
 
 ### Abstract（~170 词，1 段）
 - 句 1-2 痛点：组织/团队的文档资产被当作扁平 chunk 袋；文件名与固定目录不可靠；裸向量检索无法自证"找对了"。
-- 句 3-4 系统与机制：QDCVR 按内容分类组织文档，检索时实读候选按 0-8 rubric 裁决，失败则如实奉告。
+- 句 3-4 系统与机制：HMRS 按内容分类组织文档，检索时实读候选按 0-8 rubric 裁决，失败则如实奉告。
 - 句 5 数字：50 篇真实论文 / 5 门类库 / 1321 分段；10 题回归 9/10；门控 7-8/8 且兜底全部成功。
 - 句 6 演示什么 + 视频 URL（摘要尾句，PolyUQuest 式；若超词移入脚注）。
 
 ### §1 Introduction（0.9 栏）
 - 开场场景（范文式具体化）：研究组/企业知识管理员面对 50 篇 PDF——哪个库？什么标签？问一句"X 的结论是什么"，系统凭什么说找对了？
 - 已有系统局限 **4 句**（R1 增补第 4 句，带引用）：① 框架类默认扁平分块；② 平台类靠手工建库与 metadata 规则；③ 裸向量靠相似度分自证，无内容裁决与失败契约；④ **agentic 方法（Self-RAG、FLARE 一类）可自证与弃答，但无协议化、可审计的 rubric 与失败契约，也未解决"按内容组织库"本身**。
-- "We present QDCVR…" + **4 条贡献 bullets**：
+- "We present HMRS…" + **4 条贡献 bullets**：
   1. content-based organization：正文分类入库+标签传播+可审计判定工件；
-  2. content-verified retrieval：QDCVR 协议（向量优先→内容门控→图书管理员兜底→如实奉告）；
+  2. content-verified retrieval：HMRS 协议（向量优先→内容门控→图书管理员兜底→如实奉告）；
   3. agent-native + deployable：MCP 40+ 工具 + skill 协议封装 + ragctl 一键单机部署（冷启动 ~20s）；
   4. evidence：50 篇真实文献全链路 benchmark（三轨对照，回归 9/10 spot check）。
 - 尾句：§3 给出三个现场演示场景。
 
-### §2 The QDCVR Platform（≈1.2 页）
+### §2 The HMRS Platform（≈1.2 页）
 - **Fig 1**（全宽 architecture，见 §5）后接 5 小节：
   - **2.1 Knowledge-Base Lifecycle**：上传→MinerU 解析→内容分段（>12k→≤10k part+章节头）→分类→标签→索引；一段话+行内小数字（50/50、1321）。
   - **2.2 Content-Based Organization**：分类器读正文而非文件名（举 1 个真实"文件名误导、内容改判"例子——classification.json notes 三例选一）；标签批量传播；判定工件落盘可审计。
@@ -194,7 +194,7 @@ Abstract (180词) → §1 Introduction (0.9栏, 场景痛点+已有系统局限+
 ## 5. 配图与图表设计规范（照范文风格执行，含 R1 修订）
 
 **Fig 1 — 系统架构（全宽跨栏，矢量 PDF，横向流水线）**
-- 4 条横带（自上而下）：Client Layer（Web Console / ragctl CLI / MCP Agents）；Agent & Protocol Layer（QDCVR skill：Phase 0→1→Gate→2→3 小框串联）；Service Layer（FastAPI：解析 MinerU / 分类 / 检索 / 标签 / 经验）；Storage Layer（ChromaDB+BGE-M3、Neo4j、YAML tree-fs）。
+- 4 条横带（自上而下）：Client Layer（Web Console / ragctl CLI / MCP Agents）；Agent & Protocol Layer（HMRS skill：Phase 0→1→Gate→2→3 小框串联）；Service Layer（FastAPI：解析 MinerU / 分类 / 检索 / 标签 / 经验）；Storage Layer（ChromaDB+BGE-M3、Neo4j、YAML tree-fs）。
 - 一条**真实示例 query**（"What limits NISQ devices?"）用高亮箭头从 Client 走到 Storage 再折返答案。**R1 约束：毫秒/耗时标注只印在示例 query 路径上，其余框保持干净**（防信息糊）。
 - 风格：圆角矩形、低饱和色（蓝灰系+一个强调橙）、无阴影、全图无衬线、字号 ≥7pt、色盲安全；TikZ 或 matplotlib 生成（放 `figures/fig1_architecture.pdf`，源码同目录 .py/.tex）。
 
@@ -209,7 +209,7 @@ System / Track    | Contract            | Retrieval (s) | End-to-end (s) | KW hi
 ------------------|---------------------|---------------|----------------|---------------
 B  Bare agent     | free-form           |     —         | 55.5 (18-77)   | 9
 C  Dense baseline | none                | 0.72          | 23.2           | 10
-A  QDCVR protocol | gate + fail-contract| 1.93 (+0.80)  |  <补测>        |  <补测>ᵃ
+A  HMRS protocol | gate + fail-contract| 1.93 (+0.80)  |  <补测>        |  <补测>ᵃ
 ```
 - ᵃ 脚注：判定="≥1 gold 关键词子串命中"；轮间 ±1 波动披露（B 10→9、C 9→10）。
 - **A 轨两格空缺不允许存在到提交**：执行期补测端到端 + 实算 KW hit（对 skill_track_answers.json 五段式答案）。若 KW hit 补测不利，备选方案=整列删除，换能力列 "Answer contract (cited 5-section / free-form / none)"。
@@ -277,7 +277,7 @@ paper_demo/
 
 **执行顺序（含 R1 新增产证步骤）：**
 1. **① UI 截图采集**（系统在跑；zoom 125-150%、裁面板，供 Fig2 与视频）
-2. **② honest-failure probe 产证**（R1 最高优先）：设计 2-3 个语料外问题（不存在的论文 / 跨库矛盾 / 杜撰概念）实跑 QDCVR 协议 → Phase 3 如实奉告原文落盘 `benchmark-suite/results/honest_failure_probe.json` + 截图 → Scenario 3b 与视频第三段专用
+2. **② honest-failure probe 产证**（R1 最高优先）：设计 2-3 个语料外问题（不存在的论文 / 跨库矛盾 / 杜撰概念）实跑 HMRS 协议 → Phase 3 如实奉告原文落盘 `benchmark-suite/results/honest_failure_probe.json` + 截图 → Scenario 3b 与视频第三段专用
 3. **②′ 缺口补测**：(a) Track A 端到端耗时一轮（10 题）；(b) Track A KW hit 实算（对 skill_track_answers.json，"≥1 gold 子串"口径）；(c) ragctl 冷启动计时日志落盘（或正文口径改 "~20s measured"）
 4. **③ visualization_agent 画 Fig1 + 视频录制（与 tex 起草并行）**
 5. **④ tex 起草**（按 §4 顺序；引用逐条核验后入 .bib）

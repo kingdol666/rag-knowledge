@@ -1,0 +1,183 @@
+{
+  "per_arm": {
+    "A0": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 39,
+      "gold_rate": 0.541667,
+      "gold_ci95": [
+        0.427399,
+        0.651714
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 38321,
+      "avg_tool_s_gold": 17.4,
+      "avg_digest_s_gold": 9.6
+    },
+    "A0f": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 44,
+      "gold_rate": 0.611111,
+      "gold_ci95": [
+        0.495624,
+        0.715343
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 303418,
+      "avg_tool_s_gold": 12.0,
+      "avg_digest_s_gold": 75.8
+    },
+    "A0h": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 51,
+      "gold_rate": 0.708333,
+      "gold_ci95": [
+        0.594943,
+        0.800619
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 309106,
+      "avg_tool_s_gold": 12.5,
+      "avg_digest_s_gold": 77.3
+    },
+    "PD": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 45,
+      "gold_rate": 0.625,
+      "gold_ci95": [
+        0.509529,
+        0.727808
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 307866,
+      "avg_tool_s_gold": 12.9,
+      "avg_digest_s_gold": 77.0
+    },
+    "A2": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 25,
+      "gold_rate": 0.347222,
+      "gold_ci95": [
+        0.247534,
+        0.462387
+      ],
+      "n_probe": 4,
+      "gate_rejections": null,
+      "gate_rejection_rate": null,
+      "gate_rejection_ci95": null,
+      "gate_evaluable": false,
+      "avg_bytes_gold": 1787,
+      "avg_tool_s_gold": 1.0,
+      "avg_digest_s_gold": 0.5
+    },
+    "A1b": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 39,
+      "gold_rate": 0.541667,
+      "gold_ci95": [
+        0.427399,
+        0.651714
+      ],
+      "n_probe": 4,
+      "gate_rejections": 0,
+      "gate_rejection_rate": 0.0,
+      "gate_rejection_ci95": [
+        0.0,
+        0.489891
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 38464,
+      "avg_tool_s_gold": 10.3,
+      "avg_digest_s_gold": 9.6
+    },
+    "A3": {
+      "n_total": 76,
+      "n_gold": 72,
+      "gold_hits": 25,
+      "gold_rate": 0.347222,
+      "gold_ci95": [
+        0.247534,
+        0.462387
+      ],
+      "n_probe": 4,
+      "gate_rejections": 4,
+      "gate_rejection_rate": 1.0,
+      "gate_rejection_ci95": [
+        0.510109,
+        1.0
+      ],
+      "gate_evaluable": true,
+      "avg_bytes_gold": 26885,
+      "avg_tool_s_gold": 8.8,
+      "avg_digest_s_gold": 6.7
+    }
+  },
+  "paired_mcnemar_vs_baseline": {
+    "A0f": {
+      "base_only": 0,
+      "arm_only": 5,
+      "p_exact_two_sided": 0.0625
+    },
+    "A0h": {
+      "base_only": 0,
+      "arm_only": 12,
+      "p_exact_two_sided": 0.00048828125
+    },
+    "PD": {
+      "base_only": 0,
+      "arm_only": 6,
+      "p_exact_two_sided": 0.03125
+    },
+    "A2": {
+      "base_only": 19,
+      "arm_only": 5,
+      "p_exact_two_sided": 0.006610751152038574
+    },
+    "A1b": {
+      "base_only": 1,
+      "arm_only": 1,
+      "p_exact_two_sided": 1.0
+    },
+    "A3": {
+      "base_only": 17,
+      "arm_only": 3,
+      "p_exact_two_sided": 0.0025768280029296875
+    }
+  },
+  "metric_note": "Gold containment is a retrieval proxy, not answer correctness.",
+  "ood_probe_note": "Gate rejection counts are retrieval-stage outcomes, not final-answer abstentions; A1 and A2 have no applicable gate outcome.",
+  "scope_note": "A1b/A2 are the final 2026-11-10 scoped-union re-runs (per-KB directed search merged by score); A0f/A0h/PD are the 2026-11-11 content-layer optimization arms (full-window judge; A0h adds a chunk-window union; PD drops navigation). New-arm traces were pollution-audited (top1/survivors all within the ten MD语料-* eval KBs, zero route-card leakage) before promotion."
+}

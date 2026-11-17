@@ -1,0 +1,367 @@
+<div id="ladder-reply-viz">
+  <h2>逐级检索优化实验 · 结果与四模式回复内容</h2>
+  <p class="text-small text-muted" id="lrv-meta"></p>
+
+  <div class="viz-grid" id="lrv-stats"></div>
+
+  <h3>金标命中率（gold n=72 / 臂）</h3>
+  <div id="lrv-chart" role="img" aria-label="八臂命中率条形图，含95%置信区间与BM25 floor参考线"></div>
+  <div class="table-responsive">
+    <table class="table table-sm" aria-label="八臂指标总表">
+      <thead>
+        <tr><th>臂</th><th class="text-end">金标命中</th><th class="text-end">命中率</th><th class="text-end">95% CI</th><th class="text-end">McNemar vs A0</th><th class="text-end">字节/题</th><th class="text-end">tool_s</th><th class="text-end">digest_s</th><th>路由</th><th>拒答门</th></tr>
+      </thead>
+      <tbody id="lrv-tbody"></tbody>
+    </table>
+  </div>
+  <p class="text-small text-muted">floor：BM25 60%（平台无关锚）· dense 47.5% / RRF 65% 为平台组成指纹，跨环境禁横比 · A3 端到端数值跨 run 敏感，只引定性结论。</p>
+
+  <h3>A0 未命中归因与新臂修复</h3>
+  <div id="lrv-attr"></div>
+
+  <hr>
+
+  <h3>模式回复内容（逐题真实工件）</h3>
+  <div class="nav nav-pills" role="tablist" aria-label="回复浏览方式">
+    <button class="nav-link active" id="lrv-tab-browse" role="tab" aria-controls="lrv-panel-browse" aria-selected="true" type="button">按模式浏览</button>
+    <button class="nav-link" id="lrv-tab-compare" role="tab" aria-controls="lrv-panel-compare" aria-selected="false" type="button">同题四模式对比</button>
+  </div>
+
+  <div id="lrv-panel-browse" role="tabpanel" aria-labelledby="lrv-tab-browse">
+    <div class="viz-controls">
+      <div id="lrv-arms" role="group" aria-label="选择模式"></div>
+      <label class="form-label" for="lrv-filter">筛选</label>
+      <select class="form-select form-select-sm" id="lrv-filter" style="width:auto">
+        <option value="all">全部 76 题</option>
+        <option value="hit">金标命中</option>
+        <option value="miss">未命中</option>
+        <option value="refusal">拒答探针</option>
+      </select>
+      <span class="text-small text-muted" id="lrv-count"></span>
+    </div>
+    <div class="lrv-row">
+      <div class="card lrv-list" id="lrv-list" role="listbox" aria-label="题目列表"></div>
+      <div id="lrv-detail" aria-live="polite" class="lrv-detail"></div>
+    </div>
+  </div>
+
+  <div id="lrv-panel-compare" role="tabpanel" aria-labelledby="lrv-tab-compare" hidden>
+    <div class="viz-controls">
+      <button class="btn btn-sm" id="lrv-prev" type="button">‹ 上一题</button>
+      <select class="form-select form-select-sm" id="lrv-cq" style="width:auto; max-width:340px" aria-label="选择题目"></select>
+      <button class="btn btn-sm" id="lrv-next" type="button">下一题 ›</button>
+      <span id="lrv-pattern" class="lrv-pattern"></span>
+    </div>
+    <div class="lrv-cgrid" id="lrv-cgrid" aria-live="polite"></div>
+  </div>
+
+  <hr>
+  <ul class="text-small text-muted lrv-notes">
+    <li>「回复内容」为各模式实际返回的证据摘要（含引用）头部截取，完整工件在 <code>artifacts/final_bench/responses/{A0,A0f,A0h,PD}.json</code>；A1b / A1-readall / A2 / A3 仅落盘 trace 指标、无逐题回复工件。</li>
+    <li>命中/未命中判定一律取终版 trace（与主表 52/45/37/46 一致）。回复文本取自 responses 快照，其中 walden（A0h/A0f/PD）与 A0 的 G-gwr-1 / G-fyp-1 / F-hlm-2 / F-hlm-3 共 7 行处于 chroma 段修复重跑前后的混合批次——这些行的 badge 与文本可能不完全对应，属已知快照漂移，以终版 trace 判卷为准。</li>
+    <li>判卷 = 本地 Laya 引擎（liveness real_engine=true，参考+inline 双模式）· 路由卡零泄漏 · 金标回贴 179/179。</li>
+    <li>R3 第三次独立复现（2026-11-12）：A0h 70.8%、逐题一致率 98.6%（71/72）；A1b / A2 100% 零翻转（可当确定性常数）；A3 端到端跨 run 翻转 → 只引定性；omp 真实 Agent 车道 7/7（含诚实 NOT_FOUND）。</li>
+    <li>A0h vs PD 正面对比：A0h-only 7 : PD-only 1（McNemar p=0.0703，方向一致未达显著；PD 多付 10× 搜索调用）。</li>
+  </ul>
+</div>
+
+<style>
+#ladder-reply-viz { width: 100%; }
+#ladder-reply-viz .lrv-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+#ladder-reply-viz .lrv-list { flex: 0 0 320px; max-width: 320px; max-height: 470px; overflow-y: auto; padding: 6px; }
+#ladder-reply-viz .lrv-detail { flex: 1 1 420px; min-width: 300px; }
+#ladder-reply-viz .lrv-qitem { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; padding: 5px 8px; border: 0; background: transparent; border-radius: 8px; }
+#ladder-reply-viz .lrv-qitem:hover { background: var(--muted); }
+#ladder-reply-viz .lrv-qitem.is-selected { background: var(--accent); }
+#ladder-reply-viz .lrv-qitem .lrv-qtext { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+#ladder-reply-viz .lrv-badge { display: inline-block; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+#ladder-reply-viz .lrv-hit { background: color-mix(in oklab, var(--green) 16%, transparent); color: var(--green); }
+#ladder-reply-viz .lrv-miss { background: color-mix(in oklab, var(--red) 14%, transparent); color: var(--red); }
+#ladder-reply-viz .lrv-refusal { background: color-mix(in oklab, var(--yellow) 20%, transparent); color: var(--yellow); }
+#ladder-reply-viz .lrv-neutral { background: var(--muted); color: var(--muted-foreground); }
+#ladder-reply-viz .lrv-reply { background: var(--muted); border-radius: 10px; padding: 10px 12px; max-height: 430px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; margin-top: 8px; }
+#ladder-reply-viz .lrv-reply-compare { max-height: 300px; }
+#ladder-reply-viz .lrv-metrics { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; }
+#ladder-reply-viz .lrv-cgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+#ladder-reply-viz .lrv-cpanel { padding: 10px 12px; }
+#ladder-reply-viz .lrv-cpanel .lrv-reply { margin-top: 6px; }
+#ladder-reply-viz .lrv-pattern { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+#ladder-reply-viz .lrv-seg { height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; color: var(--foreground); overflow: hidden; }
+#ladder-reply-viz .lrv-segrow { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+#ladder-reply-viz .lrv-seglabel { flex: 0 0 118px; }
+#ladder-reply-viz .lrv-segtrack { flex: 1 1 220px; display: flex; border-radius: 6px; overflow: hidden; }
+#ladder-reply-viz .lrv-notes { padding-left: 18px; margin-top: 8px; }
+#ladder-reply-viz .lrv-notes li { margin-bottom: 4px; }
+#ladder-reply-viz svg text { fill: var(--foreground); font-size: 12px; }
+@media (max-width: 760px) {
+  #ladder-reply-viz .lrv-cgrid { grid-template-columns: 1fr; }
+  #ladder-reply-viz .lrv-list { flex-basis: 100%; max-width: none; max-height: 300px; }
+}
+</style>
+
+<script>
+/*__DATA__*/
+(function () {
+  var root = document.getElementById('ladder-reply-viz');
+  if (!root || !window.DATA_LADDER) return;
+  var D = window.DATA_LADDER;
+
+  /* ---------- helpers ---------- */
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+  var pct = function (x) { return (x * 100).toFixed(1) + '%'; };
+  var kb = function (b) {
+    if (b == null) return '—';
+    if (b >= 1048576) return (b / 1048576).toFixed(1) + ' MB';
+    if (b >= 1024) return Math.round(b / 1024) + ' KB';
+    return b + ' B';
+  };
+  var fmtCI = function (ci) { return '[' + pct(ci[0]) + ', ' + pct(ci[1]) + ']'; };
+  function badge(cls, txt) { return '<span class="lrv-badge ' + cls + '">' + esc(txt) + '</span>'; }
+
+  /* ---------- meta + stat cards ---------- */
+  document.getElementById('lrv-meta').textContent = D.meta.line;
+
+  var stats = D.meta.stats.map(function (s) {
+    return '<div class="card viz-stat"><div class="text-muted">' + esc(s.label) + '</div>' +
+      '<div class="viz-stat-value">' + esc(s.value) + '</div>' +
+      '<div class="text-small text-muted">' + esc(s.sub) + '</div></div>';
+  }).join('');
+  document.getElementById('lrv-stats').innerHTML = stats;
+
+  /* ---------- summary table ---------- */
+  var tbody = document.getElementById('lrv-tbody');
+  tbody.innerHTML = D.arms.map(function (a) {
+    var star = a.recommended ? ' <span class="lrv-badge lrv-hit">推荐主臂</span>' : '';
+    return '<tr><td><strong>' + esc(a.id) + '</strong> ' + esc(a.desc) + star + '</td>' +
+      '<td class="text-end tabular-nums">' + a.hits + '/' + a.n + '</td>' +
+      '<td class="text-end tabular-nums"><strong>' + pct(a.rate) + '</strong></td>' +
+      '<td class="text-end tabular-nums text-muted">' + fmtCI(a.ci) + '</td>' +
+      '<td class="text-end tabular-nums">' + esc(a.p) + '</td>' +
+      '<td class="text-end tabular-nums">' + kb(a.bytes) + '</td>' +
+      '<td class="text-end tabular-nums">' + (a.tool_s == null ? '—' : a.tool_s) + '</td>' +
+      '<td class="text-end tabular-nums">' + (a.digest_s == null ? '—' : a.digest_s) + '</td>' +
+      '<td>' + esc(a.routing) + '</td><td>' + esc(a.gate) + '</td></tr>';
+  }).join('');
+
+  /* ---------- rate chart (SVG) ---------- */
+  var chartHost = document.getElementById('lrv-chart');
+  function drawChart() {
+    var W = Math.max(320, chartHost.clientWidth);
+    var rows = D.arms;
+    var left = 104, right = 64, top = 26, barH = 24, gap = 12;
+    var H = top + rows.length * (barH + gap) + 14;
+    var x0 = left, x1 = W - right;
+    var floorX = x0 + (x1 - x0) * D.floor.bm25;
+    var s = '';
+    rows.forEach(function (a, i) {
+      var y = top + i * (barH + gap);
+      var cy = y + barH / 2;
+      var w = Math.max(2, (x1 - x0) * a.rate);
+      var isRec = !!a.recommended, isUB = !!a.upper_bound;
+      var fill = isRec ? 'var(--viz-series-1)'
+        : 'color-mix(in oklab, var(--foreground) 13%, transparent)';
+      s += '<text x="' + (left - 10) + '" y="' + cy + '" text-anchor="end" dominant-baseline="middle"' + (isRec ? ' font-weight="500"' : '') + '>' + esc(a.id) + '</text>';
+      s += '<rect x="' + x0 + '" y="' + y + '" width="' + w + '" height="' + barH + '" rx="4" fill="' + fill + '"' + (isUB ? ' opacity="0.55"' : '') + '></rect>';
+      s += '<text x="' + (x0 + w + 8) + '" y="' + cy + '" dominant-baseline="middle">' + pct(a.rate) + '</text>';
+      var c0 = x0 + (x1 - x0) * a.ci[0], c1 = x0 + (x1 - x0) * a.ci[1];
+      s += '<line x1="' + c0 + '" y1="' + cy + '" x2="' + c1 + '" y2="' + cy + '" stroke="var(--foreground)" stroke-width="1.5" opacity="0.55"></line>';
+      s += '<line x1="' + c0 + '" y1="' + (cy - 5) + '" x2="' + c0 + '" y2="' + (cy + 5) + '" stroke="var(--foreground)" stroke-width="1.5" opacity="0.55"></line>';
+      s += '<line x1="' + c1 + '" y1="' + (cy - 5) + '" x2="' + c1 + '" y2="' + (cy + 5) + '" stroke="var(--foreground)" stroke-width="1.5" opacity="0.55"></line>';
+    });
+    s += '<line x1="' + floorX + '" y1="' + (top - 12) + '" x2="' + floorX + '" y2="' + (H - 10) + '" stroke="var(--foreground)" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.5"></line>';
+    s += '<text x="' + (floorX + 6) + '" y="' + (top - 14) + '" font-size="12">BM25 floor ' + Math.round(D.floor.bm25 * 100) + '%</text>';
+    s += '<line x1="' + x0 + '" y1="' + (H - 10) + '" x2="' + x1 + '" y2="' + (H - 10) + '" stroke="var(--border)" stroke-width="1"></line>';
+    chartHost.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="presentation">' + s + '</svg>';
+  }
+  drawChart();
+  if (window.ResizeObserver) new ResizeObserver(drawChart).observe(chartHost);
+
+  /* ---------- attribution ---------- */
+  var att = D.attribution;
+  function segBar(label, segs, total) {
+    var track = segs.map(function (g) {
+      var wpct = (100 * g.v / total).toFixed(2);
+      return '<span class="lrv-seg" style="width:' + wpct + '%;background:' + g.bg + ';color:' + g.fg + '" data-tooltip="' + esc(g.label + '：' + g.v) + '">' + (g.v >= 4 ? g.v : '') + '</span>';
+    }).join('');
+    return '<div class="lrv-segrow"><span class="lrv-seglabel text-small">' + esc(label) + '</span><span class="lrv-segtrack">' + track + '</span></div>';
+  }
+  var J = 'var(--viz-series-2)', Wn = 'var(--viz-series-3)';
+  var html = '';
+  html += segBar('A0 未命中 35', [
+    { v: att.a0.judge, label: 'judge-miss（窗内未进证据包）', bg: 'color-mix(in oklab, ' + J + ' 26%, transparent)', fg: J },
+    { v: att.a0.window, label: 'window-truncation（40K/200行截断）', bg: 'color-mix(in oklab, ' + Wn + ' 30%, transparent)', fg: Wn }
+  ], att.a0.judge + att.a0.window);
+  ['A0f', 'A0h', 'PD'].forEach(function (id) {
+    var f = att.fixes[id];
+    html += segBar(id + ' 修复 ' + f.total, [
+      { v: f.window, label: '修复·窗口截断类', bg: 'color-mix(in oklab, ' + Wn + ' 30%, transparent)', fg: Wn },
+      { v: f.judge, label: '修复·judge-miss 类', bg: 'color-mix(in oklab, ' + J + ' 26%, transparent)', fg: J }
+    ], f.total);
+  });
+  document.getElementById('lrv-attr').innerHTML = html +
+    '<p class="text-small text-muted">routing-miss 0（A0 路由 72/72 全对）· A0h 仍未命中 20/35 全为深处 judge-miss（gold 段 Laya<0.5 或 chunk 未召回对应窗口）· 回收主力 = A0h 的 chunk 窗口并集（+15 > PD +9 > A0f +8），0 回归。</p>';
+
+  /* ---------- state ---------- */
+  var state = { tab: 'browse', arm: 'A0h', filter: 'all', qid: null, cqid: null };
+  try {
+    var saved = (window.zcode && window.zcode.widgetState) || {};
+    var pc = saved.privateContent || {}, mc = saved.modelContent || {};
+    if (mc.tab === 'compare' || mc.tab === 'browse') state.tab = mc.tab;
+    if (D.replyArms.indexOf(mc.arm) >= 0) state.arm = mc.arm;
+    if (['all', 'hit', 'miss', 'refusal'].indexOf(pc.filter) >= 0) state.filter = pc.filter;
+    if (pc.qid && D.qids.indexOf(pc.qid) >= 0) state.qid = pc.qid;
+    if (pc.cqid && D.qids.indexOf(pc.cqid) >= 0) state.cqid = pc.cqid;
+  } catch (e) { }
+  function saveState() {
+    try {
+      window.zcode.setWidgetState({
+        modelContent: { tab: state.tab, arm: state.arm },
+        privateContent: { filter: state.filter, qid: state.qid, cqid: state.cqid }
+      }).catch(function () { });
+    } catch (e) { }
+  }
+
+  /* ---------- tab switching (absolute, idempotent) ---------- */
+  function setTab(tab) {
+    state.tab = tab; saveState();
+    var b = document.getElementById('lrv-tab-browse'), c = document.getElementById('lrv-tab-compare');
+    var pb = document.getElementById('lrv-panel-browse'), pcmp = document.getElementById('lrv-panel-compare');
+    var browse = tab === 'browse';
+    b.classList.toggle('active', browse); b.setAttribute('aria-selected', browse ? 'true' : 'false');
+    c.classList.toggle('active', !browse); c.setAttribute('aria-selected', browse ? 'false' : 'true');
+    pb.hidden = !browse; pcmp.hidden = browse;
+  }
+  document.getElementById('lrv-tab-browse').addEventListener('click', function () { setTab('browse'); });
+  document.getElementById('lrv-tab-compare').addEventListener('click', function () { setTab('compare'); });
+
+  /* ---------- reply helpers ---------- */
+  function hitBadge(r) {
+    if (r.refusal) return badge('lrv-refusal', '拒答探针');
+    return r.hit ? badge('lrv-hit', '命中') : badge('lrv-miss', '未命中');
+  }
+  function metricsLine(r) {
+    var bits = ['证据 ' + kb(r.bytes), 'tool ' + r.tool_s + 's', 'digest ' + r.digest_s + 's', 'calls ' + r.calls];
+    if (r.route === true) bits.push('路由 ✓');
+    if (r.route === false) bits.push('路由 ✗');
+    if (r.top1) bits.push('top1 ' + r.top1);
+    return '<div class="lrv-metrics text-small text-muted">' + bits.map(function (b) { return '<span>' + esc(b) + '</span>'; }).join('') + '</div>';
+  }
+  function replyBox(r, cls) {
+    var txt = r.text ? r.text : '（空回复）';
+    var cut = r.cut ? '<p class="text-small text-muted" style="margin:2px 0 0">…[已截断，完整 ' + r.len + ' 字符见 responses 工件]</p>' : '';
+    return '<div class="lrv-reply' + (cls ? ' ' + cls : '') + '">' + esc(txt) + '</div>' + cut;
+  }
+  function qHead(qid) {
+    var q = D.questions[qid];
+    var gold = q.gold_evidence ? '<p class="text-small" style="margin:4px 0">gold 文档：<code>' + esc(q.gold_doc) + '</code> · gold 证据：「' + esc(q.gold_evidence) + '」</p>' : '';
+    return '<h4 style="margin:0 0 2px">' + esc(q.q) + '</h4><p class="text-small text-muted" style="margin:2px 0">' + esc(qid) + (q.refusal ? ' · 拒答探针' : '') + '</p>' + gold;
+  }
+
+  /* ---------- browse tab ---------- */
+  var armsHost = document.getElementById('lrv-arms');
+  armsHost.innerHTML = D.replyArms.map(function (id) {
+    var a = D.arms.find(function (x) { return x.id === id; });
+    var rec = a && a.recommended ? '（推荐）' : '';
+    return '<button class="btn btn-sm" type="button" data-arm="' + id + '" aria-pressed="false">' + id + rec + ' · ' + pct(a.rate) + '</button>';
+  }).join('');
+  function setArm(id) {
+    state.arm = id; saveState();
+    Array.prototype.forEach.call(armsHost.querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-arm') === id ? 'true' : 'false');
+    });
+    renderList();
+  }
+  armsHost.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-arm]');
+    if (b) setArm(b.getAttribute('data-arm'));
+  });
+
+  var listHost = document.getElementById('lrv-list');
+  var filterSel = document.getElementById('lrv-filter');
+  filterSel.value = state.filter;
+  filterSel.addEventListener('change', function () { state.filter = filterSel.value; saveState(); renderList(); });
+
+  function renderList() {
+    var arm = state.arm, items = [];
+    D.qids.forEach(function (qid) {
+      var r = D.replies[arm][qid];
+      if (!r) return;
+      if (state.filter === 'hit' && !(r.hit && !r.refusal)) return;
+      if (state.filter === 'miss' && (r.hit || r.refusal)) return;
+      if (state.filter === 'refusal' && !r.refusal) return;
+      items.push({ qid: qid, r: r });
+    });
+    document.getElementById('lrv-count').textContent = items.length + ' 题 · 当前模式 ' + arm;
+    listHost.innerHTML = items.map(function (it) {
+      var q = D.questions[it.qid];
+      var attr = (arm === 'A0' && !it.r.refusal && !it.r.hit && D.attribution.rows[it.qid]) ? ' <span class="lrv-badge lrv-neutral">' + esc(D.attribution.rows[it.qid].short) + '</span>' : '';
+      return '<button class="lrv-qitem" type="button" role="option" data-qid="' + esc(it.qid) + '" aria-selected="false">' +
+        hitBadge(it.r) + '<span class="lrv-qtext text-small">' + esc(q.q) + '</span>' + attr + '</button>';
+    }).join('');
+    if (!items.some(function (it) { return it.qid === state.qid; })) {
+      state.qid = items.length ? items[0].qid : null;
+    }
+    renderDetail();
+  }
+
+  var detailHost = document.getElementById('lrv-detail');
+  function renderDetail() {
+    Array.prototype.forEach.call(listHost.querySelectorAll('.lrv-qitem'), function (b) {
+      var sel = b.getAttribute('data-qid') === state.qid;
+      b.classList.toggle('is-selected', sel);
+      b.setAttribute('aria-selected', sel ? 'true' : 'false');
+    });
+    if (!state.qid) { detailHost.innerHTML = '<p class="text-muted">无匹配题目。</p>'; return; }
+    var r = D.replies[state.arm][state.qid];
+    var attrNote = (state.arm === 'A0' && !r.hit && !r.refusal && D.attribution.rows[state.qid])
+      ? ' <span class="lrv-badge lrv-neutral">归因：' + esc(D.attribution.rows[state.qid].short) + '</span>' : '';
+    detailHost.innerHTML = '<div class="card" style="padding:12px 14px">' + qHead(state.qid) +
+      '<div class="lrv-metrics" style="margin-top:6px">' + hitBadge(r) + attrNote + '</div>' +
+      metricsLine(r) + (r.note ? '<p class="text-small text-muted" style="margin:6px 0 0">模式注记：' + esc(r.note) + '</p>' : '') +
+      '<p class="text-small text-muted" style="margin:8px 0 0">回复内容：</p>' + replyBox(r) + '</div>';
+  }
+  listHost.addEventListener('click', function (e) {
+    var b = e.target.closest('.lrv-qitem');
+    if (!b) return;
+    state.qid = b.getAttribute('data-qid'); saveState(); renderDetail();
+  });
+
+  /* ---------- compare tab ---------- */
+  var cqSel = document.getElementById('lrv-cq');
+  cqSel.innerHTML = D.qids.map(function (qid) {
+    return '<option value="' + esc(qid) + '">' + esc(qid + ' · ' + D.questions[qid].q.slice(0, 24)) + '</option>';
+  }).join('');
+  function setCq(qid, keepSave) {
+    if (D.qids.indexOf(qid) < 0) qid = D.qids[0];
+    state.cqid = qid; cqSel.value = qid; if (keepSave !== false) saveState();
+    var pat = D.replyArms.map(function (id) {
+      var r = D.replies[id][qid];
+      return '<span class="lrv-badge ' + (r.refusal ? 'lrv-refusal' : (r.hit ? 'lrv-hit' : 'lrv-miss')) + '">' + id + ' ' + (r.refusal ? '拒答' : (r.hit ? '命中' : '未命中')) + '</span>';
+    }).join('');
+    document.getElementById('lrv-pattern').innerHTML = pat;
+    document.getElementById('lrv-cgrid').innerHTML = D.replyArms.map(function (id) {
+      var r = D.replies[id][qid];
+      return '<div class="card lrv-cpanel"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong>' + esc(id) + '</strong>' + hitBadge(r) + '</div>' +
+        '<div class="lrv-metrics text-small text-muted"><span>证据 ' + kb(r.bytes) + '</span><span>tool ' + r.tool_s + 's</span><span>digest ' + r.digest_s + 's</span></div>' +
+        replyBox(r, 'lrv-reply-compare') + '</div>';
+    }).join('');
+  }
+  document.getElementById('lrv-prev').addEventListener('click', function () {
+    var i = D.qids.indexOf(state.cqid); setCq(D.qids[Math.max(0, i - 1)]);
+  });
+  document.getElementById('lrv-next').addEventListener('click', function () {
+    var i = D.qids.indexOf(state.cqid); setCq(D.qids[Math.min(D.qids.length - 1, i + 1)]);
+  });
+  cqSel.addEventListener('change', function () { setCq(cqSel.value); });
+
+  /* ---------- init ---------- */
+  setArm(state.arm);
+  setTab(state.tab);
+  if (!state.cqid) state.cqid = 'L-pipl-1';
+  setCq(state.cqid, false);
+})();
+</script>

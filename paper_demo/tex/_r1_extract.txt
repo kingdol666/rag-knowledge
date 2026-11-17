@@ -1,5 +1,5 @@
 ===== PAGE 1 =====
-QDCVR: An Agent-Operated Platform for Knowledge
+HMRS: An Agent-Operated Platform for Knowledge
 Organization and Inspectable Retrieval
 Author Name
 Affiliation
@@ -8,7 +8,7 @@ author@example.com
 Abstract
 Research administrators need to organize document collections and
 inspect the evidence behind answers drawn from them. We present
-Qdcvr, an agent-operated platform that connects content-guided
+Hmrs, an agent-operated platform that connects content-guided
 knowledge organization with inspectable retrieval. Packaged agent
 skills call tool APIs to parse documents, route them among existing
 category bases, maintain tags, and read candidate evidence. The
@@ -24,7 +24,7 @@ three scripted out-of-corpus examples illustrate agent-authored not-
 found reports. These operational spot checks provide concrete cases
 for examining the workflow, its recorded decisions, and the limits of
 available evidence. Demo video: https://github.com/kingdol666/rag-
-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4.
+knowledge/blob/master/paper_demo/video/hmrs-demo.mp4.
 CCS Concepts
 •Information systems →Information retrieval;•Human-
 centered computing→Interactive systems and tools.
@@ -32,7 +32,7 @@ Keywords
 knowledge-base management, retrieval-augmented generation, ev-
 idence inspection, agent workflows, demonstration
 ACM Reference Format:
-Author Name. 2026. QDCVR: An Agent-Operated Platform for Knowledge
+Author Name. 2026. HMRS: An Agent-Operated Platform for Knowledge
 Organization and Inspectable Retrieval. InCIKM ’26, November 9–11, 2026,
 Rome, Italy.ACM, New York, NY, USA, 5 pages.
 1 Introduction
@@ -47,11 +47,11 @@ eration and adapt later processing [ 1,7]. DeepRead exposes doc-
 ument hierarchies and paragraph coordinates to locate passages
 CIKM ’26, Rome, Italy
 2026.before reading them [ 4]. CyberBOT grounds generation and verifi-
-cation in an ontology [ 8]. QDCVR complements these approaches
+cation in an ontology [ 8]. HMRS complements these approaches
 with content-guided collection management and a reusable evi-
 dence workflow built on tool APIs. The integration problem is to
 carry a document from administrative placement into evidence an
-agent can locate and a user can inspect. QDCVR connects move-
+agent can locate and a user can inspect. HMRS connects move-
 ment/tagging tools to the same document-part identifiers used by
 search and reading. Attendees can therefore inspect a routing de-
 cision and then follow the placed document into an answer or a
@@ -77,7 +77,7 @@ their outputs. Section 4 examines saved traces and provenance
 limits as operational evidence, not a general efficacy comparison.
 2 System and Agent Workflow
 2.1 Services and Agent Operations
-Qdcvrcombines a web console, a FastAPI backend, a service-
+Hmrscombines a web console, a FastAPI backend, a service-
 management CLI ( ragctl ), and an MCP server [ 5]. The inspected
 implementation exposes 41 kb_* knowledge-management tools
 within a 94-tool inventory, including document creation, movement,
@@ -95,7 +95,7 @@ Graph navigation is optional, not the evaluated retrieval route.
 ===== PAGE 2 =====
 CIKM ’26, November 9–11, 2026, Rome, Italy Author Name
 BQ02 · Wha t deﬁnes NISQ t echnology and wha t is its cen tral limit ation?
-Dense RA G (our r eproduction) QDCVR (ag ent-execut ed skill)
+Dense RA G (our r eproduction) HMRS (ag ent-execut ed skill)
 ≈800-t oken windo ws
 Fixed fr agmen ts
 Dense r etrieval → pack 2 e xcerp ts
@@ -120,7 +120,7 @@ Scoped r eportCompar ed conﬁgur ations,
 not a claim of accur acy superiority .
 0–8 rubric: ≥6 dir ect; usable P1 =5 ma y support an a ttribut ed ans wer after fallback. Sc ores ar e agent judgmen ts.
 Figure 1: Two evidence-handling workflows for the same question. The reproduced dense baseline retrieves candidates and
-packs two excerpts for one generation call; its logging adapter does not retain source-document metadata. The QDCVR skill asks
+packs two excerpts for one generation call; its logging adapter does not retain source-document metadata. The HMRS skill asks
 an agent to read section-addressed evidence and assess it before answering. Initial scores below six invoke recovery; a usable
 score-five backstop may support an explicitly qualified answer after recovery. This schematic explains the configurations, not a
 general accuracy ranking.
@@ -140,7 +140,7 @@ plete tagging and indexing. Administrators retain control over the
 bases and permissions. The five-base collection is a demonstration
 configuration, not a platform restriction.
 2.3 Read, Assess, and Escalate
-QDCVR stands for Query-Driven Content-Verified Retrieval. Its
+HMRS stands for Hierarchical Management Retrieval System. Its
 skill rewrites a query, recalls vector candidates across selected
 bases, and reads their text.Content-verifieddenotes a prompted
 relevance assessment, not guaranteed correctness. The executingagent assigns
@@ -166,7 +166,7 @@ Attendees inspect documents in the web console and operate an
 MCP-capable agent with the packaged skills loaded. The presenter
 2
 ===== PAGE 3 =====
-QDCVR: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval CIKM ’26, November 9–11, 2026, Rome, Italy
+HMRS: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval CIKM ’26, November 9–11, 2026, Rome, Italy
 Web HT TP / CLI se tup Agents → MCP adap ter Back end / s torage primitiv es
 (a) Ag ent-assis ted ing est (b) Online r etrieval
 PDFMinerU
@@ -195,9 +195,9 @@ No usable P0/P1Qualiﬁed ans wer
 With a ttribution
 After fallback:
 Usable P1 =5
-5 retained; ≤4 disc ardedAgent-execut ed QDCVR skill Demo: ﬁv e category bases
+5 retained; ≤4 disc ardedAgent-execut ed HMRS skill Demo: ﬁv e category bases
 Skills e xecut e gate / retry / classiﬁc ation; w eb or HT TP sear ch does not aut oma tically en force this policy .
-Figure 2: Platform operations and the agent-executed QDCVR workflow. (a) Parsing, content-guided placement, and part-level
+Figure 2: Platform operations and the agent-executed HMRS workflow. (a) Parsing, content-guided placement, and part-level
 checks prepare indexed evidence. (b) The packaged skill prescribes query rewriting, recall, reading, and a conditional content
 assessment. Scores of at least six permit a direct answer; lower initial scores invoke the librarian. After reassessment, usable
 score-five evidence can support an attributed backstop answer; no usable evidence yields not-found. These instructions are not
@@ -234,7 +234,7 @@ collection, not the existence of an answer elsewhere.
 We examine saved operational traces for ten questions and three
 out-of-corpus probes over 50 papers in five category bases, compris-
 ing 165 stored documents and parts. Track A pairs tool-execution
-records with savedQdcvranswers; Track B uses an external agent
+records with savedHmrsanswers; Track B uses an external agent
 with file tools over exported papers; Track C uses dense retrieval
 with a 4,000-character context budget. A separate regression using
 the raw questions passes 9/10 cases: each pass requires the desig-
@@ -245,7 +245,7 @@ one literal gold keyword in their combined snippets. BQ06 retrieves
 CIKM ’26, November 9–11, 2026, Rome, Italy Author Name
 BQ01 · Ho w is a ttention c omput ed, and wh y replace r ecurr ence and c onvolution?
 Tool r ecords + ag ent-author ed summaries; not an aut onomous benchmark.
-A QDCVR
+A HMRS
 Saved e vidence tr aceB Bar e agent
 Self-report ed ﬁle sour ceC Dense RA G
 Our r eproduction
@@ -316,7 +316,7 @@ A records retrieval and read times but not answer-authoring time,so its end-to-e
 port an operational demonstration, not claims of answer accuracy,
 speed advantage, or general efficacy.
 5 Conclusion
-Qdcvrlinks knowledge-base management tools with an agent-
+Hmrslinks knowledge-base management tools with an agent-
 executed workflow for reading evidence, assessing relevance, and
 reporting search failure. The demonstration exposes document
 placement, source inspection, and not-found behavior. The saved
@@ -333,7 +333,7 @@ OpenAI Codex assisted with prose revision, manuscript organiza-
 tion, inspection of implementation and experiment artifacts, and
 4
 ===== PAGE 5 =====
-QDCVR: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval CIKM ’26, November 9–11, 2026, Rome, Italy
+HMRS: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval CIKM ’26, November 9–11, 2026, Rome, Italy
 vector-figure implementation. No new answer-generation experi-
 ments were run for this revision; reported observations come from
 the existing saved records. The demonstrated system uses language

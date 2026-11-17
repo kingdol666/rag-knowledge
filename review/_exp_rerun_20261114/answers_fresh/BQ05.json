@@ -1,0 +1,29 @@
+{
+ "qid": "BQ05",
+ "arxiv": "1512.08067",
+ "question": "Why does historical European economic growth contradict Unified Growth Theory?",
+ "http": 200,
+ "error": "",
+ "wall_s": 142.4,
+ "latency_s": 140.683,
+ "turns": 7,
+ "cost_usd": 0.33201516,
+ "success": true,
+ "answer": "**结论：** 按照该库收录文献的论证，欧洲（西方 12 个领先国家、西方 30 国合计、东欧）的 Maddison 长期 GDP 数据显示的是 **AD 1500–1900 年间不间断的双曲增长**，Galor 统一增长理论（UGT）所主张的“马尔萨斯停滞→后马尔萨斯→持续增长”三阶段，以及“惊人的马尔萨斯陷阱逃离”，在数据中都不存在；工业革命也未改变增长轨迹，因此在欧洲这一本应最支持 UGT 的地区，该理论反而被数据推翻。（来源：Nielsen, *Unified Growth Theory Contradicted by the Economic Growth in Europe*, Griffith University, Dec 2015, arXiv:1512.08067；库「经济与社会」）\n\n**核心论据**\n\n1. **方法：倒数变换检验。** 若增长是双曲型 S(t)=(a−kt)⁻¹，其倒数 1/GDP = a−kt 应为一条下降直线；直线即“机制未变”，不应被人为切成两三个“制度阶段”。该文用 Maddison (2010) 数据分别作半对数与倒数图。\n2. **无停滞、无跳变。** “There was never a transition from stagnation to growth because there was no stagnation.” 马尔萨斯振荡（随机波动）在原始与倒数图中均缺失；所谓起飞特征在倒数图上“missing”。\n3. **拟合参数（可复核的关键数字）：**\n   - 西欧 12 国：a = 1.147×10⁻¹，k = 5.961×10⁻⁵，奇点 1923 年；但增长约在 1900 年转向更慢轨迹（绕过奇点约 23 年）；AD 1500–1900 拟合“remarkably good”。\n   - 西欧 30 国合计：a = 9.859×10⁻²，k = 5.112×10⁻⁵，奇点 1929 年，约 1900 年转向（约 29 年）。\n   - 东欧：a = 7.749×10⁻¹，k = 4.048×10⁻⁴，奇点 1915 年，约 1890 年转向（约 25 年）。\n4. **逐条对撞（Conclusions 原文）：** “The theory claims a prolonged epoch of stagnation; the data show a steadily-increasing hyperbolic growth. The theory claims the existence of Malthusian trap; the data show that there was no trap… The theory claims that the Industrial Revolution was the primary engine of economic growth; the data show that this engine had absolutely no effect on the economic growth trajectories.”\n5. **对 UGT 数据用法的批评：** Galor 等人反复只取 4 个点用直线相连（Ashraf 2009；Galor 2005a 等多处），该文称这种处理“unscientific”，导致理论“dissociated from reality”，需“thoroughly revised… most likely replaced”。\n6. **附加论点：** 该文还称 UGT 宣称的“持续增长时代”具有误导性——数据反而显示增长虽已减速但仍过快，指向不安全的未来（Nielsen 2015f）。\n\n**可信度标注：** P1（直接相关，但为单一作者 arXiv 预印本的批评性论证，非中性综述；本次检索未见 Galor 原著或 UGT 教科书条目入库，故仅呈现该批评文献的立场与证据）。库内另有同文分块副本（KB `Corpus-Chunks800`，`economics__1512.08067…__k*.md`），不构成独立第二来源。",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 1,
+  "kw_total": 1,
+  "kw_list_hit": [
+   "unified growth theory"
+  ],
+  "cited": true,
+  "n_markers": 2,
+  "markers_head": [
+   "1512.08067",
+   "1512.08067"
+  ],
+  "false_abstain": false,
+  "chars": 1768
+ }
+}

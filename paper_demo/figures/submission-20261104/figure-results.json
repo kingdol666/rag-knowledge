@@ -1,0 +1,85 @@
+{
+  "A0": {
+    "n_gold": 72,
+    "gold_hits": 37,
+    "gold_rate": 0.5138888888888888,
+    "wilson_95": [
+      0.40069754605192803,
+      0.6256732547092813
+    ],
+    "avg_bytes_gold": 31409,
+    "avg_tool_seconds_gold": 16.3,
+    "avg_digest_seconds_gold": 7.9
+  },
+  "A1-readall": {
+    "n_gold": 72,
+    "gold_hits": 72,
+    "gold_rate": 1.0,
+    "wilson_95": [
+      0.9493488274035422,
+      1.0
+    ],
+    "avg_bytes_gold": 24313972,
+    "avg_tool_seconds_gold": 253.7,
+    "avg_digest_seconds_gold": 6078.5
+  },
+  "A1b": {
+    "n_gold": 72,
+    "gold_hits": 42,
+    "gold_rate": 0.5833333333333334,
+    "wilson_95": [
+      0.46807697931465553,
+      0.6901478252526017
+    ],
+    "avg_bytes_gold": 28215,
+    "avg_tool_seconds_gold": 9.0,
+    "avg_digest_seconds_gold": 7.0
+  },
+  "A2": {
+    "n_gold": 72,
+    "gold_hits": 35,
+    "gold_rate": 0.4861111111111111,
+    "wilson_95": [
+      0.37432674529071863,
+      0.5993024539480719
+    ],
+    "avg_bytes_gold": 1641,
+    "avg_tool_seconds_gold": 0.2,
+    "avg_digest_seconds_gold": 0.4
+  },
+  "A3": {
+    "n_gold": 72,
+    "gold_hits": 33,
+    "gold_rate": 0.4583333333333333,
+    "wilson_95": [
+      0.34828627057626194,
+      0.5726013271401095
+    ],
+    "avg_bytes_gold": 23461,
+    "avg_tool_seconds_gold": 7.8,
+    "avg_digest_seconds_gold": 5.9
+  },
+  "mcnemar_exact_vs_A0": {
+    "A1-readall": 5.820766091346741e-11,
+    "A1b": 0.266845703125,
+    "A2": 0.8505540192127228,
+    "A3": 0.454498291015625
+  },
+  "ood_gate_rejections": {
+    "A0": {
+      "n_probes": 4,
+      "rejections": 2
+    },
+    "A1-readall": null,
+    "A1b": {
+      "n_probes": 4,
+      "rejections": 0
+    },
+    "A2": null,
+    "A3": {
+      "n_probes": 4,
+      "rejections": 0
+    }
+  },
+  "scope_note": "Gold containment uses the 72 in-domain questions. The four out-of-domain probes are reported separately. A1b/A2 and dense/RRF used unscoped global search and returned collections outside the evaluation corpus; those vector-arm results are exploratory, not controlled comparisons."
+}

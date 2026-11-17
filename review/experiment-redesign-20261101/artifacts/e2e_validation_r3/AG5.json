@@ -1,0 +1,44 @@
+{
+  "qid": "AG5",
+  "harness": "omp",
+  "seconds": 250.4,
+  "final": {
+    "success": true,
+    "task_id": "kbt_mwd1t1sl_14ff2c30",
+    "status": "completed",
+    "mode": "async",
+    "prompt": "基于知识库回答（限定范围提示：优先在「技术」相关知识库中检索）：Which Kubernetes documentation chapter explains the Pod Security Standards profiles? 要求：按 QDCVR 流程（改写→kb_search_vector 宽网→kb_laya_judge 引用式判卷→kb_doc_read 逐字核验），答案给出引用文档 doc_path 并逐字引用关键句，标注可信度。若知识库中不存在答案，如实报告未找到，禁止编造。",
+    "engine": "omp",
+    "permission": "bypassPermissions",
+    "created_at": "2026-11-12T04:29:00.117Z",
+    "finished_at": "2026-11-12T04:33:06.821Z",
+    "result": {
+      "success": true,
+      "reply": "## 检索执行（QDCVR 全流程）\n\n**改写（Phase 0）**\n原句 → 声明式检索式：`Kubernetes official documentation chapter that defines and explains the Pod Security Standards profiles: Privileged, Baseline and Restricted policies, and how they are applied via Pod Security Admission.`\n\n**向量宽网（Phase 1）**\n- `kb_search_vector` @ `MD语料-技术-英文` (d7a93979-…)，top_k=30、slim=true：threshold 0.35 → **0 命中**；按契约降 0.30 重试 → **仍 0**。\n- 全库复核（balance_kbs=true, 0.35）返回的 14 条全是无关分块（基因本体、远程医疗、HNSW 调优、民法典/密码法等），无任何 Kubernetes 文档 → **该 KB 的向量集合对本查询无召回**（判定为索引未建/为空，记盲区，不据此下结论）。\n\n**Laya 引用式判卷（Phase 2，reference 模式，服务器端取正文）**\n`kb_laya_judge(query=改写式, documents=[k8s_pss.md, k8s_components.md, k8s_nodes.md], criterion=evidence, threshold=0.5)`\n→ `status=ok, real_engine=true, engine=laya_sdk, candidate=8, scored=8, survivor=6, docs_with_yes=3`；\n- `MD语料-技术-英文/k8s_pss.md` segment-0000 **0.6697**、segment-0001 **0.5354** → 存活（目标章节）\n- `k8s_components.md` 0.8241、`k8s_nodes.md` 0.7592/0.6865/0.6988 → 存活但仅术语级命中，**仅留审计，不作证据**\n\n**逐字核验（Phase 3）**\n`kb_doc_read` 读取 `k8s_pss.md` 首部（1–120 行）与尾部（520–586 行），全文 586 行，章节结构完整。\n\n---\n\n## 答案\n\n**章节：Kubernetes 官方文档《Pod Security Standards》（概念 → 安全 章节）**，库内文档 `MD语料-技术-英文\\k8s_pss.md`。**可信度 P0（直接命中、逐字核验）**。\n\n逐字引用（该文档 YAML front matter 与正文）：\n\n```yaml\ntitle: Pod Security Standards\ndescription: >\n  A detailed look at the different policy levels defined in the Pod Security Standards.\ncontent_type: concept\nweight: 15\n```\n\n> \"The Pod Security Standards define three different _policies_ to broadly cover the security\n> spectrum. These policies are _cumulative_ and range from highly-permissive to highly-restrictive.\n> This guide outlines the requirements of each policy.\"\n>\n> | Profile | Description |\n> | ------ | ----------- |\n> | **Privileged** | Unrestricted policy, providing the widest possible level of permissions. This policy allows for known privilege escalations. |\n> | **Baseline** | Minimally restrictive policy which prevents known privilege escalations. Allows the default (minimally specified) Pod configuration. |\n> | **Restricted** | Heavily restricted policy, following current Pod hardening best practices. |\n\n章节内部结构印证\"explains the profiles\"：`## Profile Details` → `### Privileged`（\"**The _Privileged_ policy is purposely-open, and entirely unrestricted.**\"）、`### Baseline`（\"**The _Baseline_ policy is aimed at ease of adoption for common containerized workloads while preventing known privilege escalations.**\"），以及 `## FAQ → ### Why isn't there a profile between Privileged and Baseline?`：\n\n> \"The three profiles defined here have a clear linear progression from most secure (Restricted) to least\n> secure (Privileged), and cover a broad set of workloads.\"\n\n补充（同章节 FAQ，说明执行机制；该库 13 篇文档中**不含**独立的 Pod Security Admission 章节）：\n\n> \"As of July 2021, [Pod Security Policies](/docs/concepts/security/pod-security-policy/) are deprecated in favor of the\n> built-in [Pod Security Admission Controller](/docs/concepts/security/pod-security-admission/).\"\n\n**盲区/限制**：`MD语料-技术-英文` 的向量召回为 0（0.35 与 0.30 两档均空，全库扫描亦无 Kubernetes 命中），本次结论来自目录导航 + Laya 引擎逐段判卷 + 原文字节级核验，非向量召回。若问者指的是\"Pod Security Admission\"章节本身，则该库无此文档。\n\n## Result\n\n- 目标库：`MD语料-技术-英文` (kb_id `d7a93979-3454-4ae9-a738-985a0c5456a5`)，共 13 篇。\n- 答案：**《Pod Security Standards》章节**，doc_path = `MD语料-技术-英文\\k8s_pss.md`（586 行，含 Privileged / Baseline / Restricted 三档 profile 定义与 Profile Details、Pod OS field、User namespaces、FAQ）。\n- 证据：Laya evidence 判卷 segment 得分 0.6697 / 0.5354（文档级 yes）；正文逐字引用已核验（title、description、overview 段、profile 表、FAQ）。\n- 可信度：**P0**。审计性弱相关（不采信）：`k8s_components.md` 0.8241、`k8s_nodes.md` 0.7592/0.6865/0.6988。\n- 检索统计：queries=3（改写式×2 + 全库复核×1）、candidates=13（目录全量）+8 段判卷、judged_segments=8、survivors=6(3 文档)、fallback=librarian（目录导航，本进程执行）。\n- 盲区：该 KB 向量索引无召回（两档阈值均 0 命中）；库内无独立 Pod Security Admission 文档。",
+      "engine": "omp",
+      "permission": "bypassPermissions",
+      "tools_used": [
+        "read",
+        "mcp__kb-mcp__backend_status",
+        "mcp__kb-mcp__kb_list",
+        "mcp__kb-mcp__backend_status",
+        "mcp__kb-mcp__kb_list",
+        "mcp__kb-mcp__kb_search_vector",
+        "mcp__kb-mcp__kb_search_vector",
+        "mcp__kb-mcp__kb_search_vector",
+        "mcp__kb-mcp__kb_get_documents",
+        "mcp__kb-mcp__kb_get_documents",
+        "mcp__kb-mcp__kb_laya_judge",
+        "mcp__kb-mcp__kb_laya_judge",
+        "mcp__kb-mcp__kb_doc_read",
+        "mcp__kb-mcp__kb_doc_read",
+        "mcp__kb-mcp__kb_search_vector"
+      ],
+      "session_id": "01a1ce04-275a-7000-845c-6964a700bb36",
+      "duration_ms": 246613,
+      "total_cost_usd": 0.0678798,
+      "num_turns": 13,
+      "stop_reason": "stop"
+    }
+  }
+}

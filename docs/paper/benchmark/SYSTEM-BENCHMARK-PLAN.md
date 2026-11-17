@@ -1,4 +1,4 @@
-# QDCVR 知识库平台 — CIKM 2027 可发表级完整评测方案（v6.0 最终版）
+# HMRS 知识库平台 — CIKM 2027 可发表级完整评测方案（v6.0 最终版）
 
 > **本文是评测的唯一权威文档，取代之前所有版本（含 v5.0）。**
 > **目标**: CIKM 2027 Full Research Paper §6 Experimental Evaluation
@@ -59,7 +59,7 @@ Claims
   C3:  content-overrides-vector → 可信            [EXP-4]
   C4:  经验 E0-E12 加速运维检索                   [EXP-5]
   C5:  自动归档 A0-A9 准确可靠                    [EXP-6]
-  C6:  QDCVR 在效率-精度联合指标上超越基线          [EXP-7, EXP-8]
+  C6:  HMRS 在效率-精度联合指标上超越基线          [EXP-7, EXP-8]
   C7:  五层一致性模型保障数据可靠性                 [EXP-9]
   C8:  图谱桥接文档实现跨域知识发现                 [EXP-10]
   C9:  balance_kbs 防止大库霸权                    [EXP-11]
@@ -94,7 +94,7 @@ Result
 | **C3** | content-overrides-vector 原则独立于向量分裁决 | EXP-4 | CRAG/Self-RAG 做不到的可解释裁决 |
 | **C4** | 经验优先检索使运维查询的文档读取减少 ≥50% | EXP-5 | 经验的实用价值 |
 | **C5** | 自动归档 Top-1 准确率 ≥80%，支撑结构可靠 | EXP-6 | 领域结构的前提条件成立 |
-| **C6** | QDCVR 在效率-精度联合指标上超越 CRAG 和 Self-RAG | EXP-7, EXP-8 | 整体优势 |
+| **C6** | HMRS 在效率-精度联合指标上超越 CRAG 和 Self-RAG | EXP-7, EXP-8 | 整体优势 |
 | **C7** | 五层一致性模型确保文档删除后索引正确清理 | EXP-9 | 数据完整性（#1 数据损坏成因的防御） |
 | **C8** | 图谱桥接文档发现跨域知识联系 | EXP-10 | Neo4j 图谱的实用价值 |
 | **C9** | balance_kbs 多样性守卫防止大库检索霸权 | EXP-11 | 公平检索的工程保障 |
@@ -161,7 +161,7 @@ CIKM 审稿人会要求与**最相关已发表工作**对比，且基线必须**
 | **B5: Self-RAG-style** ⭐ | 反射验证 | 内容验证对手 | 用 LLM 模拟 reflection token |
 | **B6: MCP-Pyserini** | Agent IR | **必须引用+区分** | 调用其 MCP 工具做检索对比 |
 | **B7: 两阶段搜索 (不含内容验证)** | 我们的系统消融 | 验证内容验证的独立贡献 | 同管线但跳过 Step 3 |
-| **B8: Flat QDCVR (无 KB 选择)** | 我们的系统消融 | 验证 KB 选择的独立贡献 | 同管线但 kb_id="" |
+| **B8: Flat HMRS (无 KB 选择)** | 我们的系统消融 | 验证 KB 选择的独立贡献 | 同管线但 kb_id="" |
 | **S1: RAGFlow** | 知识库系统 | 系统级对照 | 同文档集，测入库→检索完整流程 |
 | **S2: Dify** | 知识库平台 | 系统级对照 | 同文档集，测功能覆盖 |
 | **S3: LightRAG** | 图增强 RAG | 图方法对照 | 同文档集，测图增强效果 |
@@ -292,7 +292,7 @@ Step 3: 输出 Figure 1 数据
 ### EXP-1: 检索精度主实验
 
 **对应论文**: §6.2 Main Results (Table 1)
-**假设 (H1)**: QDCVR Domain-organized 检索的 P@5 ≥ Vector-only Flat 检索，且 nDCG@5 显著更高。
+**假设 (H1)**: HMRS Domain-organized 检索的 P@5 ≥ Vector-only Flat 检索，且 nDCG@5 显著更高。
 **预注册**: H0: P@5(domain) = P@5(flat); H1: P@5(domain) > P@5(flat)
 
 #### 数据集: D1 (arXiv-6D, 60 queries) + D2 (MS MARCO dev, 50 queries sampled) + D3 (BEIR NFCorpus+SciFact)
@@ -334,7 +334,7 @@ Stage D: 计算指标
 | B1: Vector-only (Flat) | — | — | — | — | — | — | ~13,709 |
 | B2: BM25+Vector | — | — | — | — | — | — | ~13,709 |
 | B3: Vec+CE Rerank | — | — | — | — | — | — | ~13,709 |
-| **QDCVR Domain (ours)** | — | — | — | — | — | — | **~12** |
+| **HMRS Domain (ours)** | — | — | — | — | — | — | **~12** |
 | *Δ vs B3* | | | | | | | **×1,142** |
 
 **验收**: P@5(domain) ≥ P@5(flat) 且 搜索空间缩减 ≥ 100× (p < 0.05)
@@ -344,7 +344,7 @@ Stage D: 计算指标
 ### EXP-2: 跨域误召回消除
 
 **对应论文**: §6.3 Cross-Domain Robustness (Table 2, Figure 4)
-**假设 (H2)**: QDCVR 的领域 KB 选择系统性消除跨域假阳性，FPR 显著低于 Flat 检索。
+**假设 (H2)**: HMRS 的领域 KB 选择系统性消除跨域假阳性，FPR 显著低于 Flat 检索。
 
 #### 数据集: D7 对抗查询集 (15 条) + D1 multi-domain queries + D6 现有跨域数据
 
@@ -387,7 +387,7 @@ Stage D: 跨域混淆矩阵
 ### EXP-3: 多基线全面对比
 
 **对应论文**: §6.2 Main Results + §6.6 Comparison with Prior Systems
-**目的**: 在一张表上展示 QDCVR 相对所有基线的优势。
+**目的**: 在一张表上展示 HMRS 相对所有基线的优势。
 
 #### 协议
 
@@ -398,7 +398,7 @@ Stage A: 检索方法对比 (B1-B8 vs Ours)
   → B5 (Self-RAG): LLM 逐 chunk 输出 IS_REL/IS_SUP
   → B6 (MCP-Pyserini): 如其 MCP 可用则调用；否则用等价的 BM25+dense 实现 + 诚实声明
   → B7 (Two-stage without content verification): 我们的管线跳过 Step 3
-  → B8 (Flat QDCVR without KB selection): 同管线但 kb_id="" 
+  → B8 (Flat HMRS without KB selection): 同管线但 kb_id="" 
   → 所有方法同嵌入、同 top-k、同查询
 
 Stage B: 系统级对比 (S1-S3 vs Ours)
@@ -429,8 +429,8 @@ Stage B: 系统级对比 (S1-S3 vs Ours)
 | B5: Self-RAG-style | — | — | — | — | 13,709 | 1 |
 | B6: MCP-Pyserini | — | — | — | — | 13,709 | 1 |
 | B7: Two-stage (no verify) | — | — | — | — | 13,709 | 0 |
-| B8: QDCVR Flat (no KB sel) | — | — | — | — | 13,709 | 0 |
-| **QDCVR (ours)** | — | — | — | — | **~12** | **9** |
+| B8: HMRS Flat (no KB sel) | — | — | — | — | 13,709 | 0 |
+| **HMRS (ours)** | — | — | — | — | **~12** | **9** |
 | *Best baseline* | *best* | *best* | *best* | *best* | — | — |
 
 ---
@@ -438,7 +438,7 @@ Stage B: 系统级对比 (S1-S3 vs Ours)
 ### EXP-4: Content-Overrides-Vector 实证
 
 **对应论文**: §6.4 Content Verification Analysis (Figure 5)
-**假设 (H3)**: 存在高向量分(>0.6)低内容分(≤4)的文档被 QDCVR 正确丢弃，证明 C-over-V 原则有效。
+**假设 (H3)**: 存在高向量分(>0.6)低内容分(≤4)的文档被 HMRS 正确丢弃，证明 C-over-V 原则有效。
 
 #### 协议
 
@@ -451,7 +451,7 @@ Stage A: 对每条查询 (D1, 60 条)
 Stage B: 构建 Content-vs-Vector 散点图
   → 横轴: Vector Score [0,1]
   → 纵轴: Content Score [0,8]
-  → 关键区域: 右下角 (v>0.6, c≤4) = QDCVR 正确截断的假阳性
+  → 关键区域: 右下角 (v>0.6, c≤4) = HMRS 正确截断的假阳性
 
 Stage C: 量化 C-over-V 贡献
   → False Positive Prevention Rate (FPPR) 对比 CRAG 和 Self-RAG
@@ -461,7 +461,7 @@ Stage C: 量化 C-over-V 贡献
 
 | 场景 | 数量 | 说明 |
 |------|:---:|------|
-| 高向量 (>0.6) + 低内容 (≤4) | ~18% | QDCVR 正确截断 |
+| 高向量 (>0.6) + 低内容 (≤4) | ~18% | HMRS 正确截断 |
 | 高向量 + 高内容 → Accept | ~65% | 正确通过 |
 | 低向量 + 高内容 → Accept | ~5% | C-over-V 挽救 |
 
@@ -470,7 +470,7 @@ Stage C: 量化 C-over-V 贡献
 ### EXP-7: 效率与成本对比
 
 **对应论文**: §6.6 Efficiency Analysis (Table 7)
-**目的**: 证明 QDCVR 的延迟是可接受的，且效率-精度联合指标优于基线。
+**目的**: 证明 HMRS 的延迟是可接受的，且效率-精度联合指标优于基线。
 
 #### 协议
 
@@ -487,7 +487,7 @@ Stage B: 方法间延迟对比
   → B1 (Vector): 纯向量检索
   → B3 (Vec+CE): 向量 + Cross-Encoder 重排
   → B4 (CRAG): 评估器
-  → QDCVR: 完整管线
+  → HMRS: 完整管线
 ```
 
 #### 预期结果表 (Table 7)
@@ -506,7 +506,7 @@ Stage B: 方法间延迟对比
 | B1: Vector-only | — | — | — |
 | B3: Vec+CE | — | — | — |
 | B4: CRAG-style | — | — | — |
-| **QDCVR** | — | — | — |
+| **HMRS** | — | — | — |
 
 ---
 
@@ -519,7 +519,7 @@ Stage B: 方法间延迟对比
 
 | 变体 | 移除的组件 | 验证的 Claim | 预期 ΔP@5 | 预期 ΔFPR |
 |------|-----------|:-----------:|:---------:|:---------:|
-| QDCVR-full | — (完整系统) | baseline | 0.000 | 0.000 |
+| HMRS-full | — (完整系统) | baseline | 0.000 | 0.000 |
 | −ContentVerify | 0-8 内容验证 (Step 3) | C3 | **−0.15** | **+0.28** |
 | −Archiving | 自动归档 → 扁平 KB | C5, C1 | **−0.12** | **+0.22** |
 | −DomainScope | KB 选择 → 全库检索 | C1, C2 | **−0.08** | **+0.18** |
@@ -1122,7 +1122,7 @@ $$
 | 论文元素 | 来源实验 | 类型 |
 |---------|:--------:|------|
 | **Figure 1**: 跨域污染实证 | EXP-0 | 散点图 |
-| **Figure 2**: QDCVR 管线总览 | 架构 | 流程图 |
+| **Figure 2**: HMRS 管线总览 | 架构 | 流程图 |
 | **Figure 3**: Content-vs-Vector 散点图 | EXP-4 | 散点图 |
 | **Figure 4**: FPR 对比柱状图 | EXP-2 | 柱状图 |
 | **Figure 5**: 消融瀑布图 | EXP-8 | 瀑布图 |
@@ -1182,12 +1182,12 @@ Method A vs Method B:
 
 | 检验对 | 指标 | 实验 |
 |--------|------|:----:|
-| QDCVR vs B4 (CRAG) | P@5, nDCG@5 | EXP-3 |
-| QDCVR vs B1 (Flat vector) | FPR | EXP-2 |
-| QDCVR-full vs −ContentVerify | P@5 | EXP-8 |
-| QDCVR-full vs −Archiving | P@5 | EXP-8 |
-| QDCVR-full vs −AutoIndex | P@5 | EXP-8 |
-| QDCVR-full vs −IncrementalIndex | P@5, Consistency | EXP-8 |
+| HMRS vs B4 (CRAG) | P@5, nDCG@5 | EXP-3 |
+| HMRS vs B1 (Flat vector) | FPR | EXP-2 |
+| HMRS-full vs −ContentVerify | P@5 | EXP-8 |
+| HMRS-full vs −Archiving | P@5 | EXP-8 |
+| HMRS-full vs −AutoIndex | P@5 | EXP-8 |
+| HMRS-full vs −IncrementalIndex | P@5, Consistency | EXP-8 |
 | Doc-only vs Exp-first | docs_read | EXP-5 |
 | Bridge docs vs Random | relevance | EXP-10 |
 | balance=true vs balance=false | Shannon entropy | EXP-11 |
@@ -1349,7 +1349,7 @@ benchmark/
 ```json
 {
   "timestamp": "2026-07-29T00:00:00Z",
-  "system": "QDCVR Knowledge Platform v2.3.0",
+  "system": "HMRS Knowledge Platform v2.3.0",
   "plan_version": "v6.0",
   "composite_score": 0.XXX,
   "dimensions": {
@@ -1395,7 +1395,7 @@ benchmark/
 | 评测金字塔 | 3 层 | **4 层 (+Layer 0 数据基础层)** | 解析质量是整个系统的前提 |
 | Claims | 10 | **16** | 新增 C11-C16 |
 | 数据集 | 8 个 | **13 个** | 新增 D9-D13 |
-| 基线系统 | 10 个 | **12 个 (+B8, +P1, +P2)** | QDCVR 扁平对照 + 解析基线 |
+| 基线系统 | 10 个 | **12 个 (+B8, +P1, +P2)** | HMRS 扁平对照 + 解析基线 |
 | 新增 EXP-13 ⭐ | — | **冥想自动归纳质量** | 独特差异化功能 |
 | 新增 EXP-14 ⭐ | — | **多格式解析质量** | 入库管线可靠性基础 |
 | 新增 EXP-15 ⭐ | — | **增量索引正确性** | 长期运行数据安全 |
@@ -1412,6 +1412,6 @@ benchmark/
 
 ---
 
-> **本文件是 QDCVR 评测的权威定稿 (v6.0 Final)。所有实验执行、结果记录、论文写作均以此为准。**
+> **本文件是 HMRS 评测的权威定稿 (v6.0 Final)。所有实验执行、结果记录、论文写作均以此为准。**
 > **执行时严格遵循：公开协议 → 预注册假设 → 执行 → 记录 → 不做 p-hacking。**
 > **v6.0 新增 6 个实验覆盖了从数据基础层 (Layer 0) 到系统扩展性的全部能力维度，确保 CIKM 审稿人无法以"未覆盖关键功能"为由拒绝。**

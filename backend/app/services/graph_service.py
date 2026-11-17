@@ -44,8 +44,18 @@ def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+class AmbiguousDocumentPath(ValueError):
+    """A bare document name matches more than one catalog path."""
+
+    def __init__(self, doc_path: str, candidates: list[str]) -> None:
+        self.doc_path = doc_path
+        self.candidates = candidates
+        super().__init__(f"Ambiguous document name {doc_path!r}; use a full path: {', '.join(candidates)}")
+
+
 def _graph_doc_id(doc_path: str) -> str:
-    return "doc::" + doc_path.replace("\\", "/")
+    path = _norm_path(doc_path)
+    return path if path.startswith("doc::") else "doc::" + path
 
 
 def _norm_path(p: str) -> str:
@@ -156,33 +166,46 @@ class GraphService:
         return ""
 
     def _resolve_doc_path(self, doc_path: str) -> str:
-        """Normalise a doc_path for graph lookups.
+        """Canonicalize a graph document path and resolve unambiguous bare names.
 
-        Graph nodes are keyed on graph_doc_id = 'doc::' + full_path. A bare
-        filename (no KB prefix) never matches an ingest-time id and silently
-        returns an empty graph (E2E BUG-4). Resolve a bare name to its full
-        kb-prefixed path by scanning the storage catalog; full paths and
-        already-canonical forms pass through unchanged.
+        Full paths retain their KB prefix and only have separators normalized.
+        Bare names are resolved through the storage catalog. Returning the
+        first match would query an arbitrary node when names collide, so an
+        ambiguous name is rejected and callers must provide a full path.
         """
         if not doc_path:
             return doc_path
-        # Already qualified (contains a separator) → use as-is.
-        if "/" in doc_path or "\\" in doc_path:
-            return doc_path
+        original = doc_path
+        explicit_id = doc_path.startswith("doc::")
+        if explicit_id:
+            doc_path = doc_path[5:]
+        normalized = _norm_path(doc_path)
+        if explicit_id or "/" in normalized:
+            return normalized
         try:
             from app.services.storage_reader_service import storage_reader
+            candidates: set[str] = set()
             for kb in storage_reader.list_knowledge_bases():
                 kb_path = kb.get("path", "")
                 if not kb_path:
                     continue
-                for d in storage_reader.list_documents(kb_path):
-                    name = (d.get("name") or "").strip()
-                    dp = (d.get("path") or "").replace("\\", "/")
-                    if name == doc_path or dp.rsplit("/", 1)[-1] == doc_path:
-                        return dp
+                for doc in storage_reader.list_documents(kb_path):
+                    name = (doc.get("name") or "").strip()
+                    path = _norm_path(doc.get("path", ""))
+                    if name == normalized or path.rsplit("/", 1)[-1] == normalized:
+                        if path:
+                            candidates.add(path)
+            if len(candidates) == 1:
+                return next(iter(candidates))
+            if len(candidates) > 1:
+                raise AmbiguousDocumentPath(doc_path, sorted(candidates))
+        except AmbiguousDocumentPath:
+            raise
         except Exception as e:
             logger.debug("doc path resolution failed for %s: %s", doc_path, e)
-        return doc_path
+        # Preserve legacy behavior for unknown names; callers can inspect
+        # document_found to distinguish a missing node from an unconnected one.
+        return original
 
     def _resolve_kb_id(self, raw):
         if re.match(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", raw.lower()):
@@ -205,6 +228,7 @@ class GraphService:
 
     def index_document(self, doc_path="", content="", kb_id="", doc_name="", description="", tags=None, similar_docs=None, agent_relations=None):
         from app.services.storage_reader_service import storage_reader
+        doc_path = self._resolve_doc_path(doc_path)
         gid = _graph_doc_id(doc_path)
         norm = _norm_path(doc_path)
         tags = tags or []
@@ -225,10 +249,10 @@ class GraphService:
                 if agent_relations:
                     agent_count = self._relate_agent_judged(session, gid, agent_relations)
         except Exception as e:
-            return {"graph_doc_id": gid, "kb_id": kb_id, "parent_kb_id": parent_kb_id or None, "tag_count": len(tags) if tags else 0, "shared_tag_relations": 0, "vector_relations": 0, "agent_relations": 0, "indexed_at": _now_iso(), "error": str(e)[:200]}
+            return {"success": False, "graph_doc_id": gid, "kb_id": kb_id, "parent_kb_id": parent_kb_id or None, "tag_count": len(tags) if tags else 0, "shared_tag_relations": 0, "vector_relations": 0, "agent_relations": 0, "indexed_at": _now_iso(), "error": str(e)[:200]}
         logger.info("Graph indexed %s (%d tags, %d shared_tag edges)",
                          doc_path, len(tags) if tags else 0, shared_tag_edge_count)
-        return {"graph_doc_id": gid, "kb_id": kb_id, "parent_kb_id": parent_kb_id or None, "tag_count": len(tags) if tags else 0, "shared_tag_relations": shared_tag_edge_count, "vector_relations": len(similar_docs) if similar_docs else 0, "agent_relations": agent_count if agent_relations else 0, "indexed_at": _now_iso()}
+        return {"success": True, "graph_doc_id": gid, "kb_id": kb_id, "parent_kb_id": parent_kb_id or None, "tag_count": len(tags) if tags else 0, "shared_tag_relations": shared_tag_edge_count, "vector_relations": len(similar_docs) if similar_docs else 0, "agent_relations": agent_count if agent_relations else 0, "indexed_at": _now_iso()}
 
     def _write_doc_metadata(self, session, gid, doc_path, kb_id, doc_name, description, tags, parent_kb_id="", kb_name=""):
         # SET kb.name = coalesce($kb_name, kb.name): always-SET so re-indexing
@@ -318,7 +342,7 @@ class GraphService:
             op = sim.get("doc_path", "")
             sc = sim.get("score", 0.0)
             if not op or sc < config.vector_score_threshold: continue
-            og = _graph_doc_id(op)
+            og = _graph_doc_id(self._resolve_doc_path(op))
             session.run("MATCH (me:Document {graph_doc_id: $gid}) MATCH (other:Document {graph_doc_id: $og}) MERGE (me)-[r:RELATED_TO]->(other) ON CREATE SET r.reason='vector_similar', r.weight=$sc, r.created_at=datetime() ON MATCH SET r.weight=$sc, r.reason='vector_similar'", gid=gid, og=og, sc=round(sc, 4))
             session.run("MATCH (other:Document {graph_doc_id: $og}) MATCH (me:Document {graph_doc_id: $gid}) MERGE (other)-[r:RELATED_TO]->(me) ON CREATE SET r.reason='vector_similar', r.weight=$sc, r.created_at=datetime() ON MATCH SET r.weight=$sc, r.reason='vector_similar'", gid=gid, og=og, sc=round(sc, 4))
 
@@ -329,7 +353,7 @@ class GraphService:
             rtype = rel.get("relation_type", "agent_judged")
             weight = float(rel.get("weight", 1.0))
             if not op: continue
-            og = _graph_doc_id(op)
+            og = _graph_doc_id(self._resolve_doc_path(op))
             session.run("MATCH (me:Document {graph_doc_id: $gid}) MATCH (other:Document {graph_doc_id: $og}) MERGE (me)-[r:RELATED_TO]->(other) ON CREATE SET r.reason=$rtype, r.weight=$weight, r.reasoning=$reasoning, r.created_at=datetime() ON MATCH SET r.reason=$rtype, r.weight=CASE WHEN $weight>r.weight THEN $weight ELSE r.weight END, r.reasoning=$reasoning", gid=gid, og=og, rtype=rtype, weight=weight, reasoning=reasoning)
 
     def _extract_tags(self, doc):
@@ -340,18 +364,37 @@ class GraphService:
             return [t.strip() for t in raw.split(",") if t.strip()]
         return []
 
-    def build_kb_graph(self, kb_id, force=False):
+    def build_kb_graph(self, kb_id, force=False, *, enable_vector_similarity=True):
         from app.services.storage_reader_service import storage_reader
         kb_path = self._resolve_kb_path(kb_id)
         if not kb_path:
             return {"success": False, "error": f"KB not found: {kb_id}"}
         kb_id_resolved = self._resolve_kb_id(kb_id)
         if force:
-            try: self.delete_kb_graph(kb_id_resolved)
-            except Exception as e: logger.warning("Pre-build delete failed: %s", e)
+            # Invalidate old success markers before deleting nodes. If deletion
+            # or rebuilding fails, a non-forced build must retry those documents.
+            paths = [kb_path] + [sub["path"] for sub in storage_reader.list_sub_kbs(kb_id_resolved)]
+            for path in paths:
+                for doc in storage_reader.list_documents(path):
+                    if doc.get("graph_index") and doc.get("path"):
+                        if not storage_reader.update_document_graph_index(path, doc["path"], {}):
+                            return {"success": False, "kb_id": kb_id_resolved, "kb_path": kb_path,
+                                    "errors": [{"doc_path": doc["path"], "reason": "Failed to clear stale graph_index marker"}]}
+            try:
+                self.delete_kb_graph(kb_id_resolved)
+            except Exception as e:
+                logger.warning("Pre-build delete failed: %s", e)
+                return {"success": False, "kb_id": kb_id_resolved, "kb_path": kb_path,
+                        "errors": [{"kb_id": kb_id_resolved, "reason": f"Pre-build delete failed: {e}"}]}
         try:
-            with self.driver.session(database=config.graph_database) as session: self._ensure_schema(session)
-        except Exception as e: logger.warning("Schema ensure failed: %s", e)
+            with self.driver.session(database=config.graph_database) as session:
+                self._ensure_schema(session)
+        except Exception as e:
+            logger.exception("Schema ensure failed for KB graph build %s", kb_id_resolved)
+            return {"success": False, "kb_id": kb_id_resolved, "kb_path": kb_path,
+                    "docs_processed": 0, "docs_skipped": 0, "total_relations": 0,
+                    "sub_kb_count": 0, "sub_kbs": [],
+                    "errors": [{"kb_id": kb_id_resolved, "reason": f"Schema ensure failed: {e}"}]}
         parent_kb_id = storage_reader.get_kb_parent(kb_id_resolved) or ""
         direct = self._build_single_kb_docs(kb_id_resolved, kb_path, force, parent_kb_id)
         sub_kbs = storage_reader.list_sub_kbs(kb_id_resolved)
@@ -359,12 +402,28 @@ class GraphService:
         for sub in sub_kbs:
             sub_r = self._build_single_kb_docs(sub["kb_id"], sub["path"], force, parent_kb_id=kb_id_resolved)
             sub_results.append({"kb_id": sub["kb_id"], "kb_path": sub["path"], **sub_r})
-        self._relate_kbs_by_tags(kb_id_resolved, sub_kbs)
+        errors = direct["errors"] + [e for s in sub_results for e in s["errors"]]
+        try:
+            self._relate_kbs_by_tags(kb_id_resolved, sub_kbs)
+        except Exception as e:
+            logger.warning("KB tag relation build failed: %s", e)
+            errors.append({"kb_id": kb_id_resolved, "reason": f"KB tag relation build failed: {e}"})
         total_docs = direct["docs_processed"] + sum(s["docs_processed"] for s in sub_results)
+        # Standalone builds include scoped similarity; global builds defer it
+        # until every KB has been indexed, and run it once across the graph.
+        if enable_vector_similarity:
+            try:
+                vector_result = self._build_vector_similarity_edges(force=force, kb_id=kb_id_resolved)
+                errors.extend({"kb_id": kb_id_resolved, "reason": f"Vector similarity build failed: {error}"}
+                              for error in vector_result.get("errors", []))
+            except Exception as e:
+                logger.warning("Single-KB vector similarity build failed: %s", e)
+                errors.append({"kb_id": kb_id_resolved, "reason": f"Vector similarity build failed: {e}"})
         # Count ACTUAL relationships from Neo4j instead of the incomplete per-doc
         # accumulation (which misses vector_similar edges built in a separate phase).
         all_kb_ids = [kb_id_resolved] + [s["kb_id"] for s in sub_kbs]
         actual_total_rels = direct["total_relations"] + sum(s["total_relations"] for s in sub_results)
+        relation_count_exact = False
         try:
             with self.driver.session(database=config.graph_database) as session:
                 rec = session.run(
@@ -375,16 +434,13 @@ class GraphService:
                 ).single()
                 if rec:
                     actual_total_rels = rec["cnt"]
+                    relation_count_exact = True
+                else:
+                    errors.append({"kb_id": kb_id_resolved, "reason": "Relation count query returned no result"})
         except Exception as e:
             logger.warning("Post-build relation count query failed: %s", e)
-        # FIX: build vector_similar edges for this KB. Previously only the
-        # global build_all_graphs created similarity edges, so single-KB
-        # builds produced zero RELATED_TO edges between documents.
-        try:
-            self._build_vector_similarity_edges(force=force, kb_id=kb_id_resolved)
-        except Exception as e:
-            logger.warning("Single-KB vector similarity build failed: %s", e)
-        return {"success": True, "kb_id": kb_id_resolved, "kb_path": kb_path, "docs_processed": total_docs, "docs_skipped": direct["docs_skipped"] + sum(s["docs_skipped"] for s in sub_results), "total_relations": actual_total_rels, "sub_kb_count": len(sub_kbs), "sub_kbs": sub_results, "errors": direct["errors"] + [e for s in sub_results for e in s["errors"]]}
+            errors.append({"kb_id": kb_id_resolved, "reason": f"Relation count query failed: {e}"})
+        return {"success": not errors, "kb_id": kb_id_resolved, "kb_path": kb_path, "docs_processed": total_docs, "docs_skipped": direct["docs_skipped"] + sum(s["docs_skipped"] for s in sub_results), "total_relations": actual_total_rels, "relation_count_exact": relation_count_exact, "sub_kb_count": len(sub_kbs), "sub_kbs": sub_results, "errors": errors}
 
     def _build_single_kb_docs(self, kb_id, kb_path, force, parent_kb_id=""):
         from app.services.storage_reader_service import storage_reader
@@ -393,13 +449,28 @@ class GraphService:
         total_relations = 0
         for doc in docs:
             doc_path = doc.get("path", "")
-            if not doc_path or doc.get("file_type") == "knowledge-base": continue
-            if not force and doc.get("graph_index"): skipped.append(doc_path); continue
+            if not doc_path or doc.get("file_type") == "knowledge-base":
+                continue
+            marker = doc.get("graph_index")
+            valid_marker = isinstance(marker, dict) and marker and not marker.get("error") and marker.get("success") is not False
+            if not force and valid_marker:
+                skipped.append(doc_path)
+                continue
             tags = self._extract_tags(doc)
             try:
+                # A failed forced rebuild must not leave a stale success marker
+                # that would suppress the next non-forced attempt.
+                if marker and not storage_reader.update_document_graph_index(kb_path, doc_path, {}):
+                    errors.append({"doc_path": doc_path, "reason": "Failed to clear stale graph_index marker"})
+                    continue
                 result = self.index_document(doc_path=doc_path, kb_id=kb_id, doc_name=doc.get("name", ""), description=doc.get("description", ""), tags=tags)
+                if result.get("success") is False or result.get("error"):
+                    errors.append({"doc_path": doc_path, "reason": result.get("error") or "Graph indexing failed"})
+                    continue
                 gi = {"graph_doc_id": result["graph_doc_id"], "kb_id": kb_id, "parent_kb_id": parent_kb_id or None, "tag_count": result["tag_count"], "indexed_at": _now_iso(), "schema_version": _GRAPH_SCHEMA_VERSION}
-                storage_reader.update_document_graph_index(kb_path, doc_path, gi)
+                if not storage_reader.update_document_graph_index(kb_path, doc_path, gi):
+                    errors.append({"doc_path": doc_path, "reason": "Failed to persist graph_index marker; document will be retried"})
+                    continue
                 total_relations += (result.get("vector_relations", 0) +
                                result.get("agent_relations", 0) +
                                result.get("shared_tag_relations", 0))
@@ -689,7 +760,7 @@ class GraphService:
         # ── Phase 1: 按 KB 构建元数据 + 标签关联 ──
         for kb in top_kbs:
             kid = kb["kb_id"] or kb["path"]
-            r = self.build_kb_graph(kid, force)
+            r = self.build_kb_graph(kid, force, enable_vector_similarity=False)
             results.append({"kb_id": kid, "kb_path": kb["path"], **r})
 
         total_docs_phase1 = sum(r.get("docs_processed", 0) for r in results)
@@ -711,9 +782,10 @@ class GraphService:
             kb_relation_stats = self._relate_all_kbs_comprehensive()
         except Exception as e:
             logger.warning("KB relation build failed: %s", e)
+            kb_relation_stats["error"] = str(e)[:300]
 
         return {
-            "success": True,
+            "success": all(r.get("success", False) for r in results) and not vector_stats.get("errors") and not kb_relation_stats.get("error"),
             "total_top_kbs": len(results),
             "kbs": results,
             "phase1_metadata": {"docs_processed": total_docs_phase1},
@@ -735,6 +807,16 @@ class GraphService:
     def search_tags(self, keyword, limit=20):
         with self.driver.session(database=config.graph_database) as s:
             return [dict(r) for r in s.run("MATCH (t:Tag) WHERE t.name CONTAINS $k OPTIONAL MATCH (t)<-[:HAS_TAG]-(d:Document) WITH t, count(d) AS dc RETURN t.name AS name, dc AS doc_count ORDER BY dc DESC LIMIT $limit", k=keyword, limit=limit)]
+
+    @_retry_transient
+    def document_exists(self, doc_path: str) -> bool:
+        """Return whether the requested document node exists in Neo4j."""
+        gid = _graph_doc_id(self._resolve_doc_path(doc_path))
+        with self.driver.session(database=config.graph_database) as session:
+            return session.run(
+                "MATCH (d:Document {graph_doc_id: $gid}) RETURN count(d) > 0 AS found",
+                gid=gid,
+            ).single()["found"]
 
     def get_related_documents(self, doc_path, limit=20):
         """获取与目标文档真正相关的文档（质量过滤）。
@@ -825,6 +907,7 @@ class GraphService:
                        sum(1 for a in agent if a.get("kb_id") != my_kb)
 
             return {
+                "document_found": me_rec is not None,
                 "by_vector_similar": vec,
                 "by_shared_tags": tag,
                 "by_agent_judged": agent,
@@ -903,6 +986,7 @@ class GraphService:
             return {
                 "doc_path": _norm_path(doc_path),
                 "graph_doc_id": gid,
+                "document_found": doc is not None,
                 "document": doc_data,
                 "tags": doc_data.get("tags", []),
                 "related_documents": [dict(r) for r in related],
@@ -928,7 +1012,7 @@ class GraphService:
         depth = max(1, min(int(depth), 3))
         with self.driver.session(database=config.graph_database) as s:
             if node_type == "document":
-                gid = _graph_doc_id(node_id) if not node_id.startswith("doc::") else node_id
+                gid = _graph_doc_id(self._resolve_doc_path(node_id))
                 q = f"MATCH path=(d:Document {{graph_doc_id: $id}})-[*1..{depth}]-(n) RETURN nodes(path) AS ns, relationships(path) AS rs LIMIT 50"
                 result = s.run(q, id=gid)
             elif node_type == "kb":
@@ -979,7 +1063,7 @@ class GraphService:
     @_retry_transient
     def find_document_paths(self, doc_a, doc_b, max_depth=4):
         md = max(1, min(int(max_depth), 6))
-        ga, gb = _graph_doc_id(doc_a), _graph_doc_id(doc_b)
+        ga, gb = _graph_doc_id(self._resolve_doc_path(doc_a)), _graph_doc_id(self._resolve_doc_path(doc_b))
         with self.driver.session(database=config.graph_database) as s:
             paths = [dict(r) for r in s.run(f"MATCH (a:Document {{graph_doc_id: $na}}), (b:Document {{graph_doc_id: $nb}}) MATCH p=shortestPath((a)-[:RELATED_TO*1..{md}]-(b)) RETURN [n IN nodes(p) | n.path] AS doc_path, [r IN relationships(p) | r.reason] AS reasons, length(p) AS hops LIMIT 5", na=ga, nb=gb)]
             return {"doc_a": doc_a, "doc_b": doc_b, "paths": paths, "path_count": len(paths)}
@@ -992,7 +1076,7 @@ class GraphService:
 
     @_retry_transient
     def delete_document(self, doc_path):
-        gid = _graph_doc_id(doc_path)
+        gid = _graph_doc_id(self._resolve_doc_path(doc_path))
         with self.driver.session(database=config.graph_database) as s:
             s.run("MATCH (d:Document {graph_doc_id: $gid})-[r:RELATED_TO]-() DELETE r", gid=gid)
             s.run("MATCH (d:Document {graph_doc_id: $gid})-[r:HAS_TAG]->() DELETE r", gid=gid)

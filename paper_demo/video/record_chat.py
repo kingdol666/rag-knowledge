@@ -2,7 +2,7 @@
 """Record a real KB-enhanced question in the Claude Chat console.
 
 Turns on KB-enhanced mode (which instructs the agent to run the
-/knowledgebase-search QDCVR pipeline), asks one question, and records the whole
+/knowledgebase-search HMRS pipeline), asks one question, and records the whole
 agent turn: skill invocation, retrieval steps, and the cited answer.
 
 Output: paper_demo/video/rec/chat/*.webm + shots + the transcript text.

@@ -1,0 +1,30 @@
+{
+ "qid": "BQ04",
+ "arxiv": "1602.01876",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "http": 200,
+ "error": "",
+ "wall_s": 58.0,
+ "latency_s": 56.243,
+ "turns": 7,
+ "cost_usd": 0.17585876,
+ "success": true,
+ "answer": "**结论：Gene Ontology（GO）由三个相互独立的本体（sub-ontology）划分——Molecular Function（MF，分子功能）、Biological Process（BP，生物过程）、Cellular Component（CC，细胞组分），三者非冗余，并共享同一套标识符空间与语法。**\n\n**原始出处（P0 直接证据，逐字引用）**\n\n文献：*Primer on the Gene Ontology*（Gaudet, Škunca, Hu, Dessimoz, 2016；文件名 `genomics__1602.01876__primer-on-the-gene-ontology.md`），KB：生命科学与医学（`b28f0a25-1e1d-40ad-96b8-61bd2b093a28`），第 2 节 \"What is the Gene Ontology?\"：\n\n> \"The Gene Ontology is a controlled vocabulary of terms to represent biology in a structured way. **The terms are subdivided in three distinct ontologies that represent different biological aspects: Molecular Function (MF), Biological Process (BP), and Cellular Component (CC)** (1). These ontologies are non-redundant and share a common space of identifiers and a well-specified syntax.\"\n\n**要点补充（同一段落）**\n- GO 术语通过 `is_a`、`part_of`、`has_part`、`regulates`（含正/负调控）等关系构成有向无环图，节点为术语、边为关系；一个术语可有多个父节点。\n- 规模（2015 年 10 月）：43,835 个术语、73,776 条显式 `is_a`、7,436 条 `part_of`、8,263 条 `regulates` 类关系。\n- 三者之上常用的\"精简版\"是 GO-slim（如 Generic GO slim），是跨全部生物学层面的高通用术语人工子集，并非第四个本体。\n\n**可信度**：P0——检索命中即目标文档，且已 `kb_doc_read` 打开正文核对逐字原句，非片段推断。\n\n**检索说明**：对 5 个指定库各做一次向量检索（`kb_search_vector`, slim=true, top_k=10）；命中仅来自 `b28f0a25`（score 0.764，远超其他库 0.44–0.58 的噪声），其余四库（计算机与人工智能、自然科学与地球科学、工程与能源、经济与社会）无相关证据。",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 3,
+  "kw_total": 3,
+  "kw_list_hit": [
+   "molecular function",
+   "biological process",
+   "cellular component"
+  ],
+  "cited": true,
+  "n_markers": 1,
+  "markers_head": [
+   "1602.01876"
+  ],
+  "false_abstain": false,
+  "chars": 1277
+ }
+}

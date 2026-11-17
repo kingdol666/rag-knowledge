@@ -15,8 +15,8 @@
      脚本随后轮询两个健康端点，确认整条服务链就绪；
   4. 全绿 exit 0，任何一步失败 exit 1 并给出可执行的修复指引。
 
-安全边界：健康探测的 URL 是各调用点内联的字面量回环地址（127.0.0.1 平台标准
-端口），无任何可配置主机/协议入口（SSRF 防护）。
+安全边界：健康探测仅允许来自环境或配置的回环 HTTP(S) 地址；禁用代理和重定向。
+注意：执行本脚本会启动配置的 MCP 进程，kb-mcp 的启动钩子可能启动服务。
 
 注意：本脚本只做"确保可连接"，不承载业务检索；会话内 agent 的预检仍以
 skill 规定的 kb_project_status 为准。
@@ -26,6 +26,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import queue
+import re
 import subprocess
 import sys
 import threading
@@ -33,28 +35,64 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+from urllib.parse import urlsplit
+
+try:
+    import yaml
+except ImportError:  # config.yml parsing is best-effort without PyYAML
+    yaml = None
+
+MAX_CONFIG_BYTES = 1024 * 1024
+MAX_STDOUT_LINE = 1024 * 1024
+MAX_STDOUT_TOTAL = 8 * 1024 * 1024
+MAX_STDERR_BYTES = 64 * 1024
+SAFE_DIAGNOSTICS = (
+    (re.compile(r"timed?\s*out|timeout", re.I), "timeout"),
+    (re.compile(r"enoent|not found|no such file|cannot find", re.I), "file or command not found"),
+    (re.compile(r"eacces|permission denied", re.I), "permission denied"),
+    (re.compile(r"mcp.*(?:fail|error|disconnect)", re.I), "MCP connection failure"),
+    (re.compile(r"error|failed|exception", re.I), "startup error"),
+)
 
 REPO = Path(__file__).resolve().parents[1]
 PROTOCOL_VERSION = "2024-11-05"
-HANDSHAKE_TIMEOUT = 90.0   # uv 冷启动 + 启动钩子最多 ~45s 服务等待，留足余量
+HANDSHAKE_TIMEOUT = 180.0  # peer wait + own launch + uv/OMP cold startup
 LIST_TIMEOUT = 30.0
 HEALTH_TIMEOUT = 60.0
 
 
 def _send(proc: subprocess.Popen, obj: dict) -> None:
     assert proc.stdin is not None
-    proc.stdin.write(json.dumps(obj, ensure_ascii=False) + "\n")
+    proc.stdin.write((json.dumps(obj, ensure_ascii=False) + "\n").encode("utf-8"))
     proc.stdin.flush()
 
 
-def _recv(proc: subprocess.Popen, want_id: int, timeout_s: float) -> dict:
-    assert proc.stdout is not None
-    deadline = time.time() + timeout_s
-    while time.time() < deadline:
-        line = proc.stdout.readline()
-        if not line:
+def _sanitized_diagnostic(stderr_tail: bytes) -> list[str]:
+    """Return bounded fixed categories only; never surface process text/secrets."""
+    text = stderr_tail.decode("utf-8", errors="replace")[-MAX_STDERR_BYTES:]
+    categories: list[str] = []
+    for pattern, category in SAFE_DIAGNOSTICS:
+        if pattern.search(text):
+            categories.append(category)
+    return categories[:5]
+
+
+def _recv(proc: subprocess.Popen, want_id: int, timeout_s: float,
+          stdout_queue: queue.Queue, state: dict) -> dict:
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        try:
+            item = stdout_queue.get(timeout=min(0.25, max(0.0, deadline - time.monotonic())))
+        except queue.Empty:
+            if proc.poll() is not None:
+                break
+            continue
+        if item is None:
             break
-        line = line.strip()
+        state["total"] += len(item)
+        if state["total"] > MAX_STDOUT_TOTAL or len(item) > MAX_STDOUT_LINE:
+            raise RuntimeError("MCP server exceeded bounded stdout limits")
+        line = item.strip()
         if not line:
             continue
         try:
@@ -66,92 +104,244 @@ def _recv(proc: subprocess.Popen, want_id: int, timeout_s: float) -> dict:
     raise TimeoutError(f"no response for id={want_id} within {timeout_s:.0f}s")
 
 
-def check_stdio_server(name: str, cfg: dict) -> dict:
-    """用配置里的原样命令 spawn 一个探活实例并完成 MCP 握手。
+def _read_bounded_config(path: Path) -> dict:
+    with path.open("rb") as stream:
+        raw = stream.read(MAX_CONFIG_BYTES + 1)
+    if len(raw) > MAX_CONFIG_BYTES:
+        raise ValueError("configuration exceeds 1 MiB limit")
+    parsed = json.loads(raw.decode("utf-8"))
+    if not isinstance(parsed, dict):
+        raise ValueError("configuration root must be an object")
+    return parsed
 
-    管道死锁防护（Windows 实测）：stderr 直接 DEVNULL（无人消费的管道会塞满并
-    卡死子进程）；看门狗定时器到期强杀进程，使阻塞中的 readline 立即解除。
-    """
-    command = [cfg["command"]] + [str(a) for a in cfg.get("args", [])]
+
+def _configured_health_endpoints() -> dict:
+    """Read loopback ports from env/config without permitting remote URLs."""
+    env_path = REPO / ".env"
+    env: dict[str, str] = {}
+    try:
+        if env_path.stat().st_size <= MAX_CONFIG_BYTES:
+            for line in env_path.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
+                    env[key.strip()] = value.strip().strip("\"'")
+    except OSError:
+        pass
+
+    cfg: dict = {}
+    try:
+        config_path = REPO / "config.yml"
+        if yaml and config_path.stat().st_size <= MAX_CONFIG_BYTES:
+            cfg = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+    except Exception:  # invalid or unavailable YAML: fall back to env/defaults
+        pass
+
+    # Match kb-mcp/config.py: process environment wins per key, then .env.
+    env.update(os.environ)
+    mode = env.get("APP_MODE", "dev")
+    section = (cfg.get("server") or {}).get(mode) or (cfg.get("server") or {}).get("dev") or {}
+    backend_url = env.get("BACKEND_URL")
+    backend_port = env.get("BACKEND_PORT")
+    if not backend_url and backend_port:
+        backend_url = f"http://127.0.0.1:{backend_port}"
+    backend_url = backend_url or section.get("backend_url")
+    if not backend_url:
+        port = backend_port or section.get("backend_port", 8765)
+        backend_url = f"http://127.0.0.1:{port}"
+    web_url = env.get("WEB_URL")
+    if not web_url:
+        web_port = env.get("WEB_PORT") or env.get("FRONTEND_PORT")
+        configured_url = section.get("frontend_url")
+        if web_port:
+            host = env.get("WEB_HOST") or "127.0.0.1"
+            web_url = f"http://{host}:{web_port}"
+        elif configured_url:
+            web_url = str(configured_url)
+        else:
+            host = env.get("WEB_HOST") or "127.0.0.1"
+            web_url = f"http://{host}:{section.get('frontend_port', 6789)}"
+
+    result = {}
+    for label, raw_url, suffix in (("backend", backend_url, "/api/v1/health"),
+                                   ("web", web_url, "/")):
+        parts = urlsplit(str(raw_url))
+        try:
+            port = parts.port
+        except ValueError as exc:
+            raise ValueError(f"invalid {label} endpoint port") from exc
+        if parts.scheme not in ("http", "https") or parts.hostname not in ("localhost", "127.0.0.1", "::1"):
+            raise ValueError(f"{label} health endpoint must use a loopback host and http(s)")
+        if parts.username or parts.password or parts.query or parts.fragment:
+            raise ValueError(f"{label} health endpoint contains unsupported components")
+        authority = f"[{parts.hostname}]" if ":" in parts.hostname else parts.hostname
+        if port:
+            authority += f":{port}"
+        base = f"{parts.scheme}://{authority}{parts.path.rstrip('/') if parts.path != '/' else ''}"
+        result[label] = f"{base}{suffix}"
+    return result
+
+
+def _expand_config_value(value: object, variables: dict[str, str]) -> str:
+    """Expand only environment-style variables used by MCP configs."""
+    pattern = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*)")
+    return pattern.sub(lambda match: variables.get(match.group(1) or match.group(2), match.group(0)), str(value))
+
+
+def check_stdio_server(name: str, cfg: dict) -> dict:
+    """Spawn the configured stdio server and perform MCP initialize/tools/list."""
+    if not isinstance(cfg, dict) or not isinstance(cfg.get("command"), str):
+        return {"name": name, "ok": False, "error": "invalid stdio server configuration"}
+    raw_env = cfg.get("env") or {}
+    if not isinstance(raw_env, dict):
+        return {"name": name, "ok": False, "error": "invalid MCP environment configuration"}
+    variables = dict(os.environ)
+    variables.setdefault("RAG_PROJECT_ROOT", str(REPO))
+    config_env = {str(k): _expand_config_value(v, variables) for k, v in raw_env.items()}
+    variables.update(config_env)
+    command = [_expand_config_value(cfg["command"], variables)] + [
+        _expand_config_value(a, variables) for a in cfg.get("args", [])
+    ]
     env = dict(os.environ)
-    env.update({k: str(v) for k, v in (cfg.get("env") or {}).items()})
+    env.update(config_env)
     env.setdefault("PYTHONUTF8", "1")
+    # Both project .mcp.json and .omp/mcp.json run from the project root;
+    # .omp is a configuration directory, not the server's working directory.
+    cwd = str(REPO.resolve())
 
     t0 = time.perf_counter()
-    proc = subprocess.Popen(
-        command, cwd=str(REPO), env=env,
-        stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL, text=True, encoding="utf-8", bufsize=1)
-    watchdog = threading.Timer(
-        HANDSHAKE_TIMEOUT + LIST_TIMEOUT + 15, proc.kill)
+    try:
+        proc = subprocess.Popen(
+            command, cwd=cwd, env=env,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, bufsize=0)
+    except OSError as exc:
+        return {"name": name, "ok": False,
+                "error": "could not spawn configured MCP command",
+                "diagnostics": ["file or command not found" if getattr(exc, "errno", None) == 2
+                                else "permission denied" if getattr(exc, "errno", None) == 13
+                                else "spawn failure"]}
+
+    stdout_queue: queue.Queue = queue.Queue(maxsize=256)
+    state = {"total": 0}
+    stderr_tail = bytearray()
+    stderr_lock = threading.Lock()
+
+    def read_stdout() -> None:
+        assert proc.stdout is not None
+        try:
+            while True:
+                line = proc.stdout.readline(MAX_STDOUT_LINE + 1)
+                if not line:
+                    break
+                try:
+                    stdout_queue.put(line, timeout=1)
+                except queue.Full:
+                    break
+        finally:
+            try:
+                stdout_queue.put_nowait(None)
+            except queue.Full:
+                try:
+                    stdout_queue.get_nowait()
+                    stdout_queue.put_nowait(None)
+                except (queue.Empty, queue.Full):
+                    pass
+
+    def drain_stderr() -> None:
+        assert proc.stderr is not None
+        while True:
+            chunk = proc.stderr.read(4096)
+            if not chunk:
+                return
+            with stderr_lock:
+                stderr_tail.extend(chunk)
+                if len(stderr_tail) > MAX_STDERR_BYTES:
+                    del stderr_tail[:-MAX_STDERR_BYTES]
+
+    stdout_thread = threading.Thread(target=read_stdout, daemon=True)
+    stderr_thread = threading.Thread(target=drain_stderr, daemon=True)
+    stdout_thread.start()
+    stderr_thread.start()
+    watchdog = threading.Timer(HANDSHAKE_TIMEOUT + LIST_TIMEOUT + 15, proc.kill)
     watchdog.daemon = True
     watchdog.start()
-    out: dict = {"name": name, "command": " ".join(command[:2]) + " …", "ok": False}
+    out: dict = {"name": name, "command": Path(command[0]).name, "ok": False}
     try:
         _send(proc, {"jsonrpc": "2.0", "id": 1, "method": "initialize",
                      "params": {"protocolVersion": PROTOCOL_VERSION, "capabilities": {},
                                 "clientInfo": {"name": "mcp-ensure", "version": "1.0"}}})
-        init = _recv(proc, 1, HANDSHAKE_TIMEOUT)
+        init = _recv(proc, 1, HANDSHAKE_TIMEOUT, stdout_queue, state)
         if "error" in init:
-            raise RuntimeError(f"initialize error: {json.dumps(init['error'])[:200]}")
+            raise RuntimeError("initialize returned an MCP error")
         _send(proc, {"jsonrpc": "2.0", "method": "notifications/initialized"})
-
         _send(proc, {"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}})
-        listing = _recv(proc, 2, LIST_TIMEOUT)
-        tools = [t.get("name") for t in (listing.get("result") or {}).get("tools", [])]
+        listing = _recv(proc, 2, LIST_TIMEOUT, stdout_queue, state)
+        tools = [t.get("name") for t in (listing.get("result") or {}).get("tools", [])
+                 if isinstance(t, dict)]
         if not tools:
             raise RuntimeError("tools/list returned zero tools")
         out.update(ok=True, tools=len(tools),
                    sample=[t for t in tools if t in
                            ("kb_list", "kb_search_vector", "kb_doc_read", "kb_laya_judge")],
                    seconds=round(time.perf_counter() - t0, 1))
-    except Exception as exc:  # noqa: BLE001 — 报告失败原样给操作者
-        out["error"] = f"{type(exc).__name__}: {exc}"[:220]
+    except Exception as exc:  # noqa: BLE001 — keep diagnostics non-sensitive
+        out["error"] = (str(exc) if isinstance(exc, (RuntimeError, TimeoutError))
+                        else f"MCP handshake failed ({type(exc).__name__})")
+        with stderr_lock:
+            tail = bytes(stderr_tail)
+        diagnostics = _sanitized_diagnostic(tail)
+        if diagnostics:
+            out["diagnostics"] = diagnostics
     finally:
         watchdog.cancel()
         try:
             if proc.stdin:
                 proc.stdin.close()
+        except OSError:
+            pass
+        if proc.poll() is None:
             proc.terminate()
+        try:
             proc.wait(timeout=10)
-        except Exception:  # noqa: BLE001
-            try:
-                proc.kill()
-            except Exception:  # noqa: BLE001
-                pass
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait(timeout=5)
+        stdout_thread.join(timeout=1)
+        stderr_thread.join(timeout=1)
+        for stream in (proc.stdout, proc.stderr):
+            if stream:
+                stream.close()
     return out
 
 
-def wait_services(deadline_s: float) -> dict:
-    """kb-mcp 启动钩子会自动拉起 backend/web；轮询两个字面量端点确认链路就绪。
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req: object, fp: object, code: int, msg: str,
+                         headers: object, newurl: str) -> None:
+        return None
 
-    端口 = .env 权威值（BACKEND_PORT=8771 / WEB_PORT=6789）。
-    """
-    deadline = time.time() + deadline_s
-    backend = web = 0
-    while time.time() < deadline:
-        if not backend:
+
+def wait_services(deadline_s: float) -> dict:
+    """Wait for configured local service endpoints; remote hosts are rejected."""
+    urls = _configured_health_endpoints()
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+    deadline = time.monotonic() + deadline_s
+    statuses = {"backend": 0, "web": 0}
+    while time.monotonic() < deadline:
+        for label, url in urls.items():
+            if statuses[label] == 200:
+                continue
             try:
-                with urllib.request.urlopen(
-                        "http://127.0.0.1:8771/api/v1/health", timeout=4) as r:
-                    backend = r.status
-            except urllib.error.HTTPError as e:
-                backend = e.code
+                with opener.open(url, timeout=min(4, max(0.01, deadline - time.monotonic()))) as response:
+                    statuses[label] = response.status
+            except urllib.error.HTTPError as exc:
+                statuses[label] = exc.code
             except Exception:
-                backend = 0
-        if not web:
-            try:
-                with urllib.request.urlopen("http://127.0.0.1:6789/", timeout=4) as r:
-                    web = r.status
-            except urllib.error.HTTPError as e:
-                web = e.code
-            except Exception:
-                web = 0
-        if backend == 200 and web == 200:
+                statuses[label] = 0
+        if all(status == 200 for status in statuses.values()):
             break
-        time.sleep(3)
-    return {"backend": {"url": "http://127.0.0.1:8771/api/v1/health", "status": backend},
-            "web": {"url": "http://127.0.0.1:6789/", "status": web}}
+        time.sleep(min(3, max(0, deadline - time.monotonic())))
+    return {label: {"url": urls[label], "status": statuses[label]} for label in urls}
 
 
 def main() -> int:
@@ -175,8 +365,7 @@ def main() -> int:
             all_ok = False
             continue
         try:
-            servers = (json.loads(cfg_path.read_text(encoding="utf-8"))
-                       .get("mcpServers") or {})
+            servers = _read_bounded_config(cfg_path).get("mcpServers") or {}
         except Exception as exc:  # noqa: BLE001
             print(f"  ❌ 配置解析失败: {exc}")
             all_ok = False
@@ -193,8 +382,8 @@ def main() -> int:
                       f"{r['seconds']}s{sample}")
             else:
                 print(f"  ❌ {name}: {r.get('error')}")
-                if r.get("stderr_tail"):
-                    print(f"     stderr: …{r['stderr_tail']}")
+                if r.get("diagnostics"):
+                    print(f"     diagnostics: {', '.join(r['diagnostics'])}")
                 all_ok = False
 
     if not args.skip_services:

@@ -1,8 +1,5 @@
 ﻿import { defineEventHandler, readMultipartFormData, createError, setHeader } from 'h3'
-import { readFile } from 'fs/promises'
-import { existsSync } from 'fs'
-import { getPDFParseService } from '~/server/services/pdf-parse-service'
-import { resolveTreeStorageOutputPath } from '~/server/utils/runtime-paths'
+import { getPDFParseService, backFillMarkdown } from '~/server/services/pdf-parse-service'
 import type { MineruParseResult } from '~/types/pdf-parse'
 
 /**
@@ -44,9 +41,8 @@ export default defineEventHandler(async (event) => {
 
     const outputDirField = formData.find(field => field.name === 'output_dir')
     const useOcrField = formData.find(field => field.name === 'use_ocr')
-    const parentIdField = formData.find(field => field.name === 'parent_id')
     const options = {
-      output_dir: resolveTreeStorageOutputPath(outputDirField?.data?.toString()),
+      output_dir: outputDirField?.data?.toString(),
       use_ocr: useOcrField?.data?.toString() === 'true',
     }
 
@@ -72,12 +68,7 @@ export default defineEventHandler(async (event) => {
           source_filename: raw?.source_filename,
         }
       }
-      let markdown: string | undefined
-      if (raw.markdown_path && existsSync(raw.markdown_path)) {
-        try {
-          markdown = await readFile(raw.markdown_path, 'utf-8')
-        } catch { /* leave undefined */ }
-      }
+      const markdown = raw.markdown || await backFillMarkdown(raw.markdown_path)
       return {
         success: true as const,
         markdown,

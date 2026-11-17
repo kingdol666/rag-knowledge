@@ -1,33 +1,24 @@
-% sec0_abstract.tex — 2026-09-30 rewrite around the layered ladder +
-% engine-graded judgment storyline; trimmed to <=250 words (ACM guideline)
-% in the 2026-10-01 revision round; \NUM* values refreshed 2026-10-13 from
-% run-20261013T094350Z-5f9faac (main.tex macros).
 \begin{abstract}
-\emergencystretch 1.5em\relax
-Research administrators must organize shared paper collections and inspect
-the evidence behind the answers drawn from them. We present \sys{}, an
-agent-operated platform that organizes by content and retrieves layer by
-layer through one shared address space. Packaged agent skills parse
-documents, route them by content into category bases, and index the parts
-under base\slash document\slash part\slash section addresses. Retrieval
-walks a layered ladder --- catalog, shelf descriptions, wide vector
-recall --- and acceptance is decided per segment by a locally hosted
-judgment engine that reads candidates and grades them against the query:
-the engine is fail-closed, similarity never overrules its verdicts, and
-every segment graded positive survives into the answer. When no rung
-finds a plausible candidate, the search stops there and returns a scoped
-not-found report. The platform's ingest loop built and audited a
-100-paper, five-base instance. In a monitored three-mode run under one
-harness, model, and neutral
-prompt, the platform produces grounded answers for \NUMgroundedA{} of 10
-designated papers and keyword-verifies \NUMkwA{} of 10 against fixed
-gold key facts, citing part, section, or table in \NUMciteA; the bare
-agent grounds \NUMgroundedB{} but verifies \NUMkwB, and dense retrieval
-grounds \NUMgroundedC{} and verifies \NUMkwC, citing such a marker in
-only \NUMciteC. A 27-run
-three-lane stability suite shows consistent retrieval and honest
-abstention whenever the corpus does not cover a question. Attendees
-organize a document, inspect an answer's evidence, and examine a
-failure report. Demo video:
-\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
+Shared document collections require both reliable organization and
+traceable retrieval. We demonstrate an agent-operated knowledge-base
+platform whose ingest and retrieval workflows share addresses at the
+base, document, part, and section levels. The platform parses and checks
+documents, routes them by content, adds tags and five-dimension
+descriptions, indexes them, and verifies registry and index state.
+Retrieval traverses catalogs and descriptions, recalls candidates, and
+uses a local evidence gate before reading addressed source segments;
+the agent returns a cited answer or a scoped not-found report. A web
+console, command-line interface, and MCP tools support document
+management, search, relation graphs, experiences, and personas.
+
+On a ten-domain corpus (138 documents, 879 parts), a five-arm study
+measured exact-string containment on 72 in-domain questions. Full-corpus
+reading contained all gold strings (72/72) at 24.3 MB per question;
+the platform lane contained 37/72 (51.4\%) at 31.4 KB. Removing
+catalog descriptions reduced correct routing from 72/72 to 37/72, while
+the end-to-end study did not establish retrieval superiority. Two vector
+arms used an unscoped global index and are therefore exploratory, not
+matched baselines. Containment is a retrieval proxy rather than answer
+correctness. The demo lets attendees inspect ingest checks, source
+evidence, and failure reports.
 \end{abstract}

@@ -7,7 +7,7 @@
   覆盖:  meditation runs 成功率 + 每目标 KB 产出经验数 + 信号→经验转化
   质量:  结构完整性(title/scenario/category) + 检索接地(经验正文可在其 KB 中
          向量检索命中, 阈值 0.45) + 应用/评审链路可用
-  消融:  对经验源问题: (a)经验层 /experience/global-search (QDCVR+内容验证)
+  消融:  对经验源问题: (a)经验层 /experience/global-search (HMRS+内容验证)
          vs (b)纯向量 /search/vector — 经验层是否把"蒸馏后的答案"提前命中
          ΔReach = exp_hit@3 − kb_hit@3(同一问题)
 用法:

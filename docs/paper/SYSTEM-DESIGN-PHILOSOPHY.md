@@ -1,4 +1,4 @@
-# QDCVR 知识库平台：设计思想、算法机制与系统特征
+# HMRS 知识库平台：设计思想、算法机制与系统特征
 
 > **CIKM 论文 §1-§3 核心内容 · 学术术语体系**
 
@@ -37,7 +37,7 @@ $$\text{Retrieval Quality} = f(\text{Corpus Organization}) \times g(\text{Retrie
 
 $$c(d) \leq 4 \implies \text{discard}(d), \quad \text{independent of } s(d)$$
 
-即使 $s(d) = 0.95$，若 $c(d) \leq 4$，文档被丢弃。这是 QDCVR 区别于 CRAG (训练分类器) 和 Self-RAG (生成反射 token) 的**可解释决策边界**。
+即使 $s(d) = 0.95$，若 $c(d) \leq 4$，文档被丢弃。这是 HMRS 区别于 CRAG (训练分类器) 和 Self-RAG (生成反射 token) 的**可解释决策边界**。
 
 ### 1.3 第三命题："经验是有生命周期的结构化知识对象" (Experience as First-Class KB Artifacts)
 
@@ -53,9 +53,9 @@ $$c(d) \leq 4 \implies \text{discard}(d), \quad \text{independent of } s(d)$$
 
 ## 二、算法机制 (Algorithmic Mechanisms)
 
-### 2.1 QDCVR：查询驱动的内容验证检索七阶段管线
+### 2.1 HMRS：查询驱动的内容验证检索七阶段管线
 
-QDCVR (Query-Driven Content-Verified Retrieval) 是一个七阶段管线，每一阶段解决一个特定问题：
+HMRS (Hierarchical Management Retrieval System) 是一个七阶段管线，每一阶段解决一个特定问题：
 
 ```
 Query q
@@ -104,7 +104,7 @@ Query q
 
 **与 CRAG 的关键算法差异**：
 
-| | CRAG (NAACL 2024) | QDCVR (本文) |
+| | CRAG (NAACL 2024) | HMRS (本文) |
 |---|---|---|
 | 验证方式 | 训练轻量检索评估器 → 输出 Correct/Incorrect/Ambiguous | LLM 读正文 → 0-8 三维 rubric 打分 |
 | 可解释性 | 黑箱二分类 | 三维可解释评分 |
@@ -199,7 +199,7 @@ A9: Post-index verify → 索引完整性验证
 | 部署模式 | Agent 通过 MCP stdio 直接调用 + CLI (ragctl) + Web UI (Nuxt 3) | MCP + CLI |
 | 桌面支持 | Tauri 桌面应用 (跨平台) | 无 |
 
-**关键差异化声明**：MCP-Pyserini 是"把 IR 工具暴露给 Agent"，而 QDCVR 平台是"把整个知识库管理系统设计为 Agent 可用的能力集"。76 工具使 Agent 能自主完成从文档入库到经验提取到跨库检索到整理清洗的**完整知识管理工作流**。
+**关键差异化声明**：MCP-Pyserini 是"把 IR 工具暴露给 Agent"，而 HMRS 平台是"把整个知识库管理系统设计为 Agent 可用的能力集"。76 工具使 Agent 能自主完成从文档入库到经验提取到跨库检索到整理清洗的**完整知识管理工作流**。
 
 ### 3.3 领域结构与层次知识库 (Domain-Structured Hierarchical KBs)
 
@@ -242,7 +242,7 @@ Stage 2 的 Two-Stage Recall 融合了三种互补的检索信号：
 
 ## 四、适用场景 (Use Cases)
 
-| 场景 | 典型用户 | 痛点 | QDCVR 如何解决 |
+| 场景 | 典型用户 | 痛点 | HMRS 如何解决 |
 |------|---------|------|---------------|
 | **多领域研究知识管理** | 跨学科研究团队 (材料+AI+能源+生物) | 跨域检索时语义近邻误召回 | 领域 KB 边界结构性隔离 |
 | **运维故障知识库** | DevOps/SRE 团队 | 历史故障经验不可检索、过时不可用 | E0-E12 经验生命周期 + 时效衰减 |
@@ -255,7 +255,7 @@ Stage 2 的 Two-Stage Recall 融合了三种互补的检索信号：
 
 ## 五、创新性定位总结
 
-| 维度 | 已有最接近的工作 | QDCVR 的本质差异 |
+| 维度 | 已有最接近的工作 | HMRS 的本质差异 |
 |------|----------------|-----------------|
 | **检索验证** | CRAG (训练评估器), Self-RAG (反射 token) | 可解释的 0-8 三维 rubric + content-overrides-vector 独立裁决 |
 | **语料组织** | 无等价系统 (所有现有 RAG 假设扁平语料) | **领域结构化作为检索前置** → 搜索空间压缩 ×1,138 + FPR 降低 87% |
@@ -265,4 +265,4 @@ Stage 2 的 Two-Stage Recall 融合了三种互补的检索信号：
 
 ---
 
-> **一句话总结**：QDCVR 是一个"组织优先、内容裁决、经验驱动、Agent 原生"的知识库平台，通过领域结构化的语料组织 + 可解释的三维内容验证 + 结构化经验生命周期，解决了扁平 RAG 系统的跨域假阳性问题，并为 Agent 提供了 76 个覆盖完整知识管理生命周期的 MCP 工具。
+> **一句话总结**：HMRS 是一个"组织优先、内容裁决、经验驱动、Agent 原生"的知识库平台，通过领域结构化的语料组织 + 可解释的三维内容验证 + 结构化经验生命周期，解决了扁平 RAG 系统的跨域假阳性问题，并为 Agent 提供了 76 个覆盖完整知识管理生命周期的 MCP 工具。

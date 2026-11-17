@@ -352,7 +352,7 @@ class McpClient:
 
 
 # ── 通用工具 ──
-THRESH = 0.35  # QDCVR Step2.5 硬阈值
+THRESH = 0.35  # HMRS Step2.5 硬阈值
 
 
 def doc_basename(doc_path: str) -> str:
@@ -368,7 +368,7 @@ def doc_basename(doc_path: str) -> str:
 
 
 def step25(results: list[dict], threshold: float = THRESH) -> list[dict]:
-    """QDCVR Step2.5: 硬阈值丢弃 + 文档级去重(同文档留最高分)。"""
+    """HMRS Step2.5: 硬阈值丢弃 + 文档级去重(同文档留最高分)。"""
     best: dict[str, dict] = {}
     for r in results:
         if float(r.get("score", 0)) < threshold:
@@ -441,7 +441,7 @@ def config_hash() -> str:
 def env_fingerprint_params() -> dict:
     return {"vector_top_k": 10,
             "stage1_top_k": 40, "stage2_top_k": 10,
-            "qdcvr_threshold": THRESH, "verification_reads": 3,
+            "hmrs_threshold": THRESH, "verification_reads": 3,
             "exp_threshold_default": 0.45}
 
 

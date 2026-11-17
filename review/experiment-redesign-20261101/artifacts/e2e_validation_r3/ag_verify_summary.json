@@ -1,0 +1,142 @@
+[
+ {
+  "qid": "AG1",
+  "doc_paths": [
+   "MD语料-法律-中文/个人信息保护法.md",
+   "1).md",
+   "中华人民共和国消费者权益保护法.md",
+   "数据安全法.md"
+  ],
+  "doc_hint_matched": true,
+  "key_facts": {
+   "撤回": true,
+   "便捷": true
+  },
+  "key_fact_ok": true,
+  "quote_terms": {
+   "第十五条": true
+  },
+  "line_citation": false,
+  "verbatim_quote": true,
+  "status": "completed",
+  "seconds": 220.3
+ },
+ {
+  "qid": "AG2",
+  "doc_paths": [
+   "MD语料-法律-中文/数据安全法.md",
+   "数据安全法.md"
+  ],
+  "doc_hint_matched": true,
+  "key_facts": {
+   "国家数据安全工作协调机制": true
+  },
+  "key_fact_ok": true,
+  "quote_terms": {
+   "重要数据目录": true
+  },
+  "line_citation": true,
+  "verbatim_quote": true,
+  "status": "completed",
+  "seconds": 400.5
+ },
+ {
+  "qid": "AG3",
+  "doc_paths": [
+   "红楼梦第01回.md",
+   "MD语料-文学-中文/红楼梦第01回.md",
+   "A3无描述-literature-zh/红楼梦第01回.md"
+  ],
+  "doc_hint_matched": true,
+  "key_facts": {
+   "五十两": true,
+   "冬衣": true
+  },
+  "key_fact_ok": true,
+  "quote_terms": {
+   "甄士隐": true
+  },
+  "line_citation": true,
+  "verbatim_quote": true,
+  "status": "completed",
+  "seconds": 270.3
+ },
+ {
+  "qid": "AG4",
+  "doc_paths": [
+   "MD语料-科学-英文/resnet.md",
+   "resnet.md",
+   "kb_doc_read(resnet.md",
+   "attention_is_all_you_need.md",
+   "bert_pretraining.md"
+  ],
+  "doc_hint_matched": true,
+  "key_facts": {
+   "deep residual": true,
+   "ResNet": true,
+   "residual learning": true
+  },
+  "key_fact_ok": true,
+  "quote_terms": {
+   "residual": true
+  },
+  "line_citation": false,
+  "verbatim_quote": true,
+  "status": "completed",
+  "seconds": 300.4
+ },
+ {
+  "qid": "AG5",
+  "doc_paths": [
+   "documents=[k8s_pss.md",
+   "k8s_components.md",
+   "k8s_nodes.md",
+   "MD语料-技术-英文/k8s_pss.md",
+   "k8s_pss.md"
+  ],
+  "doc_hint_matched": true,
+  "key_facts": {
+   "Pod Security": true,
+   "pod-security": true
+  },
+  "key_fact_ok": true,
+  "quote_terms": {
+   "Security": true
+  },
+  "line_citation": false,
+  "verbatim_quote": true,
+  "status": "completed",
+  "seconds": 250.4
+ },
+ {
+  "qid": "AG6",
+  "doc_paths": [
+   "11).md"
+  ],
+  "doc_hint_matched": false,
+  "key_facts": {
+   "Prince": true,
+   "君主论": true,
+   "马基雅维利": true,
+   "Machiavelli": true
+  },
+  "key_fact_ok": true,
+  "quote_terms": {
+   "Prince": true
+  },
+  "line_citation": true,
+  "verbatim_quote": true,
+  "status": "completed",
+  "seconds": 520.6
+ },
+ {
+  "qid": "AG7-ood",
+  "refusal_ok": true,
+  "explicit_not_found": true,
+  "no_fabrication_declared": true,
+  "blind_spots_declared": true,
+  "parametric_leak_in_rewrite": true,
+  "status": "completed",
+  "seconds": 488.7
+ }
+]

@@ -1,0 +1,182 @@
+[
+  {
+    "title": "全文无任何已发表的外部系统基线,所有对比均为自身组件或自身消融",
+    "quote": "Nothing here is a retrieval advance: three configurations tie at Hit@5 1.00, and the one using only words leads on MRR.",
+    "explanation": "论文相关工作引用了 GraphRAG、LightRAG、RAPTOR 等层次化/结构化 RAG 方案,但 E4 的九个配置与 E2c 的全部内容层臂都是 HMRS 自身组件或其消融,没有任何已发表的层次化管理或层次化检索系统被运行作对照。论文自己承认 BM25 在工业语料上 Hit@5=1.00、arXiv 语料上除 Graph 外全部 0.90,即新增管理层在检索质量上无可测增益;唯一直接检验分层优于扁平/精确的对比 A0h vs PD 也不显著(p=0.0703)。在内部简单基线已经封顶、外部基线缺席的情况下,论文核心的管理结构贡献无法相对现有技术被量化定位,基线完备性不足。应至少运行一个已发表的层次化基线,或将贡献定位收缩为审计方法学与失效分析。",
+    "comment_type": "baseline_fairness",
+    "severity": "major",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "被称为论文端到端证据的 E5 网格只有 10 题、单次运行且指标已在天花板",
+    "quote": "answer-layer checks per question and abstention (Section~\\ref{sec:e5}, the paper's end-to-end evidence)",
+    "explanation": "E5 被冠以 the paper's end-to-end evidence,但它只有 10 个开发者编写的问题、每臂单次运行、单一模型,gold-ID 检查在两网格共 60 格全部命中(threats 亦承认 grounding is at ceiling)。检索端在小语料上近乎完美(BM25 Hit@5=1.00),该网格几乎不可能暴露检索到答案层的退化。相反,唯一检索不完美的十域语料(72 题,containment 51.4%-72.2%,35 个 A0 miss)从未进入答案层评估,只有 containment 诊断。端到端证据集中在最不可能失败的语料上,而最容易失败的路径没有答案层数据,证据布局与承载语言的强度不匹配。",
+    "comment_type": "methodology",
+    "severity": "major",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "路由审计 52/72 问题为自动扩展且扩展来源未披露,叠加三个域占 47/72 的失衡",
+    "quote": "The question set is unbalanced across domains (52/72 questions were automatically expanded, with 47/72 drawn from three domains), so it does not estimate performance on a balanced domain sample.",
+    "explanation": "收集层核心正面结果 A0=72/72(Wilson CI [0.949,1.000])来自脚本化 route-card 探针而非部署时的 agent 工作流,且运行器带有一个未记录是否触发的回退匹配器(traces do not record whether the fallback ran)。论文已声明这不是对描述移除的因果估计,但仍有未处理的混杂:52/72 问题被 automatically expanded,扩展种子(域标签?gold 文档?)完全未披露,存在问题构造向 gold 域标签泄漏的风险;47/72 集中于三个英语域且无分层分析。作为贡献列表第二条证据,其问题构造过程必须完整披露,否则应降低 72/72 的表述强度。",
+    "comment_type": "confound",
+    "severity": "major",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "承载收集层与 ladder 核心证据的 11 月轨迹不公开,逐题复核不可能",
+    "quote": "November 2026 route traces are not public; the authors retain them for requests subject to source-document restrictions.",
+    "explanation": "E2b 路由审计(2026-11-02/03)、A1b/A2 重跑(11-10)与 E2c ladder 优化(11-11)正是论文收集层与管理层主张的主要证据,而数据可用性声明恰恰规定 11 月路由轨迹不公开。读者无法独立复核 A0h vs PD 的 7-1 discordance、A0 35 个 miss 的归因(5 truncation/30 judge)或 A3 的 11 个零字节用例;42 文档工业语料同样 not deposited publicly,仅提供替代配方。核心证据不可复核是可复现性的实质缺口,应在投稿前存放去标识化轨迹,或把相应结论标注为仅聚合统计可核。",
+    "comment_type": "reproducibility",
+    "severity": "major",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "从不显著的 A0h-PD 检验写出 matches or exceeds 的等同式结论",
+    "quote": "A0h versus PD differs on eight questions (seven A0h-only, one PD-only; exact McNemar $p=0.0703$), a consistent direction that does not reach the 0.05 threshold on this sample.",
+    "explanation": "论文诚实地报告 p=0.0703 不显著,但同段随后写 Tiered navigation plus the chunk union therefore matches or exceeds abandoning navigation。n=72、仅 8 个 discordant 的检验不显著只能支持未检测到差异,不能支持 matches or exceeds 这类等同主张;等效性需要等效边际与功效分析,均未提供。建议改为数值上更高但不显著(7-1 discordant),并给出该对比的最小可检差异或功效估算。",
+    "comment_type": "statistical_reporting",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "同一 72 题上十余个配对 McNemar 检验无多重比较控制",
+    "quote": "All rates are gold-string containment over the 72 questions, with Wilson 95\\% intervals and exact paired McNemar tests against the tiered baseline A0",
+    "explanation": "E2c 对 6 个臂各做一次对 A0 的配对检验,再加 A0h vs PD 头对头、E2b 的两个配对检验、E5 两网格间的多个 McNemar,检验 family 总数约十余个;全文未提及任何校正(如 Holm/Bonferroni),threats 亦未讨论。最小的 p(6.1e-5)对任意校正稳健,但 PD p=0.0039、A0f p=0.0078、A2 p=0.0227 这类边缘显著支撑着 A0f repairs eight, A0h fifteen 的递进叙述,未必能存活;应声明未校正并做敏感性说明。",
+    "comment_type": "statistical_reporting",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "E2c 效率主张只计搜索调用次数,不计判官 token 与字节预算,维度选择有利己偏置",
+    "quote": "matches or exceeds abandoning navigation while issuing roughly a tenth of the search calls",
+    "explanation": "ladder 臂与 PD 的取舍维度不止搜索次数:A0h 给判官喂入全窗口加 chunk-window 并集,每题判官输入 token 很可能接近甚至超过 PD 的全窗口判读;containment 指标本身偏向把更多原文送进证据包的臂(read-all 机械上限 72/72 即为证)。路由审计报告了字节数与工具秒数,最关键的 E2c 对比却只报告调用数这一个对自己有利的成本维度,无 token、字节或 wall-clock。效率口径不完整构成维度选择性偏置。",
+    "comment_type": "confound",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "同一输入下 LLM 评分摆动 0→5、3→0,该噪声量级未推广为对评分类结论的测量误差警告",
+    "quote": "downstream LLM grades varied in both directions (QK01 $0\\to5$ and QK03 $3\\to0$ under the same twelve-document, 4{,}000-character pack; sign test $p=1.0$, $n=10$)",
+    "explanation": "候选集与证据包完全固定时,下游 LLM 评分在量表两端翻转,说明答案级 LLM 评分的运行间噪声可达满量程;该量级超过 E8 报告的全部组间效应,也波及依赖 LLM 评分与 E5b answer gate 的所有单次比较。threats 只写 each arm was run once,未把该噪声量级写入,评分信道的方差从未被量化。应将此噪声量级明确列为对一切答案级评分比较的测量误差来源。",
+    "comment_type": "confound",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "答案网格的任务契约、harness prompt 与模型标识不可复现",
+    "quote": "recorded in the run timeline as claude-opus-4-8[1m] with seed~0 and harness prompt v4-neutral",
+    "explanation": "E5 两网格 under one task contract,但该契约的 prompt 文本、harness prompt v4-neutral 的内容与版本在正文与可见补充材料中均未给出;claude-opus-4-8[1m] 是运行时间线内部标签而非可引用的模型版本(无快照日期);对托管模型声明 seed 0 不能保证可复现。E8 已证明结论对 prompt 与评分高度敏感(同包 0→5 摆动),缺失 prompt 文本使答案层实验在严格意义上不可复现。",
+    "comment_type": "reproducibility",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "被评估的 hybrid wrapper 已退役,在售混合通道从未做工具层检索质量基准",
+    "quote": "The evaluated hybrid wrapper is no longer registered in the current tool layer, whose hybrid lane is the composed chat configuration of Section~\\ref{sec:twostage}, so the negative ordering result below is bounded to that retired wrapper.",
+    "explanation": "把 HMRS-Hybrid 0.44 的负结果限定在已退役 wrapper 上是诚实的,但这同时意味着系统当前的 hybrid lane 只在 10 题答案网格中出现过,从未在 E4 的两个语料上接受工具层检索质量测量。表 tab:retrieval 的 HMRS-Hybrid 行描述的是作者自己已移除的组件,读者若据表推断在售系统的混合检索质量会被误导。应在表内显著标注 retired,并给出现行 composed lane 的等价测量或说明其不可测的原因。",
+    "comment_type": "baseline_fairness",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "E5b 设计汇总表与正文不一致(3 臂×6 题 vs 3 题×3 臂),file-tree 结论错行,臂标签映射缺失",
+    "quote": "Three arms $\\times$ six questions, public API & Cost, latency, refusal behaviour & Platform arm slower and dearer than the file-tree arm",
+    "explanation": "正文定义 E5b 为 Three questions (an English methodology question, a Chinese clinical question and an out-of-corpus probe) crossed three deployment arms,即 3 题×3 臂;六个问题属于 honesty battery,file-tree arm 是 E5 的对照臂而非 E5b 的任何臂(S1/S2/S3 都是 pinned/unpinned/hybrid 变体)。tab:retrieval-design 的 E5b 行混入了另两个实验的设计与结论。此外正文先定义 S1/S2/S3,成本却按 (A)、(B)、(C) 报告(Mean cost was \\$0.182 (A), \\$0.300 (B) and \\$0.219 (C)),映射全文未给出。设计汇总表是读者建立实验地图的主要入口,此处失真必须修正。",
+    "comment_type": "methodology",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "21 篇不可检索论文的失败归因缺失,采集失败诊断停留在语料级聚合",
+    "quote": "neither attempts against failed papers nor per-paper parse status is recorded, so the 21 cannot be attributed to parsing alone",
+    "explanation": "RQ1 承诺回答采集与分类 where that process fails,但 E1 只有聚合计数(91 in state file、79 retrievable、12+9=21 不可归因),重试次数与逐篇 parse 状态均未记录,失败模式仅两句轶事(formula-dense scans and one tool-layer crash)。一个以可审计状态为核心卖点的系统,其采集层自身的失败审计不完整,这一自反性缺口应在 threats 中显式承认,并给出逐篇失败记录的改进方案。",
+    "comment_type": "methodology",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "threats 一节与实验缺口的四处错配:多重比较、评分噪声、退役 wrapper 外推、E3 近零证据",
+    "quote": "One scenario and thirteen candidates cannot support an effectiveness claim; scheduled distillation, review and approval at scale, application feedback and credibility decay went unexercised.",
+    "explanation": "threats 总体罕见详尽,但与实验实际留下的缺口仍有四处错配:(a) 全文十余个配对检验无校正,threats 未提;(b) E8 显示的 LLM 评分 0→5 摆动量级未进 threats;(c) E4 负结果被限定于退役 wrapper,但现行 composed lane 未被基准化这一泛化限制未进 threats;(d) E3 经验子系统批准路径从未行使(draft-approval path was never exercised)、仅一个场景,threats 完全未提及该子系统的证据近零状态。若声称 limitations 与实验缺口对齐,这四项应补入。",
+    "comment_type": "methodology",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "单次运行的非确定 agent 泳道配 Wilson 比例区间,系统性低估总不确定性",
+    "quote": "The tool-layer retrieval lanes, grading rule, audits, duplicate adjudication and cross-lingual ingestion pipeline are deterministic; agent lanes and text-derived results are not.",
+    "explanation": "论文明确区分确定性泳道与非确定 agent 泳道,又承认 30-cell answer grid is a single run per arm on one model;但报告的 Wilson 95% 区间只把题目当作随机来源,题目×运行两个方差成分中运行成分完全未估计,而 E8 的 0→5 评分摆动证明该成分不可忽略。所有 agent 层比例的区间因此系统性偏窄。至少应声明区间条件于该次运行,或补小规模重复运行给出运行间方差下界。",
+    "comment_type": "statistical_reporting",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "A1b/A2 于 2026-11-10 更换协议后与 11-02/03 的 A0/A0f/A0h/PD/A3 同图比较",
+    "quote": "The flat and no-gate arms (A1b, A2) were re-run on 2026-11-10 as scoped per-library directed searches merged by score, replacing an earlier unscoped protocol",
+    "explanation": "fig:ladder 与 E2c 把 11-02/03 运行的臂与 11-10 按新协议重跑的 A1b/A2 并置同一比较框架;问题集相同,但臂的检索协议在日期之间被替换,且最初设计为 unscoped。重跑已披露,但跨日期、跨协议的可比性风险未讨论——尤其论文在其他处强调快照差异不可合并(a different snapshot, and the two grids are not pooled)。应说明两日期间语料与索引快照是否逐位一致。",
+    "comment_type": "confound",
+    "severity": "moderate",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "延迟列混合进程内基线与工具层通道,表格层面未隔离",
+    "quote": "neither is the platform's keyword tool, so the millisecond latencies are in-process measurements rather than a server round trip.",
+    "explanation": "BM25/RRF 的 0.9/11 ms 是作者进程内实现,其余行(18-542 ms)是工具层调用;同一列并排呈现会诱导跨 substrate 的延迟比较。正文已作区分,但表格未按 substrate 分组或对 in-process 行加注(衍生行有 dagger 脚注而 BM25/RRF 行没有)。建议表内分组或加脚注,避免 0.9 ms 对 542 ms 的表观对比被直接引用。",
+    "comment_type": "baseline_fairness",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "测量前修复的两处故障恰属于 E2 所测失效类别,自然失效率未报告",
+    "quote": "Before measurement we repaired two corpus-integrity faults through the platform's own operations: one document missing from its vector collection was re-indexed, and one library whose collection had been lost was rebuilt, the same failure class that Section~\\ref{sec:e2} measures.",
+    "explanation": "披露值得肯定,但它同时说明被测期间自然发生的失效在正式测量前被清除:E2 报告的一致性结果条件于无未修复自然失效的状态,自然失效率(该类故障在 campaign 期间自发出现的频率)从未报告;修复与被测行为同源,均通过平台自身操作执行,无独立对照。",
+    "comment_type": "confound",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "high"
+  },
+  {
+    "title": "nDCG@5 已计算但不报告,构成轻度选择性报告",
+    "quote": "nDCG@5~\\cite{jarvelin-cumulated-gain-2002} was computed only inside one exploratory arm we do not report.",
+    "explanation": "披露本身正确,但先计算、后选择不报且不给结果方向的写法留下选择性报告的疑问;一句关于该探索臂结果方向或弃用原因的说明即可消除。",
+    "comment_type": "methodology",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "Controls 段称 honesty battery carry repeats,threats 段却称每臂最终只有一次观测",
+    "quote": "the 27-cell stability suite (Section~\\ref{sec:e7}) and the eighteen-arm honesty battery (Section~\\ref{sec:sysarms}) carry repeats",
+    "explanation": "threats 写 The refusal battery has one final observation per arm after two MCP-mount interruptions were rerun,与 Controls 段的 carry repeats 表述不一致:repeats 指失败重跑还是重复观测并不清楚。应统一口径,说明哪些臂有真正的重复观测、哪些只是失败后重跑。",
+    "comment_type": "methodology",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "medium"
+  },
+  {
+    "title": "E7 缓存修复后只重测部分读路径,完整 sweep 与超时率未声明复测",
+    "quote": "A later cache repair lowered the 30-client read-ladder \\emph{p50} from 1577 to 65.8\\,ms and repeated-query \\emph{p50} from 3743 to 2.1\\,ms; distinct queries remained near 4--5 requests per second under a process-wide lock.",
+    "explanation": "41% 超时的结论来自修复前的完整 270 请求 sweep;修复后只引用 read-ladder 与 repeated-query 两个选定指标的 p50,未说明是否重跑了同一 sweep、超时率是否下降。同一小节内前后两个系统状态的测量协议不同,容量结论的时间一致性应予声明。",
+    "comment_type": "methodology",
+    "severity": "minor",
+    "source_kind": "llm",
+    "confidence": "medium"
+  }
+]

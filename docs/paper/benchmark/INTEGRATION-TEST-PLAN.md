@@ -1,4 +1,4 @@
-# QDCVR Skill Integration Test — Master Plan
+# HMRS Skill Integration Test — Master Plan
 ## Full Pipeline End-to-End Verification
 ### Target: Validate all 14 skills across 8 realistic usage scenarios
 

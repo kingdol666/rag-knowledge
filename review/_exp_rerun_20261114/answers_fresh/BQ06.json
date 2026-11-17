@@ -1,0 +1,35 @@
+{
+ "qid": "BQ06",
+ "arxiv": "1503.07557",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "http": 200,
+ "error": "",
+ "wall_s": 264.9,
+ "latency_s": 262.365,
+ "turns": 12,
+ "cost_usd": 0.50653946,
+ "success": true,
+ "answer": "**Conclusion: the primary control is thermodynamic — the warming-driven increase in the saturation vapor pressure of water (atmospheric water-vapor content), which drives precipitation extremes up at roughly Clausius–Clapeyron scaling (6–7 % K⁻¹); changes in dynamics (vertical velocity) and precipitation efficiency are secondary and much less certain.**\n\nEvidence from the review *Precipitation extremes under climate change* (P. A. O'Gorman, climate-science__1503.07557, KB 自然科学与地球科学; P0 direct evidence):\n\n1. **The decomposition (Eq. 1):** P ≃ −ε{ω·S(T,p)}, i.e. the precipitation rate in an extreme event splits into a dynamical contribution (ω, vertical velocity), a thermodynamic contribution (S, saturation specific humidity along a moist adiabat), and a microphysical contribution (ε, precipitation efficiency). \"This scaling is often referred to as Clausius-Clapeyron scaling and gives a sensitivity of 6–7 % K⁻¹ for typical surface temperatures.\" (part 1 of 3, §3 Theory)\n\n2. **Why thermodynamics dominates in the extratropics:** \"If changes in dynamics and precipitation efficiency are negligible, precipitation extremes increase with warming because of increases in the saturation vapor pressure of water.\" (part 1, §1) And from the omega equation: \"the vertical velocities associated with large-scale extratropical precipitation extremes might not change greatly under climate change\" — hence the response is essentially the thermodynamic/Clausius–Clapeyron response (multimodel-median extratropical sensitivity ≈6 % K⁻¹). (part 1, §4.1)\n\n3. **RCE/tropical conditions:** \"For surface temperatures near those of the present-day tropics, the precipitation extremes increase at close to the thermodynamic rate, and this is close to Clausius-Clapeyron scaling with the surface specific humidity, with relatively small contributions from changes in vertical velocities and precipitation efficiency.\" (part 1, §3)\n\n4. **Conclusion:** \"Contributions from changes in thermodynamics, dynamics, and precipitation efficiency have all been found to be important… The thermodynamic contribution is the easiest to understand and always gives an intensification with warming.\" The abstract adds that it \"is robust and well understood, but theoretical understanding of the microphysical and dynamical contributions is still being developed.\" (part 2, §8; part 1 abstract)\n\n**Caveats (P1):** Where convection matters the sensitivity is higher and less certain — observed tropical sensitivity 9 % K⁻¹ (90% CI 6–14 % K⁻¹) and observationally constrained model estimate 11 % K⁻¹ (7–15 % K⁻¹) vs ~6 % K⁻¹ extratropically; possibly a more positive dynamical contribution in the tropics. Below ~295 K, changes in precipitation efficiency (e.g. hydrometeor fall speed) can push subdaily extremes above CC scaling. (part 1 §2/§4.2; part 2 §7)",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 1,
+  "kw_total": 1,
+  "kw_list_hit": [
+   "precipitation efficiency"
+  ],
+  "cited": true,
+  "n_markers": 10,
+  "markers_head": [
+   "1503.07557",
+   "part 1 of 3",
+   "§3",
+   "§1",
+   "§4.1",
+   "§3",
+   "§8",
+   "§2"
+  ],
+  "false_abstain": false,
+  "chars": 2831
+ }
+}

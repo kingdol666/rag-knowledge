@@ -203,7 +203,7 @@ ragctl soul distill <output-dir> --name soul-<name> \
 # Then let the seed evolve:
 ragctl soul learn-all soul-<name> --rounds 2     # curiosity training
 ragctl soul ask "question" --soul soul-<name>          # persona-augmented Q&A
-# Or ragctl soul ask "question" --soul soul-<name> --qdcvr  # retrieve the knowledge base first, then answer as the persona
+# Or ragctl soul ask "question" --soul soul-<name> --hmrs  # retrieve the knowledge base first, then answer as the persona
 ```
 
 Conversion mapping: persona.md → soul-definition.md appended section, work.md → thinking-style.md

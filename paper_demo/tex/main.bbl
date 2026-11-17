@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{11}
+\begin{thebibliography}{9}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -85,16 +85,16 @@
 \tempurl}
 
 
-\bibitem[Kamath et~al\mbox{.}(2020)]%
-        {kamath}
-\bibfield{author}{\bibinfo{person}{Amita Kamath}, \bibinfo{person}{Robin Jia},
-  {and} \bibinfo{person}{Percy Liang}.} \bibinfo{year}{2020}\natexlab{}.
-\newblock \showarticletitle{Selective Question Answering under Domain Shift}.
-  In \bibinfo{booktitle}{\emph{Proceedings of the 58th Annual Meeting of the
-  Association for Computational Linguistics ({ACL})}}.
-  \bibinfo{pages}{5684--5696}.
+\bibitem[Guo et~al\mbox{.}(2024)]%
+        {lightrag}
+\bibfield{author}{\bibinfo{person}{Zirui Guo}, \bibinfo{person}{Lianghao Xia},
+  \bibinfo{person}{Yanhua Yu}, \bibinfo{person}{Tu Ao}, {and}
+  \bibinfo{person}{Chao Huang}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{LightRAG}: Simple and Fast Retrieval-Augmented
+  Generation}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2410.05779}}
+  (\bibinfo{year}{2024}).
 \newblock
-\href{https://doi.org/10.18653/v1/2020.acl-main.503}{doi:\nolinkurl{10.18653/v1/2020.acl-main.503}}
 
 
 \bibitem[Lewis et~al\mbox{.}(2020)]%
@@ -128,30 +128,6 @@
   (\bibinfo{year}{2026}).
 \newblock
 \href{https://doi.org/10.48550/arXiv.2602.05014}{doi:\nolinkurl{10.48550/arXiv.2602.05014}}
-
-
-\bibitem[{Model Context Protocol Contributors}(2025)]%
-        {mcp}
-\bibfield{author}{\bibinfo{person}{{Model Context Protocol Contributors}}.}
-  \bibinfo{year}{2025}\natexlab{}.
-\newblock \bibinfo{title}{Model Context Protocol Specification (2025-11-25)}.
-\newblock
-  \bibinfo{howpublished}{\url{https://modelcontextprotocol.io/specification/2025-11-25}}.
-\newblock
-\newblock
-\shownote{Accessed September 19, 2026; specification revision 2025-11-25}.
-
-
-\bibitem[Robertson and Zaragoza(2009)]%
-        {bm25}
-\bibfield{author}{\bibinfo{person}{Stephen Robertson} {and}
-  \bibinfo{person}{Hugo Zaragoza}.} \bibinfo{year}{2009}\natexlab{}.
-\newblock \showarticletitle{The Probabilistic Relevance Framework: {BM25} and
-  Beyond}.
-\newblock \bibinfo{journal}{\emph{Foundations and Trends in Information
-  Retrieval}} \bibinfo{volume}{3}, \bibinfo{number}{4} (\bibinfo{year}{2009}),
-  \bibinfo{pages}{333--389}.
-\newblock
 
 
 \bibitem[Sarthi et~al\mbox{.}(2024)]%

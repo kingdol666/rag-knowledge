@@ -1,12 +1,9 @@
-% CIKM 2026 Demonstration draft, rewritten 2026-09-30 around the layered
-% retrieval ladder (catalog → descriptions → wide recall) + fail-closed
-% engine-graded judgment; related-work section added; all measured numbers
-% re-sourced to the fresh monitored run via the \NUM* macros (PROVISIONAL
-% until scripts/107 + audit fill them). Earlier pass: 2026-09-23 re-source to
-% run experiment_chat_20260922-211000.
-% Official format: sigconf, non-anonymous, <=4 pages of body incl. appendices/acks.
-% Only GenAI Usage Disclosure and references may extend beyond that limit.
-% AUTHOR ACTION: replace author placeholders; confirm submission eligibility.
+% CIKM Demo manuscript. Measured claims are re-derived from the complete
+% 2026-11-02/03 five-arm traces; four out-of-domain probes are reported
+% separately from the 72 in-domain gold questions. See
+% review/experiment-redesign-20261101 and figure-results.json.
+% CIKM Demo uses ACM sigconf and single-blind review; author metadata is
+% still a required human-supplied field.
 \documentclass[sigconf]{acmart}
 \setcopyright{none}
 \settopmatter{printacmref=true,printfolios=true}
@@ -17,20 +14,9 @@
 
 \usepackage{booktabs}
 \usepackage{xurl}
-\newcommand{\sys}{\textsc{Qdcvr}}
-% ── Measured-run number macros (2026-10-13 rerun) ───────────────────────────
-% Every \NUM* macro is filled from the monitored rerun
-% benchmark-suite/results/runs/run-20261013T094350Z-5f9faac, graded by
-% scripts/107_exp_grade.py (grounded / keyword-verified / cited / latency /
-% cost) and reconciled against these macros by experiments/_paper_numbers.py.
-% The `cited` triple is now a script metric (part/section/table markers), not a
-% hand-run regex. Values are script-asserted, not hand-typed; re-derive with
-% `python scripts/160_run_paper_pipeline.py --stages S3` after any rerun.
-\newcommand{\NUMgroundedA}{10}\newcommand{\NUMgroundedB}{10}\newcommand{\NUMgroundedC}{10}
-\newcommand{\NUMkwA}{10}\newcommand{\NUMkwB}{9}\newcommand{\NUMkwC}{9}
-\newcommand{\NUMciteA}{9}\newcommand{\NUMciteB}{7}\newcommand{\NUMciteC}{2}
-\newcommand{\NUMlatA}{53\,s}\newcommand{\NUMlatB}{22\,s}\newcommand{\NUMlatC}{24\,s}
-\newcommand{\NUMcostA}{\$0.71}\newcommand{\NUMcostB}{\$0.49}\newcommand{\NUMcostC}{\$0.53}
+\newcommand{\sys}{\textsc{HMRS}}
+% Gold containment uses the 72 in-domain questions; evidence-gate outcomes
+% are reported separately on four out-of-domain probes.
 % One full-width figure per page; Figs. 1/2/3 are double-column floats placed
 % by the dbltop queue. Target placement pp. 2/3/4 so the body (through the
 % Conclusion) ends on page 4 and only the disclosure + references follow.
@@ -41,6 +27,13 @@
 \setcounter{dbltopnumber}{1}
 \renewcommand{\textfraction}{.05}
 \renewcommand{\floatpagefraction}{.8}
+% Float-separation compression: with three double-column floats and two
+% tables in a four-page body, the default seps cost ~5-6 lines.
+\setlength{\textfloatsep}{8pt plus 2pt minus 4pt}
+\setlength{\dbltextfloatsep}{8pt plus 2pt minus 4pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
 
 \begin{CCSXML}
 <ccs2012>
@@ -53,7 +46,7 @@
 \keywords{knowledge-base management, retrieval-augmented generation, evidence inspection, agent workflows, demonstration}
 
 \begin{document}
-\title{QDCVR: Content-Routed Organization and Layered Agent Retrieval with Inspectable Evidence}
+\title{Organize, Retrieve, Verify: A Content-Routed Knowledge Base for Agent Retrieval}
 % CIKM Demo is single-blind. These are explicit draft placeholders, not anonymity.
 \author{Author Name}
 \affiliation{\institution{Affiliation}\city{City}\country{Country}}
@@ -66,93 +59,72 @@
 % order; declaring them later lets them drift past the experiment section.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.80\textwidth]{../figures/submission-20260922/fig1-core.pdf}
-\caption{QDCVR at a glance, as two four-panel storyboards. Top row (for
-contrast): a conventional dense-RAG configuration --- documents are
-shredded into fixed chunks, two excerpts are retrieved and packed into
-one context, and a single generation produces an answer whose sources
-are not addressable. Bottom row: the two QDCVR agent loops --- autonomous
-ingest (parse, route by content, tag, index parts with
-base/document/part/section addresses) and layered retrieval (recall
-through catalog, descriptions, and a wide vector net; the judgment
-engine grades every candidate segment; only survivors are read, yielding
-a cited answer or a scoped not-found report).}
-\Description{Two storyboard rows of four numbered panels each. Top row
-(baseline): documents arrive in the shared pool; they are shredded into
-fixed 800-character chunks, with torn-evidence marks; two excerpts are
-retrieved and packed into one 4,000-character context; one generation
-returns an answer with no sources attached. Bottom row (QDCVR): a PDF is
-parsed and routed by content into the right base; every part is indexed
-under the layered address base, document, part, section; the agent walks
-the ladder --- catalog, shelf descriptions, wide vector recall --- and the
-judgment engine grades each candidate's segments, keeping those it grades
-positive; the outcome is a cited answer with a section reference or a
-scoped not-found report. A takeaway strip states that the same base,
-document, part, and section identifiers power both loops, so every answer
-can be checked at its source.}
+\includegraphics[width=0.95\textwidth]{../figures/submission-20261104/fig1-motivated-example.pdf}
+\caption{When the named paper is absent, the platform reports a scoped
+non-answer instead of borrowing a near-miss. The trace records generic
+retrieval hits, weak title matches, and no evidence segment to grade; the
+similarity score is a retrieval diagnostic, not evidence of correctness.}
+\Description{The query asks which training epochs were used in the
+fictitious paper Spectral Tuning for Low-Resource Odor Recognition. One
+card identifies BERT fine-tuning recipes as a near-miss, not evidence
+about that paper. Separately, the trace records a top vector similarity
+of 0.52. The second card shows the scoped not-found outcome, with ten
+generic two-stage hits, twelve weak title-token matches, and no relevant
+segment for the judgment engine to grade. No epoch value is returned.}
 \label{fig:teaser}
 \end{figure*}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.84\textwidth]{../figures/submission-20260922/fig2-architecture.pdf}
-\caption{Platform operations and the agent-executed QDCVR workflow, with
-live-console screenshots (1 collection; 2 search; 3 per-channel scores,
-base/part address, verification status; 4 the agent's answer beside the
-judgment layer's outcomes). Bottom: the ORGANIZE and RETRIEVE loops.}
-\Description{Two areas. The top area shows four live-console screenshots
-from the demonstration instance: a knowledge-base row with its document
-count; the search form with strategy chips and the NISQ query; a result's
-combined and vector scores with its base chip, part address, and a
-content-verification status; and the agent's answer after retrieval,
-opening a numbered list of the Gene Ontology's three namespaces. Beside
-the answer sit the judgment layer's outcomes: segments graded positive
-survive and the answer cites them; candidates with nothing positive are
-discarded; when nothing survives, one librarian pass through catalog and
-descriptions backs up the vector lane, and still nothing surviving yields
-a scoped not-found report; dashed outlines mark the fallback exits. The
-bottom area shows the two packaged loops: organize runs from a prepared
-PDF pool through parsing and a 30,000-character split, routes by content,
-and tags and indexes parts; retrieve rewrites the query, recalls across
-catalog, descriptions, and vectors, grades candidate segments with the
-judgment engine, and reads only the survivors. A note records that the
-same 42 kb\_* tools run over vector, graph, and file storage.}
+\includegraphics[width=0.95\textwidth]{../figures/submission-20261104/fig2-platform-overview.pdf}
+\caption{The platform keeps collection management and retrieval on
+one inspectable address model. The diagram connects its interfaces and
+shared stores to the gated organize workflow and layered, fail-closed
+retrieval.}
+\Description{The top row links the web console, ragctl CLI, MCP agents,
+and packaged skills to a hierarchical knowledge base addressed as base,
+document, part, and section. Markdown content and tree and metadata
+registries share ChromaDB BGE-M3 vectors and an optional Neo4j document
+graph. Supported operations include base and document CRUD, tags, search,
+graphs, experiences, and SOUL personas. The lower organize lane parses
+and checks source files, deduplicates and splits them, routes them by
+content, adds tags and five-dimension descriptions, then verifies indexes
+with checks C1--C9. The retrieve lane rewrites a query, navigates catalogs
+and descriptions, recalls candidates with vector search or exact scans,
+retains evidence segments that pass the local Laya gate at 0.5 or above,
+reads them by address, and returns a cited answer or scoped not-found.}
 \label{fig:arch}
 \end{figure*}
 % Fig. 3 declared here (right after Fig. 2) so the dblfloat queue
 % meets it in time for a page-4 top placement.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.78\textwidth]{../figures/submission-20260920/fig3-answers-dual.pdf}
-\caption{Two questions from the 100-paper corpus under the monitored
-three-mode run (one harness, model, and neutral prompt; one run per
-mode; ellipses elide text): each column shows the saved timeline, a
-verbatim excerpt, and sources. Panel~1 (BQ04): all three modes answer
---- A quotes the source at part~1 of~2, section~2; B names the file; C
-quotes the chunk copy. Panel~2 (BQ06; bare agent omitted --- its answer
-names a file with nothing quotable): A has the judgment engine grade
-candidate segments and returns a keyword-verified answer quoting the
-source; C reaches the same factor from chunk recall alone, with no
-grading step and no addresses.}
-\Description{Two stacked panels. Panel one, the Gene Ontology question,
-has three columns. Column A's timeline lists a two-stage search, a
-vector search, one judgment-engine call, and one document read; its
-excerpt names Molecular Function, Biological Process, and Cellular
-Component and quotes the primer; its sources name the life-sciences base,
-the primer paper, part 1 of 2, section 2, and a verbatim quote. Column
-B's timeline lists four greps and a read; its excerpt states the
-same three ontologies; its source names the paper file by section. Column
-C's timeline lists two vector searches; its excerpt states
-the three ontologies; its source names the chunk copy in the
-800-character chunk index. Panel two, the precipitation-extremes
-question, has two columns. Column A's timeline lists a shelf check, four
-vector-style recalls, four document reads, and two judgment-engine calls;
-its excerpt quotes the saturation-vapor-pressure passage; its sources
-name the climate base, the paper, engine-graded reading, and keyword
-verification. Column C's timeline lists eleven vector
-searches; its excerpt names the thermodynamic contribution with a
-precision caveat; its source shows the chunk index with no grading step.}
-\label{fig:threeway}
+\includegraphics[width=0.95\textwidth]{../figures/submission-20261104/fig3-experiment-results.pdf}
+\caption{Full-corpus reading contains all 72 gold strings, but
+reads about 774$\times$ as much text per question as the platform lane.
+(a) Exact-string containment on 72 in-domain questions with Wilson 95\%
+confidence intervals; labels show rounded mean read volume ($k$=KB, $M$=MB).
+(b) Routing accuracy
+for legacy, content-summarized, and name-only catalog cards. (c) Evidence-
+gate rejections on four out-of-domain probes; A1 has no gate and A2
+disables it. These counts are not final-answer abstentions. A1b and A2
+use the shared global vector index and are shown as exploratory
+observations, not controlled baselines.}
+\Description{Three panels. Panel (a) compares five arms on 72 in-domain
+gold questions: the platform ladder gets 37/72 (51.4 percent), faithful
+full reading gets 72/72 (100 percent), global vector recall gets 42/72
+(58.3 percent), no evidence gate gets 35/72 (48.6 percent), and no
+descriptions gets 33/72 (45.8 percent). Whiskers show Wilson 95 percent
+confidence intervals; labels below bars show mean bytes read per gold
+question: 31.4 KB, 24.3 MB, 28.2 KB, 1.6 KB, and 23.5 KB. Panel (b)
+shows routing accuracy: legacy cards 34/66 (52 percent),
+content-summarized cards 72/72 (100 percent), and name-only cards 37/72
+(51 percent). Panel (c) shows evidence-gate rejections on four
+out-of-domain probes: A0 2/4, A1b 0/4, and A3 0/4; A1 and A2 are not
+applicable. The five-arm run does not generate final answers. The
+global-vector arms returned documents from outside the evaluation
+collection and are not matched comparisons.}
+\label{fig:ablation}
 \end{figure*}
 \input{sec1_intro}
 \input{sec1_related}
@@ -162,12 +134,42 @@ precision caveat; its source shows the chunk index with no grading step.}
 
 \input{sec3_demo}
 
-
+\begin{table}[t]
+\caption{Five-arm ablation on 72 in-domain gold questions and four
+out-of-domain evidence-gate probes. Gold hit means exact containment of
+the gold string in packed text, not answer correctness; the run does not
+generate final answers.}
+\label{tab:ablation}
+\footnotesize
+\setlength{\tabcolsep}{2.7pt}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Arm} & \textbf{Hit/72} & \textbf{Wilson CI} & \textbf{Gate rej./4} &
+\textbf{Read/q} & \textbf{$p$} \\
+\midrule
+A0 ladder          & 51.4\% (37) & [.401,.626] & 2/4 & 31.4\,KB    & --- \\
+A1 full-read       & 100.0\% (72) & [.949,1.000] & n/a & 24.3\,MB & $<$.0001 \\
+A1b global vector  & 58.3\% (42) & [.468,.690] & 0/4 & 28.2\,KB    & n/a$^\ddagger$ \\
+A2 no gate         & 48.6\% (35) & [.374,.599] & n/a & 1.6\,KB     & n/a$^\ddagger$ \\
+A3 no descriptions & 45.8\% (33) & [.348,.573] & 0/4 & 23.5\,KB    & .4545 \\
+\midrule
+BM25 floor$^\dagger$ & 60.0\% (24/40) & n/a & n/a & --- & n/a \\
+\bottomrule
+\end{tabular}
+\\[-2pt]\parbox{\columnwidth}{\scriptsize $p$: exact paired McNemar
+test vs. A0 on the 72 gold questions, uncorrected; only controlled arms
+are tested. $^\dagger$BM25 uses a 40-question subset; A0 scores 23/40 on
+that subset. $^\ddagger$A1b/A2 use unscoped global search and return
+documents outside the evaluation corpus, so their p-values are not
+reported as controlled comparisons. Gate rejection counts are evidence
+filter outcomes, not assistant abstention rates; A1/A2 have no gate.
+Dense/RRF floors are omitted for the same scope issue.}
+\end{table}
 \input{sec4_eval}
 \input{sec5_conclusion}
+\input{sec4_backmatter}
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
-\input{sec4_backmatter}
 \end{document}
 
 

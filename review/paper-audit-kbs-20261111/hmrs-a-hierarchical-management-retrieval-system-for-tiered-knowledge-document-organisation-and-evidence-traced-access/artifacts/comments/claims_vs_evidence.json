@@ -1,0 +1,19 @@
+[
+  {
+    "title": "Abstract and conclusion claims need explicit evidence traceability",
+    "quote": "These results show selected implemented management paths and failure boundaries, not general retrieval superiority, semantic answer quality or citation support.",
+    "explanation": "At least one headline claim was detected. Deep review should check whether experiments and conclusion language trace back to the same bounded evidence base.",
+    "comment_type": "claim_accuracy",
+    "severity": "major",
+    "confidence": "medium",
+    "source_kind": "llm",
+    "source_section": "abstract",
+    "related_sections": [
+      "abstract",
+      "results",
+      "conclusion"
+    ],
+    "review_lane": "claims_vs_evidence",
+    "gate_blocker": false
+  }
+]

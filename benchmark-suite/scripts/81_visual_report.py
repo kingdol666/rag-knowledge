@@ -4,7 +4,7 @@
 Reads every pipeline artifact from results/ and renders:
   pipeline funnel cards · vector-store coverage · retrieval regression bars ·
   three-track per-question latency/keyword comparison · per-question verbatim
-  answers (QDCVR skill flow / bare agent / dense RAG baseline).
+  answers (HMRS skill flow / bare agent / dense RAG baseline).
 
 Color language (project convention): teal = platform system (Track A),
 gray = baseline tracks (B/C), orange-red = warnings/failures.
@@ -128,7 +128,7 @@ def main() -> int:
 
     for qid, a_lat, b_lat, c_lat in per_q:
         lat_rows += f'<div class="qblock"><div class="qid">{esc(qid)}</div>'
-        lat_rows += bar("teal", qid, a_lat, "A · Platform KB (QDCVR)")
+        lat_rows += bar("teal", qid, a_lat, "A · Platform KB (HMRS)")
         lat_rows += bar("grayb", qid, b_lat, "B · Bare agent")
         lat_rows += bar("grayb", qid, c_lat, "C · Dense RAG")
         lat_rows += "</div>"
@@ -144,7 +144,7 @@ def main() -> int:
         gate = (a.get("gate") or {})
         qa_html += f'<details class="qa"><summary>{esc(qid)} — {esc(r.get("paper", ""))[:70]}</summary>'
         qa_html += f'<div class="q">{esc(q)}</div>'
-        qa_html += ('<div class="answer a-track"><h4>Track A · Platform KB (QDCVR v2 skill flow) '
+        qa_html += ('<div class="answer a-track"><h4>Track A · Platform KB (HMRS v2 skill flow) '
                     f'— gate {esc(gate.get("score", "?"))}/8 · {esc(gate.get("decision", ""))}</h4>'
                     f'<pre>{esc(a.get("final_answer", "(no answer recorded)"))}</pre></div>')
         qa_html += ('<div class="answer b-track"><h4>Track B · Bare agent — '
@@ -225,7 +225,7 @@ def main() -> int:
 </style></head><body>
 <header>
   <h1>Three-Track Benchmark — Visual Report</h1>
-  <p>QDCVR platform KB retrieval vs bare agent vs dense RAG reproduction ·
+  <p>HMRS platform KB retrieval vs bare agent vs dense RAG reproduction ·
      50 real papers · 10 English questions · generated {esc(now)}</p>
 </header>
 <main>

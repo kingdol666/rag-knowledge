@@ -81,7 +81,7 @@ curl -H "Authorization: Bearer $TOKEN" localhost:6789/api/kb/catalog
 - `/api/parse/*` — PDF 解析触发与产物入库（`file-vt`、`save-parsed-files`）
 - `/api/experience/{kbId}/*` — 经验库（index/init/search/summary/CRUD/apply/review）
 - `/api/graph/*` — 知识图谱（search/stats/build-kb/neighbors/paths 等）
-- `/api/soul/*` — 人格系统（init/list/status/ask/qdcvr-ask/learn/train-rl/review/evaluate/…）
+- `/api/soul/*` — 人格系统（init/list/status/ask/hmrs-ask/learn/train-rl/review/evaluate/…）
 - `/api/preview/*`、`/api/config/*`、`/api/system/*`、`/api/health/*` — 预览 / 配置 / 运维
 
 ## 快速自检

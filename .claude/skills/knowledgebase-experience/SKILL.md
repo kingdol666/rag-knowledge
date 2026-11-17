@@ -6,7 +6,7 @@ description: "Experience full lifecycle management E0-E12. Structured practice c
 ## Related skills
 
 - Auto-extract after ingest → `skill://knowledgebase-ingest` A7 eight-item final check · Batch export → `skill://knowledgebase-batch` B6 · Graph-associated retrieval → `skill://knowledgebase-graph` · Restructure → `skill://knowledgebase-organize`
-- Document-first retrieval → `skill://knowledgebase-search` (QDCVR v2) · Authoring/meditation/CRUD+migration → `skill://knowledgebase-experience-summarize` · Verify V8 triggers the E12 health check → `skill://knowledgebase-verify`
+- Document-first retrieval → `skill://knowledgebase-search` (HMRS v2) · Authoring/meditation/CRUD+migration → `skill://knowledgebase-experience-summarize` · Verify V8 triggers the E12 health check → `skill://knowledgebase-verify`
 - Architecture mental model (5-layer model + consistency invariants + 94-tool map) → [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Execution model (mandatory, first step of any job)

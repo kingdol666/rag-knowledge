@@ -31,7 +31,7 @@ rescues, and top-1 gold-document recall of 10/10 at $1.6$\,s mean vector recall;
 three out-of-corpus probes return not-found reports instead of fabricated answers.
 The demonstration lets attendees ingest, organize, query, and inspect every trace
 live. Demo video:
-\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.""",
+\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/hmrs-demo.mp4}.""",
 r"""Institutional document stores are indexed by filename and folder conventions, and
 retrieval stacks chunk them into flat bags of passages, so nobody can tell whether a
 retrieved passage actually answers a query. We present \sys{}, a deployable
@@ -49,7 +49,7 @@ skill run answers 10/10 on target with gate scores 6--8/8, two librarian rescues
 top-1 gold-document recall of 10/10 at $1.6$\,s mean recall; three out-of-corpus
 probes return not-found reports instead of fabricated answers. The demonstration
 lets attendees ingest, organize, query, and inspect every trace live. Demo video:
-\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.""")
+\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/hmrs-demo.mp4}.""")
 
 # 2) §1 opener
 sub("sec1_intro.tex",

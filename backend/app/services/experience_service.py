@@ -742,7 +742,7 @@ class ExperienceService:
             logger.warning("Vector search experiences failed: %s", e)
             return {"success": False, "error": str(e)}
 
-    # ── 经验检索：QDCVR 向量+内容验证（与文档检索同流程）──────────────
+    # ── 经验检索：HMRS 向量+内容验证（与文档检索同流程）──────────────
 
     @staticmethod
     def _tokenize_query(query: str) -> list[str]:
@@ -1050,7 +1050,7 @@ class ExperienceService:
     async def search_experiences_global(self, query: str, top_k: int = 10,
                                          score_threshold: float | None = None,
                                          verify_content: bool = True) -> dict:
-        """跨 KB 全局经验检索 — QDCVR 流程（与文档检索同构）。
+        """跨 KB 全局经验检索 — HMRS 流程（与文档检索同构）。
 
         流程: 向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级 → 诚实空返回。
         向量负责"快"，内容负责"准"；无确认经验则诚实声明，不"不懂装懂"。

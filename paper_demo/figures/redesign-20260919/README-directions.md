@@ -26,7 +26,7 @@ Rendered actual standalone SVGs with local Playwright Chromium at 2× and visual
 Companion Fig.1/Fig.3 drafts are owned by another collaborator. Gallery links and available previews do not imply approval or selection of an architecture direction. No original paper files were edited by this work.
 
 ## Landscape reviewer correction
-Rebuilt A as two horizontal bands, B as compact side-by-side swimlanes, and C as an evidence-centered numbered branching layout. Added native section/paragraph hierarchy glyphs. All three have compact access strips and offline/online panel labels, no visible QDCVR poster title. PNGs are 2000 × 1120. Font, canvas bounds, aspect ratio, local preferences and offline rendering checks rerun after the revision. No original paper or companion figure files changed.
+Rebuilt A as two horizontal bands, B as compact side-by-side swimlanes, and C as an evidence-centered numbered branching layout. Added native section/paragraph hierarchy glyphs. All three have compact access strips and offline/online panel labels, no visible HMRS poster title. PNGs are 2000 × 1120. Font, canvas bounds, aspect ratio, local preferences and offline rendering checks rerun after the revision. No original paper or companion figure files changed.
 
 ## Companion figure source notice
 Original Fig.3 mixed runs. Current BQ01 is 8/8 with parts 1/2 + 2/2; archived BQ01 is 7/8 with parts 11/26 + 25/26. Current drafts use the current run only; the source audit is separate. This notice reflects the source-audit context supplied by the user; this implementation pass does not independently re-audit benchmark artifacts.

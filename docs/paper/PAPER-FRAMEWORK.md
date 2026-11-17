@@ -12,7 +12,7 @@
 
 | # | 标题 | 风格 |
 |---|------|------|
-| **1 ⭐** | **QDCVR: Query-Driven Content-Verified Retrieval for Agentic Knowledge Bases** | 方法名 + 场景，最学术 |
+| **1 ⭐** | **HMRS: Hierarchical Management Retrieval System for Agentic Knowledge Bases** | 方法名 + 场景，最学术 |
 | 2 | Beyond Vector Similarity: Content-Verified Retrieval for Trustworthy RAG | 问题导向，吸引眼球 |
 | 3 | An Agentic Knowledge Base Platform with Content-Verified Retrieval and Experience Lifecycle | 全系统叙事 |
 
@@ -46,20 +46,20 @@ Agent Systems; Model Context Protocol; Experience Lifecycle; Semantic Search
 > Retrieval-Augmented Generation (RAG) systems increasingly rely on dense vector
 > similarity for document retrieval, yet high cosine similarity does not guarantee
 > content relevance—a fundamental limitation that introduces false positives
-> and erodes user trust. We present **QDCVR** (Query-Driven Content-Verified
+> and erodes user trust. We present **HMRS** (Query-Driven Content-Verified
 > Retrieval), a multi-stage retrieval methodology that decouples *recall*
 > (vector + BM25 fusion) from *relevance judgment* (independent content scoring).
-> QDCVR introduces three key innovations: (1) a **0–8 content verification
+> HMRS introduces three key innovations: (1) a **0–8 content verification
 > scoring rubric** that reads candidate documents and independently judges
 > relevance, applying the principle *"content score overrides vector score"*;
 > (2) an **adaptive query understanding layer** that classifies query intent
 > (factual, procedural, troubleshooting, comparative) and adjusts thresholds
 > accordingly; and (3) a **P0/P1/P2 credibility tier model** for an integrated
 > *experience library* that manages structured operational knowledge through a
-> 13-stage lifecycle (E0–E12) with temporal decay. We implement QDCVR within
+> 13-stage lifecycle (E0–E12) with temporal decay. We implement HMRS within
 > an agentic knowledge base platform exposing 76 Model Context Protocol (MCP)
 > tools and 14 agent skills. Evaluation on [N] queries across [M] knowledge
-> bases demonstrates that QDCVR achieves [X]% precision@5 and [Y]% reduction
+> bases demonstrates that HMRS achieves [X]% precision@5 and [Y]% reduction
 > in false-positive retrieval compared to vector-only baselines, while the
 > experience credibility model achieves [Z]% accuracy in tier assignment.
 > The system is open-source and deployed in production across [domain] domains.
@@ -69,7 +69,7 @@ Agent Systems; Model Context Protocol; Experience Lifecycle; Semantic Search
 | 要素 | 对应内容 | 字数分配 |
 |------|---------|---------|
 | **问题** | 向量相似 ≠ 内容相关 | ~30词 |
-| **方法** | QDCVR 三大创新 | ~70词 |
+| **方法** | HMRS 三大创新 | ~70词 |
 | **系统** | 91 MCP + 17 skills 的平台 | ~30词 |
 | **结果** | 精度提升 + 误召回下降的数字 | ~40词 |
 | **意义** | 开源 + 实际部署 | ~20词 |
@@ -83,7 +83,7 @@ Agent Systems; Model Context Protocol; Experience Lifecycle; Semantic Search
 │  Section 1: Introduction          ~1.5 page  │
 │  Section 2: Related Work           ~1.0 page  │
 │  Section 3: Problem & Background   ~0.8 page  │
-│  Section 4: QDCVR Methodology      ~2.5 pages │ ← 核心
+│  Section 4: HMRS Methodology      ~2.5 pages │ ← 核心
 │  Section 5: Experience Lifecycle   ~1.2 pages │ ← 核心
 │  Section 6: System Implementation  ~0.8 page  │
 │  Section 7: Evaluation             ~2.0 pages │
@@ -116,22 +116,22 @@ RAG 系统已成为 LLM 获取外部知识的主流方案。然而，现有 RAG 
 
 **Para 4 — 我们的方案**（~4句）
 
-本文提出 QDCVR，核心原则：**"Vectors are fast. Content is accurate."**（向量快召回，内容真裁决）。QDCVR 将检索分为召回阶段（向量+BM25）和裁决阶段（独立内容评分），以 0–8 分制直接读取候选文档正文进行验证，内容分 < 阈值的文档被丢弃，即使向量分再高。
+本文提出 HMRS，核心原则：**"Vectors are fast. Content is accurate."**（向量快召回，内容真裁决）。HMRS 将检索分为召回阶段（向量+BM25）和裁决阶段（独立内容评分），以 0–8 分制直接读取候选文档正文进行验证，内容分 < 阈值的文档被丢弃，即使向量分再高。
 
 **Para 5 — 贡献清单**（~4句）
 
 本文贡献：
-- **C1**: 提出 QDCVR — 一种内容验证驱动的 RAG 检索方法，包含自适应查询理解和七步管线。
+- **C1**: 提出 HMRS — 一种内容验证驱动的 RAG 检索方法，包含自适应查询理解和七步管线。
 - **C2**: 提出经验可信度模型（P0/P1/P2 三级 + E0-E12 生命周期 + 时效衰减），首个面向 Agent 知识库的经验管理框架。
 - **C3**: 实现一个 Agent 优先的知识库平台（91 MCP 工具 + 17 技能），开源并实际部署。
-- **C4**: 在 [N] 个查询上评估 QDCVR，相比向量基线提升 precision@5 达 [X]%。
+- **C4**: 在 [N] 个查询上评估 HMRS，相比向量基线提升 precision@5 达 [X]%。
 
 ### 1.2 配图计划
 
 | 图编号 | 内容 | 类型 |
 |--------|------|------|
 | **Figure 1** | 问题示意：向量高分但内容不相关的典型案例 | 示意图 |
-| **Figure 2** | QDCVR 七步管线总览 | 流程图 |
+| **Figure 2** | HMRS 七步管线总览 | 流程图 |
 
 ---
 
@@ -149,7 +149,7 @@ RAG 系统已成为 LLM 获取外部知识的主流方案。然而，现有 RAG 
 - Cross-Encoder Rerankers (Nogueira & Cho, 2019)
 - FLARE (Jiang et al., 2023) — LLM 实时判断检索质量
 - Self-RAG (Asai et al., 2023) — 训练 LLM 自我判断检索必要性
-- **差距**: 这些方法要么是黑箱 LLM 判断（不可解释），要么是独立 reranker（增加管线复杂度）。QDCVR 将验证嵌入检索管线，以可解释的 0–8 分制完成。
+- **差距**: 这些方法要么是黑箱 LLM 判断（不可解释），要么是独立 reranker（增加管线复杂度）。HMRS 将验证嵌入检索管线，以可解释的 0–8 分制完成。
 
 ### 2.3 Knowledge Management Systems（~0.2页）
 
@@ -173,7 +173,7 @@ RAG 系统已成为 LLM 获取外部知识的主流方案。然而，现有 RAG 
 | RAG (Lewis+) | ✓ | ✗ | ✗ | ✗ | ✓ |
 | GraphRAG | ✓ | ✗ | partial | ✗ | ✓ |
 | Self-RAG | ✓ | LLM | ✗ | ✗ | ✓ |
-| **Ours (QDCVR)** | **✓** | **✓ (0-8)** | **✓** | **✓ (MCP)** | **✓** |
+| **Ours (HMRS)** | **✓** | **✓ (0-8)** | **✓** | **✓ (MCP)** | **✓** |
 
 ---
 
@@ -187,7 +187,7 @@ RAG 系统已成为 LLM 获取外部知识的主流方案。然而，现有 RAG 
 
 目标：返回一个有序结果集 $R = \{(d_j, s_j, c_j, t_j)\}$，其中：
 - $s_j$: 向量相似度分数
-- $c_j \in [0, 8]$: **内容验证分数**（QDCVR 核心创新）
+- $c_j \in [0, 8]$: **内容验证分数**（HMRS 核心创新）
 - $t_j \in \{P_0, P_1, P_2\}$: 可信度分级
 
 ### 3.2 形式化：为什么内容验证是必要的
@@ -195,11 +195,11 @@ RAG 系统已成为 LLM 获取外部知识的主流方案。然而，现有 RAG 
 **定理（非正式）**: 向量相似度 $s$ 与内容相关性 $r$ 之间存在系统性偏差。设文档嵌入为 $\phi(d)$，查询嵌入为 $\phi(q)$，则：
 $$s = \cos(\phi(q), \phi(d)) = \frac{\phi(q) \cdot \phi(d)}{\|\phi(q)\| \|\phi(d)\|}$$
 
-当查询和文档处于同一语义子空间但描述不同实体时（如"battery thermal management" vs "data center thermal management"），$s$ 可以很高但 $r$ 很低。**QDCVR 通过独立内容评分 $c$ 截断这种假阳性。**
+当查询和文档处于同一语义子空间但描述不同实体时（如"battery thermal management" vs "data center thermal management"），$s$ 可以很高但 $r$ 很低。**HMRS 通过独立内容评分 $c$ 截断这种假阳性。**
 
 ### 3.3 设计约束
 
-| 约束 | QDCVR 设计选择 |
+| 约束 | HMRS 设计选择 |
 |------|---------------|
 | 可解释性 | 0-8 分制 + 分维度评分（主题/场景/证据） |
 | 低延迟 | 只对 top-5 候选执行内容验证 |
@@ -208,7 +208,7 @@ $$s = \cos(\phi(q), \phi(d)) = \frac{\phi(q) \cdot \phi(d)}{\|\phi(q)\| \|\phi(d
 
 ---
 
-## Section 4 — QDCVR Methodology（~2.5页）⭐核心
+## Section 4 — HMRS Methodology（~2.5页）⭐核心
 
 ### 4.1 管线总览
 
@@ -336,7 +336,7 @@ $$\text{decision}(d) = \begin{cases} \text{accept} & \text{if } c(d) \geq 6 \\ \
 
 | 图编号 | 内容 | 类型 |
 |--------|------|------|
-| **Figure 3** | QDCVR 详细管线（含每步输入输出） | 流程图 |
+| **Figure 3** | HMRS 详细管线（含每步输入输出） | 流程图 |
 | **Figure 4** | 0-8 评分 rubric 示意图 | 表格/图 |
 | **Figure 5** | 内容覆盖原则：向量分 vs 内容分散点图 | 散点图 |
 
@@ -362,7 +362,7 @@ $$\text{decision}(d) = \begin{cases} \text{accept} & \text{if } c(d) \geq 6 \\ \
 | **E7** | Review & Rating | Peer review with 0-5 rating |
 | **E8** | Dashboard | Aggregate statistics + health metrics |
 | **E9** | Semantic Rerank | Multi-dimensional relevance reranking |
-| **E10** | Cross-KB Search | QDCVR pipeline for experiences (isomorphic with docs) |
+| **E10** | Cross-KB Search | HMRS pipeline for experiences (isomorphic with docs) |
 | **E11** | Credibility Decay | Periodic degradation of stale/disputed experiences |
 | **E12** | Auto Health Check | Automated cleanup of orphans + re-verify |
 
@@ -458,7 +458,7 @@ Path E: Quality feedback recall (new) — applied_count≥2 ∧ rating≥4 bonus
 
 | RQ | Question | Metric |
 |----|----------|--------|
-| **RQ1** | QDCVR 的内容验证是否降低了向量误召回？ | Precision@k, False-Positive Rate |
+| **RQ1** | HMRS 的内容验证是否降低了向量误召回？ | Precision@k, False-Positive Rate |
 | **RQ2** | 内容覆盖原则（content > vector）的效果？ | Precision gain vs vector-only |
 | **RQ3** | balance_kbs 是否改善了跨库多样性？ | KB diversity (Shannon entropy) |
 | **RQ4** | 经验可信度模型的分级是否准确？ | Tier assignment accuracy |
@@ -489,13 +489,13 @@ Path E: Quality feedback recall (new) — applied_count≥2 ∧ rating≥4 bonus
 | Vector only (BGE-M3) | [0.62] | [0.55] | [0.58] | [0.28] |
 | BM25 + Vector fusion | [0.68] | [0.61] | [0.65] | [0.22] |
 | Vector + Reranker (CE) | [0.75] | [0.68] | [0.72] | [0.18] |
-| **QDCVR (ours)** | **[0.85]** | **[0.72]** | **[0.82]** | **[0.08]** |
+| **HMRS (ours)** | **[0.85]** | **[0.72]** | **[0.82]** | **[0.08]** |
 
 ### 7.5 Ablation Study
 
 | Variant | P@5 | Δ vs Full |
 |---------|:---:|:---------:|
-| QDCVR full | [0.85] | — |
+| HMRS full | [0.85] | — |
 | − Content Verification | [0.62] | −0.23 |
 | − Query Rewrite (Step 0) | [0.78] | −0.07 |
 | − balance_kbs | [0.80] | −0.05 |
@@ -524,7 +524,7 @@ Path E: Quality feedback recall (new) — applied_count≥2 ∧ rating≥4 bonus
 
 ## Section 9 — Conclusion（~0.3页）
 
-总结 QDCVR 的三大贡献（内容验证、经验生命周期、Agent 优先架构），强调"content > vector"原则对可信 RAG 的意义。展望：多模态内容验证、自动化评测集构建、跨语言经验迁移。
+总结 HMRS 的三大贡献（内容验证、经验生命周期、Agent 优先架构），强调"content > vector"原则对可信 RAG 的意义。展望：多模态内容验证、自动化评测集构建、跨语言经验迁移。
 
 ---
 

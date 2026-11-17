@@ -1,6 +1,6 @@
 /**
  * KB retrieval-augmented answer instruction — the platform's NATIVE retrieval
- * pipeline prompt, TOOL-NATIVE fast path (QDCVR v2 compressed onto the kb-mcp
+ * pipeline prompt, TOOL-NATIVE fast path (HMRS v2 compressed onto the kb-mcp
  * tools: query rewrite → two-stage/vector search → doc pick → real read →
  * engine judge → synthesized answer, honest not-found).
  *
@@ -40,7 +40,7 @@ export function buildKbInstruction(kbIds: string[]): string {
       '- Complete the synthesis INLINE: your FINAL message must be the complete answer with',
       '  citations, not a status note.',
       '',
-      `### Fast path (QDCVR, tool-native) — ${kbCount} pinned KB(s): ${kbIdList}`,
+      `### Fast path (HMRS, tool-native) — ${kbCount} pinned KB(s): ${kbIdList}`,
       '1. Rewrite the question into 1-3 self-contained retrieval queries (key entities +',
       '   constraints, phrased in the corpus\'s language).',
       '2. Call kb_search_two_stage (preferred) or kb_search_vector with slim=true, top_k=10-30',
@@ -138,7 +138,7 @@ export function buildKbInstruction(kbIds: string[]): string {
  * Neutral preamble for the general-purpose agent chat API
  * (POST /api/kb/agent/chat): the caller hands over a raw task prompt and the
  * KB system's own agent autonomously decides HOW to serve it — retrieval
- * (QDCVR skill), document ingestion, experience capture, graph relations —
+ * (HMRS skill), document ingestion, experience capture, graph relations —
  * using its kb-mcp tools. This is the decoupling contract with external
  * hosts (AgentWorkShop): they never orchestrate retrieval steps themselves.
  */
@@ -153,7 +153,7 @@ export function buildAgentChatPreamble(): string {
     '',
     'Depending on what the prompt asks, use your native capabilities:',
     '  - Retrieval / Q&A over the KB → invoke the `/knowledgebase-search` skill and',
-    '    follow its QDCVR pipeline strictly (query rewrite → KB selection → vector +',
+    '    follow its HMRS pipeline strictly (query rewrite → KB selection → vector +',
     '    two-stage retrieval → dedup + threshold → content verification >=6 for direct',
     '    answers; score = 5 is an attributed backstop; <=4 triggers librarian fallback',
     '    or an honest not-found report).',

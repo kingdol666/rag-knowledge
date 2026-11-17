@@ -36,15 +36,26 @@ def sse_reader(q: queue.Queue) -> None:
     conn.request("GET", "/sse")
     resp = conn.getresponse()
     event = None
+    data: list[str] = []
+    # SSE spec: an event is every line until a blank line; multiple
+    # `data:` lines of one event MUST be joined (large tool responses are
+    # split across data lines and previously got truncated mid-JSON,
+    # which corrupted every big kb_search_vector / kb_laya_judge output).
     while True:
         line = resp.readline()
         if not line:
             break
-        line = line.decode("utf-8", "replace").rstrip("\r\n")
-        if line.startswith("event:"):
-            event = line[6:].strip()
-        elif line.startswith("data:"):
-            q.put((event or "message", line[5:].strip()))
+        text = line.decode("utf-8", "replace").rstrip("\r\n")
+        if text == "":
+            if data:
+                q.put((event or "message", "\n".join(data)))
+            event, data = None, []
+        elif text.startswith("event:"):
+            event = text[6:].strip()
+        elif text.startswith("data:"):
+            data.append(text[5:].strip())
+    if data:
+        q.put((event or "message", "\n".join(data)))
 
 
 def main() -> int:

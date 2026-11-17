@@ -3,6 +3,18 @@ name: knowledgebase-librarian
 description: "Complete-recall librarian retrieval following ONE lean spine: layered navigation (catalog → shelf → document descriptions) to collect doc IDs, Laya/Jev judgment (batched refs ≤6 — larger bursts fail fetch fail-closed), survivor doc IDs, kb_doc_read verification, then answer ONLY from read-verified content. Literal/enumeration questions (哪些/列出所有/提到X) first run scripts/enumerate_scan.py — the semantic engine under-recalls literal mentions (measured 3/9; scanner 9/9 in ~11s). Fixed call budget ≤12, no full-library read sweeps, no criterion re-runs. Use for librarian, 逐级检索, 穷尽召回, 哪个知识库, 完整召回, Jev 判断."
 ---
 
+## Step 0 — 栈连接硬约束（先于一切作业步骤，强制）
+
+**任何检索/入库/管理操作开始前，必须先通过栈连接预检；未通过禁止继续。**
+
+1. 运行 `python -X utf8 scripts/ensure_stack.py`（工作目录 = 仓库根 D:/codes/ClaudeGPT/rag_project/rag-knowledge）。
+2. 退出码 0 且输出 `STACK-READY` 才允许进入后续步骤；否则**立即终止作业**，向调用方如实报告"平台栈不可达（已尝试自动拉起失败）"——禁止在不可达栈上继续，禁止编造结果。
+3. 该工具自动完成：MCP(8000)/backend(8771)/web(6789) 连通检查 → 缺失服务按 SOP 顺序自动拉起（backend venv → web → kb-mcp http）→ token 自愈（loop-auth 换新写回 .env）→ **端到端真实向量检索**验证（不只是端口探活）。
+4. 本步骤是硬约束：即使调用方声称"服务已在跑"，也必须以 ensure_stack 的实测为准（进程可能已死、端口可能被陈旧实例占用——历史实锤形态）。
+5. 路径注意：scripts/mcp_call.py 与 ensure_stack.py 均需仓库根为工作目录；不要在子目录下调用。
+
+（2026-11-12 新增。起因：skill 此前假定服务常驻；实机演练中栈宕机导致作业必败。）
+
 ## Related lanes
 
 - **Vector + verify lane** → `skill://knowledgebase-search` — fast semantic candidates; default when the shelf is known and the question is factual.

@@ -4,7 +4,7 @@
 文档: 手工构造的全新 .docx(二进制, 走 MinerU docx 解析链), 内容=2026-09-27
 三模式检索实测知识卡(数字均有真值可校验). 入库目标: demo-qa-20260927.
 流程严格按 knowledgebase-ingest: A0 去重预检 → A2 解析 → A3b 标签 →
-A3c 描述 → A5 存储 → A6 索引 → A7 终检 → 问答(soul_qdcvr_ask) → 拒答探针.
+A3c 描述 → A5 存储 → A6 索引 → A7 终检 → 问答(soul_hmrs_ask) → 拒答探针.
 """
 import json
 import subprocess
@@ -130,10 +130,10 @@ def main() -> int:
         rec("A7 verify", present and "68.6" in blob,
             f"catalog可见={present} 向量命中新内容={'68.6' in blob}")
 
-        # 问答 (soul_qdcvr_ask 真链路)
+        # 问答 (soul_hmrs_ask 真链路)
         for qid, qtype, q in QA:
             t0 = time.perf_counter()
-            r = mc.call("soul_qdcvr_ask",
+            r = mc.call("soul_hmrs_ask",
                         {"query": q, "soul_kb_id": SOUL, "task_goal": "全检演示",
                          "task_type": "qa", "top_k": 4, "async_mode": True}, timeout=120)
             tid2 = r.get("task_id", "")

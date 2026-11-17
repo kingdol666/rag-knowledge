@@ -90,12 +90,14 @@ search:
     stage1_pool_multiplier: 8
     kb_aware_candidates: true
     bm25_max_content_chars: 32000
+    graph_budget_ms: 1000
+    vector_budget_ms: 5000
 
 # -- Ingestion (large-doc split) --
 ingestion:
   large_doc:
     auto_split: true
-    max_chars: 30000
+    max_chars: 60000
     overlap_chars: 0
     strategy: "agent_semantic"
     target_utilization: 0.85

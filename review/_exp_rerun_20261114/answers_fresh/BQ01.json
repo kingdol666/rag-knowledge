@@ -1,0 +1,34 @@
+{
+ "qid": "BQ01",
+ "arxiv": "1706.03762",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "http": 200,
+ "error": "",
+ "wall_s": 155.2,
+ "latency_s": 151.87,
+ "turns": 4,
+ "cost_usd": 0.43157804,
+ "success": true,
+ "answer": "**Conclusion:** A Transformer computes attention as a scaled dot-product over queries, keys and values — `Attention(Q,K,V) = softmax(QKᵀ/√d_k)·V` — run in parallel heads; it replaces recurrence and convolution because a self-attention layer connects every pair of positions with **O(1) sequentially executed operations and O(1) maximum path length**, eliminating the RNN's sequential bottleneck and the CNN's distance-growing path, at a per-layer cost of O(n²·d).\n\n**1. How attention is computed** (source: *Attention Is All You Need*, arXiv 1706.03762 — KB「计算机与人工智能」, part 1/2; P0 direct evidence, verbatim):\n- **Definition:** \"An attention function can be described as mapping a query and a set of key-value pairs to an output… The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.\"\n- **Scaled dot-product:** \"We compute the dot products of the query with all keys, divide each by √d_k, and apply a softmax function to obtain the weights on the values.\" In matrix form (Eq. 1): `softmax(QKᵀ/√d_k)V`. Queries/keys have dimension d_k, values d_v.\n- **Why scale:** \"for large values of d_k, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients.\" Scaling by 1/√d_k counteracts this. Dot-product attention is preferred over additive attention because it is \"much faster and more space-efficient in practice, since it can be implemented using highly optimized matrix multiplication code.\"\n- **Multi-head (Sec. 3.2.2):** Q, K, V are linearly projected h times (h=8, d_k=d_v=d_model/h=64), attention runs in parallel per head, outputs are concatenated and projected by W^O. Purpose: \"Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions.\" Cost stays similar to single-head full-dimension attention.\n- **Three uses (Sec. 3.2.3):** encoder self-attention (all positions attend to all); decoder self-attention with masking (illegal future connections set to −∞, preserving auto-regression); encoder-decoder attention (queries from decoder, keys/values from encoder).\n- **No recurrence/convolution ⇒** sinusoidal positional encodings are added to embeddings (Sec. 3.5) so order information is injected.\n\n**2. Why it replaces recurrence:** RNNs compute h_t as a function of h_{t−1}; \"This inherently sequential nature precludes parallelization within training examples, which becomes critical at longer sequence lengths.\" Table 1: recurrent layers need **O(n) sequential operations** and have **O(n) maximum path length**, whereas self-attention needs **O(1)** for both.\n\n**3. Why it replaces convolution:** ConvS2S/ByteNet compute representations in parallel, but \"the number of operations required to relate signals from two arbitrary input or output positions grows in the distance between positions, linearly for ConvS2S and logarithmically for ByteNet… In the Transformer this is reduced to a constant number of operations, albeit at the cost of reduced effective resolution due to averaging attention-weighted positions, an effect we counteract with Multi-Head Attention.\" A single k<n convolution also cannot connect all pairs; it needs O(n/k) stacked or O(log_k n) dilated layers.\n\n**4. The three stated desiderata (Sec. 4) and Table 1:** per-layer complexity, minimum sequential operations, maximum path length. Self-attention O(n²·d) / O(1) / O(1); recurrent O(n·d²) / O(n) / O(n); convolutional O(k·n·d²) / O(1) / O(log_k n). The paper notes self-attention is faster than recurrent layers \"when the sequence length n is smaller than the representation dimensionality d,\" and that restricted (neighborhood-r) attention trades path length O(n/r) for lower complexity on very long sequences.\n\n**5. Payoff:** 28.4 BLEU EN→DE (\"improving over the existing best results, including ensembles, by over 2 BLEU\") and 41.8 BLEU EN→FR single-model SOTA after 3.5 days on eight GPUs; base models trained in 12 hours on 8 P100s.\n\n*Credibility: P0 — all quotes are verbatim from the paper text in the pinned KB (part 1 of 2; Secs. 2, 3.2, 3.5, 4, Table 1, Abstract).*",
+ "grade": {
+  "gold_id_in_answer": true,
+  "kw_hits": 3,
+  "kw_total": 3,
+  "kw_list_hit": [
+   "scaled dot-product",
+   "multi-head",
+   "recurrence"
+  ],
+  "cited": true,
+  "n_markers": 5,
+  "markers_head": [
+   "1706.03762",
+   "Table 1",
+   "Table 1",
+   "part 1 of 2",
+   "Table 1"
+  ],
+  "false_abstain": false,
+  "chars": 4226
+ }
+}

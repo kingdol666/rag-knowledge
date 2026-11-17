@@ -200,7 +200,7 @@ uv run python server.py --http
 | `experience_read()` | Read full experience information (metadata + content body). |
 | `experience_rerank()` | Semantic reranking for experience search results -- multi-dimensional scoring. |
 | `experience_review()` | Review an experience with a rating (0-5) and comment. Automatically updates the experience's average rating and review count. |
-| `experience_search_global()` | Cross-KB global experience search -- QDCVR pipeline (isomorphic with document search). |
+| `experience_search_global()` | Cross-KB global experience search -- HMRS pipeline (isomorphic with document search). |
 | `experience_search_smart()` | Intelligent multi-path experience retrieval -- the RECOMMENDED entry point for experience search. |
 | `experience_summary()` | Get experience statistics summary, including total count, distribution by category, distribution by severity, total applications, average rating, top 5 experiences. |
 | `experience_sync_kb()` | E6: Mark entire KB for sync (stale/orphan experiences marked needs_sync). |
@@ -249,7 +249,7 @@ uv run python server.py --http
 | `soul_learn()` | 自主学习: 提问→带引用自答→四维自评(双判官)→蒸馏(人格记忆+知识经验)。 |
 | `soul_learn_all()` | 全库自举: 遍历全部 SOUL × kb_scope 批量增量学习。 |
 | `soul_list()` | 列出全部 SOUL 库(排除模板)。 |
-| `soul_qdcvr_ask()` | QDCVR + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识, |
+| `soul_hmrs_ask()` | HMRS + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识, |
 | `soul_reflect()` | 反思: 认知草稿 vs 人格定义结构化 diff 报告(先自动 checkpoint)。 |
 | `soul_review_drafts()` | 草稿审批闭环: list/approve/reject 人格记忆或认知草稿。 |
 | `soul_rollback()` | 回滚到检查点(memories/ + cognition-drafts/;宪法层永不回滚)。 |

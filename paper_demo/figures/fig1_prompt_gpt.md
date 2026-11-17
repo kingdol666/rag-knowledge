@@ -1,4 +1,4 @@
-# Figure 1 — CIKM Demo paper: dense RAG vs. QDCVR protocol (methodology contrast)
+# Figure 1 — CIKM Demo paper: dense RAG vs. HMRS protocol (methodology contrast)
 
 Publication-quality flat 2D vector scientific comparison diagram for an ACM CIKM
 conference paper (information retrieval / RAG systems). Exact layout spec follows;
@@ -6,7 +6,7 @@ ALL text strings must be rendered EXACTLY as written, letter-perfect, in a clean
 sans-serif (Helvetica/Arial-like) font. White background #FFFFFF. Flat design, no
 photographic elements, no 3D, no drop shadows except none, no gradients, crisp
 1.5-2pt strokes. Color code: slate grey #64748B/#CBD5E1 = conventional baseline;
-deep teal #0F766E = the QDCVR proposed system; soft red #B4441F = warnings;
+deep teal #0F766E = the HMRS proposed system; soft red #B4441F = warnings;
 dark navy #101826 = bottom results strip. Right-side system outlined in teal as
 "the proposed system"; left side visually neutral grey.
 
@@ -31,9 +31,9 @@ Under step 3, three small soft-red warning chips, each with a small ✗ mark:
 "answers split across chunks", "no source paths", "no retry on miss".
 A grey metric line inside the header area reads: "8 / 10 answered · 2 abstentions".
 
-## TOP-RIGHT PANEL — "QDCVR Knowledge-Base Protocol" (teal theme, the proposed system)
+## TOP-RIGHT PANEL — "HMRS Knowledge-Base Protocol" (teal theme, the proposed system)
 
-Header bar: teal gradient fill #0F766E→#0D9488, white title "QDCVR Knowledge-Base
+Header bar: teal gradient fill #0F766E→#0D9488, white title "HMRS Knowledge-Base
 Protocol", small translucent white tag "gated · cited · self-checking".
 Below, a vertical 5-step pipeline connected by downward teal arrows:
 - Step 1: teal circle "1", bold "Content-routed category KBs", caption

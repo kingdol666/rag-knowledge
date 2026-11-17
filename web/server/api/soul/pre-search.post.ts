@@ -2,7 +2,7 @@ import { defineEventHandler, readBody } from 'h3'
 import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
 
 /**
- * POST /api/soul/pre-search — QDCVR 前置检索
+ * POST /api/soul/pre-search — HMRS 前置检索
  *
  * 先用两阶段检索定位知识库证据, 返回格式化片段供 context_override 注入,
  * 让人格在真实检索证据之上做增强回答(检索→验证→人格合成)。

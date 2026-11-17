@@ -2,7 +2,7 @@
 # DEPRECATED 2026-09-20 — superseded by the experiments/ platform
 # (python -m experiments.runner, chat API + harness=claude). Kept only to
 # reproduce historical reports. Do not use for new retrieval testing.
-"""复刻实验汇整报告 — QDCVR v2 skill 流程 vs 裸 Agent vs dense 复刻.
+"""复刻实验汇整报告 — HMRS v2 skill 流程 vs 裸 Agent vs dense 复刻.
 每题分别记录: 分步执行时间 + 原始最终回答(全文, 不删节)。"""
 from __future__ import annotations
 
@@ -79,20 +79,20 @@ def main() -> int:
 
     L = []
     w = L.append
-    w("# Three-Track Replication — QDCVR v2 Skill Flow vs Bare Agent vs Dense Baseline")
+    w("# Three-Track Replication — HMRS v2 Skill Flow vs Bare Agent vs Dense Baseline")
     w("")
     w(f"Generated {now} · corpus: 50 real multi-field papers · 10 content-grounded questions")
     w("")
     w("| Track | Retrieval | Answering |")
     w("|---|---|---|")
-    w("| A · Platform KB retrieval | **QDCVR v2 skill flow, executed step by step**: Phase 0 query rewrite → Phase 1 `kb_search_vector` per category KB (balance) → doc dedup → `kb_doc_read` content gate (0-8 rubric, ≥6 fast exit) → Phase 2 librarian targeted recall when gate fails → five-section answer | composed by the executing agent per the skill's Phase 3 format |")
+    w("| A · Platform KB retrieval | **HMRS v2 skill flow, executed step by step**: Phase 0 query rewrite → Phase 1 `kb_search_vector` per category KB (balance) → doc dedup → `kb_doc_read` content gate (0-8 rubric, ≥6 fast exit) → Phase 2 librarian targeted recall when gate fails → five-section answer | composed by the executing agent per the skill's Phase 3 format |")
     w("| B · Bare agent | no index — same omp engine with file tools over `data/corpus_md/` (50 md files) | the agent's own final JSON answer, recorded verbatim |")
     w("| C · Dense baseline (reproduction) | `methods.dense` over Corpus-Chunks800 → 4000-char evidence pack | unified SCEN_ANSWER_PROMPT on the same omp engine |")
     w("")
     _pipeline_section(w)
 
     # ── Track A ──
-    w("## Track A — QDCVR v2 skill flow (platform KB retrieval)")
+    w("## Track A — HMRS v2 skill flow (platform KB retrieval)")
     w("")
     w("| QID | Phase1 vector | Doc reads | Gate (0-8) | Decision | Phase 2 |")
     w("|---|:---:|:---:|:---:|---|:---:|")

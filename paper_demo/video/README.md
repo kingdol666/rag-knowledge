@@ -1,6 +1,6 @@
-# QDCVR demonstration video — CIKM Demo track
+# HMRS demonstration video — CIKM Demo track
 
-**Deliverable: [`qdcvr-demo.mp4`](qdcvr-demo.mp4)** — 1920×1080, H.264 + AAC,
+**Deliverable: [`hmrs-demo.mp4`](hmrs-demo.mp4)** — 1920×1080, H.264 + AAC,
 **3:00**, 27 MB, English narration (neural TTS), lower-third captions.
 
 ## What the video shows
@@ -32,7 +32,7 @@ cd paper_demo/video
 
 python record_clips.py        # 1. record 4 real browser clips (1920x1080 webm)
 python build_video.py --audio # 2. (optional) regenerate narration only
-python build_video.py         # 3. cards + captions + pieces + mux -> qdcvr-demo.mp4
+python build_video.py         # 3. cards + captions + pieces + mux -> hmrs-demo.mp4
 ```
 
 **Why one file per clip.** Playwright's screencast drops frames while the page is
@@ -65,8 +65,8 @@ paper's figures (same terracotta accent `#b4441f`).
 
 ## Before submission
 
-1. Upload `qdcvr-demo.mp4` and replace the placeholder URL
-   `https://example.org/qdcvr-demo` in `tex/sec0_abstract.tex`,
+1. Upload `hmrs-demo.mp4` and replace the placeholder URL
+   `https://example.org/hmrs-demo` in `tex/sec0_abstract.tex`,
    `tex/sec3_demo.tex` and `tex/sec4_backmatter.tex`.
 2. The video shows a demo user (`paperdemo`) on the local deployment; if you
    re-record against a different corpus, re-run `record_clips.py` **and**

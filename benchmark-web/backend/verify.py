@@ -24,7 +24,7 @@ REQUIRED = [
     ("rank_bm25", "[REAL-CODE] bm25 baseline", True),
     ("faiss", "[REAL-CODE] dense / hybrid / ce_rerank / crag / selfrag", True),
     ("sentence_transformers", "BGE-M3 embeddings + ms-marco reranker", True),
-    ("httpx", "[PROJECT] qdcvr_flat / qdcvr_domain baselines", True),
+    ("httpx", "[PROJECT] hmrs_flat / hmrs_domain baselines", True),
     ("numpy", "score maths", True),
     ("multipart", "POST /api/documents/upload", False),
     ("pypdf", "uploading .pdf files", False),
@@ -61,7 +61,7 @@ def main() -> int:
         print("\nResolved from the shared config.yml + .env:")
         print(f"  platform API      {settings.project_search_url}")
         print("  auth token        "
-              + ("set" if settings.auth_token else "MISSING — QDCVR baselines will get 401"))
+              + ("set" if settings.auth_token else "MISSING — HMRS baselines will get 401"))
         print(f"  embedding model   {settings.embedding_model}")
         print(f"  hub cache         {settings.hf_cache_dir} "
               f"({'present' if settings.hf_cache_dir.is_dir() else 'MISSING'})")

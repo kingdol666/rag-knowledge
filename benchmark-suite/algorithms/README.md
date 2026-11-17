@@ -2,7 +2,7 @@
 
 复现 **DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search**
 (arXiv:2602.05014) Table 1 的全部对比算法, 在本套件冻结语料 (BEIR SciFact 148
-篇, KB-SciFact) 与冻结查询 (30 条 claim, 官方 qrels) 上与 **QDCVR**(本系统
+篇, KB-SciFact) 与冻结查询 (30 条 claim, 官方 qrels) 上与 **HMRS**(本系统
 knowledgebase-search skill 真链路)对比:
 
 - 检索层: Hit@k / Recall@k / nDCG@10 / P@5 / MRR(qrels 金标)
@@ -14,7 +14,7 @@ knowledgebase-search skill 真链路)对比:
 
 | 方法 | 论文对应 | 通道 |
 |---|---|---|
-| `qdcvr` | 本系统 skill(two-stage + 0.35 阈值 + 内容验证重排) | kb-mcp MCP |
+| `hmrs` | 本系统 skill(two-stage + 0.35 阈值 + 内容验证重排) | kb-mcp MCP |
 | `dense_rag` | Dense RAG(chunk 800/400, top-10) | chunk KB + 后端嵌入 |
 | `dense_rag_rerank` | Dense RAG w/ Reranker(30→重排→10) | + omp listwise 重排 |
 | `raptor` | RAPTOR Collapsed Tree(≤800 tok/节点, 5 层, cluster top-5, top-10) | 树 KB + omp 摘要 |
@@ -72,7 +72,7 @@ python api_server.py &           # 仅绑定 127.0.0.1; 启动时加载 148 篇�
 curl -s http://127.0.0.1:8790/health
 curl -s -X POST http://127.0.0.1:8790/ask \
      -H "Content-Type: application/json" \
-     -d '{"method":"qdcvr","qid":"sf-003","judge":true}'
+     -d '{"method":"hmrs","qid":"sf-003","judge":true}'
 curl -s -X POST http://127.0.0.1:8790/compare \
      -H "Content-Type: application/json" \
      -d '{"qid":"sf-003","rank":true}'   # 8 方法同题并答 + 中间 Agent 匿名排名

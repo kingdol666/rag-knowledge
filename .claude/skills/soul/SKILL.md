@@ -39,7 +39,7 @@ After matching:
   ├── Persona distillation (Butian seed) → execute §E
   ├── Persona management (CRUD) → execute §A
   ├── Persona training (auto/manual/fixed rounds) → execute §B
-  ├── Persona Q&A (explicit/auto routing/QDCVR one-click) → execute §C
+  ├── Persona Q&A (explicit/auto routing/HMRS one-click) → execute §C
   ├── Persona evaluation (self-rating/calibration/reflection) → execute §D
   └── Mixed scenarios → in the order management → training → evaluation → Q&A
 
@@ -60,7 +60,7 @@ After matching:
 | persona evaluation, self-rating, calibration, soul_eval, soul_calibrate | **Evaluate** | §D2 `soul_eval`/`soul_calibrate` |
 | persona reflection, drift report, soul_reflect, reflect | **Reflect** | §D3 `soul_reflect` |
 | persona Q&A, answer with persona XX, soul_ask | **Ask** | §C1/C2 `soul_ask` |
-| one-click retrieval + persona answer, QDCVR persona Q&A, soul_qdcvr_ask | **QdcvrAsk** | §C4 `soul_qdcvr_ask` |
+| one-click retrieval + persona answer, HMRS persona Q&A, soul_hmrs_ask | **HmrsAsk** | §C4 `soul_hmrs_ask` |
 | retrieve the KB first then answer, summarize with a persona after retrieval | **RagAsk** | §C3 context_override combo |
 | export training data, fine-tuning data, soul_export, LoRA | **Export** | §D4 `soul_export` |
 | checkpoints, roll back persona, soul_checkpoint, soul_rollback | **Rollback** | §D5 `soul_checkpoint`/`soul_rollback` |
@@ -81,7 +81,7 @@ On failure, prompt "MCP/backend unavailable"; do not continue.
 Match per the table above, longest keyword first. Persona Q&A and knowledge base retrieval can overlap:
 - User says "help me look up/search XX" → **knowledgebase-search** (knowledge retrieval)
 - User says "answer with persona XX / in XX's voice / persona-augmented" → **soul Ask** (persona processing)
-- User says "retrieve then answer as a persona" / "one-click retrieval + persona answer" → **soul_qdcvr_ask** (QDCVR integration)
+- User says "retrieve then answer as a persona" / "one-click retrieval + persona answer" → **soul_hmrs_ask** (HMRS integration)
 - User says "distill a persona / butian" → **§E Butian distillation**
 
 ### Step 2 — Execute the Corresponding Scenario (below)
@@ -166,7 +166,7 @@ experience_meditation_config_update(soul_kb_id, {harness, model, enabled, interv
 ```
 - **Cognition accumulation mode**: the Updater only generates active cognition drafts; it doesn't write the persona definition directly (avoids fragmentary appends piling up contradictions)
 - **Global optimization**: triggered when cognition ≥3 / reward declines consecutively / convergence locks in (replaces old content and digests active drafts)
-- **Cognition participates in Q&A**: active cognition drafts are injected into prompts during soul_ask/soul_qdcvr_ask (training cognition takes effect immediately)
+- **Cognition participates in Q&A**: active cognition drafts are injected into prompts during soul_ask/soul_hmrs_ask (training cognition takes effect immediately)
 - **Convergence awareness**: reward changing <0.25 for 2 consecutive rounds → converged state: the Actor halves its question count (focus on deepening)
 - **Auto-approved memories**: training memories with groundedness≥3.5 and all four dimensions ≥3.5 are auto-approved + indexed (searchable in Q&A)
 - **Knowledge distillation**: per-round cross-memory synthesis → knowledge-synthesis.md (heuristics + knowledge points, not pile-ups)
@@ -210,7 +210,7 @@ soul_evaluate(soul_kb_id)             # independently invoke the Critic's six-di
 ```
 - **Six-dimension evaluation**: identity/values/thinking/language/knowledge/coherence (0-5)
 - **Cognition draft states**: active (awaiting global optimization) → applied (digested by global optimization); manual approve also triggers global optimization
-- **Q&A participation**: active cognition drafts are automatically injected into prompts during soul_ask/soul_qdcvr_ask
+- **Q&A participation**: active cognition drafts are automatically injected into prompts during soul_ask/soul_hmrs_ask
 - ragctl: soul evaluate / review-cognition --all
 
 ### B5 ⭐ Task Control and Training History (SQLite)
@@ -269,9 +269,9 @@ When the user asks "look up XX in the knowledge base and answer as persona YY", 
 Full strategy in [references/soul-rag-strategy.md](references/soul-rag-strategy.md),
 or directly use `Skill("soul-rag")`.
 
-### C4 ⭐ QDCVR One-Click Integration (soul_qdcvr_ask — Recommended Entry)
+### C4 ⭐ HMRS One-Click Integration (soul_hmrs_ask — Recommended Entry)
 ```
-soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)
+soul_hmrs_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)
 ```
 **First retrieves per the knowledgebase-search skill flow, then injects the persona for an augmented answer** —
 not a direct soul_ask, but the complete chain "retrieve → verify → persona synthesis":
@@ -281,7 +281,7 @@ not a direct soul_ask, but the complete chain "retrieve → verify → persona s
 - With explicit soul_kb_id, retrieval scope = that persona's kb_scope; auto-routing is cross-library
 - Returns answer + citations + pas_score + route_* + **evidence_count** (injected evidence count)
 - On no hits, the persona honestly downgrades (declares knowledge base blind spots; does not fabricate)
-- Frontend: Q&A modal "one-click retrieval + persona answer" button; ragctl: `ragctl soul ask` with --qdcvr
+- Frontend: Q&A modal "one-click retrieval + persona answer" button; ragctl: `ragctl soul ask` with --hmrs
 
 ---
 
@@ -394,7 +394,7 @@ requests must carry `Authorization: Bearer <token>`; same data as MCP); still fa
 - `soul_export(soul_kb_id, min_score)` — training data export
 - `soul_router(query, task_goal, task_type)` — routing decision preview
 - `soul_ask(query, soul_kb_id, task_goal, task_type, context_override, async_mode)` — persona Q&A
-- `soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k, async_mode)` — QDCVR one-click retrieval + persona answer (recommended)
+- `soul_hmrs_ask(query, soul_kb_id, task_goal, task_type, top_k, async_mode)` — HMRS one-click retrieval + persona answer (recommended)
 - `experience_meditation_config_update(soul_kb_id, {...})` — auto-training schedule config (includes rounds_per_run)
 - `ragctl soul distill <dot-skill dir> [--name] [--scope] [--labels] [--harness]` — Butian distillation → SOUL
 - `ragctl harness [omp|claude]` — global default harness; `ragctl soul harness <soul> <harness>` — per-persona override
@@ -404,8 +404,8 @@ requests must carry `Authorization: Bearer <token>`; same data as MCP); still fa
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- OVERRIDE (overrides Step 0's "pre-flight first" opener habit): for any SOUL task, the reply (including the first reply) must write the complete execution plan in the body, verbatim, listing the concrete tool names to be called: soul_init, kb_task_status, soul_qdcvr_ask (or the other soul_* tools actually used in the scenario), while also containing an async-contract word (async_mode or task_id or profile_pending or "async"). Openers containing no tool names or async words, like "starting execution…/first a connectivity check", are forbidden; tool names in the plan must match the tool calls actually executed afterwards.
-- For the combined scenario of creating a persona and immediately answering with it (scenario table Create→Ask): the fixed execution chain = soul_init (create; the reply must note the async contract task_id/profile_pending) → kb_task_status (poll the 4 constitutional documents' indexing until done) → soul_qdcvr_ask (one-click retrieval + persona answer; recommended entry; async_mode=True returns task_id). The reply body for this scenario must contain the three tool names soul_init, kb_task_status, soul_qdcvr_ask verbatim — all three are required.
-- Whenever calling an asynchronously-returning SOUL tool (soul_init / soul_learn / soul_learn_all / soul_train_rl / soul_qdcvr_ask / batch soul_review_drafts), the reply must immediately follow the tool name with async wording containing task_id or async_mode or profile_pending or "async", e.g.: soul_init asynchronously returns task_id+profile_pending; soul_qdcvr_ask(async_mode=True) returns a task_id to poll.
-- SOUL tasks must run to completion: the final reply must include the full execution results (creation result/index polling result/Q&A answer); ending after outputting the plan or the first tool call is not allowed. If any tool call fails, times out, or output is interrupted, the following reply must explain the error and retry or switch to the REST equivalent entry (see "Failure fallback"), and subsequent replies must likewise contain the original plan's tool names and async keywords verbatim (soul_init, kb_task_status, soul_qdcvr_ask, task_id/async).
+- OVERRIDE (overrides Step 0's "pre-flight first" opener habit): for any SOUL task, the reply (including the first reply) must write the complete execution plan in the body, verbatim, listing the concrete tool names to be called: soul_init, kb_task_status, soul_hmrs_ask (or the other soul_* tools actually used in the scenario), while also containing an async-contract word (async_mode or task_id or profile_pending or "async"). Openers containing no tool names or async words, like "starting execution…/first a connectivity check", are forbidden; tool names in the plan must match the tool calls actually executed afterwards.
+- For the combined scenario of creating a persona and immediately answering with it (scenario table Create→Ask): the fixed execution chain = soul_init (create; the reply must note the async contract task_id/profile_pending) → kb_task_status (poll the 4 constitutional documents' indexing until done) → soul_hmrs_ask (one-click retrieval + persona answer; recommended entry; async_mode=True returns task_id). The reply body for this scenario must contain the three tool names soul_init, kb_task_status, soul_hmrs_ask verbatim — all three are required.
+- Whenever calling an asynchronously-returning SOUL tool (soul_init / soul_learn / soul_learn_all / soul_train_rl / soul_hmrs_ask / batch soul_review_drafts), the reply must immediately follow the tool name with async wording containing task_id or async_mode or profile_pending or "async", e.g.: soul_init asynchronously returns task_id+profile_pending; soul_hmrs_ask(async_mode=True) returns a task_id to poll.
+- SOUL tasks must run to completion: the final reply must include the full execution results (creation result/index polling result/Q&A answer); ending after outputting the plan or the first tool call is not allowed. If any tool call fails, times out, or output is interrupted, the following reply must explain the error and retry or switch to the REST equivalent entry (see "Failure fallback"), and subsequent replies must likewise contain the original plan's tool names and async keywords verbatim (soul_init, kb_task_status, soul_hmrs_ask, task_id/async).
 <!-- SKILLOPT-SLEEP:LEARNED END -->

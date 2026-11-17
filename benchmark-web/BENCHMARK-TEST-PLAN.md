@@ -1,4 +1,4 @@
-# QDCVR Knowledge Base System — Comprehensive Benchmark Plan v3.0
+# HMRS Knowledge Base System — Comprehensive Benchmark Plan v3.0
 # Holistic Evaluation: Ingestion + Organization + Retrieval + Experience + End-to-End
 # Target: CIKM 2027 / SIGIR 2027 Experimental Evaluation
 # Date: 2026-07-30
@@ -12,7 +12,7 @@ This system does FIVE fundamentally different things:
   │               KNOWLEDGE BASE LIFECYCLE                    │
   │                                                           │
   │  ① INGEST         ② ORGANIZE       ③ RETRIEVE            │
-  │  Raw PDF/Word      Auto-tag         MoE gate → QDCVR     │
+  │  Raw PDF/Word      Auto-tag         MoE gate → HMRS     │
   │  → Auto-parse      → Sub-KB route   → Content verify     │
   │  → Auto-tag        → Dedup          → Answer + blind-spot │
   │  → Auto-describe   → Restructure                          │
@@ -202,7 +202,7 @@ Metrics:
 
 Procedure:
   1. Load Dataset C (40 annotated queries)
-  2. For each query, run the full QDCVR pipeline:
+  2. For each query, run the full HMRS pipeline:
      Step 0: Query analysis → record intent + entities
      Step 1: MoE KB selection → record which KBs activated
      Step 2: Two-stage search → record results + scores
@@ -212,8 +212,8 @@ Procedure:
   3. Compare against human ground truth
   4. Compute all metrics
   5. Also run as ABLATIONS:
-     - QDCVR-Flat (skip Step 1): measure MoE contribution
-     - QDCVR-NoVerify (skip Step 3): measure content verification contribution
+     - HMRS-Flat (skip Step 1): measure MoE contribution
+     - HMRS-NoVerify (skip Step 3): measure content verification contribution
 
 
 ### Phase D: Experience Quality (15 Q&A pairs)
@@ -281,9 +281,9 @@ We compare against ABLATIONS of our own system (not external RAG systems):
 ┌─────┬─────────────────────────┬──────────────────────────────────┐
 │ ID  │ Method                  │ What It Tests                    │
 ├─────┼─────────────────────────┼──────────────────────────────────┤
-│ S0  │ QDCVR-MoE (Full)        │ Complete pipeline — our system   │
-│ S1  │ QDCVR-Flat              │ Ablation: skip MoE routing       │
-│ S2  │ QDCVR-NoVerify          │ Ablation: skip content verify    │
+│ S0  │ HMRS-MoE (Full)        │ Complete pipeline — our system   │
+│ S1  │ HMRS-Flat              │ Ablation: skip MoE routing       │
+│ S2  │ HMRS-NoVerify          │ Ablation: skip content verify    │
 │ S3  │ BM25-only               │ Baseline: pure keyword retrieval │
 │ S4  │ Manual Ingest           │ Baseline: human-written tags/desc│
 │ S5  │ No Organization         │ Baseline: skip organize step     │
@@ -354,7 +354,7 @@ Phase B: Organization Quality
 
 Phase C: Retrieval Quality
   □ Prepare 40 annotated queries (Dataset C)
-  □ Run S0 (full QDCVR) on all 40 queries
+  □ Run S0 (full HMRS) on all 40 queries
   □ Run S1 (flat), S2 (no-verify), S3 (BM25) ablations
   □ Human-evaluate content verification scores
   □ Compute all Phase C metrics
