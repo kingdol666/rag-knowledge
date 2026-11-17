@@ -25,6 +25,14 @@ export default defineNuxtConfig({
     // Enable WebSocket support for the integrated terminal (node-pty over WS).
     // Without this, defineWebSocketHandler routes are ignored.
     experimental: { websocket: true },
+    externals: {
+      // node-pty MUST stay external: bundling it inline makes its native
+      // conpty.node hard-crash the Node process on spawn (verified prod
+      // 2026-10-04 — server dies silently on the first PTY open). External
+      // keeps the standard require() path identical to dev. Its native
+      // prebuilds/build dirs are copied into .output by start.mjs.
+      external: ['node-pty'],
+    },
   },
 
   app: {

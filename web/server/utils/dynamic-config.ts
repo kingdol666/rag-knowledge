@@ -12,24 +12,22 @@
  */
 import { readFileSync, existsSync } from 'fs'
 import { resolve, isAbsolute } from 'path'
-import { getMonorepoRoot } from './project-root'
+import { getRepoRoot } from '~/server/utils/repo-root'
 
-// Both runtime paths and dynamic config use the same validated root.
-// Resolve on demand so a runtime RAG_PROJECT_ROOT change cannot split config and storage roots.
+// ── Path anchors ───────────────────────────────────────────────────────
+// Lazy (never at module top level): import.meta.url resolves to a rollup
+// polyfill fallback in prod chunks before index.mjs sets _importMeta_,
+// crashing startup with ERR_INVALID_FILE_URL_PATH (prod verified 2026-10-04).
+const configPath = () => resolve(getRepoRoot(), 'config.yml')
+const envPath = () => resolve(getRepoRoot(), '.env')
 
 // ── Cache (5 second TTL) ───────────────────────────────────────────────
 interface CachedConfig {
   data: any
   timestamp: number
-  root: string
-}
-interface CachedEnv {
-  data: Record<string, string>
-  timestamp: number
-  root: string
 }
 let _cachedConfig: CachedConfig | null = null
-let _cachedEnv: CachedEnv | null = null
+let _cachedEnv: { data: Record<string, string>; timestamp: number } | null = null
 const CACHE_TTL = 5000 // 5 seconds
 
 // ── Minimal YAML parser (same logic as utils/paths.mjs) ────────────────
@@ -129,107 +127,70 @@ export function invalidateConfigCache(): void {
 
 /** Read config.yml (cached with TTL). */
 export function getRawConfig(): any {
-  const root = getMonorepoRoot()
-  const configPath = resolve(root, 'config.yml')
   const now = Date.now()
-  if (_cachedConfig && _cachedConfig.root === root && now - _cachedConfig.timestamp < CACHE_TTL) {
+  if (_cachedConfig && now - _cachedConfig.timestamp < CACHE_TTL) {
     return _cachedConfig.data
   }
-  if (!existsSync(configPath)) {
-    _cachedConfig = { data: {}, timestamp: now, root }
+  if (!existsSync(configPath())) {
+    _cachedConfig = { data: {}, timestamp: now }
     return {}
   }
   try {
-    const raw = readFileSync(configPath, 'utf-8')
+    const raw = readFileSync(configPath(), 'utf-8')
     const parsed = parseYaml(raw)
-    _cachedConfig = { data: parsed, timestamp: now, root }
+    _cachedConfig = { data: parsed, timestamp: now }
     return parsed
   } catch {
-    _cachedConfig = { data: {}, timestamp: now, root }
+    _cachedConfig = { data: {}, timestamp: now }
     return {}
   }
 }
 
 /** Read .env file (cached with TTL). */
 export function getEnvConfig(): Record<string, string> {
-  const root = getMonorepoRoot()
-  const envPath = resolve(root, '.env')
   const now = Date.now()
-  if (_cachedEnv && _cachedEnv.root === root && now - _cachedEnv.timestamp < CACHE_TTL) {
+  if (_cachedEnv && now - _cachedEnv.timestamp < CACHE_TTL) {
     return _cachedEnv.data
   }
   const result: Record<string, string> = {}
-  if (!existsSync(envPath)) {
-    _cachedEnv = { data: result, timestamp: now, root }
+  if (!existsSync(envPath())) {
+    _cachedEnv = { data: result, timestamp: now }
     return result
   }
   try {
-    const raw = readFileSync(envPath, 'utf-8')
+    const raw = readFileSync(envPath(), 'utf-8')
     for (const line of raw.split('\n')) {
       const trimmed = line.trim()
       if (!trimmed || trimmed.startsWith('#')) continue
       if (trimmed.includes('=')) {
         const [key, ...rest] = trimmed.split('=')
-        let value = rest.join('=').trim()
-        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-          value = value.slice(1, -1)
-        }
-        result[key.trim()] = value
+        result[key.trim()] = rest.join('=').trim()
       }
     }
   } catch { /* ignore */ }
-  _cachedEnv = { data: result, timestamp: now, root }
+  _cachedEnv = { data: result, timestamp: now }
   return result
 }
 
-/** Get the caller environment first, then dotenv, then mode config. */
-function getEnvValue(key: string): string | undefined {
-  return process.env[key] || getEnvConfig()[key]
-}
-
-/** Explicit process environment always wins over .env; .env wins over config.yml. */
+/** Get current app mode (dev/prod). */
 export function getAppMode(): string {
-  return process.env.APP_MODE || getEnvConfig().APP_MODE || 'dev'
+  return getEnvConfig().APP_MODE || process.env.APP_MODE || 'dev'
 }
 
 /**
  * Get the backend URL for the current mode.
  * Priority: env BACKEND_URL > env BACKEND_PORT > config.yml server.{mode}.backend_url > default.
  */
-/** Resolve a backend URL without reading files; useful for tests and callers with known provenance. */
-export function resolveBackendUrl({
-  processEnv = {},
-  dotenv = {},
-  mode = 'dev',
-  modeConfig = {},
-}: {
-  processEnv?: Record<string, string | undefined>
-  dotenv?: Record<string, string | undefined>
-  mode?: string
-  modeConfig?: { backend_url?: string }
-} = {}): string {
-  if (processEnv.BACKEND_URL) return processEnv.BACKEND_URL
-  if (processEnv.BACKEND_PORT) {
-    return `http://${processEnv.BACKEND_HOST || 'localhost'}:${processEnv.BACKEND_PORT}`
-  }
-  if (dotenv.BACKEND_URL) return dotenv.BACKEND_URL
-  if (dotenv.BACKEND_PORT) {
-    return `http://${dotenv.BACKEND_HOST || 'localhost'}:${dotenv.BACKEND_PORT}`
-  }
-  return modeConfig.backend_url || (mode === 'prod' ? 'http://localhost:8001' : 'http://localhost:8765')
-}
-
 export function getDynamicBackendUrl(): string {
+  const env = getEnvConfig()
+  if (env.BACKEND_URL) return env.BACKEND_URL
+  if (env.BACKEND_PORT) return `http://localhost:${env.BACKEND_PORT}`
+
   const cfg = getRawConfig()
   const mode = getAppMode()
   const server = cfg.server || {}
   const modeSection = server[mode] || {}
-  return resolveBackendUrl({
-    processEnv: process.env,
-    dotenv: getEnvConfig(),
-    mode,
-    modeConfig: modeSection,
-  })
+  return modeSection.backend_url || 'http://localhost:8765'
 }
 
 /**
@@ -237,9 +198,8 @@ export function getDynamicBackendUrl(): string {
  */
 export function getDynamicFrontendPort(): string {
   const env = getEnvConfig()
-  const port = process.env.WEB_PORT || process.env.FRONTEND_PORT || process.env.PORT
-    || env.WEB_PORT || env.FRONTEND_PORT || env.PORT
-  if (port) return port
+  if (env.WEB_PORT) return env.WEB_PORT
+  if (env.FRONTEND_PORT) return env.FRONTEND_PORT
 
   const cfg = getRawConfig()
   const mode = getAppMode()
@@ -253,8 +213,8 @@ export function getDynamicFrontendPort(): string {
  * Priority: env TREE_STORAGE_PATH > config.yml storage.tree_fs_root > default.
  */
 export function getDynamicTreeStoragePath(): string {
-  const treeStoragePath = getEnvValue('TREE_STORAGE_PATH')
-  if (treeStoragePath) return treeStoragePath
+  const env = getEnvConfig()
+  if (env.TREE_STORAGE_PATH) return env.TREE_STORAGE_PATH
 
   const cfg = getRawConfig()
   return cfg.storage?.tree_fs_root || './storage/tree-file-system'
@@ -304,7 +264,7 @@ export function getDynamicAuthConfig(): { enabled: boolean; token: string } {
  * Resolve a path relative to the monorepo root.
  */
 export function resolveMonorepoPath(pathValue: string): string {
-  return isAbsolute(pathValue) ? pathValue : resolve(getMonorepoRoot(), pathValue)
+  return isAbsolute(pathValue) ? pathValue : resolve(getRepoRoot(), pathValue)
 }
 
 /**

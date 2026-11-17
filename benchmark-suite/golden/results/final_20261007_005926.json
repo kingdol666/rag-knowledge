@@ -1,0 +1,530 @@
+{
+  "summary": {
+    "label": "final",
+    "ts": "2026-10-07 00:59:26",
+    "recall@10": 0.875,
+    "mrr": 0.7812,
+    "negative_fp_per_q": 4.0,
+    "experience_recall": 1.0,
+    "judge_survival": 1.0,
+    "vector_p50_s": 0.155,
+    "hybrid_recall": 1.0,
+    "hybrid_p50_s": 0.76
+  },
+  "rows": {
+    "vector": [
+      {
+        "id": "g01",
+        "latency_s": 0.277,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.665
+      },
+      {
+        "id": "g02",
+        "latency_s": 0.175,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.6478
+      },
+      {
+        "id": "g03",
+        "latency_s": 0.154,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.7011
+      },
+      {
+        "id": "g04",
+        "latency_s": 0.148,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.7645
+      },
+      {
+        "id": "g05",
+        "latency_s": 0.152,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.708
+      },
+      {
+        "id": "g06",
+        "latency_s": 0.152,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.636
+      },
+      {
+        "id": "g07",
+        "latency_s": 0.161,
+        "hits": 4,
+        "gold_hit": false,
+        "best_rank": null,
+        "top_score": 0.6011
+      },
+      {
+        "id": "g08",
+        "latency_s": 0.16,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.6769
+      },
+      {
+        "id": "g09",
+        "latency_s": 0.136,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 4,
+        "top_score": 0.5855
+      },
+      {
+        "id": "g10",
+        "latency_s": 0.166,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.6788
+      },
+      {
+        "id": "g11",
+        "latency_s": 0.149,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.7533
+      },
+      {
+        "id": "g12",
+        "latency_s": 0.141,
+        "hits": 4,
+        "gold_hit": false,
+        "best_rank": null,
+        "top_score": 0.5734
+      },
+      {
+        "id": "g13",
+        "latency_s": 0.16,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 4,
+        "top_score": 0.6591
+      },
+      {
+        "id": "g14",
+        "latency_s": 0.149,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.7075
+      },
+      {
+        "id": "g15",
+        "latency_s": 0.146,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.7331
+      },
+      {
+        "id": "g16",
+        "latency_s": 0.157,
+        "hits": 4,
+        "gold_hit": true,
+        "best_rank": 1,
+        "top_score": 0.7049
+      },
+      {
+        "id": "x01",
+        "latency_s": 0.161,
+        "hits": 4,
+        "gold_hit": false,
+        "best_rank": null,
+        "top_score": 0.5158
+      },
+      {
+        "id": "x02",
+        "latency_s": 0.172,
+        "hits": 4,
+        "gold_hit": false,
+        "best_rank": null,
+        "top_score": 0.5938
+      },
+      {
+        "id": "x03",
+        "latency_s": 0.155,
+        "hits": 4,
+        "gold_hit": false,
+        "best_rank": null,
+        "top_score": 0.52
+      },
+      {
+        "id": "x04",
+        "latency_s": 0.137,
+        "hits": 4,
+        "gold_hit": false,
+        "best_rank": null,
+        "top_score": 0.4952
+      }
+    ],
+    "two_stage": [
+      {
+        "id": "g01",
+        "latency_s": 0.219,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g02",
+        "latency_s": 0.171,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g03",
+        "latency_s": 0.146,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g04",
+        "latency_s": 0.164,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g05",
+        "latency_s": 0.16,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g06",
+        "latency_s": 0.156,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g07",
+        "latency_s": 0.131,
+        "gold_hit": false,
+        "best_rank": null
+      },
+      {
+        "id": "g08",
+        "latency_s": 0.138,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g09",
+        "latency_s": 0.146,
+        "gold_hit": false,
+        "best_rank": null
+      },
+      {
+        "id": "g10",
+        "latency_s": 0.138,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g11",
+        "latency_s": 0.133,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g12",
+        "latency_s": 0.137,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g13",
+        "latency_s": 0.623,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g14",
+        "latency_s": 0.148,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g15",
+        "latency_s": 0.156,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g16",
+        "latency_s": 0.152,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "x01",
+        "latency_s": 0.197,
+        "gold_hit": false,
+        "best_rank": null
+      },
+      {
+        "id": "x02",
+        "latency_s": 0.154,
+        "gold_hit": false,
+        "best_rank": null
+      },
+      {
+        "id": "x03",
+        "latency_s": 0.141,
+        "gold_hit": false,
+        "best_rank": null
+      },
+      {
+        "id": "x04",
+        "latency_s": 0.162,
+        "gold_hit": false,
+        "best_rank": null
+      }
+    ],
+    "experience": [
+      {
+        "id": "g07",
+        "latency_s": 0.219,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g09",
+        "latency_s": 0.19,
+        "gold_hit": true,
+        "best_rank": 1
+      },
+      {
+        "id": "g11",
+        "latency_s": 0.177,
+        "gold_hit": true,
+        "best_rank": 1
+      }
+    ],
+    "judge": [
+      {
+        "id": "g01",
+        "status": "ok",
+        "real_engine": true,
+        "survived": true,
+        "latency_s": 0.22
+      },
+      {
+        "id": "g02",
+        "status": "ok",
+        "real_engine": true,
+        "survived": true,
+        "latency_s": 0.21
+      },
+      {
+        "id": "g03",
+        "status": "ok",
+        "real_engine": true,
+        "survived": true,
+        "latency_s": 0.17
+      },
+      {
+        "id": "g04",
+        "status": "ok",
+        "real_engine": true,
+        "survived": true,
+        "latency_s": 0.2
+      },
+      {
+        "id": "g05",
+        "status": "ok",
+        "real_engine": true,
+        "survived": true,
+        "latency_s": 0.19
+      },
+      {
+        "id": "g06",
+        "status": "ok",
+        "real_engine": true,
+        "survived": true,
+        "latency_s": 0.22
+      },
+      {
+        "id": "g07",
+        "status": "ok",
+        "real_engine": true,
+        "survived": true,
+        "latency_s": 0.21
+      },
+      {
+        "id": "g08",
+        "status": "ok",
+        "real_engine": true,
+        "survived": true,
+        "latency_s": 0.19
+      }
+    ],
+    "negative": [
+      {
+        "id": "x01",
+        "hits": 4,
+        "top_score": 0.5158
+      },
+      {
+        "id": "x02",
+        "hits": 4,
+        "top_score": 0.5938
+      },
+      {
+        "id": "x03",
+        "hits": 4,
+        "top_score": 0.52
+      },
+      {
+        "id": "x04",
+        "hits": 4,
+        "top_score": 0.4952
+      }
+    ],
+    "hybrid": [
+      {
+        "id": "g01",
+        "latency_s": 1.35,
+        "gold_hit": true,
+        "best_rank": 9,
+        "kept_n": 12,
+        "pre_filtered": 21
+      },
+      {
+        "id": "g02",
+        "latency_s": 0.76,
+        "gold_hit": true,
+        "best_rank": 10,
+        "kept_n": 11,
+        "pre_filtered": 20
+      },
+      {
+        "id": "g03",
+        "latency_s": 0.73,
+        "gold_hit": true,
+        "best_rank": 2,
+        "kept_n": 12,
+        "pre_filtered": 20
+      },
+      {
+        "id": "g04",
+        "latency_s": 0.73,
+        "gold_hit": true,
+        "best_rank": 11,
+        "kept_n": 12,
+        "pre_filtered": 21
+      },
+      {
+        "id": "g05",
+        "latency_s": 0.69,
+        "gold_hit": true,
+        "best_rank": 9,
+        "kept_n": 10,
+        "pre_filtered": 24
+      },
+      {
+        "id": "g06",
+        "latency_s": 0.72,
+        "gold_hit": true,
+        "best_rank": 10,
+        "kept_n": 12,
+        "pre_filtered": 22
+      },
+      {
+        "id": "g07",
+        "latency_s": 0.73,
+        "gold_hit": true,
+        "best_rank": 6,
+        "kept_n": 12,
+        "pre_filtered": 22
+      },
+      {
+        "id": "g08",
+        "latency_s": 0.82,
+        "gold_hit": true,
+        "best_rank": 3,
+        "kept_n": 12,
+        "pre_filtered": 21
+      },
+      {
+        "id": "g09",
+        "latency_s": 0.78,
+        "gold_hit": true,
+        "best_rank": 3,
+        "kept_n": 11,
+        "pre_filtered": 22
+      },
+      {
+        "id": "g10",
+        "latency_s": 0.76,
+        "gold_hit": true,
+        "best_rank": 10,
+        "kept_n": 12,
+        "pre_filtered": 19
+      },
+      {
+        "id": "g11",
+        "latency_s": 0.76,
+        "gold_hit": true,
+        "best_rank": 2,
+        "kept_n": 11,
+        "pre_filtered": 22
+      },
+      {
+        "id": "g12",
+        "latency_s": 0.81,
+        "gold_hit": true,
+        "best_rank": 6,
+        "kept_n": 12,
+        "pre_filtered": 20
+      },
+      {
+        "id": "g13",
+        "latency_s": 0.71,
+        "gold_hit": true,
+        "best_rank": 10,
+        "kept_n": 12,
+        "pre_filtered": 22
+      },
+      {
+        "id": "g14",
+        "latency_s": 0.7,
+        "gold_hit": true,
+        "best_rank": 1,
+        "kept_n": 7,
+        "pre_filtered": 21
+      },
+      {
+        "id": "g15",
+        "latency_s": 0.76,
+        "gold_hit": true,
+        "best_rank": 12,
+        "kept_n": 12,
+        "pre_filtered": 21
+      },
+      {
+        "id": "g16",
+        "latency_s": 0.69,
+        "gold_hit": true,
+        "best_rank": 9,
+        "kept_n": 9,
+        "pre_filtered": 22
+      }
+    ]
+  }
+}

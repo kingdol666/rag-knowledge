@@ -4,12 +4,12 @@
  * The SDK bundles a native claude binary (npm optional dependency); no pre-installed claude CLI required.
  * Authentication uses the ANTHROPIC_API_KEY environment variable (third-party setups cannot use claude.ai login).
  */
-import { getMonorepoRoot } from '~/server/utils/runtime-paths'
+import { getRepoRoot } from './repo-root'
 
 /** Default working directory = project root (rag-knowledge/). Override with CLAUDE_PROJECT_ROOT. */
 export function getProjectRoot(): string {
   const override = process.env.CLAUDE_PROJECT_ROOT?.trim()
-  return override || getMonorepoRoot()
+  return override || getRepoRoot()
 }
 
 /** Read Anthropic API key from environment variable. */

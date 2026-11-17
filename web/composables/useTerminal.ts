@@ -38,11 +38,18 @@ export function useTerminal(initialCwd?: string): TerminalHandle {
   let socket: WebSocket | null = null
   let disposed = false
 
-  /** Build the WS URL for a given cwd. */
+  /** Build the WS URL for a given cwd. The terminal endpoint enforces auth
+   *  itself (WS upgrades bypass the HTTP middleware) and browsers cannot set
+   *  headers on `new WebSocket()`, so the token travels as ?token=. */
   function wsUrl(targetCwd: string): string {
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const param = targetCwd ? `?cwd=${encodeURIComponent(targetCwd)}` : ''
-    return `${proto}//${location.host}/api/claude/terminal${param}`
+    const params = new URLSearchParams()
+    if (targetCwd) params.set('cwd', targetCwd)
+    // Same localStorage key the auth interceptor + useAuth use.
+    const token = localStorage.getItem('kb_auth_token') || ''
+    if (token) params.set('token', token)
+    const qs = params.toString()
+    return `${proto}//${location.host}/api/claude/terminal${qs ? `?${qs}` : ''}`
   }
 
   /** (Re)connect the socket; wires PTY output → terminal and vice-versa. */

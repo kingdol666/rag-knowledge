@@ -9,22 +9,22 @@
  * Reading: history.get.ts for listing; history/[sessionId].get.ts for single-session messages (frontend replay rendering).
  */
 import Database from 'better-sqlite3'
-import { resolve, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { resolve } from 'path'
 import { mkdirSync } from 'fs'
+import { getRepoRoot } from '~/server/utils/repo-root'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-// web/server/utils/ -> web/server/ -> web/ -> rag-knowledge/
-const MONOREPO_ROOT = resolve(__dirname, '../../..')
-const STORAGE_DIR = resolve(MONOREPO_ROOT, 'storage')
-const DB_PATH = resolve(STORAGE_DIR, 'claude-chat.db')
+// Lazy (never at module top level): import.meta.url resolves to a rollup
+// polyfill fallback in prod chunks before index.mjs sets _importMeta_.
+function dbPath(): string {
+  return resolve(getRepoRoot(), 'storage', 'claude-chat.db')
+}
 
 let _db: Database.Database | null = null
 
 function getDb(): Database.Database {
   if (_db) return _db
-  mkdirSync(STORAGE_DIR, { recursive: true })
-  _db = new Database(DB_PATH)
+  mkdirSync(resolve(dbPath(), '..'), { recursive: true })
+  _db = new Database(dbPath())
   _db.pragma('journal_mode = WAL')
   _db.exec(`
     CREATE TABLE IF NOT EXISTS sessions (
