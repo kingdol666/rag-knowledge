@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Provenance for the E5 case-anatomy figure: paths, survivor counts and excerpts come from an independent 2026-11-11 response-capture reproduction, not the frozen responses. Only the displayed case-arm containment flags are cross-checked against the frozen trace.",
+  "frozen_trace": {
+    "path": "review/experiment-redesign-20261101/artifacts/final_bench/s4_traces_final.json",
+    "sha256": "d1379a546e6d6aa0c390fd8ffc262608ee70a2c0ae41c9fc826ce2a8d190f87c"
+  },
+  "response_capture_sources": {
+    "note": "Independent 2026-11-11 response-capture reproduction; these are not the frozen-run response texts. Case metadata, top1, survivor counts, excerpts and gold_hit below describe this capture; route_correct is taken from the frozen trace because the capture files do not record it. The five displayed case-arm gold_hit flags agree with the frozen trace; this does not assert agreement for other questions.",
+    "A0": {
+      "path": "review/experiment-redesign-20261101/artifacts/final_bench/responses/A0.json",
+      "sha256": "9da230620e483636fb2ab0038146b30e65c13edeabace4a23da5f1bb3bbe80d4"
+    },
+    "A0f": {
+      "path": "review/experiment-redesign-20261101/artifacts/final_bench/responses/A0f.json",
+      "sha256": "18a14d60552e0bc63af5769b6b9e85bd6b61708e49a553a690991c9ad80bb3ad"
+    },
+    "A0h": {
+      "path": "review/experiment-redesign-20261101/artifacts/final_bench/responses/A0h.json",
+      "sha256": "a9b402fbf92f9b968f7e7d3a6fea5f69e7076c6a8c881758567af0789f190e4d"
+    }
+  },
+  "cases": {
+    "A-science-en-roberta.pdf": {
+      "question": "Which paper presented RoBERTa?",
+      "meta": "collection science-en · original English",
+      "target": "RoBERTa",
+      "gold_doc": "science-en/roberta.pdf",
+      "arms": {
+        "A0": {
+          "route_correct": true,
+          "gold_hit": false,
+          "survivor_count": 22,
+          "top1": "MD语料-科学-英文/rag_lewis2020.md"
+        },
+        "A0h": {
+          "route_correct": true,
+          "gold_hit": true,
+          "survivor_count": 26,
+          "top1": "MD语料-科学-英文/rag_lewis2020.md"
+        }
+      },
+      "excerpt": "[MD语料-科学-英文/rag_lewis2020.md#70] ... who train RoBERTa [35] to classify the claim as true or false given the gold evidence sentence."
+    },
+    "F-pp-1": {
+      "question": "What yearly income does Mrs Bennet attribute to the single man at the beginning?",
+      "meta": "literature-en · original English",
+      "target": "four or five thousand a year",
+      "gold_doc": "literature-en/pride_and_prejudice_full.txt",
+      "arms": {
+        "A0": {
+          "route_correct": true,
+          "gold_hit": false,
+          "survivor_count": 1,
+          "top1": "MD语料-文学-英文/pride_and_prejudice (part 2 of 27).md"
+        },
+        "A0f": {
+          "route_correct": true,
+          "gold_hit": false,
+          "survivor_count": 2,
+          "top1": "MD语料-文学-英文/pride_and_prejudice (part 2 of 27).md"
+        },
+        "A0h": {
+          "route_correct": true,
+          "gold_hit": true,
+          "survivor_count": 2,
+          "top1": "MD语料-文学-英文/pride_and_prejudice (part 2 of 27).md"
+        }
+      },
+      "excerpt": "Exceed their income! My dear Mr. Bennet, cried his wife, what are you talking of? Why, he has four or five thousand a year, and very likely more."
+    }
+  }
+}

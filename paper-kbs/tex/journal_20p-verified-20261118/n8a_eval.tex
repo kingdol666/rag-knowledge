@@ -1,0 +1,150 @@
+%% Evaluation design and E1--E3. Section labels follow the historical source.
+\section{Evaluation}
+\label{sec:eval}
+The evaluation follows a document from ingestion and organisation to
+retrieval and use. E1, E2 and E4 test the managed state and its lifecycle
+(RQ1). E3 tests whether catalogue routing selects the intended collection
+(RQ2), and E5 measures what each retrieval configuration puts into its
+evidence pack (RQ2--RQ3). E8 tests how verifier-based ordering changes the
+top five (RQ4). E6 and E7 examine answer traces, refusals and execution
+costs (RQ5), and E9 reports operational checks across the workflow.
+Tables~S9--S10 and S17 record the protocols and provenance.
+
+\subsection{Experimental design and measures}
+\label{sec:eval-setup}
+
+\textbf{Corpora and questions.} The industrial corpus contains 42 documents
+in five libraries, including twenty near-duplicate telemetry reports. It
+has 16 questions with annotated document fragments. Q16 shares a token with
+its gold filename. A research-paper campaign sampled 100 papers from arXiv
+across about 25 domains; ten questions have gold papers annotated by their
+source identifiers, which are absent from the saved question texts.
+A November
+metadata recheck enumerated 328 parts in five libraries, including six parts
+from non-target documents. The
+cross-lingual campaign used 400 Wikipedia pages and 40 extractive queries per
+language (English, Chinese and Japanese). Its ingestion script placed pages
+in predefined language libraries and checked the resulting listings.
+The routing and content benchmark used 138 documents stored as 879 parts in
+ten domains and 72 in-domain questions. The released traces for complete
+arms also contain four out-of-domain probes (R1--R4), reported separately.
+The benchmark excludes the two cross-domain placeholders X1 and X2. The
+follow-up used the same 72 questions after the corpus grew to 906 parts.
+The questions and gold annotations were developer-authored. A post-hoc
+check lowercased each question and its nonempty annotated target string,
+then tested whether the entire target was a substring of the question,
+without other normalization. This identified overlap in 29 of 72 questions;
+the remaining 43 did not match under this test. The check describes the
+questions and does not rescore the returned packs.
+
+\textbf{Measures and controls.} Document-level Hit@5, Recall@5 and
+MRR@5 are evaluated on the five returned documents, with reciprocal rank set
+to zero when the top five contain no gold item \citep{craswell-msmarco-2021}.
+The route check tests whether the script selected the labelled collection.
+Target-string containment records whether the annotated string occurs
+anywhere in the returned evidence pack, including in a sibling document.
+The answer grids check for a gold paper identifier in the answer or trace,
+for at least $\lceil 3n/5\rceil$ of $n$ annotated terms (strict matches or,
+in the alias-aware check, accepted variants), and for a document-style
+citation marker. These lexical checks measure the presence of expected
+text and citation formatting. Semantic assessment and graded relevance
+would require distinct criteria, as in RAG evaluation frameworks
+\citep{es-ragas-2024,saad-falcon-ares-2024} and cumulated-gain measures
+\citep{jarvelin-cumulated-gain-2002}.
+
+Wilson intervals describe the observed question sets. Paired exact
+McNemar tests are two-sided and exploratory, with unadjusted $p$ values.
+Each agent arm used one model and one run per condition, with transport
+retries treated as part of that run. The answer grids used the platform chat
+API with the Claude Code engine. A separate four-question case compared
+Claude Code with oh-my-pi using \texttt{ustc/deepseek-flash} in November
+2026. Two corpus-integrity defects were repaired before measurement.
+
+\subsection{E1: Acquisition and parsing}
+\label{sec:e1}
+The campaign targeted 100 papers. In the November 14--15 disk inventory,
+every target had at least one stored part; the five libraries contained 328
+parts in total, including six from non-target documents. All 328 had
+metadata descriptions of at least 60 characters without the recorded
+placeholder pattern. This establishes neither complete paper coverage nor
+retrieval quality.
+
+Earlier records report 91 names in an ingest-state list and 79 documents
+enumerated and read from a derived library. These are not matched target
+sets or stages of a 100-paper funnel, and the records do not establish a
+reliable date or individual failure stages. An initial November probe also
+recorded misses. After forced reindexing, explicit indexing and a probe-tool
+correction, a filename-stem short-query diagnostic found all 100 target
+identifiers in returned names. However, 72 searches were unrestricted by
+library and 45 returned a chunk-copy name first; this is not a matched
+before--after retrieval comparison. A separate vector check searched one
+preassigned library for each of ten questions and ranked the gold document
+first in all ten. The judge-input loader could fall back to the known
+source identifier; the retained summary does not say when it did so.
+This check does not measure end-to-end routing, judging or evidence packing.
+
+The Wikipedia ingestion check found 350 of 400 expected titles in the
+preassigned English library and 400 of 400 in each of the Chinese and
+Japanese libraries. Its separate self-retrieval check used the first
+three index results. These tests exercise document placement and
+index access for known inputs. In a 50-paper campaign spanning 26
+domains, all 50 papers passed the parsing and verification checks.
+The run recorded 41 negative tag flags without blocking ingestion.
+
+\subsection{E2: Organisation, consistency, and management operations}
+\label{sec:e2}
+A rename in a test library exposed stale index state. The index returned
+18 chunks where nine were expected, producing duplicate results. Forced
+reindexing restored the expected nine. A separate five-library inventory
+recorded 322 parts; its archived content snippets were nonempty for all
+322, but retained at most the first 1,000 characters per part. A 33-part
+sample passed checks across files, tree entries and
+library metadata. A three-level
+test library supported parent-to-child moves, listing, reading and
+judging. Of the 16 lifecycle scenarios, the create, move, delete and
+forced reindex checks passed, and the task-status and update checks
+failed. The campaign left merge and split outside the controlled tests.
+
+Near-duplicate review flagged 35 candidate groups at a threshold of~0.90
+(scores 0.90--0.975). Review found no true duplicates and removed no
+documents (Table~S9). The tag check passed 165 parts and exposed orphan
+tags and one cross-library registry leak. A document move in the 658-node
+graph added four tag edges (4,675 to 4,679), recording the change in the
+navigation view.
+
+\subsection{E3: Paired route-card audit: the description-layer contrast}
+\label{sec:routing-audit}
+In the frozen audit, the script selected the labelled collection for all
+72 in-domain questions using description-bearing route cards (A0), and for
+37 using nominally name-only cards (A3). The 35 changed decisions all
+favoured A0 (Figure~\ref{fig:routing}a, exact McNemar $p=5.82\times10^{-11}$).
+In both later records, A0 selected the labelled collection in 72 cases and
+A3 in 49. These are contrasts between route-card configurations. A3 could fall back
+to descriptions without logging the fallback, some questions share
+titles with the descriptions, and A3 can search outside the evaluation
+scope. Among the 72 questions, 52 were expanded automatically, and
+47 came from three domains.
+
+In the frozen record, the returned packs contained the target string in
+37 A0 and 33 A3 cases (10 A0-only, six A3-only, $p=0.4545$). The mechanical full
+scan located all 72 targets (Figure~\ref{fig:routing}b), including the
+35 missed by A0 ($p=5.82\times10^{-11}$). It issued 64{,}584 tool calls
+across these questions, averaging 897 calls and 24.3 MB of recorded text
+per question. The containment--text-volume plot in
+Figure~\ref{fig:routing}c shows the cost of this reference point.
+Section~\ref{sec:ladder-opt} compares the evidence packs across
+retrieval configurations.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{fig_opt_route}
+\caption{Frozen route-card and evidence-pack diagnostics on 72 in-domain
+questions. (a) Labelled-collection selection with Wilson 95\% intervals.
+(b) Annotated target-string containment in returned text. The read-all
+arm performs a mechanical substring scan and generates no answers.
+(c) Frozen trace-recorded text per question (MB, log scale) and
+containment. The A0f and PD markers are offset horizontally by 8~pt
+for legibility. The source data retain their original coordinates.
+Recorded text and tool time measure the retrieval work in the trace.}
+\label{fig:routing}
+\end{figure}
