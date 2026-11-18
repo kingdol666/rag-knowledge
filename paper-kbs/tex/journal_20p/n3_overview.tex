@@ -23,8 +23,7 @@ view exposes collections and their descriptions; the shelf view exposes
 (document, description) entries within a selected collection; the document view
 opens a document body; and the segment view exposes indexed parts and, when
 invoked, their evidence scores and provenance. The shelf is a listing view, not
-a fourth storage level, and a pinned search may bypass catalogue and shelf
-selection. The levels describe maintained objects and operations; the views
+a fourth storage level. The levels describe maintained objects and operations; the views
 describe what a query or agent can inspect and in what order.
 
 \begin{table*}[t]
@@ -55,8 +54,7 @@ subject. The same workflow derives descriptions and tags from the body rather
 than the filename; these semantic decisions are not enforced by the parse API.
 Sub-libraries are first-class tree nodes with their own descriptions and
 indices. At the document level, duplicate detection reports candidate pairs for
-review rather than deleting them, because adjacent parts may be similar while
-carrying distinct sections. Re-indexing remains a separate, explicit operation.
+review rather than deleting them. Re-indexing remains a separate, explicit operation.
 At the segment level a document is split at recognised structural markers and
 its parts are indexed for dense and lexical search. When a workflow invokes the
 evidence gate, candidate documents are fetched and their segments scored; the

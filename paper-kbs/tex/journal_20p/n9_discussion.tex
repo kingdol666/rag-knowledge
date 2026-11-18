@@ -28,6 +28,11 @@ at 51/72 questions; a sibling-document occurrence may count. PD, A0f, A0/A1b and
 45/72, 44/72, 39/72 and 25/72, respectively. A0h versus A0 was 12--0
 ($p=0.00049$, exploratory and unadjusted). These are containment proxies, not
 semantic answers, and the configurations vary in more than navigation alone.
+The recovery pattern is nonetheless consistent with the design difference: A0h
+adds full-document and chunk windows to A0's judged pack, and a post-hoc
+classification of A0's 35 frozen misses placed five first matching string
+locations outside a nominal window and thirty inside, though these categories
+do not identify the causes of the misses.
 The frozen read-all scan found every string but generated no answers, while the
 R3 read-all run was incomplete; this is why the mechanical upper bound is not a
 current Agent baseline. These observations describe the tested configuration
@@ -40,7 +45,10 @@ verifier-score ordering reproduced the Hit@5 collapse documented in
 Section~\ref{sec:e6}; all 191 recorded scores exceeded the configured
 threshold, so filtering did not activate and its benefit was not measured.
 This is a bounded warning about a particular ordering, not a finding about
-every verifier or current retrieval lane.
+every verifier or current retrieval lane. The result also aligns with the
+design motivation drawn from the LLM-as-a-judge literature, whose documented
+preference bias and listwise instability motivate keeping verification
+separate from ranking \citep{zheng-llmjudge,sun-urara}.
 
 The reported answer and refusal cases show selected workflow behaviour, not a
 reliable abstention rate. Pagination repaired selected oversized catalogue
