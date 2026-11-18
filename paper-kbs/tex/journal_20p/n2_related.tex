@@ -39,11 +39,10 @@ models \citep{yang2024building}, OpenQA systems for low-resource languages
 Domain knowledge bases are built either from operator--function descriptions
 \citep{hou2025method} or by instantiating ontologies with LLM-generated domain
 knowledge \citep{ciatto2025large}. The same systems orientation appears in an
-open-source multi-agent framework for evidence-based knowledge-graph enrichment
-\citep{mohamed2026orchestra}, LLM-agent systems for data-driven engineering
-modelling \citep{liu2026automatin}, end-to-end LLM systems for circuit analysis
-\citep{chen2026enhancing}, and an intelligent system that automates
-hyperparameter tuning for gradient-boosted trees \citep{sorokin2023sigopt}.
+open-source multi-agent framework for evidence-based knowledge-graph
+enrichment \citep{mohamed2026orchestra} and in LLM-agent and end-to-end
+systems for engineering modelling \citep{liu2026automatin}, circuit analysis
+\citep{chen2026enhancing} and hyperparameter tuning \citep{sorokin2023sigopt}.
 HMRS shares this systems orientation but
 makes collection membership, derived descriptions and lifecycle state the
 auditable objects, rather than proposing a reference architecture or a domain
@@ -64,18 +63,14 @@ retrieval with incremental graph merging \citep{lightrag}, and RAPTOR builds a
 recursive cluster tree \citep{raptor}. RMR-SST represents multimodal
 engineering-document content as structured semantic trees and retrieves
 across abstraction levels \citep{li-kbs-rmrsst-2026}. Hierarchical
-representation is therefore already an established retrieval concern: RAPTOR summarises a tree of clusters over
-document text and retrieves over that tree, and GraphRAG retrieves over an
-entity graph induced from the corpus. HMRS differs in what the hierarchy
-governs. Its hierarchy is a management structure over collections and
-documents---which collection exists, which document belongs to it, which
-description explains it---and selected lifecycle outcomes can be audited
-across its state sources. The original RAPTOR and GraphRAG formulations build these hierarchies
-offline at index time---recursive cluster summarisation and pre-generated
-community summaries, respectively \cite{raptor,graphrag}. LightRAG
-does contribute incremental graph updates \citep{lightrag}, so HMRS's
-difference is not incremental update per se but the governance of collection
-membership and document lifecycle, reconciled across three state sources.
+representation is therefore an established retrieval concern, and
+Table~\ref{tab:related-comparison} summarises how these hierarchies are
+built and governed. The original RAPTOR and GraphRAG formulations build
+these hierarchies offline at index time \cite{raptor,graphrag}, and LightRAG
+contributes incremental graph updates \citep{lightrag}; HMRS's difference is
+not incremental update per se but the governance of collection membership
+and document lifecycle---which collection exists, which document belongs to
+it, which description explains it---reconciled across three state sources.
 Incremental vector-index maintenance is itself an
 active systems concern \cite{singh2021freshdiskann,xu2023spfresh}; HMRS
 complements it at the metadata layer with an explicit re-index operation and
@@ -84,10 +79,9 @@ variable: proposition-level and late-chunking strategies change what a
 retrievable unit carries \cite{chen2024dense,gunther2024late}. TEIE-RAG
 combines hierarchical semantic chunking with retrieval-model tuning and source
 grounding for engineering information extraction \citep{shen-kbs-teierag-2026}.
-HMRS splits at recognised structural markers and indexes the resulting parts.
-HMRS uses a
-narrower document--library--tag graph for navigation and candidate
-expansion; the graph does not establish answer evidence on its own.
+HMRS splits documents at recognised structural markers, indexes the resulting
+parts, and uses a narrower document--library--tag graph for navigation and
+candidate expansion; the graph does not establish answer evidence on its own.
 
 The decision of which collection to consult has a longer history in
 distributed IR: resource-selection methods such as CORI and ReDDE rank
@@ -111,18 +105,15 @@ catalogue-first librarian lane alongside dense and hybrid alternatives under
 explicit call and tool policies.
 
 Recent articles in this venue extend the retrieval stack in complementary
-directions: retrieval-augmented generation over engineering design knowledge
-\citep{siddharth2024retrieval}, soft-prompt tuning of dense retrievers
-\citep{peng2024soft}, and an evaluation of semantic-relation query expansion
-in retrieval systems \citep{massai2023evaluatio}. Private-library retrieval
-supports code generation \citep{zan2025private}; work on knowledge graphs
-ranges from studying how LLMs comprehend graph facts supplied in different
-prompt formats \citep{dai2025large} to prompting LLMs with graphs for
-long-tail factual questions \citep{huang2025prompting}, while fine-grained
-stateful exploration navigates graphs through an LLM \citep{tao2025fine}.
-Real-time financial data grounding \citep{sinha2026finbloom} and coordinated
-multi-agent answer generation \citep{saadaoui2025coordinat} illustrate the
-range of deployed configurations. These systems optimise what is retrieved
+directions, from retrieval-augmented generation over engineering design
+knowledge \citep{siddharth2024retrieval} and soft-prompt tuning of dense
+retrievers \citep{peng2024soft} to semantic-relation query expansion
+\citep{massai2023evaluatio}, private-library retrieval for code generation
+\citep{zan2025private}, LLM--graph comprehension, prompting and stateful
+exploration \citep{dai2025large,huang2025prompting,tao2025fine}, real-time
+financial data grounding \citep{sinha2026finbloom} and coordinated
+multi-agent answer generation \citep{saadaoui2025coordinat}. These systems
+optimise what is retrieved
 and how it is used; HMRS instead asks which managed collection is
 authoritative and whether its state can be audited after each lifecycle
 operation.
@@ -135,9 +126,9 @@ MemGPT pages memory between a context window and an external store
 conversations \citep{mem0}, and A-MEM organises notes as an agentic memory
 graph \citep{amem}; continual-learning work adds an information-theoretic dual
 memory system \citep{wu2025informati}. HMRS manages a document corpus with audited lifecycle
-state; the stores are complementary rather than competing, and an ingest
-agent of the kind these frameworks assume can also use collection assignment
-and consistency checks of the kind examined here. Knowledge organisation
+state; these stores are complementary, and an ingest agent of the kind these
+frameworks assume can likewise use collection assignment and consistency
+checks. Knowledge organisation
 standards such as SKOS \citep{skos} and Dublin Core provide conventions for
 vocabularies and descriptive metadata; HMRS derives collection and document
 descriptions from parsed content at ingest time.
@@ -171,8 +162,33 @@ and turns that negative result into a configuration rule.
 \subsection{Research gap}
 \label{sec:gap}
 
+\begin{table*}[!t]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.02}
+\caption{Representative systems along the management dimensions examined
+here, as characterised in their own publications; ``---'' marks a dimension
+the cited work does not claim to address.}
+\label{tab:related-comparison}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.245\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.215\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
+\toprule
+System & Hierarchy and scope & Construction and lifecycle & Evidence handling & Access surface\\
+\midrule
+RAPTOR \citep{raptor} & cluster tree over document text & built offline at index time & --- & tree retrieval; prototype\\
+GraphRAG \citep{graphrag} & entity--relation graph, community summaries & pre-generated offline & --- & graph retrieval; prototype\\
+LightRAG \citep{lightrag} & dual-level retrieval graph & incremental graph updates & --- & graph retrieval; prototype\\
+DeepRead \citep{deepread} & per-document structured Markdown, section coordinates & read-only, built once at ingestion & agent locates then reads sections & agentic search system\\
+EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise corpus & --- & evidence-state diagnosis; abstention or clarification & enterprise retrieval\\
+HMRS (this work) & managed collection--document--segment state & content-based placement; lifecycle operations; three-source reconciliation & optional gate, separate from ordering & self-hosted; MCP layer\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
 Supplementary Table S11 compares representative strands rather than every
-system in the literature. Prior work already studies selective question
+system in the literature, and Table~\ref{tab:related-comparison} contrasts
+representative systems along the management dimensions this study examines.
+Prior work already studies selective question
 answering, citation verifiability and retrieval correction; the distinction
 here is not that abstention or evidence checks are absent from prior research.
 The gap this study addresses is therefore a systems question: how can a
@@ -191,9 +207,8 @@ content-based classification and lifecycle checks expose collection state;
 whether a retrieved document should be re-ranked by a verifier or retain its
 fusion order; and whether agent workflows can report absence while separating
 completed negative searches from execution failures. Its contribution is a
-knowledge document management workflow that connects and exposes stages from
-parse admission through answer-evidence reporting, a per-question account of
-answer-layer checks, and a same-pool diagnostic showing a loss under verifier-score ordering
-when the tested threshold admitted every recorded score. It
-proposes no new ranking algorithm and does not claim that the underlying
+management workflow that connects and exposes stages from parse admission
+through answer-evidence reporting, a per-question account of answer-layer
+checks, and a same-pool diagnostic of verifier-score ordering. It proposes
+no new ranking algorithm and does not claim that the underlying
 retrieval problem is solved.
