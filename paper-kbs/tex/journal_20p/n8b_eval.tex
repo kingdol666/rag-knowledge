@@ -82,22 +82,26 @@ texts from each list were concatenated. This check used different
 questions, scopes and evidence construction. The trace label
 \texttt{F-rrf} denotes concatenated lists.
 
-Figure~\ref{fig:case-anatomy} shows where the additional windows supplied
-the annotated text. For the question on RoBERTa, the A0h pack contains
-a passage mentioning RoBERTa in Lewis et~al.'s RAG paper. For the
-\emph{Pride and Prejudice} question, A0h includes the original dialogue on
-the man's income, absent from A0 and A0f. The first example shows why
-target-string containment counts text that may come from a different
-document than the annotated source.
+Figure~\ref{fig:case-anatomy} shows two recorded evidence paths.
+For the question on RoBERTa, the A0h pack contains a passage mentioning
+RoBERTa in Lewis et~al.'s RAG paper, a different document from the
+annotated source. For the \emph{Pride and Prejudice} question, A0's top
+candidate is part~2, but its sole survivor is part~6; A0f's survivors are
+parts~21 and~6. Neither response contains the exact target string. A0h
+includes the requested opening dialogue in part~2, but a line break splits
+the target phrase there. Its contiguous exact match occurs instead in a
+later dialogue in part~24. The recorded HIT therefore reflects string
+containment, not verification of the requested context or answer correctness.
 
 \begin{figure*}[!b]
 \centering
 \includegraphics[width=\textwidth]{fig_opt_case}
 \caption{Recorded evidence paths for two benchmark questions.
 (a) A0h includes a passage containing \emph{RoBERTa} in the Lewis et~al. paper.
-(b) A0h includes the dialogue containing \emph{four or five thousand a year}.
-HIT and MISS refer to the presence of the annotated target string in the
-returned pack.}
+(b) A0h's exact match for \emph{four or five thousand a year} occurs in
+later dialogue (part~24); its opening dialogue (part~2) splits the phrase
+across a line break. HIT and MISS refer to exact target-string containment
+in the returned pack, not answer correctness.}
 \label{fig:case-anatomy}
 \end{figure*}
 

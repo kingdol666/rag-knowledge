@@ -27,7 +27,13 @@ research strands. Tables~S12--S13 give arm counts and paired contrasts for
 E5. The reruns reuse the same in-domain questions on later corpus states.
 Tables~S14--S16 retain the
 question-level answer proxies, aggregate answer and runtime observations,
-and the DeepSeek-R1 answer-case comparison. Table~S17 records the design
+and the DeepSeek-R1 answer-case comparison. For the 72 in-domain questions,
+a post-hoc check lowercased each question and its nonempty annotated target,
+then tested exact substring containment without other normalization. The
+29 overlapping questions had frozen containment of 16/29 for A0 and 21/29
+for A0h; the other 43 had 21/43 and 31/43, respectively. These non-random
+subsets are descriptive, not a causal test, and other lexical cues may remain
+in the non-overlap group. Table~S17 records the design
 and provenance of every campaign named in the main text. Tables S1--S8 of
 the companion inventory document (shipped alongside this supplement)
 complete the campaign-level evidence index. Each trace CSV
@@ -152,7 +158,7 @@ Exp & Corpus and scale & Metric and comparison & Headline result & Supports / li
 \midrule
 E3 (RQ2) & Ten-domain 72 q; route cards with and without descriptions & Scripted gold-domain choice & A0 72/72 vs nominally name-only A3 37/72; McNemar $p=5.82\times10^{-11}$ & Scripted probe, unlogged fallback; configuration contrast, not a causal description effect\\
 E5 (RQ3) & 72 questions in ten domains across three campaigns & Target-string containment, text volume and paired exact McNemar tests & A0h vs A0: 52/72 vs 37/72 frozen, 51/72 vs 39/72 in the first follow-up, 48/72 vs 36/72 on November 17 & Configuration contrasts on the same set. A0h--PD remains unresolved in the frozen and first follow-up records.\\
-E6 (RQ5) & Two 30-cell grids, three interfaces; later 10-question run & Gold-ID in answer or trace, lexical coverage, citation markers & Gold-ID 60/60 at ceiling; markers 9/7/2 (original), 9/9/9 (common substrate), 10/10 post-repair tiered run vs 2/10 flat chunk replica & Traceability, not semantic support; one run per arm; latest run not pooled\\
+E6 (RQ5) & Two 30-cell grids, three interfaces; later 10-question run & Gold-ID in answer or trace, lexical coverage, citation markers & Gold-ID 60/60 at ceiling; markers 9/7/2 (original), 9/9/9 (common substrate), 10/10 post-repair tiered run vs 2/10 flat chunk replica & Grid questions lack gold IDs; ID and markers do not establish source support; one run per arm; latest run not pooled\\
 E7 (RQ5) & Three arms $\times$ three questions, public API & Cost, refusal behaviour, transport & Question Q2 false refusal on a 131-doc catalogue (74.9\,KB over tool budget); repaired by pagination & Transport and cost boundary; one campaign plus replication\\
 E8 (RQ4) & 191 logged scores and a separate ordering archive & Gold vs non-gold scores and same-pool Hit@5 & Median scores 0.88 vs 0.86 ($p=0.26$). Hit@5 was 7/16 in verifier order and 15/16 in fusion order. & Historical wrapper and one corpus.\\
 E9 & 27-cell stability; 90/180/270-request sweep; gate on/off $n=10$; pinned vs unscoped scope & Wall clock and timeout rate; answer grades; Hit@5 under each scope & 41\% timeouts at 30 clients; no measured gate benefit here; gold-pinned Hit@5 1.0 (non-gold 0.0); unscoped not a matched comparison & Single-instance envelope; scope not isolated, filename confound\\
@@ -197,7 +203,10 @@ HMRS (this work) & Main paper, Sections 3--7 & A management-level model: automat
 (\protect\path{run-20261013T094350Z-5f9faac}). For each arm, s is strict
 keyword coverage, a is alias-aware coverage, and m is the count of
 recognised citation-like markers. The gold ID appeared in the answer or
-trace in all cells; this check is omitted from the table. A marker does not
+trace in all cells; this check is omitted from the table. None of the saved
+grid question texts contains its corresponding gold ID. The check searches
+answer text and recorded tool-call inputs and agent text, and ID presence
+does not establish source resolution. A marker does not
 verify source resolution or entailment.}
 \label{tab:s-answer-grid}
 \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.30\textwidth}l*{9}{c}@{}}

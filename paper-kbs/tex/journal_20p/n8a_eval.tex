@@ -18,7 +18,8 @@ in five libraries, including twenty near-duplicate telemetry reports. It
 has 16 questions with annotated document fragments. Q16 shares a token with
 its gold filename. The arXiv campaign targeted 100 papers across about
 25 domains and recorded 322 parts in five libraries at the October~13
-snapshot. Ten questions identify their gold papers by arXiv ID. A separate
+snapshot. Ten questions have gold papers annotated by arXiv ID; the saved
+question texts do not themselves include those IDs. A separate
 metadata recheck enumerated 328 parts in the five libraries. The
 cross-lingual campaign used 400 Wikipedia pages and 40 extractive queries per
 language (English, Chinese and Japanese). Its ingestion script placed pages
@@ -28,7 +29,12 @@ ten domains and 72 in-domain questions. The released traces for complete
 arms also contain four out-of-domain probes (R1--R4), reported separately.
 The benchmark excludes the two cross-domain placeholders X1 and X2. The
 follow-up used the same 72 questions after the corpus grew to 906 parts.
-The questions and gold annotations were developer-authored.
+The questions and gold annotations were developer-authored. A post-hoc
+check lowercased each question and its nonempty annotated target string,
+then tested whether the entire target was a substring of the question,
+without other normalization. This identified overlap in 29 of 72 questions;
+the remaining 43 did not match under this test. The check describes the
+questions and does not rescore the returned packs.
 
 \textbf{Measures and controls.} Document-level Hit@5, Recall@5 and
 MRR@5 are evaluated on the five returned documents, with reciprocal rank set

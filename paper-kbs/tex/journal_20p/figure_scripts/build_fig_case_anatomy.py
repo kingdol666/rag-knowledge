@@ -229,18 +229,20 @@ def verdict_card(ax, x, y, w, h, hit, note):
             color=INK, ha="left", va="center", zorder=6)
 
 
-def branch_spine(ax, x, y_top, row_ys, color, y_bottom=None):
+def branch_spine(ax, x, y_top, row_ys, color, y_bottom=None, row_colors=None):
     """Shared query spine with explicit alternative branch points."""
     if y_bottom is None:
         y_bottom = min(row_ys)
+    if row_colors is None:
+        row_colors = [color] * len(row_ys)
     ax.plot([x, x], [y_top, y_bottom], color=color, linewidth=0.9,
             zorder=4)
     ax.annotate("", xy=(x, y_top), xytext=(x, y_top + 0.018),
                 arrowprops={"arrowstyle": "-|>", "mutation_scale": 8,
                             "linewidth": 0.9, "color": color}, zorder=6)
-    for row_y in row_ys:
+    for row_y, row_color in zip(row_ys, row_colors):
         ax.add_patch(Circle((x, row_y), 0.0065, facecolor=WHITE,
-                            edgecolor=color, linewidth=0.9, zorder=6))
+                            edgecolor=row_color, linewidth=0.9, zorder=6))
 
 
 def case_a(ax, data):
@@ -258,8 +260,9 @@ def case_a(ax, data):
                 rule_start=0.340)
 
     row1, row2 = 0.766, 0.640
-    branch_spine(ax, 0.060, 0.850, [row1, row2], NAVY, y_bottom=row2)
-    arrow(ax, 0.0665, row1, 0.150, row1, NAVY)
+    branch_spine(ax, 0.060, 0.850, [row1, row2], NAVY, y_bottom=row2,
+                 row_colors=[OCHRE, BLUE])
+    arrow(ax, 0.0665, row1, 0.150, row1, OCHRE)
     process_card(ax, 0.150, row1 - 0.038, 0.190, 0.076,
                  "A0 · BASELINE", ("tiered judged pack", f"{science['arms']['A0']['survivor_count']} survivors"),
                  accent=OCHRE, face=PALE_OCHRE)
@@ -272,7 +275,7 @@ def case_a(ax, data):
     verdict_card(ax, 0.665, row1 - 0.032, 0.275, 0.064, False,
                  "target string absent")
 
-    arrow(ax, 0.0665, row2, 0.150, row2, NAVY)
+    arrow(ax, 0.0665, row2, 0.150, row2, BLUE)
     process_card(ax, 0.150, row2 - 0.040, 0.190, 0.080,
                  "A0h · ENHANCED", ("tiered pack + top-8 chunks", f"{science['arms']['A0h']['survivor_count']} survivors"),
                  accent=BLUE, face=PALE_BLUE)
@@ -301,49 +304,49 @@ def case_b(ax, data):
         literature["meta"], literature["question"],
         '“' + literature["target"] + '”',
     )
-    group_label(ax, 0.060, 0.374, 1, "Parallel control arms",
+    group_label(ax, 0.085, 0.374, 1, "Parallel control arms",
                 OCHRE, "A0 and A0f are alternatives", rule_start=0.330)
 
-    # Two independent control lanes.  Each terminates in its own aligned MISS node.
-    row_a0, row_a0f = 0.331, 0.265
-    branch_spine(ax, 0.060, 0.390, [row_a0, row_a0f], OCHRE,
-                 y_bottom=row_a0f)
-    arrow(ax, 0.0665, row_a0, 0.150, row_a0, OCHRE)
+    # All three lanes originate at the same question card.  Keep the shared
+    # spine separate from the numbered headings, which are not flow nodes.
+    row_a0, row_a0f, row_h = 0.331, 0.265, 0.135
+    spine_x = 0.040
+    ax.plot([0.060, spine_x, spine_x], [0.408, 0.408, row_h],
+            color=NAVY, linewidth=0.9, zorder=4)
+    arrow(ax, spine_x, 0.405, spine_x, 0.390, NAVY, ms=8)
+    for row_y, color in ((row_a0, OCHRE), (row_a0f, OCHRE), (row_h, BLUE)):
+        ax.add_patch(Circle((spine_x, row_y), 0.0065, facecolor=WHITE,
+                            edgecolor=color, linewidth=0.9, zorder=6))
+        arrow(ax, spine_x + 0.0065, row_y, 0.150, row_y, color)
     process_card(ax, 0.150, row_a0 - 0.028, 0.185, 0.056,
-                 "A0 · PACK", (f"{literature['arms']['A0']['survivor_count']} survivor · P&P part 2",),
+                 "A0 · PACK", (f"{literature['arms']['A0']['survivor_count']} survivor · P&P part 6",),
                  accent=OCHRE, face=PALE_OCHRE)
     arrow(ax, 0.335, row_a0, 0.365, row_a0, OCHRE)
     evidence_card(ax, 0.365, row_a0 - 0.028, 0.235, 0.056,
-                  "headers only", "dialogue not admitted", accent=OCHRE)
+                  "part 6 passage", "target string absent", accent=OCHRE)
     arrow(ax, 0.600, row_a0, 0.635, row_a0, OCHRE)
     verdict_card(ax, 0.635, row_a0 - 0.028, 0.305, 0.056, False,
                  "gold string absent")
 
-    arrow(ax, 0.0665, row_a0f, 0.150, row_a0f, OCHRE)
     process_card(ax, 0.150, row_a0f - 0.028, 0.185, 0.056,
                  "A0f · WINDOW", (f"full window · {literature['arms']['A0f']['survivor_count']} survivors",),
                  accent=OCHRE, face=PALE_OCHRE)
     arrow(ax, 0.335, row_a0f, 0.365, row_a0f, OCHRE)
     evidence_card(ax, 0.365, row_a0f - 0.028, 0.235, 0.056,
-                  "window boundary", "ends before dialogue", accent=OCHRE)
+                  "parts 21 and 6", "target string absent", accent=OCHRE)
     arrow(ax, 0.600, row_a0f, 0.635, row_a0f, OCHRE)
     verdict_card(ax, 0.635, row_a0f - 0.028, 0.305, 0.056, False,
                  "gold string absent")
 
-    group_label(ax, 0.060, 0.204, 2, "Enhanced arm",
+    group_label(ax, 0.085, 0.204, 2, "Enhanced arm",
                 BLUE, "chunk-window union", rule_start=0.245)
-    row_h = 0.135
-    # The enhanced lane has its own explicit source-to-row connector; this
-    # prevents the left arrow from appearing as a detached stub.
-    branch_spine(ax, 0.060, 0.173, [row_h], BLUE, y_bottom=row_h)
-    arrow(ax, 0.0665, row_h, 0.150, row_h, BLUE)
     process_card(ax, 0.150, row_h - 0.039, 0.205, 0.078,
                  "A0h · ENHANCED", ("windows + top-8 chunks", f"{literature['arms']['A0h']['survivor_count']} survivors"),
                  accent=BLUE, face=PALE_BLUE)
     arrow(ax, 0.355, row_h, 0.385, row_h, BLUE, "add")
     key_clause = "Why, " + literature["excerpt"].split("Why,", 1)[-1].strip()
     evidence_card(ax, 0.385, row_h - 0.039, 0.310, 0.078,
-                  "original English excerpt",
+                  "later dialogue · part 24 #26",
                   wrap("… " + key_clause, 44),
                   accent=BLUE)
     arrow(ax, 0.695, row_h, 0.730, row_h, BLUE)
@@ -351,7 +354,7 @@ def case_b(ax, data):
                  "gold present")
 
     ax.text(0.500, 0.060,
-            "Frozen response records; verdicts are target-string containment proxies, not answer correctness.",
+            "Opening dialogue in part 2 has a line break in the target; exact match above is later.",
             fontsize=LABEL_PT, color=SLATE, ha="center", va="center")
 
 

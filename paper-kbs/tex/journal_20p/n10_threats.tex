@@ -12,10 +12,17 @@ characterise individual responses.
 
 \noindent\textbf{Measurement and comparisons.} The content metric counts a
 literal target string anywhere in the pack, including in a sibling
-document. Gold-ID and citation-marker checks measure visibility in answers
-or traces. Semantic correctness and claim-to-source support require their
-own evaluation. The full-read comparator is a mechanical scan of the
-corpus. Content arms change several components, including candidate
+document. A post-hoc split by case-insensitive question--target overlap
+(Section~\ref{sec:eval-setup}) gives frozen A0 and A0h containment of
+16/29 and 21/29 on overlapping questions, and 21/43 and 31/43 on the
+remainder. These are descriptive, non-random subsets, not a causal test of
+overlap; lack of an exact match does not rule out other lexical cues.
+Gold-ID checks search answers and recorded trace text; the saved grid
+questions do not contain their corresponding IDs. Nevertheless, ID presence
+does not establish source resolution or semantic correctness, and
+claim-to-source support requires its own evaluation; citation markers only
+indicate recognised formatting. The full-read comparator is a mechanical
+scan of the corpus. Content arms change several components, including candidate
 construction and reading scope. A0, A1b and A3 can use the gold domain when
 resolving references, and A3 can fall back to descriptions or retrieve
 outside the evaluated libraries. The archived traces leave the frequency of
