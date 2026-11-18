@@ -52,6 +52,12 @@ def content_bbox(path: Path) -> tuple[pymupdf.Page, pymupdf.Rect]:
     page = doc[0]
     if page.rotation != 0:
         raise ValueError(f"{path.name}: rotation {page.rotation} not handled")
+    # Reset any pre-existing CropBox before measuring.  Both get_pixmap and
+    # set_cropbox operate in MediaBox coordinates, so measuring an
+    # already-cropped page and then writing the box shifted the frame:
+    # content near the old crop-box origin fell outside the new one (bottom
+    # clipped) while previously cropped-away padding re-entered at the top.
+    page.set_cropbox(page.mediabox)
     pix = page.get_pixmap(dpi=DPI, annots=False)
     if pix.colorspace is None or pix.n < 3:
         raise ValueError(f"{path.name}: unexpected pixmap colorspace")
