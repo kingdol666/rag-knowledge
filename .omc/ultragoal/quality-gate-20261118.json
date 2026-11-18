@@ -1,0 +1,23 @@
+{
+  "aiSlopCleaner": {
+    "status": "passed",
+    "evidence": "paper-polish fidelity discipline held (no code, prose round): 4 edits are restructuring, recovery and citation of facts already in the manuscript (n8b post-hoc 5/30 classification; n2 LLM-judge motivation); no new claims, numbers, thresholds, or citations invented; hedged verbs kept at original rung ('consistent with', 'do not identify the causes'); no AI-tone vocabulary introduced. Files: paper-kbs/tex/journal_20p/{main_20p,n3_overview,n9_discussion}.tex at commit 4cdead28."
+  },
+  "verification": {
+    "status": "passed",
+    "commands": [
+      "pdflatex -interaction=nonstopmode -halt-on-error main_20p.tex (x3 with bibtex main_20p)",
+      "pdflatex -interaction=nonstopmode -halt-on-error supplementary.tex (x2)",
+      "pdfinfo main_20p.pdf -> 20 pages; pdfinfo supplementary.pdf -> 7 pages",
+      "rg -c Overfull compile_polish_3.log compile_polish_s2.log -> 0; rg undefined/multiply defined -> none",
+      "python -I _make_overleaf_zip.py -> 54 files; zip SHA256 byte-compare MATCH for 3 edited tex",
+      "git push origin master -> 1b136714..4cdead28 (LFS 2/2)"
+    ],
+    "evidence": "compile chain exit 0; main 20 pages / supplementary 7 pages / 0 Overfull / no undefined or multiply-defined references; Overleaf zip rebuilt and byte-verified; push confirmed on origin/master."
+  },
+  "codeReview": {
+    "recommendation": "APPROVE",
+    "architectStatus": "CLEAR",
+    "evidence": "pdf:visual-judge single acceptance pass, 3/3 pass with zero repair items: abs-01.png (abstract split clean, no widow/orphan at the gold-domain boundary), disc17-17.png (mechanism-recovery and judge-bridge sentences render fully; \\citep{zheng-llmjudge,sun-urara} resolves to numeric brackets [82,83]; zero margin protrusion by pixel analysis), ov5-05.png (both n3 trims terminal-punctuated; tab:levels full-width intact)."
+  }
+}

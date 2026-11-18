@@ -1,7 +1,7 @@
 {
   "version": 1,
   "createdAt": "2026-11-18T03:00:33.140Z",
-  "updatedAt": "2026-11-18T03:09:30.943Z",
+  "updatedAt": "2026-11-18T03:14:48.624Z",
   "briefPath": ".omc/ultragoal/brief.md",
   "goalsPath": ".omc/ultragoal/goals.json",
   "ledgerPath": ".omc/ultragoal/ledger.jsonl",
@@ -35,13 +35,14 @@
       "id": "G003-ship",
       "title": "Ship",
       "objective": "Rebuild Overleaf zip, commit and push via subprocess SOP",
-      "status": "in_progress",
+      "status": "complete",
       "attempt": 1,
       "createdAt": "2026-11-18T03:00:33.140Z",
-      "updatedAt": "2026-11-18T03:09:30.943Z",
-      "startedAt": "2026-11-18T03:09:30.943Z"
+      "updatedAt": "2026-11-18T03:14:48.624Z",
+      "startedAt": "2026-11-18T03:09:30.943Z",
+      "evidence": "commit 4cdead28 pushed to origin/master (1b136714..4cdead28, LFS 2/2, subprocess SOP); 9 files +71/-9; Overleaf zip rebuilt 54 files",
+      "completedAt": "2026-11-18T03:14:48.624Z"
     }
   ],
-  "claudeObjective": "Complete all ultragoal stories in .omc/ultragoal/goals.json: G001-polish Polish; G002-verify Verify; G003-ship Ship",
-  "activeGoalId": "G003-ship"
+  "claudeObjective": "Complete all ultragoal stories in .omc/ultragoal/goals.json: G001-polish Polish; G002-verify Verify; G003-ship Ship"
 }
