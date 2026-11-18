@@ -33,8 +33,10 @@ describe what a query or agent can inspect and in what order.
 \renewcommand{\arraystretch}{1.15}
 \caption{Management levels and the tiered access path. Each level names the
 objects it maintains, the operations that write them, the state that describes
-them, the tier that reads them, and the measurement that exercises it.
-The selected access policy determines which tiers are visited; a pinned
+them, the tier that reads them, and the measurement that exercises it
+(evidence labels E1--E9 denote the evaluation campaigns of
+Section~\ref{sec:eval}; Table~S17 records their design). The selected access
+policy determines which tiers are visited; a pinned
 search can bypass catalogue navigation.}
 \label{tab:levels}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.18\textwidth}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
@@ -121,7 +123,8 @@ it.
 with each, and the evaluation that exercises it. The table separates API/MCP
 controls from agent procedures and campaign audits; semantic choices such as
 which collection owns a document remain workflow decisions and are measured,
-not enforced.}
+not enforced. Evidence labels E1--E9 are the evaluation campaigns of
+Section~\ref{sec:eval}.}
 \label{tab:functions}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.37\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.11\textwidth}@{}}
 \toprule

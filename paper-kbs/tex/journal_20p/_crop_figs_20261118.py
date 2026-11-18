@@ -42,7 +42,7 @@ SUPP_FIGS = [
     "fig_exp_s5",
 ]
 
-MARGIN_PT = 3.0   # breathing margin kept around the content box
+MARGIN_PT = 5.0   # breathing margin kept around the content box
 THRESHOLD = 245   # pixel is content if min(R,G,B) < THRESHOLD (pale fills count)
 DPI = 200
 

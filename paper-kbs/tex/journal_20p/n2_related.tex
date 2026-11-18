@@ -49,6 +49,30 @@ auditable objects, rather than proposing a reference architecture or a domain
 ontology.
 
 \subsection{Retrieval, organisation and agentic search}
+
+\begin{table*}[!t]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.02}
+\caption{Representative systems along the management dimensions examined
+here, as characterised in their own publications; ``---'' marks a dimension
+the cited work does not claim to address.}
+\label{tab:related-comparison}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.245\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.215\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
+\toprule
+System & Hierarchy and scope & Construction and lifecycle & Evidence handling & Access surface\\
+\midrule
+RAPTOR \citep{raptor} & cluster tree over document text & built offline at index time & --- & tree retrieval; prototype\\
+GraphRAG \citep{graphrag} & entity--relation graph, community summaries & pre-generated offline & --- & graph retrieval; prototype\\
+LightRAG \citep{lightrag} & dual-level retrieval graph & incremental graph updates & --- & graph retrieval; prototype\\
+DeepRead \citep{deepread} & per-document structured Markdown, section coordinates & read-only, built once at ingestion & agent locates then reads sections & agentic search system\\
+EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise corpus & --- & evidence-state diagnosis; abstention or clarification & enterprise retrieval\\
+HMRS (this work) & managed collection--document--segment state & content-based placement; lifecycle operations; three-source reconciliation & optional gate, separate from ordering & self-hosted; MCP layer\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
 RAG grounds generated responses in retrieved passages \citep{rag-lewis}; dense
 retrievers learn shared query--passage representations \citep{dpr}, while BM25
 remains a strong lexical baseline \citep{bm25}. Ghali et al. combine
@@ -161,29 +185,6 @@ and turns that negative result into a configuration rule.
 
 \subsection{Research gap}
 \label{sec:gap}
-
-\begin{table*}[!t]
-\centering
-\small
-\setlength{\tabcolsep}{3.5pt}
-\renewcommand{\arraystretch}{1.02}
-\caption{Representative systems along the management dimensions examined
-here, as characterised in their own publications; ``---'' marks a dimension
-the cited work does not claim to address.}
-\label{tab:related-comparison}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.245\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.215\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
-\toprule
-System & Hierarchy and scope & Construction and lifecycle & Evidence handling & Access surface\\
-\midrule
-RAPTOR \citep{raptor} & cluster tree over document text & built offline at index time & --- & tree retrieval; prototype\\
-GraphRAG \citep{graphrag} & entity--relation graph, community summaries & pre-generated offline & --- & graph retrieval; prototype\\
-LightRAG \citep{lightrag} & dual-level retrieval graph & incremental graph updates & --- & graph retrieval; prototype\\
-DeepRead \citep{deepread} & per-document structured Markdown, section coordinates & read-only, built once at ingestion & agent locates then reads sections & agentic search system\\
-EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise corpus & --- & evidence-state diagnosis; abstention or clarification & enterprise retrieval\\
-HMRS (this work) & managed collection--document--segment state & content-based placement; lifecycle operations; three-source reconciliation & optional gate, separate from ordering & self-hosted; MCP layer\\
-\bottomrule
-\end{tabular}
-\end{table*}
 
 Supplementary Table S11 compares representative strands rather than every
 system in the literature, and Table~\ref{tab:related-comparison} contrasts

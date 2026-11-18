@@ -71,6 +71,12 @@
 \setlength{\dblfloatsep}{7pt plus 2pt minus 2pt}
 \setlength{\dbltextfloatsep}{9pt plus 2pt minus 2pt}
 
+%% Ragged bottoms: with nine floats the flushbottom setting stretches
+%% underfull columns into heading-sized gaps (visible under the Threats and
+%% Conclusion headings). Ragged bottoms leave the slack at the column foot
+%% instead, which is the usual journal appearance for float-heavy pages.
+\raggedbottom
+
 \journal{Knowledge-Based Systems}
 
 \begin{document}
