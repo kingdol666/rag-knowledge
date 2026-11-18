@@ -36,6 +36,7 @@ SLATE = "#75818C"
 GRID = "#D9E2E8"
 LINE = "#9EADB8"
 WHITE = "#FFFFFF"
+LABEL_PT = 7.1
 
 plt.rcParams.update(
     {
@@ -136,7 +137,7 @@ def arrow(ax, x1, y1, x2, y2, color=INK, label=None, label_dy=0.014,
     if label:
         ax.text(
             (x1 + x2) / 2, (y1 + y2) / 2 + label_dy, label,
-            fontsize=6.55, color=INK, ha="center", va="bottom", zorder=8,
+            fontsize=LABEL_PT, color=INK, ha="center", va="bottom", zorder=8,
             bbox={"facecolor": WHITE, "edgecolor": "none", "pad": 0.45},
         )
 
@@ -147,7 +148,7 @@ def question_card(ax, x, y, w, h, meta, question, target):
                 radius=0.006)
     document_icon(ax, x + 0.014, y + 0.024, w=0.027, h=0.044)
     tx = x + 0.055
-    ax.text(tx, y + h - 0.015, meta, fontsize=6.55, color=SLATE,
+    ax.text(tx, y + h - 0.015, meta, fontsize=LABEL_PT, color=SLATE,
             style="italic", ha="left", va="top", zorder=5)
     # These questions fit on one line at the full-width figure size; keeping
     # them single-line gives the target strip a stable, non-overlapping home.
@@ -156,7 +157,7 @@ def question_card(ax, x, y, w, h, meta, question, target):
             zorder=5)
     ax.plot([tx, x + w - 0.014], [y + 0.026, y + 0.026],
             color=GRID, linewidth=0.55, zorder=3)
-    ax.text(tx, y + 0.008, "evaluation target: " + target, fontsize=6.45,
+    ax.text(tx, y + 0.005, "evaluation target: " + target, fontsize=LABEL_PT,
             color=OCHRE, fontweight="bold", ha="left", va="bottom", zorder=5)
 
 
@@ -164,21 +165,20 @@ def group_label(ax, x, y, number, title, color, note=None,
                 text_x=None, rule_start=0.31):
     ax.add_patch(Circle((x, y), 0.013, facecolor=WHITE, edgecolor=color,
                         linewidth=0.95, zorder=5))
-    ax.text(x, y - 0.001, str(number), fontsize=7.0, color=color,
+    ax.text(x, y - 0.001, str(number), fontsize=LABEL_PT, color=color,
             fontweight="bold", ha="center", va="center", zorder=6)
     if text_x is None:
         text_x = x + 0.022
     ax.text(text_x, y, title, fontsize=8.1, color=color,
             fontweight="bold", ha="left", va="center", zorder=6)
     if note:
-        ax.text(0.944, y, note, fontsize=6.5, color=SLATE,
+        ax.text(0.944, y, note, fontsize=LABEL_PT, color=SLATE,
                 style="italic", ha="right", va="center", zorder=6)
     ax.plot([rule_start, 0.944], [y - 0.018, y - 0.018],
             color=GRID, linewidth=0.65, zorder=2)
 
 
-def process_card(ax, x, y, w, h, title, lines, accent=BLUE, face=PALE_BLUE,
-                 body_size=6.9):
+def process_card(ax, x, y, w, h, title, lines, accent=BLUE, face=PALE_BLUE):
     """Process node with a compact dark title strip."""
     rounded_box(ax, x, y, w, h, face=face, edge=accent, lw=0.9,
                 radius=0.008)
@@ -187,15 +187,14 @@ def process_card(ax, x, y, w, h, title, lines, accent=BLUE, face=PALE_BLUE,
         Rectangle((x, y + h - band_h), w, band_h,
                   facecolor=accent, edgecolor=accent, linewidth=0, zorder=2)
     )
-    ax.text(x + 0.010, y + h - band_h / 2, title, fontsize=6.95,
+    ax.text(x + 0.010, y + h - band_h / 2, title, fontsize=LABEL_PT,
             color=WHITE, fontweight="bold", ha="left", va="center", zorder=5)
     ax.text(x + 0.010, y + h - band_h - 0.010, "\n".join(lines),
-            fontsize=body_size, color=INK, ha="left", va="top",
+            fontsize=LABEL_PT, color=INK, ha="left", va="top",
             linespacing=1.20, zorder=5)
 
 
-def evidence_card(ax, x, y, w, h, title, excerpt, accent=OCHRE,
-                  body_size=6.75):
+def evidence_card(ax, x, y, w, h, title, excerpt, accent=OCHRE):
     """Evidence/provenance node; deliberately distinct from process cards."""
     rounded_box(ax, x, y, w, h, face="#F7F8F8", edge=accent, lw=0.9,
                 radius=0.008)
@@ -205,10 +204,10 @@ def evidence_card(ax, x, y, w, h, title, excerpt, accent=OCHRE,
                   facecolor=accent, edgecolor=accent, linewidth=0, zorder=2)
     )
     ax.text(x + 0.010, y + h - band_h / 2, "EVIDENCE · " + title,
-            fontsize=6.85, color=WHITE, fontweight="bold",
+            fontsize=LABEL_PT, color=WHITE, fontweight="bold",
             ha="left", va="center", zorder=5)
     ax.text(x + 0.010, y + h - band_h - 0.010, excerpt,
-            fontsize=body_size, color=INK, ha="left", va="top",
+            fontsize=LABEL_PT, color=INK, ha="left", va="top",
             linespacing=1.18, zorder=5)
 
 
@@ -224,9 +223,9 @@ def verdict_card(ax, x, y, w, h, hit, note):
                   linewidth=0, zorder=2)
     )
     ax.text(x + badge_w / 2, y + h / 2, "HIT" if hit else "MISS",
-            fontsize=7.0, color=WHITE, fontweight="bold",
+            fontsize=LABEL_PT, color=WHITE, fontweight="bold",
             ha="center", va="center", zorder=6)
-    ax.text(x + badge_w + 0.010, y + h / 2, note, fontsize=6.65,
+    ax.text(x + badge_w + 0.010, y + h / 2, note, fontsize=LABEL_PT,
             color=INK, ha="left", va="center", zorder=6)
 
 
@@ -268,7 +267,7 @@ def case_a(ax, data):
     evidence_card(ax, 0.370, row1 - 0.032, 0.255, 0.064,
                   "retrieved passage",
                   "RoBERTa string not admitted",
-                  accent=OCHRE, body_size=6.8)
+                  accent=OCHRE)
     arrow(ax, 0.625, row1, 0.665, row1, OCHRE)
     verdict_card(ax, 0.665, row1 - 0.032, 0.275, 0.064, False,
                  "target string absent")
@@ -281,14 +280,14 @@ def case_a(ax, data):
     evidence_card(ax, 0.370, row2 - 0.040, 0.255, 0.080,
                   "archived passage · #70",
                   wrap(clip(science["excerpt"].split(" ... ", 1)[-1], 64), 36),
-                  accent=BLUE, body_size=6.8)
+                  accent=BLUE)
     arrow(ax, 0.625, row2, 0.665, row2, BLUE)
     verdict_card(ax, 0.665, row2 - 0.040, 0.275, 0.080, True,
                  "target string present")
 
     ax.text(0.500, 0.560,
             "The displayed excerpt is from the frozen A0h response capture; verdicts are target-string proxies.",
-            fontsize=6.65, color=SLATE, ha="center", va="center")
+            fontsize=LABEL_PT, color=SLATE, ha="center", va="center")
 
 
 def case_b(ax, data):
@@ -312,11 +311,10 @@ def case_b(ax, data):
     arrow(ax, 0.0665, row_a0, 0.150, row_a0, OCHRE)
     process_card(ax, 0.150, row_a0 - 0.028, 0.185, 0.056,
                  "A0 · PACK", (f"{literature['arms']['A0']['survivor_count']} survivor · P&P part 2",),
-                 accent=OCHRE, face=PALE_OCHRE, body_size=6.65)
+                 accent=OCHRE, face=PALE_OCHRE)
     arrow(ax, 0.335, row_a0, 0.365, row_a0, OCHRE)
     evidence_card(ax, 0.365, row_a0 - 0.028, 0.235, 0.056,
-                  "headers only", "dialogue not admitted", accent=OCHRE,
-                  body_size=6.65)
+                  "headers only", "dialogue not admitted", accent=OCHRE)
     arrow(ax, 0.600, row_a0, 0.635, row_a0, OCHRE)
     verdict_card(ax, 0.635, row_a0 - 0.028, 0.305, 0.056, False,
                  "gold string absent")
@@ -324,11 +322,10 @@ def case_b(ax, data):
     arrow(ax, 0.0665, row_a0f, 0.150, row_a0f, OCHRE)
     process_card(ax, 0.150, row_a0f - 0.028, 0.185, 0.056,
                  "A0f · WINDOW", (f"full window · {literature['arms']['A0f']['survivor_count']} survivors",),
-                 accent=OCHRE, face=PALE_OCHRE, body_size=6.65)
+                 accent=OCHRE, face=PALE_OCHRE)
     arrow(ax, 0.335, row_a0f, 0.365, row_a0f, OCHRE)
     evidence_card(ax, 0.365, row_a0f - 0.028, 0.235, 0.056,
-                  "window boundary", "ends before dialogue", accent=OCHRE,
-                  body_size=6.65)
+                  "window boundary", "ends before dialogue", accent=OCHRE)
     arrow(ax, 0.600, row_a0f, 0.635, row_a0f, OCHRE)
     verdict_card(ax, 0.635, row_a0f - 0.028, 0.305, 0.056, False,
                  "gold string absent")
@@ -338,24 +335,24 @@ def case_b(ax, data):
     row_h = 0.135
     # The enhanced lane has its own explicit source-to-row connector; this
     # prevents the left arrow from appearing as a detached stub.
-    branch_spine(ax, 0.060, 0.190, [row_h], BLUE, y_bottom=row_h)
+    branch_spine(ax, 0.060, 0.173, [row_h], BLUE, y_bottom=row_h)
     arrow(ax, 0.0665, row_h, 0.150, row_h, BLUE)
-    process_card(ax, 0.150, row_h - 0.034, 0.205, 0.068,
+    process_card(ax, 0.150, row_h - 0.039, 0.205, 0.078,
                  "A0h · ENHANCED", ("windows + top-8 chunks", f"{literature['arms']['A0h']['survivor_count']} survivors"),
-                 accent=BLUE, face=PALE_BLUE, body_size=6.65)
+                 accent=BLUE, face=PALE_BLUE)
     arrow(ax, 0.355, row_h, 0.385, row_h, BLUE, "add")
     key_clause = "Why, " + literature["excerpt"].split("Why,", 1)[-1].strip()
-    evidence_card(ax, 0.385, row_h - 0.034, 0.310, 0.068,
+    evidence_card(ax, 0.385, row_h - 0.039, 0.310, 0.078,
                   "original English excerpt",
                   wrap("… " + key_clause, 44),
-                  accent=BLUE, body_size=6.15)
+                  accent=BLUE)
     arrow(ax, 0.695, row_h, 0.730, row_h, BLUE)
-    verdict_card(ax, 0.730, row_h - 0.034, 0.210, 0.068, True,
+    verdict_card(ax, 0.730, row_h - 0.039, 0.210, 0.078, True,
                  "gold present")
 
     ax.text(0.500, 0.060,
             "Frozen response records; verdicts are target-string containment proxies, not answer correctness.",
-            fontsize=6.55, color=SLATE, ha="center", va="center")
+            fontsize=LABEL_PT, color=SLATE, ha="center", va="center")
 
 
 def main() -> None:

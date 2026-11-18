@@ -1,80 +1,21 @@
-KBS 投稿填写清单（AUTHOR ACTION 六处落点）
-================================================
-日期：2026-11-16 ｜ 依据：KBS Guide for Authors（sciencedirect.com/journal/
-knowledge-based-systems/publish/guide-for-authors，本轮已核验）
+# KBS 首次投稿核对单
 
-以下【方括号】内容必须由作者提供真实值；AI 不得代填。
-把真实值发给助手后，助手负责写入并重新编译打包。
+适用于 Research Article。本轮直连期刊指南返回 403。期刊专属要求依据 2026-03-04 公开打印副本（第 3–4、9–11 页）和仓库内 2026-10-12 核对记录，上传、数据和 AI 政策另查 Elsevier 当前通用说明。实际上传项目以 Editorial Manager 当时的界面为准。 [KBS 作者指南](https://www.sciencedirect.com/journal/knowledge-based-systems/publish/guide-for-authors) [公开打印副本节选](https://www.studypool.com/discuss/82267917/scopus-article-writing-knowledge-system-journal) [仓库核对记录](../../notes/kbs-requirements-compliance-2026-10-12.md)
 
---------------------------------------------------------------------
-1) 标题页作者块 — main_20p.tex 第 82–87 行附近
---------------------------------------------------------------------
-当前占位：
-  \author[inst1]{Author Name\corref{cor1}}
-  \ead{author@example.com}
-  \author[inst1]{Co-author Name}
-  \cortext[cor1]{Corresponding author.}
-  \affiliation[inst1]{organization={Affiliation Department, University,
-  City, Country}, city={City}, country={Country}}
+## 稿件与附件
 
-填写模板（可增删作者；每位作者一行；通讯作者保留 \corref+\ead）：
-  \author[inst1]{【姓名1 全名】\corref{cor1}}
-  \ead{【通讯作者邮箱】}
-  \author[inst1]{【姓名2 全名】}
-  \author[inst2]{【姓名3 全名】}          % 如有多单位
-  \cortext[cor1]{Corresponding author.}
-  \affiliation[inst1]{organization={【系/院, 大学全称】},
-    city={【城市】}, country={【国家】}}
-  \affiliation[inst2]{organization={【第二单位全称, 含完整邮政地址】},
-    city={【城市】}, country={【国家】}}
+- 正文摘要最多 250 个词，提供 1–7 个英文关键词。Research Article 推荐不超过 20 页双倍行距，页数包括图表。当前双栏 LaTeX 样稿采用期刊排版，按双倍行距计算篇幅应使用同源的 `main_20p_review.tex`。
+- KBS 对 Word 稿要求单栏，允许 LaTeX 稿采用双栏。提供可编辑源文件。若由 Editorial Manager 编译 LaTeX，正文、图件和参考文献文件放在同一层，保留 `.bbl`，并检查生成的审稿 PDF。Overleaf 工程包括子目录，适用于本地和 Overleaf 编译。 [Elsevier LaTeX 上传说明](https://www.elsevier.support/publishing/answer/how-to-submit-a-latex-file-in-editorial-manager)
+- KBS 鼓励提供独立的 Highlights 文件。`highlights.docx` 包含 5 条，每条最多 85 个字符（含空格）。 [Elsevier Highlights 指南](https://www.elsevier.com/researcher/author/tools-and-resources/highlights)
+- 数据声明列出可分享的实验记录及受限源材料的具体范围。随稿上传补充材料和可共享记录，并为任何已经公开存档的数据提供实际可访问的链接。 [Elsevier 研究数据指南](https://www.elsevier.com/en-in/researcher/author/tools-and-resources/research-data/data-guidelines)
+- 生成式 AI 声明置于参考文献前，写明工具和用途。采用 AI 生成或修改的解释性图件应在对应图注和总声明中披露。纳入研究方法的 AI 使用应在方法中写明工具和版本等复现信息。 [Elsevier 生成式 AI 政策](https://www.elsevier.com/about/policies-and-standards/generative-ai-policies-for-journals)
 
-指南要求：作者顺序与投稿系统一致；单位用小写上标字母标注并给
-完整邮政地址（含国家）；通讯作者邮箱将随文发表。
+## 由作者确认或补齐
 
---------------------------------------------------------------------
-2) CRediT — n_back.tex（"Author 1"/"Author 2" 两行）
---------------------------------------------------------------------
-建议角色分配（按实际工作确认后替换姓名；14 角色可多选，用逗号连接）：
-  【姓名1】: Conceptualization, Methodology, Software, Validation,
-  Investigation, Data curation, Writing – original draft,
-  Writing – review & editing, Visualization.
-  【姓名2】: Methodology, Validation, Investigation,
-  Writing – review & editing.
+1. **作者页**。KBS 采用单匿名评审，作者信息随正文提供。在 `main_20p.tex` 填写真实作者姓名及顺序、工作完成时的单位及完整邮政地址（含国家）、通讯作者和联系方式。投稿系统中的名单保持一致。
+2. **作者贡献与基金**。在 `n_back.tex` 逐人确认 CRediT 角色，填写真实基金机构和项目编号，或确认无专项资助。致谢如适用，由作者确认措辞。
+3. **利益冲突声明**。确认所有作者的披露内容，使用投稿页面提供的 Elsevier declarations tool 生成并上传 `.doc` 或 `.docx`。正文声明与上传文件保持一致。
+4. **投稿批准**。全体作者审批稿件、确认原创性和一稿一投，并核实同一系统的 CIKM Demo 草稿是否曾投递或发表，再按实际状态向编辑说明两稿关系。使用 `cover_letter.txt` 前移除草稿提示并填写实际签名。 [Elsevier 出版伦理](https://www.elsevier.com/about/policies-and-standards/publishing-ethics)
+5. **图稿披露**。图 1–3 的矢量文件由设计原型重建。核实每张原型是否使用生成式 AI 及其工具，再补齐对应图注和参考文献前的总声明。
 
-指南原文要点：通讯作者须用 CRediT 声明共同作者贡献。
-
---------------------------------------------------------------------
-3) 基金 — n_back.tex Funding 段
---------------------------------------------------------------------
-若有基金（替换【】）：
-  This work was supported by 【基金机构】 (grant number 【编号】).
-若无基金（指南官方措辞，直接可用）：
-  This research did not receive any specific grant from funding agencies
-  in the public, commercial, or not-for-profit sectors.
-
---------------------------------------------------------------------
-4) 致谢 — n_back.tex Acknowledgements 段
---------------------------------------------------------------------
-模板（无具体对象可整段删除该小节）：
-  The authors thank 【致谢对象/机构】 for 【具体支持】.
-（致谢不得早于投稿前写入未参与贡献者；指南无强制内容。）
-
---------------------------------------------------------------------
-5) GenAI 声明版本号 — n_back.tex
---------------------------------------------------------------------
-状态：已满足指南要求（声明"作者使用 [工具] 做 [用途]"格式、置于
-参考文献前、作者担责）。工具版本号指南未要求，仅当编辑来信索要时
-补写，例如在工具名后加 (version 【版本】)。→ 本项投稿前无需动作。
-
---------------------------------------------------------------------
-6) 投稿门户步骤（非稿件内容，提交时在 Editorial Manager 完成）
---------------------------------------------------------------------
-- Declaration of Interests：用 Elsevier declarations tool 生成
-  .doc/.docx 并在上传页提交（即使稿件内已有声明段）。
-- Research data（Option B/C）：选择数据选项；本稿随附
-  experiment_data/ 三份 trace CSV + SHA256 + manifest；工业语料
-  不可公开的理由已写在 Data Availability 声明中。
-- Highlights：单独可编辑文件（highlights.tex 已就绪，5 条 ≤71 字符）。
-- 篇幅口径：指南为"建议不超过 20 页双倍行距（含图表）"——针对
-  Word 口径、措辞为 preferably；elsarticle 双栏 LaTeX 投稿为标准
-  路径。若编辑要求压缩，再按意见处理。
+[Knowledge-Based Systems 投稿系统](https://www.editorialmanager.com/knosys/default2.aspx)

@@ -367,7 +367,7 @@ def draw_route(frozen: dict[str, list[dict[str, str]]]) -> None:
     ax_volume.legend(
         handles=legend_handles, loc="upper center", bbox_to_anchor=(0.5, -0.30),
         ncol=4, frameon=False, handletextpad=0.25, columnspacing=0.5,
-        fontsize=6.4, borderaxespad=0.0,
+        fontsize=7.1, borderaxespad=0.0,
     )
     write_csv("redraw_route_summary.csv", records, ["panel", "arm", "n", "hits", "percent", "wilson_low", "wilson_high", "mean_mb", "display_offset_pt_x", "display_offset_pt_y"])
     save_figure(fig, "fig_opt_route")

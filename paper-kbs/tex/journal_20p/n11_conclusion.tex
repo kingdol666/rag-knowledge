@@ -1,58 +1,22 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-HMRS is a knowledge-document management system whose retrieval path depends on
-managed state. It parses heterogeneous sources, assigns content to collections,
-derives descriptions and tags, stores documents and structural parts, exposes
-catalogue-first access, and records lifecycle state across document files, the
-tree registry and per-library metadata. The segment-level gate adds provenance
-and an admission signal; it is not a truth oracle or a ranker. This separation
-of managed objects, access views and workflow decisions is the system's central
-design claim.
+HMRS connects the state used to manage collections, documents and segments
+to the interfaces that agents use to find and inspect evidence. The
+collection catalogue and document shelf expose metadata for narrowing
+search, and opened documents and indexed segments carry the provenance
+needed to inspect a result. Lifecycle checks make discrepancies observable:
+a rename left duplicate vector entries, and re-indexing restored the expected
+state.
 
-The management campaigns show that this loop is operational but not complete.
-The 100-paper arXiv campaign produced 322 parts, with 79 papers retrievable and
-21 not; the separate 400-pages-per-language test measured content-based
-assignment accuracy of 0.875 for English and 1.0 for Chinese and Japanese. A
-33-part storage sample passed its selected checks, while a rename exposed stale
-index state and 16 lifecycle scenarios included failures in task-status and
-update checks. The system therefore contributes a testable management loop with
-explicit failure visibility, rather than an unqualified claim of automatic
-consistency.
-
-The access campaigns provide the next layer of evidence. The frozen route-card
-audit produced 72/72 full-card versus 37/72 nominally name-only collection
-selection, with an unlogged fallback that prevents causal attribution. In the
-latest complete R3 content-layer follow-up on the same questions, the tiered
-chunk-window arm A0h achieved 51/72 (70.8\%), above PD 45/72, A0f 44/72, A0/A1b 39/72 and A2 25/72; its paired
-contrast with A0 was 12--0 ($p=0.00049$, exploratory). A0h was the highest
-configuration among the four completed content arms in the frozen run, an
-archived reproduction and the follow-up,
-with the A0h $>$ PD $>$ A0f ordering preserved in all three; A1b and A2
-repeated their frozen counts exactly. These values are annotated target-string containment proxies in returned
-evidence packs; a sibling-document occurrence may count, and the arms vary in
-more than navigation.
-The frozen read-all script found all 72 strings but generated no answers, and
-R3 read-all was incomplete. At the answer layer, gold identifiers appeared in
-all 60 grid cells and in a later ten-question run; document-style citation
-markers separated the substrates (9/7/2, then 9/9/9 on a common substrate,
-and 10/10 after repair against the flat chunk replica's 2/10; the last
-pairing is cross-run and is not pooled)---lexical
-contrasts, not semantic support. Together, the results support the narrower
-claim that A0h had the highest observed annotated target-string containment in
-returned evidence packs among the completed content arms on this corpus and question set,
-not gold-document retrieval, semantic answer accuracy, universal retrieval
-superiority or a single-factor causal hierarchy claim.
-
-These bounded results support treating the collection as a managed, auditable
-object and motivate its use as an inspectable basis for evidence-traced
-retrieval. The immediate deployment implication is to expose collection state
-and incomplete paths, retain evidence provenance, and separately evaluate
-verifier-based admission and ordering before deployment. The global channel can also
-silently skip unreadable library indexes while reporting success; until that
-condition is surfaced, a successful cross-library response is not evidence of
-complete coverage. The study's contribution is a system-level management
-contract and a bounded A0h observation, not a claim of universal retrieval
-superiority. Broader evaluation needs semantic support review, independently
-authored questions, repeated agent trials with run-to-run variance estimates,
-larger matched comparisons with multiplicity control, and crash-recovery tests.
+On the 72-question evaluation, the tiered configuration that combined
+document and chunk windows recovered more annotated targets than the
+baseline tiered configuration. The difference was 15 questions in the
+frozen run and 12 in each rerun on the same questions.
+This improvement came with a higher text budget than the baseline and
+remained well below the budget of reading the corpus in full. The verifier
+replay exposed a complementary trade-off: fusion order kept 15 of 16 gold
+documents in the top five, while ordering by verifier score kept seven.
+These results motivate two concrete practices in managed document systems:
+audit the state that supplies retrieval candidates, and test evidence
+admission and ordering as separate decisions.

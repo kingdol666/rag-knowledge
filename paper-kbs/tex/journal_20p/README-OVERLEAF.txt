@@ -1,45 +1,32 @@
-HMRS manuscript package for Overleaf (2026-11-17)
-==================================================
+HMRS manuscript sources (2026-11-18)
+====================================
 
-Main document
--------------
-Open/compile: main_20p.tex
-Sequence: pdflatex -> bibtex -> pdflatex -> pdflatex (Overleaf runs this
-automatically; the class is elsarticle, available in TeX Live).
-Expected result: main_20p.pdf, 20 pages, no undefined references.
+Open main_20p.tex as the root document. Compile with pdfLaTeX and BibTeX.
+The sources also support main_20p_review.tex, a double-spaced length check
+built from the same text and figures. The double-column draft uses the
+elsarticle journal layout. KBS's 20-page recommendation is measured on the
+double-spaced manuscript including figures and tables.
 
-Supplementary material
-----------------------
-Compile separately: supplementary.tex (pdflatex twice).
-Expected result: supplementary.pdf, 8 pages, figures S1-S5 and tables
-S9-S17 with S-prefixed numbering.
+Build supplementary.tex separately with pdfLaTeX. Upload supplementary.pdf
+and the companion supplementary-inventory.pdf as supplementary material,
+together with the shareable experiment_data files. The companion inventory
+is a static PDF with tables S1-S8. It has its own source history.
+The tables and figures in supplementary.tex use S-prefixed numbering.
 
-supplementary-inventory.pdf is a static 42-page companion (campaign
-inventories, its own tables S1-S8). It is referenced from the main text as
-"the supplementary inventory"; its LaTeX source predates this package and is
-archived outside it, so it ships as a finished PDF only.
+The Overleaf package includes the referenced vector PDFs in figs/, the
+editable highlights.docx, the supplement sources, and the trace/provenance
+files. The November 17 trace export contains 532 rows with question IDs and
+measured outcomes. The older frozen (608 rows), first follow-up (532 rows)
+and floor (120 rows) exports are included for comparison. SHA256SUMS and
+revision-20261112.sha256 record the actual bytes as packaged.
 
-Figures
--------
-All included graphics are vector PDFs under figs/ with embedded fonts
-(Arial subsets, fonttype 42). No absolute paths are used; the sources
-reference them via \graphicspath{{figs/}}.
+Editorial Manager uses a separate flat manuscript archive. Open the ZIP
+and select files according to their item types. Use the .tex, .bib and
+.bbl files as editable manuscript sources and the separate PDFs as
+figures. Keep the supplement and highlights separate from those sources.
+The older Word exports of the main text and supplement in this repository
+predate this revision. The revised LaTeX sources are authoritative.
 
-Data and provenance
--------------------
-experiment_data/ carries the packaged trace CSVs (frozen 608 rows,
-follow-up 532, floor 120; SHA256SUMS), the figure-source manifest, the
-case-anatomy provenance record and the redraw summaries produced by
-figure_scripts/build_results_20261116.py (kept in the repository, not required
-for compilation).
-Manifest semantics: every hash in revision-20261112.sha256 and
-experiment_data/SHA256SUMS is the SHA256 of the file bytes AS PACKAGED in
-this zip — verify by hashing the packaged files themselves.
-
-Notes
------
-- Author names, affiliation, e-mail, CRediT, funding and acknowledgements
-  remain author-confirmation fields in the source (see AUTHOR ACTION comments
-  in main_20p.tex and n_back.tex); they must be completed before submission.
-- This package is a double-column elsarticle review preview; final KBS
-  layout remains subject to the journal's current author guide.
+This is a draft with author placeholders. See SUBMISSION-FILL-IN.md in
+the repository before journal submission. Confirm author details and
+declarations, including the AI tools used for individual figure prototypes.

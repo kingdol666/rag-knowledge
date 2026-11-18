@@ -2,71 +2,58 @@
 owned collection}
 \label{sec:acquisition}
 
-Acquisition determines what later retrieval can support, and it is where a
-document is assigned to the collection that owns it. HMRS submits PDFs,
-Office files and scans to MinerU through an asynchronous parsing service
-\citep{mineru}; parse tasks return identifiers that callers can poll, while
-workflow quality review examines the resulting text for parsing defects.
+Acquisition establishes what a later search can find and where it can
+look for it. HMRS parses PDFs, scanned images, Word and Excel files through
+an asynchronous MinerU service \citep{mineru}. The MCP parse tools return
+pollable task identifiers. Markdown and plain text take the direct save
+path. For parsed inputs, the ingest agent reviews the recovered body before
+selecting a collection by topic.
 
-The intended ingest workflow includes submission, parsing,
-agent-mediated quality review, duplicate review, optional splitting, collection
-assignment, storage, indexing and a retrieval probe. These dependencies matter to
-the system claim: parsing produces the content used for placement; placement
-controls the collections visible to later access; indexing makes the stored
-parts searchable; and the probe checks that the claimed transition is visible
-through the retrieval interface. Depending on the entry point, artefacts may
-include a parse task identifier, a quality report, a content fingerprint, a
-split manifest, a storage record, a placement decision and a probe result. The
-workflow treats a content-derived retrieval probe as evidence of retrievability;
-an HTTP success from a save call alone does not establish that property. The
-platform accepts scanned pages, Office files and plain text, but quality review,
-classification and completion checks are not all enforced by the parse API.
+The ingestion workflow connects parsing, review, optional splitting,
+placement, storage and indexing. The source content informs the placement
+decision, and the destination determines the scope of subsequent access.
+The workflow records the applicable artefacts: a parse task identifier,
+a quality report, a content fingerprint, a split manifest, a storage
+record and the destination library. A content-based retrieval probe checks
+that indexing exposes the document to later queries. This check follows the
+save acknowledgement and tests a different transition.
 
 \subsection{Quality gates and ingest lifecycle}
 
-Duplicate handling has two paths rather than a universal admission gate. The
-upload service rejects an exact same-parent duplicate by content hash, while
-the separate near-duplicate tool reports similar candidates for review at a
-configured threshold; it does not delete them automatically. In the ingest
-workflow, an agent reviews parsed text for OCR noise, binary residue, bodyless
-headings, whitespace collapse and language mismatch. Save and indexing behaviour
-depends on the entry point: the web parsed-file save route stores content
-without starting indexing, while the MCP parsed-document save operation can
-start vector/BM25 indexing asynchronously. The ingestion agent classifies the document into a library whose scope matches
-the parsed content's subject, not its filename, and the classification is
-recorded so that the owning collection can be compared with the catalogue
-afterwards.
+The upload service checks sibling files for exact duplicates using content
+hashes. A separate near-duplicate tool returns pairs above a similarity
+threshold for review. The ingest agent checks recovered text for OCR noise,
+binary residue, missing section bodies, whitespace collapse and language
+mismatch. It selects a library whose scope matches the recovered subject and
+derives descriptions and tags from the same body. The owning collection and
+its listing can then be checked after storage.
 
-When requested and above the configured context ceiling (30,000 characters in
-the arXiv campaign; 60,000 in later configurations), documents are split at
-recognised structural markers. The splitter targets 0.85 utilisation as a
-soft target and detects units such as headings, Markdown tables, lists, block
-quotes and fenced code. It does not guarantee preservation of equation
-boundaries. Descriptions and tags are derived from the body and checked by the
-ingest workflow; mismatches call for metadata correction, not document
-rewriting.
-Vector/BM25 indexing and graph construction are distinct operations.
-Post-index verification checks selected properties such as a non-empty vector
-collection and expected chunk identifiers; reconciliation can detect stale
-index state, but is not a transaction across storage and index services.
+On oversized documents, the optional structural splitter groups recognised
+units such as headings, Markdown tables, lists, block quotes and fenced code.
+The arXiv campaign used a 30,000-character limit; later configurations used
+60,000. The splitter aims to fill 85\% of the configured window and records
+oversized indivisible units where applicable. Structure recognition covers
+Markdown units, with formula-heavy pages depending on the quality of the
+parsed representation.
+
+The web parsed-file route persists Markdown and images. The MCP save tool
+can also schedule vector and lexical indexing in the background. Graph
+construction is a separate operation. Post-index checks can compare
+expected identifiers with the recorded chunks and probe retrieval for
+content from the saved document.
 
 \subsection{Acquisition evidence and accounting limits}
 
-The 100-paper campaign produced 322 stored parts in five libraries, so the
-collection level was populated across five distinct owning collections rather
-than a single corpus.
-Its reconciliation is incomplete: the state file records 91 submitted names;
-at the 2026-10-13 evaluation snapshot 79 papers were retrievable and 21 were
-not, and
-the surviving artefacts do not enumerate attempts and failures per paper, so
-the missing 21 cannot be attributed to parsing alone. Formula-dense scans and
-a recovered batch-process crash were observed; neither establishes the cause
-for every missing paper.
+The 100-paper arXiv campaign produced 322 stored parts in five libraries.
+Seventy-nine source papers were retrievable at the evaluation snapshot on
+13 October 2026. The submission state lists 91 names, and the surviving
+artefacts give an incomplete account of the 21 papers absent from the final
+retrieval result. The records document formula-dense scans and recovery
+from a batch-process crash.
 
-A separate cross-lingual test processed 400 Wikipedia pages per language.
-Ingestion success was 1.0 throughout the test. Automatic membership accuracy was
-0.875 for English and 1.0 for Chinese and Japanese; this metric measures
-whether content-based classification placed a document in the correct
-collection independently of its filename. Section~\ref{sec:e1} reports the
-per-language storage and self-retrieval results. These measurements
-characterise ingestion, classification and storage, not answer quality.
+In the separate multilingual ingestion test, a script sent 400 Wikipedia
+pages per language to preassigned libraries. Their listings contained
+87.5\% of expected English titles and all expected Chinese and Japanese
+titles. This test checks listing coverage after a known placement decision.
+Section~\ref{sec:e1} describes the listing and self-retrieval checks on the
+same libraries.

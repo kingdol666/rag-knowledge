@@ -1,148 +1,116 @@
-%% n8b_eval.tex -- evaluation, middle part: E4 (operational knowledge and
-%% automated distillation) and E5 (content-layer configuration comparison).
-%% Labels owned here: sec:e3 (E4, historical name), sec:ladder-opt (E5),
-%% fig:content. The former fig:ladder / fig:miss-overlap floats and the
-%% separate R3 follow-up figure were merged into fig:content on 2026-11-16.
+%% Evaluation results for the experience store and the content-layer arms.
 \subsection{E4: Operational knowledge and automated distillation}
 \label{sec:e3}
-
-The experience store is a functional observation, not an effectiveness
-result. It holds operational lessons as retrievable documents---addressed,
-indexed and searched as an ordinary document, with a credibility tier
-deciding whether a lesson may be shown
-(Section~\ref{sec:org-experience}). Three case measurements exist: an
-extraction campaign over one small knowledge base produced thirteen
-candidate drafts; one end-to-end scenario was sedimented into one experience
-(\texttt{exp-d6f4d47ae3d6}) that a later global experience search returned
-first, at local similarity 0.711; and the draft-approval path was never
-exercised, because the draft pool was empty (\texttt{count}~0) and the read
-and approve operations could not run. The heuristic extraction path had run
-only in dry-run mode, returning a dump the quality gate would reject. One
-scenario and thirteen candidates cannot support an effectiveness claim;
-scheduled distillation, review and approval at scale, application feedback
-and credibility decay went unexercised.
+HMRS stores operational lessons as searchable documents and uses a
+credibility tier to decide which lessons to present
+(Section~\ref{sec:org-experience}). An extraction run produced 13 draft
+lessons from one small library. In a separate end-to-end case, the system
+stored one lesson (\texttt{exp-d6f4d47ae3d6}), which global experience
+search later ranked first with a similarity of~0.711. The approval check
+encountered an empty draft pool, and the heuristic dry run produced output
+that failed the quality criteria. These checks cover extraction, storage
+and retrieval. Scheduled distillation, review and approval at scale,
+application feedback and credibility decay remain untested.
 
 \subsection{E5: Content-layer configuration comparison}
 \label{sec:ladder-opt}
-A0 is the tiered baseline with route-card selection and a 40K reference-mode
-judge. A0f retains route-card selection but reads full document windows
-inline (up to 250K characters); A0h adds the top-eight vector-chunk windows
-to A0f, with a 60K evidence cap. PD removes catalogue navigation and
-searches a per-library top-six document union before full-window judging.
-A1b is a scoped union of vector results from the ten evaluation libraries,
-merged by score and judged in a 40K reference window; A2 uses the same
-scoped vector union with concatenated candidate snippets and no judge. A3
-uses nominally name-only route cards, while read-all mechanically scans
-every stored part for the target string. Route-card retrieval uses
-top-30 vector candidates at cosine threshold 0.35 with a 0.30 retry. These
-are recorded configuration details, not a single-factor design: A0h, PD and
-A1b vary in routing, candidate construction and judging, so their
-differences cannot be assigned to navigation alone. Some reference lookups
-may use the gold domain, with unknown frequency and impact; A3 may retrieve
-outside the evaluation scope.
+A0 selects a collection from the route cards and gives candidate references
+to a judge with a 40{,}000-character document window. A0f fetches windows of
+up to 250{,}000 characters and passes them directly to the judge. A0h
+combines the resulting judged text with up to eight vector-retrieved chunk
+windows in a pack capped at 60{,}000 characters. PD searches the ten libraries
+separately and judges the six unique documents with the highest scores using
+the A0f window. A1b merges the ten libraries' vector results and uses the A0
+reference-mode judge. A2 concatenates snippets from the same scoped union
+and omits judging. A3 uses the nominally name-only route cards. Within the
+routed library, vector search requests up to 30 candidates at a cosine
+threshold of 0.35, with a retry at 0.30 if the first search is empty.
+The configurations vary in routing, candidate construction and judging.
+Some reference lookups may use the gold domain to resolve candidates,
+as detailed in Section~\ref{sec:threats}.
 
-\textbf{A0h had the highest annotated target-string containment among the
-four completed content arms in each execution.} In the frozen aggregate, the
-target string occurred somewhere in the returned evidence pack for
-A0/A0f/A0h/PD/A1b/A2/A3/read-all in 37/45/52/46/39/25/33/72 of 72 questions
-(Figure~\ref{fig:content}a). A hit can occur in a non-gold sibling document;
-this is a lexical evidence-pack proxy, not gold-document retrieval, entailment
-or answer correctness. The A0h Wilson 95\% interval is [0.610, 0.812]. The four
-content arms (A0, A0f, A0h, PD) were executed three times: the frozen run,
-an archived reproduction of it recorded to retain response texts, and a later same-question follow-up on a
-corpus grown from 879 to 906 parts (the R3 record). A0h
-was the highest configuration and the ordering A0h $>$ PD $>$ A0f $>$ A0
-held in all three records (52/46/45/37, then 51/45/44/39 twice). The
-reproduction agreed with the frozen records on 71/72 questions for A0f, A0h
-and PD and on 68/72 for A0, and the follow-up returned hit/miss records
-identical to the reproduction for all four arms. A1b and A2 repeated their
-frozen counts exactly in the follow-up, with no per-question flips; frozen
-versus follow-up agreement was 94.4\% for A0 and 98.6\% for A0f, A0h and
-PD. The follow-up reuses the frozen questions, so these are stability
-records, not independent test sets.
+\textbf{A0h put the target string into more evidence packs than any other
+configuration with a bounded retrieval pack.} In
+the frozen record, A0h contained the string for 52 of 72 questions (72.2\%,
+Wilson 95\% interval 61.0--81.2\%), compared with 37 of 72 (51.4\%) for A0.
+The gain was 20.8 percentage points, with 15 A0h-only hits and no reverse
+cases (exact McNemar $p=6.1\times10^{-5}$). On the same questions in the
+November~12 follow-up, A0h contained 51 targets and A0 contained 39, a
+16.7-point difference with 12 A0h-only hits ($p=0.00049$).
+Across the frozen and follow-up records, PD contained 46 and 45
+targets, A0f 45 and 44, A1b 39 in each, and A2 25 in each
+(Figure~\ref{fig:content}a and Table~S12).
 
-In exploratory paired records (two-sided exact McNemar tests, unadjusted; no
-familywise inference is intended), A0h led the tiered baseline A0 on
-fifteen frozen questions with no reverse ($p=6.1\times10^{-5}$) and on
-twelve follow-up questions with no reverse ($p=0.00049$). A0h led the
-scoped flat union A1b on thirteen frozen and twelve follow-up questions,
-again with no reverse ($p=0.00024$; $p=0.00049$). A0h led PD on seven
-questions in both records while PD led on one ($p=0.0703$); this contrast
-is not statistically resolved, and PD differs from A0h in more than
-navigation. The window expansion is supported separately: A0f led A0 on
-eight frozen questions with no reverse ($p=0.0078$) and on five follow-up
-questions ($p=0.0625$, unresolved), and PD led A0 on six follow-up questions with no
-reverse ($p=0.031$). A1b and A0 showed no resolved difference in either
-record (frozen 4--2, $p=0.69$; follow-up 1--1). Removing the evidence
-gate is the largest resolved contrast in the grid by discordant pairs: A2 contained the string for 25/72 against
-37/72 (frozen) and 39/72 (follow-up) for A0, with discordant records of
-6--18 ($p=0.0227$) and 5--19 ($p=0.0066$). A2 and A0 also differ in
-returned text, so even this comparison does not isolate the gate mechanism
-alone. PD led A1b on seven frozen questions with no reverse ($p=0.0156$).
-Table~S13 retains all paired records for auditability.
+The paired comparison with the scoped vector union A1b favoured A0h on
+13 frozen and 12 follow-up questions, with no reverse cases
+($p=0.00024$ and $0.00049$). A0h's lead over PD was smaller. In both
+records, seven questions favoured A0h and one favoured PD
+($p=0.0703$). Among A0's 35 frozen misses, A0f, A0h and PD recovered
+8, 15 and 9, respectively. Eight recoveries were shared by all three,
+seven were unique to A0h and one to PD. Nineteen were missed by all three.
+A post-hoc search placed five first matching occurrences outside the
+nominal window and 30 inside. The matching file could differ from the gold
+document or the one the judge read. Figure~\ref{fig:content}b and Table~S13
+give the paired records, including the secondary comparisons.
 
-The follow-up completes as follows. The six arms A0, A0f, A0h, PD, A1b and
-A2 yielded 39/44/51/45/39/25 contained strings; A0h, at 51/72 (70.8\%), is
-16.7 percentage points above A0. A3, recorded separately and later, yielded
-25/72 (gold domain selected 49/72, 13 missing top candidates, 23 empty
-packs); the causes are not established, so A3 is read qualitatively across
-runs. Follow-up read-all was incomplete (three
-completed rows at the report cutoff) and is not plotted as a 72-question
-result; the frozen read-all is a mechanical substring scan, not an agent
-that reads and answers. A0h recorded 309 KB and 13.8 s of tool time per
-frozen question, versus 24.3 MB and 253.7 s for the scan; in the follow-up,
-A0's elapsed-time mean was 17.4 s, median 9.8 s and maximum 540.9 s. Tool
-time excludes answer generation, and recorded bytes may include overlap;
-neither is network traffic or measured model input.
+The frozen A0h trace recorded 309~KB and 13.8~s of tool time per question, compared with
+31.4~KB and 16.3~s for A0. The read-all scan found all 72 target strings
+using 24.3~MB and 253.7~s per question, about 79 times the text recorded
+for A0h. The trace counts overlap where the same text is fetched or packed
+more than once. Tool time covers retrieval work and excludes answer
+generation. In the follow-up, the A0 tool-time median was 9.8~s
+(mean 17.4~s, maximum 540.9~s). The separately executed A3 follow-up
+contained 25 target strings, down from 33, and selected the gold domain
+on 49 questions. It returned no top candidate in 13 cases and an empty
+pack in 23. The follow-up read-all scan completed three rows and was
+excluded from the 72-question comparison.
 
-Among A0's 35 frozen misses, A0f, A0h and PD contain the string in 8, 15 and
-9 cases, respectively. These sets overlap---8 questions recovered by all
-three, 7 only by A0h, 1 only by PD and 19 by none---so they are not
-additive configuration gains. A post-hoc search classified five first
-matching string locations outside a nominal window and 30 inside; the chosen
-matching file need not be the gold document or a candidate actually read, so
-these categories do not identify the causes of misses. As an external
-content-based reference point, a separate 40-question diagnostic found the
-gold string in returned text for 24/40 BM25 cases, 19/40 dense-search cases,
-and 26/40 when the top five texts from each list were concatenated. The
-historical label \texttt{F-rrf} is retained only for trace compatibility: no
-reciprocal-rank fusion was computed, and the diagnostic uses different
-questions, scopes and returned-text construction.
+An archived reproduction of the four content arms matched the frozen
+hit status on 71/72 questions for A0f, A0h and PD and on 68/72 for A0.
+Its hit/miss records match the follow-up for these four arms. A1b and A2
+also had identical frozen and follow-up hit sets. A separate November~17
+rerun on the same questions used the restarted live stack and omitted the
+full scan. Counts fell to 48/72 for A0h, 42/72 for PD, 41/72 for A0f
+and 36/72 for A0. The four arms kept their order, and A0h again contained
+12 targets missed by A0 without a reverse case. The corpus state was not
+held fixed across these runs. The benchmark archive includes the dated
+rerun traces.
 
-Figure~\ref{fig:case-anatomy} illustrates two frozen evidence paths. In
-A-science-en-roberta, A0 misses the target string while A0h admits a passage
-containing ``RoBERTa.'' In F-pp-1, A0 and A0f stop before the dialogue,
-whereas A0h admits the excerpt containing ``four or five thousand a year.''
-The figure shows recorded evidence and annotated target-string verdicts, not
-gold-document retrieval or semantic answer correctness.
+In a separate 40-question diagnostic, the returned text contained the target
+in 24 BM25 cases, 19 dense-search cases and 26 cases when the top five
+texts from each list were concatenated. This check used different
+questions, scopes and evidence construction. The trace label
+\texttt{F-rrf} denotes concatenated lists.
+
+Figure~\ref{fig:case-anatomy} shows where the additional windows supplied
+the annotated text. For the question on RoBERTa, the A0h pack contains
+a passage mentioning RoBERTa in Lewis et~al.'s RAG paper. For the
+\emph{Pride and Prejudice} question, A0h includes the original dialogue on
+the man's income, absent from A0 and A0f. The first example shows why
+target-string containment counts text that may come from a different
+document than the annotated source.
 
 \begin{figure*}[!b]
 \centering
 \includegraphics[width=\textwidth]{fig_opt_case}
-\caption{Two frozen evidence paths. (a) A-science-en-roberta: A0 misses
-``RoBERTa,'' whereas A0h admits an archived passage containing it. (b) F-pp-1:
-A0 and A0f stop before the dialogue, whereas A0h admits the original excerpt.
-HIT/MISS indicates annotated target-string containment in the recorded evidence
-pack; a target occurrence may be in a non-gold document, so this is not
-gold-document retrieval or semantic answer correctness.}
+\caption{Recorded evidence paths for two benchmark questions.
+(a) A0h includes a passage containing \emph{RoBERTa} in the Lewis et~al. paper.
+(b) A0h includes the dialogue containing \emph{four or five thousand a year}.
+HIT and MISS refer to the presence of the annotated target string in the
+returned pack.}
 \label{fig:case-anatomy}
 \end{figure*}
 
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{fig_opt_content}
-\caption{Content-layer configurations on 72 in-domain questions. (a) Frozen
-annotated target-string containment in the returned evidence pack, with Wilson
-95\% intervals (filled circles) and the same-question follow-up (open
-triangles); counts are in the right-hand column (frozen / follow-up). A
-sibling-document occurrence may count; these are lexical proxies, not
- gold-document retrieval or answer correctness. The frozen aggregate combines
-dates; A3 was added separately to the follow-up and read-all was incomplete.
-The dashed line marks frozen A0. (b) Paired discordance for six frozen
-contrasts; each point is the number of questions on which the first (circle)
-or second (triangle) arm alone contained the string; $p$ values are two-sided
-exact McNemar, unadjusted. A0h, PD and A1b change multiple components; A0,
-A1b and A3 may use the gold domain for reference resolution; read-all is a
-mechanical scan, not an answering agent.}
+\caption{Target-string containment on 72 in-domain questions.
+(a) Frozen results with Wilson 95\% intervals (filled circles) and
+same-question follow-up (open triangles). The dashed line marks frozen
+A0. The frozen aggregate combines dates. The follow-up A3 ran separately
+and read-all was incomplete. (b) Paired discordance in six frozen
+contrasts. Circles and triangles count questions where only the first or
+second arm contained the target, respectively. Exact McNemar $p$ values
+are two-sided and unadjusted.}
 \label{fig:content}
 \end{figure*}

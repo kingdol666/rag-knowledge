@@ -9,11 +9,12 @@
 \setlength{\@dblfpsep}{12pt}
 \makeatother
 \begin{document}
-\twocolumn[{%
-\centering
-\section*{Supplementary Material}
-}]
 \setcounter{figure}{0}\setcounter{table}{8}\renewcommand{\thefigure}{S\arabic{figure}}\renewcommand{\thetable}{S\arabic{table}}
+\twocolumn[{%
+\begin{minipage}{\textwidth}
+{\centering
+\section*{Supplementary Material}
+}
 
 \noindent\textbf{Reading the supplementary material.} The material is
 grouped by evidence type, and each result retains the corpus and unit
@@ -22,26 +23,28 @@ shared state. Figures~S2--S3 report answer-marker and out-of-corpus probe
 observations; Figures~S4--S5 replay verifier roles and illustrate one
 logged query. Table~S9 indexes the management checks, Table~S10 summarises
 the retrieval and answer designs, and Table~S11 positions representative
-research strands. Tables~S12--S13 give the frozen and follow-up arm counts
-and all paired contrasts discussed in E5; frozen and follow-up reuse the
-same in-domain questions but differ in corpus state (879 versus 906 parts),
-so they are not independent samples. Tables~S14--S16 retain the
+research strands. Tables~S12--S13 give arm counts and paired contrasts for
+E5. The reruns reuse the same in-domain questions on later corpus states.
+Tables~S14--S16 retain the
 question-level answer proxies, aggregate answer and runtime observations,
 and the DeepSeek-R1 answer-case comparison. Table~S17 records the design
 and provenance of every campaign named in the main text. Tables S1--S8 of
 the companion inventory document (shipped alongside this supplement)
 complete the campaign-level evidence index. Each trace CSV
-packages 76 question IDs per complete arm; four R1--R4
-cross-placeholder/out-of-domain probes remain in the files but are excluded
-from the 72-question in-domain analyses.
-\begin{figure*}[!t]
-\centering
+packages 76 question IDs per complete arm. The in-domain analyses exclude the
+four out-of-domain probes R1--R4.
+
+\medskip
+{\centering
 \includegraphics[width=\textwidth]{fig1_architecture_native}
-\caption{HMRS service boundaries and shared state. The browser reaches the
-Nuxt server, while agent tools use the MCP server. The evidence gate is an
-optional call; threshold passage is not proof of support.}
+\par}
+\captionof{figure}{HMRS service boundaries and shared state. The browser
+reaches the Nuxt server, and agent tools use the MCP server. The evidence
+gate is an optional call.}
 \label{fig:softdesign}
-\end{figure*}
+\end{minipage}
+\vspace{12pt}
+}]
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig_opt_s_answer}
@@ -95,7 +98,8 @@ Hit@5 is 0.94, 0.44 and 0.94.}
 \includegraphics[width=\textwidth]{fig_exp_s5}
 \caption{Anatomy of one real query (Q2; single logged HMRS-Hybrid call).
 Each line is one of the 12 fused candidates; the shaded band is the top-5
-window the answer agent reads in full. (a)~The shipped re-ranking: the
+window selected for source reading in the recorded run. (a)~In the logged
+re-ranking, the
 judge scores five extruder-PLC telemetry reports $0.887$--$0.926$ and the
 gold root-cause report $0.846$, demoting it from fusion rank~1 to
 rank~8 --- outside the read window. (b)~The same call with the verdicts
@@ -123,7 +127,7 @@ Description audit & Later 100-paper re-check across five libraries & 328/328 par
 Parse quality & 50-paper, 26-domain campaign & 50/50 parsed and verified, all probes ok; 202 tags; 41 tag flags negative without blocking ingestion & E1\\
 Structural split & 50 papers at the 30{,}000-character tier & 165 stored parts (9 whole papers, 156 split parts) in 2{,}672\,s; storage 50/50; descriptions and tags 165/165 & E1\\
 Near-duplicate review & 322-part corpus, 0.90 threshold & 35 candidate groups (0.90--0.975), zero true duplicates, nothing deleted & E2\\
-Content placement & 100-paper campaign; 400 pages per language & 322 parts recorded for the paper campaign; cross-lingual membership 0.875 (en), 1.0 (zh, ja) & E1--E2\\
+Campaign inventories & 100 arXiv papers and 400 Wikipedia pages per language & 322 parts recorded for arXiv. Expected titles in preassigned libraries: 350/400 (en), 400/400 (zh, ja) & E1--E2\\
 Content audit and three-source consistency & 322-part content audit; 33-part storage sample & 322/322 content; 33/33 sampled storage checks; separate disposable-library rename defect fixed by re-index & E2\\
 Lifecycle operations & 16 scenarios on two disposable libraries & create, move, delete and forced re-index pass; two failures (task status, update check) & E2\\
 Sub-library hierarchy & Three-level disposable fixture & create, parent-to-child move, listing, reading and judging all pass & E2\\
@@ -139,18 +143,18 @@ Experience store & One small knowledge base; one end-to-end scenario & 13 candid
 \caption{Design and headline results of the retrieval and answer experiments.
 Each row names the corpus and scale, the metric and the comparison it is read
 against, the headline outcome, and the claim that outcome supports together
-with its limit. The E5 row reports both the frozen result and the latest
-same-question R3 follow-up; none is re-estimated.}
+with its limit. Tables~S12--S13 give the campaign-level E5 counts and paired
+contrasts.}
 \label{tab:retrieval-design}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.10\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
 \toprule
 Exp & Corpus and scale & Metric and comparison & Headline result & Supports / limit\\
 \midrule
 E3 (RQ2) & Ten-domain 72 q; route cards with and without descriptions & Scripted gold-domain choice & A0 72/72 vs nominally name-only A3 37/72; McNemar $p=5.82\times10^{-11}$ & Scripted probe, unlogged fallback; configuration contrast, not a causal description effect\\
-E5 (RQ3) & Ten-domain 72 q; content-layer arms & Containment; tiered vs flat vs precise vs ablated; paired exact McNemar & Frozen A0h 72.2\% (52/72), highest among content arms in three executions with ordering A0h $>$ PD $>$ A0f preserved; A0h--A0 15--0/12--0, A0h--A1b 13--0/12--0; A2 (no gate) 25/72 vs 37--39/72 & Multiple components vary; flat lookup can use gold domain; A0h--PD unresolved ($p=0.0703$); follow-up same questions, not independent\\
+E5 (RQ3) & 72 questions in ten domains across three campaigns & Target-string containment, text volume and paired exact McNemar tests & A0h vs A0: 52/72 vs 37/72 frozen, 51/72 vs 39/72 in the first follow-up, 48/72 vs 36/72 on November 17 & Configuration contrasts on the same set. A0h--PD remains unresolved in the frozen and first follow-up records.\\
 E6 (RQ5) & Two 30-cell grids, three interfaces; later 10-question run & Gold-ID in answer or trace, lexical coverage, citation markers & Gold-ID 60/60 at ceiling; markers 9/7/2 (original), 9/9/9 (common substrate), 10/10 post-repair tiered run vs 2/10 flat chunk replica & Traceability, not semantic support; one run per arm; latest run not pooled\\
 E7 (RQ5) & Three arms $\times$ three questions, public API & Cost, refusal behaviour, transport & Question Q2 false refusal on a 131-doc catalogue (74.9\,KB over tool budget); repaired by pagination & Transport and cost boundary; one campaign plus replication\\
-E8 (RQ4) & 191 logged scores; second NLI signal & Gold vs non-gold score separation; judge-as-ranker vs fusion order; rank replay & Gold median 0.88 vs non-gold 0.86, $p=0.26$; re-ranking Hit@5 0.44 vs 0.94 in fusion order; NLI Hit@5 0.3125 & The judge is not a ranker; one corpus\\
+E8 (RQ4) & 191 logged scores and a separate ordering archive & Gold vs non-gold scores and same-pool Hit@5 & Median scores 0.88 vs 0.86 ($p=0.26$). Hit@5 was 7/16 in verifier order and 15/16 in fusion order. & Historical wrapper and one corpus.\\
 E9 & 27-cell stability; 90/180/270-request sweep; gate on/off $n=10$; pinned vs unscoped scope & Wall clock and timeout rate; answer grades; Hit@5 under each scope & 41\% timeouts at 30 clients; no measured gate benefit here; gold-pinned Hit@5 1.0 (non-gold 0.0); unscoped not a matched comparison & Single-instance envelope; scope not isolated, filename confound\\
 \bottomrule
 \end{tabular}
@@ -280,7 +284,7 @@ Campaign and state & Material and unit & Comparison or observation & Measure and
 Industrial corpus, 2026-10-13 & 42 documents in five libraries; 16 questions & Hybrid candidates; verifier ordering & Document Hit@5; same-pool replay; one workstation\\
 arXiv, 2026-10-13 & 100 papers; 322 parts in five libraries; 10 questions & Platform, file and chunk-replica answer arms & Gold-ID, strict/alias keywords, markers; one run per arm\\
 arXiv, 2026-11-14/15 & 100 papers; 328 parts in five libraries; 10 questions & Title-derived ID probe and a scoped ten-question vector check & Target arXiv ID in result names; 72/100 probes unscoped, 45 chunk-copy-first; not a matched rerun\\
-Wikipedia ingestion & 400 pages per language; 40 queries per language & English, Chinese and Japanese assignment & Source-category agreement; post-ingest index self-check; not a task benchmark\\
+Wikipedia ingestion & 400 pages per language; 40 excerpt queries per language & Ingestion into preassigned English, Chinese and Japanese libraries & Expected-title coverage and a top-three self-retrieval check\\
 Routing, frozen and follow-up & 72 in-domain questions; 138 documents; 879 parts (follow-up 906) & Description-layer and content-layer configurations & Gold-domain choice and annotated target-string containment in returned packs; multiple components; sibling matches may count; same questions, not independent\\
 Answer grids & 10 questions; 30 cells per grid & Platform, file and chunk-replica arms; common substrate & Gold-ID, strict/alias keywords, markers; one run per arm; lexical proxies, not semantic support\\
 Verifier archive & 191 scores from 16 hybrid runs; 17 gold and 174 non-gold & Score distribution and same-pool ordering & Medians and Hit@5; separate archives; exploratory $p$ values; filtering never activates\\

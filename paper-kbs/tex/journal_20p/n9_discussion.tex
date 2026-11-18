@@ -1,64 +1,52 @@
 \section{Discussion and lessons learned}
 \label{sec:discussion}
 
-The management evidence is the first result, not merely a precondition for the
-retrieval experiments. Across the acquisition and organisation campaigns, HMRS
-recorded 322 stored parts across five libraries, measured content-based
-assignment separately from retrieval, and exposed state disagreement after a
-rename and in selected lifecycle checks. The 79/21 arXiv availability result
-and the 0.875/1.0/1.0 cross-lingual assignment result come from different
-corpora and should be read as complementary evidence: the former identifies an
-incomplete ingestion boundary, while the latter tests content-based placement.
-The 33-part consistency sample and selected passing lifecycle checks show
-that the management loop is exercisable, not that it is transactionally
-complete. The failed task-status/update checks and stale-index rename are
-important system results because they show why reconciliation and post-operation
-probes are part of the design rather than optional diagnostics. This failure
-visibility is the management-side counterpart of the metadata-quality and
-governance concerns raised in the tagging and enterprise-content-management
-literature \citep{park-metadata-quality-2009,paivarinta-ecm-2005}.
+The lifecycle audits show what a collection-level representation buys in
+practice. A rename updated document state while leaving nine stale chunks
+in the vector index. Re-indexing removed the duplicates and restored the
+expected count. The three-source checks let operators verify the file,
+registry and metadata views separately, while a search probe checks whether
+the index reflects the change. The arXiv acquisition audit similarly
+distinguished acquisition targets from availability: 79 of the 100 papers
+were retrievable at the October snapshot. The practical implication is to
+test retrieval after a lifecycle operation as well as checking its write
+response. This joins metadata governance to a property that matters at
+query time \citep{park-metadata-quality-2009,paivarinta-ecm-2005}.
 
-The access results then show how managed state is consumed. The frozen route-card
-audit selected the gold collection in 72/72 full-card cases and 37/72 nominally
-name-only cases, but its fallback and scripted nature prevent a causal
-interpretation. In the latest complete R3 content-layer follow-up on the same
-questions, A0h, the tiered configuration with a chunk-window union, had the
-highest observed annotated target-string containment in returned evidence packs
-at 51/72 questions; a sibling-document occurrence may count. PD, A0f, A0/A1b and A2 contained it in
-45/72, 44/72, 39/72 and 25/72, respectively. A0h versus A0 was 12--0
-($p=0.00049$, exploratory and unadjusted). These are containment proxies, not
-semantic answers, and the configurations vary in more than navigation alone.
-The recovery pattern is nonetheless consistent with the design difference: A0h
-adds full-document and chunk windows to A0's judged pack, and a post-hoc
-classification of A0's 35 frozen misses placed five first matching string
-locations outside a nominal window and thirty inside, though these categories
-do not identify the causes of the misses.
-The frozen read-all scan found every string but generated no answers, while the
-R3 read-all run was incomplete; this is why the mechanical upper bound is not a
-current Agent baseline. These observations describe the tested configuration
-on this corpus and question set; they do not establish a universal advantage of hierarchical
-retrieval.
+At the access layer, the full route cards gave the scripted selector a
+usable collection-level view. The evidence packs show a second decision
+after routing: how much of the selected material to read. Adding document
+and vector chunk windows in A0h raised target-string containment over A0 by
+15 questions in the frozen run and 12 in each same-question rerun. The
+frozen run used an average of 309~kB of trace-recorded text per question,
+compared with 31.4~kB for A0 and 24.3~MB for the mechanical full read. Thus
+A0h traded a larger reading budget for more retained targets while using
+about 1.3\% of the full scan's text volume. A0h also led the per-library
+union PD by six questions in both runs, with a smaller paired difference
+that remained unresolved. This contrast matters because PD already
+limits search to a library. The stronger result is the improvement over A0
+when the retrieval configuration expands the evidence it reads.
 
-The same-pool diagnostic illustrates how candidate-evidence ordering can matter
-in this setting. On identical logged pools from the retired hybrid wrapper,
-verifier-score ordering reproduced the Hit@5 collapse documented in
-Section~\ref{sec:e6}; all 191 recorded scores exceeded the configured
-threshold, so filtering did not activate and its benefit was not measured.
-This is a bounded warning about a particular ordering, not a finding about
-every verifier or current retrieval lane. The result also aligns with the
-design motivation drawn from the LLM-as-a-judge literature, whose documented
-preference bias and listwise instability motivate keeping verification
-separate from ranking \citep{zheng-llmjudge,sun-urara}.
+Source visibility carries through to answering. On different substrates,
+the rates of detected document-style markers diverged across the three
+interfaces. They converged at nine of ten when the interfaces used the same
+indexed libraries. This convergence directs attention to how documents and
+their references are represented at the interface. Marker checks are a
+trace-format diagnostic. A separate semantic assessment would be needed to
+determine which answer claims the retrieved passages support.
 
-The reported answer and refusal cases show selected workflow behaviour, not a
-reliable abstention rate. Pagination repaired selected oversized catalogue
-paths, but incomplete searches and tool failures remain distinct from a
-completed search without support. A late inspection also found that the global
-channel can silently skip unreadable library indexes while reporting success;
-until this is surfaced, a successful response is not evidence of complete
-cross-library coverage. The inspection identified eight affected collections;
-scoped search worked for the newly ingested example, but a probe on another
-affected library returned no results. Stronger claims need
-independent questions, controlled single-factor comparisons, repeated runs,
-semantic support review, and tests of operations and recovery beyond the
-present local setting.
+The verifier replay identifies a distinct design choice. The same sixteen
+candidate pools produced 15 top-five hits in fusion order and seven in
+verifier-score order. Preserving candidate order after admission avoids
+that specific failure mode. The score archive informs a separate question:
+at the recorded threshold, all 191 scores passed, leaving the effect of
+active filtering open. This separation is consistent with the practical
+distinction between a relevance judgement and a ranking rule in work on
+LLM judgements and reranking \citep{zheng-llmjudge,sun-urara}.
+
+Operational traces also show why a search needs to report its coverage.
+Pagination recovered a failed catalogue path. An index read failure exposed
+a different defect: the global channel could skip a library and still report
+success. For the affected example, re-indexing recovered the missing hit.
+Reporting partial coverage would help callers distinguish an incomplete search
+from a completed search that returned no supporting evidence.

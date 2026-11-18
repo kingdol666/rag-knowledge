@@ -28,35 +28,28 @@ This article does not report studies involving human participants, human
 data, or animals.
 
 \section*{Data availability}
-Source code and benchmark scripts are available at
-\url{https://github.com/kingdol666/rag-knowledge}. The repository indexes the
-artefact inventory; hashes for the corrected and pre-correction annotations
-and grader are recorded in
-\path{paper-kbs/tex/journal_20p/.frozen-experiment-sha256.txt}.
-The supplement contains campaign inventories, per-question summaries and
-lifecycle and ablation tables. De-identified per-question records for the
-November 2026 route and content-layer campaigns are prepared for deposit
-alongside the supplement (frozen, follow-up and floor trace CSVs); each row
-carries the arm, question identifier, containment outcome, byte and timing
-totals and, where applicable, route labels. Question texts, gold strings and
-evidence-pack contents are withheld because of source-document restrictions.
-The CSV files, hash manifests and figure provenance records are included in
-the deposited package.
-The 42-document industrial corpus is a non-customer demonstration instance,
-not deposited publicly. The verifier comparison is reproducible from the
-released scores, golds and grader; an end-to-end rerun needs a substitute
-corpus, with a recipe and synthetic sample in
-\path{paper-kbs/notes/industrial-corpus-substitute-recipe-2026-10-16.md}.
+The implementation and benchmark scripts are available at
+\url{https://github.com/kingdol666/rag-knowledge}. The supplement describes
+the campaigns and includes per-question results, provenance manifests and
+the score and ordering records for the verifier replay. The accompanying
+route and content trace CSVs report identifiers, containment outcomes, text
+volumes and timings. These exports omit question text, reference strings and
+returned passages. The source restrictions on the evaluation corpora limit
+redistribution. The repository includes a recipe and synthetic sample for
+constructing a substitute for the 42-document industrial demonstration
+corpus.
 
 \section*{Acknowledgments}
 The authors thank the maintainers of the open-source components the platform
 builds on. %% AUTHOR ACTION: adjust or remove.
 
-%% AUTHOR ACTION: confirm all service names and versions before submission.
+%% AUTHOR ACTION: confirm the tool used for each figure concept prototype,
+%% its role, the caption disclosures and author review before submission.
 \section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
-The authors used Anthropic Claude Code, ZCode, OpenAI Codex and an AI image
-generation tool for experiment execution, tabulation, language editing and
-initial figure design. The authors reviewed the final text and figures and take
-responsibility for them; all reported experimental numbers come from logged
-runs on the authors' machine.
+Anthropic Claude Code, ZCode and OpenAI Codex assisted with language editing,
+manuscript revision and preparation of tables from archived results. An AI
+image tool assisted with initial figure concepts. The research uses of
+language models are described with the retrieval workflow and experimental
+design. The authors reviewed the manuscript and take responsibility for its
+content.
 

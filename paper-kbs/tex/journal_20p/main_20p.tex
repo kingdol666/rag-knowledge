@@ -2,20 +2,21 @@
 %% v3 restructure 2026-11-11: hierarchical *management* framing — the system
 %% manages documents at three levels (collection / document / segment) and
 %% serves a tiered access path; retrieval algorithms are supporting components.
-%% 20-page pass 2026-10-13: back matter (n_back) included; figures restored.
 %% Compile: pdflatex main_20p && bibtex main_20p && pdflatex main_20p && pdflatex main_20p
 %% AUTHOR ACTION (authors reserved these values; do not infer them):
 %%   1. frontmatter below: author names/order, affiliation, city, country,
 %%      corresponding-author e-mail, and the ORCID lines if any;
 %%   2. n_back.tex: the two CRediT names, the funding wording and the
 %%      acknowledgements;
-%%   3. n_back.tex: confirm the generative-AI declaration (service names are
-%%      filled; versions only if the editors ask).
-%% This is a double-column review preview with a local 20-page target.
-%% The exact KBS submission layout remains subject to its author guide.
-% journal-style camera-ready preview (generated from the submission sources)
+%%   3. n_back.tex: confirm the generative-AI statement and figure provenance.
+%% Default: double-column journal layout. main_20p_review.tex selects
+%% a double-spaced layout from these same sources.
+\ifdefined\HMRSReviewLayout
+\documentclass[review,12pt]{elsarticle}
+\else
 \documentclass[final,5p,times,twocolumn]{elsarticle}
 \usepackage{stfloats}
+\fi
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -42,13 +43,7 @@
 \graphicspath{{figs/}}
 \setlength{\emergencystretch}{1.5em}
 
-%% Float placement: the paper carries nine figures and three body table
-%% environments (the 2026-11-16 evaluation rework moved the 30-cell answer
-%% grid to supplement S14, merged the two content figures into fig:content,
-%% and added the case-anatomy figure plus tab:eval-design; the historical
-%% management and verifier floats were replaced by the redrawn result figures), so the
-%% default fractions defer most of them past the references. Allow denser
-%% float pages to keep each float near the text that discusses it.
+%% Allow figures and tables to stay near their first discussion.
 \renewcommand{\topfraction}{0.90}
 \renewcommand{\bottomfraction}{0.85}
 \renewcommand{\textfraction}{0.08}
@@ -60,16 +55,14 @@
 \setcounter{totalnumber}{4}
 \setcounter{dbltopnumber}{3}
 
-%% Tighten the vertical glue around floats. With nine figures and the body
-%% tables the elsarticle defaults spend roughly three inches of column height
-%% on separation alone, which the 20-page budget cannot afford.
-%% Values are about half the class defaults and remain within normal
-%% typographic practice for a two-column layout.
+%% Spacing for the double-column layout.
+\ifdefined\HMRSReviewLayout\else
 \setlength{\floatsep}{7pt plus 2pt minus 2pt}
 \setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
 \setlength{\intextsep}{7pt plus 2pt minus 2pt}
 \setlength{\dblfloatsep}{7pt plus 2pt minus 2pt}
 \setlength{\dbltextfloatsep}{9pt plus 2pt minus 2pt}
+\fi
 
 %% Ragged bottoms: with nine floats the flushbottom setting stretches
 %% underfull columns into heading-sized gaps (visible under the Threats and
@@ -83,8 +76,7 @@
 
 \begin{frontmatter}
 
-\title{HMRS: A hierarchical management-and-retrieval system for tiered
-knowledge document organisation and evidence-traced access}
+\title{HMRS: Hierarchical document management for evidence-traced retrieval}
 
 \author[inst1]{Author Name\corref{cor1}}
 \ead{author@example.com}
@@ -94,39 +86,28 @@ knowledge document organisation and evidence-traced access}
 City, Country}, city={City}, country={Country}}
 
 \begin{abstract}
-Document collections support knowledge work only when acquisition,
-organisation, maintenance and access are connected. We present HMRS, a
-self-hosted system that manages collections, documents and segments through
-catalogue, shelf, document and segment views. Parsed content informs collection
-assignment; document files, the tree registry and per-library metadata support
-lifecycle audits. An optional evidence gate scores passages without
-establishing entailment; pinned search may bypass catalogue navigation.
+Retrieval from evolving document collections depends on where documents are
+placed, how they are described and whether their indexes reflect changes.
+We present HMRS, a self-hosted system that manages collections, documents
+and segments and exposes them through catalogue, shelf, document and
+segment views. The same management state supports collection selection,
+source inspection and lifecycle audits. In a 100-paper ingestion campaign,
+79 papers were retrievable at the audit snapshot. A separate rename test
+exposed nine stale vector entries, which re-indexing removed.
 
-In a 100-paper arXiv campaign, 79 papers were retrievable and 21 were not; a
-separate 400-page-per-language test measured 0.875 (English) and 1.0
-(Chinese/Japanese) assignment accuracy. A scripted 72-question route audit
-selected the gold collection in 72/72 full-card versus 37/72 name-only cases
-(an unlogged fallback may use descriptions). On the same questions, frozen
-annotated target-string containment in returned evidence packs was 52/72 for
-the tiered chunk-window arm and 46/72 for the per-library union without
-catalogue navigation (PD); the same-question follow-up gave 51/72 (70.8\%) and
-45/72, with the arm ordering preserved in all three records, the difference
-from PD unresolved, and a scoped flat union at 39/72. These are lexical
-proxies (a sibling-document match may count), not gold-document retrieval or
-semantic answer quality. Arms vary in multiple components; the flat lookup may
-depend on the gold domain.
-
-Gold identifiers appeared in all 60 answer-or-trace
-cells, which does not establish document reachability; document-style citation
-markers separated the arms (9/10 versus 2/10) but were 9/10 in every arm on a
-common substrate, lexical contrasts in both cases. In a
-same-pool replay of a retired hybrid wrapper, verifier re-ranking lowered
-Hit@5 from 15/16 to 7/16, fusion order restored 15/16, and all 191 recorded
-scores exceeded threshold.
-
-The results document an auditable structure, not general retrieval superiority,
-semantic answer quality or reliability; the replay warns against one historical
-ordering configuration, and filtering was not tested on that pool.
+On 72 questions, the scripted selector reached the labelled collection in
+72 cases with full route cards and 37 with nominally name-only cards.
+The tiered configuration that combined document and vector chunk windows
+returned annotated target strings on 52 of the 72 questions, compared with
+37 for the baseline tiered configuration. Its trace-recorded text volume
+was about ten times the baseline's and 1.3\% of a mechanical full scan's.
+Two reruns on the same questions gave 51 versus 39 and 48 versus 36.
+These comparisons
+measure collection choice and target-string containment. In a separate
+replay of sixteen candidate pools, fusion order retained 15 top-five hits
+and verifier-score ordering retained seven. The findings connect retrieval
+behaviour to collection metadata, reading scope and candidate order, all
+of which can be inspected at the point where the system uses them.
 \end{abstract}
 
 \begin{keyword}
@@ -153,11 +134,8 @@ Model Context Protocol
 \input{n11_conclusion}
 \input{n_back}
 
-{\fontsize{6.05pt}{6.5pt}\selectfont
-%% References use a compact review-preview setting so the added case-anatomy
-%% evidence figure remains within the local 20-page budget.
-\setlength{\bibsep}{0pt plus 0.01ex}
-\setlength{\baselineskip}{6.5pt}
+{\ifdefined\HMRSReviewLayout\else\footnotesize\fi
+\setlength{\bibsep}{0.5pt plus 0.2ex}
 \urlstyle{same}
 \bibliographystyle{elsarticle-num}
 \bibliography{refs,refs_new_verified}

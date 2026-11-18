@@ -5,84 +5,6 @@
 \expandafter\ifx\csname href\endcsname\relax
   \def\href#1#2{#2} \def\path#1{#1}\fi
 
-\bibitem{modular-rag}
-Y.~Gao, Y.~Xiong, M.~Wang, H.~Wang, Modular {RAG}: Transforming {RAG} systems
-  into {LEGO}-like reconfigurable frameworks, ACM Transactions on Information
-  Systems 44 (2026) 1--53.
-\newblock \href {https://doi.org/10.1145/3837856} {\path{doi:10.1145/3837856}}.
-
-\bibitem{gao-ragsurvey}
-Y.~Gao, Y.~Xiong, X.~Gao, et~al., Retrieval-augmented generation for large
-  language models: A survey, arXiv preprint arXiv:2312.10997 (2023).
-\newblock \href {https://doi.org/10.48550/arXiv.2312.10997}
-  {\path{doi:10.48550/arXiv.2312.10997}}.
-
-\bibitem{rag-lewis}
-P.~Lewis, E.~Perez, A.~Piktus, F.~Petroni, V.~Karpukhin, N.~Goyal,
-  H.~K{\"u}ttler, M.~Lewis, W.~Yih, T.~Rockt{\"a}schel, S.~Riedel, D.~Kiela,
-  \href{https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html}{Retrieval-augmented
-  generation for knowledge-intensive {NLP} tasks}, in: Advances in Neural
-  Information Processing Systems, Vol.~33, Curran Associates, Inc., 2020, pp.
-  9459--9474.
-\newline\urlprefix\url{https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html}
-
-\bibitem{dpr}
-V.~Karpukhin, B.~O{\u{g}}uz, S.~Min, P.~Lewis, L.~Wu, S.~Edunov, D.~Chen,
-  W.~Yih, Dense passage retrieval for open-domain question answering, in:
-  Proceedings of the 2020 Conference on Empirical Methods in Natural Language
-  Processing ({EMNLP}), 2020, pp. 6769--6781.
-\newblock \href {https://doi.org/10.18653/v1/2020.emnlp-main.550}
-  {\path{doi:10.18653/v1/2020.emnlp-main.550}}.
-
-\bibitem{mcp}
-{Model Context Protocol Contributors}, Model context protocol specification
-  (2025-11-25), \url{https://modelcontextprotocol.io/specification/2025-11-25},
-  accessed September 19, 2026; specification revision 2025-11-25 (2025).
-
-\bibitem{singh-agentic-rag}
-A.~Singh, A.~Ehtesham, S.~Kumar, T.~T. Khoei, A.~V. Vasilakos, Agentic
-  retrieval-augmented generation: A survey on agentic {RAG}, arXiv preprint
-  arXiv:2501.09136 (2025).
-\newblock \href {https://doi.org/10.48550/arXiv.2501.09136}
-  {\path{doi:10.48550/arXiv.2501.09136}}.
-
-\bibitem{bm25}
-S.~Robertson, H.~Zaragoza, The probabilistic relevance framework: {BM25} and
-  beyond, Foundations and Trends in Information Retrieval 3~(4) (2009)
-  333--389.
-\newblock \href {https://doi.org/10.1561/1500000019}
-  {\path{doi:10.1561/1500000019}}.
-
-\bibitem{rrf-cormack}
-G.~V. Cormack, C.~L.~A. Clarke, S.~Buettcher, Reciprocal rank fusion
-  outperforms {Condorcet} and individual rank learning methods, in: Proceedings
-  of the 32nd International {ACM} {SIGIR} Conference on Research and
-  Development in Information Retrieval, 2009, pp. 758--759.
-\newblock \href {https://doi.org/10.1145/1571941.1572114}
-  {\path{doi:10.1145/1571941.1572114}}.
-
-\bibitem{graphrag}
-D.~Edge, H.~Trinh, N.~Cheng, J.~Bradley, A.~Chao, A.~Mody, S.~Truitt,
-  D.~Metropolitansky, R.~O. Ness, J.~Larson,
-  \href{https://arxiv.org/abs/2404.16130}{From local to global: A {GraphRAG}
-  approach to query-focused summarization}, arXiv preprint arXiv:2404.16130
-  (2024).
-\newline\urlprefix\url{https://arxiv.org/abs/2404.16130}
-
-\bibitem{lightrag}
-Z.~Guo, L.~Xia, Y.~Yu, T.~Ao, C.~Huang, {LightRAG}: Simple and fast
-  retrieval-augmented generation, in: Findings of the Association for
-  Computational Linguistics: EMNLP 2025, 2025, pp. 10746--10761.
-\newblock \href {https://doi.org/10.18653/v1/2025.findings-emnlp.568}
-  {\path{doi:10.18653/v1/2025.findings-emnlp.568}}.
-
-\bibitem{raptor}
-P.~Sarthi, S.~Abdullah, A.~Tuli, S.~Khanna, A.~Goldie, C.~D. Manning, {RAPTOR}:
-  Recursive abstractive processing for tree-organized retrieval, in: The
-  Twelfth International Conference on Learning Representations ({ICLR}), 2024.
-\newblock \href {https://doi.org/10.48550/arXiv.2401.18059}
-  {\path{doi:10.48550/arXiv.2401.18059}}.
-
 \bibitem{paivarinta-ecm-2005}
 T.~P{\"a}iv{\"a}rinta, B.~E. Munkvold, Enterprise content management: An
   integrated perspective on information management, in: Proc. 38th Annual
@@ -111,28 +33,6 @@ S.~A. Golder, B.~A. Huberman, Usage patterns of collaborative tagging systems,
 \newblock \href {https://doi.org/10.1177/0165551506062337}
   {\path{doi:10.1177/0165551506062337}}.
 
-\bibitem{auer-dbpedia-kb-2007}
-S.~Auer, C.~Bizer, G.~Kobilarov, J.~Lehmann, R.~Cyganiak, Z.~Ives, {DBpedia}: A
-  nucleus for a web of open data, in: The Semantic Web (ISWC/ASWC 2007),
-  Lecture Notes in Computer Science, Springer, 2007, pp. 722--735.
-\newblock \href {https://doi.org/10.1007/978-3-540-76298-0_52}
-  {\path{doi:10.1007/978-3-540-76298-0_52}}.
-
-\bibitem{hoffart-yago2-kb-2013}
-J.~Hoffart, F.~M. Suchanek, K.~Berberich, G.~Weikum, {YAGO2}: A spatially and
-  temporally enhanced knowledge base from {Wikipedia}, Artificial Intelligence
-  194 (2013) 28--61.
-\newblock \href {https://doi.org/10.1016/j.artint.2012.06.001}
-  {\path{doi:10.1016/j.artint.2012.06.001}}.
-
-\bibitem{siren}
-Y.~Zhang, Y.~Li, L.~Cui, D.~Cai, L.~Liu, T.~Fu, X.~Huang, E.~Zhao, Y.~Zhang,
-  C.~Xu, Y.~Chen, L.~Wang, A.~T. Luu, W.~Bi, F.~Shi, S.~Shi,
-  \href{https://arxiv.org/abs/2309.01219}{Siren's song in the {AI} ocean: A
-  survey on hallucination in large language models}, arXiv preprint
-  arXiv:2309.01219 (2023).
-\newline\urlprefix\url{https://arxiv.org/abs/2309.01219}
-
 \bibitem{callan1995searching}
 J.~P. Callan, Z.~Lu, W.~B. Croft, Searching distributed collections with
   inference networks, in: Proc. of the 18th Annual International ACM SIGIR
@@ -147,12 +47,67 @@ L.~Si, J.~Callan, Relevant document distribution estimation method for resource
 \newblock \href {https://doi.org/10.1145/860435.860490}
   {\path{doi:10.1145/860435.860490}}.
 
+\bibitem{rag-lewis}
+P.~Lewis, E.~Perez, A.~Piktus, F.~Petroni, V.~Karpukhin, N.~Goyal,
+  H.~K{\"u}ttler, M.~Lewis, W.~Yih, T.~Rockt{\"a}schel, S.~Riedel, D.~Kiela,
+  \href{https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html}{Retrieval-augmented
+  generation for knowledge-intensive {NLP} tasks}, in: Advances in Neural
+  Information Processing Systems, Vol.~33, Curran Associates, Inc., 2020, pp.
+  9459--9474.
+\newline\urlprefix\url{https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html}
+
+\bibitem{dpr}
+V.~Karpukhin, B.~O{\u{g}}uz, S.~Min, P.~Lewis, L.~Wu, S.~Edunov, D.~Chen,
+  W.~Yih, Dense passage retrieval for open-domain question answering, in:
+  Proceedings of the 2020 Conference on Empirical Methods in Natural Language
+  Processing ({EMNLP}), 2020, pp. 6769--6781.
+\newblock \href {https://doi.org/10.18653/v1/2020.emnlp-main.550}
+  {\path{doi:10.18653/v1/2020.emnlp-main.550}}.
+
+\bibitem{modular-rag}
+Y.~Gao, Y.~Xiong, M.~Wang, H.~Wang, Modular {RAG}: Transforming {RAG} systems
+  into {LEGO}-like reconfigurable frameworks, ACM Transactions on Information
+  Systems 44 (2026) 1--53.
+\newblock \href {https://doi.org/10.1145/3837856} {\path{doi:10.1145/3837856}}.
+
+\bibitem{gao-ragsurvey}
+Y.~Gao, Y.~Xiong, X.~Gao, et~al., Retrieval-augmented generation for large
+  language models: A survey, arXiv preprint arXiv:2312.10997 (2023).
+\newblock \href {https://doi.org/10.48550/arXiv.2312.10997}
+  {\path{doi:10.48550/arXiv.2312.10997}}.
+
+\bibitem{mcp}
+{Model Context Protocol Contributors}, Model context protocol specification
+  (2025-11-25), \url{https://modelcontextprotocol.io/specification/2025-11-25},
+  accessed September 19, 2026; specification revision 2025-11-25 (2025).
+
+\bibitem{singh-agentic-rag}
+A.~Singh, A.~Ehtesham, S.~Kumar, T.~T. Khoei, A.~V. Vasilakos, Agentic
+  retrieval-augmented generation: A survey on agentic {RAG}, arXiv preprint
+  arXiv:2501.09136 (2025).
+\newblock \href {https://doi.org/10.48550/arXiv.2501.09136}
+  {\path{doi:10.48550/arXiv.2501.09136}}.
+
 \bibitem{yang-kbs-llm-2025}
 W.~Yang, L.~Some, M.~Bain, B.~Kang, A comprehensive survey on integrating large
   language models with knowledge-based methods, Knowledge-Based Systems 318
   (2025) 113503.
 \newblock \href {https://doi.org/10.1016/j.knosys.2025.113503}
   {\path{doi:10.1016/j.knosys.2025.113503}}.
+
+\bibitem{auer-dbpedia-kb-2007}
+S.~Auer, C.~Bizer, G.~Kobilarov, J.~Lehmann, R.~Cyganiak, Z.~Ives, {DBpedia}: A
+  nucleus for a web of open data, in: The Semantic Web (ISWC/ASWC 2007),
+  Lecture Notes in Computer Science, Springer, 2007, pp. 722--735.
+\newblock \href {https://doi.org/10.1007/978-3-540-76298-0_52}
+  {\path{doi:10.1007/978-3-540-76298-0_52}}.
+
+\bibitem{hoffart-yago2-kb-2013}
+J.~Hoffart, F.~M. Suchanek, K.~Berberich, G.~Weikum, {YAGO2}: A spatially and
+  temporally enhanced knowledge base from {Wikipedia}, Artificial Intelligence
+  194 (2013) 28--61.
+\newblock \href {https://doi.org/10.1016/j.artint.2012.06.001}
+  {\path{doi:10.1016/j.artint.2012.06.001}}.
 
 \bibitem{nonaka-seci-1994}
 I.~Nonaka, A dynamic theory of organizational knowledge creation, Organization
@@ -238,10 +193,13 @@ M.~G. Oca{\~n}a, A.~L. Opdahl, {A Software Reference Architecture for
   {\path{doi:10.1016/j.knosys.2023.110750}}.
 
 \bibitem{gallofr2021jkpdesign}
-M.~Gallofr\'e Oca\~na, A.~L. Opdahl, Developing a software reference
-  architecture for journalistic knowledge platforms, in: Proceedings of the 6th
-  Workshop on Semantic Access to Big Data and AI (SAML), Vol. 2978 of CEUR
-  Workshop Proceedings, 2021.
+M.~Gallofr\'e Oca\~na, A.~L. Opdahl,
+  \href{https://ceur-ws.org/Vol-2978/saml-paper2.pdf}{Developing a software
+  reference architecture for journalistic knowledge platforms}, in: Companion
+  Proceedings of the 15th European Conference on Software Architecture, 1st
+  International Workshop on Software Architecture and Machine Learning (SAML),
+  Vol. 2978 of CEUR Workshop Proceedings, 2021.
+\newline\urlprefix\url{https://ceur-ws.org/Vol-2978/saml-paper2.pdf}
 
 \bibitem{yang2024building}
 Y.~Yang, H.~Huang, Y.~Gao, J.~Li, {Building knowledge-grounded dialogue systems
@@ -325,6 +283,28 @@ A.~G. Sorokin, X.~Zhu, E.~H. Lee, B.~Cheng, {SigOpt Mulch: An intelligent
 \newblock \href {https://doi.org/10.1016/j.knosys.2023.110604}
   {\path{doi:10.1016/j.knosys.2023.110604}}.
 
+\bibitem{raptor}
+P.~Sarthi, S.~Abdullah, A.~Tuli, S.~Khanna, A.~Goldie, C.~D. Manning, {RAPTOR}:
+  Recursive abstractive processing for tree-organized retrieval, in: The
+  Twelfth International Conference on Learning Representations ({ICLR}), 2024.
+\newblock \href {https://doi.org/10.48550/arXiv.2401.18059}
+  {\path{doi:10.48550/arXiv.2401.18059}}.
+
+\bibitem{graphrag}
+D.~Edge, H.~Trinh, N.~Cheng, J.~Bradley, A.~Chao, A.~Mody, S.~Truitt,
+  D.~Metropolitansky, R.~O. Ness, J.~Larson,
+  \href{https://arxiv.org/abs/2404.16130}{From local to global: A {GraphRAG}
+  approach to query-focused summarization}, arXiv preprint arXiv:2404.16130
+  (2024).
+\newline\urlprefix\url{https://arxiv.org/abs/2404.16130}
+
+\bibitem{lightrag}
+Z.~Guo, L.~Xia, Y.~Yu, T.~Ao, C.~Huang, {LightRAG}: Simple and fast
+  retrieval-augmented generation, in: Findings of the Association for
+  Computational Linguistics: EMNLP 2025, 2025, pp. 10746--10761.
+\newblock \href {https://doi.org/10.18653/v1/2025.findings-emnlp.568}
+  {\path{doi:10.18653/v1/2025.findings-emnlp.568}}.
+
 \bibitem{deepread}
 Z.~Li, H.~Tian, L.~Luo, Y.~Cao, P.~Luo, {DeepRead}: Document structure-aware
   reasoning to enhance agentic search, arXiv preprint arXiv:2602.05014v3
@@ -339,12 +319,27 @@ I.~H. Kinalioglu, {EPRAG}: An epistemic policy framework for action selection
 \newblock \href {https://doi.org/10.1016/j.knosys.2026.116929}
   {\path{doi:10.1016/j.knosys.2026.116929}}.
 
+\bibitem{bm25}
+S.~Robertson, H.~Zaragoza, The probabilistic relevance framework: {BM25} and
+  beyond, Foundations and Trends in Information Retrieval 3~(4) (2009)
+  333--389.
+\newblock \href {https://doi.org/10.1561/1500000019}
+  {\path{doi:10.1561/1500000019}}.
+
 \bibitem{ghali-kbs-retrieval-2025}
 M.-K. Ghali, A.~Farrag, D.~Won, Y.~Jin, Enhancing knowledge retrieval with
   in-context learning and semantic search through generative {AI},
   Knowledge-Based Systems 311 (2025) 113047.
 \newblock \href {https://doi.org/10.1016/j.knosys.2025.113047}
   {\path{doi:10.1016/j.knosys.2025.113047}}.
+
+\bibitem{rrf-cormack}
+G.~V. Cormack, C.~L.~A. Clarke, S.~Buettcher, Reciprocal rank fusion
+  outperforms {Condorcet} and individual rank learning methods, in: Proceedings
+  of the 32nd International {ACM} {SIGIR} Conference on Research and
+  Development in Information Retrieval, 2009, pp. 758--759.
+\newblock \href {https://doi.org/10.1145/1571941.1572114}
+  {\path{doi:10.1145/1571941.1572114}}.
 
 \bibitem{bge-m3}
 J.~Chen, S.~Xiao, P.~Zhang, K.~Luo, D.~Lian, Z.~Liu, {M3-Embedding}:
@@ -360,20 +355,6 @@ F.~Li, X.~Li, J.~Bao, Recursive multi-modal retrieval for structured semantic
   trees in engineering documents, Knowledge-Based Systems 338 (2026) 115433.
 \newblock \href {https://doi.org/10.1016/j.knosys.2026.115433}
   {\path{doi:10.1016/j.knosys.2026.115433}}.
-
-\bibitem{singh2021freshdiskann}
-A.~Singh, S.~J. Subramanya, R.~Krishnaswamy, H.~V. Simhadri, Freshdiskann: A
-  fast and accurate graph-based ann index for streaming similarity search
-  (2021).
-\newblock \href {http://arxiv.org/abs/2105.09613} {\path{arXiv:2105.09613}}.
-
-\bibitem{xu2023spfresh}
-Y.~Xu, H.~Liang, J.~Li, S.~Xu, Q.~Chen, Q.~Zhang, C.~Li, Z.~Yang, F.~Yang,
-  Y.~Yang, P.~Cheng, M.~Yang, Spfresh: Incremental in-place update for
-  billion-scale vector search, in: Proc. of the 29th Symposium on Operating
-  Systems Principles (SOSP '23), 2023, pp. 545--561.
-\newblock \href {https://doi.org/10.1145/3600006.3613166}
-  {\path{doi:10.1145/3600006.3613166}}.
 
 \bibitem{chen2024dense}
 T.~Chen, H.~Wang, S.~Chen, W.~Yu, K.~Ma, X.~Zhao, H.~Zhang, D.~Yu, Dense x
@@ -393,6 +374,20 @@ J.~Shen, H.~Zhu, B.~Zhang, Toward trustworthy engineering information
   (2026) 116418.
 \newblock \href {https://doi.org/10.1016/j.knosys.2026.116418}
   {\path{doi:10.1016/j.knosys.2026.116418}}.
+
+\bibitem{singh2021freshdiskann}
+A.~Singh, S.~J. Subramanya, R.~Krishnaswamy, H.~V. Simhadri, Freshdiskann: A
+  fast and accurate graph-based ann index for streaming similarity search
+  (2021).
+\newblock \href {http://arxiv.org/abs/2105.09613} {\path{arXiv:2105.09613}}.
+
+\bibitem{xu2023spfresh}
+Y.~Xu, H.~Liang, J.~Li, S.~Xu, Q.~Chen, Q.~Zhang, C.~Li, Z.~Yang, F.~Yang,
+  Y.~Yang, P.~Cheng, M.~Yang, Spfresh: Incremental in-place update for
+  billion-scale vector search, in: Proc. of the 29th Symposium on Operating
+  Systems Principles (SOSP '23), 2023, pp. 545--561.
+\newblock \href {https://doi.org/10.1145/3600006.3613166}
+  {\path{doi:10.1145/3600006.3613166}}.
 
 \bibitem{react-yao}
 S.~Yao, J.~Zhao, D.~Yu, N.~Du, I.~Shafran, K.~Narasimhan, Y.~Cao, {ReAct}:
@@ -415,6 +410,13 @@ L.~Siddharth, J.~Luo, {Retrieval augmented generation using engineering design
 \newblock \href {https://doi.org/10.1016/j.knosys.2024.112410}
   {\path{doi:10.1016/j.knosys.2024.112410}}.
 
+\bibitem{zan2025private}
+D.~Zan, B.~Chen, Y.~Gong, J.~Cao, F.~Zhang, B.~Wu, B.~Guan, Y.~Yin, Y.~Wang,
+  {Private-library-oriented code generation with large language models},
+  Knowledge-Based Systems 326 (2025) 113934.
+\newblock \href {https://doi.org/10.1016/j.knosys.2025.113934}
+  {\path{doi:10.1016/j.knosys.2025.113934}}.
+
 \bibitem{peng2024soft}
 Z.~Peng, X.~Wu, Q.~Wang, Y.~Fang, {Soft prompt tuning for augmenting dense
   retrieval with large language models}, Knowledge-Based Systems 309 (2024)
@@ -427,13 +429,6 @@ L.~Massai, {Evaluation of semantic relations impact in query expansion-based
   retrieval systems}, Knowledge-Based Systems 283 (2023) 111183.
 \newblock \href {https://doi.org/10.1016/j.knosys.2023.111183}
   {\path{doi:10.1016/j.knosys.2023.111183}}.
-
-\bibitem{zan2025private}
-D.~Zan, B.~Chen, Y.~Gong, J.~Cao, F.~Zhang, B.~Wu, B.~Guan, Y.~Yin, Y.~Wang,
-  {Private-library-oriented code generation with large language models},
-  Knowledge-Based Systems 326 (2025) 113934.
-\newblock \href {https://doi.org/10.1016/j.knosys.2025.113934}
-  {\path{doi:10.1016/j.knosys.2025.113934}}.
 
 \bibitem{dai2025large}
 X.~Dai, Y.~Hua, T.~Wu, S.~Yang, J.~Qiu, G.~Qi, {Large language models can

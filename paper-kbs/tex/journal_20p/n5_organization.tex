@@ -2,13 +2,11 @@
 lifecycle}
 \label{sec:organization}
 
-Organisation determines which collections exist, which tier can see a
-document, and whether the stored state remains trustworthy. HMRS places
-documents by content rather than filename; split parts inherit the source
-assignment, and the catalogue exposes library and document descriptions
-before full bodies are read. This section covers the collection and document
-levels of Table~\ref{tab:levels}; the segment level is treated in
-Section~\ref{sec:retrieval}.
+Collection membership defines the scope available to a query. HMRS uses
+the subject of the content for placement, preserves the source assignment
+across split parts, and exposes descriptions before an agent opens a
+document body. The collection and document operations in
+Table~\ref{tab:levels} maintain these choices over the life of the corpus.
 
 \subsection{Classification, metadata, tags and duplicate review}
 \label{sec:org-placement}
@@ -16,62 +14,52 @@ Section~\ref{sec:retrieval}.
 \label{sec:org-tags}
 \label{sec:org-dedup}
 
-Integrity checks compare three sources: the document files on disk, the
-\texttt{.tree-fs.json} tree and each library's \texttt{.knowledge-base.yml}.
-The comparison covers document existence, path and index metadata. Tags derive
-from content and are checked against it.
-Duplicate detection reports candidate pairs for review; deletion is not
-automatic because adjacent parts may be similar while containing distinct
-source sections.
+The catalogue returns collections and sub-libraries with descriptions.
+Each shelf shows document titles and descriptions within its selected scope.
+The ingest agent uses that scope and the parsed content to select a library,
+then writes descriptions and tags grounded in the body. Duplicate review
+presents candidate pairs for inspection because adjacent parts may share
+metadata while retaining distinct source sections.
 
-The layer's operations are library and sub-library creation, classification,
-description and tag edits, move, rename, delete, duplicate review and forced
-re-index. Together they implement the management loop that turns parsed content
-into a maintained collection: placement records ownership, descriptions expose
-scope, lifecycle operations change ownership or content, and reconciliation
-checks whether the representations still agree. Each operation updates the
-state relevant to it; for example, a move changes the document path and
-registry entries, while re-indexing updates search indices. The audit compares
-the files and registries where applicable. The catalogue lists libraries, their
-descriptions, sub-library containers and document descriptions, which lets a
-reader or an agent decide where to look before opening a body. Classification
-involves a semantic choice: the ingest agent
-selects the library from the parsed content, and the platform checks the
-consequences rather than the choice. The same asymmetry holds at query time: the workflow selects a collection,
-whereas operations to open and index documents, and optionally score their
-segments, are provided by the server.
+HMRS supports library and sub-library creation, metadata edits, moves,
+renames, deletion and forced re-indexing. A move updates the document path
+and registry entries, while re-indexing updates the searchable representation.
+Integrity checks compare document existence, path and index metadata across
+the files on disk, the \texttt{.tree-fs.json} registry and the library's
+\texttt{.knowledge-base.yml}. These checks give operators observable
+outcomes for the state changes made by each operation.
 
-Sub-libraries are tree nodes with their own descriptions and indices. For a
-parent scope, the vector service resolves the parent and its descendants to the
-collections available to that query; the two-stage service likewise resolves
-descendant identifiers during its lexical stage. This is a scope-resolution
-policy, not a claim that child vectors are stored in the parent's collection.
-The measured campaigns used explicit per-library scopes for the flat union and
-did not treat parent traversal as an independently benchmarked retrieval
-condition. Index availability and route-specific failures therefore still
-require a post-search probe.
+Sub-libraries keep their descriptions and indices at their own tree nodes.
+When the caller supplies a parent scope, the vector service resolves the
+parent and its descendants into the collections searched. The lexical stage
+of the two-stage service likewise resolves descendant identifiers. The
+tested flat union calls explicit library scopes, which fixes the collections
+compared in the evaluation.
 
 \subsection{Lifecycle operations, graph and operational knowledge}
 \label{sec:org-lifecycle}
 \label{sec:org-graph}
 \label{sec:org-experience}
 
-A historical rename trial left stale vector chunks until forced re-indexing.
-The current rename path starts index synchronisation asynchronously, with
-failures logged as non-fatal; checking the resulting index remains necessary
-because successful metadata updates alone do not establish index consistency. The document graph supports navigation and candidate
-expansion, not evidence. Operational lessons are stored as retrievable
-documents with credibility tiers, but the available measurements are case
-examples rather than a scale evaluation of distillation, approval or
-credibility decay.
+A rename trial exposed a lifecycle defect: queries found chunks under the
+old document path until a forced re-index. The current rename paths
+synchronise the old and new index entries and record failures separately
+from the metadata update. A post-operation probe can then check whether
+queries resolve to the new path.
+
+The document graph links libraries, documents and tags for navigation and
+candidate expansion. Operational lessons are also stored as retrievable
+documents. Experience tools track reviews, use and freshness and use
+credibility tiers to order results. Section~\ref{sec:eval} reports
+operational-experience cases alongside the management experiments.
 
 \subsection{Organisation contract}
 \label{sec:org-integrity}
 \label{sec:org-summary}
 
-The evaluation checks three-source consistency, content-derived descriptions,
-regression probes and lifecycle outcomes (Section~\ref{sec:e2}). Reconciliation
-can expose selected stale or inconsistent states; it does not detect or prevent
-every failure by construction. Merge and split remain outside the controlled test
-scope, so performance claims must be read within the corpus sizes reported in
-the Evaluation section.
+The organisation contract links each document to its current owning
+collection, descriptive metadata and indexed path. The checks in
+Section~\ref{sec:e2} test these relationships on selected lifecycle
+operations by reconciling the three sources, reviewing document descriptions
+and rerunning retrieval probes. The resulting traces locate inconsistencies
+at the file, registry or index stage.

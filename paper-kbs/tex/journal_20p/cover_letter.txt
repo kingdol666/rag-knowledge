@@ -1,46 +1,39 @@
+[Draft for the corresponding author. Before submission, confirm author
+approval, originality, related submissions, funding and competing
+interests, and complete the signature below.]
+
 Dear Editors of Knowledge-Based Systems,
 
-We submit our manuscript "HMRS: A hierarchical management-and-retrieval
-system for tiered knowledge document organisation and evidence-traced
-access" for consideration as a research paper.
+Please consider our research article, "HMRS: Hierarchical document
+management for evidence-traced retrieval."
 
-Retrieval-augmented pipelines usually assume that a corpus is already
-indexed and governed. In practice, parsed documents drift: placements
-change, indexes go stale, and answers lose the link to their sources. Our
-manuscript studies the missing half — management — as a first-class system
-concern. HMRS manages collections, documents and segments as explicit
-objects and serves catalogue-first access through one auditable state,
-with an optional evidence gate that admits scored passages without
-claiming entailment.
+Document retrieval begins with how a collection is maintained. A document
+must be assigned to a collection, described so that a query can find it,
+and kept in sync with its index when it changes. HMRS connects these
+operations to retrieval in a self-hosted system. Its catalogue, document
+shelf and segment views give operators and retrieval agents access to the
+metadata and source material used at each step.
 
-We believe the work fits Knowledge-Based Systems because it is a
-knowledge-document management system contribution: it reports the design,
-an MCP-based implementation, and a bounded, artifact-anchored evaluation
-rather than a new ranking algorithm. Three evidence lines carry the
-claims. First, management and lifecycle audits (three-source consistency,
-rename and re-index failure modes, cross-language assignment) establish
-that the state is inspectable and repairable, including where it fails.
-Second, on a 72-question routing corpus, the tiered chunk-window
-configuration held the highest exact gold-string containment in three
-recorded executions (52/72 frozen; 51/72 in a reproduction and a
-same-question follow-up), with paired contrasts of 15-0 and 12-0 against
-the tiered baseline; the navigation-free comparison remains statistically
-unresolved and is reported as such. Third, at the answer layer, gold
-identifiers appeared in every recorded cell while document-style citation
-markers separated document-level organisation from a flat chunk replica
-(9/10 versus 2/10; 10/10 after repair) — a lexical contrast we explicitly
-do not read as semantic quality. A same-pool replay additionally shows why
-verifier scores must not be used for ordering.
+The paper examines how those choices affect access. A rename audit found
+nine stale vector entries and confirmed their removal after re-indexing.
+On 72 questions, the tiered configuration using document and vector chunk
+windows returned annotated target strings for 52 questions, compared with
+37 for the baseline tiered configuration. In a separate replay on 16
+fixed candidate pools, fusion order placed a hit in the top five for 15
+queries, compared with seven when the candidates were ordered by verifier
+score. Together, the results show how a knowledge system can inspect
+which collection was searched, what evidence was read and how the final
+ordering was produced.
 
-All statements are traceable to frozen archives; limitations, exploratory
-statistics and non-independent follow-up are disclosed in the manuscript.
-The work is original, not under consideration elsewhere, and all authors
-have approved the submission. We declare no competing interests; funding
-and data availability are stated in the manuscript. Generative-AI use for
-experiment execution, tabulation, language editing and initial figure
-design is declared before the references.
+The manuscript links the system design to its implementation and
+evaluation, with per-question records and campaign inventories in the
+supplementary material. The connection between knowledge organisation
+and inspectable evidence access will interest readers of Knowledge-Based
+Systems who design and evaluate knowledge-intensive systems.
 
-Thank you for your consideration.
+Thank you for considering our manuscript.
 
 Sincerely,
-The authors
+[Corresponding author's full name]
+[Affiliation]
+[Email]

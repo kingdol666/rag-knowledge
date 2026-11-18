@@ -1,48 +1,36 @@
 \section{Threats to validity}
 \label{sec:threats}
 
-\noindent\textbf{Data and scope.} The corpora and questions are small and
-bounded; questions and gold annotations were developer-authored. The
-management campaigns and the access campaigns use different corpora and
-should not be pooled. The 72-question route set includes 52 automatically
-expanded questions, and 47 questions come from three English domains. Four
-out-of-domain probes cannot estimate abstention rates. The storage
-reconciliation checks 33 of 322 parts. Different retrieval arms use different
-scopes or substrates; the historical hybrid wrapper, not the current composed
-hybrid lane, was tested. Broader generalisation requires independent questions,
-larger corpora and matched single-factor comparisons across the content-layer
-configurations.
+\noindent\textbf{Data and scope.} The collections represent local
+demonstration and benchmark workloads. Developers authored or expanded the
+questions and gold annotations. The routing benchmark includes 52 expanded
+questions, with 47 questions concentrated in three English domains.
+Same-question reruns test repeatability under recorded changes to the
+environment. An independent question set would test transfer. The storage
+reconciliation examined 33 of 322 parts, and the four out-of-domain probes
+characterise individual responses.
 
-\noindent\textbf{Measurement and comparisons.} Annotated target-string
-containment in a returned evidence pack is a substring proxy, not gold-document
-retrieval, semantic answer correctness or entailment; a sibling-document
-occurrence may count. Gold-ID, lexical and citation marker checks likewise do
-not establish claim-to-source support. Two answer
-grids used ten questions, one model and one run per arm; one replication held
-libraries fixed, while substrates differed in the original grid. The scripted
-full-read baseline searches strings and generates no answer. A0h, A1b and PD
-change multiple components, and A0, A1b and A3 may use the gold domain to
-resolve candidate references. Historical traces do not quantify this fallback.
-A3 can also admit candidates outside the evaluated libraries and its
-name-only routing may fall back to descriptions. Thus these arms cannot isolate
-navigation or establish deployed performance. The later run repeats the same
-questions and is not an independent test set; code hashes and judge inputs are
-not fully preserved for each historical record.
+\noindent\textbf{Measurement and comparisons.} The content metric counts a
+literal target string anywhere in the pack, including in a sibling
+document. Gold-ID and citation-marker checks measure visibility in answers
+or traces. Semantic correctness and claim-to-source support require their
+own evaluation. The full-read comparator is a mechanical scan of the
+corpus. Content arms change several components, including candidate
+construction and reading scope. A0, A1b and A3 can use the gold domain when
+resolving references, and A3 can fall back to descriptions or retrieve
+outside the evaluated libraries. The archived traces leave the frequency of
+these paths unknown. The reported contrasts therefore apply to the tested
+configurations. A matched intervention would be needed to attribute
+differences to navigation alone. The two ten-question answer grids use one
+model and one run per arm, with the common-substrate grid controlling which
+libraries each interface uses.
 
-\noindent\textbf{Statistical and operational validity.} Paired tests are
-exploratory and not pre-registered; Wilson intervals condition on the sampled
-questions and do not capture run-to-run variance. Candidate- and span-level
-tests treat observations within queries as independent and may be
-anti-conservative. Some E5 reference-mode score and candidate inputs were not retained; the E8
-verifier replay is reproducible from the released scores, golds and grader.
-The manual refusal battery has one final observation per arm, and experience
-approval was not exercised. The 16 lifecycle assertions, selected pagination
-checks and one-workstation concurrency measurements do not establish multi-host
-reliability, adversarial security, human adoption or crash recovery. The global
-cross-library vector channel also silently skipped unreadable collections in
-one inspection while reporting success; until the response exposes this
-condition, successful global queries do not establish complete corpus coverage.
-Future work should instrument the reference lookup, remove gold-dependent
-fallback, conduct matched single-factor ablations and a genuine agent full-read
-baseline, surface global-channel degradation, and pre-specify repeated
-comparisons and multiplicity control.
+\noindent\textbf{Statistical and operational validity.} The paired
+comparisons are exploratory. Wilson intervals summarise uncertainty
+conditional on the question set and observed run. Candidate- and span-level
+tests can understate uncertainty by treating within-query observations as
+independent. Some historical reference-mode inputs, judge inputs and code
+hashes are missing. The verifier results use a historical implementation
+and support replay of the released records. The lifecycle assertions and
+concurrency sweep cover one installation. The experience approval path,
+multi-host reliability, and crash recovery remain open.
