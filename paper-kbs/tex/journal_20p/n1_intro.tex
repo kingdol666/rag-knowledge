@@ -18,13 +18,15 @@ quality and tagging determine how users discover those documents
 information retrieval addresses the selection of collections
 \cite{callan1995searching,si2003redde}. Retrieval-augmented generation
 (RAG) and agentic retrieval add passage ranking and tool-guided evidence
-access \cite{rag-lewis,dpr,modular-rag,mcp}.
-HMRS connects these responsibilities. It makes collection membership,
+access over standard tool protocols such as the Model Context Protocol
+(MCP) \cite{rag-lewis,dpr,modular-rag,mcp,gao-rag-survey-2023}.
+The system presented here, HMRS (Hierarchical Management Retrieval
+System), connects these responsibilities. It makes collection membership,
 document metadata and source references available from ingestion through
 query time, so that an operator can trace a failed search to the stages
 that supplied its candidates.
 
-The Hierarchical Management Retrieval System (HMRS) is a self-hosted
+HMRS is a self-hosted
 knowledge document platform. An ingest agent uses parsed content to select
 a collection and describe the document. Management operations update the
 files, tree registry and library metadata, and reconciliation checks them
@@ -54,7 +56,8 @@ the catalogue, document descriptions, source documents and indexed passages
 to an agent. Catalogue-first and pinned policies let the agent narrow a
 search using managed descriptions or start within selected collections
 (Section~\ref{sec:retrieval}).
-\item \textbf{A source-traceable evidence gate.} An optional server-side
+\item \textbf{A server-side evidence gate with separated admission and
+ordering.} An optional server-side
 gate fetches candidate text, scores its passages against the question, and
 returns admitted passages with source references and error information.
 Candidate ordering is a separate decision made by the calling workflow or
@@ -71,7 +74,8 @@ lifecycle consistency. \textbf{RQ2} measures collection selection and
 document visibility under catalogue-first access. \textbf{RQ3} compares
 target-string containment and retrieval cost across the tested evidence
 configurations. \textbf{RQ4} measures the effect of verifier-score ordering
-and whether the configured admission threshold changes the candidate pool.
+on the read window; all recorded scores passed the configured admission
+threshold, so threshold effects remain unobserved.
 \textbf{RQ5} examines abstention, runtime, tool cost and execution failures
 at the answer layer.
 

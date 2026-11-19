@@ -32,9 +32,9 @@ follow-up used the same 72 questions after the corpus grew to 906 parts.
 The questions and gold annotations were developer-authored. A post-hoc
 check lowercased each question and its nonempty annotated target string,
 then tested whether the entire target was a substring of the question,
-without other normalization. This identified overlap in 29 of 72 questions;
-the remaining 43 did not match under this test. The check describes the
-questions and does not rescore the returned packs.
+without other normalisation. This identified overlap in 29 of 72 questions;
+the remaining 43 did not match under this test. The check characterises
+possible question--target leakage and does not rescore the returned packs.
 
 \textbf{Measures and controls.} Document-level Hit@5, Recall@5 and
 MRR@5 are evaluated on the five returned documents, with reciprocal rank set
@@ -107,8 +107,9 @@ navigation view.
 \subsection{E3: Paired route-card audit: the description-layer contrast}
 \label{sec:routing-audit}
 The script selected the labelled collection for all 72 in-domain
-questions using description-bearing route cards (A0), and for 37 using
-nominally name-only cards (A3). The 35 changed decisions all favoured A0
+questions using description-bearing route cards (A0) --- per-collection
+cards pairing the collection name with its description --- and for 37
+using nominally name-only cards (A3). The 35 changed decisions all favoured A0
 (Figure~\ref{fig:routing}a, exact McNemar $p=5.82\times10^{-11}$). The
 design compares the two route-card configurations. A3 could fall back
 to descriptions without logging the fallback, some questions share
@@ -118,7 +119,7 @@ scope. Among the 72 questions, 52 were expanded automatically, and
 
 Selecting the correct collection left a separate evidence-selection
 problem. The returned packs contained the target string in 37 A0 and
-33 A3 cases (10 A0-only, six A3-only, $p=0.4545$). The mechanical full
+33 A3 cases (10 A0-only, six A3-only, $p=0.4545$). The read-all
 scan located all 72 targets (Figure~\ref{fig:routing}b), including the
 35 missed by A0 ($p=5.82\times10^{-11}$). It issued 64{,}584 tool calls
 across these questions, averaging 897 calls and 24.3 MB of recorded text
@@ -135,8 +136,8 @@ questions. (a) Labelled-collection selection with Wilson 95\% intervals.
 (b) Annotated target-string containment in returned text. The read-all
 arm performs a mechanical substring scan and generates no answers.
 (c) Frozen trace-recorded text per question (MB, log scale) and
-containment. The A0f and PD markers are offset horizontally by 8~pt
-for legibility. The source data retain their original coordinates.
+containment. Two adjacent volume markers are offset horizontally by
+8~pt for legibility. The source data retain their original coordinates.
 Recorded text and tool time measure the retrieval work in the trace.}
 \label{fig:routing}
 \end{figure}

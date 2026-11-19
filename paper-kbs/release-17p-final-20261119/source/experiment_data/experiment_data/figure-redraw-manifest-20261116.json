@@ -1,0 +1,65 @@
+{
+  "builder": "figure_scripts/build_results_20261116.py",
+  "style": {
+    "font_family": [
+      "Arial",
+      "Liberation Sans",
+      "DejaVu Sans"
+    ],
+    "base_font_pt": 8.2,
+    "pdf_fonttype": 42,
+    "png_dpi": 300,
+    "origin_application_used": false
+  },
+  "figures": [
+    "fig_opt_route",
+    "fig_opt_content",
+    "fig_opt_answer",
+    "fig_opt_verifier",
+    "fig_opt_s_answer",
+    "fig_exp_s3",
+    "fig_opt_s_margin",
+    "fig_exp_s5"
+  ],
+  "source_sha256": {
+    "review/experiment-redesign-20261101/artifacts/final_bench/s4_traces_final.json": "d1379a546e6d6aa0c390fd8ffc262608ee70a2c0ae41c9fc826ce2a8d190f87c",
+    "review/experiment-redesign-20261101/artifacts/final_bench/s6_stats.json": "6c88cfd4ba15148d51bfc40d2b221e21fd556d2b34c24b2fff9ebeae9cf20cc3",
+    "review/experiment-redesign-20261101/artifacts/replication_bench_20261112/s4_traces_r3.json": "efe05ff215f02d0234b627be8feffd0f0962f0a965290c5fa918a5717337d417",
+    "review/experiment-redesign-20261101/artifacts/replication_bench_20261112/s6_stats.json": "03e6f763c884d04a47934f510602d3ba4f15d5ed608ac5f875c81beb8d44218c",
+    "benchmark-suite/results/exp_r2_grade_corrected.json": "ad9e4c47db9266ed650961c2f8f7d88ba4317890480f8057c0da9c77f581571b",
+    "benchmark-suite/results/exp_rerun5_grade.json": "d715ce68b9573b76b5ecb8d9140cc0238ad06e846bfc2b2547151a53435a0d74",
+    "paper-kbs/experiments/results/exp1_retrieval.json": "0a6b56eece0db237ecdc6e0685dc78de88c4a8d7d68494526e06496a6f5b68d1",
+    "paper-kbs/experiments/results/exp5_judge_filter.json": "25c049ed5ba38c0cd0815bbf18f857bf32d36a47f3eb2cb799effe8e53da5b24",
+    "experiment_data/case-anatomy-provenance.json": "58d85a31a4ebe76b23d6f1a7caeace86b10d722eab3f67c69d46f04ad444e39b",
+    "review/_exp_rerun_20261114/answers_fresh_summary.json": "c2fa7dfd23f0bde941823962874356fa868dd4bb4faa3f599e97e93a93d29db2",
+    "review/_exp_rerun_20261114/desc_audit.json": "6783db9958466961a417accd6242e37a354c49d5878ced36b690bf0cea16480d",
+    "review/_exp_rerun_20261114/probe5_final.json": "2969af837a349ace85d6fdf61fd126bb81864b54d685b94d3c7ce83f1c0517a6",
+    "experiment_data/supp_traces_frozen.csv": "66b4a00d5d9dbd589d33c29fd3ec8cd194645f2b1ee5541f84c17050517fdd01",
+    "experiment_data/supp_traces_followup.csv": "2b23d58bc8827313c8d8d5dd8e865d3ef203de92fdf1bc7a2809973e72eaa153",
+    "experiment_data/supp_traces_floor.csv": "944c0fb90580c06a10e79f6bb28b159877e30db8a1d4cb4cb4cfde0c1de67c33"
+  },
+  "output_sha256": {
+    "figs/fig_opt_route.pdf": "e465108a50f0583b6a09e246385c1e1f04a623234d9e93165a0a3445cbca158f",
+    "figs/fig_opt_route.png": "d2b878447f1cec7940d9f45f01e715d0ebbafc239c4dfd31becf08439aef8854",
+    "figs/fig_opt_content.pdf": "857274e6bf4d732eaaa085110f60f5df10cbb3146177fd6e449ca9593c411771",
+    "figs/fig_opt_content.png": "b50296359a394eb46844a69afb3982653770e28edc80603cd53b390b62ae9888",
+    "figs/fig_opt_answer.pdf": "feea06709cf5c49b54eb70f4d7f4dc112f6cffa7ba81508e38ca10d3eec3029d",
+    "figs/fig_opt_answer.png": "d3e29d0bff2354337f667b4e23bf7c84b7487e4cc8f39b52f9e3c5fc552baa37",
+    "figs/fig_opt_verifier.pdf": "e158f05aa2bfbce003ea6c1bb1bc479f55694cc1c5151ee7292935c64a51c98b",
+    "figs/fig_opt_verifier.png": "b5593893c35b97fd5a377b101468c41648241fbf9e02e838551ba8fa53484e4f",
+    "figs/fig_opt_s_answer.pdf": "a66b6da2f42114f6474e1772c328576808d10df25c5f392d1a050b71a75f814f",
+    "figs/fig_opt_s_answer.png": "53de47d0e28502b44f7bf4ee91699505711792400bc33ef0cfeb6afb21cb6ddb",
+    "figs/fig_exp_s3.pdf": "e884c2a9185bdbfba056d76c8c255607aa3d160ff07ddb8ed5fe110aab585d9b",
+    "figs/fig_exp_s3.png": "1d30892ec2422ad5311b0a5efa1ec6213a94aa2fe75350c0e951d8857b08dee9",
+    "figs/fig_opt_s_margin.pdf": "3ba9fdcfc534cfe5f6f77ed7d318fe675ac4a11e17dc5d0afb442cc92805b1fd",
+    "figs/fig_opt_s_margin.png": "046077097428526557a0ce721a5fd868890dbc93845b213697c3d64f6bba16ce",
+    "figs/fig_exp_s5.pdf": "c02131a93e00990ef39d0d86f53481d7fd918b4ec0cadbd19a446131363c5920",
+    "figs/fig_exp_s5.png": "ab21873875e0f6a97affe8272a5e186a054ac43d01868e789aacefe79bb75efb"
+  },
+  "units": {
+    "route_content": "72 in-domain questions; exact-string containment",
+    "answer": "10 questions per arm; lexical marker/keyword proxies",
+    "verifier": "191 score records plus separate 16-pool ordering archive",
+    "ood": "documents versus chunks; different units"
+  }
+}

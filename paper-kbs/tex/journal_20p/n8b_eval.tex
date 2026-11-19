@@ -1,8 +1,8 @@
 %% Evaluation results for the experience store and the content-layer arms.
 \subsection{E4: Operational knowledge and automated distillation}
 \label{sec:e3}
-HMRS stores operational lessons as searchable documents and uses a
-credibility tier to decide which lessons to present
+Separate from the retrieval arms, HMRS stores operational lessons as
+searchable documents and uses a credibility tier to decide which lessons to present
 (Section~\ref{sec:org-experience}). An extraction run produced 13 draft
 lessons from one small library. In a separate end-to-end case, the system
 stored one lesson (\texttt{exp-d6f4d47ae3d6}), which global experience
@@ -18,14 +18,21 @@ A0 selects a collection from the route cards and gives candidate references
 to a judge with a 40{,}000-character document window. A0f fetches windows of
 up to 250{,}000 characters and passes them directly to the judge. A0h
 combines the resulting judged text with up to eight vector-retrieved chunk
-windows in a pack capped at 60{,}000 characters. PD searches the ten libraries
-separately and judges the six unique documents with the highest scores using
-the A0f window. A1b merges the ten libraries' vector results and uses the A0
-reference-mode judge. A2 concatenates snippets from the same scoped union
-and omits judging. A3 uses the nominally name-only route cards. Within the
-routed library, vector search requests up to 30 candidates at a cosine
-threshold of 0.35, with a retry at 0.30 if the first search is empty.
+windows in a pack capped at 60{,}000 characters. A3 uses the nominally
+name-only route cards.
+
+The cross-library arms vary the candidate source: PD searches the ten
+libraries separately and judges the six unique documents with the highest
+scores using the A0f window. A1b merges the ten libraries' vector results
+and uses the A0 reference-mode judge. A2 concatenates snippets from the
+same scoped union and omits judging. Within the routed library, vector
+search requests up to 30 candidates at a cosine threshold of 0.35, with
+a retry at 0.30 if the first search is empty.
 The configurations vary in routing, candidate construction and judging.
+In the labels, ``f'' marks full-window inline judging, ``h'' the hybrid
+union of judged text with chunk windows, and ``b'' the merged global
+baseline; PD (per-library directed) searches each library separately.
+Table~S12 lists the full configurations.
 Some reference lookups may use the gold domain to resolve candidates,
 as detailed in Section~\ref{sec:threats}.
 
@@ -43,7 +50,13 @@ targets, A0f 45 and 44, A1b 39 in each, and A2 25 in each
 
 The paired comparison with the scoped vector union A1b favoured A0h on
 13 frozen and 12 follow-up questions, with no reverse cases
-($p=0.00024$ and $0.00049$). A0h's lead over PD was smaller. In both
+($p=0.00024$ and $0.00049$). Against A0f, the closer comparison at a
+similar reading budget (both arms record roughly 300~kB of text per
+question), A0h led 52 to 45 in the frozen record and 51 to 44 in the
+follow-up, each with seven A0h-only hits and no reverse case ($p=0.016$).
+Holding reading volume approximately constant, this contrast isolates
+the added chunk windows, their priority in the pack and the
+60{,}000-character cap. A0h's lead over PD was smaller. In both
 records, seven questions favoured A0h and one favoured PD
 ($p=0.0703$). Among A0's 35 frozen misses, A0f, A0h and PD recovered
 8, 15 and 9, respectively. Eight recoveries were shared by all three,
@@ -53,8 +66,8 @@ nominal window and 30 inside. The matching file could differ from the gold
 document or the one the judge read. Figure~\ref{fig:content}b and Table~S13
 give the paired records, including the secondary comparisons.
 
-The frozen A0h trace recorded 309~KB and 13.8~s of tool time per question, compared with
-31.4~KB and 16.3~s for A0. The read-all scan found all 72 target strings
+The frozen A0h trace recorded 309~kB and 13.8~s of tool time per question, compared with
+31.4~kB and 16.3~s for A0. The read-all scan found all 72 target strings
 using 24.3~MB and 253.7~s per question, about 79 times the text recorded
 for A0h. The trace counts overlap where the same text is fetched or packed
 more than once. Tool time covers retrieval work and excludes answer

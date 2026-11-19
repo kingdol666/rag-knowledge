@@ -5,8 +5,9 @@
 A query reaches evidence by narrowing its scope. Catalogue-first search
 selects a collection, examines the descriptions on its shelf and opens
 selected documents or passages. Pinned search starts within specified
-collections and uses their indices to propose candidates. Both paths can
-call the server-side Laya evidence gate. This design gives an agent
+collections and uses their indices to propose candidates; vector search
+over these indices returns chunks drawn from the stored segments. Both
+paths can call the server-side Laya evidence gate. This design gives an agent
 explicit choices at collection, document and passage granularity and
 preserves the source identifiers needed to inspect those choices.
 
@@ -28,16 +29,16 @@ Access policies choose which operations to run. The workflow distinguishes
 a completed review without support from an incomplete run with possible
 partial evidence.
 
-\begin{figure*}[t]
+\begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{fig_tiered_drawio_20261116}
+\includegraphics[width=\columnwidth]{fig_tiered_singlecol_20261119}
 \caption{Tiered access workflow. Candidate references come from pinned
-collections, catalogue navigation or a combination. The optional Laya gate
-fetches and scores passages. A completed review without support reports
-the searched scope. An incomplete operation reports failures and keeps
-any available evidence.}
+collections, catalogue navigation or a combination (numbered badges mark
+the staged steps). The optional Laya gate fetches and scores passages. A
+completed review without support reports the searched scope. An
+incomplete operation reports failures and keeps any available evidence.}
 \label{fig:tiered-algorithm}
-\end{figure*}
+\end{figure}
 
 \begin{algorithm}[t]
 \caption{Tiered access with optional evidence gate}

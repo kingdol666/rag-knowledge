@@ -15,7 +15,10 @@ selected management operations.
 
 The management model has three levels: collections carry ownership and scope,
 documents carry content and descriptive metadata, and segments carry the
-text units used for passage retrieval or scoring. Four access views expose
+text units used for passage retrieval or scoring. A collection corresponds
+to a library (knowledge base) in the implementation, and this paper uses
+the two terms with that mapping; a document may be stored as several
+parts, and its segments are the indexed text units. Four access views expose
 those levels. The catalogue lists collections, the shelf lists documents
 within a collection, the document view opens a body and the segment view
 exposes passages and their source references. Table~\ref{tab:levels} links each
@@ -80,7 +83,8 @@ Figure~\ref{fig:workflow} follows a document from acquisition and
 organisation to evidence-based reporting. The ingest workflow governs
 content review and placement. The query workflow determines whether to
 consult the catalogue or search a pinned collection, and whether to use
-Laya to score passages. The answer instructions distinguish a completed
+Laya, the platform's local passage scorer, to score passages. The answer
+instructions distinguish a completed
 review's searched scope and blind spots from an incomplete review caused
 by tool failure.
 Hybrid retrieval is also available as a tool and can be composed from

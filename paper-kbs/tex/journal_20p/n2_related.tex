@@ -55,7 +55,8 @@ HMRS (this work) & managed collection--document--segment state & content-based p
 \end{tabular}
 \end{table*}
 
-RAG uses retrieved passages to inform generation \citep{rag-lewis}. Dense
+RAG uses retrieved passages to inform generation
+\citep{rag-lewis,gao-rag-survey-2023}. Dense
 retrieval ranks passages in a learned representation space \citep{dpr}; BM25
 uses lexical signals \citep{bm25}. Enterprise architectures combine semantic
 retrieval with vector storage and LLMs \citep{ghali-kbs-retrieval-2025}.
@@ -76,10 +77,12 @@ query reads a maintained record of which collections and documents exist.
 Index maintenance complements this hierarchy by keeping passages reachable
 after document changes \citep{xu2023spfresh}.
 
-Distributed IR selects collections from relevance estimates before searching
-them \citep{callan1995searching,si2003redde}. HMRS applies the same
-select-then-search principle to collection and document descriptions that
-operators can maintain. Tool-using agents can choose and iteratively refine
+Distributed IR treats collection selection and result merging as its two
+subproblems \citep{callan1995searching,si2003redde,shokouhi-federated-2011}.
+HMRS applies the same select-then-search principle to collection and
+document descriptions that operators can maintain: the catalogue-first
+path selects collections from their descriptions, and document selection
+plays the role of result merging. Tool-using agents can choose and iteratively refine
 what they retrieve \citep{react-yao,toolformer}; MCP provides standard
 interfaces to these tools \citep{mcp}. Modular RAG studies how these
 workflows combine retrieval components \citep{modular-rag}. DeepRead
@@ -131,7 +134,12 @@ as distinct decisions.
 RMR-SST and TEIE-RAG structure engineering document content for retrieval
 and evidence access \citep{li-kbs-rmrsst-2026,shen-kbs-teierag-2026}. EPRAG
 selects a response action once the candidate evidence is available
-\citep{kinalioglu-kbs-eprag-2026}. HMRS studies the collection state that
+\citep{kinalioglu-kbs-eprag-2026}. Archival curation and enterprise
+content management do govern placement and description over time
+\citep{paivarinta-ecm-2005,park-metadata-quality-2009,missier-prov-2013};
+the unstudied step is the coupling of that managed state to evidence
+access, that is, whether a failed search can be traced to the placement,
+description or index decision that supplied its candidates. HMRS studies the collection state that
 supplies evidence to such workflows (Table~\ref{tab:related-comparison}
 and Supplementary Table~S11). It records where documents belong, exposes
 the descriptions used to select them, and lets operators check whether

@@ -88,26 +88,30 @@ City, Country}, city={City}, country={Country}}
 \begin{abstract}
 Retrieval from evolving document collections depends on where documents are
 placed, how they are described and whether their indexes reflect changes.
-We present HMRS, a self-hosted system that manages collections, documents
-and segments and exposes them through catalogue, shelf, document and
-segment views. The same management state supports collection selection,
-source inspection and lifecycle audits. In a 100-paper ingestion campaign,
-79 papers were retrievable at the audit snapshot. A separate rename test
-exposed nine stale vector entries, which re-indexing removed.
+We present the Hierarchical Management Retrieval System (HMRS), a
+self-hosted platform that manages collections, documents and segments and
+exposes them through catalogue, shelf, document and segment views,
+available to agents through the Model Context Protocol (MCP). The same
+management state supports collection selection, source inspection and
+lifecycle audits: a rename test exposed nine stale vector entries, which
+re-indexing removed.
 
-On 72 questions, the scripted selector reached the labelled collection in
-72 cases with full route cards and 37 with nominally name-only cards.
-The tiered configuration that combined document and vector chunk windows
-returned annotated target strings on 52 of the 72 questions, compared with
-37 for the baseline tiered configuration. Its trace-recorded text volume
-was about ten times the baseline's and 1.3\% of a mechanical full scan's.
-Two reruns on the same questions gave 51 versus 39 and 48 versus 36.
-These comparisons
-measure collection choice and target-string containment. In a separate
-replay of sixteen candidate pools, fusion order retained 15 top-five hits
-and verifier-score ordering retained seven. The findings connect retrieval
-behaviour to collection metadata, reading scope and candidate order, all
-of which can be inspected at the point where the system uses them.
+On 72 developer-authored questions, route cards pairing each collection's
+name with its description let a scripted selector reach the labelled
+collection 72 times, versus 37 with nominally name-only cards. Adding
+vector chunk windows to judged document text returned annotated target
+strings on 52 questions versus 37 for the tiered baseline. At matched
+reading budgets near 300~kB, the chunk-enhanced configuration still led
+its closest comparison 52 to 45, with seven paired gains and no losses.
+Two reruns under recorded corpus changes reproduced the direction
+(51 versus 39 and 48 versus 36) without a reverse case. In a replay of
+sixteen candidate pools, fusion order retained 15 top-five hits and
+verifier-score ordering retained seven. These comparisons measure
+collection choice and literal target-string containment, not answer
+correctness; an exact match can occur outside the intended context. The
+findings connect retrieval behaviour to collection metadata, reading
+scope and candidate order, all inspectable at the point where the system
+uses them.
 \end{abstract}
 
 \begin{keyword}
