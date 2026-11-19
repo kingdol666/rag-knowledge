@@ -23,19 +23,17 @@ shared state. Figures~S2--S3 report answer-marker and out-of-corpus probe
 observations; Figures~S4--S5 replay verifier roles and illustrate one
 logged query. Table~S9 indexes the management checks, Table~S10 summarises
 the retrieval and answer designs, and Table~S11 positions representative
-research strands. Tables~S12--S13 give arm counts and paired contrasts for
-E5. The reruns reuse the same in-domain questions on later corpus states.
-Tables~S14--S16 retain the
-question-level answer proxies, aggregate answer and runtime observations,
-and the DeepSeek-R1 answer-case comparison. For the 72 in-domain questions,
-a post-hoc check lowercased each question and its nonempty annotated target,
-then tested exact substring containment without other normalization. The
-29 overlapping questions had frozen containment of 16/29 for A0 and 21/29
-for A0h; the other 43 had 21/43 and 31/43, respectively. These non-random
-subsets are descriptive, not a causal test, and other lexical cues may remain
-in the non-overlap group. Table~S17 records the design and provenance of
-selected campaigns. Tables S1--S8 of the companion inventory document
-(shipped alongside this supplement) give historical campaign-level details.
+research strands. Tables~S12--S13 give arm counts, costs and paired contrasts.
+The Main comparison reused the same questions after a service restart.
+For the 29 questions whose text includes the complete target string, its
+packs matched in 16/29 cases for A0 and 21/29 for A0h. For the remaining
+43, the counts were 20/43 and 27/43. This descriptive split does not
+control for other lexical cues. Tables~S14--S16 give the answer grids,
+the standalone answer check and the case study; Table~S17 records the
+campaign boundaries. Figures~S6--S7 show the historical marker and verifier
+comparisons. Tables~S1--S8 of the companion inventory document give
+historical campaign details. See \path{experiment-source-map.md} for
+experiment provenance.
 The E5 trace exports contain 76 question IDs per complete arm. The in-domain
 analyses exclude the four out-of-domain probes R1--R4.
 
@@ -53,17 +51,14 @@ gate is an optional call.}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig_opt_s_answer}
-\caption{Answer checks for the original grid (30 cells,
-\protect\path{run-20261013T094350Z-5f9faac}). P = platform agent, F = file
-tools, C = 800-character chunk replica. Gold-identifier coverage is at
-ceiling in all three arms; strict keyword coverage shows three misses, and
-recognised citation markers fall from nine to seven to two answers. A later
-grid on selected libraries gives nine marker-bearing answers in every arm;
-its C arm used the same five libraries and a different substrate. The
-marker pattern counts document-style syntax; it does not verify citation
-resolution or claim support. Wall-clock and cost figures for these cells
-are reported in Table~S15. The common-substrate rerun changed BQ06's
-question, so it is not a fully matched question set.}
+\caption{Answer checks on the 30-cell Original grid. P = platform agent,
+F = file tools, C = 800-character chunk replica. Gold-identifier
+coverage is at ceiling in all three arms; strict keyword coverage shows
+three misses. Document-style markers occur in nine, seven and two answers
+(P/F/C). Counting either document-style or native chunk markers gives
+10/7/7 for the same answers. Neither rule checks resolution or support.
+Table~S15 also reports the Common-library grid and the separate
+Platform-only check. BQ06 wording changed between the grids.}
 \label{fig:threearms}
 \end{figure}
 \begin{figure}[t]
@@ -89,8 +84,9 @@ instructed agent behaviour, not a server-side guarantee.}
 (a)~A relative-margin replay on the recorded retained-candidate scores: keep
 the top five plus every candidate within $m$ of the pool's best score, $m$
 swept 0.05--0.35. The curve counts gold instances kept of the 17 that entered
-a pool. Dashed rules mark $m=0.15$ (16 of 17) and $m=0.20$ (all 17); the mean
-candidate count rises from 6.4 to 11.9. (b)~Fusion order on the intersection
+a pool. Dashed rules mark $m=0.15$ (16 of 17) and $m=0.20$ (all 17), at
+mean candidate counts of 10.4 and 11.1 respectively. The mean rises from
+6.4 to 11.9 over the full sweep. (b)~Fusion order on the intersection
 with the judge's retained list versus score order on that list, using one
 logged response per query. Hit@5 is 15/16 and 7/16, respectively.}
 \label{fig:marginvariants}
@@ -106,9 +102,29 @@ judge scores five extruder-PLC telemetry reports $0.887$--$0.926$ and the
 gold root-cause report $0.846$, demoting it from fusion rank~1 to
 rank~8 --- outside the read window. (b)~The same call with the verdicts
 used only as a filter: all 12 pass, the fusion order stands, and the gold
-is the first document read. Same pool, same scores, same verdicts; only
-the role of the induced ordering differs.}
+would be first in the read order. The second panel is a replay, not a
+second retrieval. Same pool, scores and verdicts; only the ordering differs.}
 \label{fig:anatomy}
+\end{figure*}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_opt_answer}
+\caption{Original grid (left) and Common-library grid (right). The panels
+show marker presence, not source support. The Common-library grid used
+the same five libraries across arms; BQ06 wording and the C-arm substrate
+changed between grids, so the comparison is not fully matched. The
+separate Platform-only check is not shown.}
+\label{fig:answer}
+\end{figure*}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_opt_verifier}
+\caption{Historical industrial-corpus verifier diagnostics from separate
+archives. (a) The 191 recorded retained-candidate scores include 17 gold
+and 174 other scores, with medians of 0.88 and 0.86. One additional Q14
+candidate has no recorded score. (b) Retained-candidate ordering Hit@5:
+15/16 in fusion order and 7/16 in verifier-score order.}
+\label{fig:verifier}
 \end{figure*}
 \begin{table*}[t]
 \centering
@@ -124,8 +140,10 @@ stated scale, not that the function is exhaustively verified.}
 \toprule
 Function & Test and scale & Observed outcome & Where\\
 \midrule
-Parse and ingest & 100-paper target; November disk inventory & Each target had at least one stored part. Earlier records contain 91 state-list names and 79 documents enumerated and read in a derived library; these are not a matched funnel and have no reliable shared audit date & E1\\
-Description audit & November re-check across five libraries & 328/328 parts had descriptions of at least 60 characters without the recorded placeholder pattern; six parts were non-target. The 100-ID short-query probe is diagnostic: 72 searches were unscoped and 45 returned a chunk-copy name first & E1\\
+Batch acquisition & Three PDFs and two direct Markdown documents & Hot-engine batch: 3/3 PDFs parsed in 38.7\,s; all five document-specific probes ranked their document first. One fixture, not an estimate of recall & E1\\
+Lifecycle check & Single-document rename fixture & The renamed document was retrieved under its new name with a cache-bypassing query and after forced reindexing. This is not a concurrency test & E2\\
+Historical inventory & 100-paper target and earlier snapshots & Each target had at least one stored part. Earlier records contain 91 state-list names and 79 documents enumerated and read in a derived library; the snapshots cannot be reliably aligned and do not form a matched funnel & E1\\
+Description audit & Five-library re-check & 328/328 parts had descriptions of at least 60 characters without the recorded placeholder pattern; six parts were non-target. The 100-ID short-query probe is diagnostic: 72 searches were unscoped and 45 returned a chunk-copy name first & E1\\
 Parse quality & 50-paper, 26-domain campaign & 50/50 parsed and verified, all probes ok; 202 tags; 41 tag flags negative without blocking ingestion & E1\\
 Structural split & 50 papers at the 30{,}000-character tier & 165 stored parts (9 whole papers, 156 split parts) in 2{,}672\,s; storage 50/50; descriptions and tags 165/165 & E1\\
 Near-duplicate review & 322-part corpus, 0.90 threshold & 35 candidate groups (0.90--0.975), zero true duplicates, nothing deleted & E2\\
@@ -152,11 +170,11 @@ contrasts.}
 \toprule
 Exp & Corpus and scale & Metric and comparison & Headline result & Supports / limit\\
 \midrule
-E3 (RQ2) & 72 ten-domain questions; full vs nominally name-only cards & Scripted gold-domain choice & Frozen A0 72/72 vs A3 37/72 ($p=5.82\times10^{-11}$); 72 vs 49 in both later records & Unlogged fallback; configuration contrast, not an isolated description effect\\
-E5 (RQ3) & 72 questions in ten domains across three campaigns & Target-string containment, text volume and paired exact McNemar tests & A0h vs A0: 52/72 vs 37/72 frozen, 51/72 vs 39/72 in the first follow-up, 48/72 vs 36/72 on November 17 & Configuration contrasts on the same set. The A0h--PD comparison is inconclusive in all three records.\\
-E6 (RQ5) & Two 30-cell grids, three interfaces; later 10-question run & Gold-ID in answer or trace, lexical coverage, citation markers & Gold-ID 60/60 at ceiling; markers 9/7/2 (original), 9/9/9 (common substrate); separate post-repair tiered run 10/10 under a broader marker rule & Grid questions lack gold IDs; BQ06 changed in the common grid; marker rules differ for the later run. ID and markers do not establish source support; one run per arm\\
-E7 (RQ5) & Three arms $\times$ three questions, public API & Cost, refusal behaviour, transport & Question Q2 false refusal on a 131-doc catalogue (74.9\,KB over tool budget); repaired by pagination & Transport and cost boundary; one campaign plus replication\\
-E8 (RQ4) & 191 logged scores and a separate ordering archive & Gold vs non-gold scores and retained-candidate Hit@5 & Median scores 0.88 vs 0.86 ($p=0.26$). Retained-candidate Hit@5 was 15/16 in fusion order and 7/16 in verifier-score order. & Historical wrapper and one corpus; score and ordering archives are separate.\\
+E3 (RQ2) & 72 ten-domain questions; full vs nominally name-only cards & Scripted gold-domain choice & Main comparison: A0 72/72 vs A3 49/72. A3: 37/72 in Frozen aggregate, 49/72 in Follow-up & Unlogged fallback; not an isolated description effect\\
+E5 (RQ3) & 72 questions in ten domains, reused across campaigns & Literal containment and trace-level measurements & Main comparison: A0h 48/72 vs A0 36/72 and A0f 41/72; see S12--S13 & Text counters differ by mode. A0h--PD is inconclusive.\\
+E6 (RQ5) & Platform-only check: one arm, ten questions & Identifier and term matches in archived answers & 10/10 complete and gold-ID-bearing; 9/10 all terms; 131.2 s mean wall time & No concurrent controls; broad markers also match bare IDs. The grids are in S14--S15.\\
+E7 (RQ5) & Single-document API fixture & Resource and documentation checks & Resource assertions 6/6; contract 11/13 initially, two readbacks passed in fixture-ready retests & Vector assertion does not establish a document hit; the earlier truncation case was not repeated\\
+E8 (RQ4) & 191 logged scores and a separate ordering archive & Gold vs non-gold scores and retained-candidate Hit@5 & Median scores 0.88 vs 0.86. Retained-candidate Hit@5 was 15/16 in fusion order and 7/16 in verifier-score order. & Historical wrapper and one corpus; score and ordering archives are separate.\\
 E9 & 27-cell stability; 90/180/270-request read sweep; separate vector-only trial; gate on/off $n=10$; pinned vs unscoped scope & Wall clock and completion within observation window; answer grades; Hit@5 under each scope & Read sweep recorded no errors; in the separate vector trial 111/270 were unfinished at 30 seconds; no measured gate benefit here; gold-pinned Hit@5 1.0 (non-gold 0.0) & Single-instance envelope; unfinished requests are not established timeouts; scope not isolated, filename confound\\
 \bottomrule
 \end{tabular}
@@ -180,7 +198,7 @@ Strand & Representative work & What it optimises & What it leaves to the deploym
 Knowledge management & Public knowledge bases; enterprise content management & An explicit ontology, or governance over a curated collection & Whether an answer drawn from that collection is supported by the text it cites\\
 Document AI & Layout-aware extraction; MinerU & Recovery of text, tables and formulas from difficult layouts & Whether what was recovered is complete enough to index, and where it is then stored\\
 Retrieval & Dense, lexical and hybrid ranking & Rank quality over a corpus that is assumed indexed & Whether a top-ranked candidate contains evidence for the claim it is used to support\\
-Graph-structured organisation & GraphRAG, LightRAG, RAPTOR & Multi-hop and hierarchical relationships between documents & Evidentiary status: a graph edge is a navigation fact, not evidence\\
+Structured organisation & GraphRAG, LightRAG, RAPTOR & Graph-linked context or recursive clusters and summaries of text & Evidentiary status: a relationship or summary is not itself proof of a claim\\
 Self-reflective generation & Self-RAG, CRAG, FLARE; judge-based verification & Evidence assessment or retrieval correction in generation workflows & How verification and abstention interact with knowledge-base acquisition and organisation in a knowledge-base workflow\\
 Agentic tool use & ReAct, MCP & Access to retrieval tools behind a stable interface & Whether configured retrieval budgets and failure states are exposed and checked in a particular deployment\\
 Structure-aware navigation & DeepRead  & In-document section coordinates for locate-then-read agentic search & Cross-collection lifecycle governance and selected reconciliation audits\\
@@ -195,17 +213,15 @@ HMRS (this work) & Main paper, Sections 3--7 & A management-level model: automat
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
-\caption{Question-level answer proxies for the original 30-cell grid
-(\protect\path{run-20261013T094350Z-5f9faac}). For each arm, s is strict
-keyword coverage, a is alias-aware coverage, and m is the count of
-recognised citation-like markers. Original answers were rescored against the
-revised BQ06 annotations; under the original annotation P's strict total is
-10/10 rather than 9/10. The gold ID appeared in the answer or
-trace in all cells; this check is omitted from the table. None of the saved
-grid question texts contains its corresponding gold ID. The check searches
-answer text and recorded tool-call inputs and agent text, and ID presence
-does not establish source resolution. A marker does not
-verify source resolution or entailment.}
+\caption{Question-level answer proxies for the 30-cell Original grid.
+For each arm, s is strict keyword coverage, a is alias-aware coverage, and
+m is the count of recognised citation-like markers. Original grid answers
+were rescored against the revised BQ06 annotations; under the original
+annotation P's strict total is 10/10 rather than 9/10. The gold ID appeared
+in the answer or trace in all cells; this check is omitted from the table.
+None of the saved grid questions contains its corresponding gold ID. The
+check searches answer text, recorded tool-call inputs and agent text.
+Neither ID presence nor a marker establishes source resolution or entailment.}
 \label{tab:s-answer-grid}
 \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.30\textwidth}l*{9}{c}@{}}
 \toprule
@@ -232,27 +248,28 @@ BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes
 \centering
 \small
 \setlength{\tabcolsep}{4pt}
-\caption{Aggregate answer and runtime proxies for the original and
-common-substrate grids, plus a separate post-repair run. Lexical checks do
-not establish semantic support; each arm is one run. The post-repair run is
-a single current-state observation on a later stack and is not pooled with
-the grids. BQ06 changed in the common-substrate rerun, and original-grid
-keyword totals use revised BQ06 annotations rather than the original rule.
-The post-repair
-marker count uses a broader recognition rule than the grid counts and is not
-directly comparable to them.}
+\caption{Answer diagnostics. The Original grid uses revised term
+annotations for BQ06, whose wording changed in the Common-library grid.
+The separate Platform-only check used the original BQ06 prompt and had no
+concurrent controls. Gold IDs were checked in answer text; strict coverage
+uses the same minimum term fraction with the pilot's term lists, and
+all-term coverage was also 9/10. Its marker rate is not directly comparable
+with the grid rates: the broader rule counts bare IDs. Masking the gold ID
+left matches in 8/10; an explicit repository label or link occurred in 3/10.
+Neither rule tests citation resolution or evidence support. Times are means;
+costs are per question unless marked total.}
 \label{tab:s-answer-summary}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}*{4}{c}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.15\textwidth}@{}}
 \toprule
 Grid and arm & Gold-ID & Strict & Alias & Markers & Mean time (s) & Cost (USD)\\
 \midrule
-Original, P & 10/10 & 9/10 & 10/10 & 9/10 & 52.6 & 0.711/q\\
-Original, F & 10/10 & 9/10 & 10/10 & 7/10 & 22.2 & 0.487/q\\
-Original, C & 10/10 & 9/10 & 10/10 & 2/10 & 24.5 & 0.527/q\\
-Common, P & 10/10 & 7/10 & 9/10 & 9/10 & 37.7 & 0.672/q\\
-Common, F & 10/10 & 7/10 & 9/10 & 9/10 & 15.2 & 0.377/q\\
-Common, C & 10/10 & 8/10 & 10/10 & 9/10 & 19.6 & 0.524/q\\
-Current, post-repair & 10/10 & 9/10 & -- & 10/10 & 131 & 3.10 total\\
+Original grid, P & 10/10 & 9/10 & 10/10 & 9/10 & 52.6 & 0.711/q\\
+Original grid, F & 10/10 & 9/10 & 10/10 & 7/10 & 22.2 & 0.487/q\\
+Original grid, C & 10/10 & 9/10 & 10/10 & 2/10 & 24.5 & 0.527/q\\
+Common-library grid, P & 10/10 & 7/10 & 9/10 & 9/10 & 37.7 & 0.672/q\\
+Common-library grid, F & 10/10 & 7/10 & 9/10 & 9/10 & 15.2 & 0.377/q\\
+Common-library grid, C & 10/10 & 8/10 & 10/10 & 9/10 & 19.6 & 0.524/q\\
+Platform-only check & 10/10 & 9/10 & -- & 10/10 & 131.2 & 3.10 total\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -281,21 +298,24 @@ Electricity cost & No electricity amount reported; distinguished the \$294K rent
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \caption{Evaluation design and provenance for selected campaigns. Counts
-are not pooled into a system-level accuracy. The retrieval reruns reuse the
-72 in-domain questions; the November~12 record reports 906 stored parts.
-The November paper-corpus probe searches short filename stems, not scoped
-titles. The answer grids use one run per arm and lexical proxies; the verifier
+are not pooled into a system-level accuracy. The retrieval comparisons
+reuse the 72 in-domain questions; Follow-up reports 906 stored parts.
+The paper-corpus probe searches short filename stems, not scoped titles.
+The answer grids use one run per arm and lexical proxies; the verifier
 score and ordering archives are separate records.}
 \label{tab:eval-design}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}@{}}
 \toprule
 Campaign and state & Material and unit & Comparison or observation & Measure and boundary\\
 \midrule
-Industrial corpus, 2026-10-13 & 42 documents in five libraries; 16 questions & Hybrid candidates; verifier ordering & Document Hit@5; same-pool replay; one workstation\\
-Paper-corpus inventory, 2026-11-14/15 & 100 targets; 328 five-library parts including six non-target parts; 10 questions & Filename-stem ID diagnostic and scoped ten-question vector check & At least one disk part per target; IDs found in probe result names; 72/100 probes unscoped, 45 chunk-copy-first; not a matched rerun\\
-Routing and retrieval, frozen and November~12 & 72 in-domain questions; 138 documents; 879 parts (follow-up 906) & Route-card and evidence-pack configurations & Gold-domain choice and target-string containment; sibling matches may count; same questions, not independent\\
-Retrieval, November~17 & Same 72 in-domain questions & Seven complete arms on the restarted stack & Latest target-string containment results; no read-all rerun\\
-Paper-corpus answer grids & 10 questions; 30 cells per grid & Platform, file and chunk-replica arms; common substrate & Gold-ID, strict/alias keywords, markers; one run per arm; lexical proxies, not semantic support\\
+Industrial-corpus verifier check & 42 documents in five libraries; 16 questions & Hybrid candidates; verifier ordering & Document Hit@5; same-pool replay; one workstation\\
+Paper-corpus inventory & 100 targets; 328 five-library parts including six non-target parts; 10 questions & Filename-stem ID diagnostic and scoped ten-question vector check & At least one disk part per target; IDs found in probe result names; 72/100 probes unscoped, 45 chunk-copy-first; not a matched rerun\\
+Frozen aggregate and Follow-up & 72 in-domain questions; 138 documents; 879 parts (Follow-up 906) & Route-card and evidence-pack configurations & Gold-domain choice and target-string containment; sibling matches may count; same questions, not independent\\
+Main comparison & Same 72 in-domain questions & Seven complete arms on the restarted stack & Target-string containment; no read-all rerun\\
+Paper-corpus answer runs & Original grid, Common-library grid and Platform-only check & Lexical diagnostics on stored answers & Different marker rules; check source resolution and claim support separately\\
+API resource checks & One new document and collection & Creation, reindex, keyword and catalogue responses & 6/6 assertions; vector response assertion does not establish a document hit\\
+API contract and readback & Separate contract suite & Initial checks and two fixture-ready readback retests & 11/13 initially; 2/2 retests, not pooled\\
+Stored-state inspection & Session, vector and collection records & Read-only application and storage checks & 11/11 recorded assertions; no restart or recovery test\\
 Verifier archives & 191 retained scores in one archive; 16 queries in a separate ordering comparison & Score distribution and retained-candidate ordering & Medians and Hit@5; pre-cut scores are not available for all candidates\\
 \bottomrule
 \end{tabular}

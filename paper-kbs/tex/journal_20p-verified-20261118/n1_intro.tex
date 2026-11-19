@@ -21,8 +21,8 @@ information retrieval addresses the selection of collections
 access \cite{rag-lewis,dpr,modular-rag,mcp}.
 HMRS connects these responsibilities. It makes collection membership,
 document metadata and source references available from ingestion through
-query time, so that an operator can trace a failed search to the stages
-that supplied its candidates.
+query time, so an operator can inspect the stages that supplied its
+candidates. The trace does not necessarily reveal why a candidate was missed.
 
 The Hierarchical Management Retrieval System (HMRS) is a self-hosted
 knowledge document platform. An ingest agent uses parsed content to select
@@ -63,20 +63,13 @@ support from an incomplete execution
 (Sections~\ref{sec:gate} and~\ref{sec:lanes}).
 \end{enumerate}
 
-\subsection{Research questions and reading guide}
+\subsection{Research questions}
 \label{sec:rq}
 
-\textbf{RQ1} examines document acquisition, collection membership and
-lifecycle consistency. \textbf{RQ2} measures collection selection and
-document visibility under catalogue-first access. \textbf{RQ3} compares
-target-string containment and retrieval cost across the tested evidence
-configurations. \textbf{RQ4} compares the order of retained candidates and
-examines the admission scores available in the archive.
-\textbf{RQ5} examines abstention, runtime, tool cost and execution failures
-at the answer layer.
-
-Section~\ref{sec:related} positions HMRS within related work.
-Sections~\ref{sec:system}--\ref{sec:implementation} describe the management
-model and its implementation. Section~\ref{sec:eval} reports the evaluation,
-followed by the discussion, limitations and conclusions in
-Sections~\ref{sec:discussion}--\ref{sec:conclusion}.
+\textbf{RQ1} asks what the acquisition and lifecycle checks establish about
+stored documents and post-change visibility (E1--E2). \textbf{RQ2} asks how
+the tested route-card configurations differ in collection selection (E3).
+\textbf{RQ3} compares evidence-pack containment and retrieval-tool measurements
+(E5). \textbf{RQ4} examines the historical use of admission scores for ordering
+(E8). \textbf{RQ5} asks what can be established by the answer and deployment
+checks (E6--E7, E9). E4 is a separate operational-lesson creation check.

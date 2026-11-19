@@ -1,0 +1,124 @@
+\section{The tiered access path: from collection to admitted segment}
+\label{sec:retrieval}
+\label{sec:lanes}
+
+A query reaches evidence by narrowing its scope. Catalogue-first search
+selects a collection, examines the descriptions on its shelf and opens
+selected documents or passages. Pinned search starts within specified
+collections and uses their indices to propose candidates. Both paths can
+call the server-side Laya evidence gate. This design gives an agent
+explicit choices at collection, document and passage granularity and
+preserves the source identifiers needed to inspect those choices.
+
+Figure~\ref{fig:tiered-algorithm} and Algorithm~\ref{alg:tiered} show how
+an access policy selects, deduplicates and reads candidates, with or without
+the evidence gate. The resulting pack is an input to answer assessment.
+
+Access policies choose which operations to run. The intended workflow distinguishes
+a completed review without support from an incomplete run with possible
+partial evidence. This distinction depends on observable failure status;
+the global-search defect in Section~\ref{sec:e7} shows it is not guaranteed
+when a collection is silently skipped.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_tiered_drawio_20261116}
+\caption{Tiered access workflow. Candidate references come from pinned
+collections, catalogue navigation or a combination. The optional Laya gate
+fetches and scores passages. A completed review without support reports
+the searched scope. An incomplete operation reports failures and keeps
+any available evidence.}
+\label{fig:tiered-algorithm}
+\end{figure*}
+
+\begin{algorithm}[t]
+\caption{Tiered access with optional evidence gate}
+\label{alg:tiered}
+\begin{algorithmic}[1]
+\Require question $q$; catalogue $\mathcal{C}$; threshold $\tau$; gate flag $g$
+\State $D \gets \textsc{GatherCandidates}(q,\mathcal{C})$ \Comment{pinned or catalogue-first}
+\If{$g$}
+  \State $S \gets \textsc{LayaJudge}(D,q,\tau)$ \Comment{fetch, score and return survivors}
+\Else
+  \State $S \gets \textsc{ReadSelected}(D)$
+\EndIf
+\If{execution incomplete}
+  \State \Return incomplete status, searched scope, and available evidence
+\ElsIf{completed review finds no support}
+  \State \Return scoped not-found (searched scope, blind spots)
+\Else
+  \State \Return agent-synthesised answer with source references
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+The policy instructs the agent to report its searched scope and remaining
+blind spots when it reaches its call budget. The chat endpoint controls
+timeouts and turn limits. Workflow instructions specify the retrieval
+sequence and batch sizes.
+
+\subsection{Tier policies and the evidence gate}
+\label{sec:trace}
+\label{sec:gate}
+\label{sec:gate-primitive}
+\label{sec:twostage}
+
+The knowledge-base chat interface defines two policies. The search policy
+starts from pinned collections and calls two-stage or vector search. The
+librarian policy starts from the all-library catalogue, uses shelf
+descriptions to choose document references and directs the agent to score
+them in sequential batches before reading the survivors. The two-stage
+tool uses lexical search and optional graph expansion to form a candidate
+pool, applies dense ranking and returns candidates for inspection.
+
+The MCP server also registers \path{kb_hybrid_search}, which merges vector
+and catalogue candidates, optionally applies Laya, and sorts retained
+documents by verifier score when judging is enabled. The librarian policy
+directs the agent to use the catalogue and shelf tools directly. A separate
+controlled hybrid experiment used per-library vector top-30 at cosine
+threshold 0.35, catalogue candidates, fusion and a cap of twelve. The
+ordering analysis in Section~\ref{sec:e6} replays historical hybrid pools
+to compare ways of using the recorded scores.
+
+The local Laya classifier \cite{laya}, exposed as \path{kb_laya_judge},
+segments candidate text. Its \texttt{noul} output is a passage score on a
+0--1 scale; passages at or above the threshold (0.5 by default) are eligible
+for admission. It is not a calibrated probability that a passage supports
+an answer claim. The gate groups survivors by source and position,
+deduplicates them and applies a character cap. Where available, survivors
+carry collection and document identifiers, file path, part or section, and
+line range in the parsed text. These locators are not bound to immutable
+versions. Fetch or scoring errors are reported separately from low scores.
+Calling workflows may apply their own ordering. Table~\ref{tab:lanes}
+summarises the policy choices.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\caption{Access policies over the tiered path. Modes differ in how candidate collections and documents are selected.
+The hybrid row describes the experimental composition used in the evaluation.}
+\label{tab:lanes}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.11\textwidth}>{\raggedright\arraybackslash}p{0.19\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}@{}}
+\toprule
+Policy & Tiers traversed & Retrieval affordance & Budget type & Intended terminal report\\
+\midrule
+Search & pinned collections, segment & Two-stage or vector search & Endpoint turn limit & Answer or scoped not-found\\
+Librarian & catalogue, shelf, document, segment & Catalogue navigation and passage scoring & Workflow instructions & Answer or searched scope\\
+Hybrid & catalogue and segment & Combined vector and catalogue candidates & Configuration-specific candidate cap & Candidates or judged survivors\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Response transport also determines which candidates the agent can see.
+The catalogue-truncation case exposed an incomplete preview before the agent
+could inspect the whole shelf. The shelf tool now caps its response and
+supplies grouped and paginated views, allowing the caller to request the
+remaining entries. Section~\ref{sec:eval} reports the repair check.
+
+\subsection{Honest abstention}
+The answer workflow asks the agent to report absence after a completed
+review that finds no support, including the scope it searched. A plausible
+candidate may still lack the required evidence. If a tool is unavailable
+or the search times out, the workflow reports the incomplete execution
+and any usable evidence. Section~\ref{sec:eval} reports how the agents
+handled these terminal conditions in the observed trials.

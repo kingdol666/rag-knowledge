@@ -1,0 +1,39 @@
+[Draft for the corresponding author. Before submission, confirm author
+approval, originality, related submissions, funding and competing
+interests, and complete the signature below.]
+
+Dear Editors of Knowledge-Based Systems,
+
+Please consider our research article, "HMRS: Hierarchical document
+management for evidence-traced retrieval."
+
+Document retrieval begins with how a collection is maintained. A document
+must be assigned to a collection, described so that a query can find it,
+and kept in sync with its index when it changes. HMRS connects these
+operations to retrieval in a self-hosted system. Its catalogue, document
+shelf and segment views give operators and retrieval agents access to the
+metadata and source material used at each step.
+
+The paper examines how those choices affect access. A rename audit found
+nine stale vector entries and confirmed their removal after re-indexing.
+On 72 questions, the tiered configuration using document and vector chunk
+windows returned annotated target strings for 52 questions, compared with
+37 for the baseline tiered configuration. In a separate replay on 16
+fixed candidate pools, fusion order placed a hit in the top five for 15
+queries, compared with seven when the candidates were ordered by verifier
+score. Together, the results show how a knowledge system can inspect
+which collection was searched, what evidence was read and how the final
+ordering was produced.
+
+The manuscript links the system design to its implementation and
+evaluation, with per-question records and campaign inventories in the
+supplementary material. The connection between knowledge organisation
+and inspectable evidence access will interest readers of Knowledge-Based
+Systems who design and evaluate knowledge-intensive systems.
+
+Thank you for considering our manuscript.
+
+Sincerely,
+[Corresponding author's full name]
+[Affiliation]
+[Email]

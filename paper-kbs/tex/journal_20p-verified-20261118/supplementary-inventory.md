@@ -5,14 +5,15 @@ subtitle: "Companion to the Knowledge-Based Systems manuscript draft"
 
 # Supplementary Material: Complete Inventory of System and Retrieval Test Evidence
 
-**Revision note (2026-11-12).** This document preserves campaign inventories
-and supporting Tables S1--S8. Its route-card section A.20 records the earlier
-protocol; the revised manuscript and the separate figure supplement report
-the later scoped configurations and updated records. The current runner can
-use the gold domain to resolve candidate references for A0, A1b and A3; this
-limits their evidence-pack comparisons. The earlier and later route-card
-records do not establish a causal navigation benefit or semantic answer
-accuracy. Figures S1--S5 and Tables S9--S10 are supplied separately.
+**Reading note.** This inventory preserves campaign records and Tables S1--S8.
+The older manuscript, appendix and supplement sources cited below are archival,
+not the revised manuscript or its separate figure supplement
+(Figures S1--S7 and Tables S9--S17). Section A.20 records the earlier route-card
+protocol; the revised manuscript and figure supplement report the later
+scoped configurations. The later runner could use the gold domain to resolve
+candidate references for A0, A1b and A3, which limits their evidence-pack
+comparisons. Neither set of records establishes a causal navigation benefit
+or semantic answer accuracy.
 
 This document is the complete inventory of the functional, system-level and retrieval
 evidence produced for this project. The manuscript reports its test campaigns in prose
@@ -20,8 +21,10 @@ and in a small number of summary tables; the material here is everything else: w
 campaigns that the manuscript only summarises in a sentence, the full retrieval
 configuration matrix, and the campaigns whose results are negative, null or unmeasured.
 
-**Provenance rule.** Campaign numbers below are taken from the named artifacts; where
-an explicitly identified re-analysis or correction is provided, its scope is stated.
+**Provenance rule.** Campaign numbers below are taken from the cited artifacts.
+References such as A.7 / Src 1 resolve to exact paths and run identifiers in the
+separate `supplementary-inventory-source-map.md` file. Where an explicitly identified
+re-analysis or correction is provided, its scope is stated.
 Where an artifact is internally inconsistent, the inconsistency is stated rather than
 silently resolved. Where an artifact reports `null`, `NOT measured`, or a failed check,
 that is reproduced as such.
@@ -35,7 +38,7 @@ this key retain their original A/B/C labels.
 **Scope.** All results come from a single self-hosted instance on the authors' machine,
 driven through the official harness API and the project's own MCP tool layer. The
 counts of test cells are given per campaign so the reader can judge the weight of each
-result. Section C states the limitations that apply across all of the evidence. Part D
+result. Part C states the limitations that apply across all of the evidence. Part D
 contains supporting tables S1-S8 and later campaign records; the manuscript's
 Data-availability statement points to this document for the campaign inventory,
 per-question results, and lifecycle and ablation tables.
@@ -45,9 +48,9 @@ per-question results, and lifecycle and ablation tables.
 ## Part A. System-level test campaigns
 
 Each subsection states what was tested, at what scale, the headline result with the
-actual numbers, and the artifact path.
+actual numbers, and the artifact references.
 
-### A.1 Eighteen-scenario end-to-end harness campaign (2026-10-12)
+### A.1 Eighteen-scenario end-to-end harness campaign
 
 **What was tested.** The full agent surface, in three independent stages, against the
 live deployment: Stage A drove the agent/chat surface with the platform's native engine
@@ -90,9 +93,9 @@ ingested through the third engine had no graph node (graph overview reported
 `doc_count` 2 where 3 documents existed); (v) diagnostic prompts trigger a six-skill
 pre-check that was killed at 30 s, so production calls need an explicit timeout.
 
-**Artifact.** `review/fulltest-20261012/SUMMARY.md`
+**Artifact.** Campaign summary (A.1 / Src 1).
 
-### A.2 Archived three-lane stability suite, 27 runs (2026-09-30)
+### A.2 Archived three-lane stability suite, 27 runs
 
 **What was tested.** Three retrieval behaviours (vector-first, catalogue-first, hybrid)
 crossed with three question types and repeated over three rounds, through the chat API
@@ -138,16 +141,14 @@ the session traces fall in the final answer-synthesis window (no cross-turn prom
 on the model route used) and not in tool execution; tool-side execution was within
 1-33 s in every case.
 
-**Artifact.** `review/stability-multiround-20260930/REPORT.md` and the 27 run files
-`review/stability-multiround-20260930/results/r{1,2,3}_{attention,seismology,pickles}_{A,B,C}.json`;
-runner `review/stability-multiround-20260930/run_stability.py`.
+**Artifacts.** Original report (A.2 / Src 1), 27 run files (A.2 / Src 2) and
+runner (A.2 / Src 3).
 
-**Current rerun.** The manuscript's Section 8.7 reports the 2026-10-13 rerun of the same
-design (`review/stability-multiround-20261013/results`): 27/27 HTTP 200, 27/27
-lane-compliant, wall-clock 14.9--182.0 s. Its per-cell times differ from the archived
-2026-09-30 table above; the success pattern is the same. The two tables are not pooled.
+**Historical rerun.** A later rerun of the same design (A.2 / Src 4): 27/27 HTTP 200,
+27/27 lane-compliant, wall-clock 14.9--182.0 s. Its per-cell times differ from the
+original table above; the success pattern is the same. The two tables are not pooled.
 
-### A.3 Concurrency and load campaign (2026-09-23)
+### A.3 Concurrency and load campaign
 
 **What was tested.** Nine phases (S0-S8): endpoint baselines, write concurrency, large
 single documents, parallel real PDF parses, streaming and background-task fan-out, a
@@ -190,7 +191,7 @@ recovery after 70 s. Footprint after the campaign: backend worker RSS 981 MB and
 CPU, BFF Node process RSS 103 MB. Post-test sanity checks 5/5; cleanup removed one library
 and 23 documents.
 
-**Artifact.** `review/stress-20260923/STRESS-REPORT.md`
+**Artifact.** Stress report (A.3 / Src 1).
 
 ### A.4 Paper acquisition campaign
 
@@ -206,15 +207,13 @@ reliable shared audit date. Neither a 21-paper failure count nor the individual
 failure stages can be inferred from these counts. The state file has no per-paper parse
 status or error text. Reports mention difficulty with formula-dense scanned papers and
 a tool-layer crash followed by restart from a checkpoint; neither is a quantified
-explanation of the difference. In a separate November 14--15 disk inventory, each of
+explanation of the difference. In a separate, later disk inventory, each of
 the 100 targets had at least one stored part; that observation does not establish
 complete paper coverage or retrieval quality.
 
-**Artifact.** `paper-kbs/experiments/results/exp10_ingest_state.json` (knowledge base
-`6a3c45f2-a1a1-4ce7-b64d-7a5a2f293bb5`, parse task `40f6fd42930d`, `parse_task_done`
-true, 10 entries in `saved`, 91 entries in `saved_all`);
-`paper-kbs/experiments/results/exp10_papers_toollayer.json` (`n_docs` 79); and
-`review/_exp_rerun_20261114/disk_inventory.json` (later disk inventory).
+**Artifacts.** Ingest state (A.4 / Src 1: `parse_task_done` true, 10 entries in `saved`,
+91 entries in `saved_all`); tool-layer results (A.4 / Src 2: `n_docs` 79); and later disk
+inventory (A.4 / Src 3).
 
 ### A.5 Fifty-paper / twenty-six-domain ingest and the 30,000-character tier
 
@@ -253,10 +252,9 @@ the literal phrase checked for ("precipitation efficiency") fell outside the ret
 chunk window because the answer sentence sits in a continuation paragraph cut by the
 30,000-character boundary. This is a chunk-window effect, not a wrong-library retrieval.
 
-**Artifacts.** `benchmark-suite/results/BENCHMARK-30000chunk-20260918.md`;
-`benchmark-suite/results/ingest_report.json` (per-record tag and verification flags);
-`paper-kbs/notes/functional-test-evidence-2026-10-12.md` (campaign summary);
-`paper-kbs/tex/journal_20p/n8a_eval.tex`.
+**Artifacts.** Chunk-tier benchmark report (A.5 / Src 1); ingest report with per-record
+tag and verification flags (A.5 / Src 2); campaign summary (A.5 / Src 3); and archived
+manuscript evaluation (A.5 / Src 4).
 
 ### A.6 Three-hundred-and-twenty-two-part reorganisation campaign
 
@@ -291,10 +289,8 @@ were identical before and after. After the description upgrade and forced re-ind
 same fixed set improved to 49/50 = 98% with MRR 1.00. The newly ingested 50 papers were
 100% retrievable at the 100-paper scale on both channels (50/50, MRR 1.0).
 
-**Artifacts.** `paper-kbs/notes/functional-test-evidence-2026-10-12.md` (the campaign's
-per-check counts and its two honesty notes);
-`benchmark-suite/results/R2-SCALING-20260921.md` (the before/after scaling comparison);
-`paper-kbs/tex/journal_20p/n8a_eval.tex`.
+**Artifacts.** Per-check counts and the two honesty notes (A.6 / Src 1); the before/after
+scaling comparison (A.6 / Src 2); and archived manuscript evaluation (A.6 / Src 3).
 
 ### A.7 Cross-lingual ingestion campaign
 
@@ -306,7 +302,7 @@ Membership and ingestion success are computed over all 400 pages per language; s
 completeness and self-retrieval Hit@1 use a 40-page or 40-query sample per language.
 
 **Headline result.** Round 2 reproduced round 1 bit-for-bit, so one column is shown.
-This table is **Table S2** of the manuscript appendix (Part D).
+This table is **Table S2** of this inventory (Part D), reproduced from the archived appendix.
 
 | Language | Ingestion success | KB membership accuracy | Storage completeness | Self-retrieval Hit@1 |
 |---|---:|---:|---:|---:|
@@ -321,24 +317,21 @@ source category labels, not against any naming convention derived by the ingest 
 it is the one placement-correctness measurement in the manuscript that does not depend on
 filename cues.
 
-**Artifacts.** `paper-kbs/tex/journal_20p/_appendix-archived/n_appendix_tables.tex`
-(Table S2; manuscript source before the 2026-10-16 revision);
-`paper-kbs/tex/journal_20p/n8a_eval.tex`;
-`paper-kbs/tex/journal_20p/n4_acquisition.tex`. The underlying run outputs are retained under
-`benchmark-web/benchmark/results/benchmark/`, which lives in the web-repository checkout
-and not in this repository; the numbers above are therefore taken from the manuscript
-table that reports them.
+**Artifacts.** Archived Table S2 from the manuscript before revision (A.7 / Src 1),
+archived evaluation (A.7 / Src 2) and acquisition section (A.7 / Src 3). The underlying
+run outputs (A.7 / Src 4) are retained in the separate web-repository checkout, not in
+this repository; the numbers above are therefore taken from the manuscript table that
+reports them.
 
-### A.8 Sixteen-skill lifecycle scenarios (2026-09-24)
+### A.8 Sixteen-skill lifecycle scenarios
 
 **What was tested.** Every knowledge-base skill, exercised end to end through the
 project's own stdio MCP client against a live backend and web instance, using two
 disposable libraries that were created for the test and deleted afterwards.
 
-**Scale.** 16 skills, 109 real tool calls. Two test libraries
-(`E2E-SkillTest-1457` = `95f4e9a1-b24d-43c1-b94d-04c55d90b5d1`, `E2E-SkillTest-Dst-1457`
-= `c2e2bf92-db86-48f5-96f8-7ac9b9931f67`), 94 registered tools verified on that
-date (the current server registers 95; one tool was added afterwards). Pre-existing
+**Scale.** 16 skills, 109 real tool calls. Two test libraries (A.8 / Src 3),
+94 registered tools verified in this campaign (a later server version registered 95
+after one tool was added). Pre-existing
 libraries were read-only and the final listing showed the original 10 libraries
 unchanged.
 
@@ -374,8 +367,7 @@ secondary defects.
   with a unique token returned the fixture at rank 1, so the weakness is tokenisation on
   generic terms and not a missing index.
 
-**Artifacts.** `benchmark-suite/results/SKILL-E2E-REPORT.md`;
-raw call log `.e2e/skilltest/calls.jsonl` (109 calls).
+**Artifacts.** Lifecycle report (A.8 / Src 1) and raw call log (A.8 / Src 2; 109 calls).
 
 ### A.9 Static skill and tool evidence chain
 
@@ -409,9 +401,8 @@ directories and 94 registered tools, and its table lists exactly 19 skills (the 
 the standardisation artifact states 20 skills. This document reports both numbers as
 they stand in their respective artifacts rather than reconciling them.
 
-**Artifacts.** `benchmark-suite/results/SKILL-AUDIT.md`;
-`benchmark-suite/results/SKILL-SMOKE.md`;
-`benchmark-suite/results/SKILL-STANDARD-AND-CHAT-LANE-TEST.md`.
+**Artifacts.** Structural audit (A.9 / Src 1), smoke report (A.9 / Src 2) and
+standardisation and chat-lane report (A.9 / Src 3).
 
 ### A.10 Isolated-environment ingest and index probe
 
@@ -436,9 +427,9 @@ exercised**; consequently the parse-quality gate, the split gate and the parsed-
 save path were not exercised either. All ingest testing in this probe used the direct
 document-creation path.
 
-**Artifact.** `benchmark-suite/results/SKILL-E2E-REPORT.md`
+**Artifact.** Lifecycle report (A.10 / Src 1).
 
-### A.11 Three-channel retrieval end-to-end campaign (2026-10-12)
+### A.11 Three-channel retrieval end-to-end campaign
 
 **What was tested.** The same three questions through three independent channels, so that
 the retrieval result and the answering surface can be separated:
@@ -465,8 +456,8 @@ hierarchical all-library, C hybrid), three channels.
   B = 66.4 s, C = 68.9 s. Per-cell: A 53.0 / 65.3 / 25.7 s, B 41.4 / 91.9 / 66.0 s,
   C 58.3 / 100.0 / 48.3 s (cm1 / cm2 / cm3).
 - **Channel 3: 12/12 gold cells.** Six scripted arm cells (3 modes x 2 in-corpus
-  questions) and six scripted baseline cells all hit the gold document. Against the 2026-09-26
-  baseline this is a large latency improvement: mode B 342 s / 234 s to 25.0 s / 10.2 s,
+  questions) and six scripted baseline cells all hit the gold document. Against the earlier
+  baseline (A.11 / Src 5) this is a large latency improvement: mode B 342 s / 234 s to 25.0 s / 10.2 s,
   mode C 1152 s / 1818 s to 37.3 s / 33.7 s. The lexical BM25 baseline returned 10/10
   documents for the two questions.
 
@@ -474,15 +465,13 @@ Channel 1 mean latencies were A = 47.0 s, B = 142.2 s, C = 51.2 s; the failing c
 was 353.5 s against 29.9-65.0 s for the other eight, and its engine time was 352.7 s. All
 nine cells were otherwise PASS.
 
-**Artifacts.** `review/retrieval-e2e-20261012/REPORT.md` and
-`review/retrieval-e2e-20261012/channel1_summary.json`;
-`benchmark-suite/results/runs/chatmodes-20261012T061102Z-5f9faac/CHAT-MODES-COMPARE.md`;
-`benchmark-suite/results/runs/run-20261012T062847Z-5f9faac/RETRIEVAL-COMPARE.md`.
+**Artifacts.** Campaign report (A.11 / Src 1), streaming summary (A.11 / Src 2),
+chat-mode comparison (A.11 / Src 3) and retrieval comparison (A.11 / Src 4).
 
 Note the difference in external baseline tables between the two runs is a corpus
-difference, not a contradiction: in `run-20261012T062847Z` the BM25 baseline
-was scored on a 100-document markdown corpus, and the chat-mode run reports the system arms while the retrieval
-run reports mode cells.
+difference, not a contradiction: in the retrieval comparison (A.11 / Src 4) the BM25
+baseline was scored on a 100-document markdown corpus, and the chat-mode run reports the
+system arms while the retrieval run reports mode cells.
 
 ### A.12 Stratified three-track run with the judge switched off
 
@@ -499,7 +488,7 @@ question set) with the evaluator deliberately left unconfigured.
 | B | 10 | 6 | 0.6 | 10 | 6 | 0.0 | 0 | 0 (None) | 42.7 | 0.1631 |
 | C | 10 | 5 | 0.5 | 9 | 6 | 0.0 | 0 | 0 (None) | 48.0 | 0.1803 |
 
-The run identifier is `experiment_chat_20260922-211000` using `qa_questions.json`. Two
+The run (A.12 / Src 2) used the archived question file (A.12 / Src 3). Two
 things must be recorded with these numbers. First, `notfound_accuracy` is `null` and the
 judge-derived "correct" field is `None` for every row, because the judge was not
 configured; the only populated stratum is "single" at 10 of 10 per track, so the three
@@ -508,10 +497,9 @@ across all three tracks is accompanied by zero should-refuse questions, and the 
 itself notes that refusal-accuracy-only rules are equivalent to "always refuse", so both
 directions must be reported together.
 
-**Artifact.** `benchmark-suite/results/stratified_grade_smoke.md` and
-`benchmark-suite/results/stratified_grade_smoke.json`
+**Artifacts.** Smoke report (A.12 / Src 1) and structured results (A.12 / Src 2).
 
-### A.13 Harness and honest-refusal campaign (2026-09-30)
+### A.13 Harness and honest-refusal campaign
 
 **What was tested.** Two things: a three-mode system-arm comparison against fixed gates,
 and a two-round harness reliability run over ten questions crossed with five methods.
@@ -522,14 +510,14 @@ self-check.
 
 **Headline result.**
 
-- System arms: run `chatmodes-20260930T143945Z-3ec2174` **passed 9/9 gates** (exit code
+- System arms: run (A.13 / Src 2) **passed 9/9 gates** (exit code
   0). Mode A: cm1 85.5 s / 6 turns, cm2 83.6 / 5, cm3 76.1 / 5. Mode B: cm1 196.9 / 17,
   cm2 142.2 / 9, cm3 316.0 / 19 (before the fix described below). Mode C: cm1 99.1 / 7,
   cm2 89.9 / 8, cm3 72.0 / 5. The two gold papers were hit verbatim and the out-of-domain
   question was refused with zero fabrication in all three modes.
-- Reliability run, round 1 (`run-20260930T165316Z`): gold 0.75, citation 0.75, mean
+- Reliability run, round 1 (A.13 / Src 3): gold 0.75, citation 0.75, mean
   41.5 s, 5.1 tools per question, over-refusal 0, errors 0, $3.75. Round 2
-  (`run-20260930T170730Z`): **gold 1.00, citation 1.00**, mean 34.1 s, 5.2 tools per
+  (A.13 / Src 4): **gold 1.00, citation 1.00**, mean 34.1 s, 5.2 tools per
   question, over-refusal 0, errors 0, $4.50. The self-check passed 6/6 in both rounds over
   50 units each (cost consistent, provenance complete).
 - Retrieval-only baseline cells (including a lexical BM25 baseline) achieved retrieval
@@ -551,7 +539,7 @@ self-check.
   (`JUDGE_ENDPOINT`/`JUDGE_KEY` unset), qrels, and significance testing. No significance
   claim is made from this campaign.
 
-**Artifact.** `benchmark-suite/results/PIPELINE-REPORT-20260930.md`
+**Artifact.** Pipeline report (A.13 / Src 1).
 
 ### A.14 Two-lane isolation test
 
@@ -581,15 +569,15 @@ and lane B (the retest is n=1 and variance is high), and no efficiency conclusio
 B (12-19 tools against 7-13 for lane A). It also records that 24 poor novel descriptions
 remained unfixed at the time of the run.
 
-**Artifact.** `benchmark-suite/results/SKILL-STANDARD-AND-CHAT-LANE-TEST.md`
+**Artifact.** Standardisation and chat-lane report (A.14 / Src 1).
 
-### A.15 Three-engine and three-channel cost campaign (2026-10-12)
+### A.15 Three-engine and three-channel cost campaign
 
 **What was tested.** What the same kind of task costs when it is delivered three different
 ways. First, three **engines** on one task set: the agent surface
 (`/api/kb/agent/chat`), the Claude harness (`engine=claude`) and the OMP harness
-(`engine=omp`). Second, the three **delivery channels** of the same day's three-channel
-campaign run over the same three retrieval modes.
+(`engine=omp`). Second, the three **delivery channels** of the contemporaneous three-channel
+campaign (A.11), run over the same three retrieval modes.
 
 **Scale.** 18 runs in the engine campaign (7 agent-surface scenarios, 6 Claude-harness
 scenarios, 5 OMP-harness scenarios); 9 runs each in channel 1 and channel 2 of the
@@ -600,11 +588,11 @@ answer gold-hit, zero fabricated citations.
 
 | Condition | Runs | Wall clock (s) | Turns | Cost per run |
 |---|---:|---|---:|---|
-| Agent surface (`/api/kb/agent/chat`) | 7 | 50.5-175.9 | 2-9 | $0.9-1.8 |
-| Claude harness (`engine=claude`) | 6 | 23.2-52.4 | 5-8 | $0.11-0.36 |
-| OMP harness (`engine=omp`) | 5 | 33.5-171.4 | 2-9 | $0.03-0.07 |
-| Channel 1 (streaming harness, `engine=claude`; 8 of 9 gates) | 9 | 29.9-353.5 | 5-8 | $0.12-0.25 |
-| Channel 2 (non-streaming chat API; 8 of 9 gates) | 9 | 25.7-100.0 | 4-11 | not metered |
+| Agent surface | 7 | 50.5-175.9 | 2-9 | $0.9-1.8 |
+| Claude harness | 6 | 23.2-52.4 | 5-8 | $0.11-0.36 |
+| OMP harness | 5 | 33.5-171.4 | 2-9 | $0.03-0.07 |
+| Channel 1 (streaming; 8 of 9 gates) | 9 | 29.9-353.5 | 5-8 | $0.12-0.25 |
+| Channel 2 (non-streaming; 8 of 9 gates) | 9 | 25.7-100.0 | 4-11 | not metered |
 
 The three engines separate by one to two orders of magnitude in cost at one quality tier
 (the agent surface $0.9-1.8, the Claude harness $0.11-0.36, the OMP harness $0.03-0.07). The
@@ -614,22 +602,17 @@ third channel of the same campaign is pure retrieval with no LLM call at all: 12
 method-question cells with the gold document present in all 12, 10.2-37.3 s against
 millisecond in-process calls for the lexical baseline, at zero token cost.
 
-**Artifacts.** `review/fulltest-20261012/SUMMARY.md` (the 18 engine runs, per scenario);
-`review/retrieval-e2e-20261012/channel1_summary.json` and
-`review/retrieval-e2e-20261012/REPORT.md` (channel 1);
-`benchmark-suite/results/runs/chatmodes-20261012T061102Z-5f9faac/CHAT-MODES-COMPARE.md`
-(channel 2); `benchmark-suite/results/runs/run-20261012T062847Z-5f9faac/RETRIEVAL-COMPARE.md`
-(channel 3, the pure-retrieval matrix);
-`paper-kbs/notes/functional-test-evidence-2026-10-12.md` (reproduces the three-engine row
-and cites the summary's line range); `paper-kbs/supplementary/supplementary-material.md` (this table; the
-manuscript no longer carries it). The cost rows are **not** carried by any `exp8b*` artifact: the `paper-kbs/experiments/results/exp8b*.json`
-glob resolves to exactly one file, `paper-kbs/experiments/results/exp8b_absent_agent.json`,
-and that file carries the three absent-tier agent probes of B.7, not the cost table.
-
+**Artifacts.** Per-scenario summary for the 18 engine runs (A.15 / Src 1); channel 1
+summary and report (A.15 / Src 2 and A.15 / Src 3); channel 2 comparison (A.15 / Src 4);
+channel 3 pure-retrieval matrix (A.15 / Src 5); the campaign note that reproduces the
+three-engine row and cites the summary's line range (A.15 / Src 6); and the earlier
+supplementary inventory containing the cost table (A.15 / Src 7). The `exp8b*` file
+pattern (A.15 / Src 8) resolves to exactly one file: it carries the three absent-tier
+agent probes of B.7, not the cost table.
 
 ### A.16 The 30-cell answer grid: wall clock, tools and cost per cell
 
-**What was tested.** Per-cell time, tool count and cost for the original three-arm answer grid. The manuscript discusses it in Section 8.7 (E6) and plots marker presence in Figure 8. Supplementary Tables S14--S15 report question-level answer checks and aggregate answer and runtime results.
+**What was tested.** Per-cell time, tool count and cost for the original three-arm answer grid. Supplementary Figure S6 and Tables S14--S15 preserve the marker, answer and runtime checks. The later platform-only run in E6 is not part of this grid.
 
 **Scale.** 30 cells: ten questions (BQ01-BQ10) x three arms (P = platform read tools, F = file tools over the exported tree, C = chunk index over the 800-character mirror; the archived run tracks are a2, b and c respectively).
 
@@ -668,9 +651,11 @@ and that file carries the three absent-tier agent probes of B.7, not the cost ta
 | BQ09 | C (chunk) | 23.3 | 3 | 0.516 |
 | BQ10 | C (chunk) | 21.3 | 4 | 0.503 |
 
-**Artifacts.** `benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/track_*.json` (one file per cell; `latency_s`, `tool_call_count`, `total_cost_usd`); arm aggregates recomputed here. The question-level checks in Table S14 use `benchmark-suite/results/exp_r2_grade_corrected.json` for the same run.
+**Artifacts.** Original grid records (A.16 / Src 1; one file per cell; `latency_s`,
+`tool_call_count`, `total_cost_usd`); arm aggregates recomputed here. The question-level
+checks in Table S14 use the corrected grades for the same run (A.16 / Src 2).
 
-### A.17 Deployment-layer system arms (three questions, 2026-10-12)
+### A.17 Deployment-layer system arms (three questions)
 
 **What was tested.** Whether the public chat API delivers the same contracts when invoked as an external caller would. Three questions (an English methodology question, a Chinese clinical question, one out-of-corpus probe) crossed three deployment arms: S1 pinned the target shelf, S2 left the library unpinned, S3 pinned it with a hybrid directive.
 
@@ -682,14 +667,15 @@ and that file carries the three absent-tier agent probes of B.7, not the cost ta
 | S2 all-KB librarian | 353.5 s, fail | 43.2 s, pass | 29.9 s, abstain |
 | S3 hybrid | 43.1 s, pass | 45.6 s, pass | 65.0 s, abstain |
 
-**Artifacts.** `review/retrieval-e2e-20261012/` and the campaign records cited in the manuscript's Section 8.7; S2's failure is the oversized-catalog transport failure analyzed there.
+**Artifact.** The historical campaign archive (A.17 / Src 1) records S2's oversized-catalog
+transport failure. The revised manuscript's E7 (Section 8.8) notes that truncation case
+but reports separate, later deployment checks.
 
 ### A.18 Failure-mode catalogue
 
 **What was tested.** Not an experiment. This entry documents the provenance of the
-failure-mode catalogue (`tab:failures` in `paper-kbs/tex/n9_discussion.tex`), whose nine rows
-are production incidents recorded during the campaigns plus the defects those campaigns
-surfaced.
+failure-mode catalogue from the earlier manuscript (A.18 / Src 1). Its nine rows cover recorded production
+incidents and defects surfaced by the campaigns.
 
 **Scale.** Nine failure modes. The chapter names three early production incidents (a
 corrupted index segment that made one library silently un-retrievable across lanes, an
@@ -704,38 +690,35 @@ exist); graph node not created (a library reports two of three documents); and a
 that outlives its task (a finished build still reports `running`).
 
 **Headline result, stated as a provenance limit.** No single catalogue artifact exists.
-The catalogue is compiled from the incident logs held in `paper-kbs/notes/`, and those notes
+The catalogue is compiled from the incident notes, and those notes
 in turn cite the campaign artifacts that recorded each incident. The four notes actually
 found to carry it are:
 
-- `paper-kbs/notes/review-round3-2026-10-09.md` — the request that produced the table
+- A.18 / Src 2 — the request that produced the table
   (consolidate the incident log into failure -> detection signal -> fix -> residual risk) and
   the item tracking it.
-- `paper-kbs/notes/review-2026-10-08.md` — the Windows driver-contention incident (the
+- A.18 / Src 3 — the Windows driver-contention incident (the
   end-to-end regression from 68 s to 27 min).
-- `paper-kbs/notes/restructure-plan-2026-10-12.md` — the out-of-memory indexing run that
+- A.18 / Src 4 — the out-of-memory indexing run that
   returned an empty payload in a success envelope.
-- `paper-kbs/notes/functional-test-evidence-2026-10-12.md` — the campaign defects: the
+- A.18 / Src 5 — the campaign defects: the
   three-source check that found `chunk_count=18` where 9 chunks exist, the graph node that
   was not created, and the graph-build task left reporting `running`.
 
-The campaign artifacts those notes cite are
-`benchmark-suite/results/SKILL-E2E-REPORT.md`, `benchmark-suite/results/graph_stats.json`
-and `benchmark-suite/results/tags_report.json`. Rows in the catalogue that no note in
-`paper-kbs/notes/` traces to a recording artifact are reported here as carried only by the
-chapter's own incident log, not as independently recorded.
+The campaign artifacts those notes cite are the lifecycle report (A.18 / Src 6),
+graph statistics (A.18 / Src 7) and tag report (A.18 / Src 8). Rows in the catalogue that
+no note traces to a recording artifact are reported here as carried only by the chapter's
+own incident log, not as independently recorded.
 
 **Artifacts.** No dedicated catalogue artifact; the carrier files are the four notes listed
-above, with `benchmark-suite/results/SKILL-E2E-REPORT.md`,
-`benchmark-suite/results/graph_stats.json` and `benchmark-suite/results/tags_report.json`
-behind them.
+above, with the cited campaign artifacts behind them.
 
 ---
 
 ## Part B. Retrieval evaluation matrix
 
 Every retrieval configuration the project has measured, with its corpus, question count,
-metrics and artifact path. Metrics are `hit@5 / recall@5 / MRR` unless a row states
+metrics and artifact references. Metrics are `hit@5 / recall@5 / MRR` unless a row states
 otherwise. Rows are grouped by corpus and experiment, not by claim.
 
 ### B.1 Five configurations on the 42-document corpus
@@ -752,7 +735,7 @@ build took 0.61 s.
 | fusion_only | 0.9375 | 0.9375 | 0.85625 | 0.062 | 0.066 |
 | hmrs_hybrid | 0.4375 | 0.40625 | 0.226042 | 0.542 | 0.581 |
 
-**Artifact.** `paper-kbs/experiments/results/exp1_summary.json`
+**Artifact.** Retrieval summary (B.1 / Src 1).
 
 ### B.2 Judged / as-filter / judge-fuse decomposition on the same corpus
 
@@ -771,8 +754,7 @@ One remark that the artifacts themselves support rather than conceal: `judged`
 here reports the same values as `hmrs_hybrid` in B.1 to five decimal places, so the two
 names denote the same measurement and should not be counted twice.
 
-**Artifacts.** `paper-kbs/experiments/results/exp5_judge_filter.json`;
-`paper-kbs/experiments/results/exp1_summary.json`
+**Artifacts.** Judge-filter replay (B.2 / Src 1) and retrieval summary (B.2 / Src 2).
 
 ### B.3 Threshold selection on the same corpus (leave-one-out)
 
@@ -784,7 +766,7 @@ Q11 is the only fold that selected 0.15, and it is the only fold whose holdout g
 document was not kept. Every fold kept the gold document at a fixed 0.20 cut, which is the
 artifact's justification for not adopting the leave-one-out threshold.
 
-**Artifact.** `paper-kbs/experiments/results/exp6_loo_margin.json`
+**Artifact.** Leave-one-out margin results (B.3 / Src 1).
 
 ### B.4 Same configurations on the paraphrase grid (16 questions, one paraphrase each)
 
@@ -803,7 +785,7 @@ Each of the 16 questions was re-asked once in different words.
 Under rewording `fusion_only` and `filter_only` hold their B.1 hit@5 while BM25 and the
 two-stage lane lose ground; the judged configuration's MRR falls furthest (0.226 to 0.189).
 
-**Artifact.** `paper-kbs/experiments/results/exp6_paraphrase.json`
+**Artifact.** Paraphrase results (B.4 / Src 1).
 
 ### B.5 Six configurations on the derived library (79 document records)
 
@@ -826,7 +808,7 @@ appears in the answer or trace in all arms of the separate A.19 grid. Per-questi
 2.253, BQ02 0.621, BQ03 0.233, BQ04 0.187, BQ05 0.242, BQ06 0.185, BQ07 0.171, BQ08
 0.178, BQ09 0.192, BQ10 0.206; candidate counts were 10-12 and kept counts 5-11.
 
-**Artifact.** `paper-kbs/experiments/results/exp10_papers_toollayer.json`
+**Artifact.** Derived-library tool-layer results (B.5 / Src 1).
 
 ### B.6 Four-lane agentic grid
 
@@ -850,9 +832,8 @@ cites a document (citation 0.0) and its fact-marker rate falls from 0.5 to 0.3 b
 rounds, i.e. the closed-book control is unstable as well as inaccurate. Individual run
 records exist for every cell.
 
-**Artifacts.** `paper-kbs/experiments/results/exp2_lanes/summary.json`,
-`.../summary_gen.json`, `.../run_{search,librarian,hybrid,bare}-Q{2,4,6,7}.json`;
-`paper-kbs/experiments/results/exp2_lanes_rep2/summary.json` and its run files.
+**Artifacts.** First-round summary (B.6 / Src 1), generated summary (B.6 / Src 2) and
+first-round run files (B.6 / Src 3); second-round summary and run files (B.6 / Src 4).
 
 ### B.7 Abstention runs
 
@@ -883,26 +864,29 @@ read — rather than performed by a single hybrid tool; the answer text times th
 lanes at **1.67 s**. The vector and experience channels are recorded as unavailable in the
 *first* of the three runs, not the third.
 
-**Artifacts.** `paper-kbs/experiments/results/exp4_abstention/run_{hybrid,librarian,search}-O{1,2}.json`;
-`paper-kbs/experiments/results/exp8b_absent_agent.json`
+**Artifacts.** Six agent-run records (B.7 / Src 1) and the separate absent-tier agent
+records (B.7 / Src 2).
 
 ### B.8 Out-of-corpus probes at the tool layer
 
 Four out-of-corpus questions were run through the tool layer alone (no LLM answer) to see
 how many candidates survive the gate, out of 12.
 
-| Probe | Topic | Vector top score | Candidates above 0.35 | Merged | Kept of 12 | Reads | Latency (s) |
-|---|---|---:|---:|---:|---:|---:|---:|
-| O1 | lithium battery thermal runaway | 0.596 | 4 | 43 | 11 | 5 | 0.7 |
-| O2 | child vaccination schedule | 0.397 | 8 | 42 | 11 | 5 | 0.15 |
-| O3 | Python multiprocessing vs threading | 0.511 | 10 | 43 | 9 | 5 | 0.16 |
-| O4 | injection-mould vent design | 0.538 | 7 | 43 | 11 | 5 | 0.16 |
+O1--O4 concern lithium battery thermal runaway, child vaccination schedules,
+Python multiprocessing versus threading, and injection-mould vent design, respectively.
+
+| Probe | Vector top score | Candidates above 0.35 | Merged | Kept of 12 | Reads | Latency (s) |
+|---|---:|---:|---:|---:|---:|---:|
+| O1 | 0.596 | 4 | 43 | 11 | 5 | 0.7 |
+| O2 | 0.397 | 8 | 42 | 11 | 5 | 0.15 |
+| O3 | 0.511 | 10 | 43 | 9 | 5 | 0.16 |
+| O4 | 0.538 | 7 | 43 | 11 | 5 | 0.16 |
 
 The same artifact replays the candidate cut on the in-corpus question set, reporting how
 many of the 17 gold documents survive at each threshold: 8 at cut 0.05, 14 at 0.10, 16 at
 0.15, and 17 at every cut from 0.20 to 0.35.
 
-**Artifact.** `paper-kbs/experiments/results/exp3_abstention.json`
+**Artifact.** Tool-layer abstention results (B.8 / Src 1).
 
 ### B.9 Graded probes on a partially-answerable set
 
@@ -910,14 +894,14 @@ Six tool-layer probes on questions graded partial-answerable (PA) or absent (AB)
 three agent-layer probes on the same partial-answerable questions. Retained candidates are
 out of 12.
 
-| Probe | Kind | Merged | Kept | Top score | Span of kept scores | Latency (s) |
-|---|---|---:|---:|---:|---|---:|
-| PA1 | partial | 12 | 12 | 0.954 | 0.954 down to 0.666 | 7.83 |
-| PA2 | partial | 12 | 12 | 0.876 | 0.876 down to 0.511 | 1.44 |
-| PA3 | partial | 12 | 11 | 0.965 | 0.965 down to 0.55 | 0.68 |
-| AB1 | absent | 12 | 10 | 0.983 | 0.983 down to 0.5 | 0.67 |
-| AB2 | absent | 12 | 11 | 0.968 | 0.968 down to 0.813 | 0.64 |
-| AB3 | absent | 12 | 11 | 0.944 | 0.944 down to 0.592 | 0.79 |
+| Probe | Kind | Merged | Kept | Max score | Min kept score | Latency (s) |
+|---|---|---:|---:|---:|---:|---:|
+| PA1 | partial | 12 | 12 | 0.954 | 0.666 | 7.83 |
+| PA2 | partial | 12 | 12 | 0.876 | 0.511 | 1.44 |
+| PA3 | partial | 12 | 11 | 0.965 | 0.550 | 0.68 |
+| AB1 | absent | 12 | 10 | 0.983 | 0.500 | 0.67 |
+| AB2 | absent | 12 | 11 | 0.968 | 0.813 | 0.64 |
+| AB3 | absent | 12 | 11 | 0.944 | 0.592 | 0.79 |
 
 Every tool-layer probe retains 10-12 of 12 candidates and top scores reach 0.983 on a
 question the corpus cannot answer, which is the clearest single demonstration in this
@@ -925,7 +909,7 @@ project that a high vector score is not evidence of an answer. The agent layer o
 same partial questions is much slower and gives no turn counts: 47.9 s / 724 characters,
 65.9 s / 840 characters, 155.7 s / 774 characters.
 
-**Artifact.** `paper-kbs/experiments/results/exp8_graded_probes.json`
+**Artifact.** Graded-probe results (B.9 / Src 1).
 
 ### B.10 NLI second signal (first replay)
 
@@ -935,14 +919,14 @@ scoring signal over the same candidate pairs as the platform gate, n = 191 pairs
 | Quantity | Value |
 |---|---:|
 | NLI hit@5 / MRR | 0.3125 / 0.1375 |
-| Platform gate hit@5 / MRR (same pairs) | 0.4375 / 0.22604166666666667 |
+| Platform gate hit@5 / MRR (same pairs) | 0.4375 / 0.22604 |
 | NLI score, gold median | 0.0113 |
 | NLI score, non-gold median | 0.05285 |
 | NLI score, gold minimum | 0.0001 |
 | NLI score, non-gold maximum | 0.9992 |
-| Mann-Whitney p | 0.120243225159967 |
-| Cliff's delta | 0.22853279242731575 |
-| Spearman rho | -0.13420631455001675 |
+| Mann-Whitney p | 0.12024 |
+| Cliff's delta | 0.22853 |
+| Spearman rho | -0.13421 |
 
 The direction is wrong: the non-gold median is higher than the gold median, the
 correlation with gold rank is negative, and the separation is not significant at
@@ -950,7 +934,7 @@ p = 0.12024. One symbolic sub-check is also recorded: for Q6, gold documents con
 the literal string `3135` were 1 of 1 while non-gold documents containing it were 0 of 11.
 The artifact additionally carries a full out-of-corpus replay over the corpus documents.
 
-**Artifact.** `paper-kbs/experiments/results/exp7_second_signal.json`
+**Artifact.** Document-level NLI replay (B.10 / Src 1).
 
 ### B.11 Span-level NLI (second replay)
 
@@ -958,21 +942,21 @@ The same idea applied at span level rather than document level, over the same 19
 
 | Signal | hit@5 | MRR |
 |---|---:|---:|
-| platform gate | 0.4375 | 0.22604166666666667 |
+| platform gate | 0.4375 | 0.22604 |
 | NLI, head | 0.3125 | 0.1375 |
 | NLI, span | 0.1875 | 0.09375 |
-| rank ensemble | 0.3125 | 0.11145833333333333 |
+| rank ensemble | 0.3125 | 0.11146 |
 
 Span separation: gold median 0.4728 against non-gold median 0.91855 (gold minimum
 0.0002, non-gold maximum 0.999), Mann-Whitney p = 0.007414975017999724. The separation is
 significant and in the wrong direction, and span-level scoring is worse than head-level
 scoring as a ranker. Neither NLI replay improves on the platform gate.
 
-**Artifact.** `paper-kbs/experiments/results/exp9_span_nli.json`
+**Artifact.** Span-level NLI replay (B.11 / Src 1).
 
 ### B.12 Five-track by ten-question matrix
 
-Run `run-20260930T174948Z-3ec2174` crossed five tracks (`a2`, `bm25`, `vector`, `rrf`,
+The run (B.12 / Src 1) crossed five tracks (`a2`, `bm25`, `vector`, `rrf`,
 `rerank`) with ten questions, producing 50 rows. The run manifest records `n_rows` 50,
 total cost $8.6161, 22,300 output tokens, `prompt_version` v4-neutral, seed 0,
 `max_turns` 12, shuffled questions, `selfheal` true.
@@ -994,14 +978,13 @@ total cost $8.6161, 22,300 output tokens, `prompt_version` v4-neutral, seed 0,
 
 Three artifacts that would carry those metrics are absent: `judge.json` (L2 evaluation),
 `qrels_scores.json` (IR metrics) and `stats.json` (significance). Per-question records for
-all five tracks exist as `track_{a2,bm25,vector,rrf,rerank}_QK01..QK10.json`, so the raw
-material is present even though the summary table is not populated. This document records
-the absence of the metrics rather than substituting anything for them.
+all five tracks are available in B.12 / Src 1. The summary table leaves the unmeasured
+metrics blank rather than substituting other results.
 
-**Artifact.** `benchmark-suite/results/runs/run-20260930T174948Z-3ec2174/`
-(`REPORT.md`, `report.json`, `run_manifest.json`, `track_*_QK*.json`)
+**Artifact.** The five-track run archive (B.12 / Src 1) contains the reports, run manifest
+and per-question records.
 
-### B.13 Verification-gate ablation, ten questions (2026-10-12)
+### B.13 Verification-gate ablation, ten questions
 
 Three arms over one ten-question set and one **frozen shared candidate set**: `C-nogate`,
 the ungated control; `C-judge`, the gate applied to those frozen candidates; and
@@ -1010,7 +993,7 @@ candidate set is frozen before the arms diverge, the gate is the only difference
 conditions. An earlier protocol built around `kb_hybrid_search(enable_judge=...)` was
 superseded and is **not** reported here.
 
-**Scale.** Ten questions (`QK01`-`QK10`) from `benchmark-suite/data/papers/qa_quick10.json`
+**Scale.** Ten questions (`QK01`-`QK10`) from the archived question set (B.13 / Src 4)
 against the live five-library corpus, candidate cap 12, gate threshold 0.5 with criterion
 `auto` and `reference_mode` true, evidence pack budget 4000 characters. Thirty answer
 cells (three arms x ten questions), 30 answer calls, $1.0015 of metered answer cost. Eight
@@ -1019,11 +1002,9 @@ corpus, and both are excluded from the gold-level means.
 
 | Arm | Mean grade, all ten | Mean grade, eight gold-answerable | Gold docs surviving | Mean documents per cell | Mean latency (s) |
 |---|---:|---:|---:|---:|---:|
-| C-nogate (ungated control) | 1.8 | 1.0 | 8 of 8 | 12.0 | 6.92 |
-| C-judge (gate on frozen candidates) | 2.0 | 1.25 | 8 of 8 | 11.2 | 7.65 |
-| C-judge-seg (segment-granular evidence) | 1.3 | 0.375 | 8 of 8 | 11.2 | 6.37 |
-
-**Headline result.**
+| `C-nogate` | 1.8 | 1.0 | 8 of 8 | 12.0 | 6.92 |
+| `C-judge` | 2.0 | 1.25 | 8 of 8 | 11.2 | 7.65 |
+| `C-judge-seg` | 1.3 | 0.375 | 8 of 8 | 11.2 | 6.37 |
 
 - **The gate moved two of ten answers and left eight unchanged.** Paired against the
   control, `QK01` rose **0 to 5** and `QK03` fell **3 to 0**; the other eight questions are
@@ -1045,16 +1026,14 @@ corpus, and both are excluded from the gold-level means.
   and the pre-repair originals are retained in `repairs.json`.
 
 **Protocol deviation recorded in the artifact.** The planned gate,
-`kb_hybrid_search(enable_judge=...)`, is not registered on the shipped tool layer, so the
-ablation was rebuilt around `kb_laya_judge` applied to a frozen shared candidate set. The
+`kb_hybrid_search(enable_judge=...)`, was not registered in the test
+environment, so the ablation used `kb_laya_judge` on a frozen shared candidate set. The
 consequence for reading these numbers is stated in the artifact and repeated here: only
 the within-run contrast between the three arms is comparable to anything, and no number in
 this entry is comparable to a run of the superseded protocol.
 
-**Artifacts.** `paper-kbs/experiments/results/exp11_gate_ablation.json`;
-`paper-kbs/experiments/results/exp11/exp11-20261012-full/` (`cell_QK01..QK10.json`,
-`cand_QK01..QK10.json`, `repairs.json`);
-`paper-kbs/notes/exp11-gate-ablation-report.md`
+**Artifacts.** Aggregate results (B.13 / Src 1); per-cell, candidate and repair records
+(B.13 / Src 2); and the ablation report (B.13 / Src 3).
 
 ### B.14 Library-partition ablation
 
@@ -1067,12 +1046,14 @@ conditions did not have a controlled, matched search scope. Both
 (`top_k=10`, `score_threshold=0.0`, gate threshold 0.5) so that an empty
 result cannot be an artifact of the threshold.
 
-| Condition | hit@5 | hit@10 | Mean gold rank | Mean candidates | Mean kept after gate | Mean latency (s) |
-|---|---:|---:|---:|---:|---:|---:|
-| pinned-gold (correct library) | 1.0 | 1.0 | 1.0 | 2.75 | 2.75 | 0.462 |
-| pinned-other (routing mistake) | 0.0 | 0.0 | null | 7.125 | 6.875 | 0.487 |
-| flat (no library restriction) | 1.0 | 1.0 | 1.0 | 2.5 | 2.5 | 0.3 |
-| catalog-only (descriptions only) | 1.0 | 1.0 | 1.75 | 235.75 | 11.375 | ~0.0 |
+| Condition      | Hit@5 | Hit@10 | Gold rank | Candidates | Kept | Time (s) |
+|----------------|------:|-------:|----------:|-----------:|-----:|---------:|
+| Gold library   | 1.0   | 1.0    | 1.0       | 2.75       | 2.75 | 0.462    |
+| Other library  | 0.0   | 0.0    | null      | 7.125      | 6.875| 0.487    |
+| Unscoped       | 1.0   | 1.0    | 1.0       | 2.5        | 2.5  | 0.3      |
+| Catalogue only | 1.0   | 1.0    | 1.75      | 235.75     | 11.375| ~0.0    |
+
+Gold rank, candidate count, retained count and time are means.
 
 Denominators: `QK09` (unanswerable) and `QK10` (out of corpus) have no gold document in
 the corpus and are excluded from the hit and rank denominators
@@ -1096,25 +1077,23 @@ everything in every condition, so it did not provide scoping in this run. The
 n = 2 version of this experiment is retained separately as a superseded
 record.
 
-**Artifacts.** `paper-kbs/experiments/results/exp12_partition_ablation.json` (the
-reportable ten-question aggregate);
-`paper-kbs/experiments/results/exp12_partition_ablation_n2.json` (superseded);
-`paper-kbs/experiments/results/exp12/exp12-20261012-full/cell_QK01..QK10.json`;
-`paper-kbs/notes/exp12-partition-ablation-report.md`
+**Artifacts.** Reportable ten-question aggregate (B.14 / Src 1); superseded record
+(B.14 / Src 2); per-cell records (B.14 / Src 3); and the ablation report (B.14 / Src 4).
 
 ### B.15 The sixteen-question gold set
 
-**What was tested.** This entry documents the question set that is the denominator of every
-retrieval table in Part B and of **Table S3** of the manuscript appendix (Part D).
+**What was tested.** This entry documents the sixteen-question industrial set used
+for the tool-layer runs in B.1 and B.2. The questions are listed in **Table S3**
+of this inventory (Part D).
 
-**Scale.** Sixteen questions, `Q1`-`Q16`, defined once in
-`paper-kbs/experiments/kbcommon.py` (the `QUESTIONS` list, lines 195-292). Each entry carries
+**Scale.** Sixteen questions, `Q1`-`Q16`, defined once in the `QUESTIONS` list
+(B.15 / Src 1, lines 195-292). Each entry carries
 `qid`, `kb`, `text`, `gloss`, `gold_doc_substrings`, `fact_markers` and an `exp2` flag
 marking the four questions included in the agentic end-to-end experiment (`Q2`, `Q4`, `Q6`,
 `Q7`). The set is materialised in the artifacts that consume it:
-`paper-kbs/experiments/results/exp1_retrieval.json` holds 16 question ids x 7 methods = 112
-rows over a 42-document corpus (`corpus_docs`), and
-`paper-kbs/experiments/results/exp5_judge_filter.json` holds 16 rows keyed `Q1`-`Q16`.
+the retrieval results (B.15 / Src 2) hold 16 question ids x 7 methods = 112 rows over a
+42-document corpus (`corpus_docs`), and the judge-filter results (B.15 / Src 3) hold 16
+rows keyed `Q1`-`Q16`.
 
 **Headline result (provenance).** The questions are **author-written**, in Chinese, over the
 five demonstration knowledge bases, for a PV-module manufacturing and process-engineering
@@ -1127,19 +1106,17 @@ answers are unique filename fragments (`gold_doc_substrings`) rather than corpus
 judgements.
 
 **Inconsistency carried rather than resolved.** The comment block above the list
-(`paper-kbs/experiments/kbcommon.py`:190) still reads "Gold question set: 8 domain questions
+(B.15 / Src 1, line 190) still reads "Gold question set: 8 domain questions
 over the 5 production KBs" while the list itself defines sixteen. The set of record is the
 list; the stale comment is reported here as it stands.
 
-**Artifacts.** `paper-kbs/experiments/kbcommon.py` (the definitions);
-`paper-kbs/experiments/results/exp1_retrieval.json`;
-`paper-kbs/experiments/results/exp5_judge_filter.json`;
-`paper-kbs/tex/journal_20p/_appendix-archived/n_appendix_tables.tex`
-(Table S3; manuscript source before the 2026-10-16 revision).
+**Artifacts.** Question definitions (B.15 / Src 1); retrieval and judge-filter results
+(B.15 / Src 2 and B.15 / Src 3); and archived Table S3 from the manuscript before
+revision (B.15 / Src 4).
 
 ### B.16 Per-question rank table and its generator
 
-**What was tested.** The provenance of **Table S4** of the manuscript appendix (Part D), the
+**What was tested.** The provenance of **Table S4** of this inventory (Part D), the
 per-question best-gold-rank grid for the five reported tool-layer pipelines and two derived
 configurations. The generator also emits Dense and RRF columns from the same frozen
 artefact; those columns are not reproduced in this document.
@@ -1148,22 +1125,14 @@ artefact; those columns are not reproduced in this document.
 2-stage, Fusion, Hybrid, Filter). Each cell is the best gold rank inside the top-5
 window, or `--` where the gold document was not in that window.
 
-**Headline result (generator and inputs).** The table is produced by
-`paper-kbs/experiments/derive_appendix.py`, which reads exactly two inputs:
-`paper-kbs/experiments/results/exp1_retrieval.json` for the seven tool-layer pipelines
-(`bm25`, `dense`, `rrf`, `graph`, `twostage`, `fusion_only`, `hmrs_hybrid`) and
-`paper-kbs/experiments/results/exp5_judge_filter.json` for the two derived configurations
-(`filter_only`, `rrf_fuse`) replayed over the same logged pools. Question order comes from
-`QUESTIONS` in `paper-kbs/experiments/kbcommon.py`, and the script asserts the input shapes
-it depends on: 7 x 16 rows in the first file and 16 rows in the second. Its output is written
-to `paper-kbs/tex/journal_20p/_appendix-archived/tab_appendix_ranks.tex`, marked
-`Auto-generated ... do not edit`, and is reproduced as Table S4 in Part D.
-
-**Artifacts.** `paper-kbs/experiments/derive_appendix.py`;
-`paper-kbs/experiments/kbcommon.py`;
-`paper-kbs/experiments/results/exp1_retrieval.json`;
-`paper-kbs/experiments/results/exp5_judge_filter.json`;
-`paper-kbs/tex/journal_20p/_appendix-archived/tab_appendix_ranks.tex`
+**Headline result (generator and inputs).** The generator (B.16 / Src 1) reads exactly
+two result inputs: the retrieval artifact (B.16 / Src 3) for the seven tool-layer pipelines
+(`bm25`, `dense`, `rrf`, `graph`, `twostage`, `fusion_only`, `hmrs_hybrid`) and the
+judge-filter artifact (B.16 / Src 4) for the two derived configurations (`filter_only`,
+`rrf_fuse`) replayed over the same logged pools. Question order comes from `QUESTIONS`
+(B.16 / Src 2), and the script asserts the input shapes it depends on: 7 x 16 rows in the
+first file and 16 rows in the second. Its output (B.16 / Src 5) is marked
+`Auto-generated ... do not edit` and is reproduced as Table S4 in Part D.
 
 ---
 
@@ -1183,7 +1152,7 @@ retrieval probes. The two-lane test (A.14) is four questions, and its own retest
 The abstention runs (B.7) are two questions per lane. The gate ablation (B.13) is ten
 questions across three arms but only eight gold-answerable ones, and it was run once, so it
 carries no variance estimate either; the retrieval-mode ablation recorded at n=2
-(`exp12_partition_ablation_n2.json`) is retained only as a superseded record and
+(B.14 / Src 2) is retained only as a superseded record and
 **supports no claim at all**. Where a campaign ran multiple rounds (A.2, A.13) the rounds
 agree, but agreement across two or three rounds on one machine is not a reliability
 result.
@@ -1223,7 +1192,7 @@ limited fixture tests to operations not exercised in the evaluation:
   split is reported.
 - **Sub-library hierarchy.** The separate three-level fixture (E2, Table S9) passed
   creation, parent-to-child document moves, listing, reading and judging. The
-  parent-scope probe in `review/kb-capability-20261021/result.json` found a child
+  parent-scope probe (C / Src 1) found a child
   document. Neither check tests library re-parenting or generalises to all nested retrieval.
 - **Experience decay and meditation.** The decay cycle, the meditation induction, and the
   `apply_decay` path were never exercised end to end. The sixteen-skill campaign (A.8)
@@ -1259,16 +1228,16 @@ measured.
 ## Part D. Supporting tables and later campaign records
 
 Tables S1-S5 provide store, cross-lingual, question-set, rank and lifecycle
-detail. Their older LaTeX sources are archived at
-`paper-kbs/tex/journal_20p/_appendix-archived/n_appendix_tables.tex` (S1, S2, S3,
-S5) and `paper-kbs/tex/journal_20p/_appendix-archived/tab_appendix_ranks.tex`
-(S4); every value is copied from its source. S6-S8 report verifier-threshold
+detail. Their older LaTeX sources are the archived appendix (D / Src 1; S1, S2,
+S3, S5) and generated rank table (D / Src 2; S4); every value is copied from
+its source. S6-S8 report verifier-threshold
 and source-presence audits.
 
 ### Table S1. Stores and their principal contents
 
-Field names are the ones used by the implementation and by the audit tools
-(three-source consistency checks of the manuscript's Section 8.3).
+This historical table records the field names used by the implementation and
+its audit tools. See A.6 for the archived three-source consistency check and
+E2 (Section 8.3) of the revised manuscript for the separate lifecycle check.
 
 | Store | Contents |
 |---|---|
@@ -1281,20 +1250,21 @@ Field names are the ones used by the implementation and by the audit tools
 
 ### Table S2. Cross-lingual ingestion
 
-The manuscript cites the cross-lingual table as **Table S2**; it is the table in
-Section A.7 above (400 Wikipedia pages per language, first round; the second
-round reproduced these values bit-for-bit, so one column is shown).
+The cross-lingual results are in Section A.7 above (400 Wikipedia pages per
+language, first round; the second reproduced these values bit-for-bit, so one
+column is shown). The table retains its number from the archived appendix.
 
 ### Table S3. Gold-annotated questions over the five demonstration knowledge bases
 
 "Gold" lists unique filename fragments of the ground-truth documents. All
-sixteen serve the tool-layer experiment (manuscript Section 8.5); Q2, Q4, Q6 and
-Q7 also served the archived lane grid of Section 8.6.
+sixteen were used in the historical tool-layer runs (B.1 and B.2); Q2, Q4, Q6
+and Q7 were also used in the archived four-lane grid (B.6). The revised
+manuscript discusses the historical ordering diagnostic in E8 (Section 8.9).
 
 | # | Question (abridged, translated) | Gold document(s) | Design intent |
 |---|---|---|---|
 | Q1 | EVA encapsulation film lamination: how to set the temperature, pressure and time window; how to control cure degree | EVA process essentials; EVA hydro-thermal aging mechanism | multi-gold |
-| Q2 | EL inspection shows edge delamination: root cause and corrective actions | EL-2025-0317 delamination RCA report | incident to RCA |
+| Q2 | EL inspection shows edge delamination: root cause and corrective actions | EL delamination RCA report (S3 / Src 1) | incident to RCA |
 | Q3 | Why does humid aging of EVA generate acetic acid and corrode ribbons; moisture transport mechanism | EVA hydro-thermal aging mechanism | mechanism |
 | Q4 | Moisture-barrier behavior of POE encapsulant; lamination differences vs. EVA | POE process essentials | cross-material |
 | Q5 | Summer power drop at a PV plant: systematic troubleshooting order | Power-drop troubleshooting manual; O&M lessons | synonym gap ("drop" vs. "plunge") |
@@ -1314,10 +1284,9 @@ Q7 also served the archived lane grid of Section 8.6.
 
 Best gold rank for the five tool-layer pipelines (logged runs) and the two
 derived configurations (offline replay of the same logged HMRS-Hybrid pools).
-Fusion = fusion-only (no judge); Hybrid = the shipped HMRS-Hybrid judged
-ordering; Filter = judge-as-filter. `--` = gold absent from the top-5 window.
-Generated by `paper-kbs/experiments/derive_appendix.py`; question texts in
-Table S3.
+Fusion = fusion-only (no judge); Hybrid = the judged ordering in the historical
+HMRS-Hybrid wrapper; Filter = judge-as-filter. `--` = gold absent from the top-5 window.
+Generated by the script in B.16 / Src 1; question texts in Table S3.
 
 | Q | BM25 | Graph | 2-stage | Fusion | Hybrid | Filter |
 |---|---|---|---|---|---|---|
@@ -1338,6 +1307,8 @@ Table S3.
 | 15 | 1 | -- | 1 | 1 | 5 | 1 |
 | 16 | 1 | -- | 2 | -- | -- | -- |
 
+\Needspace{9\baselineskip}
+
 ### Table S5. Lifecycle operations exercised on disposable test libraries
 
 Merge and split were analysed but never executed.
@@ -1355,13 +1326,13 @@ Merge and split were analysed but never executed.
 
 
 
-### A.19 Controlled replication on a common substrate (2026-10-17)
+### A.19 Controlled replication on a common substrate
 
 **What was tested.** The 30-cell answer grid was repeated with every arm restricted to the same five domain libraries (322 stored parts), using different access interfaces. The platform and chunk arms query the libraries' vector collections (500-character segments); the file arm reads the same parts in full. P, F and D are the run tracks a2, b and c; D denotes the chunk arm called C in the revised manuscript. BQ06 was worded differently in the two grids, and the access substrates also changed; the comparison does not isolate an interface, substrate or wording effect.
 
-**Scale.** Ten questions (BQ01-BQ10) x three arms x one run per arm = 30 cells. Same model as the original grid (recorded as claude-opus-4-8[1m]), seed 0, 12-turn configuration; run `benchmark-suite/results/runs/rerun5-20261017`.
+**Scale.** Ten questions (BQ01-BQ10) x three arms x one run per arm = 30 cells. Same model as the original grid (recorded as claude-opus-4-8[1m]), seed 0, 12-turn configuration; run archived as A.19 / Src 1.
 
-**Headline result.** Gold-identifier coverage 10/10 in every arm; strict keyword coverage 7/7/8; alias-aware coverage 9/9/10; answers with at least one document-style marker 9/9/9 versus 9/7/2 originally (Section 8.7, E6; Figure 8; Supplementary Tables S14--S15).
+**Headline result.** Gold-identifier coverage 10/10 in every arm; strict keyword coverage 7/7/8; alias-aware coverage 9/9/10; answers with at least one document-style marker 9/9/9 versus 9/7/2 originally (Supplementary Figure S6 and Tables S14--S15). E6 (Section 8.7 of the revised manuscript) reports the separate, later platform-only run.
 
 | Q | Arm | Gold-ID | Strict | Alias | Markers (count) |
 |---|---|---|---|---|---|
@@ -1410,13 +1381,14 @@ the B.5 run on 79 derived-library records logged no top-five gold hit for BQ03.
 | Strict | 22 / 5 / 0 / 3 | 25/30 | 0.0625 |
 | Marker | 18 / 0 / 9 / 3 | 21/30 | 0.0039 |
 
-All five strict disagreements favour the original grid and all nine marker disagreements favour the common-substrate grid; alias coverage loses BQ08 in the P and F arms in the replication. Excluding BQ06 leaves 27 same-wording, same-arm pairs. In the same order (both / original only / replication only / neither), their counts are gold ID 27 / 0 / 0 / 0; alias 25 / 2 / 0 / 0; strict 22 / 3 / 0 / 2; and marker presence 16 / 0 / 8 / 3. These are descriptive single-run comparisons across different substrates, not evidence of semantic support or a causal effect. The historical script `paper-kbs/experiments/e5_replication_agreement.py` joins all 30 cells by identifier and writes `paper-kbs/experiments/results/e5_replication_agreement.json`; it does not exclude the changed BQ06 wording.
+All five strict disagreements favour the original grid and all nine marker disagreements favour the common-substrate grid; alias coverage loses BQ08 in the P and F arms in the replication. Excluding BQ06 leaves 27 same-wording, same-arm pairs. In the same order (both / original only / replication only / neither), their counts are gold ID 27 / 0 / 0 / 0; alias 25 / 2 / 0 / 0; strict 22 / 3 / 0 / 2; and marker presence 16 / 0 / 8 / 3. These are descriptive single-run comparisons across different substrates, not evidence of semantic support or a causal effect. The historical script (A.19 / Src 4) joins all 30 cells by identifier and writes the agreement results (A.19 / Src 5); it does not exclude the changed BQ06 wording.
 
 **Arm means.** Wall clock and cost: P 37.7 s / $0.672; F 15.2 s / $0.377; D 19.6 s / $0.524. These are single-run means.
 
-**Artifacts.** `benchmark-suite/results/runs/rerun5-20261017/` (per-cell records); `benchmark-suite/results/exp_rerun5_grade.json` (grades); `benchmark-suite/experiments/chat_tracks.py` (`RAG_BENCH_PIN_KB`, `RAG_BENCH_CORPUS_DIR`).
+**Artifacts.** Per-cell records (A.19 / Src 1), grades (A.19 / Src 2) and runner
+(A.19 / Src 3; `RAG_BENCH_PIN_KB`, `RAG_BENCH_CORPUS_DIR`).
 
-### A.20 Paired route-card audit (2026-11-02/03)
+### A.20 Paired route-card audit
 
 **Question.** How do two configured route-card probes differ before document
 retrieval and answer generation? This is not an isolated description
@@ -1473,11 +1445,12 @@ limitation stated above. Four out-of-domain probes per arm
 are too few for a stable abstention estimate. Empty evidence survivors in a
 probe do not demonstrate that the final assistant correctly abstained.
 
-**Artifacts.** `review/experiment-redesign-20261101/RESULTS.md`,
-`review/experiment-redesign-20261101/artifacts/final_bench/s4_traces_final.json`,
-`review/experiment-redesign-20261101/artifacts/final_bench/s6_stats.json`, and
-`review/experiment-redesign-20261101/artifacts/provenance/pdf_anchor_audit_20261104.json`.
-The manuscript's Figure 5(a) visualizes the paired routing result.
+**Artifacts.** Audit report (A.20 / Src 1), traces (A.20 / Src 2), paired statistics
+(A.20 / Src 3) and PDF anchor audit (A.20 / Src 4).
+Figure 5(a) of the revised manuscript shows this historical routing result alongside
+the later scoped follow-up and rerun.
+
+\Needspace{11\baselineskip}
 
 ### Table S6. Verdict-score threshold sweep (16 hybrid runs, 191 recorded scores)
 
@@ -1496,7 +1469,9 @@ Each row re-reads the recorded per-candidate scores and counts survivors at that
 | 0.90 | 49 | 25.7 | 4 | 25.9 |
 | 0.92 | 29 | 15.2 | 2 | 15.5 |
 
-**Artifacts.** `paper-kbs/experiments/results/exp1_retrieval.json` (`judge_scores.all` on the sixteen `hmrs_hybrid` rows) and `paper-kbs/experiments/kbcommon.py` (`QUESTIONS` for the gold substrings).
+**Artifacts.** Retrieval results (S6 / Src 1; `judge_scores.all` on the sixteen
+`hmrs_hybrid` rows) and question definitions (S6 / Src 2; `QUESTIONS` for the gold
+substrings).
 
 ### Table S7. Source-presence audit of matched facts (30 answer cells)
 
@@ -1510,11 +1485,12 @@ For every cell, the audit looks for annotated strict keywords both in the answer
 
 Across all 30 cells, 29 satisfy the check; the remaining cell (BQ06 in arm P) matched no keyword because its answer is in Chinese.
 
-**Artifacts.** `benchmark-suite/results/runs/run-20261013T094350Z-5f9faac/track_*.json` (answers); `benchmark-suite/data/papers/qa_questions_e5_corrected.json` (keywords); `benchmark-suite/data/corpus_md/*.md` (gold documents).
+**Artifacts.** Original grid answers (S7 / Src 1), keywords (S7 / Src 2) and gold
+documents (S7 / Src 3).
 
 ### Table S8. Source-presence audit of the replication grid (30 answer cells)
 
-Same lexical co-occurrence check as Table S7, run on `rerun5-20261017`. Every strict keyword matched by an answer occurs in the separately selected gold document in all 30 cells, including the BQ08 cells whose alias coverage fails. The audit does not check that the gold document was cited or that any cited source supports the answer.
+Same lexical co-occurrence check as Table S7, run on the common-substrate replication grid (A.19). Every strict keyword matched by an answer occurs in the separately selected gold document in all 30 cells, including the BQ08 cells whose alias coverage fails. The audit does not check that the gold document was cited or that any cited source supports the answer.
 
 | Arm | Cells with at least one matched keyword | Cells where every matched keyword occurs in the gold document |
 |---|---:|---:|
@@ -1524,7 +1500,8 @@ Same lexical co-occurrence check as Table S7, run on `rerun5-20261017`. Every st
 
 Across all 30 cells, 30 satisfy the check.
 
-**Artifacts.** `benchmark-suite/results/runs/rerun5-20261017/track_*.json` (answers); `benchmark-suite/data/papers/qa_questions_e5_corrected.json` (keywords); `benchmark-suite/data/corpus_md/*.md` (gold documents); `paper-kbs/experiments/source_presence_audit.py`.
+**Artifacts.** Replication grid answers (S8 / Src 1), keywords (S8 / Src 2), gold
+documents (S8 / Src 3) and audit script (S8 / Src 4).
 
 ### Release checksum manifest
 

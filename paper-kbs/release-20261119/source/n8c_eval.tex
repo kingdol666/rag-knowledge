@@ -1,0 +1,53 @@
+%% Answer diagnostics, deployment acceptance and historical boundary cases.
+\subsection{E6: Answer diagnostics}
+\label{sec:e5}
+\label{sec:agentic}\label{sec:abstention}\label{sec:composition}\label{sec:eval-agent}
+In the platform-only check, the system answered ten paper-corpus questions
+with the five relevant collections predefined. All ten responses completed
+and included the annotated paper identifier; nine contained all designated
+terms. Mean wall time was 131.2~s and total recorded cost was \$3.10. The
+broad marker rule counted all ten responses, but it also recognises bare
+identifiers. Masking the gold identifier left a marker in eight answers;
+a separate rule requiring an explicit repository label or link found three.
+Neither rule tests whether a citation resolves or supports a claim. This
+check used the original BQ06 prompt and had no concurrent file or chunk
+comparison. Tables~S14--S15 report the original and common-library grids
+as separate diagnostics.
+
+\subsection{E7: Deployment checks}
+\label{sec:sysarms}
+A one-document API fixture recorded six passing assertions.
+The keyword check matched the document name and the catalogue check found
+its collection. The vector assertion could pass on a response with an empty
+results list, so the pass flag does not establish a vector hit. The contract
+suite initially passed 11 of 13 checks; the two document-read checks passed
+when repeated after fixture creation. Separate answer probes used direct
+reads when the verifier was unavailable; they do not retest the verifier.
+These checks establish selected interface behaviour, not retrieval accuracy.
+In the separate catalogue-truncation case, an incomplete preview blocked
+an unpinned search and pagination recovered the affected query.
+
+\subsection{E8: Historical candidate-ordering diagnostic}
+\label{sec:e6}
+\label{sec:inflation}\label{sec:eval-verify}
+The archived industrial-corpus diagnostic illustrates why admission and
+ordering should be evaluated separately: sorting retained candidates by
+verifier score moved some gold documents outside the read window.
+Figures~S4--S5 and S7 report the historical ranks, separate score archive
+and limits of the replay. The deployment fixtures do not repeat this
+comparison or estimate the effect of the admission threshold.
+
+\subsection{E9: Operational boundaries}
+\label{sec:e7}
+In an earlier cross-library failure audit, global search skipped eight
+unreadable index collections but reported success. Reindexing restored a
+missing global hit in one tested library. A separate read-only inspection
+checked for persisted records in the application and storage layers,
+including session data, vector records, and collection metadata. Eleven
+assertions passed. The inspection did not include a restart or recovery test
+and did not retest the missed-library case.
+Historical load sweeps and fixed-candidate and library-scope probes remain
+separate (Table~S10 and the companion inventory). In particular, a request
+unfinished at the end of a load-test observation window is not necessarily
+an explicit timeout. The present evidence does not establish a current
+capacity limit, concurrent-write safety or crash recovery.

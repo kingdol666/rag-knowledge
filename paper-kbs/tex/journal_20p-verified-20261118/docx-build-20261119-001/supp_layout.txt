@@ -1,0 +1,382 @@
+ Supplementary Material for the HMRS
+                  manuscript
+
+Reading the supplementary material. The material is grouped by evidence type, and
+each result retains the corpus and unit reported in the main text. Figure S1 shows the service
+boundaries and shared state. Figures S2–S3 report answer-marker and out-of-corpus probe
+observations; Figures S4–S5 replay verifier roles and illustrate one logged query. Table S9
+indexes the management checks, Table S10 summarises the retrieval and answer designs, and
+Table S11 positions representative research strands. Tables S12–S13 give arm counts and paired
+contrasts for E5. The reruns reuse the same in-domain questions on later corpus states.
+Tables S14–S16 retain the question-level answer proxies, aggregate answer and runtime
+observations, and the DeepSeek-R1 answer-case comparison. For the 72 in-domain questions, a
+post-hoc check lowercased each question and its nonempty annotated target, then tested exact
+substring containment without other normalization. The 29 overlapping questions had frozen
+containment of 16/29 for A0 and 21/29 for A0h; the other 43 had 21/43 and 31/43, respectively.
+These non-random subsets are descriptive, not a causal test, and other lexical cues may remain in
+the non-overlap group. Table S17 records the design and provenance of every campaign named
+in the main text. Tables S1–S8 of the companion inventory document (shipped alongside this
+supplement) complete the campaign-level evidence index. Each trace CSV packages 76 question
+IDs per complete arm. The in-domain analyses exclude the four out-of-domain probes R1–R4.
+
+Figure S1. HMRS service boundaries and shared state. The browser reaches the Nuxt server,
+and agent tools use the MCP server. The evidence gate is an optional call.
+Figure S2. Answer checks for the original grid (30 cells,
+run-20261013T094350Z-5f9faac). P = platform agent, F = file tools, C = 800-character
+chunk replica. Gold-identifier coverage is at ceiling in all three arms; strict keyword coverage
+shows three misses, and recognised citation markers fall from nine to seven to two answers. A
+later grid on selected libraries gives nine marker-bearing answers in every arm; its C arm used
+the same five libraries and a different substrate. The marker pattern counts document-style
+syntax; it does not verify citation resolution or claim support. Wall-clock and cost figures for
+these cells are reported in Table S15. The common-substrate rerun changed BQ06’s question, so
+it is not a fully matched question set.
+
+Figure S3. Tool-layer out-of-corpus probes
+(paper-kbs/experiments/results/exp3_abstention.json) retained 9–11 documents after
+the 12-candidate cap; the merged pool had 42–43 candidates. Separately, dense-search chunks
+had scores above the 0.35 threshold. The two counts use different units (documents versus
+chunks). Thus the retrieval threshold did not identify semantic absence in these probes. In a
+separate answer-workflow probe family
+(paper-kbs/experiments/results/exp8b_absent_agent.json), three completed absent
+queries returned natural-language not-found reports and no fabricated citation was observed.
+The latter is an observation of instructed agent behaviour, not a server-side guarantee.
+
+Figure S4. Two replays over the logged hybrid pools analysed in the main paper’s verifier
+section; both reuse recorded candidate pools and verdict scores rather than retrieving again.
+(a) A relative-margin replay: keep the top five plus every candidate within m of the pool’s best
+score, m swept 0.05–0.35; the curve counts gold instances kept of the 17 that entered a pool;
+dashed rules mark m=0.15 (16 of 17) and m=0.20 (all 17); the mean candidate count rises from
+6.4 to 11.9 of the twelve submitted. (b) Verdict roles on identical candidates and identical
+scores: fusion order, verdict order and verdict filter; only the role differs, which makes the panel
+an attribution rather than a benchmark; the verdict-order role loses the gold, while the filter role
+leaves the fusion order intact. Hit@5 is 0.94, 0.44 and 0.94.
+
+Figure S5. Anatomy of one real query (Q2; single logged HMRS-Hybrid call). Each line is
+one of the 12 fused candidates; the shaded band is the top-5 window selected for source reading
+in the recorded run. (a) In the logged re-ranking, the judge scores five extruder-PLC telemetry
+reports 0.887–0.926 and the gold root-cause report 0.846, demoting it from fusion rank 1 to
+rank 8 — outside the read window. (b) The same call with the verdicts used only as a filter: all
+12 pass, the fusion order stands, and the gold is the first document read. Same pool, same scores,
+same verdicts; only the role of the induced ordering differs.
+Table S9. Functional checks on the management layer. Each row names the function, the test
+and its scale, the observed outcome, and the subsection that reports it. The numbers are those of
+the cited campaigns; none is re-estimated. A passing check means the stated property was
+observed on the stated scale, not that the function is exhaustively verified.
+
+Function     Test and scale               Observed outcome                                 Where
+Parse and    100-paper target; November   Each target had at least one stored part.        E1
+ingest       disk inventory               Earlier records contain 91 state-list names
+                                          and 79 documents enumerated and read in a        E1
+Descriptio   November re-check across     derived library; these are not a matched
+n audit      five libraries               funnel and have no reliable shared audit date    E1
+                                          328/328 parts had descriptions of at least 60    E1
+Parse        50-paper, 26-domain          characters without the recorded placeholder      E2
+quality      campaign                     pattern; six parts were non-target. The 100-     E1–E2
+                                          ID short-query probe is diagnostic: 72           E2
+Structural   50 papers at the 30,000-     searches were unscoped and 45 returned a
+split        character tier               chunk-copy name first                            E2
+                                          50/50 parsed and verified, all probes ok; 202    E2
+Near-        322-part corpus, 0.90        tags; 41 tag flags negative without blocking     E2
+duplicate    threshold                    ingestion                                        E4
+review                                    165 stored parts (9 whole papers, 156 split
+Campaign     Separate five-library        parts) in 2,672 s; storage 50/50; descriptions
+inventories  inventory and 400            and tags 165/165
+             Wikipedia pages per          35 candidate groups (0.90–0.975), zero true
+Content      language                     duplicates, nothing deleted
+audit and    322-part inventory; 33-part
+three-       storage sample               322 parts in the five-library inventory, not a
+source                                    count of the target papers. Expected titles in
+consistenc   16 scenarios on two          preassigned libraries: 350/400 (en), 400/400
+y            disposable libraries         (zh, ja)
+Lifecycle    Three-level disposable       322/322 archived content snippets nonempty,
+operations   fixture                      each at most 1,000 characters; 33/33 sampled
+Sub-library  316-tag registry; 658-node   storage checks across files, tree and
+hierarchy    graph                        metadata; separate rename defect fixed by re-
+Tags and                                  index
+graph        One heuristic smoke run;
+             one separate case report     create, move, delete and forced re-index
+Experience                                pass; two failures (task status, update check)
+store                                     create, parent-to-child move, listing, reading
+                                          and judging all pass
+                                          165 stored parts pass the tag check in 47.6 s;
+                                          four tag edges on one document move 4,675
+                                          to 4,679
+                                          13 draft creations reported; a later top-ranked
+                                          retrieval is report-level only, with its
+                                          successful raw response unavailable; the
+                                          empty-pool approval check did not exercise
+                                          approval
+Table S10. Design and headline results of the retrieval and answer experiments. Each row
+names the corpus and scale, the metric and the comparison it is read against, the headline
+outcome, and the claim that outcome supports together with its limit. Tables S12–S13 give the
+campaign-level E5 counts and paired contrasts.
+
+Exp    Corpus and scale      Metric and comparison     Headline result           Supports / limit
+E3     Ten-domain 72 q;      Scripted gold-domain      A0 72/72 vs nominally     Scripted probe,
+(RQ2)  route cards with and  choice                    name-only A3 37/72;       unlogged
+       without descriptions                            McNemar                   fallback;
+E5                                                                               configuration
+(RQ3)  72 questions in ten   Target-string             p=5.82 × 10−11            contrast, not a
+       domains across        containment, text                                   causal
+E6     three campaigns       volume and paired exact   A0h vs A0: 52/72 vs       description
+(RQ5)                        McNemar tests             37/72 frozen, 51/72 vs    effect
+                                                       39/72 in the first        Configuration
+E7     Two 30-cell grids,    Gold-ID in answer or      follow-up, 48/72 vs       contrasts on the
+(RQ5)  three interfaces;     trace, lexical coverage,  36/72 on November 17      same set. A0h–
+E8     later 10-question     citation markers                                    PD remains
+(RQ4)  run                                             Gold-ID 60/60 at          unresolved in
+                                                       ceiling; markers 9/7/2    the frozen and
+E9     Three arms × three    Cost, refusal behaviour,  (original), 9/9/9         first follow-up
+                             transport                 (common substrate);       records.
+       questions, public                               separate post-repair      Grid questions
+       API                                             tiered run 10/10 under    lack gold IDs;
+                                                       a broader marker rule     BQ06 changed
+       191 logged scores     Gold vs non-gold scores                             in the common
+       and a separate        and same-pool Hit@5       Question Q2 false         grid; marker
+       ordering archive                                refusal on a 131-doc      rules differ for
+                                                       catalogue (74.9 KB        the later run. ID
+       27-cell stability;    Wall clock and            over tool budget);        and markers do
+       90/180/270-request    completion within         repaired by pagination    not establish
+       read sweep;           observation window;       Median scores 0.88 vs     source support;
+       separate vector-only  answer grades; Hit@5                                one run per arm
+       trial; gate on/off    under each scope          0.86 ( p=0.26).           Transport and
+                                                                                 cost boundary;
+       n=10; pinned vs                                 Hit@5 was 7/16 in         one campaign
+                                                       verifier order and        plus replication
+       unscoped scope                                  15/16 in fusion order.
+                                                       Read sweep recorded       Historical
+                                                       no errors; in the         wrapper and one
+                                                       separate vector trial     corpus.
+                                                       111/270 were
+                                                       unfinished at 30          Single-instance
+                                                       seconds; no measured      envelope;
+                                                       gate benefit here; gold-  unfinished
+                                                       pinned Hit@5 1.0          requests are not
+                                                       (non-gold 0.0)            established
+                                                                                 timeouts; scope
+                                                                                 not isolated,
+                                                                                 filename
+                                                                                 confound
+Table S11. Positioning. Each strand addresses part of the path from stored document to
+answer. HMRS studies a knowledge document management workflow combining automatic
+collection assignment, content-informed acquisition, server-side checks when invoked, and
+answer-layer reporting; the evaluation measures selected components and boundaries in the
+main paper. References for the representative strands are provided in the main paper’s related-
+work section.
+
+Strand           Representative work        What it optimises           What it leaves to the
+Knowledge        Public knowledge bases;    An explicit ontology, or    deployment
+management       enterprise content         governance over a curated
+                 management                 collection                  Whether an answer drawn
+                                                                        from that collection is
+Document AI Layout-aware extraction;        Recovery of text, tables    supported by the text it
+                     MinerU                 and formulas from           cites
+                                            difficult layouts           Whether what was
+Retrieval        Dense, lexical and hybrid                              recovered is complete
+                 ranking                    Rank quality over a         enough to index, and
+                                            corpus that is assumed      where it is then stored
+Graph-           GraphRAG, LightRAG,        indexed                     Whether a top-ranked
+structured       RAPTOR                                                 candidate contains
+organisation                                Multi-hop and hierarchical  evidence for the claim it
+Self-reflective  Self-RAG, CRAG, FLARE;     relationships between       is used to support
+generation       judge-based verification   documents                   Evidentiary status: a
+                                            Evidence assessment or      graph edge is a navigation
+Agentic tool ReAct, MCP                     retrieval correction in     fact, not evidence
+use                                         generation workflows        How verification and
+                                                                        abstention interact with
+Structure-       DeepRead                   Access to retrieval tools   knowledge-base
+aware            CORI, ReDDE                behind a stable interface   acquisition and
+navigation                                                              organisation in a
+Collection                                  In-document section         knowledge-base
+selection                                   coordinates for locate-     workflow
+                                            then-read agentic search    Whether configured
+HMRS (this       Main paper, Sections 3–7   Ranking collections by      retrieval budgets and
+work)                                       estimated relevance before  failure states are exposed
+                                            within-collection search    and checked in a
+                                                                        particular deployment
+                                            A management-level          Cross-collection lifecycle
+                                            model: automatic            governance and selected
+                                            collection assignment,      reconciliation audits
+                                            three-source state checks,  Lifecycle governance and
+                                            a tiered access path, an    three-source
+                                            invoked server-side         reconciliation of the
+                                            evidence gate and agent     selected collections
+                                            answer reporting            Claims beyond the
+                                                                        measured corpora and
+                                                                        configurations, bounded
+                                                                        in the main paper
+                                                                        limitations
+Table S12. Annotated target-string containment in returned evidence packs on 72 in-domain
+questions across three recorded campaigns. A target occurrence in a sibling document may
+count, so this is a lexical proxy rather than gold-document retrieval or answer correctness.
+Wilson intervals describe the frozen counts. Agreement compares the first follow-up with the
+frozen run. The November 17 run used the live corpus after a service restart and reused the
+existing route-card libraries for A3. Mechanical read-all was incomplete in the first follow-up
+and omitted on November 17. Arms differ in more than one component and some reference
+lookups may use the gold domain.
+
+Configuratio                            Wilson 95%                 Agreemen
+n                                                   CI
+A0            Frozen       Frozen rate                  Follow-up       t    Nov. 17
+A0f            37/72            51.4%          [40.1,                          36/72
+A0h            45/72            62.5%         62.6]%    39/72      68/72       41/72
+PD             52/72            72.2%                                          48/72
+A1b            46/72            63.9%          [51.0,   44/72      71/72       42/72
+A2             39/72            54.2%         72.8]%                           36/72
+A3             25/72            34.7%                   51/72      71/72       23/72
+Read-all       33/72            45.8%          [61.0,                          26/72
+               72/72           100.0%         81.2]%    45/72      71/72
+                                                                                     –
+                                               [52.4,   39/72      72/72
+                                              74.0]%
+                                                        25/72      72/72
+                                               [42.7,
+                                              65.2]%    25/72      54/72
+
+                                               [24.8,   –               –
+                                              46.2]%
+
+                                               [34.8,
+                                              57.3]%
+
+                                               [94.9,
+                                            100.0]%
+
+Table S13. Exploratory paired annotated target-string containment contrasts in returned
+evidence packs on the 72 in-domain questions (two-sided exact McNemar tests, unadjusted; no
+familywise inference). The follow-up repeats the same questions and is not an independent
+sample; an archived same-corpus reproduction of the frozen content arms agreed with the frozen
+records on 71/72 questions for A0f, A0h and PD and on 68/72 for A0. A target occurrence may
+be in a sibling document; arms differ in multiple components and some lookups may use the gold
+domain.
+
+Run           Contrast                  First only      Second only                p
+
+Frozen        A0h vs. A0                        15                   0       0.000061
+Frozen        A0h vs. A1b                       13                   0        0.00024
+Frozen        A0h vs. PD                          7                  1        0.07031
+Frozen        PD vs. A1b                          7                  0        0.01563
+Frozen        A0f vs. A0                          8                  0        0.00781
+Frozen        A1b vs. A0                          4                  2          0.6875
+Frozen        A2 vs. A0                           6                 18          0.0227
+Follow-up     A0h vs. A0                        12                   0        0.00049
+Follow-up     A0h vs. A1b                       12                   0        0.00049
+Follow-up     A0h vs. PD                          7                  1        0.07031
+Follow-up     PD vs. A0                           6                  0        0.03125
+Follow-up     A0f vs. A0                          5                  0          0.0625
+Follow-up     A1b vs. A0                          1                  1
+Follow-up     A2 vs. A0                           5                 19              1.0
+Nov. 17       A0h vs. A0                        12                   0          0.0066
+                                                                              0.00049
+Table S14. Question-level answer proxies for the original 30-cell grid
+(run-20261013T094350Z-5f9faac). For each arm, s is strict keyword coverage, a is alias-
+aware coverage, and m is the count of recognised citation-like markers. The gold ID appeared in
+the answer or trace in all cells; this check is omitted from the table. None of the saved grid
+question texts contains its corresponding gold ID. The check searches answer text and recorded
+tool-call inputs and agent text, and ID presence does not establish source resolution. A marker
+does not verify source resolution or entailment.
+
+Q     Question (abridged)        Gold          Platform (P)       File (F)  Chunk replica (C)
+BQ01  Transformer attention and  1706.03762  s am            s am            s am
+BQ02  recurrence                 1801.00862  ✓✓ 6            ✓✓ 0            ✓✓ 5
+BQ03  NISQ definition and        2212.13138  ✓✓ 4            ✓✓ 3            ✓✓ 0
+BQ04  limitation                 1602.01876  ✓✓ 4            ✓✓ 1            ✓✓ 1
+BQ05  MultiMedQA and Flan-       1512.08067  ✓✓ 1            ✓✓ 1            ✓✓ 0
+BQ06  PaLM on MedQA              1503.07557  ✓✓ 0            ✓✓ 0            ✓✓ 0
+BQ07  Gene Ontology              2608.05850                  ✓✓ 4            ✓✓ 0
+BQ08  subdivisions               2408.09942  ×✓ 6
+BQ09  European growth and        2410.10669                  ✓✓ 2            ✓✓ 0
+BQ10  Unified Growth Theory      2604.01385  ✓✓ 1            ✓✓ 0            ✓✓ 0
+      Controls on precipitation              ✓✓ 2                            ✓✓ 0
+      extremes                               ✓✓ 2            ×✓ 6
+                                                                            ×✓ 0
+      MameLoshnLM and                        ✓✓ 3            ✓✓ 6
+      parameter scale                                                        9 10 6
+      Oxygen redox and cathode               9 10 29         9 10 23
+      capacity
+      Visual SLAM in dynamic
+      scenes
+
+      Tumour control under
+      immune evasion
+
+      All ten questions
+
+Table S15. Aggregate answer and runtime proxies for the original and common-substrate
+grids, plus a separate post-repair run. Lexical checks do not establish semantic support; each
+arm is one run. The post-repair run is a single current-state observation on a later stack and is
+not pooled with the grids. BQ06 changed in the common-substrate rerun. The post-repair marker
+count uses a broader recognition rule than the grid counts and is not directly comparable to
+them.
+
+Grid and arm          Gold-ID    Strict      Alias  Markers  Mean time      Cost (USD)
+Original, P            10/10     9/10        10/10    9/10   (s)            0.711/q
+Original, F            10/10     9/10        10/10    7/10                  0.487/q
+Original, C            10/10     9/10        10/10    2/10   52.6           0.527/q
+Common, P              10/10     7/10        9/10     9/10   22.2           0.672/q
+Common, F              10/10     7/10        9/10     9/10   24.5           0.377/q
+Common, C              10/10     8/10        10/10    9/10   37.7           0.524/q
+Current, post-repair   10/10     9/10                10/10   15.2           3.10 total
+                                               –             19.6
+                                                             131
+Table S16. Recorded answer-case comparison on one ingested DeepSeek-R1 paper. The cells
+summarise the case compendium; complete responses and source text are retained in the
+associated demonstration records. The prompt identified the library and paper and prescribed
+the tool steps. This non-blinded case study is not a measurement of autonomous selection,
+general answer accuracy or abstention.
+
+Question          OMP response summary                    Claude response summary
+Benchmark                                                 Same two values; distinguished R1-Zero
+scores            AIME 79.8%, MATH-500 97.3%;
+RL and rewards    distinguished R1-Zero                   GRPO and rule-based rewards; noted
+                  GRPO, rule-based rewards; noted reward  reward hacking
+R1-Zero training  hacking                                 RL without SFT; poor readability and
+                  RL without SFT; poor readability and    language mixing
+Electricity cost  language mixing                         No electricity amount reported;
+                  No electricity amount reported;         distinguished the $294K rental-based
+                  distinguished the $294K rental-based    training estimate
+                  training estimate
+
+Table S17. Evaluation design and provenance. Each row is a separate corpus, run and unit;
+counts are not pooled into a system-level accuracy. The 72-question follow-up reuses the frozen
+questions and reports 906 stored parts. The November arXiv observation is a filename-stem
+short-query identifier probe, not scoped title retrieval or a matched before–after comparison.
+The answer grids use one run per arm and lexical proxies; the verifier score archive and
+ordering archive are separate records.
+
+Campaign and      Material and unit         Comparison or              Measure and boundary
+state             42 documents in five      observation                Document Hit@5; same-pool
+Industrial        libraries; 16 questions   Hybrid candidates;         replay; one workstation
+corpus, 2026-                               verifier ordering
+10-13             100-paper target; 10                                 Gold-ID, strict/alias
+arXiv answer      questions                 Platform, file and chunk-  keywords, markers; one run
+grid, 2026-10-                              replica answer arms        per arm; the separate 322-part
+13                100 targets; 328 five-                               inventory is not a target-paper
+                  library parts including   Filename-stem ID           count
+arXiv, 2026-11-   six non-target parts; 10  diagnostic and scoped      At least one disk part per
+14/15             questions                 ten-question vector check  target; IDs found in probe
+                                                                       result names; 72/100 probes
+Wikipedia         400 pages per language;   Ingestion into             unscoped, 45 chunk-copy-
+ingestion         40 excerpt queries per    preassigned English,       first; not a matched rerun
+                  language                  Chinese and Japanese       Expected-title coverage and a
+Routing, frozen                             libraries                  top-three self-retrieval check
+and follow-up     72 in-domain questions;   Description-layer and
+                  138 documents; 879        content-layer              Gold-domain choice and
+Answer grids      parts (follow-up 906)     configurations             annotated target-string
+                                                                       containment in returned
+                  10 questions; 30 cells    Platform, file and chunk-  packs; multiple components;
+                  per grid                  replica arms; common       sibling matches may count;
+                                            substrate                  same questions, not
+                                                                       independent
+                                                                       Gold-ID, strict/alias
+                                                                       keywords, markers; one run
+                                                                       per arm; lexical proxies, not
+                                                                       semantic support
+Campaign and      Material and unit         Comparison or           Measure and boundary
+state             191 scores from 16        observation             Medians and Hit@5; separate
+Verifier archive  hybrid runs; 17 gold and  Score distribution and
+                  174 non-gold              same-pool ordering      archives; exploratory p
+
+                                                                    values; filtering never
+                                                                    activates
+

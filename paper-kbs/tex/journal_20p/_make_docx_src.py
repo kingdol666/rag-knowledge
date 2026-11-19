@@ -1,202 +1,265 @@
 #!/usr/bin/env python3
-"""Print a pandoc-friendly flattened LaTeX source for the Word conversions.
+"""Prepare a Pandoc LaTeX input from an already compiled HMRS manuscript.
 
-Read-only: the script only reads the manuscript sources, the compiled .aux
-label map and the .bbl bibliography, then prints the patched single-file
-LaTeX to stdout. The caller redirects stdout to a literal path, e.g.
-    python -X utf8 -I _make_docx_src.py main > _docx_build/main_docx.tex
-Modes: main | supp
+Run as _make_docx_src.py main or _make_docx_src.py supp. The converter reads the
+matching aux file and, for main, the bibliography produced by BibTeX. Render
+the included PDFs to same-named PNGs in figs/ before Pandoc reads the output.
 """
 from __future__ import annotations
 
+import argparse
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+WORD_TEXT_WIDTH_CM = 16.5
 
-MAIN_FILES = [
-    "n1_intro.tex", "n2_related.tex", "n3_overview.tex", "n4_acquisition.tex",
-    "n5_organization.tex", "n6_retrieval.tex", "n7_implementation.tex",
-    "n8a_eval.tex", "n8b_eval.tex", "n8c_eval.tex", "n9_discussion.tex",
-    "n10_threats.tex", "n11_conclusion.tex", "n_back.tex",
-]
-
-PREAMBLE = """\\documentclass[11pt]{article}
-\\usepackage[utf8]{inputenc}
-\\usepackage{amsmath,amssymb}
-\\usepackage{booktabs}
-\\usepackage{graphicx}
-\\usepackage{longtable}
-\\usepackage{array}
-\\usepackage[hidelinks]{hyperref}
-"""
+BIBITEM = re.compile(r"\\bibitem(?:\[[^\]]*\])?\{([^}]+)\}")
+LABEL = re.compile(r"\\label\{([^}]+)\}")
+CITE = re.compile(r"\\citep?\{([^}]+)\}")
+FLOAT = re.compile(
+    r"\\begin\{(figure|table)(\*?)\}(?:\[[^]]*\])?(.*?)\\end\{\1\2\}", re.S
+)
+ALGORITHM = re.compile(r"\\begin\{algorithm\}(?:\[[^]]*\])?(.*?)\\end\{algorithm\}", re.S)
 
 
-def read(path: Path) -> str:
-    return path.read_text(encoding="utf-8")
+def read(name: str) -> str:
+    return (HERE / name).read_text(encoding="utf-8")
 
 
-def parse_aux_labels() -> dict[str, str]:
-    """label -> rendered number, from the compiled main_20p.aux."""
-    labels: dict[str, str] = {}
-    text = read(HERE / "main_20p.aux")
-    for m in re.finditer(r"\\newlabel\{([^}]+)\}\{\{([^}]*)\}", text):
-        labels[m.group(1)] = m.group(2)
-    return labels
+def strip_comments(text: str) -> str:
+    return re.sub(r"(?<!\\)%[^\n]*(?:\n|$)", "", text)
 
 
-def parse_bbl_numbers() -> dict[str, str]:
-    """bib key -> printed reference number, in .bbl order."""
-    text = read(HERE / "main_20p.bbl")
-    keys = re.findall(r"\\bibitem(?:\[[^\]]*\])?\{([^}]+)\}", text)
-    return {k: str(i + 1) for i, k in enumerate(keys)}
+def aux_labels(aux: str) -> dict[str, str]:
+    return dict(re.findall(r"\\newlabel\{([^}]+)\}\{\{([^}]*)\}", aux))
 
 
-def compress(nums: list[str]) -> str:
-    ints = sorted({int(n) for n in nums})
-    parts: list[str] = []
-    i = 0
-    while i < len(ints):
-        j = i
-        while j + 1 < len(ints) and ints[j + 1] == ints[j] + 1:
-            j += 1
-        if j - i >= 2:
-            parts.append(f"{ints[i]}--{ints[j]}")
+def source_section(text: str, environment: str) -> str:
+    match = re.search(
+        rf"\\begin\{{{environment}\}}(.*?)\\end\{{{environment}\}}", text, re.S
+    )
+    if not match:
+        raise ValueError(f"No {environment} environment found")
+    return match.group(1).strip()
+
+
+def escape_tex(text: str) -> str:
+    return re.sub(r"(?<!\\)([_#%&$])", r"\\\1", text)
+
+
+def format_paths(text: str) -> str:
+    return re.sub(
+        r"\\path\{([^{}]+)\}", lambda m: r"\texttt{" + escape_tex(m[1]) + "}", text
+    )
+
+
+def format_bibliography(bbl: str, aux: str) -> tuple[str, dict[str, str]]:
+    numbers = dict(re.findall(r"\\bibcite\{([^}]+)\}\{\{([0-9]+)\}", aux))
+    matches = list(BIBITEM.finditer(bbl))
+    if len(matches) != len(numbers) or not matches:
+        raise ValueError("The compiled bibliography and aux citation counts differ")
+    entries = []
+    for index, match in enumerate(matches, 1):
+        key = match[1]
+        if numbers.get(key) != str(index):
+            raise ValueError(f"Reference order differs between bibliography and aux for {key}")
+        next_start = matches[index].start() if index < len(matches) else len(bbl)
+        body = bbl[match.end():next_start].replace(r"\end{thebibliography}", "").strip()
+        body = format_paths(body).replace(r"\newblock", " ").replace(r"\urlprefix", "URL ")
+        body = body.replace(r"\newline", " ")
+        entries.append(f"[{index}] " + " ".join(body.split()))
+    return "\n\n".join(entries), numbers
+
+
+def numbered_headings(text: str) -> str:
+    counts = [0, 0]
+
+    def number(match: re.Match[str]) -> str:
+        command = match[1]
+        if command == "section":
+            counts[0] += 1
+            counts[1] = 0
+            ordinal = str(counts[0])
         else:
-            parts.extend(str(ints[k]) for k in range(i, j + 1))
-        i = j + 1
-    return ",".join(parts)
+            counts[1] += 1
+            ordinal = f"{counts[0]}.{counts[1]}"
+        return "\\" + command + "{" + ordinal + ". "
+
+    return re.sub(r"\\(section|subsection)\{", number, text)
 
 
-def patch_body(text: str, refs: dict[str, str], labels: dict[str, str]) -> str:
-    # citations -> printed numbers
-    def cite_repl(m: re.Match) -> str:
-        keys = [k.strip() for k in m.group(1).split(",")]
-        nums = [refs[k] for k in keys if k in refs]
-        if not nums:
-            return "[citation:" + m.group(1) + "]"
-        return "[" + compress(nums) + "]"
+def format_floats(text: str, labels: dict[str, str], *, supplement: bool) -> str:
+    counters = Counter({"table": 8 if supplement else 0})
 
-    text = re.sub(r"\\citep?\{([^}]+)\}", cite_repl, text)
-    text = re.sub(r"\\cite\{([^}]+)\}", cite_repl, text)
+    def numbered_float(match: re.Match[str]) -> str:
+        kind, body = match[1], match[3]
+        counters[kind] += 1
+        expected = ("S" if supplement else "") + str(counters[kind])
+        label = LABEL.search(body)
+        if label and labels.get(label[1]) != expected:
+            raise ValueError(f"{label[1]} does not match compiled {kind} number {expected}")
+        tag = r"\textbf{" + f"{kind.title()} {expected}." + "}"
+        if r"\caption{" not in body:
+            raise ValueError(f"No caption for {kind} {expected}")
+        body = body.replace(r"\caption{", r"\caption{" + tag + " ", 1)
+        return f"\\begin{{{kind}}}" + body + f"\\end{{{kind}}}"
 
-    # cross references -> rendered numbers
-    text = re.sub(r"\\ref\{([^}]+)\}",
-                  lambda m: labels.get(m.group(1), "??"), text)
-    text = re.sub(r"\\(?:eqref|autoref|pageref)\{([^}]+)\}",
-                  lambda m: labels.get(m.group(1), "??"), text)
+    return FLOAT.sub(numbered_float, text)
 
-    # labels carry no meaning in Word
-    text = re.sub(r"\\label\{[^}]*\}", "", text)
-    # figure*/table* -> figure/table so pandoc keeps them as floats
-    text = text.replace("\\begin{figure*}", "\\begin{figure}")
-    text = text.replace("\\end{figure*}", "\\end{figure}")
-    text = text.replace("\\begin{table*}", "\\begin{table}")
-    text = text.replace("\\end{table*}", "\\end{table}")
-    # column decorations pandoc cannot parse
-    text = text.replace(">{\\raggedright\\arraybackslash}", "")
-    text = re.sub(r"p\{[\d.]+\\textwidth\}", "p{4cm}", text)
-    text = re.sub(r"p\{[\d.]+\\columnwidth\}", "p{3cm}", text)
-    # macros
-    text = text.replace("\\protect", "")
+
+def format_algorithm(match: re.Match[str], labels: dict[str, str]) -> str:
+    source = match[1]
+    label, caption = LABEL.search(source), re.search(r"\\caption\{([^}]+)\}", source)
+    if not label or label[1] not in labels or not caption:
+        raise ValueError("An algorithm has no compiled number or caption")
+    body = re.search(r"\\begin\{algorithmic\}(?:\[[^]]+\])?(.*?)\\end\{algorithmic\}",
+                     source, re.S)
+    if not body:
+        raise ValueError("Missing algorithmic block")
+
+    rows = [r"\textbf{" + f"Algorithm {labels[label[1]]}. {caption[1]}" + "}"]
+    step = 0
+    for raw_line in body[1].strip().splitlines():
+        line = raw_line.strip()
+        line = re.sub(r"\\Comment\{([^}]+)\}", r" (\1)", line)
+        line = line.replace(r"\textsc{", r"\mathrm{").replace(r"\Return ", r"\textbf{return} ")
+        if line.startswith(r"\Require "):
+            rows.append(line.replace(r"\Require ", r"\textbf{Require.} ", 1))
+            continue
+        condition = re.fullmatch(r"\\(If|ElsIf)\{(.*)\}", line)
+        if condition:
+            word = "if" if condition[1] == "If" else "else if"
+            line = r"\textbf{" + word + "} " + condition[2] + r" \textbf{then}"
+        elif line == r"\Else":
+            line = r"\textbf{else}"
+        elif line == r"\EndIf":
+            line = r"\textbf{end if}"
+        elif line.startswith(r"\State "):
+            line = line.removeprefix(r"\State ")
+        else:
+            raise ValueError(f"Unsupported algorithm line {raw_line}")
+        step += 1
+        rows.append(f"{step}. {line}")
+    return "\\begin{quote}\n" + "\n\n".join(rows) + "\n\\end{quote}"
+
+
+def patch_body(text: str, refs: dict[str, str], labels: dict[str, str],
+               *, supplement: bool = False) -> str:
+    used: set[str] = set()
+
+    def cite_replace(match: re.Match[str]) -> str:
+        keys = [k.strip() for k in match[1].split(",")]
+        missing = set(keys) - refs.keys()
+        if missing:
+            raise ValueError(f"Unresolved citation keys {sorted(missing)}")
+        used.update(keys)
+        return "[" + ", ".join(refs[k] for k in keys) + "]"
+
+    text = CITE.sub(cite_replace, text)
+    if set(refs) != used or re.search(r"\\cite[a-zA-Z]*\s*[\[{]", text):
+        raise ValueError("The Word source and compiled bibliography do not have the same citations")
+    text = format_floats(text, labels, supplement=supplement)
+    text = ALGORITHM.sub(lambda m: format_algorithm(m, labels), text)
+
+    def ref_replace(match: re.Match[str]) -> str:
+        key = match[2]
+        value = labels.get(key)
+        if value is None:
+            raise ValueError(f"Unresolved cross-reference {key}")
+        return f"({value})" if match[1] == "eqref" else value
+
+    text = re.sub(r"\\(ref|eqref)\{([^}]+)\}", ref_replace, text)
+    if re.search(r"\\(?:autoref|pageref)\{", text):
+        raise ValueError("Use a section, figure or table number for the Word cross-reference")
+    text = LABEL.sub("", text)
+    text = text.replace(r">{\raggedright\arraybackslash}", "")
+    text = re.sub(
+        r"p\{([\d.]+)\\(?:textwidth|columnwidth)\}",
+        lambda m: f"p{{{float(m[1]) * WORD_TEXT_WIDTH_CM:.3f}cm}}",
+        text,
+    )
+    text = format_paths(text.replace(r"\protect", ""))
     text = re.sub(r"(?<!\\)\\yes\b", "✓", text)
     text = re.sub(r"(?<!\\)\\no\b", "–", text)
-    # png figures
-    text = re.sub(r"(\\includegraphics(?:\[[^\]]*\])?)\{([^}]+)\}",
-                  r"\1{figs/\2.png}", text)
-    # drop float placement hints and size wrappers pandoc ignores anyway
-    text = re.sub(r"\\begin\{(figure|table)\}\[!?[tbph]+\]",
-                  r"\\begin{\1}", text)
-    return text
-
-
-def clean_bbl(bbl: str, refs: dict[str, str]) -> str:
-    """Flatten the .bbl into numbered plain-text entries for Word."""
-    bbl = re.sub(r"\\expandafter\\ifx.*?\\fi\n", "", bbl, flags=re.S)
-    bbl = bbl.replace("\\begin{thebibliography}{10}", "")
-    bbl = bbl.replace("\\end{thebibliography}", "")
-    bbl = re.sub(r"\\path\{([^}]*)\}", r"\1", bbl)
-    bbl = re.sub(r"\\href\s*\{([^{}]*)\}\s*\{([^{}]*)\}", r"\2", bbl)
-    bbl = re.sub(r"\\url\{([^{}]*)\}", r"\1", bbl)
-    bbl = bbl.replace("\\urlprefix", "")
-    bbl = bbl.replace("\\newblock", " ")
-
-    def item_repl(m: re.Match) -> str:
-        n = refs.get(m.group(1), "?")
-        return f"\n\n[{n}] "
-
-    return re.sub(r"\\bibitem\{([^}]+)\}", item_repl, bbl)
+    text = re.sub(
+        r"\\includegraphics(?:\[width=\\(textwidth|columnwidth)\])?\{([^}]+)\}",
+        lambda m: r"\includegraphics[width=" + ("4.1in" if m[1] == "columnwidth" else "6.45in")
+        + "]{figs/" + m[2] + ".png}",
+        text,
+    )
+    return numbered_headings(text) if not supplement else text
 
 
 def build_main() -> str:
-    src = read(HERE / "main_20p.tex")
-    refs = parse_bbl_numbers()
-    labels = parse_aux_labels()
-
-    title_m = re.search(r"\\title\{(.*?)\}\s*\n\\author", src, re.S)
-    title = re.sub(r"\s+", " ", title_m.group(1)) if title_m else "HMRS"
-
-    abs_m = re.search(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", src, re.S)
-    abstract = abs_m.group(1).strip() if abs_m else ""
-    abstract = re.sub(r"%.*", "", abstract)
-
-    kw_m = re.search(r"\\begin\{keyword\}(.*?)\\end\{keyword\}", src, re.S)
-    keywords = ""
-    if kw_m:
-        keywords = kw_m.group(1).replace("\\sep", "·").strip()
-        keywords = re.sub(r"\s+", " ", re.sub(r"%.*", "", keywords))
-
-    parts = [PREAMBLE]
-    parts.append(f"\\title{{{title}}}\n")
-    parts.append("\\author{Author Name\\and Co-author Name}\n")
-    parts.append("\\begin{document}\n\\maketitle\n")
-    parts.append("\\begin{abstract}\n" + abstract + "\n\\end{abstract}\n")
-    if keywords:
-        parts.append("\n\\noindent\\textbf{Keywords:} " + keywords + "\n")
-    parts.append("\n\\vspace{1em}\n")
-
-    for name in MAIN_FILES:
-        body = read(HERE / name)
-        parts.append("\n" + patch_body(body, refs, labels) + "\n")
-
-    bbl = clean_bbl(read(HERE / "main_20p.bbl"), refs)
-    parts.append("\n\\section*{References}\n" + bbl + "\n")
-    parts.append("\\end{document}\n")
-    return "".join(parts)
+    src = strip_comments(read("main_20p.tex"))
+    aux = read("main_20p.aux")
+    bibliography, refs = format_bibliography(read("main_20p.bbl"), aux)
+    title = re.search(r"\\title\{([^}]+)\}", src)
+    if not title:
+        raise ValueError("No manuscript title found")
+    authors = re.findall(
+        r"\\author(?:\[[^\]]+\])?\{((?:[^{}]|\\corref\{[^{}]*\})+)\}", src
+    )
+    authors = [re.sub(r"\\corref\{[^{}]*\}", "", a).strip() for a in authors]
+    if not authors:
+        raise ValueError("No manuscript authors found")
+    affiliations = re.findall(r"organization=\{([^{}]+)\}", src)
+    emails = re.findall(r"\\ead\{([^}]+)\}", src)
+    frontmatter = "\\author{" + r"\and ".join(authors) + "}\n"
+    title_lines = [rf"\title{{{title[1]}}}", frontmatter, r"\begin{document}", r"\maketitle"]
+    title_lines.extend(f"\\begin{{center}}{item}\\end{{center}}" for item in affiliations)
+    title_lines.extend(
+        f"\\begin{{center}}Correspondence: \\href{{mailto:{email}}}{{{escape_tex(email)}}}\\end{{center}}"
+        for email in emails
+    )
+    abstract = source_section(src, "abstract")
+    keywords = " ".join(source_section(src, "keyword").replace(r"\sep", "·").split())
+    body = "\n\n".join(
+        strip_comments(read(name + ".tex")) for name in re.findall(r"\\input\{([^}]+)\}", src)
+    )
+    header = "\n".join(title_lines) + "\n\n"
+    return (
+        header + "\\section*{Abstract}\n\n" + abstract + "\n\n"
+        + r"\noindent\textbf{Keywords:} " + keywords + "\n\n"
+        + patch_body(body, refs, aux_labels(aux))
+        + "\n\\section*{References}\n\n" + bibliography + "\n\\end{document}\n"
+    )
 
 
 def build_supp() -> str:
-    src = read(HERE / "supplementary.tex")
-    refs: dict[str, str] = {}
-    labels: dict[str, str] = {}
-
-    body_m = re.search(r"\\begin\{document\}(.*?)\\end\{document\}",
-                       src, re.S)
-    body = body_m.group(1) if body_m else src
-    body = body.replace("\\twocolumn[{%\n\\centering\n"
-                        "\\section*{Supplementary Material}\n}]\n", "")
-    body = body.replace("\\input{supplementary-arm-tables}",
-                        read(HERE / "supplementary-arm-tables.tex"))
-    body = patch_body(body, refs, labels)
-
-    out = [PREAMBLE]
-    out.append("\\title{Supplementary Material for the HMRS manuscript}\n")
-    out.append("\\begin{document}\n\\maketitle\n")
-    out.append(body)
-    out.append("\\end{document}\n")
-    return "".join(out)
+    body = source_section(strip_comments(read("supplementary.tex")), "document")
+    body = re.sub(r"\\setcounter[^\n]*\n", "", body, count=1)
+    body = re.sub(
+        r"\\twocolumn\[\{\s*\\begin\{minipage\}\{\\textwidth\}\s*"
+        r"\{\\centering\s*\\section\*\{Supplementary Material\}\s*\}", "", body, count=1
+    )
+    body = re.sub(
+        r"\\medskip\s*\{\\centering\s*(\\includegraphics[^\n]+)\s*\\par\}\s*"
+        r"\\captionof\{figure\}((?:.|\n)*?)\\end\{minipage\}\s*\\vspace\{12pt\}\s*\}\]",
+        r"\\begin{figure}\n\1\n\\caption\2\\end{figure}", body, count=1
+    )
+    if r"\captionof" in body or r"\twocolumn" in body:
+        raise ValueError("The supplementary title and figure layout could not be flattened")
+    body = re.sub(
+        r"\\input\{([^}]+)\}", lambda m: strip_comments(read(m[1] + ".tex")), body
+    )
+    return (
+        "\\title{Supplementary Material for the HMRS manuscript}\n"
+        "\\begin{document}\n\\maketitle\n"
+        + patch_body(body, {}, aux_labels(read("supplementary.aux")), supplement=True)
+        + "\n\\end{document}\n"
+    )
 
 
 def main() -> None:
-    mode = sys.argv[1] if len(sys.argv) > 1 else "main"
-    if mode == "main":
-        out = build_main()
-    elif mode == "supp":
-        out = build_supp()
-    else:
-        raise SystemExit("mode must be main|supp")
-    sys.stdout.buffer.write(out.encode("utf-8"))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("mode", choices=("main", "supp"), nargs="?", default="main")
+    mode = parser.parse_args().mode
+    document = build_main() if mode == "main" else build_supp()
+    sys.stdout.buffer.write(document.encode("utf-8"))
 
 
 if __name__ == "__main__":

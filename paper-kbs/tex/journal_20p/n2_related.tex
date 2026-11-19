@@ -3,14 +3,16 @@
 
 \subsection{Knowledge management and document acquisition}
 
-Knowledge-based systems combine language-model capabilities with curated
-knowledge \citep{yang-kbs-llm-2025}. Public knowledge bases represent facts
-using explicit ontologies \citep{auer-dbpedia-kb-2007,hoffart-yago2-kb-2013},
-while enterprise content management governs the documents through which
+Recent work on knowledge-based systems combines language models with curated
+knowledge \citep{yang-kbs-llm-2025}. DBpedia publishes structured
+information from Wikipedia as linked data \citep{auer-dbpedia-kb-2007}.
+Enterprise content management governs the documents through which
 organisations retain and share knowledge
-\citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006,nonaka-seci-1994,nonaka-seci-ba-2000}.
+\citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006}. Knowledge creation theory
+also examines how organisations articulate tacit knowledge
+\citep{nonaka-seci-1994}.
 Metadata, tagging and human review affect which materials users can find and
-trust \citep{park-metadata-quality-2009,golder-tagging-2006,mosqueira-rey-hitl-2022,barredo-arrieta-xai-2020}.
+trust \citep{park-metadata-quality-2009,golder-tagging-2006,mosqueira-rey-hitl-2022}.
 Text categorisation supports placement \citep{sebastiani2002machine}.
 Layout-aware parsing and MinerU recover structured content for indexing
 \citep{zhong-publaynet-layout-2019,huang-layoutlmv3-docai-2022,mineru}, while
@@ -19,20 +21,15 @@ near-duplicate detection and provenance help maintain the collection
 HMRS connects these operations by making the results of acquisition and
 placement visible to the workflow that selects evidence.
 
-Prior knowledge-platform research specifies responsibilities and interfaces
-in reference architectures for journalism
-\citep{ocaa2023software,gallofr2021jkpdesign} and implements complete
-knowledge-grounded systems for dialogue, low-resource OpenQA, clinical
-support and bank supervision
-\citep{yang2024building,budur2024building,vito2025heliot,aarab2024system}.
-Other systems integrate deployment constraints and expert knowledge
-\citep{liao2026practical,garridomer2026gofai}, capture operator--function
-models or instantiate domain ontologies \citep{hou2025method,ciatto2025large},
-and support graph enrichment and engineering workflows
-\citep{mohamed2026orchestra,liu2026automatin,chen2026enhancing,sorokin2023sigopt}.
-HMRS takes this systems perspective to the changing document collection.
-Its focus is the state that a deployed evidence workflow reads and that an
-operator can inspect after a management operation.
+Gallofr\'e Oca\~na and Opdahl \citep{ocaa2023software} describe how to
+integrate AI and knowledge bases in a newsroom platform. Related systems
+ground dialogue in a graph, build open-domain question answering for
+low-resource languages, or support retrieval by bank supervisors
+\citep{yang2024building,budur2024building,aarab2024system}. LLMs can also
+populate domain ontologies \citep{ciatto2025large}. HMRS applies this systems
+perspective to changing document collections. Its focus is the managed
+state a retrieval workflow reads and an operator can inspect after a
+lifecycle operation.
 
 \subsection{Retrieval, organisation and agentic search}
 
@@ -50,7 +47,7 @@ System & Hierarchy and scope & Construction and lifecycle & Evidence handling & 
 \midrule
 RAPTOR \citep{raptor} & cluster tree over document text & built offline at index time & --- & tree retrieval; prototype\\
 GraphRAG \citep{graphrag} & entity--relation graph, community summaries & pre-generated offline & --- & graph retrieval; prototype\\
-LightRAG \citep{lightrag} & dual-level retrieval graph & incremental graph updates & --- & graph retrieval; prototype\\
+LightRAG \citep{lightrag} & low- and high-level graph retrieval & incremental graph updates & --- & graph retrieval; prototype\\
 DeepRead \citep{deepread} & per-document structured Markdown, section coordinates & structure built at ingestion & agent locates then reads sections & agentic search system\\
 EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise corpus & --- & evidence-state diagnosis; abstention or clarification & enterprise retrieval\\
 HMRS (this work) & managed collection--document--segment state & content-based placement; lifecycle operations; three-source reconciliation & optional gate, separate from ordering & self-hosted; MCP layer\\
@@ -66,58 +63,55 @@ Hybrid search combines ranking signals, for example with reciprocal-rank
 fusion \citep{rrf-cormack}, and BGE-M3 provides multilingual and
 multi-granularity embeddings \citep{bge-m3}. Structured retrieval organises
 the units a ranker searches. GraphRAG builds entity graphs and community
-summaries \citep{graphrag}; LightRAG updates a dual-level graph incrementally
-\citep{lightrag}; RAPTOR recursively groups text into a cluster tree
-\citep{raptor}; and RMR-SST represents multimodal engineering documents as
-semantic trees \citep{li-kbs-rmrsst-2026}. Proposition-level indexing,
-late chunking and hierarchical semantic chunking make different choices
-about what each unit retains
-\citep{chen2024dense,gunther2024late,shen-kbs-teierag-2026}.
+summaries \citep{graphrag}. LightRAG searches an incrementally updated
+graph at two retrieval levels \citep{lightrag}, and RAPTOR recursively
+groups text into a cluster tree \citep{raptor}. RMR-SST represents multimodal engineering
+documents as semantic trees \citep{li-kbs-rmrsst-2026}. Dense X Retrieval
+indexes propositions \citep{chen2024dense}, while TEIE-RAG combines
+hierarchical semantic chunking with source highlighting for engineering
+information extraction \citep{shen-kbs-teierag-2026}.
 Table~\ref{tab:related-comparison} locates HMRS among these designs. Its
 hierarchy represents collection ownership and document structure, so a
 query reads a maintained record of which collections and documents exist.
 Index maintenance complements this hierarchy by keeping passages reachable
-after document changes \citep{singh2021freshdiskann,xu2023spfresh}.
+after document changes \citep{xu2023spfresh}.
 
 Distributed IR selects collections from relevance estimates before searching
 them \citep{callan1995searching,si2003redde}. HMRS applies the same
 select-then-search principle to collection and document descriptions that
 operators can maintain. Tool-using agents can choose and iteratively refine
 what they retrieve \citep{react-yao,toolformer}; MCP provides standard
-interfaces to these tools \citep{mcp}. Modular and agentic RAG work studies
-how the resulting workflows combine retrieval calls
-\citep{modular-rag,singh-agentic-rag}. DeepRead illustrates structure-aware
-agent access within a document by indexing paragraphs with section
+interfaces to these tools \citep{mcp}. Modular RAG studies how these
+workflows combine retrieval components \citep{modular-rag}. DeepRead
+illustrates structure-aware agent access by indexing paragraphs with section
 coordinates and reading selected sections \citep{deepread}. HMRS gives
 an agent a catalogue and shelf to determine which documents to open, then
 exposes document and passage access through the same tool layer.
 
-Recent knowledge-based retrieval systems study engineering design and
-private code libraries \citep{siddharth2024retrieval,zan2025private},
-soft-prompt tuning and semantic query expansion
-\citep{peng2024soft,massai2023evaluatio}, and LLM-guided graph exploration
-\citep{dai2025large,huang2025prompting,tao2025fine}. Systems for financial
-grounding and multi-agent answer generation show how retrieved evidence is
-used downstream \citep{sinha2026finbloom,saadaoui2025coordinat}. HMRS
-makes the upstream document state available for inspection alongside that
-retrieval and answer process.
+In engineering design, structured facts extracted from patents support RAG
+\citep{siddharth2024retrieval}. Other approaches change which evidence a
+query can reach through soft-prompt tuning, semantic query expansion and
+stateful graph exploration
+\citep{peng2024soft,massai2023evaluatio,tao2025fine}. HMRS exposes the document
+state on which collection and passage selection depend.
 
 \subsection{Verification, correction and abstention}
 
-MemGPT, Mem0 and A-MEM maintain agent interaction records and notes
-\citep{memgpt,mem0,amem}, and continual-learning work studies complementary
-memory stores \citep{wu2025informati}. HMRS maintains a corpus of source
+MemGPT and A-MEM maintain agent interaction records and notes
+\citep{memgpt,amem}. HMRS maintains a corpus of source
 documents and the descriptions, ownership and indices used to find them.
 Knowledge organisation standards such as SKOS \citep{skos} and Dublin Core
+\citep{dcmi-terms}
 give conventions for vocabularies and descriptive metadata. At ingestion,
 the HMRS workflow derives descriptions and tags from document content.
 
 Self-RAG and CRAG assess evidence or correct retrieval during generation
 \citep{selfrag,crag}; FLARE triggers retrieval as more evidence is needed
-\citep{flare}. Selective prediction under domain shift, uncertainty
-reporting, ontology-grounded retrieval and citation verifiability supply
-methods for handling incomplete evidence
-\citep{kamath,feng-abstain,yin-knowwhat,cyberbot,liu-verifiability,gao-citations}.
+\citep{flare}. Work on selective prediction under domain shift and
+uncertainty reporting examines when to withhold an answer
+\citep{kamath,feng-abstain,yin-knowwhat}. Citation studies examine whether
+references support the statements in the answer
+\citep{liu-verifiability,gao-citations}.
 EPRAG diagnoses evidence states to choose among response, clarification and
 abstention in enterprise retrieval \citep{kinalioglu-kbs-eprag-2026}.
 HMRS makes verification a server-side operation. The gate fetches
@@ -126,21 +120,21 @@ so an agent can inspect the source material behind the result.
 
 Judge studies report preference bias, variable agreement and ranking
 instability \citep{zheng-llmjudge,sun-urara,panickssery-selfpref}.
-Outcome-based verification can also reward flawed reasoning
-\citep{lightman-verify}. Related systems work examines explainability,
-logic-grounded reliability tests and graded assessment
-\citep{saeed2023explainab,zhou2026lgmt,hou2025msdiagnos}. These findings
-motivate separate measurements for evidence admission, candidate order and
-answer-stage reporting.
+Logic-grounded metamorphic testing checks whether model decisions remain
+consistent under equivalent input transformations \citep{zhou2026lgmt}.
+HMRS tests evidence admission, candidate order and answer-stage reporting
+as distinct decisions.
 
 \subsection{Research gap}
 \label{sec:gap}
 
-The literature offers methods for managing documents, selecting collections,
-ranking passages and checking evidence (Table~\ref{tab:related-comparison}
-and Supplementary Table~S11). HMRS makes the connections among these
-operations inspectable. It records the collection that owns a document,
-exposes the descriptions that a query uses to find it, and preserves source
-references when passages reach the answer workflow. Its evaluation therefore
-asks where the evidence path succeeds or fails, from post-ingest state and
-catalogue visibility through candidate selection and verifier ordering.
+RMR-SST and TEIE-RAG structure engineering document content for retrieval
+and evidence access \citep{li-kbs-rmrsst-2026,shen-kbs-teierag-2026}. EPRAG
+selects a response action once the candidate evidence is available
+\citep{kinalioglu-kbs-eprag-2026}. HMRS studies the collection state that
+supplies evidence to such workflows (Table~\ref{tab:related-comparison}
+and Supplementary Table~S11). It records where documents belong, exposes
+the descriptions used to select them, and lets operators check whether
+the index reflects lifecycle changes. The evaluation follows this path from
+post-ingest state and catalogue visibility through candidate selection and
+verifier ordering.

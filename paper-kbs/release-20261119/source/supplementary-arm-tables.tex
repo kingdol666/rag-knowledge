@@ -1,0 +1,69 @@
+\begin{table*}[t]
+\centering\small
+\caption{Evidence-pack results on the same 72 in-domain questions. The
+Main comparison columns report target-string containment, marginal Wilson 95\%
+intervals, mean trace-recorded text (decimal kB) and mean retrieval tool time
+(s). The text counter sums arm-specific payloads: reference-mode counts omit
+internal judge reads, while inline counts include fetched document windows.
+Neither is total I/O or final context size. Tool time excludes answer
+generation. Only containment counts are shown for the earlier series.
+The mechanical full scan was incomplete in Follow-up and not run for the
+Main comparison.}
+\label{tab:s-arm-data}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{4}{c}{Main comparison} & \multicolumn{2}{c}{Historical hits} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-7}
+Configuration & Hits & Wilson 95\% CI & Logged kB & Tool time (s) & Follow-up & Frozen aggregate \\
+\midrule
+A0 & 36/72 & [38.7, 61.3]\% & 33.4 & 16.6 & 39/72 & 37/72 \\
+A0f & 41/72 & [45.4, 67.7]\% & 293.7 & 16.3 & 44/72 & 45/72 \\
+A0h & 48/72 & [55.2, 76.5]\% & 298.9 & 15.0 & 51/72 & 52/72 \\
+PD & 42/72 & [46.8, 69.0]\% & 311.7 & 16.7 & 45/72 & 46/72 \\
+A1b & 36/72 & [38.7, 61.3]\% & 35.8 & 11.9 & 39/72 & 39/72 \\
+A2 & 23/72 & [22.3, 43.4]\% & 1.7 & 1.1 & 25/72 & 25/72 \\
+A3 & 26/72 & [26.0, 47.6]\% & 12.1 & 6.3 & 25/72 & 33/72 \\
+Read-all & -- & -- & -- & -- & -- & 72/72 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+\begin{table*}[t]
+\centering\small
+\caption{Exploratory paired annotated target-string containment contrasts in
+returned evidence packs on the 72 in-domain questions (two-sided exact
+McNemar tests, unadjusted; no familywise inference). Follow-up and the Main
+comparison reuse the same questions, so neither is an independent sample.
+The archived same-corpus reproduction agreed with Frozen aggregate on
+71/72 questions for A0f, A0h and PD and on 68/72 for A0. A target occurrence
+may be in a sibling document; arms differ in multiple components and some
+lookups may use the gold domain.}
+\label{tab:s-paired-data}
+\begin{tabular}{llrrr}
+\toprule
+Series & Contrast & First only & Second only & $p$ \\
+\midrule
+Frozen aggregate & A0h vs. A0 & 15 & 0 & 0.000061 \\
+Frozen aggregate & A0h vs. A1b & 13 & 0 & 0.00024 \\
+Frozen aggregate & A0h vs. PD & 7 & 1 & 0.07031 \\
+Frozen aggregate & PD vs. A1b & 7 & 0 & 0.01563 \\
+Frozen aggregate & A0f vs. A0 & 8 & 0 & 0.00781 \\
+Frozen aggregate & A1b vs. A0 & 4 & 2 & 0.6875 \\
+Frozen aggregate & A2 vs. A0 & 6 & 18 & 0.0227 \\
+Follow-up & A0h vs. A0 & 12 & 0 & 0.00049 \\
+Follow-up & A0h vs. A1b & 12 & 0 & 0.00049 \\
+Follow-up & A0h vs. PD & 7 & 1 & 0.07031 \\
+Follow-up & PD vs. A0 & 6 & 0 & 0.03125 \\
+Follow-up & A0f vs. A0 & 5 & 0 & 0.0625 \\
+Follow-up & A1b vs. A0 & 1 & 1 & 1.0 \\
+Follow-up & A2 vs. A0 & 5 & 19 & 0.0066 \\
+Main comparison & A0h vs. A0 & 12 & 0 & 0.00049 \\
+Main comparison & A0h vs. A0f & 7 & 0 & 0.01563 \\
+Main comparison & A0f vs. A0 & 5 & 0 & 0.06250 \\
+Main comparison & PD vs. A0 & 6 & 0 & 0.03125 \\
+Main comparison & A1b vs. A0 & 1 & 1 & 1.00000 \\
+Main comparison & A2 vs. A0 & 5 & 18 & 0.01062 \\
+Main comparison & A3 vs. A0 & 4 & 14 & 0.03088 \\
+Main comparison & A0h vs. PD & 7 & 1 & 0.07031 \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -41,11 +41,10 @@ compared in the evaluation.
 \label{sec:org-graph}
 \label{sec:org-experience}
 
-A rename trial exposed a lifecycle defect: queries found chunks under the
-old document path until a forced re-index. The current rename paths
-synchronise the old and new index entries and record failures separately
-from the metadata update. A post-operation probe can then check whether
-queries resolve to the new path.
+One historical rename left old-path chunks until a forced re-index. The
+current rename paths attempt to synchronise index entries and report
+failures separately from the metadata update. The post-operation query in
+E2 tests the result in one fixture, not the general invariant.
 
 The document graph links libraries, documents and tags for navigation and
 candidate expansion. Operational lessons are also stored as retrievable

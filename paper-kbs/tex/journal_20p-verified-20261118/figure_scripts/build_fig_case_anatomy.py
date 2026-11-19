@@ -257,7 +257,7 @@ def case_a(ax, data):
         science["meta"], science["question"], '“' + science["target"] + '”',
     )
     group_label(ax, 0.060, 0.823, 1, "Alternative retrieval arms",
-                NAVY, "same question · different evidence admission",
+                NAVY, "same question · different pack configurations",
                 rule_start=0.340)
 
     row1, row2 = 0.766, 0.640
@@ -269,8 +269,8 @@ def case_a(ax, data):
                  accent=OCHRE, face=PALE_OCHRE)
     arrow(ax, 0.340, row1, 0.370, row1, OCHRE, "read")
     evidence_card(ax, 0.370, row1 - 0.032, 0.255, 0.064,
-                  "retrieved passage",
-                  "RoBERTa string not admitted",
+                  "returned pack",
+                  "No RoBERTa match",
                   accent=OCHRE)
     arrow(ax, 0.625, row1, 0.665, row1, OCHRE)
     verdict_card(ax, 0.665, row1 - 0.032, 0.275, 0.064, False,
@@ -278,9 +278,9 @@ def case_a(ax, data):
 
     arrow(ax, 0.0665, row2, 0.150, row2, BLUE)
     process_card(ax, 0.150, row2 - 0.040, 0.190, 0.080,
-                 "A0h · ENHANCED", ("tiered pack + top-8 chunks", f"{science['arms']['A0h']['survivor_count']} survivors"),
+                 "A0h · ENHANCED", ("Inline judged text", "Up to 8 chunk windows"),
                  accent=BLUE, face=PALE_BLUE)
-    arrow(ax, 0.340, row2, 0.370, row2, BLUE, "add")
+    arrow(ax, 0.340, row2, 0.370, row2, BLUE)
     evidence_card(ax, 0.370, row2 - 0.040, 0.255, 0.080,
                   "archived passage · #70",
                   wrap(clip(science["excerpt"].split(" ... ", 1)[-1], 64), 36),
@@ -342,9 +342,9 @@ def case_b(ax, data):
     group_label(ax, 0.085, 0.204, 2, "Enhanced arm",
                 BLUE, "chunk-window union", rule_start=0.245)
     process_card(ax, 0.150, row_h - 0.039, 0.205, 0.078,
-                 "A0h · ENHANCED", ("windows + top-8 chunks", f"{literature['arms']['A0h']['survivor_count']} survivors"),
+                 "A0h · ENHANCED", ("Inline judged text", "Up to 8 chunk windows"),
                  accent=BLUE, face=PALE_BLUE)
-    arrow(ax, 0.355, row_h, 0.385, row_h, BLUE, "add")
+    arrow(ax, 0.355, row_h, 0.385, row_h, BLUE)
     key_clause = "Why, " + literature["excerpt"].split("Why,", 1)[-1].strip()
     evidence_card(ax, 0.385, row_h - 0.039, 0.310, 0.078,
                   "later dialogue · part 24 #26",

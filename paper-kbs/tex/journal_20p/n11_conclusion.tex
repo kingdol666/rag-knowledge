@@ -15,8 +15,9 @@ baseline tiered configuration. The difference was 15 questions in the
 frozen run and 12 in each rerun on the same questions.
 This improvement came with a higher text budget than the baseline and
 remained well below the budget of reading the corpus in full. The verifier
-replay exposed a complementary trade-off: fusion order kept 15 of 16 gold
-documents in the top five, while ordering by verifier score kept seven.
+replay exposed a complementary trade-off. Fusion order placed a gold
+document in the top five for 15 of the 16 candidate pools, compared with
+seven under verifier-score ordering.
 These results motivate two concrete practices in managed document systems:
 audit the state that supplies retrieval candidates, and test evidence
 admission and ordering as separate decisions.

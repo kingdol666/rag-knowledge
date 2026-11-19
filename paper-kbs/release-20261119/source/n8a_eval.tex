@@ -1,0 +1,94 @@
+%% Evaluation design and E1--E3. Section labels follow the historical source.
+\section{Evaluation}
+\label{sec:eval}
+We evaluate what is stored and remains accessible after a change (E1--E2,
+E4), what the retrieval path selects and returns (E3, E5, E8), and what
+answer diagnostics and deployment assertions establish (E6--E7, E9).
+Tables~S9--S10 and S17 give the protocols and denominators. The separate
+experiment source map links the descriptive campaign names to their
+archives. We do not pool engineering assertions with benchmark results.
+
+\subsection{Experimental design and measures}
+\label{sec:eval-setup}
+
+\textbf{Corpora and questions.} The routing and evidence-pack benchmark
+uses the same 72 in-domain questions across ten domains in three campaigns:
+the Frozen aggregate (138 documents stored as 879 parts), the Follow-up
+(906 parts), and the Main comparison (seven arms on a restarted stack).
+The Main comparison is the basis for the primary contrasts; the other
+campaigns show how the same labels vary across corpus and index states. Each complete arm also has
+four out-of-domain probes (R1--R4); two cross-domain placeholders were not
+scored. Developers authored the questions and target annotations. A separate
+paper corpus has 100 target papers and ten question-specific source IDs.
+The historical industrial-corpus ranking diagnostic has 16 questions on
+42 documents, including twenty near-duplicate telemetry reports; Q16 shares
+a token with its gold filename. Tables~S9--S10 and S17 document these and
+the separate multilingual listing checks.
+
+\textbf{Measures.} The route metric checks which collection the script
+selected. Containment checks for the annotated literal string anywhere in
+the returned pack, even in a non-gold document. The historical ranking
+analysis uses document Hit@5; the answer diagnostics check literal source
+IDs, annotated terms (at least $\lceil 3n/5\rceil$ of $n$) and marker syntax.
+These measures do not substitute for judged relevance or claim support
+\citep{craswell-msmarco-2021,jarvelin-cumulated-gain-2002,es-ragas-2024,saad-falcon-ares-2024}.
+Wilson intervals are marginal summaries; questions are paired by ID for
+two-sided exact McNemar tests. Tests are exploratory and unadjusted.
+Each answer condition was run once; retries belong to the same condition,
+not independent trials. The historical grids used Claude Code through the
+platform chat API; the four-question engine contrast in Table~S16 is a
+separate instructed case.
+
+\subsection{E1: Acquisition and parsing}
+\label{sec:e1}
+The storage audit found at least one stored part for each
+of the 100 target papers. The five libraries contained 328 parts, including
+six outside the target set. All 328 passed the recorded description check.
+Neither check measures retrieval coverage. A filename-stem diagnostic found
+all target identifiers, but most searches were unscoped and chunk copies
+could count. A separate ten-question vector diagnostic ranked each gold
+document first within its preassigned library; it did not test automatic
+routing or passage support. Table~S9 preserves the audit details.
+
+In a separate batch fixture, the warmed parser processed three
+PDFs in 38.7~s. Those three parsed documents and two directly ingested
+Markdown documents were all retrieved at rank one by document-specific
+probes. This checks both acquisition paths on five inputs, not parser
+accuracy or general retrieval recall.
+
+\subsection{E2: Lifecycle consistency}
+\label{sec:e2}
+The single-document rename fixture compared three observations:
+the stored metadata and vector entries showed the new name,
+but the repeated query initially showed the old one. A cache-bypassing query
+returned the new name, and a probe after forced reindexing confirmed it.
+This distinguishes cached output from index state in one fixture; it does not
+establish concurrent-write or crash-recovery safety.
+An older rename test had found duplicate chunks before forced reindexing;
+the two checks describe different system states. Table~S9 and the historical
+inventory retain the separate reconciliation, sub-library, tagging and
+graph checks.
+
+\subsection{E3: Collection selection versus evidence retrieval}
+\label{sec:routing-audit}
+In the Main comparison, the scripted selector chose the labelled collection for
+all 72 in-domain questions with full route cards (A0), compared with 49
+with nominally name-only cards (A3). The corresponding evidence packs
+contained the target string for 36 and 26 questions, respectively
+(Figure~\ref{fig:routing}). The runner logged a shelf request but chose documents by vector rank, not
+from shelf descriptions. A3 could fall back to descriptions without logging
+that path and could search outside the benchmark libraries. Some route cards
+also share title terms with the questions. A3 returned no candidate on
+35 of 72 questions, including 23 of the 49 it routed correctly. A0 found
+candidates on 21 of those 23. The comparison does not isolate descriptions
+or shelf navigation. Earlier runs on the same questions appear separately
+in Figure~\ref{fig:routing}.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{fig_latest_route}
+\caption{(a) Labelled-collection selection and (b) target-string containment
+for A0 and A3. Shading marks the Main comparison. All three campaigns use
+the same 72 in-domain questions; they are not independent test sets.}
+\label{fig:routing}
+\end{figure}

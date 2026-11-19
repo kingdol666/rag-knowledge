@@ -1,0 +1,64 @@
+\section{Collection and document management: organisation, classification and
+lifecycle}
+\label{sec:organization}
+
+Collection membership defines the scope available to a query. HMRS uses
+the subject of the content for placement, preserves the source assignment
+across split parts, and exposes descriptions before an agent opens a
+document body. The collection and document operations in
+Table~\ref{tab:levels} maintain these choices over the life of the corpus.
+
+\subsection{Classification, metadata, tags and duplicate review}
+\label{sec:org-placement}
+\label{sec:org-registries}
+\label{sec:org-tags}
+\label{sec:org-dedup}
+
+The catalogue returns collections and sub-libraries with descriptions.
+Each shelf shows document titles and descriptions within its selected scope.
+The ingest agent uses that scope and the parsed content to select a library,
+then writes descriptions and tags grounded in the body. Duplicate review
+presents candidate pairs for inspection because adjacent parts may share
+metadata while retaining distinct source sections.
+
+HMRS supports library and sub-library creation, metadata edits, moves,
+renames, deletion and forced re-indexing. A move updates the document path
+and registry entries, while re-indexing updates the searchable representation.
+Integrity checks compare document existence, path and index metadata across
+the files on disk, the \texttt{.tree-fs.json} registry and the library's
+\texttt{.knowledge-base.yml}. These checks give operators observable
+outcomes for the state changes made by each operation.
+
+Sub-libraries keep their descriptions and indices at their own tree nodes.
+When the caller supplies a parent scope, the vector service resolves the
+parent and its descendants into the collections searched. The lexical stage
+of the two-stage service likewise resolves descendant identifiers. The
+tested flat union calls explicit library scopes, which fixes the collections
+compared in the evaluation.
+
+\subsection{Lifecycle operations, graph and operational knowledge}
+\label{sec:org-lifecycle}
+\label{sec:org-graph}
+\label{sec:org-experience}
+
+One historical rename left old-path chunks until a forced re-index. The
+current rename paths attempt to synchronise index entries and report
+failures separately from the metadata update. The post-operation query in
+E2 tests the result in one fixture, not the general invariant.
+
+The document graph links libraries, documents and tags for navigation and
+candidate expansion. Operational lessons are also stored as retrievable
+documents. Experience tools track reviews, use and freshness and use
+credibility tiers to order results. Section~\ref{sec:eval} reports
+operational-experience cases alongside the management experiments.
+
+\subsection{Organisation contract}
+\label{sec:org-integrity}
+\label{sec:org-summary}
+
+The organisation contract links each document to its current owning
+collection, descriptive metadata and indexed path. The checks in
+Section~\ref{sec:e2} test these relationships on selected lifecycle
+operations by reconciling the three sources, reviewing document descriptions
+and rerunning retrieval probes. The resulting traces locate inconsistencies
+at the file, registry or index stage.

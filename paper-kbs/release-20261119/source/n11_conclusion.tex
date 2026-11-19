@@ -1,0 +1,16 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+HMRS links the state of collections, documents and segments to the
+interfaces used to retrieve and inspect evidence. The lifecycle
+and API checks show why a successful write should be followed by a search
+probe: the write response alone cannot verify index visibility, and a
+cached result need not reflect current index state.
+
+In the Main comparison, the document-plus-chunk configuration matched the
+annotated string on 48 of 72 questions, versus 36 for the reference-mode
+baseline and 41 for the wider document-window configuration. These are
+configuration-level results on one shared question set. Correct routing did
+not guarantee passage access, and a literal match did not establish that a
+passage supported the answer. The results support checking collection
+selection, passage access and answer support separately.

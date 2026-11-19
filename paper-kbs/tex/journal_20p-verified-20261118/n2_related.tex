@@ -21,15 +21,14 @@ near-duplicate detection and provenance help maintain the collection
 HMRS connects these operations by making the results of acquisition and
 placement visible to the workflow that selects evidence.
 
-Gallofr\'e Oca\~na and Opdahl \citep{ocaa2023software} describe how to
-integrate AI and knowledge bases in a newsroom platform. Related systems
-ground dialogue in a graph, build open-domain question answering for
-low-resource languages, or support retrieval by bank supervisors
-\citep{yang2024building,budur2024building,aarab2024system}. LLMs can also
-populate domain ontologies \citep{ciatto2025large}. HMRS applies this systems
-perspective to changing document collections. Its focus is the managed
-state a retrieval workflow reads and an operator can inspect after a
-lifecycle operation.
+Gallofr\'e Oca\~na and Opdahl \citep{ocaa2023software} connect ingestion,
+a source archive, retrieval and provenance in a newsroom platform. HMRS
+shares this systems perspective, but uses collection ownership and descriptions
+as retrieval inputs and checks agreement among files, the tree registry and
+library metadata after selected lifecycle operations. Related systems ground
+dialogue in a graph, support low-resource-language question answering, help
+bank supervisors retrieve information, or populate domain ontologies
+\citep{yang2024building,budur2024building,aarab2024system,ciatto2025large}.
 
 \subsection{Retrieval, organisation and agentic search}
 
@@ -46,10 +45,10 @@ A dash indicates a dimension outside the cited work's main contribution.}
 System & Hierarchy and scope & Construction and lifecycle & Evidence handling & Access surface\\
 \midrule
 RAPTOR \citep{raptor} & cluster tree over document text & built offline at index time & --- & tree retrieval; prototype\\
-GraphRAG \citep{graphrag} & entity--relation graph, community summaries & pre-generated offline & --- & graph retrieval; prototype\\
+GraphRAG \citep{graphrag} & entity--relation graph, community summaries & built offline & supporting record IDs & graph retrieval; prototype\\
 LightRAG \citep{lightrag} & low- and high-level graph retrieval & incremental graph updates & --- & graph retrieval; prototype\\
 DeepRead \citep{deepread} & per-document structured Markdown, section coordinates & structure built at ingestion & agent locates then reads sections & agentic search system\\
-EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise corpus & --- & evidence-state diagnosis; abstention or clarification & enterprise retrieval\\
+EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise corpus & --- & enterprise evidence diagnosis & enterprise retrieval\\
 HMRS (this work) & managed collection--document--segment state & content-based placement; lifecycle operations; three-source reconciliation & optional gate, separate from ordering & self-hosted; MCP layer\\
 \bottomrule
 \end{tabular}
@@ -105,18 +104,15 @@ Knowledge organisation standards such as SKOS \citep{skos} and Dublin Core
 give conventions for vocabularies and descriptive metadata. At ingestion,
 the HMRS workflow derives descriptions and tags from document content.
 
-Self-RAG and CRAG assess evidence or correct retrieval during generation
-\citep{selfrag,crag}; FLARE triggers retrieval as more evidence is needed
-\citep{flare}. Work on selective prediction under domain shift and
-uncertainty reporting examines when to withhold an answer
-\citep{kamath,feng-abstain,yin-knowwhat}. Citation studies examine whether
-references support the statements in the answer
-\citep{liu-verifiability,gao-citations}.
-EPRAG diagnoses evidence states to choose among response, clarification and
-abstention in enterprise retrieval \citep{kinalioglu-kbs-eprag-2026}.
-HMRS makes verification a server-side operation. The gate fetches
-candidate text, scores passages and returns surviving text with provenance,
-so an agent can inspect the source material behind the result.
+Self-RAG, CRAG and FLARE assess retrieved material or refine retrieval
+\citep{selfrag,crag,flare}. CRAG uses document relevance to trigger correction
+before generation. The HMRS contrast is an optional tool for passage
+admission over managed sources, not that verification happens earlier.
+Work on selective prediction studies when to withhold an answer
+\citep{kamath,feng-abstain,yin-knowwhat}; citation studies ask whether a
+source supports the cited statement \citep{liu-verifiability,gao-citations}.
+EPRAG studies evidence diagnosis in enterprise retrieval
+\citep{kinalioglu-kbs-eprag-2026}.
 
 Judge studies report preference bias, variable agreement and ranking
 instability \citep{zheng-llmjudge,sun-urara,panickssery-selfpref}.
@@ -128,13 +124,15 @@ as distinct decisions.
 \subsection{Research gap}
 \label{sec:gap}
 
-RMR-SST and TEIE-RAG structure engineering document content for retrieval
-and evidence access \citep{li-kbs-rmrsst-2026,shen-kbs-teierag-2026}. EPRAG
-selects a response action once the candidate evidence is available
-\citep{kinalioglu-kbs-eprag-2026}. HMRS studies the collection state that
-supplies evidence to such workflows (Table~\ref{tab:related-comparison}
-and Supplementary Table~S11). It records where documents belong, exposes
-the descriptions used to select them, and lets operators check whether
-the index reflects lifecycle changes. The evaluation follows this path from
-post-ingest state and catalogue visibility through candidate selection and
-verifier ordering.
+RMR-SST and TEIE-RAG study the structure of engineering documents for
+retrieval and information extraction
+\citep{li-kbs-rmrsst-2026,shen-kbs-teierag-2026}. DeepRead shows how to locate
+and read sections within a document; distributed IR prioritises collections
+before within-collection retrieval \citep{deepread,callan1995searching,si2003redde}.
+HMRS studies the maintained state between these stages. After a document
+changes, an operator can inspect its collection and stored location, probe
+index visibility, and open a returned passage before judging support. The
+rename fixture distinguishes a cached response from the stored index state, whereas the
+evidence examples show why a returned passage alone does not establish
+support. Table~\ref{tab:related-comparison} compares design choices, not
+performance across systems or the absence of features in prior work.

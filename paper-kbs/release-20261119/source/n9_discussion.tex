@@ -1,0 +1,33 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\textbf{Check availability after a write.} The rename fixture
+separated index state from a cached search response; the API fixture
+recorded a keyword match and catalogue visibility but did not establish
+a document-level vector hit.
+Together with the earlier stale-index incident, these results motivate testing
+retrieval after management operations, not relying on the write response alone
+\citep{park-metadata-quality-2009,paivarinta-ecm-2005}.
+
+\textbf{Measure collection choice and evidence separately.} In the Main
+comparison, the selector chose the labelled collection more often with full
+cards, yet correct routing sometimes left the pack empty. A0h matched more
+targets than A0 and A0f, but the contrast with A0f tests the extra chunk query,
+chunk priority and pack cap together. The comparison with PD is inconclusive.
+The text counters cover different read stages, and containment alone does
+not establish better answers.
+
+Supporting another deployment would require reconcilable document identities
+and collection membership, locators that resolve to the source text, and
+observable reporting of skipped search scope. These requirements do not
+depend on the registry format or the Laya scorer. The measured effects have
+not been validated on another deployment.
+
+\textbf{Expose how the search ended.} The older verifier comparison shows
+that ordering retained candidates by their admission scores can place a
+relevant document outside the read window \citep{zheng-llmjudge,sun-urara}.
+This is distinct from silently skipping a library or returning no candidates.
+Reporting scope, missing collections and the stage at which evidence was lost
+would help callers distinguish an incomplete search from an unsuccessful one.
+The platform-only answer check illustrates why an identifier match should not
+be treated as confirmation that a source supports an answer.

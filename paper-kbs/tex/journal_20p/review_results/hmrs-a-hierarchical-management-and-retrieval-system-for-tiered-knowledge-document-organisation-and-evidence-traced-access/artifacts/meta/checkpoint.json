@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "status": "prepared",
+  "phase_index": 1,
+  "phases": [
+    {
+      "name": "prepare",
+      "status": "completed"
+    },
+    {
+      "name": "phase0_audit",
+      "status": "pending"
+    },
+    {
+      "name": "committee",
+      "status": "pending"
+    },
+    {
+      "name": "lanes",
+      "status": "pending"
+    },
+    {
+      "name": "consolidation",
+      "status": "pending"
+    },
+    {
+      "name": "present",
+      "status": "pending"
+    }
+  ],
+  "completed_lanes": [],
+  "suspended_lanes": [],
+  "generated_files": [
+    "artifacts/data/all_comments.json",
+    "artifacts/data/claim_map.json",
+    "artifacts/data/final_issues.json",
+    "artifacts/data/section_index.json",
+    "artifacts/data/subsection_index.json",
+    "artifacts/meta/full_text.md",
+    "artifacts/meta/metadata.json",
+    "artifacts/meta/phase0_context.md",
+    "artifacts/summary/overall_assessment.txt",
+    "artifacts/summary/paper_summary.md",
+    "artifacts/summary/peer_review_report.md",
+    "review_report.md",
+    "revision_suggestions.md"
+  ],
+  "created_at": "2026-11-18T01:36:12.459285",
+  "updated_at": "2026-11-18T01:36:14.417671"
+}

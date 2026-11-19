@@ -72,7 +72,10 @@ also had identical frozen and follow-up hit sets. A separate November~17
 rerun on the same questions used the restarted live stack and omitted the
 full scan. Counts fell to 48/72 for A0h, 42/72 for PD, 41/72 for A0f
 and 36/72 for A0. The four arms kept their order, and A0h again contained
-12 targets missed by A0 without a reverse case. The corpus state was not
+12 targets missed by A0 without a reverse case. Across the frozen,
+follow-up and rerun records, the paired A0h-over-A0 direction held in
+each, with 15, 12 and 12 A0h-only questions and no A0-only question in
+any record. The corpus state was not
 held fixed across these runs. The benchmark archive includes the dated
 rerun traces.
 
@@ -97,7 +100,9 @@ containment, not verification of the requested context or answer correctness.
 \centering
 \includegraphics[width=\textwidth]{fig_opt_case}
 \caption{Recorded evidence paths for two benchmark questions.
-(a) A0h includes a passage containing \emph{RoBERTa} in the Lewis et~al. paper.
+(a) A0h includes a passage containing \emph{RoBERTa} in the paper by
+Lewis et~al.~\citep{rag-lewis}. The bracketed reference in the excerpt
+uses the source paper's numbering.
 (b) A0h's exact match for \emph{four or five thousand a year} occurs in
 later dialogue (part~24); its opening dialogue (part~2) splits the phrase
 across a line break. HIT and MISS refer to exact target-string containment

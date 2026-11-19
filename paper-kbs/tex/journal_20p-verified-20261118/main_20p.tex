@@ -1,5 +1,5 @@
 %% HMRS platform — Knowledge-Based Systems submission (elsarticle)
-%% v3 restructure 2026-11-11: hierarchical *management* framing — the system
+%% Hierarchical management framing: the system
 %% manages documents at three levels (collection / document / segment) and
 %% serves a tiered access path; retrieval algorithms are supporting components.
 %% Compile: pdflatex main_20p && bibtex main_20p && pdflatex main_20p && pdflatex main_20p
@@ -86,27 +86,26 @@
 City, Country}, city={City}, country={Country}}
 
 \begin{abstract}
-Retrieval from evolving document collections depends on placement,
-descriptions and index consistency. HMRS is a self-hosted system managing
-collections, documents and segments through catalogue, shelf, document and
-segment views. A November disk inventory found at least one stored part for
-each of 100 target papers. A separate rename test exposed nine stale vector
-entries, removed by re-indexing.
+Retrieval over evolving document collections depends on whether documents
+are listed in the right collection and whether search can reach their
+current content. The Hierarchical Management Retrieval System (HMRS) links
+collection, document and segment state to catalogue, shelf, document and
+segment views. A storage audit found at least one stored part for each of
+100 target papers. A separate lifecycle check recovered a renamed document
+using a cache-bypassing query.
 
-On a separate ten-domain benchmark, a scripted selector reached the
-labelled collection for 72 of 72 questions with full route cards and 49
-with nominally name-only cards in the latest rerun. This contrast does not
-isolate description effects. Combining document and vector chunk windows
-returned annotated target strings
-on 48 questions in the latest seven-arm rerun, compared with 36 for the
-baseline. Earlier records gave 52 versus 37 and 51 versus 39 on the same
-questions. In the frozen record the combined configuration's trace-recorded
-text was about ten times the baseline's and 1.3\% of a mechanical full scan's;
-the latest campaign omitted the full scan. These measures do not establish
-answer support. In a separate logged comparison, fusion order among retained
-candidates yielded 15 top-five hits across sixteen queries, versus seven in
-verifier-score order. The results illustrate how collection metadata, reading scope and candidate order
-affect evidence access in the evaluated configurations.
+In a scripted comparison on 72 questions across ten domains,
+full route cards selected the labelled collection on 72 questions, versus
+49 with nominally name-only cards. This contrast does not isolate the effect
+of descriptions. The document-plus-chunk configuration returned the annotated
+string for 48 questions, versus 36 for the reference-mode baseline and 41
+for a configuration that passed longer document windows directly to the
+judge. The paired comparison with the reference-mode baseline yielded 12
+additional hits and no losses (two-sided exact test, $p=0.00049$, unadjusted).
+Mean retrieval tool time was 15.0~s for the document-plus-chunk configuration
+and 16.6~s for the reference-mode baseline, excluding answer generation.
+These results distinguish collection selection from evidence access. They do not establish semantic support or answer accuracy: an exact
+match can occur in the wrong document or context.
 \end{abstract}
 
 \begin{keyword}
@@ -134,7 +133,11 @@ Model Context Protocol
 \input{n_back}
 
 {\ifdefined\HMRSReviewLayout\else\footnotesize\fi
-\setlength{\bibsep}{0.5pt plus 0.2ex}
+\ifdefined\HMRSReviewLayout
+  \setlength{\bibsep}{0.5pt plus 0.2ex}
+\else
+  \setlength{\bibsep}{0pt}
+\fi
 \urlstyle{same}
 \bibliographystyle{elsarticle-num}
 \bibliography{refs,refs_new_verified}

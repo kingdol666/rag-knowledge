@@ -1,140 +1,31 @@
-# paper-kbs — KBS期刊论文《HMRS》实验与手稿
+# paper-kbs — HMRS 论文工作区（2026-11-19 清理后）
 
-本目录是为 **Knowledge-Based Systems** (Elsevier) 撰写的完整论文及其全部实验产物。
-论文系统 = `D:\codes\ragproject\rag-knowledge`(HMRS 平台 v2.3.0)。
+投 **Knowledge-Based Systems**（Elsevier）的《HMRS》论文工作区。
+系统实现 = 仓库根的 `backend/`、`kb-mcp/` 等（HMRS 平台）。
 
-> **2026-11-14 KBS 本刊文献整合**：当前投稿正本是 `tex/journal_20p/main_20p.tex`
-> (elsarticle 双栏)。新增 **27 条** KBS 本刊系统 / 平台 / 架构 / 部署类文献已
-> 全部写入 §2 三个小节与评测设置段落，并逐条出现在参考文献列表；另补齐 5 条
-> 既有"定义了却从未引用"的孤儿条目。`refs.bib` 35→62 条，与
-> `refs_new_verified.bib` 合计 **97 条定义 / 96 条引用**，
-> `pdflatex+bibtex` 全链编译 **20 页 / 0 错误 / 0 未定义引用 / 0 超宽 overfull**。
-> 2 条 DOI 重复项已去重，`hmrs-demo` 因双盲保持未引用。文献包、阅读指南与
-> 完整验证记录见 `reference/kbs/README.md`；根目录 `tex/` 是历史稿件，未改动。
->
-> **2026-11-14 第二轮引用一致性审计**：按 29 篇 PDF 摘要逐条核验引用的内容 /
-> 位置 / 时机，查出 §2.3 一组位置错配（5 篇系统工程与持续学习文献被归入
-> "trustworthiness"）与 5 处超出摘要证据的描述，已全部修正并重新编译
-> （仍 20 页 / 96 条参考文献 / 0 错误，约束复核 15/15 PASS）。报告见
-> `notes/CITATION-CONSISTENCY-AUDIT-2026-11-14.md`。
+## 当前结构
 
-> **2026-10-12 结构优化稿**: `tex/main.pdf` 48 页(elsarticle preprint 12pt,
-> pdflatex+bibtex 编译,0 错误/0 未解析引用/无 >15pt overfull)。本轮按 KBS 写作
-> 要求 + 逻辑/故事线清晰化做了**纯写作层**优化(未改任何数据):新增 RQ1–RQ4 研究
-> 问题与 "paper at a glance" 表(§1)、端到端系统 trace(§3.4)、车道操作点表(§4.1)、
-> 结果与 RQ 对齐、威胁节补 "experimental controls / consumer-side evidence / Q16
-> 修复方案"。详见 `notes/revision-2026-10-12.md`。
->
-> **2026-10-09 KBS 稿现状**: `tex/main.pdf` 32 页(elsarticle preprint 12pt,
-> tectonic 编译,0 错误/0 未解析引用,视觉验收 6 关键页全 PASS)。
-> 8 图 5 表 + 附录 A(16题×9配置逐题 best_rank,由 `experiments/derive_appendix.py`
-> 生成)。检索有效性主线:Exp5 judge-as-filter(Hit@5 0.44→0.94,符号检验
-> 8胜0负 p=0.008)+ Figure 7 真实查询解剖图(Q2 全链路,`experiments/exp5b_q2_anatomy.py`)。
+| 路径 | 内容 | 状态 |
+|---|---|---|
+| `tex/journal_20p/` | **投稿正本（17 页重构前版，用户指定）**。2026-11-19 已落 4 处修复（E5 三战役方向稳定性 / threats 波动披露 / E6 成本口径 / E9 延迟口径），编译 17 页 / 0 错误 / 0 未定义 | ✅ 投稿用 |
+| `tex/journal_20p-verified-20261118/` | 14 页重构版（recast），暂留对照 | 🗄 存档 |
+| `release-17p-20261119/` + `.zip` | 17p 完整交付包（源码+PDF+docs，76 条目，完整性已验） | ✅ 交付物 |
+| `release-20261119/` | 14p 版交付包 | 🗄 存档 |
+| `reference/kbs/` | 29 篇 KBS 已发表文章 PDF（合法 OA 渠道：2 篇 VoR + 26 篇接受稿/arXiv 版 + 1 篇预印本）+ BibTeX + 图库，Related Work 依赖 | ✅ 保留 |
+| `notes/` | 引用一致性审计、下载清单、溯源 JSON（被 reference/kbs/README 与溯源链引用） | ✅ 保留 |
+| `experiments/` | 实验结果 JSON（被 14p 版 experiment-source-map 引用） | ✅ 保留 |
+| `tex/_package_release_*.py` | 两个打包脚本（可重跑生成 release） | 🔧 工具 |
 
-## ⭐ IEEE TII 版本 (tex-ieee/, 2026-10-09)
+## 2026-11-19 清理记录
 
-目标期刊由 KBS 转向 **IEEE TII**。`tex-ieee/main_tii.pdf` 为 IEEEtran 双栏
-**9 页**编译稿(tectonic, 0错误/0未解析引用),已做:
-- elsarticle→IEEEtran 转换、Index Terms、IEEEtran.bst 引用重排(28条,含新增的
-  两篇同方向 TII 论文 CoMA-IKG (TII 22(6)) 与 RRPDG (TII 20(4)));
-- **双盲匿名化**(作者块/致谢/仓库链接均已匿名——TII 是 double-anonymous 评审);
-- 工业信息学叙事重构(工业 PV 产线语料前置,Industry 应用导向);
-- 7 张 IEEE 尺寸图(单栏 89mm×5 + 跨栏 181mm×1 + 新数据图×2:
-  fig5 切割线 margin 重放曲线、fig6 OOD 弃答探针柱状),由
-  `figures/figures_ieee.py` 生成;
-- 内容压缩:题集表并入仓库引用、高亮/KBS声明移除、章节合并。
-**投稿前 AUTHOR ACTION**: 全员 ORCID(TII必填);录用后去匿名(作者块/仓库链接/
-致谢恢复);IEEE Author Portal 提交。页数 9<10 无超页费。
+删除（约 538 MB）：`_archive_20261111/`、`figures/`、`overleaf*/`（4 个目录）、
+`KBS-Revision-20261112(-20p)/`、`figure-reconstruction-20261116/`、
+`review/`、`review_results/`、`supplementary/`、`templates/`、
+3 个 HMRS-Overleaf zip、根层过期 md ×3；`tex/` 下 `journal_opt_20261115/`、
+`journal_20p-word-work-20261118/`、`journal_20p_relwork/`、`preview_pages/`、
+`release-9694b73a/`、`FinalPaper/`、`_zip_selftest/`、旧 `figs/`、`notes/`、
+根层散落孤儿文件；`journal_20p/` 内约 150 个历史编译日志、11 个 render 目录、
+旧 hmrs_kbs 独立稿、备份 docx/png/txt。清理后复编译验证通过。
 
-## 目录结构
-
-```
-paper-kbs/
-├── tex/                    # 论文手稿 (elsarticle, KBS 模板)
-│   ├── main.tex            # 主文件 (pdflatex → bibtex → pdflatex ×2)
-│   ├── main.md             # 可读预览版 (build_preview.py 生成, 引用为[键名])
-│   ├── main_preview.pdf    # 浏览器打印的预览PDF(18页,非elsarticle排版)
-│   ├── refs.bib            # 27 条参考文献(全部经 arXiv/DOI 核验,含 refs_verified.json)
-│   ├── highlights.tex      # KBS 要求的 Highlights(5 条,均 ≤85 字符)
-│   ├── tab_agentic.tex     # Exp2 结果表(由 experiments/gen_agentic_table.py 生成)
-│   ├── check_refs.py       # 引用/标签/图文件一致性检查
-│   └── figs/               # 论文用图 (PDF 矢量)
-├── figures/
-│   ├── figures.py          # 全部论文图的绘图脚本 (Okabe-Ito 色盲安全, 300dpi)
-│   └── fig1..fig5 .pdf/.png
-├── experiments/
-│   ├── kbcommon.py         # 公共库: MCP SSE 客户端 / chat API / 16 金标题集
-│   ├── exp5_judge_filter.py# Exp5: 判卷门角色实验(filter-only 0.94 恢复)
-│   ├── exp1_retrieval.py   # Exp1: 机器级 7 方法 × 16 题检索对照
-│   ├── exp2_lanes.py       # Exp2: agentic 3 lane + bare × 4 题端到端 × 两轮 (真实 omp)
-│   ├── exp3_abstention.py  # Exp3: OOD弃答探针(机器层) + 切割线重放 + 金标秩次
-│   ├── exp4_agent_abstention.py # Exp4: agent层OOD弃答探针 6跑(全答案存档)
-│   ├── analyze_round2.py   # 双轮一致性 + 去污染fact-check + refusal重算
-│   ├── gen_agentic_table.py# Exp2 → LaTeX 表格 + 汇总
-│   └── results/
-│       ├── exp1_retrieval.json / exp1_summary.json   # Exp1 原始数据(16题)
-│       ├── exp2_lanes/ exp2_lanes_rep2/              # Exp2 两轮逐跑日志(32跑)
-│       ├── exp3_abstention.json                      # 探针/重放/秩次
-│       └── exp4_abstention/run_*.json                # OOD探针全答案(6跑)
-└── notes/review-2026-10-08.md  # 五维评审意见与全部修复记录
-```
-
-## 复现步骤
-
-```bash
-# 0) 前置: ragctl up (backend:8770 + web:6789 + neo4j), kb-mcp SSE :8000, laya worker :8791
-cd paper-kbs/experiments
-PY=../rag-knowledge/backend/.venv/Scripts/python.exe   # 从仓库根相对
-$PY exp1_retrieval.py        # ~3 min, 产出 results/exp1_*.json
-$PY exp2_lanes.py            # ~40 min, 16 次真实 agent 运行
-uv run --python 3.12 --with matplotlib --with numpy ../figures/figures.py all
-$PY gen_agentic_table.py     # 生成 tex/tab_agentic.tex
-cd ../tex && pdflatex main && bibtex main && pdflatex main && pdflatex main
-```
-
-## 实验设计一页纸
-
-- **Exp1 (工具层)**: 同一 42 文档/5 库生产语料,16 个金标题,7 方法
-  (BM25 / Dense / RRF / Graph / Two-stage / Fusion-only / HMRS-Hybrid+judge),
-  指标 Hit@5 / Recall@5 / MRR / 时延。平台方法全部经真实 MCP 工具接口调用。
-- **Exp2 (Agent 层)**: 4 题 (Q2 EL脱层 / Q4 POE阻隔 / Q6 克重条款 / Q7 TC0根因) × 4 臂
-  (search 钉库 / librarian 全库 / hybrid 钉库 / bare 无KB) × 2 轮,经公开 chat API
-  (engine=omp→GLM-5.3-Flash) 真实执行,记录墙钟 / 轮次 / 金标引用 / 事实标记 / 拒答。
-- **Exp3 (判卷分析)**: 4条库外探针(机器层,阈值零弃答) + 切割线margin离线重放
-  (0.15→16/17金标,0.20→17/17) + 金标judged秩次分布。
-- **Exp4 (agent层弃答)**: 3臂×2条OOD题,6/6诚实not-found,零编造引用。
-- **判卷膨胀分析**: 191个judged候选分数,金标(n=17)与非金标(n=174)分布
-  Mann-Whitney p=0.26 无可检出分离 (图4)。
-- **Exp5 (判卷门角色, 检索有效性修复)**: 同一管线三种verdict角色——
-  按分重排0.44 / **只过滤不过滤序 0.94(恢复)** / RRF融合0.88。
-  失败归因=排序而非判卷本身;修复=配置级变更 (图6b)。
-- **图**: KBS版7张 (新增fig6 margin重放+变体对比、fig7 OOD探针)。
-
-## 主要发现(详见论文 §7)
-
-1. 健康语料上 BM25/RRF/Two-stage 均 Hit@5=1.00(毫秒级),dense 0.94(Q16近重复族);
-   **judged hybrid 0.44**——判卷同域膨胀是唯一主导失败(8题判卷重转序+Q16融合丢)。
-2. 191个judged候选全部过阈(≥0.589),零过滤力;金标与非金标分数分布不可分
-   (MW p=0.26);**切割线margin重放**: 0.15→丢1金标(Q11),≥0.20→17/17保留。
-3. 阈值层对库外查询也不弃答(kept 9-11/12);**诚实弃答的enforcement在阅读/作答层**:
-   agent层6/6 OOD诚实not-found、零编造引用、自愿盲区披露。
-4. Agent双轮32跑: 金标引用一致16/16、去污染事实标记12/12两轮全保持;bare 0/4引用。
-   时延≈轮数×12-15s且两轮波动大→"结果可复现,时延不可复现"。
-5. 语料完整性是前提: 实验设置期发现并修复两起索引静默丢失(§6.1/§8 L5)。
-
-## KBS 合规对照
-
-| 要求 | 状态 |
-|---|---|
-| elsarticle 模板 + 编号引用 (elsarticle-num) | ✅ `tex/journal_20p/main_20p.tex` |
-| KBS 本刊近三年系统类文献引用 | ✅ 27 条已写入正文并列入参考文献（2026-11-14，见 `reference/kbs/README.md`） |
-| Highlights (3–5×≤85 字符) | ✅ highlights.tex |
-| 结构: 摘要(≈250词)/关键词/背景/相关工作/方法/实现/实验/讨论/结论 | ✅ |
-| 声明: CRediT / 利益冲突 / 数据可用性 / AI 使用声明 | ✅ |
-| 图: 架构图(1)/三lane流程(2)/工具层结果(3)/agentic结果(4)/判卷膨胀(5) | ✅ 全矢量+视觉验收18页全pass |
-| 作者信息/ORCID/基金/demo论文作者名单 | ⚠️ AUTHOR ACTION 占位(main.tex 内有标记) |
-
-> 编译: `tex/main.pdf` 由 tectonic 0.15 (elsarticle) 编译,29页,BibTeX干净;
-> `tex/main_preview.pdf` 是 HTML 打印的可读预览(非期刊排版)。
-> 注意文件名顺序: 文内 Figure 4 = fig5_e2e(§7.2),Figure 5 = fig4_inflation(§7.3)。
-> exp2 run JSON 的 success:false 是已知omp信封误标bug,答案完整,评测以内容为准。
+> 历史工作区（KBS-Revision、overleaf 各轮、journal_opt 等）内容已按
+> 2026-11-19 用户决定清除；git 历史中已提交的部分仍可追溯。

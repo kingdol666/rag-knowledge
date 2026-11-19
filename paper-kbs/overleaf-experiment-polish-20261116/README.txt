@@ -1,1 +1,0 @@
-Overleaf: upload ZIP, set main_20p.tex as main document, use pdfLaTeX and BibTeX. supplementary.tex is a separate document. The 20-page, two-column PDF is a review preview; consult the journal author guide for current submission requirements. Author details and declarations need author verification. See EXPERIMENT-EVIDENCE-AUDIT-20261116.md for study limitations.

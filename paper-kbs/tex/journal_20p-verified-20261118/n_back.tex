@@ -3,8 +3,7 @@
 %% every declaration; n11_conclusion.tex carries the Conclusion and nothing else.
 %%
 %% The declarations follow the Conclusion. Keep the generative-AI statement
-%% immediately before the references, pending a final check of the current KBS
-%% Guide for Authors.
+%% immediately before the references per the current KBS Guide for Authors.
 %%
 %% AUTHOR ACTION: replace the CRediT names, confirm the funding wording, and
 %% adjust or remove the acknowledgements.
@@ -28,19 +27,17 @@ This article does not report studies involving human participants, human
 data, or animals.
 
 \section*{Data availability}
-The implementation and benchmark scripts are available at
-\url{https://github.com/kingdol666/rag-knowledge}. The supplement describes
-the campaigns and includes per-question results, provenance manifests and
-the score and ordering records for the verifier replay. The accompanying
-route and content trace CSVs report identifiers, containment outcomes, text
-volumes and timings. These exports omit question text, reference strings and
-returned passages; they support recomputation of reported summaries from saved
-labels, not independent verification of every containment decision or a full
-replay. Some historical verifier inputs and corpus/index states were not
-retained. The source restrictions on the evaluation corpora limit
-redistribution. The repository includes a recipe and synthetic sample for
-constructing a substitute for the 42-document industrial demonstration
-corpus.
+The \href{https://github.com/kingdol666/rag-knowledge}{project repository}
+provides code, benchmark scripts and a synthetic industrial-corpus recipe.
+The supplement and companion inventory document results and protocols. The
+trace CSVs support recomputation from saved labels, including all 532 rows
+from the Main comparison, but omit question text, targets and returned
+passages. The platform-only answers can be rescored locally; only derived
+tables are released. Service assertions are sanitised. Missing complete
+packs and index snapshots prevent live replay. Source rights limit corpus
+redistribution.
+%% AUTHOR ACTION: add the actual dataset repository link after deposit, or
+%% explain at submission which research data cannot be shared (KBS Option C).
 
 \section*{Acknowledgments}
 The authors thank the maintainers of the open-source components the platform

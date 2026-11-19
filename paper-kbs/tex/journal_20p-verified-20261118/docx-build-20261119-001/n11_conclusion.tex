@@ -1,0 +1,24 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+HMRS connects the state used to manage collections, documents and segments
+to the interfaces that agents use to find and inspect evidence. The
+collection catalogue and document shelf expose metadata for narrowing
+search, and opened documents and indexed segments carry the provenance
+needed to inspect a result. Lifecycle checks make discrepancies observable:
+a rename left duplicate vector entries, and re-indexing restored the expected
+state.
+
+On the 72-question evaluation, the tiered configuration that combined
+document and chunk windows returned packs containing more annotated target
+strings than the baseline configuration. The difference was 15 questions in the
+frozen run and 12 in each rerun on the same questions.
+In the frozen trace, the combined configuration used a higher recorded text
+volume than the baseline and less than the mechanical full scan; the scan was
+incomplete or absent in the later runs. The verifier
+replay exposed a complementary trade-off. Fusion order placed a gold
+document in the top five for 15 of the 16 candidate pools, compared with
+seven under verifier-score ordering.
+These results motivate two concrete practices in managed document systems:
+audit the state that supplies retrieval candidates, and test evidence
+admission and ordering as separate decisions.

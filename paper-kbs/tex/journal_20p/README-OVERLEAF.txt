@@ -1,4 +1,4 @@
-HMRS manuscript sources (2026-11-18)
+HMRS manuscript sources (2026-11-18, 69 references)
 ====================================
 
 Open main_20p.tex as the root document. Compile with pdfLaTeX and BibTeX.
@@ -24,8 +24,8 @@ Editorial Manager uses a separate flat manuscript archive. Open the ZIP
 and select files according to their item types. Use the .tex, .bib and
 .bbl files as editable manuscript sources and the separate PDFs as
 figures. Keep the supplement and highlights separate from those sources.
-The older Word exports of the main text and supplement in this repository
-predate this revision. The revised LaTeX sources are authoritative.
+The editable Word exports are companion files. The main Word manuscript
+uses the bibliography numbering of the LaTeX build.
 
 This is a draft with author placeholders. See SUBMISSION-FILL-IN.md in
 the repository before journal submission. Confirm author details and

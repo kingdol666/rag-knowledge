@@ -147,7 +147,10 @@ def validate() -> int:
         if name == "frozen" and len(read_ids) != N_QUESTIONS:
             failures.append("frozen read-all: expected all 72 in-domain rows")
 
-        for other, expected in (("A0", expected_a0), ("PD", expected_pd)):
+        contrasts = [("A0", expected_a0), ("PD", expected_pd)]
+        if name == "rerun-20261117":
+            contrasts.append(("A0f", (7, 0)))
+        for other, expected in contrasts:
             if not {"A0h", other} <= valid or len(in_domain) != N_QUESTIONS:
                 print(f"  A0h vs {other}: unavailable (invalid paired IDs)")
                 continue

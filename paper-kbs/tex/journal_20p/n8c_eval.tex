@@ -29,7 +29,10 @@ coverage was
 and \$0.487 for F, and 24.5~s and \$0.527 for C. A later run on the
 repaired platform used the same five libraries and returned an identifier
 and marker in all ten answers, with full keyword coverage in nine.
-The run averaged 131~s per question and cost \$3.10 overall.
+The run averaged 131~s per question and cost \$3.10 overall
+(about \$0.31 per question, versus the \$0.487--0.711 per-question means
+of the original grid arms; the later run is slower per question and used
+a single arm rather than the three concurrent access paths).
 
 \textbf{Answer-level case study.} After ingesting DeepSeek-R1, two agent
 harnesses answered four questions with the library, paper and arXiv identifier
@@ -115,7 +118,9 @@ across three tasks, three lanes and three rounds. In the single-instance
 concurrency sweep (90, 180 and 270 requests at 5, 15 and 30 clients),
 median latency rose from 5.2 to 1577~ms, and 111 of 270 requests timed
 out at 30 clients. A cache repair lowered the 30-client median to
-65.8~ms on selected read-ladder reruns. The full sweep, concurrent writes
+65.8~ms on selected read-ladder reruns; the two medians come from the
+full pre-repair sweep and targeted post-repair reruns, not a repeated
+sweep. The full sweep, concurrent writes
 and crash recovery were outside that retest.
 
 An inspection of cross-library vector search identified eight collections
