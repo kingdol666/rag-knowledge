@@ -81,3 +81,20 @@ Task: design review + skills/API verification + non-paper test-result cleanup + 
 - readall not rerun (deterministic script scan ~5h; rationale documented, architect-approved).
 - Verdict: REPRODUCED. Report: review/experiment-redesign-20261101/artifacts/repro_20261117/REPRO-REPORT-20261117.md
 - Paper review (US-101): A−/B+/B+; two blockers fixed (S1–S8 inventory note; intro arm gloss), rebuilt 20/7 pages CLEAN, Overleaf zip refreshed.
+
+=== R2 round 2026-11-18 (external API acceptance v2) ===
+US-001 PASS: 3 services green (8770 healthy+vector ready / 6789 200 / 8000 sse 200); loop token valid cached; no-token 401 re-verified.
+US-002 PASS: 136 routes enumerated -> review/api-harness-e2e-20261118/route-inventory.txt; gaps vs docs/api-web.md v1: agent/chat trio, claude/chat, automation*, meditation*, search/* proxies, harnesses — all now documented in api-web.md v2.0; integration doc port note fixed 8771->8770.
+US-003: R2 suite running (runner_r2.py r2full, sequential 5 groups) — results pending.
+US-004: docs/api-web.md rewritten to v2.0 (standard structure, 11 sections); agentworkshop-integration.md port errata + R2 contract findings.
+Learnings: h3 error shell uniform; sessionId(camel) vs session_id(snake) lane difference confirmed in code paths; automation routes proxy backend /api/v1/automation/*; meditation PUT is MERGE semantics.
+US-003 R2 results so far: r2sync PASS 302.7s/$0.91 (gold formula, skill pipeline, Result section); r2ood PASS 116s/$0.18 (transparent refusal, 62 KBs, zero fabrication); r2chat PASS (turn1 201s/11t + turn2 143s/2t resume continuity, sessionId echo CONFIRMED -> R1 F3 RETRACTED, was extractor bug); r2ingest PASS 258.7s/$0.66 (named quality gates A0/A3c/A3b/A2-Q, triple verify 0.768, three-source match, KB api-e2e-20261118-r2 kbId 4d0b401b); r2async attempt1 hit 600s cap (day-load variance ~2x vs R1 same prompt 272s) -> retry running.
+US-004: api-web.md v2.0 written (11-section standard doc, placeholders only, spot-checked contracts); L3 row updated to retraction note; L1 row gains client-timeout >=750s guidance (measured: timeout-turn server response can exceed 630s).
+Learnings: agent names skill gates explicitly when prompt references them; OOD went tool-native (no Skill load) this round = faster honest path also emerges naturally.
+US-006: reviewer rounds R1 REJECT (2 blockers: inventory auth column missing; integration doc missing 4 findings) -> fixed; R2 REJECT (classifier index bug: split('/')[1]=='api', whitelist never matched -> 3 rows wrong) -> fixed; R3 APPROVE 21/21 AC. Deslop pass (--review): no unused imports, both runners compile, port mentions are intentional errata, cross-doc duplication intentional; no writer follow-up needed. Final state: all 6 stories passes=true.
+=== R3 round 20261118 evening (full-chain / persistence / frontend / doc-as-contract) ===
+US-007 PASS: resource-lane 6-step chain (create KB r3 796153b2 -> doc -> reindex chunks=1 -> vector hit -> keyword hit -> catalog) 6/6.
+US-008 PASS 11/11: chat-db 3 today sessions + 3631 msgs; auth 57u/302t; LIVE CHROMA = repo-root chroma_db/ (storage/chroma is empty decoy!) r1/r2/r3 collections all present; tree-fs+yml; SDK jsonl agent sessions persisted.
+US-009 PASS w/1 UI defect: real-browser login+guard OK; r1/r2/r3 KBs visible w/ desc+counts; canary doc visible in r3 KB detail; keyword search hit #2 score 4.0 top w/ kb label+path (screenshots gui-test-screenshots/); history DIALOG shows only 4 old 10/12 sessions = UI render defect (data layer fine: history API DESC first=today; sessions API first=today agent session w/ auto title).
+US-010 PASS 13/13: doc examples verbatim incl two-stage success assert, automation trio (summarize created exp-b6a61a4c3525 on aw-industrial), double-spelling readback 200x2 (suite first-run 400 was test-ordering bug, fixed evidence r3_readback_fix.json), sync 151.7s + async 0.0s submit -> completed 140.9s.
+Learnings: ant-design radios are hidden inputs -> use dom_cua (ref from get_visible_dom) not role locators; cua.scroll times out on scrollspy one-pager -> use click+PageUp; nav items route on click at text center via geometry read.

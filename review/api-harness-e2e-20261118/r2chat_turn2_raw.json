@@ -1,0 +1,17 @@
+{
+ "success": true,
+ "toolCalls": [
+  "mcp__kb-mcp__kb_doc_read"
+ ],
+ "toolCallCount": 1,
+ "engine": "claude",
+ "sessionId": "b9585f1c-94fc-441d-be2e-ffaa242c9d60",
+ "model": "default",
+ "subtype": "success",
+ "answer": "伊丽莎白拒绝达西时给出的最主要理由有两点：一是她从根本上反感达西“傲慢、自负，轻蔑他人感情”的性格，并且他求婚时言语羞辱了她；二是他做了两件事，一是亲手拆散吉英与彬格莱，二是亏待韦翰。伊丽莎白把前一件事列为第一条直接指控。\n\n**1. 求婚方式本身就让她愤怒**：达西声称自己喜欢她，但这件事违背他的意愿、理智甚至性格（“*liked me against your will, against your reason, and even against your character*”）；他还在求婚时大谈她家世低微、自己是在屈尊（“*degradation*”）。伊丽莎白事后回应：“*You are mistaken, Mr. Darcy, if you suppose that the mode of your declaration affected me in any other way than as it spared me the concern which I might have felt in refusing you, had you behaved in a more gentlemanlike manner.*”（你要是举止更像绅士些，我拒绝你时还会觉得过意不去。）\n\n**2. 性格层面的根本反感**：“*your manners impressing me with the fullest belief of your arrogance, your conceit, and your selfish disdain of the feelings of others, were such as to form that groundwork of disapprobation... I had not known you a month before I felt that you were the last man in the world whom I could ever be prevailed on to marry.*”（认识你不到一个月，我就认定你是我最不可能嫁的人。）\n\n**3. 第一条具体罪状：拆散吉英与彬格莱**：“*do you think that any consideration would tempt me to accept the man who has been the means of ruining, perhaps for ever, the happiness of a most beloved sister?*”；并且她控诉他是“*the principal, if not the only means of dividing them from each other*”。达西当场承认，甚至表示“*I rejoice in my success*”。\n\n**4. 第二条具体罪状：亏待韦翰**：“*Your character was unfolded in the recital which I received many months ago from Mr. Wickham*”；“*You have reduced him to his present state of poverty--comparative poverty.*”\n\n**出处**：`Novel-PridePrejudice` 知识库（Gutenberg #1342 全文），`pride_and_prejudice (part 13 of 26).md`，第 34 章拒绝场景，引文逐字核对。\n**可信度**：P0 强（原文直接引证）。**盲点**：语义裁判引擎（Laya）在本会话中不可用（`laya_sdk_unavailable`），因此我没有依赖打分，而是直接通读了原文章节来确认。",
+ "duration_ms": 141614,
+ "duration_api_ms": 343354,
+ "num_turns": 2,
+ "total_cost_usd": 0.65236304,
+ "elapsed_ms": 143191
+}

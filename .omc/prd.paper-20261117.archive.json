@@ -1,0 +1,90 @@
+{
+ "task": "论文设计/写作/排版评审 + bench 管道真机复现实验（2026-11-17）：干净端口重启平台栈 → S0 预检 → S1/S3 校验 → S4 消融复跑（临时目录，禁覆盖 final_bench）→ S6 统计对比论文数字 → 可信度裁定 → architect 验收",
+ "stories": [
+  {
+   "id": "US-101",
+   "title": "论文设计、写作流程与排版布局评审报告",
+   "priority": 6,
+   "passes": true,
+   "acceptanceCriteria": [
+    "对 paper-kbs/tex/journal_20p 全文给出设计主线、章节写作流程、排版布局三维度评审",
+    "评审含可执行的具体问题定位（file:line 或页码），不含空泛评价",
+    "结论明确：是否达到初稿可投状态"
+   ],
+   "evidence": "评审报告交付：设计 A−/写作 B+/排版 B+，含 file:line 定位与 Top-5 打磨项；两阻断项（S1–S8 断层说明、引言臂名速览）已修复并重编译（主文 20 页/补充 7 页 CLEAN）；结论=补完作者信息即可投"
+  },
+  {
+   "id": "US-102",
+   "title": "干净端口重启平台栈并恢复健康",
+   "priority": 1,
+   "passes": true,
+   "acceptanceCriteria": [
+    "8771/8000/6789 旧实例全部终止（含 uv/bun 僵尸链），端口清空",
+    "按 backend → kb-mcp → web 顺序重启，三端口 health 全部 200",
+    "8771 监听属主为 venv python 而非 anaconda 孤儿 worker",
+    "loop-auth.json 令牌刷新（当前已 74h 过期），lib.auth_token() 探针可用"
+   ],
+   "evidence": "三端口 health 200×3；8771 属主链=venv main.py(146880)→worker(138296) 完整父子（非孤儿）；幽灵 spawn worker(85460) 已按 SOP 清杀；loop-auth 刷新 len=46"
+  },
+  {
+   "id": "US-103",
+   "title": "S0i/S0c 平台预检全绿",
+   "priority": 2,
+   "passes": true,
+   "acceptanceCriteria": [
+    "s0i_final_preflight.py 执行完成且判卷活性、10 库向量探针、题集×库存对账三项全绿",
+    "预检输出落盘并可回溯"
+   ],
+   "evidence": "S0i 10/10 OK；S0c 判卷活性 PASS（bad_request 分类=fail-closed 活）+10 库 3/3 命中无 chroma 异常+72/72 金标文档在库（词干回退 27）"
+  },
+  {
+   "id": "US-104",
+   "title": "S1 语料校验 + S3 题集校验通过",
+   "priority": 3,
+   "passes": true,
+   "acceptanceCriteria": [
+    "build_manifest.py 通过判据 evidence_failures=0",
+    "s3_validate_questions.py --validate questions.jsonl 通过（78 行：72 gold + 4 refusal + 2 cross 占位）",
+    "两步输出落盘"
+   ],
+   "evidence": "S1 evidence_failures=0（manifest 落盘）；S3 total=78 gold=72 refusal=4 cross=0 pending_expansion=2 机械校验通过，构成与论文披露完全一致"
+  },
+  {
+   "id": "US-105",
+   "title": "S4 消融复跑（临时目录）+ 污染审计",
+   "priority": 4,
+   "passes": true,
+   "acceptanceCriteria": [
+    "新 trace 落临时目录 artifacts/repro_20261117/，final_bench 字节未动",
+    "臂集：A0/A0f/A0h/PD/A1b/A2/A3 全部复跑（readall 决策=不跑，理由落盘）",
+    "污染审计通过：每臂 qid 唯一、无路由目录卡 survivors/top1、A1b/A2 候选路径全部属于十个评测库",
+    "每臂 n=72 gold 行（或如实记录缺口）"
+   ],
+   "evidence": "七臂 532 checkpoint 行（7×76）全部落 repro_20261117/；final_bench SHA256 前后一致（d1379a54…）；污染审计 4 项全过：qid 唯一 76/臂、survivors/top1 零目录卡、A1b/A2 候选 0/1252 越界；readall 不跑理由=机械扫描 ~5h 且 72/72 为脚本确定性属性；A3 首跑挂起于 --prepare-a3 孪生库重建（同 R3 attempt1_aborted 指纹），已披露并无 prepare 重试成功"
+  },
+  {
+   "id": "US-106",
+   "title": "S6 统计 + 论文对比 + 可信度裁定",
+   "priority": 5,
+   "passes": true,
+   "acceptanceCriteria": [
+    "对新 trace 跑 s6_stats.py 输出聚合+McNemar",
+    "逐臂对比表：复跑值 vs 论文 frozen 值 vs 论文 follow-up 值，差异显性化",
+    "给出可信度裁定（复现/部分复现/不复现）与证据引用",
+    "对比结论写入报告并同步给用户"
+   ],
+   "evidence": "REPRO-REPORT-20261117.md 落盘：七臂排序全保持（A0h>PD>A0f>A0≈A1b>A2）；A0h−A0=+12 与 follow-up 精确一致；配对 McNemar 四项 bit 级一致（A0h 12–0 p=0.000488/A0f 5–0 p=0.0625/PD 6–0 p=0.03125/A1b 1–1 p=1.0）；逐题一致率 94.4–97.2%（A3 84.7%）处于论文自报稳定带；裁定=复现"
+  },
+  {
+   "id": "US-107",
+   "title": "architect 终审",
+   "priority": 7,
+   "passes": true,
+   "acceptanceCriteria": [
+    "architect 按 PRD 各故事验收标准复核全部证据",
+    "APPROVED 或整改后 APPROVED，拒绝项全部闭环"
+   ],
+   "evidence": "architect 独立复核 APPROVED：健康探针/进程链/532 行/七臂聚合/污染审计/final_bench 哈希/McNemar 复算/报告表逐项 bit 级一致；readall 豁免判定=PRD 授权+理由成立"
+  }
+ ]
+}

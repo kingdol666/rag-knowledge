@@ -1,0 +1,36 @@
+{
+ "success": true,
+ "task_id": "kbt_mwlmaivz_7e5ce9b7",
+ "status": "completed",
+ "mode": "async",
+ "prompt": "请创建一个名为 api-e2e-20261118-r2 的知识库（描述：对外 API R2 轮验收测试专用库），然后把下面这篇文档入库到该知识库，完成向量索引并回查验证，最后报告 doc_path 与 chunk 数。\n---文档开始---\n# R2 轮对外 API 验收记录（2026-11-18）\n\n本记录是第二轮对外接口验收的入库测试文档，验证建库→入库→索引→回查全管线。\n同步模式返回完整信封：reply、tools_used、duration_ms、total_cost_usd、session_id。\n异步模式即返 task_id，后台执行完毕后经 GET /api/kb/agent/tasks/{task_id} 取全信封。\nR2 轮新增检查点：文档须含四要素描述与标签，索引后 chunk 数必须大于等于 1。\n---文档结束---",
+ "engine": "claude",
+ "permission": "bypassPermissions",
+ "created_at": "2026-11-18T04:24:37.151Z",
+ "finished_at": "2026-11-18T04:28:59.490Z",
+ "result": {
+  "success": true,
+  "reply": "## Result\n\n已完成 R2 轮建库 → 入库 → 索引 → 回查全管线验收，所有检查点通过。\n\n**1. 建库**\n- 知识库名：`api-e2e-20261118-r2`\n- kb_id：`4d0b401b-198d-435b-90b7-62920f26db42`\n- 描述：对外 API R2 轮验收测试专用库（建库前已确认同名库不存在，新库为空）\n\n**2. 入库（含质量门控）**\n- A0 去重：新库 0 文档，无重复内容\n- A3c 描述：已写入四要素描述（内容要点 / 用途 / 适用对象 / 语言），并经 `kb_get_documents` 回读确认\n- A3b 标签：`[\"验收测试\",\"对外API\",\"R2\",\"入库验证\",\"索引验证\"]`，经 `kb_doc_get_by_tag` 回读确认\n- A2-Q 解析质量：正文完整无乱码（源 245 字符 → 存储 473 字节）\n\n**3. 索引**\n- 显式调用 `kb_index_document` 完成向量索引（bge-m3）\n- collection：`kb_4d0b401b-198d-435b-90b7-62920f26db42`（与 KB UUID 一致，无 collection 错配）\n- **chunk 数：1**（≥ 1，满足 R2 新增检查点）\n- 索引元数据已回写 `.knowledge-base.yml`（`vector_index.total_chunks = 1`）\n- 图谱按平台设计在整理阶段统一构建（`skip_graph=true`，非本次验收项）\n\n**4. 回查验证**\n- 向量检索（query=「R2 轮对外 API 验收 异步模式 task_id 如何取全信封」）命中 1 条，score **0.768**，chunk_index 0，doc_path 与 collection 均正确\n- `kb_search_stats`：`chunk_count = 1`\n- `kb_doc_read`：正文与原文逐字一致\n\n---\n\n- **doc_path**：`api-e2e-20261118-r2\\R2轮对外API验收记录-2026-11-18.md`（向量层路径 `api-e2e-20261118-r2/R2轮对外API验收记录-2026-11-18.md`）\n- **chunk 数**：**1**\n- **doc_id**：`bcfb0811-05d3-4bda-a1d3-8e11b57bb126`\n- **kb_id**：`4d0b401b-198d-435b-90b7-62920f26db42`\n\n（全程仅使用 kb-mcp MCP 工具，未使用任何 HTTP/curl 兜底。）",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "tools_used": [
+   "WaitForMcpServers",
+   "mcp__kb-mcp__backend_status",
+   "mcp__kb-mcp__kb_list",
+   "mcp__kb-mcp__kb_create",
+   "mcp__kb-mcp__kb_doc_create",
+   "mcp__kb-mcp__kb_task_status",
+   "mcp__kb-mcp__kb_index_document",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_search_stats",
+   "mcp__kb-mcp__kb_doc_read",
+   "mcp__kb-mcp__kb_get_documents",
+   "mcp__kb-mcp__kb_doc_get_by_tag"
+  ],
+  "session_id": "1d187e3b-2c51-4a76-b88c-5df128216aa3",
+  "duration_ms": 258715,
+  "total_cost_usd": 0.6593160599999999,
+  "num_turns": 13,
+  "stop_reason": "end_turn"
+ }
+}

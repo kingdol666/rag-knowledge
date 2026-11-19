@@ -1,0 +1,26 @@
+{
+ "success": true,
+ "toolCalls": [
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_laya_judge",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read"
+ ],
+ "toolCallCount": 10,
+ "engine": "claude",
+ "sessionId": "b9585f1c-94fc-441d-be2e-ffaa242c9d60",
+ "model": "default",
+ "subtype": "success",
+ "answer": "**达西先生第一次向伊丽莎白求婚发生在肯特郡汉斯福德（Hunsford）夏洛特·柯林斯家的牧师住宅，时间是傍晚；伊丽莎白当场拒绝了他的求婚。**\n\n- **场合（第三十四章）**：当晚柯林斯夫妇与玛丽亚应邀去罗新斯（Rosings）喝茶，伊丽莎白因头痛独自留在家中；门铃响后，达西意外进屋，来回踱步数分钟后激动地说：“*In vain have I struggled. It will not do. My feelings will not be repressed. You must allow me to tell you how ardently I admire and love you.*” 他的告白同时大谈伊丽莎白家世卑下、这桩婚事是“degradation”（屈尊下娶），以及他如何克服自身判断上的反对。\n- **结果（拒绝）**：伊丽莎白毫不留情地回绝：“*you were the last man in the world whom I could ever be prevailed on to marry.*”（你是我最不可能嫁的人）。她列出理由是达西的傲慢与自私，以及他拆散吉英与彬格莱、亏待韦翰。达西面色发白，冷冷回应：“*You have said quite enough, madam… accept my best wishes for your health and happiness.*” 随即离开；伊丽莎白独自坐下哭了半小时。\n- **紧接的后续（第三十五章）**：次日清晨，达西在牧师住宅外的林间小径把一封长信交到她手中，为自己在彬格莱与韦翰两件事上辩解——这就是著名的“达西之信”。\n\n**出处**：`Novel-PridePrejudice` 知识库（《Pride and Prejudice》Gutenberg #1342 全文），文档 `pride_and_prejudice (part 13 of 26).md`（第 33–35 章）；长信续于 `part 14 of 26.md`。\n**可信度**：P0 强——原文全文直接引证，情节与对白逐字核对。\n**盲点**：本次 Laya 语义裁判引擎不可用（`laya_sdk_unavailable`，0 命中返回），故未依赖打分，而是直接通读原文章节确认。",
+ "duration_ms": 198977,
+ "duration_api_ms": 205492,
+ "num_turns": 11,
+ "total_cost_usd": 0.50245904,
+ "elapsed_ms": 201012
+}

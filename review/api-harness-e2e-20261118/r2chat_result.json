@@ -1,0 +1,33 @@
+{
+ "turn1": {
+  "status": 200,
+  "wall_s": 201.0,
+  "answer_head": "**达西先生第一次向伊丽莎白求婚发生在肯特郡汉斯福德（Hunsford）夏洛特·柯林斯家的牧师住宅，时间是傍晚；伊丽莎白当场拒绝了他的求婚。**\n\n- **场合（第三十四章）**：当晚柯林斯夫妇与玛丽亚应邀去罗新斯（Rosings）喝茶，伊丽莎白因头痛独自留在家中；门铃响后，达西意外进屋，来回踱步数分钟后激动地说：“*In vain have I struggled. It will not do. My feelings will not be repressed. You must allow me to tell you how ardently I admire and love you.*” 他的告白同时大谈伊丽莎白家世卑下、这桩婚事是“degradation”（屈尊下娶），以及他如何克服自身判断上的反对。\n- **结果（拒绝）**：伊丽莎白毫不留情地回绝：“*you were ",
+  "session_id": "b9585f1c-94fc-441d-be2e-ffaa242c9d60",
+  "toolCalls": [
+   "mcp__kb-mcp__kb_list",
+   "mcp__kb-mcp__kb_get_documents",
+   "mcp__kb-mcp__kb_get_documents",
+   "mcp__kb-mcp__kb_laya_judge",
+   "mcp__kb-mcp__kb_doc_read",
+   "mcp__kb-mcp__kb_doc_read",
+   "mcp__kb-mcp__kb_doc_read",
+   "mcp__kb-mcp__kb_doc_read",
+   "mcp__kb-mcp__kb_doc_read",
+   "mcp__kb-mcp__kb_doc_read"
+  ],
+  "num_turns": 11,
+  "cost": 0.50245904
+ },
+ "turn2": {
+  "status": 200,
+  "wall_s": 143.2,
+  "answer_head": "伊丽莎白拒绝达西时给出的最主要理由有两点：一是她从根本上反感达西“傲慢、自负，轻蔑他人感情”的性格，并且他求婚时言语羞辱了她；二是他做了两件事，一是亲手拆散吉英与彬格莱，二是亏待韦翰。伊丽莎白把前一件事列为第一条直接指控。\n\n**1. 求婚方式本身就让她愤怒**：达西声称自己喜欢她，但这件事违背他的意愿、理智甚至性格（“*liked me against your will, against your reason, and even against your character*”）；他还在求婚时大谈她家世低微、自己是在屈尊（“*degradation*”）。伊丽莎白事后回应：“*You are mistaken, Mr. Darcy, if you suppose that the mode of your declaration affected me in any other way than as it spared me the concern which I might have felt in refusing you, had you behaved in a more gentlemanlike manner.*”（你要是举止更像绅士些，我拒绝你时还会觉得过意不去。）\n\n**2. 性格层面的根本反感**：“*your manners impressing me ",
+  "toolCalls": [
+   "mcp__kb-mcp__kb_doc_read"
+  ],
+  "num_turns": 2,
+  "cost": 0.65236304,
+  "session_id_echo": "b9585f1c-94fc-441d-be2e-ffaa242c9d60"
+ }
+}

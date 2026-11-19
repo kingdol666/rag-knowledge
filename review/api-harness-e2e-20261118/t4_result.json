@@ -1,0 +1,42 @@
+{
+ "success": true,
+ "task_id": "kbt_mwlj66nt_ac6c6699",
+ "status": "failed",
+ "mode": "async",
+ "prompt": "在小说《傲慢与偏见》（Pride and Prejudice）中，班纳特夫妇共有几个女儿？长女的姓名是什么？请依据知识库文档回答并给出出处。",
+ "engine": "claude",
+ "permission": "bypassPermissions",
+ "created_at": "2026-11-18T02:57:15.833Z",
+ "finished_at": "2026-11-18T03:07:17.844Z",
+ "result": {
+  "success": false,
+  "stage": "timeout",
+  "error": "agent turn timed out after 600000ms before a final result frame",
+  "partial_text": "Stack is up (backend :8770 / web :6789 / neo4j / MinerU). Candidate shelves found: `Novel-PridePrejudice` (28 docs, P&P full text in 26 parts), `MD语料-文学-英文` (461 docs, 19 Gutenberg novels incl. P&P), `A3无描述-literature-en` (434 docs). Dispatching one retrieval subagent to run the HMRS lane.I'll execute the retrieval lane myself with MCP tools only. Starting with a preflight probe, then Phase 0-3.Preflight passed (ready=true, MCP connected). Phase 0 rewrite complete. Now Phase 1 vector wide net on the primary KB — two sub-queries in parallel.Phase 1 returned 30 hits per sub-query. Deduped to 11 distinct documents. Phase 2 — engine verify gate by reference, batched ≤6 refs per call (measured constraint: larger bursts fail fetch fail-closed). Batch 1 of 2.The engine gate is fail-closed `unavailable` — `ModuleNotFoundError: No module named 'laya'` (Laya SDK not installed in the backend process). One confirmation retry on the single top document, plus a catalog read to obtain doc_ids (both independent).Engine confirmed `unavailable` (deterministic missing `laya` module, fail-closed). Falling back ONCE to the librarian lane: read the P&P chapter-1 part document (part 2 of 26, doc_id 09351942...).Fallback read-verified. The chapter-1 document (part 2 of 26) contains Chapters I–IV and states both facts verbatim.\n\nRESULT\n- b4c48237-6937-440a-9696-cc1e66bed5c1 | 09351942-2f89-4327-8758-25ef611da570 | Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md | 0.7184 (vector; engine gate unavailable — read-verified via librarian fallback) | Answers BOTH facts. (a) Daughter count: \"Not all that Mrs. Bennet, however, with the assistance of her five daughters, could ask on the subject, was sufficient to draw from her husband any satisfactory description of Mr. Bingley.\" Also Ch. I: \"When a woman has five grown-up daughters, she ought to give over thinking of her own beauty.\" (b) Eldest = Jane: \"'You are dancing with the only handsome girl in the room,' said Mr. Darcy, looking at the eldest Miss Bennet.\" → \"Mrs. Bennet had seen her eldest daughter much admired by the Netherfield party... Jane was as much gratified by this as her mother could be.\" Ch. I also distinguishes the sisters: \"she is not half so handsome as Jane, nor half so good-humoured as Lydia.\" (Order corroborated in-doc: Elizabeth = \"his second daughter\"; Lydia = \"the youngest\".)\n\nSCANNED queries=2 candidates=11 judged_segments=25 survivors=1 fallback=librarian\n\nBLIND_SPOTS\n- ENGINE GATE UNAVAILABLE (fail-closed): `kb_laya_judge` returned status=unavailable, real_engine=false, backend=unavailable for every segment — error `laya_sdk_unavailable:ModuleNotFoundError:No module named 'laya'` (Laya SDK not installed in the backend process). Confirmed with one single-document retry; identical failure. Zero engine verdicts were produced, so the reported survivor is read-verified (kb_doc_read of the chapter-1 part), NOT engine-verified.\n- 10 of the 11 deduped candidates were never adjudicated: Novel-PridePrejudice parts 23, 10, 22 (part 1 of 2), 20, 16, 12, 21, 19, 15, and part 1 (part 1 of 2) — all vector hits 0.55-0.65, none judged, none reported as survivors.\n- Secondary (1c2f042d-4439-4cc2-95dd-b36a5c8daa46) and tertiary (718287e5-42e4-409c-a6e4-fd73b11224cb) KBs were not scanned — the primary KB answered the question, so per scope the fallback shelves were unnecessary.\n- Known metadata note (not a retrieval failure): the part-2 document's stored description reads \"Chapters XV–XLIX\", but its body actually opens at Chapter I; the description is wrong.Subagent returned; the Laya engine gate is down (`No module named 'laya'`), so I'll spot-verify the quoted evidence myself with one bounded read.The part-2 document opens with an illustration index, not Chapter I — the subagent's citation needs checking. Locating the exact source passage on disk.",
+  "session_id": "2ab6baf5-10f2-4bce-b95c-2764baa1ab4a",
+  "tools_used": [
+   "WaitForMcpServers",
+   "Skill",
+   "WaitForMcpServers",
+   "PowerShell",
+   "WaitForMcpServers",
+   "mcp__kb-mcp__kb_project_status",
+   "mcp__kb-mcp__kb_list",
+   "Agent",
+   "mcp__kb-mcp__kb_project_status",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_laya_judge",
+   "mcp__kb-mcp__kb_laya_judge",
+   "mcp__kb-mcp__kb_get_documents",
+   "mcp__kb-mcp__kb_doc_read",
+   "mcp__kb-mcp__kb_doc_read",
+   "Grep",
+   "Glob",
+   "Grep",
+   "Grep",
+   "Grep",
+   "Grep"
+  ]
+ }
+}

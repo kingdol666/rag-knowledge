@@ -1,0 +1,23 @@
+{
+ "success": true,
+ "toolCalls": [
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_laya_judge",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read"
+ ],
+ "toolCallCount": 7,
+ "engine": "claude",
+ "sessionId": "41d71485-a666-42d3-ab76-c827e71737cf",
+ "model": "default",
+ "subtype": "success",
+ "answer": "**结论：达西第一次求婚发生在肯特郡汉斯福德牧师住宅（Hunsford Parsonage）——伊丽莎白到访夏洛特·柯林斯家、两人正客居罗新斯（Rosings）期间的一个傍晚；伊丽莎白当场断然拒绝，达西愤然离去，次日清晨又送来一封长信。**\n\n**场合（第34章）**\n- 时间/地点：伊丽莎白在肯特作客五周、住在夏洛特家；当晚柯林斯夫妇去罗新斯陪凯瑟琳夫人喝茶，伊丽莎白独自在家重读吉英来信。\n- 触发：门铃响，\"to her utter amazement, she saw Mr. Darcy walk into the room\"——达西不请自来，先是寒暄她的病情，随后在房中踱步、沉默数分钟。\n- 开场告白：\"In vain have I struggled. It will not do. My feelings will not be repressed. You must allow me to tell you how ardently I admire and love you.\"\n- 求婚辞的致命伤：他在倾诉柔情的同时大谈她的\"inferiority\"、这门亲事是\"a degradation\"，以及\"the family obstacles which judgment had always opposed to inclination\"——原文点明这番话\"very unlikely to recommend his suit\"。\n\n**结果（第34章末）**\n- 伊丽莎白先是惊愕，\"stared, coloured, doubted, and was silent\"；被他的措辞激怒后断然拒绝：\"I have never desired your good opinion…\"，并明言：\"you were the last man in the world whom I could ever be prevailed on to marry.\"\n- 拒绝理由三条：他初识时的傲慢无礼；他拆散彬格莱与吉英（\"Why was he to be the judge?\"）；他亏待韦翰（\"You have reduced him to his present state of poverty\"）。\n- 达西的反应：\"You have said quite enough, madam. I perfectly comprehend your feelings, and have now only to be ashamed of what my own have been. Forgive me for having taken up so much of your time…\" 随即\"hastily left the room\"，开门离去。\n- 后续：伊丽莎白独自痛哭半小时；次日清晨在庄园小径相遇，达西递上一封信：\"Will you do me the honour of reading that letter?\"（第35章，即长篇自辩信，见 part 14）。\n\n**出处与可信度**\n- 来源：《傲慢与偏见》（Jane Austen，Project Gutenberg #1342）全文库 **Novel-PridePrejudice**，`pride_and_prejudice (part 13 of 26).md`（含 Chapters XXXIII–XXXV），引文逐字取自原文；part 14 为达西次日的解释信。可信度 **P0（一手原文全文）**。\n- 说明：Laya 证据判定引擎本轮不可用（`laya_sdk_unavailable`），故改为直接读取命中的原文分卷核验；结论仅基于该库原文，未穷尽其余含本书的库（如 MD语料-文学-英文），但这不影响上述事实的一手证据链。",
+ "duration_ms": 157842,
+ "duration_api_ms": 171256,
+ "num_turns": 8,
+ "total_cost_usd": 0.36715854000000003,
+ "elapsed_ms": 160092
+}

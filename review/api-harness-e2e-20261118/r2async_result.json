@@ -1,0 +1,26 @@
+{
+ "success": true,
+ "task_id": "kbt_mwlmiv2e_12e62695",
+ "status": "failed",
+ "mode": "async",
+ "prompt": "在知识库中查询：《傲慢与偏见》中班纳特夫妇共有几个女儿、长女姓名。执行约束：按 /knowledgebase-search skill 的快速路径作业（先 kb_list 甄别小说库 → kb_search_vector → kb_laya_judge 一批 → 至多 1 次 kb_doc_read 验证），不要委派子代理，不要浏览仓库文件。最终答案 ≤150 字并给出 doc_path 出处。",
+ "engine": "claude",
+ "permission": "bypassPermissions",
+ "created_at": "2026-11-18T04:31:06.182Z",
+ "finished_at": "2026-11-18T04:41:08.187Z",
+ "result": {
+  "success": false,
+  "stage": "timeout",
+  "error": "agent turn timed out after 600000ms before a final result frame",
+  "session_id": "64153efb-f924-4696-b7ca-0d631381226b",
+  "tools_used": [
+   "WaitForMcpServers",
+   "Skill",
+   "mcp__kb-mcp__kb_project_status",
+   "mcp__kb-mcp__kb_list",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_laya_judge",
+   "mcp__kb-mcp__kb_search_vector"
+  ]
+ }
+}

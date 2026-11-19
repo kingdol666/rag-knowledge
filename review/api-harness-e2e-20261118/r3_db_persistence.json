@@ -1,0 +1,57 @@
+[
+ {
+  "id": "db-A1-chat-session-row",
+  "ok": true,
+  "detail": "sessions row for b9585f1c: [('b9585f1c-94fc-441d-be2e-ffaa242c9d60', 'claude', '2026-11-18 04:18:54')]"
+ },
+ {
+  "id": "db-A2-chat-messages",
+  "ok": true,
+  "detail": "messages persisted for session: 3631 rows"
+ },
+ {
+  "id": "db-B1-users",
+  "ok": true,
+  "detail": "active users: 57"
+ },
+ {
+  "id": "db-B2-tokens",
+  "ok": true,
+  "detail": "live api_tokens: 302"
+ },
+ {
+  "id": "db-C1-chroma-r1-collection",
+  "ok": true,
+  "detail": "R1 KB vector collection: ['kb_c286bb1c-637b-4b3c-a44f-c49b76c67273']"
+ },
+ {
+  "id": "db-C2-chroma-r2-collection",
+  "ok": true,
+  "detail": "R2 KB vector collection: ['kb_4d0b401b-198d-435b-90b7-62920f26db42']"
+ },
+ {
+  "id": "db-C3-chroma-r3-collection",
+  "ok": true,
+  "detail": "R3 KB uuid=796153b2-0504-4a85-9b0e-fd41610b7e01 collection: ['kb_796153b2-0504-4a85-9b0e-fd41610b7e01']"
+ },
+ {
+  "id": "db-C4-chroma-r2-embeddings",
+  "ok": true,
+  "detail": "R2 collection embedding rows: 1"
+ },
+ {
+  "id": "db-D1-treefs-index",
+  "ok": true,
+  "detail": ".tree-fs.json contains r2=True r3=True"
+ },
+ {
+  "id": "db-D2-kb-yaml-r2",
+  "ok": true,
+  "detail": "r2 .knowledge-base.yml contains ingested doc entry"
+ },
+ {
+  "id": "db-E1-sdk-session-jsonl",
+  "ok": true,
+  "detail": "agent/chat harness sessions persisted as JSONL: {'t2r_result.json': {'sid': '90894e5a', 'persisted': True, 'project_dir': 'd--codes-ClaudeGPT-rag-project-rag-knowledge'}, 'r2sync_result.json': {'sid': '3f03d1bd', 'persisted': True, 'project_dir': 'd--codes-ClaudeGPT-rag-project-rag-knowledge'}}"
+ }
+]

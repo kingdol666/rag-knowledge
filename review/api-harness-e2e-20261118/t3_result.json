@@ -1,0 +1,26 @@
+{
+ "success": false,
+ "stage": "timeout",
+ "error": "agent turn timed out after 600000ms before a final result frame",
+ "session_id": "d621f425-2c7b-4fac-9b59-1e752c9e16d7",
+ "tools_used": [
+  "WaitForMcpServers",
+  "Skill",
+  "PowerShell",
+  "mcp__kb-mcp__kb_project_status",
+  "mcp__kb-mcp__backend_status",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_laya_judge",
+  "mcp__kb-mcp__kb_search",
+  "mcp__kb-mcp__kb_search",
+  "Glob",
+  "Glob",
+  "PowerShell",
+  "Read",
+  "Read"
+ ],
+ "_http_status": 200,
+ "_wall_s": 602.0
+}

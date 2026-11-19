@@ -1,0 +1,130 @@
+{
+ "contract": {
+  "pass": 11,
+  "total": 13,
+  "items": [
+   {
+    "id": "doc-2.1-login",
+    "ok": true,
+    "detail": "login status=200, has token field, success=True"
+   },
+   {
+    "id": "doc-5.1-meta",
+    "ok": true,
+    "detail": "meta status=200, engines=14"
+   },
+   {
+    "id": "doc-5.1-harnesses",
+    "ok": true,
+    "detail": "harnesses status=200, count=14"
+   },
+   {
+    "id": "doc-5.4-catalog",
+    "ok": true,
+    "detail": "catalog status=200, count=62, fields_ok=True"
+   },
+   {
+    "id": "doc-4.3-error-shell",
+    "ok": true,
+    "detail": "missing-prompt status=400, error shell=True, statusCode=400"
+   },
+   {
+    "id": "doc-5.4-kbsearch",
+    "ok": true,
+    "detail": "kb/search status=200, count=5"
+   },
+   {
+    "id": "doc-5.4-vector",
+    "ok": true,
+    "detail": "search/vector status=200, keys=['success', 'results', 'count']"
+   },
+   {
+    "id": "doc-5.4-twostage",
+    "ok": true,
+    "detail": "two-stage status=200, success=True, stage2.results=60"
+   },
+   {
+    "id": "doc-5.9-automation-get",
+    "ok": true,
+    "detail": "automation GET status=200, keys=['success', 'kb_id', 'enabled', 'doc_counter', 'interval']"
+   },
+   {
+    "id": "doc-5.9-automation-toggle",
+    "ok": true,
+    "detail": "toggle status=200, body={\"success\": true, \"kb_id\": \"aw-industrial\", \"enabled\": true, \"kb_name\": \"aw-industrial\"}"
+   },
+   {
+    "id": "doc-5.9-automation-summarize",
+    "ok": true,
+    "detail": "summarize status=200 (触发成功或忙/重复均可读), body={\"success\": true, \"action\": \"created\", \"round\": 1, \"summary_exp_id\": \"exp-b6a61a4c3525\", \"docs_total\": 72, \"docs_new_sin"
+   },
+   {
+    "id": "doc-4.2-readback-snake",
+    "ok": false,
+    "detail": "read-back (snake) status=400"
+   },
+   {
+    "id": "doc-4.2-readback-camel",
+    "ok": false,
+    "detail": "read-back (camel) status=400"
+   }
+  ]
+ },
+ "chain": {
+  "pass": 6,
+  "total": 6,
+  "items": [
+   {
+    "id": "chain-1-create-kb",
+    "ok": true,
+    "detail": "create KB status=200 (409=已存在续用), body={\"success\": true, \"knowledgeBase\": {\"id\": \"796153b2-0504-4a85-9b0e-fd41610b7e01\", \"name\": \"api-e2e-20261118-r3\", \"descri"
+   },
+   {
+    "id": "chain-2-create-doc",
+    "ok": true,
+    "detail": "create doc status=200, body={\"success\": true, \"source_chars\": 150, \"document\": {\"id\": \"31b76e14-782c-4753-a974-b32d3e2bee7d\", \"name\": \"R3链路验证文档.md\", \"parentId\": \"796153b2-0504-4a85-9b0e-fd"
+   },
+   {
+    "id": "chain-3-reindex",
+    "ok": true,
+    "detail": "reindex status=200, body={\"success\": true, \"total_docs\": 1, \"total_chunks\": 1, \"total_relations\": 0, \"errors\": []}"
+   },
+   {
+    "id": "chain-4-vector-hit",
+    "ok": true,
+    "detail": "vector search status=200, hit=True"
+   },
+   {
+    "id": "chain-5-keyword-hit",
+    "ok": true,
+    "detail": "keyword search status=200, hit=True"
+   },
+   {
+    "id": "chain-6-catalog-visible",
+    "ok": true,
+    "detail": "catalog status=200, entry=796153b2-0504-4a85-9b0e-fd41610b7e01, docCount=1"
+   }
+  ]
+ },
+ "agents": {
+  "pass": 3,
+  "total": 3,
+  "items": [
+   {
+    "id": "doc-2.2-sync-chat",
+    "ok": true,
+    "detail": "sync chat success=True, wall=151.7s, turns=5"
+   },
+   {
+    "id": "doc-2.3-async-submit",
+    "ok": true,
+    "detail": "async submit wall=0.0s, task=kbt_mwlntlng_b34b9429"
+   },
+   {
+    "id": "doc-2.3-async-poll",
+    "ok": true,
+    "detail": "poll status=completed, duration_ms=140952, reply head=检索完成：`kb_search_vector(slim)` 的最高命中是 `Novel-PridePrejudice/pride_and_prejudice ("
+   }
+  ]
+ }
+}

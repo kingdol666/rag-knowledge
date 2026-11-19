@@ -1,0 +1,24 @@
+{
+ "success": true,
+ "reply": "**公式**：Attention(Q, K, V) = softmax(QKᵀ / √dₖ) · V\n\n**符号解释**\n- **Q**：查询矩阵，每行是一个查询向量。\n- **K**：键矩阵，与 Q 做点积得到相关性分数。\n- **V**：值矩阵，按注意力权重加权求和。\n- **dₖ**：query 与 key 的维度，用作缩放因子。\n- **1/√dₖ**：缩放点积，避免 dₖ 较大时点积过大、softmax 落入梯度极小区域。\n- **softmax**：把缩放后的分数归一化为对 V 的权重。\n\n**出处**：文档 `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md`（§3.2.1 式(1)），知识库「计算机与人工智能」；同文副本在「MD语料-科学-英文/attention_is_all_you_need.md」。可信度 **P0**（直接读取原文核验，向量分 0.83）。\n\n*盲点：Laya 判定引擎本次不可用（`ModuleNotFoundError: No module named 'laya'`，门控返回 unavailable），已改用最优命中直接读取原文核验。*\n\n## Result\n- 执行：查询改写 → `kb_search_vector` 跨库召回（top30，阈值 0.35，命中 3 份 Attention Is All You Need 副本 + TinyBERT）→ 去重 → `kb_laya_judge` 一批 4 refs（引擎不可用，fail-closed）→ `kb_doc_read` 核验最优命中。\n- 答案：**Attention(Q,K,V)=softmax(QKᵀ/√dₖ)V**；Q/K/V 分别为查询、键、值矩阵；dₖ 为 query/key 维度，1/√dₖ 为缩放因子，softmax 生成权重。\n- 出处 doc_path：`计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md`｜KB：计算机与人工智能（副本：MD语料-科学-英文/attention_is_all_you_need.md）。\n- 可信度：P0 直接证据；盲点：Laya 门控引擎缺失，未执行正式判定。",
+ "engine": "claude",
+ "permission": "bypassPermissions",
+ "tools_used": [
+  "WaitForMcpServers",
+  "Skill",
+  "PowerShell",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_laya_judge",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_search_vector",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read"
+ ],
+ "session_id": "90894e5a-5ec4-4c4b-a004-129d4cbf3a85",
+ "duration_ms": 438826,
+ "total_cost_usd": 1.22860626,
+ "num_turns": 11,
+ "stop_reason": "end_turn",
+ "_http_status": 200,
+ "_wall_s": 442.4
+}

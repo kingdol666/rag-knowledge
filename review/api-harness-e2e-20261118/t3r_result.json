@@ -1,0 +1,19 @@
+{
+ "success": true,
+ "reply": "检索范围：61 个根知识库；目录层甄别后，这些库覆盖计算机、AI、自然科学、生命医学、工程能源、经社、工业、法律、政务、文学、历史等方向，无食品、发酵、烹饪类库。查询词：「四川泡菜的完整制作工艺：原料清单、盐水配比、发酵条件」。随后执行全库 `kb_search_vector`（top_k=20，阈值 0.35）。\n\n最高分 0.477 仅命中《食品安全法》的场所与设备条款，其余为《远大前程》烹调句、产线温度诊断等无关片段；没有检索到任何关于泡菜原料、盐水配比、发酵条件的内容。\n\n## Result\n未找到：现有知识库不覆盖四川泡菜制作工艺，按规范不编造答案。",
+ "engine": "claude",
+ "permission": "bypassPermissions",
+ "tools_used": [
+  "WaitForMcpServers",
+  "Skill",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_search_vector"
+ ],
+ "session_id": "cee4e476-8d93-407b-b8c2-e7ad3515f6b1",
+ "duration_ms": 94269,
+ "total_cost_usd": 0.38323716,
+ "num_turns": 6,
+ "stop_reason": "end_turn",
+ "_http_status": 200,
+ "_wall_s": 99.3
+}

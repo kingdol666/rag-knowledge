@@ -1,90 +1,124 @@
 {
- "task": "论文设计/写作/排版评审 + bench 管道真机复现实验（2026-11-17）：干净端口重启平台栈 → S0 预检 → S1/S3 校验 → S4 消融复跑（临时目录，禁覆盖 final_bench）→ S6 统计对比论文数字 → 可信度裁定 → architect 验收",
- "stories": [
-  {
-   "id": "US-101",
-   "title": "论文设计、写作流程与排版布局评审报告",
-   "priority": 6,
-   "passes": true,
-   "acceptanceCriteria": [
-    "对 paper-kbs/tex/journal_20p 全文给出设计主线、章节写作流程、排版布局三维度评审",
-    "评审含可执行的具体问题定位（file:line 或页码），不含空泛评价",
-    "结论明确：是否达到初稿可投状态"
-   ],
-   "evidence": "评审报告交付：设计 A−/写作 B+/排版 B+，含 file:line 定位与 Top-5 打磨项；两阻断项（S1–S8 断层说明、引言臂名速览）已修复并重编译（主文 20 页/补充 7 页 CLEAN）；结论=补完作者信息即可投"
-  },
-  {
-   "id": "US-102",
-   "title": "干净端口重启平台栈并恢复健康",
-   "priority": 1,
-   "passes": true,
-   "acceptanceCriteria": [
-    "8771/8000/6789 旧实例全部终止（含 uv/bun 僵尸链），端口清空",
-    "按 backend → kb-mcp → web 顺序重启，三端口 health 全部 200",
-    "8771 监听属主为 venv python 而非 anaconda 孤儿 worker",
-    "loop-auth.json 令牌刷新（当前已 74h 过期），lib.auth_token() 探针可用"
-   ],
-   "evidence": "三端口 health 200×3；8771 属主链=venv main.py(146880)→worker(138296) 完整父子（非孤儿）；幽灵 spawn worker(85460) 已按 SOP 清杀；loop-auth 刷新 len=46"
-  },
-  {
-   "id": "US-103",
-   "title": "S0i/S0c 平台预检全绿",
-   "priority": 2,
-   "passes": true,
-   "acceptanceCriteria": [
-    "s0i_final_preflight.py 执行完成且判卷活性、10 库向量探针、题集×库存对账三项全绿",
-    "预检输出落盘并可回溯"
-   ],
-   "evidence": "S0i 10/10 OK；S0c 判卷活性 PASS（bad_request 分类=fail-closed 活）+10 库 3/3 命中无 chroma 异常+72/72 金标文档在库（词干回退 27）"
-  },
-  {
-   "id": "US-104",
-   "title": "S1 语料校验 + S3 题集校验通过",
-   "priority": 3,
-   "passes": true,
-   "acceptanceCriteria": [
-    "build_manifest.py 通过判据 evidence_failures=0",
-    "s3_validate_questions.py --validate questions.jsonl 通过（78 行：72 gold + 4 refusal + 2 cross 占位）",
-    "两步输出落盘"
-   ],
-   "evidence": "S1 evidence_failures=0（manifest 落盘）；S3 total=78 gold=72 refusal=4 cross=0 pending_expansion=2 机械校验通过，构成与论文披露完全一致"
-  },
-  {
-   "id": "US-105",
-   "title": "S4 消融复跑（临时目录）+ 污染审计",
-   "priority": 4,
-   "passes": true,
-   "acceptanceCriteria": [
-    "新 trace 落临时目录 artifacts/repro_20261117/，final_bench 字节未动",
-    "臂集：A0/A0f/A0h/PD/A1b/A2/A3 全部复跑（readall 决策=不跑，理由落盘）",
-    "污染审计通过：每臂 qid 唯一、无路由目录卡 survivors/top1、A1b/A2 候选路径全部属于十个评测库",
-    "每臂 n=72 gold 行（或如实记录缺口）"
-   ],
-   "evidence": "七臂 532 checkpoint 行（7×76）全部落 repro_20261117/；final_bench SHA256 前后一致（d1379a54…）；污染审计 4 项全过：qid 唯一 76/臂、survivors/top1 零目录卡、A1b/A2 候选 0/1252 越界；readall 不跑理由=机械扫描 ~5h 且 72/72 为脚本确定性属性；A3 首跑挂起于 --prepare-a3 孪生库重建（同 R3 attempt1_aborted 指纹），已披露并无 prepare 重试成功"
-  },
-  {
-   "id": "US-106",
-   "title": "S6 统计 + 论文对比 + 可信度裁定",
-   "priority": 5,
-   "passes": true,
-   "acceptanceCriteria": [
-    "对新 trace 跑 s6_stats.py 输出聚合+McNemar",
-    "逐臂对比表：复跑值 vs 论文 frozen 值 vs 论文 follow-up 值，差异显性化",
-    "给出可信度裁定（复现/部分复现/不复现）与证据引用",
-    "对比结论写入报告并同步给用户"
-   ],
-   "evidence": "REPRO-REPORT-20261117.md 落盘：七臂排序全保持（A0h>PD>A0f>A0≈A1b>A2）；A0h−A0=+12 与 follow-up 精确一致；配对 McNemar 四项 bit 级一致（A0h 12–0 p=0.000488/A0f 5–0 p=0.0625/PD 6–0 p=0.03125/A1b 1–1 p=1.0）；逐题一致率 94.4–97.2%（A3 84.7%）处于论文自报稳定带；裁定=复现"
-  },
-  {
-   "id": "US-107",
-   "title": "architect 终审",
-   "priority": 7,
-   "passes": true,
-   "acceptanceCriteria": [
-    "architect 按 PRD 各故事验收标准复核全部证据",
-    "APPROVED 或整改后 APPROVED，拒绝项全部闭环"
-   ],
-   "evidence": "architect 独立复核 APPROVED：健康探针/进程链/532 行/七臂聚合/污染审计/final_bench 哈希/McNemar 复算/报告表逐项 bit 级一致；readall 豁免判定=PRD 授权+理由成立"
-  }
- ]
+  "task": "对外 API 全量真实测试（R2 轮）+ 新增功能盘点 + 标准外部 API 文档撰写（供 AgentWorkShop 插件集成） + R3 轮：全链路操作/数据库持久化/前端显示/文档即契约（2026-11-18 晚）",
+  "createdAt": "2026-11-18",
+  "stories": [
+    {
+      "id": "US-001",
+      "title": "服务健康与凭证前置",
+      "priority": 1,
+      "passes": true,
+      "acceptanceCriteria": [
+        "backend 8770 /api/v1/health 返回 healthy 且 vector.ready=true",
+        "web 6789 /api/health 返回 200",
+        "kb-mcp 8000 SSE 端点可达",
+        "loop-auth token 对 backend /api/v1/auth/verify 返回 valid:true（过期则自动 login 刷新并回写 loop-auth.json）",
+        "无 token 请求 POST /api/kb/agent/chat 返回 401"
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "对外 API 全量盘点 + 新增功能识别",
+      "priority": 2,
+      "passes": true,
+      "acceptanceCriteria": [
+        "脚本化枚举 web/server/api/** 全部路由（方法+路径+文件），产出 inventory 文件",
+        "通读 docs/api-web.md 与 docs/agentworkshop-integration.md，标注文档未覆盖的新路由（如 kb/automation、meditation、workspaces、history、skills、terminal）",
+        "按'外部调用方相关/内部 UI 专用'两级分类，外部相关清单入文档；inventory 中每条路由含 auth 要求"
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "R2 轮真实完整测试（token 凭证，sync+async 双模式）",
+      "priority": 3,
+      "passes": true,
+      "acceptanceCriteria": [
+        "同步模式：agent/chat 金标检索回合 success=true，reply 含 doc_path 引用与可信度标注，tools_used 含 kb_* MCP 工具，有 ## Result 段",
+        "异步模式：0-1s 内返回 task_id；轮询至 completed；result.reply 有效且含出处",
+        "交互模式：claude/chat kbEnhanced 两轮 resume，turn2 在 ≤6 turns 内命中 turn1 语境",
+        "OOD 诚实拒答：域外问题明确报告未找到 + 已检索范围，零编造",
+        "入库作业：创建新测试库（不同名于上轮 api-e2e-20261118）+ 文档入库 + 显式索引 + 回查验证，三源对账（磁盘/yml/catalog）吻合",
+        "全部原始信封 JSON 落盘 review/api-harness-e2e-20261118/（R2 前缀）"
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "标准外部 API 文档撰写（补充优化现有 docs/api-web.md）",
+      "priority": 4,
+      "passes": true,
+      "acceptanceCriteria": [
+        "新增/更新 docs/ 下标准结构 API 文档：概述、基址与环境、鉴权（获取/携带/过期）、通用约定（错误结构/限流/超时上限/字段命名差异）、端点参考（每个端点=方法+路径+鉴权+请求参数表+响应字段表+curl 示例）、异步任务集成指南、AgentWorkShop 插件集成要点、已知限制与调优、变更记录",
+        "覆盖 US-002 清单中全部'外部调用方相关'端点，且每个文档化端点与实际代码实现 spot-check 一致（参数名/响应字段）",
+        "文档与示例中不含任何真实凭证字面量（token 一律占位符）",
+        "docs/agentworkshop-integration.md 补充本轮新发现（sessionId 字段差异、600s 顶、laya 降级、fast-path 缓解）"
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "R2 测试结果报告",
+      "priority": 5,
+      "passes": true,
+      "acceptanceCriteria": [
+        "REPORT-R2.md：本次 fresh run 的通过矩阵（测试/模式/结果/耗时/成本/证据文件）、与 R1 轮对比、新缺陷与遗留项、给 AgentWorkShop 插件的集成建议清单",
+        "所有 pass 判定均引用本 fresh run 工件文件，不引用 R1 旧数字"
+      ]
+    },
+    {
+      "id": "US-006",
+      "title": "独立评审核验",
+      "priority": 6,
+      "passes": true,
+      "acceptanceCriteria": [
+        "派发独立 general-purpose 评审代理，对照 US-001..US-005 全部验收标准逐条核验 fresh 证据",
+        "评审结论为 APPROVE；如有 REJECT 项，修复后重验至 APPROVE"
+      ],
+      "verdict": "APPROVE (21/21 AC, reviewer: general-purpose agent, 3 rounds: REJECT->REJECT->APPROVE)"
+    },
+    {
+      "id": "US-007",
+      "title": "纯 API 全链路操作分析系统（资源直调面，不经 Agent）",
+      "priority": 7,
+      "passes": true,
+      "acceptanceCriteria": [
+        "仅用 HTTP 资源端点完成：建库→写文档→向量索引→向量检索命中→关键词检索命中→目录可见 六步全链路",
+        "每步响应 schema 与 docs/api-web.md 对应端点文档一致",
+        "使用新库名 api-e2e-20261118-r3，全程 Bearer token"
+      ]
+    },
+    {
+      "id": "US-008",
+      "title": "API 操作结果持久化到数据库验证",
+      "priority": 8,
+      "passes": true,
+      "acceptanceCriteria": [
+        "向量层：R2/R3 测试文档 chunks 在向量库可检索（kb_search_vector 命中 + collection 一致）",
+        "SQLite：claude-chat.db 中存在本日 agent/chat 与 claude/chat 会话记录（含 session id 抽查）",
+        "SQLite：auth.db users/api_tokens 表结构与行数正常（参数绑定查询）",
+        "树存储：.tree-fs.json 全局索引与 .knowledge-base.yml 均含 R3 新库条目"
+      ]
+    },
+    {
+      "id": "US-009",
+      "title": "前端界面显示验证",
+      "priority": 9,
+      "passes": true,
+      "acceptanceCriteria": [
+        "真实浏览器登录 Web UI 成功",
+        "知识库目录页面能看到 R2/R3 测试库与文档计数",
+        "检索界面用测试文档内容关键词能命中测试文档",
+        "会话历史界面能看到本日 agent/chat 产生的会话记录"
+      ]
+    },
+    {
+      "id": "US-010",
+      "title": "文档即契约：照 docs/api-web.md 逐字执行可集成",
+      "priority": 10,
+      "passes": true,
+      "acceptanceCriteria": [
+        "快速开始三段示例（login→sync chat→async chat+poll）照抄执行全通",
+        "§5.4 catalog/search、§5.5 create/读回（camel+snake 双拼写）、§5.9 automation 三端点示例逐字执行成功",
+        "发现的任何文档-实现偏差要么修正文档要么修正判定，最终零偏差",
+        "结论写入 REPORT-R3.md：外部系统可按文档完成集成"
+      ]
+    }
+  ]
 }
