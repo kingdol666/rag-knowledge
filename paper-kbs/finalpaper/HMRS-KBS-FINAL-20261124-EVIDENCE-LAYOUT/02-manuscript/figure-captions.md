@@ -24,7 +24,7 @@
 
 **Table 4.** Access policies over the tiered path. Modes differ in how candidate collections and documents are selected. The hybrid row describes the experimental composition used in the evaluation.
 
-**Table 5.** Answer-quality rubric applied by the blind judge in E2. Each dimension was scored as an integer from 1 to 5; 2–4 denote intermediate evidence. The overall score is the unweighted mean of the four dimensions. The judge also recorded one holistic verdict (correct, partial or incorrect) and a rationale, separately from the mean. It saw the question, a head-only gold excerpt and eight anonymised answers, not the retrieved contexts or system names.
+**Table 5.** Answer-quality rubric applied by the blind judge in E2. Scores are integers 1–5; 2–4 are intermediate. Overall is the unweighted mean; the holistic verdict is separate, not a mean threshold. The judge saw the question, a head-only gold excerpt and eight anonymised answers, not retrieved contexts or system names.
 
 **Table 6.** Blind answer scores for the eight native configurations on BQ01–BQ10. Each configuration answered each question once. C/P/I denotes correct, partial and incorrect verdict counts. Time and cost are per question; time is end-to-end and cost is estimated for generator calls only. † Gold-paper subset; ‡ DeepRead's native corpus. ᵃ Configured for five collections, but in nine of ten questions at least one search lacked an effective restriction. The audited result lists contained items from 31 collections, including other copies of the corpus (Section 8.3). The configurations differ in source access, and their indexed corpora are not all matched.
 
