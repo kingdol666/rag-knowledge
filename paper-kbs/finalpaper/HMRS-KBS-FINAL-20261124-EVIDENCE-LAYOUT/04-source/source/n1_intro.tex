@@ -58,16 +58,15 @@ candidates displaced gold documents from the top five
 \end{enumerate}
 
 The evaluation checks three links in this design. First, we ask whether
-changes to a managed document are visible to search. We then assess answer
-quality in the native configurations.
-The HMRS agent in that comparison made no catalogue calls, and some searches
-lacked an effective restriction to the five configured collections, so it did
-not exercise collection selection; its gate calls did not succeed
-(Section~\ref{sec:e10}).
-The component experiments that follow address those functions separately:
-they test whether the selector reaches the labelled collection, whether the
-evidence pack contains the required text, and whether the verifier's score
-is suitable for ordering candidates.
+changes to a managed document are visible to search. Second, we compare
+answer quality in the native configurations. The HMRS agent in that
+comparison made no catalogue calls, and some searches lacked an effective
+restriction to the five configured collections, so it did not exercise
+collection selection; its gate calls did not succeed
+(Section~\ref{sec:e10}). Third, we test the component stages separately:
+whether the selector reaches the labelled collection, whether the evidence
+pack contains the required text, and whether the verifier's score is
+suitable for ordering candidates.
 
 \subsection{Research questions and reading guide}
 \label{sec:rq}
