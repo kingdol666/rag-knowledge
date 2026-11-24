@@ -16,19 +16,6 @@ candidates, the filtered and unfiltered sets matched on nine of ten
 questions, and answer grades fluctuated even for identical packs. The
 reordering result therefore does not show whether filtering helps.
 
-\begin{figure*}[!tb]
-\centering
-\includegraphics[width=0.92\textwidth]{fig_opt_verifier}
-\caption{Verifier scores and same-pool ordering from separate archives.
-(a) Laya scores for 191 recorded candidates across 16 hybrid runs. Median
-scores were 0.88 for the 17 gold candidates and 0.86 for the 174 others.
-All recorded scores exceeded 0.5; one more candidate (Q14) had no recorded
-score. Horizontal jitter separates the marks. (b) The same 16 pools in the
-ordering archive, replayed in fusion and verifier-score order. Filled marks
-indicate a gold document among the first five.}
-\label{fig:verifier}
-\end{figure*}
-
 \subsection{What answer traces and success status reveal (E7)}
 \label{sec:e5}
 \label{sec:agentic}\label{sec:abstention}\label{sec:composition}\label{sec:eval-agent}
@@ -53,3 +40,31 @@ Both observations bound how the earlier results should be read. A target
 string in the pack measures text coverage (Figure~\ref{fig:content}), and a
 top-five hit measures document position (Figure~\ref{fig:verifier}); neither
 establishes that a cited passage supports the answer.
+
+% The two full-width result figures are declared together after E7 so that
+% the E4--E7 text fills page 11 continuously; both figures occupy page 12.
+\begin{figure*}[!tb]
+\centering
+\includegraphics[width=\textwidth]{fig_opt_content}
+\caption{Target-string containment on 72 in-domain questions. (a) Circles
+and Wilson 95\% intervals show the frozen run; open triangles show the
+same-question follow-up. The dashed line marks frozen A0. The columns give
+hit counts out of 72; a dash indicates that the read-all follow-up was
+incomplete. (b) For each frozen-run contrast, the symbols count questions
+on which only the first or only the second configuration hit. McNemar
+$p$ values are exact, two-sided and unadjusted.}
+\label{fig:content}
+\end{figure*}
+
+\begin{figure*}[!tb]
+\centering
+\includegraphics[width=0.92\textwidth]{fig_opt_verifier}
+\caption{Verifier scores and same-pool ordering from separate archives.
+(a) Laya scores for 191 recorded candidates across 16 hybrid runs. Median
+scores were 0.88 for the 17 gold candidates and 0.86 for the 174 others.
+All recorded scores exceeded 0.5; one more candidate (Q14) had no recorded
+score. Horizontal jitter separates the marks. (b) The same 16 pools in the
+ordering archive, replayed in fusion and verifier-score order. Filled marks
+indicate a gold document among the first five.}
+\label{fig:verifier}
+\end{figure*}
