@@ -1,0 +1,41 @@
+**Conclusion: NISQ (Noisy Intermediate-Scale Quantum) technology refers to "quantum computers with roughly 50 to a few hundred qubits, gate error rates of about 0.1% or above, and no protection from quantum error correction"; its central limitation is that noise caps the circuit size that can be executed reliably at roughly 1000 two-qubit gates -- and this ceiling on circuit size directly caps the computational power of NISQ technology.**
+
+## 1. What defines NISQ (Preskill's original definition)
+
+In *Quantum Computing in the NISQ Era and Beyond* (2018-07-30), John Preskill recounts coining the term:
+
+> "I needed a name to describe this impending new era, so I made up a word: NISQ. This stands for Noisy Intermediate-Scale Quantum."
+
+The three constituent elements, unpacked verbatim (same section, 4.1 "The 50-qubit barrier"):
+
+| Element | Original wording |
+|---|---|
+| **Intermediate-scale** | "the size of quantum computers which will be available in the next few years, with **a number of qubits ranging from 50 to a few hundred**"; the point of 50 qubits is "beyond what can be simulated by brute force using the most powerful existing digital supercomputers" |
+| **Noisy** | "'Noisy' emphasizes that we'll have **imperfect control over those qubits**; the noise will place serious limitations on what quantum devices can achieve in the near term" |
+| **No error-correction protection** (implicit but explicit) | "When I speak of the NISQ era, I'm imagining quantum computers with **noisy gates unprotected by quantum error correction**" |
+
+The formal statement in the abstract:
+
+> "Quantum computers with 50-100 qubits may be able to perform tasks which surpass the capabilities of today's classical digital computers, but **noise in quantum gates will limit the size of quantum circuits that can be executed reliably**."
+
+## 2. The central limitation: noise caps circuit size, and thereby caps computing power
+
+The original text (S4.2 Qubit "quality") gives the quantitative chain:
+
+> "with these noisy devices we don't expect to be able to execute a circuit that contains **many more than about 1000 gates -- that is, 1000 fundamental two-qubit operations** -- because the noise will overwhelm the signal in a circuit much larger than that. **That limitation on circuit size imposes a ceiling on the computational power of NISQ technology.**"
+
+That is: **the essence of the limitation is not too few qubits but the fact that accumulated noise scales with the gate count until it swamps the signal**. Supporting data: two-qubit gate error rates "above the .1% level (and often much worse)"; measurement error rates around 1% (superconducting qubits). The way out is quantum error correction, but "quantum error correction imposes a heavy overhead cost in number of qubits and number of gates", so that belongs to a more distant goal.
+
+## 3. Corroboration: an equivalent characterization in a second paper (P1, partially consistent)
+
+*Benchmarking Noisy Intermediate-Scale Quantum...* (arXiv 2303.00445), S I:
+
+> "We find ourselves in the era of noisy intermediate-scale quantum (NISQ) computation, which is characterized by various obstacles including **restrictive qubit topologies, short coherence times and imperfect quantum gates**."
+
+This **complements the causes** of the "noise" limitation (restricted topology, short coherence times, imperfect gates) and is the same limitation as Preskill's "gate error rate -> circuit-size ceiling" stated at a different level; it does not constitute a conflict.
+
+## 4. Credibility and retrieval notes
+
+- **P0 (direct evidence)**: Preskill's original text (KB `1e6199ea-...`, `Natural Sciences and Earth Sciences/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md`) -- the definition, 50-to-a-few-hundred qubits, the 1000-gate ceiling and "ceiling on computational power" are all verbatim.
+- **P1 (partial corroboration)**: 2303.00445 (same KB) -- three concrete sources of the noise.
+- **Retrieval execution**: `kb_search_two_stage` (English query, 20 candidates/5 hits) + `kb_search_vector` (Chinese query, 20 hits), plus `kb_doc_read` of the first 80 lines of the original to verify the quotes. No independent Chinese-language definition of NISQ was found in the Chinese corpus (the Chinese retrieval hits were all chunk mirrors of the same set of English quantum-physics papers, e.g. `Corpus-Chunks800/...`), so the answer rests on the English primary literature.

@@ -1,0 +1,47 @@
+\begin{table*}[!t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.0}
+\caption{Question-level judge scores from the earlier judge pass
+(one answer per isolated call) on the four
+matched-scope arms of E2, retained as sensitivity context for the unified
+batch (Tables~S19 and S21). Each cell represents one answer
+from the single run. Overall is the unweighted mean of factual correctness,
+completeness, groundedness and attribution. The judge saw one anonymised
+answer and a head-only gold-paper prefix, not the retrieved context; the
+scores should be interpreted in light of the protocol limitations discussed
+in the main text. The forty rows are set in two halves side by side.}
+\label{tab:baseline-quality-question-level}
+\begin{tabular}{@{}llrrrrrl@{\hskip 14pt}llrrrrrl@{}}
+\toprule
+Question & Arm & Factual & Compl. & Ground. & Attrib. & Overall & Verdict &
+Question & Arm & Factual & Compl. & Ground. & Attrib. & Overall & Verdict\\
+\midrule
+BQ01 & HMRS & 5 & 5 & 4 & 4 & 4.50 & correct & BQ06 & HMRS & 5 & 5 & 4 & 4 & 4.50 & correct\\
+BQ01 & BM25 & 2 & 1 & 1 & 1 & 1.25 & incorrect & BQ06 & BM25 & 5 & 5 & 3 & 2 & 3.75 & correct\\
+BQ01 & Dense & 3 & 4 & 2 & 2 & 2.75 & partial & BQ06 & Dense & 5 & 3 & 4 & 2 & 3.50 & partial\\
+BQ01 & RRF-order & 2 & 1 & 1 & 1 & 1.25 & incorrect & BQ06 & RRF-order & 5 & 5 & 4 & 3 & 4.25 & correct\\
+\addlinespace[1pt]
+BQ02 & HMRS & 5 & 5 & 5 & 5 & 5.00 & correct & BQ07 & HMRS & 5 & 5 & 3 & 2 & 3.75 & correct\\
+BQ02 & BM25 & 5 & 5 & 3 & 2 & 3.75 & partial & BQ07 & BM25 & 5 & 5 & 3 & 2 & 3.75 & correct\\
+BQ02 & Dense & 4 & 5 & 3 & 2 & 3.50 & partial & BQ07 & Dense & 5 & 5 & 5 & 5 & 5.00 & correct\\
+BQ02 & RRF-order & 5 & 5 & 4 & 3 & 4.25 & correct & BQ07 & RRF-order & 1 & 1 & 1 & 1 & 1.00 & incorrect\\
+\addlinespace[1pt]
+BQ03 & HMRS & 5 & 5 & 4 & 4 & 4.50 & correct & BQ08 & HMRS & 5 & 5 & 5 & 5 & 5.00 & correct\\
+BQ03 & BM25 & 5 & 5 & 4 & 2 & 4.00 & correct & BQ08 & BM25 & 4 & 5 & 2 & 1 & 3.00 & partial\\
+BQ03 & Dense & 5 & 5 & 4 & 4 & 4.50 & correct & BQ08 & Dense & 4 & 3 & 2 & 1 & 2.50 & partial\\
+BQ03 & RRF-order & 2 & 5 & 3 & 2 & 3.00 & partial & BQ08 & RRF-order & 5 & 4 & 2 & 1 & 3.00 & partial\\
+\addlinespace[1pt]
+BQ04 & HMRS & 5 & 5 & 5 & 5 & 5.00 & correct & BQ09 & HMRS & 5 & 5 & 4 & 3 & 4.25 & correct\\
+BQ04 & BM25 & 5 & 5 & 4 & 4 & 4.50 & correct & BQ09 & BM25 & 4 & 5 & 3 & 2 & 3.50 & partial\\
+BQ04 & Dense & 5 & 5 & 4 & 2 & 4.00 & correct & BQ09 & Dense & 4 & 5 & 3 & 2 & 3.50 & correct\\
+BQ04 & RRF-order & 5 & 5 & 3 & 2 & 3.75 & correct & BQ09 & RRF-order & 4 & 5 & 4 & 3 & 4.00 & correct\\
+\addlinespace[1pt]
+BQ05 & HMRS & 5 & 5 & 5 & 5 & 5.00 & correct & BQ10 & HMRS & 4 & 5 & 4 & 3 & 4.00 & correct\\
+BQ05 & BM25 & 5 & 5 & 4 & 3 & 4.25 & correct & BQ10 & BM25 & 3 & 3 & 2 & 1 & 2.25 & partial\\
+BQ05 & Dense & 5 & 5 & 5 & 5 & 5.00 & correct & BQ10 & Dense & 4 & 3 & 3 & 3 & 3.25 & partial\\
+BQ05 & RRF-order & 5 & 5 & 4 & 3 & 4.25 & correct & BQ10 & RRF-order & 4 & 5 & 2 & 1 & 3.00 & partial\\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,121 @@
+\begin{table*}[!t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Cross-batch judge means for the eight-arm external-baseline study.
+The unified batch is the primary descriptive batch used in the main text.
+The other columns are retained as sensitivity context: v4 is a second
+subagent batch on the same answer set, and R1/R2 are earlier judge batches
+that each scored one answer per isolated call. These columns should not be
+pooled or interpreted as a calibrated
+inter-rater reliability estimate.}
+\label{tab:external-cross-batch}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Arm & Unified subagent & v4 subagent & R1 & R2\\
+\midrule
+HMRS & 5.00 & 4.95 & 4.55 & 4.55\\
+BM25 & 4.95 & 4.85 & 3.30 & 3.30\\
+Dense (BGE-M3) & 4.90 & 4.90 & 3.60 & 3.55\\
+RRF-order & 4.83 & 4.62 & 3.12 & 3.12\\
+RAPTOR & 4.80 & 4.42 & 3.40 & 2.95\\
+LightRAG & 4.75 & 4.83 & 3.25 & 3.38\\
+DeepRead-native & 4.70 & 4.67 & 3.60 & 3.58\\
+GraphRAG & 4.28 & 3.98 & 2.55 & 2.58\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Question-level mean overall scores from the unified blind batch.
+HMRS was at least tied with the best comparator on every question; ties are common
+because scores are means of four integer 1--5 dimensions. The table is a
+descriptive paired view, not an accuracy estimate or a significance test.}
+\label{tab:external-question-level}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Question & HMRS & BM25 & Dense & RRF & RAPTOR & LightRAG & DeepRead & GraphRAG\\
+\midrule
+BQ01 & 5.00 & 4.50 & 4.75 & 4.50 & 4.75 & 4.25 & 5.00 & 4.75\\
+BQ02 & 5.00 & 5.00 & 5.00 & 5.00 & 4.00 & 5.00 & 5.00 & 4.75\\
+BQ03 & 5.00 & 5.00 & 4.50 & 5.00 & 5.00 & 4.75 & 4.25 & 2.00\\
+BQ04 & 5.00 & 5.00 & 5.00 & 5.00 & 4.25 & 5.00 & 4.75 & 4.00\\
+BQ05 & 5.00 & 5.00 & 5.00 & 5.00 & 5.00 & 4.75 & 4.75 & 5.00\\
+BQ06 & 5.00 & 5.00 & 5.00 & 5.00 & 5.00 & 5.00 & 5.00 & 4.50\\
+BQ07 & 5.00 & 5.00 & 5.00 & 3.75 & 5.00 & 4.75 & 4.25 & 3.75\\
+BQ08 & 5.00 & 5.00 & 5.00 & 5.00 & 5.00 & 4.75 & 5.00 & 5.00\\
+BQ09 & 5.00 & 5.00 & 5.00 & 5.00 & 5.00 & 4.75 & 4.25 & 5.00\\
+BQ10 & 5.00 & 5.00 & 4.75 & 5.00 & 5.00 & 4.50 & 4.75 & 4.00\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\noindent\textbf{External-baseline provenance.} The unified batch used one
+blind judge and one fresh anonymisation map. All 80 answers, the raw retrieval
+records, per-dimension rationales, source-scope declarations, the repeat
+subagent batch records (\path{judgments-v4-sub.jsonl}), and earlier
+judge-batch summaries are retained in
+\path{experiment_data/external_baselines_v3/}. RAPTOR and GraphRAG used the
+30-part gold subset; DeepRead's answer-time index covered 23 of its 96
+native documents, including the gold papers (gold document present in all
+nine recorded contexts), and its parse completed to 96/96 documents after
+the answer round; these scope
+states are part of the result and are not corrected by post-hoc weighting.
+After the twelve-unit cut the retrieval-mode prompts carried per question
+on average 9.6~k characters (BM25), 5.7~k (dense), 9.6~k (RRF), 9.6~k
+(RAPTOR), 6.6~k (LightRAG) and 9.3~k (GraphRAG); the native DeepRead
+agent's recorded evidence units total 6.8~k characters per question
+(7.6~k over the nine questions with recorded units). This field does not
+aggregate the HMRS agent's multi-turn reading. Table~6 of the main text
+reports estimated generator cost as a separate measure.
+GraphRAG ran its fast NLP-extraction variant (entity extraction without
+language-model calls) and RAPTOR's clustering used a deterministic PCA
+replacement for its unstable Gaussian-mixture component; both indexing
+configurations are recorded in the experiment adapters of the repository
+(\path{review/ext-baselines-20261121/adapters/}).
+
+\begin{table*}[!t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Earlier four-arm judging aggregate (sensitivity context for
+E2). The answers are the same as the unified batch's matched-scope rows;
+the pass scored one answer per isolated call,
+with a head-only gold prefix and without the unified rubric's
+honest-absence anchor. Top: mean judged dimension scores (1--5), overall
+mean, verdict counts, gold-identifier presence, keyword coverage, and
+per-question wall time and generator cost. Bottom: paired per-question
+differences (HMRS minus baseline) with two-sided exact sign-test $p$
+values and verdict discordance with exact McNemar $p$; all unadjusted and
+exploratory. A post-hoc Holm adjustment within the six
+groundedness/attribution tests retains four contrasts at $p\le0.032$;
+across all fifteen dimension and verdict tests none survives. Wall time
+and cost are recomputed from the answer records, as in Table~6 of the
+main text. Not pooled with the unified
+batch.}
+\label{tab:baseline-quality}
+\begin{tabular}{@{}lcccccccccc@{}}
+\toprule
+Arm & Factual & Compl. & Ground. & Attrib. & Overall & C/P/I & Gold-ID & Kw cov. & Time (s) & Cost (\$)\\
+\midrule
+HMRS agent (pinned) & 4.9 & 5.0 & 4.3 & 4.0 & 4.55 & 10/0/0 & 10/10 & 0.97 & 75.1 & 0.060\\
+BM25 & 4.3 & 4.4 & 2.9 & 2.0 & 3.40 & 5/4/1 & 1/10 & 0.85 & 35.8 & 0.030\\
+Dense (BGE-M3) & 4.4 & 4.3 & 3.5 & 2.8 & 3.75 & 5/5/0 & 0/10 & 0.87 & 28.4 & 0.021\\
+RRF-order ($k=60$) & 3.8 & 4.1 & 2.8 & 2.0 & 3.18 & 5/3/2 & 0/10 & 0.70 & 25.7 & 0.022\\
+\bottomrule
+\end{tabular}
+
+\medskip
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Paired contrast & $\Delta$Groundedness & $\Delta$Attribution & Verdict discordance\\
+\midrule
+HMRS $-$ BM25 & $+1.4$ ($p=0.0078$) & $+2.0$ ($p=0.0039$) & 5--0 ($p=0.0625$)\\
+HMRS $-$ Dense & $+0.8$ ($p=0.125$) & $+1.2$ ($p=0.125$) & 5--0 ($p=0.0625$)\\
+HMRS $-$ RRF-order & $+1.5$ ($p=0.0078$) & $+2.0$ ($p=0.0039$) & 5--0 ($p=0.0625$)\\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,63 @@
+\subsection{Choosing the right collection (E3)}
+\label{sec:routing-audit}
+We first asked whether the description on a catalogue card helps the
+selector find the right collection. A0 supplied the name and a description
+derived from the collection's contents; A3 was intended to supply the name
+alone. With descriptions, the scripted selector chose the labelled
+collection on all 72 questions, compared with 37 under A3 in the frozen run
+(Figure~\ref{fig:routing}). The direction persisted on the two reruns.
+Even with the collection correctly identified, A0 returned the target
+string on only 37 questions. Searching in the right place does not ensure
+that the right passage reaches the reader.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\columnwidth]{fig_opt_route}
+\caption{Correct collection selections for the two route-card variants.
+All three runs use the same 72 questions. A3 is nominally name-only.}
+\label{fig:routing}
+\end{figure}
+
+\subsection{Getting the target text into the evidence pack (E4)}
+\label{sec:ladder-opt}
+On the same questions, we compared the six ways of assembling evidence in
+Table~\ref{tab:ablation-configs}. In the frozen run, A0h retrieved the
+annotated string on 52 of 72 questions, up from 37 with A0. It recovered 15
+of A0's misses without losing any of its hits (exact McNemar
+$p=6.1\times10^{-5}$). Both same-question reruns preserved the gain.
+A0h also led the unrouted vector union A1b, but the difference from the
+unrouted per-document configuration PD was not significant
+(Figure~\ref{fig:content}).
+
+A0h changes what the system retrieves and what it puts first in the pack.
+The comparison with A0f is therefore not a test of window size alone.
+Similarly, A2 removes document reads as well as the gate, so it does not
+isolate the gate's effect. The trace counted 309~kB of text per question
+for A0h, against 31.4~kB for A0 and 24.3~MB for the mechanical read-all scan,
+which found every target. For A0h the count sums candidate text fetched for
+the gate, the gate's output and selected chunk windows. Text can be counted
+more than once. The final A0h pack has a separate 60{,}000-character cap;
+these byte totals are neither final pack sizes nor generator input sizes.
+
+\begin{figure*}[!tb]
+\centering
+\includegraphics[width=\textwidth]{fig_opt_content}
+\caption{Target-string containment on 72 in-domain questions. (a) Circles
+and Wilson 95\% intervals show the frozen run; open triangles show the
+same-question follow-up. The dashed line marks frozen A0. The columns give
+hit counts out of 72; a dash indicates that the read-all follow-up was
+incomplete. (b) For each frozen-run contrast, the symbols count questions
+on which only the first or only the second configuration hit. McNemar
+$p$ values are exact, two-sided and unadjusted.}
+\label{fig:content}
+\end{figure*}
+
+\subsection{Storing and finding operational lessons (E5)}
+\label{sec:e3}
+HMRS stores operational lessons as searchable documents and orders them by
+credibility tier. The extraction check produced draft lessons, and one
+stored lesson ranked first in a case-level search. No generated response
+was retained for that case. The approval check found an empty draft pool,
+and the heuristic dry run did not meet its quality criteria. These checks
+show that the system can store and retrieve lessons; they do not establish
+reliable automatic approval, feedback or credibility decay over time.

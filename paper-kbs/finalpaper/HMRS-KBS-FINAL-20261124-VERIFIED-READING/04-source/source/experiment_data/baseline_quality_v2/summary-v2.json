@@ -1,0 +1,67 @@
+{
+ "hmrs-agent": {
+  "n": 10,
+  "factual": 4.9,
+  "completeness": 5.0,
+  "groundedness": 4.3,
+  "sources": 4.0,
+  "overall": 4.55,
+  "verdicts": {
+   "correct": 10
+  },
+  "gold_id_rate": 1.0,
+  "kw_coverage": 0.97,
+  "mean_wall_s": 75.13,
+  "mean_chars": 2290.0
+ },
+ "bm25": {
+  "n": 10,
+  "factual": 4.3,
+  "completeness": 4.4,
+  "groundedness": 2.9,
+  "sources": 2.0,
+  "overall": 3.4,
+  "verdicts": {
+   "incorrect": 1,
+   "partial": 4,
+   "correct": 5
+  },
+  "gold_id_rate": 0.1,
+  "kw_coverage": 0.85,
+  "mean_wall_s": 35.84,
+  "mean_chars": 1965.7
+ },
+ "dense": {
+  "n": 10,
+  "factual": 4.4,
+  "completeness": 4.3,
+  "groundedness": 3.5,
+  "sources": 2.8,
+  "overall": 3.75,
+  "verdicts": {
+   "partial": 5,
+   "correct": 5
+  },
+  "gold_id_rate": 0.0,
+  "kw_coverage": 0.87,
+  "mean_wall_s": 28.45,
+  "mean_chars": 1706.0
+ },
+ "rrf": {
+  "n": 10,
+  "factual": 3.8,
+  "completeness": 4.1,
+  "groundedness": 2.8,
+  "sources": 2.0,
+  "overall": 3.18,
+  "verdicts": {
+   "incorrect": 2,
+   "correct": 5,
+   "partial": 3
+  },
+  "gold_id_rate": 0.0,
+  "kw_coverage": 0.7,
+  "mean_wall_s": 25.68,
+  "mean_chars": 1793.8
+ }
+}

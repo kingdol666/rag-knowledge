@@ -1,0 +1,153 @@
+%% HMRS platform — Knowledge-Based Systems submission (elsarticle)
+%% v3 restructure 2026-11-11: hierarchical *management* framing — the system
+%% manages documents at three levels (collection / document / segment) and
+%% serves a tiered access path; retrieval algorithms are supporting components.
+%% Compile: pdflatex main_20p && bibtex main_20p && pdflatex main_20p && pdflatex main_20p
+%% AUTHOR ACTION (authors reserved these values; do not infer them):
+%%   1. frontmatter below: author names/order, affiliation, city, country,
+%%      corresponding-author e-mail, and the ORCID lines if any;
+%%   2. n_back.tex: the two CRediT names, the funding wording and the
+%%      acknowledgements;
+%%   3. n_back.tex: confirm the generative-AI statement and figure provenance.
+%% Default: double-column journal layout. main_20p_review.tex selects
+%% a double-spaced layout from these same sources.
+\ifdefined\HMRSReviewLayout
+\documentclass[review,12pt]{elsarticle}
+\else
+\documentclass[final,5p,times,twocolumn]{elsarticle}
+\usepackage{stfloats}
+\usepackage{flushend} % balance the two columns of the last page
+\fi
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\pdfstringdefDisableCommands{\def\corref#1{}}
+\usepackage{xurl}
+\urlstyle{same}
+% DOIs are emitted by the .bst as \path{...}; re-declare it so they
+% typeset in the ambient roman face at 7.2 pt instead of 6.97 pt typewriter.
+\DeclareUrlCommand\path{\urlstyle{same}}
+\usepackage{caption}
+\usepackage{placeins}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newcommand{\yes}{\checkmark}
+\newcommand{\no}{--}
+
+\graphicspath{{figs/}}
+\setlength{\emergencystretch}{1.5em}
+% Cross-reference labels stay unbroken across lines (no "Ta-ble 4").
+\hyphenation{Table Tables Figure Figures Section Sections Algorithm Algorithms}
+
+%% Allow figures and tables to stay near their first discussion.
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dbltopfraction}{0.90}
+\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{3}
+
+%% Spacing for the double-column layout.
+\ifdefined\HMRSReviewLayout\else
+\setlength{\floatsep}{7pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
+\setlength{\intextsep}{7pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{7pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{9pt plus 2pt minus 2pt}
+\fi
+
+%% Ragged bottoms: with nine floats the flushbottom setting stretches
+%% underfull columns into heading-sized gaps (visible under the Threats and
+%% Conclusion headings). Ragged bottoms leave the slack at the column foot
+%% instead, which is the usual journal appearance for float-heavy pages.
+\raggedbottom
+
+\journal{Knowledge-Based Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{HMRS: Hierarchical document management for evidence-traced retrieval}
+
+\author[inst1]{Author Name\corref{cor1}}
+\ead{author@example.com}
+\author[inst1]{Co-author Name}
+\cortext[cor1]{Corresponding author.}
+\affiliation[inst1]{organization={Affiliation Department, University},
+city={City}, country={Country}}
+
+\begin{abstract}
+When document collections change, retrieval depends on where documents are
+stored, how they are described and whether the search index reflects those
+changes. The Hierarchical Management Retrieval System (HMRS) links
+collection, document and segment management to agent retrieval. Its
+catalogue, shelf and document views let an agent narrow a search and
+inspect source passages through the Model Context Protocol. On 72
+questions, a scripted selector identified the labelled collection in
+72 cases with description-bearing cards and 37 with nominally name-only
+cards. Correct routing did not guarantee that the evidence pack contained
+the target. Combining scored document text with prioritised chunk windows
+raised target-string containment from 37 to 52 of 72 questions. The
+retrieval trace counted 309~kB of text handled per question for this
+configuration, compared with 31.4~kB for the reference.
+Both same-question reruns retained the gain. In 16 fixed candidate pools,
+reordering by verifier score reduced top-five gold-document hits from 15
+to seven. In the native eight-configuration comparison, a blind judge
+rated all ten HMRS answers correct, but no paired contrast with the three
+same-corpus baselines was significant. The deployed agent read more text
+and searched outside its configured collections, and the indexed corpora
+were not all matched. These results support
+separate evaluation of collection selection, target-string containment and
+candidate ordering. They do not establish better backend answer quality
+under matched access.
+\end{abstract}
+
+\begin{keyword}
+Knowledge document management \sep Agentic retrieval \sep
+Hierarchical organisation \sep Tiered retrieval \sep Evidence verification \sep
+Model Context Protocol
+\end{keyword}
+
+\end{frontmatter}
+
+%% ============================================================ body (v2 order)
+\input{n1_intro}
+\input{n2_related}
+\input{n3_overview}
+\input{n4_acquisition}
+\input{n5_organization}
+\input{n6_retrieval}
+\input{n7_implementation}
+\input{n8a_eval}
+\input{n8d_eval}
+\input{n8b_eval}
+\input{n8c_eval}
+\FloatBarrier
+\input{n9_discussion}
+\input{n10_threats}
+\input{n11_conclusion}
+\input{n_back}
+
+{\ifdefined\HMRSReviewLayout\else\footnotesize\fi
+\renewcommand{\baselinestretch}{0.90}\selectfont
+\setlength{\bibsep}{-0.3pt plus 0.05ex}
+\urlstyle{same}
+\bibliographystyle{elsarticle-num}
+\bibliography{refs,refs_new_verified}
+}
+
+\end{document}

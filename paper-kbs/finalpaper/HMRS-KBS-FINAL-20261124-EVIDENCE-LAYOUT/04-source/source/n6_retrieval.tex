@@ -1,0 +1,119 @@
+\section{Tiered access and evidence reporting}
+\label{sec:retrieval}
+\label{sec:lanes}
+
+A query can reach the evidence through two entry points. Catalogue-first
+search selects a collection, examines shelf descriptions and opens
+selected documents or passages. Pinned search starts in specified
+collections and returns chunks from their segment indexes. Both entry
+points carry forward the
+source identifiers needed to trace the selected evidence.
+
+Algorithm~\ref{alg:tiered} specifies what the workflow reports at the end
+of the review.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_tiered_workflow_vector}
+\caption{Tiered access workflow. Pinned search and catalogue navigation
+supply candidate references. The workflow reads selected evidence directly
+or calls Laya to fetch, score and admit passages. Failures or limits that
+prevent completion at any stage yield an incomplete report with the
+searched scope and any available evidence.}
+\label{fig:tiered-algorithm}
+\end{figure}
+
+The chat endpoint sets timeouts and turn limits. Workflow instructions
+specify the retrieval sequence, batch sizes and what the agent should
+report if it exhausts its call budget.
+
+\subsection{Tier policies and the evidence gate}
+\label{sec:trace}
+\label{sec:gate}
+\label{sec:gate-primitive}
+\label{sec:twostage}
+
+\looseness=-1 The knowledge-base chat interface defines two policies
+(Table~\ref{tab:lanes}). The search policy
+starts from pinned collections and calls two-stage or vector search. Each
+tool applies the scope from the single collection identifier it receives,
+so a call without one searches every collection
+(Section~\ref{sec:exp-e2}). The
+librarian policy starts from the full catalogue, uses shelf
+descriptions to choose document references and directs the agent to score
+them in sequential batches before reading the survivors. The two-stage
+tool uses lexical search and optional graph expansion to form a candidate
+pool, applies dense ranking and returns candidates for inspection.
+
+The MCP server also provides \path{kb_hybrid_search}. It combines vector
+and catalogue candidates and, when the gate is enabled, sorts retained
+documents by its admission score (the verifier score of the ordering
+records). The hybrid experiment used the top 30 vector
+candidates per collection at a cosine threshold of 0.35, added catalogue
+candidates and capped the fused pool at twelve. Section~\ref{sec:e6}
+compares fusion order and verifier-score order on historical pools.
+
+The local Laya classifier \cite{laya} is exposed as \path{kb_laya_judge}.
+In reference mode it fetches candidate text, segments it and assigns each
+passage an admission score in $[0,1]$ for the evidence question. Passages
+that meet the threshold (0.5 by default) are eligible for the returned
+pack. The gate orders them by source and position, deduplicates them and
+applies a character limit. It returns document coordinates and source
+spans alongside separate fetch and scoring errors, so valid passages can
+remain available after a partial failure. The score governs passage
+admission. The calling workflow or hybrid tool controls candidate fusion
+and document order. Figure~\ref{fig:tiered-algorithm} shows where the
+workflow chooses between direct reading and scoring, and why an incomplete
+review is distinct from a completed review that found no support.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\caption{Access policies over the tiered path. Modes differ in how candidate collections and documents are selected.
+The hybrid row describes the experimental composition used in the evaluation.}
+\label{tab:lanes}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.11\textwidth}>{\raggedright\arraybackslash}p{0.19\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}@{}}
+\toprule
+Policy & Tiers traversed & Retrieval affordance & Budget type & Intended terminal report\\
+\midrule
+Search & pinned collections, segment & Two-stage or vector search & Endpoint turn limit & Answer or scoped not-found\\
+Librarian & catalogue, shelf, document, segment & Catalogue navigation and passage scoring & Workflow instructions & Answer or searched scope\\
+Hybrid & catalogue and segment & Combined vector and catalogue candidates & Configuration-specific candidate cap & Candidates or judged survivors\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Response transport also determines which candidates the agent can see.
+A recorded October 2026 incident truncated a document listing before the
+agent could inspect the whole shelf. The shelf tool now caps its response and
+supplies grouped and paginated views, allowing the caller to request the
+remaining entries. Section~\ref{sec:eval} reports the repair check.
+
+\begin{algorithm}[tbp]
+\caption{Tiered access with optional evidence gate}
+\label{alg:tiered}
+\begin{algorithmic}[1]
+\Require question $q$; catalogue $\mathcal{C}$; threshold $\tau$; gate flag $g$
+\State $D \gets \textsc{GatherCandidates}(q,\mathcal{C})$ \Comment{chosen policy}
+\If{$g$}
+  \State $S \gets \textsc{LayaJudge}(D,q,\tau)$ \Comment{admit passages}
+\Else
+  \State $S \gets \textsc{ReadSelected}(D)$
+\EndIf
+\If{execution incomplete}
+  \State \Return incomplete status, scope and available evidence
+\ElsIf{completed review finds no support}
+  \State \Return scoped not-found with blind spots
+\Else
+  \State \Return answer with source references
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Reporting search outcomes}
+The workflow instructs the agent to cite sources when the evidence
+supports an answer. After a completed review without support, it reports
+the searched scope and remaining blind spots. If a failure or timeout
+prevents completion, it reports the interruption and any usable evidence.
+Section~\ref{sec:eval} evaluates these outcomes in observed agent trials.

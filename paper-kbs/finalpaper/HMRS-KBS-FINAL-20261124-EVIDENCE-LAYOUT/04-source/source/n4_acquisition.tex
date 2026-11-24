@@ -1,0 +1,42 @@
+\section{Document acquisition and classification}
+\label{sec:acquisition}
+
+HMRS parses PDFs, scanned images, Word and Excel files through
+an asynchronous MinerU service \citep{mineru}. The MCP parse tools return
+pollable task identifiers. Markdown and plain text take the direct save
+path. For parsed inputs, the ingest agent reviews the recovered text
+before selecting a collection by topic.
+
+The ingestion workflow connects parsing, review, optional splitting,
+placement, storage and indexing. Depending on the operations performed,
+the workflow records a parse task identifier, a quality report, a
+content fingerprint, a split manifest, a storage record and the
+destination collection. After storage and indexing, a content-based retrieval probe
+checks whether the saved material is searchable.
+
+\subsection{Quality gates and ingest lifecycle}
+
+The upload service checks sibling files for exact duplicates using content
+hashes. A separate near-duplicate tool returns pairs above a similarity
+threshold for review. The ingest agent checks recovered text for
+optical character recognition (OCR) noise,
+binary residue, missing section bodies, whitespace collapse and language
+mismatch. It selects a collection whose scope matches the recovered subject and
+derives descriptions and tags from the same body. The owning collection and
+its listing can then be checked after storage.
+
+For oversized documents, the optional structural splitter groups recognised
+units such as headings, Markdown tables, lists, block quotes and fenced code.
+The arXiv campaign used a 30,000-character split target; later configurations used
+60,000. The splitter aims to fill 85\% of the configured window and records
+oversized indivisible units where applicable. Structure recognition covers
+Markdown units, with formula-heavy pages depending on the quality of the
+parsed representation.
+
+The web and MCP entry points share the parsing and storage services in
+Figure~\ref{fig:arch}, but the two save paths do not initiate indexing in
+the same way. The web parsed-file route persists Markdown and images. The
+MCP save tool can also schedule vector and lexical indexing in the
+background. Graph construction is a separate operation. Post-index checks
+can compare expected identifiers with the recorded chunks and probe
+retrieval for content from the saved document.

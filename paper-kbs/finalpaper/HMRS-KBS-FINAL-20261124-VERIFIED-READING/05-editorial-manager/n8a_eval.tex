@@ -1,0 +1,68 @@
+\section{Evaluation}
+\label{sec:eval}
+A document can appear in the catalogue yet be missing from the index. A
+search can reach the right collection yet miss the passage that answers the
+question. We test these failures separately from answer quality, which also
+depends on how much text the answering agent can read.
+
+\subsection{Datasets and measures}\label{sec:eval-setup}
+The answer comparison uses ten developer-authored questions with annotated
+reference papers in five arXiv collections. The routing and evidence-pack
+experiments use 72 in-domain questions across ten collections (138 documents
+in the frozen run); out-of-domain probes are analysed separately. The
+verifier diagnostics use a separate industrial corpus of 42 documents in
+five collections. The saved questions omit the gold document identifiers.
+
+For routing, a hit means that the selector chose the labelled collection.
+For evidence packs, a hit means that the annotated target string occurs in
+the returned text. This second measure does not verify a claim and can count
+a match in a different document from the annotated source. Hit@5 measures
+whether a gold document appears among the first five results. Answer scores
+and verdicts are defined in Section~\ref{sec:e10}. The paired sign and
+McNemar tests are two-sided and exploratory. Repeated runs use the same
+questions; they do not add independent observations.
+
+Table~\ref{tab:ablation-configs} lists the six configurations used to test
+how evidence packs are assembled.
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.16}
+\caption{Search scope and evidence construction for the six E4 configurations.
+Limits are in characters, not model tokens.}
+\label{tab:ablation-configs}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.23\columnwidth}>{\raggedright\arraybackslash}p{\dimexpr0.77\columnwidth-31pt\relax}@{}}
+\toprule
+Arm & Search scope & Candidate selection and evidence\\
+\midrule
+A0 & One collection, selected by name and description & Retrieve vector hits. The reference-mode gate reads up to six distinct documents, with a nominal 40{,}000-character window per document.\\
+A0f & Same route as A0 & Use the same candidates with an inline gate. Allow up to 250{,}000 characters per candidate and in the gate pack.\\
+A0h & Same route as A0 & Keep the A0f gate and add a second vector search. Place up to eight chunk windows first, then add gate-retained text up to a final limit of 60{,}000 characters.\\
+PD & All ten collections & Keep the six highest-scoring distinct collection/path pairs and use the A0f inline gate.\\
+A1b & All ten collections & Merge vector hits and use the A0 reference-mode gate, including document reads.\\
+A2 & All ten collections & Merge the same hits as A1b and concatenate their snippets. Do not read documents or run a gate.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Routed vector search requests up to 30 candidates at a cosine threshold of
+0.35 and retries at 0.30 only if it returns nothing. The unrouted arms search
+each collection at 0.35. Some reference lookups could use the gold domain,
+but it did not determine the route-card choice (Section~\ref{sec:threats}).
+
+\subsection{Do changes in storage reach the index? (E1)}
+\label{sec:e1}
+\label{sec:e2}
+After explicit indexing and reindexing, all 328 stored arXiv parts had
+content-derived descriptions, and search probes returned identifiers for
+all 100 papers. This establishes identifier presence, not ranking within
+each collection. The controlled checks passed for document creation, moves,
+deletion and forced reindexing. In an earlier disposable-collection test,
+a rename left 18 vector entries instead of nine. Forced reindexing restored
+the expected count. In a separate, later retest, an old label in search
+results was traced to the retrieval cache; the index metadata was correct.
+Task-status and update checks failed; merge and split were not tested. The
+historical tag audit also recorded orphan tags and a cross-collection
+registry anomaly. These checks distinguish what is stored, what is indexed
+and what the search interface returns.

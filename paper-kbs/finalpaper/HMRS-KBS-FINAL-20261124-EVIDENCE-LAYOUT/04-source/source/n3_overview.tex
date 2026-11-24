@@ -1,0 +1,135 @@
+\section{System overview and management model}
+\label{sec:system}
+
+The parsing service recovers document content, the web application
+maintains collections and their files, and the MCP server exposes these
+operations to agents \cite{mcp}. Collection placement defines where a
+document is visible, its description guides selection within the
+collection, and
+its index entries make passages available to lexical and dense search.
+Reconciliation checks for selected management operations compare the
+document files, tree registry and per-library metadata.
+
+\subsection{Management levels and the tiered access path}
+\label{sec:levels}
+
+Collections define ownership and scope, documents hold text and
+descriptive metadata, and segments are the text units used for passage
+retrieval or scoring. The implementation calls a collection a library
+(knowledge base); this paper says \emph{collection} for the object and
+keeps \emph{library} only in the implementation's own terms (sub-library,
+library registry, file names). A document can be stored in several
+parts; each part is split into segments, called chunks in the index. A
+passage is any text span returned or scored at query time. The evidence
+gate (the Laya passage scorer) admits passages by a query-conditioned
+admission score in $[0,1]$; in the evaluation, an unqualified
+\emph{judge} is the blind answer evaluator, never the gate. The catalogue lists collections, the shelf
+lists documents within a collection, the document view exposes the body
+and the segment view exposes passages with source references.
+Table~\ref{tab:levels} maps each level to the operations that maintain and
+check it.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\caption{\looseness=-1 Management levels and the tiered access path. Each level names the
+objects it maintains, the operations that write them, the state that describes
+them, the tier that reads them, and the measurement that exercises it.
+Evidence labels E1--E7 denote the evaluation campaigns of
+Section~\ref{sec:eval}. The selected access policy determines which tiers are
+visited; a pinned search can bypass catalogue navigation.}
+\label{tab:levels}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.18\textwidth}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
+\toprule
+Level & Objects and operations & State description & Read tier & Check & Evidence\\
+\midrule
+Collection & libraries and sub-libraries; agent assignment from parsed content; description and tag derivation; catalogue listing & library registry, per-library metadata, library-level index & catalogue & catalogue inventory and description round-trip & E1, E3\\
+Document & documents and their parts; structural split; duplicate review; move, rename, delete; forced reindex & document files, tree registry, per-library metadata & shelf and document & reconciliation on selected operations & E1\\
+Segment & dense and lexical indices; optional evidence gate & chunk identifiers, per-segment scores with provenance & segment & index coverage and post-index probe & E1, E2, E4, E6, E7\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The ingest agent uses catalogue descriptions to place parsed material and
+derives document descriptions and tags from its content. Sub-libraries are
+tree nodes with their own descriptions and indices. At the document level,
+duplicate review identifies candidates and a lifecycle operation can move,
+rename or delete a document. At the segment level, search returns indexed
+chunks, while the optional evidence gate fetches candidate text and scores
+query-conditioned passages with provenance.
+
+\looseness=-1 Figure~\ref{fig:levels} illustrates how catalogue-first search narrows
+from collections to passages. Pinned search can reach indexed chunks
+directly within specified collections. Inspecting the catalogue and shelf
+separately helps locate a missing collection or document.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_library_analogy_vector}
+\caption{\looseness=-1 Library analogy for a catalogue-first HMRS access path. The library catalogue, shelf, book and passage correspond to the collection catalogue, document listing, document body and segment. Evidence scoring is optional; pinned search may bypass the catalogue and shelf.}
+\label{fig:levels}
+\end{figure}
+
+\setcounter{dbltopnumber}{2}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_service_architecture_vector}
+\caption{HMRS service architecture. The browser and agent/CLI access the web and MCP interfaces. Parsing, management and retrieval operate on shared document files, the tree registry, library metadata and search indices. Laya scoring is optional, and the Neo4j graph supports navigation.}
+\label{fig:arch}
+\end{figure*}
+
+Hybrid retrieval combines ordinary search calls, while experience retrieval
+reuses the document infrastructure with its own selection procedure.
+
+Table~\ref{tab:functions} maps acquisition, organisation, lifecycle, query
+and experience operations to the interface or workflow that checks them.
+The ingest agent chooses a collection, the save service validates the
+destination identifier and an audit checks the stored result.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Management functions, the enforcement or workflow check associated
+with each, and the evaluation that exercises it. The table separates API/MCP
+controls from agent procedures and campaign audits; semantic choices such as
+which collection owns a document are made and recorded by the workflow.
+Evidence labels E1--E7 denote the campaigns in Section~\ref{sec:eval}.}
+\label{tab:functions}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.37\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.11\textwidth}@{}}
+\toprule
+Group & Operations & Platform or workflow check & Evidence\\
+\midrule
+Acquisition & submit, parse (MinerU), quality review, duplicate review, structural split, store, index & parse-task state; workflow quality checks; entry-point-specific deduplication and indexing; post-index probe & E1\\
+Organisation & create library or sub-library, content-informed placement, descriptions and tags, duplicate review & API validates identifiers and required fields; workflow checks descriptions and tags; audit compares files, tree and library metadata & E1\\
+Lifecycle & move, rename, delete, force reindex, graph build & operation-specific API updates; reconciliation audit detects selected stale or inconsistent state & E1\\
+Query & tier selection, vector, keyword, catalogue and two-stage search, gate invocation & endpoint enforces tool allow/deny lists, timeouts and turn limits; invoked gate returns survivor provenance & E2, E3, E4, E6, E7\\
+Experience & extract, approve, tier, search & experience tools apply their own retrieval, verification and credibility filters & E5\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_workflow_vector}
+\caption{\looseness=-1 Illustrative HMRS workflow from document acquisition to evidence-based reporting. Documents are parsed when needed, organised into collections and indexed according to the entry point. A question can use catalogue navigation or pinned search; optional Laya scoring precedes evidence inspection. A completed review without support is distinct from an incomplete search or tool failure, which may occur at any stage.}
+\label{fig:workflow}
+\end{figure*}
+
+\subsection{Data model and object lifecycle}
+\label{sec:datamodel}
+\label{sec:lifecycle}
+
+Documents are stored as Markdown with associated assets. A managed
+collection's state spans the document files, \texttt{.tree-fs.json} and the
+library's \texttt{.knowledge-base.yml}. The ingest workflow distinguishes
+parsed, stored and indexed content and records completion after a retrieval
+probe. The MCP save path can start background indexing; the web parsed-file
+save path exposes indexing as a separate operation. After a move, rename
+or reindex, the file path and metadata show the stored state and a
+retrieval probe checks which path the index returns.
+Sections~\ref{sec:acquisition}--\ref{sec:implementation} describe these
+layers in turn: acquisition, organisation and lifecycle, tiered access
+and the evidence gate, and the implementation.

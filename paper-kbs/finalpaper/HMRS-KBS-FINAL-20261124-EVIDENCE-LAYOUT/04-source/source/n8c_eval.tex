@@ -1,0 +1,55 @@
+\subsection{Using verifier scores to admit or rank evidence (E6)}
+\label{sec:e6}
+\label{sec:inflation}\label{sec:eval-verify}\label{sec:exp-e6}
+A score that is suitable for admitting passages need not work as a ranking
+score. The hybrid tool of Section~\ref{sec:gate} uses the verifier score in
+both roles, so we tested the second one directly. We took 16 candidate pools
+from the historical hybrid wrapper and changed only their order. Under
+verifier-score order, the number of pools with a gold document in the top
+five fell from 15 to seven: eight pools lost a hit and none gained one
+(exact McNemar $p=0.0078$; Figure~\ref{fig:verifier}b).
+
+The admission question remains open. All 191 scores in a separate archive
+exceeded the 0.5 cutoff (Figure~\ref{fig:verifier}a), so that archive says
+little about the value of filtering. In a reconstructed replay with fixed
+candidates, the filtered and unfiltered sets matched on nine of ten
+questions, and answer grades fluctuated even for identical packs. The
+reordering result therefore does not show whether filtering helps.
+
+\begin{figure*}[!tb]
+\centering
+\includegraphics[width=0.92\textwidth]{fig_opt_verifier}
+\caption{Verifier scores and same-pool ordering from separate archives.
+(a) Laya scores for 191 recorded candidates across 16 hybrid runs. Median
+scores were 0.88 for the 17 gold candidates and 0.86 for the 174 others.
+All recorded scores exceeded 0.5; one more candidate (Q14) had no recorded
+score. Horizontal jitter separates the marks. (b) The same 16 pools in the
+ordering archive, replayed in fusion and verifier-score order. Filled marks
+indicate a gold document among the first five.}
+\label{fig:verifier}
+\end{figure*}
+
+\subsection{What answer traces and success status reveal (E7)}
+\label{sec:e5}
+\label{sec:agentic}\label{sec:abstention}\label{sec:composition}\label{sec:eval-agent}
+\label{sec:sysarms}\label{sec:e7}\label{sec:exp-e7}
+On a shared five-collection corpus, each of three interfaces included
+citation markers in nine of ten answers. A marker records an attempt to
+cite; it does not show that the source supports the claim. Abstention was
+not uniform. In three industrial probes with no answer in the corpus, the
+instructed agent reported not-found, whereas other absent-answer probes
+still retrieved candidates above the threshold. These observations do not
+establish a server-side abstention guarantee, and they do not make the
+retrieval threshold a test of answerability.
+
+The deployment probes exposed a different ambiguity: global search could
+report success after skipping unreadable collections. Scoped search with
+forced reindexing recovered a missing hit, and pagination recovered a shelf
+listing cut off by the output limit. Reporting the scope searched and any
+skipped collections makes it possible to distinguish incomplete search from
+a completed search that found no evidence.
+
+Both observations bound how the earlier results should be read. A target
+string in the pack measures text coverage (Figure~\ref{fig:content}), and a
+top-five hit measures document position (Figure~\ref{fig:verifier}); neither
+establishes that a cited passage supports the answer.
