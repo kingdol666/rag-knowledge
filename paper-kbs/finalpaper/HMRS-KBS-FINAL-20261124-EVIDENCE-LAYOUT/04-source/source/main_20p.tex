@@ -108,9 +108,9 @@ Both same-question reruns retained the gain. In 16 fixed candidate pools,
 reordering by verifier score reduced top-five gold-document hits from 15
 to seven. In the native eight-configuration comparison, a blind judge
 rated all ten HMRS answers correct, but no paired contrast with the three
-same-corpus baselines was significant. The deployed agent read more text
-and searched outside its configured collections, and the indexed corpora
-were not all matched. These results support
+baselines indexed on the intended corpus was significant. The deployed
+agent could read source documents and searched outside its configured
+collections; the indexed corpora were not all matched. These results support
 separate evaluation of collection selection, target-string containment and
 candidate ordering. They do not establish better backend answer quality
 under matched access.
@@ -136,7 +136,6 @@ Model Context Protocol
 \input{n8d_eval}
 \input{n8b_eval}
 \input{n8c_eval}
-\FloatBarrier
 \input{n9_discussion}
 \input{n10_threats}
 \input{n11_conclusion}

@@ -3,7 +3,7 @@
 **题目：** HMRS: Hierarchical document management for evidence-traced retrieval  
 **投稿入口：** [Knowledge-Based Systems · Editorial Manager](https://submit.elsevier.com/KNOSYS)
 
-本目录在阅读校订版（2026-11-24）的基础上润色并重排了第 8 节（实验）；其余章节只做了保持一致所必需的修改。正文图 1–8 均与至少一处实质性正文说明同页。正文不引用补充材料。原始实验记录未改动。
+本目录在阅读校订版（2026-11-24）的基础上润色并重排了第 8 节（实验），并对全文论证边界与排版进行了复核。正文不引用补充材料；保留实验的原始记录未改动。
 
 ## 本版改动
 
@@ -19,7 +19,7 @@
 |---|---|
 | `01-cover-letter/` | 投稿信 PDF（1 页）和源码 |
 | `02-manuscript/main_20p.pdf` | 双栏正文（15 页） |
-| `02-manuscript/main_20p_review.pdf` | 单栏双倍行距审稿版（36 页） |
+| `02-manuscript/main_20p_review.pdf` | 单栏双倍行距审稿版（37 页） |
 | `02-manuscript/highlights.docx` | 投稿亮点 |
 | `02-manuscript/figure-captions.docx` / `.md` | 投稿用图表说明（8 图、6 表、1 算法） |
 | `03-supplementary/` | 补充材料（10 页）、证据清单（40 页）、基线问答转录（78 页） |

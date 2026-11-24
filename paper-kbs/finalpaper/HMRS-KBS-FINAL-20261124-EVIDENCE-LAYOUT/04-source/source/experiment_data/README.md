@@ -30,7 +30,7 @@ gold paper identifier and the annotated keywords of the question.
 | `judgments-unified.jsonl` | 80 rows of the unified blind pass: four dimension scores (`factual`, `completeness`, `groundedness`, `sources`), verdict, per-dimension rationale and summary rationale. `system` is the anonymous letter of the arm. |
 | `mapping-unified.json` | Anonymous letter assigned to each arm for each question. |
 | `summary-unified.json` | Per-arm means and verdict counts of the unified pass (`primary`) and the cross-batch means of Table S19 (`judge_batches`). |
-| `paired-unified.json` | Paired exact sign tests and exact McNemar tests for the three matched-scope contrasts, derived by `figure_scripts/build_unified_paired_stats.py`. |
+| `paired-unified.json` | Paired exact sign tests and exact McNemar tests for the three retrieval-mode contrasts against HMRS, derived by `figure_scripts/build_unified_paired_stats.py`. |
 | `external-baselines-v3-derived.json` | Per-arm and per-question derived values, head-to-head counts and the indexed scope of each arm; records the SHA-256 of its two sources. |
 | `judgments-v4-sub.jsonl` | Repeat subagent batch on the same 80 answers (Table S19, column v4). |
 | `parse_log.jsonl` | Native DeepRead parse log: the 96 documents and their parse durations. |
@@ -46,7 +46,7 @@ and R2 of Table S19 are stored in `judge_batches` of `summary-unified.json`.
 
 | File | Content |
 |---|---|
-| `answers-v2.jsonl` | The 40 answers of the four matched-scope arms, identical to the corresponding rows of `answers-v3.jsonl`. |
+| `answers-v2.jsonl` | The 40 answers of the four retrieval-mode arms, identical to the corresponding rows of `answers-v3.jsonl`. The HMRS search scope was not consistently restricted to the five configured collections. |
 | `judgments-v2.jsonl` | 40 rows of the earlier pass that scored one answer per isolated call: dimension scores, verdict, rationale and the first 200 characters of the raw response (`raw_head`). |
 | `mapping-v2.json` | Anonymous letters of that pass. |
 | `summary-v2.json` | Per-arm means of that pass (Table S21). |

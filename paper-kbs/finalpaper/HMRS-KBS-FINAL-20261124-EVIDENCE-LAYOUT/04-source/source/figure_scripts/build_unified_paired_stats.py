@@ -1,4 +1,4 @@
-"""Paired exploratory statistics for the four matched-scope arms of the
+"""Paired exploratory statistics for the four retrieval-mode arms of the
 unified eight-arm blind batch (E2). Reads judgments-unified.jsonl verbatim,
 computes two-sided exact sign tests on per-question dimension/overall
 differences and exact McNemar tests on correct-vs-not verdicts, and writes

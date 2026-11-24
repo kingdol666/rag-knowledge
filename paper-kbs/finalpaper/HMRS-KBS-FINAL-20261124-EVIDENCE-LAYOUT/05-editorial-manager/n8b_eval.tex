@@ -2,15 +2,17 @@
 \label{sec:routing-audit}
 \label{sec:exp-e3}
 The native comparison in Section~\ref{sec:e10} did not exercise collection
-selection: the agent made no catalogue calls, and its searches were not
-restricted to the five collections. Figure~\ref{fig:case-native}a shows the
+selection: the agent made no catalogue calls, and at least one search in
+nine questions lacked an effective five-collection restriction. Figure~\ref{fig:case-native}a shows the
 agent going straight to search. To test that step, we compared two
 catalogue-card variants with a scripted selector. A0 supplied the name and a
 description derived from the collection's contents; A3 was intended to
 supply the name alone. With
 descriptions, the selector chose the labelled collection on all 72
 questions, against 37 under A3 in the frozen run (Figure~\ref{fig:routing}).
-The direction persisted on the two reruns.
+The direction persisted on the two reruns. A3 could fall back to
+descriptions or search outside the evaluated collections; those paths were
+not logged, so the contrast does not isolate the effect of descriptions.
 
 Reaching the right collection is only a first step. Even when A0 identified
 it correctly, A0 returned the target string on only 37 questions. Searching

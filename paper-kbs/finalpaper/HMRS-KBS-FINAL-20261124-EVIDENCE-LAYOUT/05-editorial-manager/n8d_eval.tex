@@ -5,7 +5,9 @@
 An agent can follow up a search by reading the source document, whereas a
 one-shot baseline must answer from the passages in its prompt. We compared
 these deployed configurations on BQ01--BQ10, drawn from a five-collection
-arXiv corpus (100 papers, 328 stored parts and 9{,}504 passages).
+arXiv corpus (100 papers, 328 stored parts and 9{,}504 passages). These
+developer-authored questions were also used in development grids and
+post-repair validation; they are not a held-out test set.
 
 \subsubsection{Native configurations}
 The deployed HMRS agent was configured for the five collections and chose
@@ -14,18 +16,20 @@ using two-stage or vector search and document reads. It made no catalogue
 or shelf calls. Its three gate calls all failed, so this comparison does
 not measure the contribution of the gate.
 
-Its search scope was also wider than the configuration. The two search
-tools take one collection identifier each, and in nine of the ten
-questions the agent's 19 search calls carried no effective restriction (13
-passed a list that the tools do not accept and six passed none). Those
-calls ran across every collection on the host and returned items from 31
-collections: 139 of 234 first-stage candidates were unrelated documents,
-and 77 of 180 vector results were papers of the same corpus stored in
-another collection. Document reads were narrower. Of the 21 reads, 20 used
-the five collections, and all but one read the gold paper.
+Its search scope was also wider than configured. The two search tools each
+accept one collection identifier. In nine of the ten questions, 19 search
+calls carried no effective restriction: 13 passed a list that the tools do
+not accept and six passed no collection argument. The unrestricted calls
+searched across collections, and the audited result lists contained items
+from 31 distinct collections. Of 234 first-stage results, 139 had neither a
+configured collection ID nor a recognised corpus identifier in their path;
+of 180 vector results, 77 were identifiable copies of corpus papers in
+other collections. These path-based counts are not semantic relevance
+judgments. Document reads were narrower: 20 of 21 used the five configured
+collections, and a path-based check identified all but one as gold reads.
 
-BM25, dense search and RRF-order used the same generator, endpoint and corpus
-as HMRS. Each received one prompt with up to twelve passages of 800
+BM25, dense search and RRF-order used the same generator and endpoint as
+HMRS and indexed the intended 328-part corpus. Each received one prompt with up to twelve passages of 800
 characters each. Okapi BM25 used $k_1=1.5$, $b=0.75$ and an ASCII
 alphanumeric tokeniser without stemming or stopword removal \citep{bm25}.
 Dense search merged the top 30 BGE-M3 results per collection by score
@@ -49,7 +53,8 @@ completeness, groundedness and attribution from 1 to 5 and assigned a
 correct, partial or incorrect verdict. It did not see the retrieved contexts
 and could not resolve baseline citation markers to sources. An honest report
 of missing evidence was not scored as fabrication. Identifier presence,
-keyword coverage and gold-document reach were recorded separately.
+keyword coverage and gold-document reach were recorded separately. These
+verdicts and rubric scores are not claim-level checks of source support.
 
 \begin{table*}[!tb]
 \centering
@@ -58,9 +63,10 @@ BQ01--BQ10. Each configuration answered each question once. C/P/I denotes
 correct, partial and incorrect verdict counts. Time and cost are per
 question; time is end-to-end and cost is estimated for generator calls
 only. $\dagger$ Gold-paper subset; $\ddagger$ DeepRead's native corpus.
-$^{a}$ Configured for the five collections, but in nine of ten questions
-the agent's searches were not restricted to them and reached 31
-collections, including other copies of the corpus
+$^{a}$ Configured for five collections, but in nine of ten questions
+at least one search lacked an effective restriction. The audited result
+lists contained items from 31 collections, including other copies of the
+corpus
 (Section~\ref{sec:exp-e2}). The configurations differ in source access,
 and their indexed corpora are not all matched.}
 \label{tab:external-baselines}
@@ -69,7 +75,7 @@ and their indexed corpora are not all matched.}
 \toprule
 Arm & Scope & Factual & Compl. & Ground. & Attrib. & Overall & C/P/I & Time (s) & Cost (\$)\\
 \midrule
-HMRS agent & Unrestricted search$^{a}$ & 5.0 & 5.0 & 5.0 & 5.0 & \textbf{5.00} & 10/0/0 & 75.1 & 0.060\\
+HMRS agent & Scope not enforced$^{a}$ & 5.0 & 5.0 & 5.0 & 5.0 & \textbf{5.00} & 10/0/0 & 75.1 & 0.060\\
 BM25 & Full 328 parts & 5.0 & 4.8 & 5.0 & 5.0 & 4.95 & 9/1/0 & 35.8 & 0.030\\
 Dense (BGE-M3) & Full 328 parts & 5.0 & 4.6 & 5.0 & 5.0 & 4.90 & 8/2/0 & 28.4 & 0.021\\
 RRF-order ($k=60$) & Full 328 parts & 5.0 & 4.4 & 5.0 & 4.9 & 4.83 & 8/1/1 & 25.7 & 0.022\\
@@ -84,8 +90,8 @@ GraphRAG$^{\dagger}$ & 30 gold parts & 4.6 & 3.3 & 4.6 & 4.6 & 4.28 & 4/3/3 & 12
 
 HMRS received ten correct verdicts and a mean of 5.00 in the unified pass
 (Table~\ref{tab:external-baselines}). BM25 was close at 4.95, and the
-clearest differences among the three same-corpus baselines were in
-completeness. HMRS tied or exceeded each arm on these questions, but no
+clearest differences among the three baselines indexed on the intended corpus
+were in completeness. HMRS tied or exceeded each arm on these questions, but no
 paired contrast with those baselines was significant. The contrasts are
 judge-pass sensitive: earlier
 judging passes changed some dimension scores and individual per-question
@@ -117,7 +123,7 @@ HMRS agent issued two searches in its first turn, read the first part of the
 gold paper in the second and answered correctly. RRF-order and GraphRAG each
 received twelve context units that did not include the gold paper; both
 reported that they could not answer and were scored incorrect. The deployed
-HMRS agent could read more than the one-shot arms, search outside the five
-collections and spend more on generator calls than the three same-corpus
-baselines. The native comparison therefore does not separate retrieval
-from these differences in access.
+HMRS agent could read source documents and search outside the five configured
+collections. Its estimated generator cost was higher than that of the three
+baselines indexed on the intended corpus. The native comparison therefore
+does not separate retrieval from differences in access.

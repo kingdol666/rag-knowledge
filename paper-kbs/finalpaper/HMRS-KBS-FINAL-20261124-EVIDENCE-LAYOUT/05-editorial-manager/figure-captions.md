@@ -24,7 +24,7 @@
 
 **Table 4.** Access policies over the tiered path. Modes differ in how candidate collections and documents are selected. The hybrid row describes the experimental composition used in the evaluation.
 
-**Table 5.** Blind answer scores for the eight native configurations on BQ01–BQ10. Each configuration answered each question once. C/P/I denotes correct, partial and incorrect verdict counts. Time and cost are per question; cost estimates generator calls only. † Gold-paper subset; ‡ DeepRead’s native corpus. HMRS searches lacked an effective collection restriction for at least one call in nine questions. The configurations differ in source access and indexed scope.
+**Table 5.** Blind answer scores for the eight native configurations on BQ01–BQ10. Each configuration answered each question once. C/P/I denotes correct, partial and incorrect verdict counts. Time and cost are per question; time is end-to-end and cost is estimated for generator calls only. † Gold-paper subset; ‡ DeepRead's native corpus. ᵃ Configured for five collections, but in nine of ten questions at least one search lacked an effective restriction. The audited result lists contained items from 31 collections, including other copies of the corpus (Section 8.3). The configurations differ in source access, and their indexed corpora are not all matched.
 
 **Table 6.** Search scope and evidence construction for the six E4 configurations. Limits are in characters, not model tokens.
 

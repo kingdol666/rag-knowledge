@@ -140,9 +140,10 @@ references support the statements in the answer
 \citep{liu-verifiability,gao-citations}.
 EPRAG diagnoses evidence states to choose among response, clarification and
 abstention in enterprise retrieval \citep{kinalioglu-kbs-eprag-2026}.
-HMRS makes verification a server-side operation. The gate fetches
-candidate text, scores passages and returns surviving text with provenance,
-so an agent can inspect the source material behind the result.
+HMRS provides an optional server-side passage-admission scorer. The gate
+fetches candidate text, scores passages and returns surviving text with
+provenance, so an agent can inspect the source material behind the result.
+The score does not itself establish claim-level support.
 
 Judge studies report preference bias, variable agreement and ranking
 instability, including position and verbosity effects
