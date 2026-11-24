@@ -21,6 +21,7 @@ The QA transcript source is regenerated from the shipped records with `python bu
 - `experiment_data/baseline_quality_v2/` and `experiment_data/external_baselines_v3/`: the pinned answer-quality records (unified eight-arm answers, judgments, anonymisation maps, paired statistics, the earlier four-arm pass and the protocol texts).
 - `experiment_data/external_baselines_v3/fig-hmrs-case-provenance.json`: the recorded tool calls of the HMRS agent on BQ07, behind Figure 5.
 - `experiment_data/routing_content_traces/`: the six trace CSVs behind Tables S12–S13 and Figures 6–7.
+- `experiment_data/paired_diagnostics/`: the two verifier-replay tables behind Figure 8 (16 pools, 191 recorded scores).
 - `experiment_data/README.md`: a file-by-file guide and the recomputation scripts.
 - `inventory-build/`: the Markdown source of the companion evidence inventory (Tables S1–S8).
 

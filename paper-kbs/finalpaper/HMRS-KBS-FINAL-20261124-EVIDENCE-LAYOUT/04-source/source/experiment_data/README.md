@@ -10,7 +10,7 @@ from `answers-v3.jsonl` and `judgments-unified.jsonl`.
 
 | `arm` in the records | Manuscript (Table 5) | Indexed scope at answer time |
 |---|---|---|
-| `hmrs-agent` | HMRS agent (pinned) | full export, 328 parts |
+| `hmrs-agent` | HMRS agent | full export, 328 parts |
 | `bm25` | BM25 | full export |
 | `dense` | Dense (BGE-M3) | full export |
 | `rrf` | RRF-order (k = 60) | full export |
@@ -18,6 +18,10 @@ from `answers-v3.jsonl` and `judgments-unified.jsonl`.
 | `lightrag` | LightRAG | full export, 699 chunks |
 | `deepread-native` | DeepRead | 23 of 96 native documents (including the gold papers); 96 parsed after answering |
 | `graphrag` | GraphRAG | 30 gold parts |
+
+The HMRS index covered the full export, but its search calls were not
+consistently restricted to the five configured collections; see
+`external_baselines_v3/hmrs-search-scope-audit.json` and Section 8.3.
 
 Questions are `BQ01`–`BQ10`; `arxiv` and `kw_list` in each answer row give the
 gold paper identifier and the annotated keywords of the question.
@@ -51,6 +55,16 @@ and R2 of Table S19 are stored in `judge_batches` of `summary-unified.json`.
 | `mapping-v2.json` | Anonymous letters of that pass. |
 | `summary-v2.json` | Per-arm means of that pass (Table S21). |
 | `figure-values.json` | Values of `figs/fig_baseline_quality` with the SHA-256 of their sources. |
+
+## `paired_diagnostics/`: verifier replay (Figure 8)
+
+| File | Content |
+|---|---|
+| `redraw_verifier_order.csv` | The 16 fixed candidate pools; `fusion_hit` and `verifier_hit` mark a gold document in the top five under each order. Fusion keeps 15, verifier-score order keeps seven. |
+| `redraw_verifier_scores.csv` | The 191 recorded Laya scores over the same pools: 17 gold and 174 non-gold candidates, medians 0.8759 and 0.8627. No recorded score is at or below 0.5; one further candidate (Q14) had no recorded score. |
+
+These tables are the archived E6 records from which Figure 8 is drawn. The
+counts are recomputed from the tables; no value is re-estimated.
 
 ## Recomputing the reported values
 
