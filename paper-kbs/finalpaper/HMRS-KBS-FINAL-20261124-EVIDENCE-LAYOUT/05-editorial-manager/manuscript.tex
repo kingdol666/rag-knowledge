@@ -3,12 +3,8 @@
 %% manages documents at three levels (collection / document / segment) and
 %% serves a tiered access path; retrieval algorithms are supporting components.
 %% Compile: pdflatex main_20p && bibtex main_20p && pdflatex main_20p && pdflatex main_20p
-%% AUTHOR ACTION (authors reserved these values; do not infer them):
-%%   1. frontmatter below: author names/order, affiliation, city, country,
-%%      corresponding-author e-mail, and the ORCID lines if any;
-%%   2. n_back.tex: the two CRediT names, the funding wording and the
-%%      acknowledgements;
-%%   3. n_back.tex: confirm the generative-AI statement and figure provenance.
+%% AUTHOR ACTION: confirm the CRediT roles in n_back.tex and the
+%% declarations before submission.
 %% Default: double-column journal layout. main_20p_review.tex selects
 %% a double-spaced layout from these same sources.
 \ifdefined\HMRSReviewLayout
@@ -83,12 +79,17 @@
 
 \title{HMRS: Hierarchical document management for evidence-traced retrieval}
 
-\author[inst1]{Author Name\corref{cor1}}
-\ead{author@example.com}
-\author[inst1]{Co-author Name}
-\cortext[cor1]{Corresponding author.}
-\affiliation[inst1]{organization={Affiliation Department, University},
-city={City}, country={Country}}
+\author[inst1]{Haozheng Zhang}
+\author[inst2]{Bo Fu}
+\author[inst2]{Liangbin Li\corref{cor1}}
+\ead{lbli@ustc.edu.cn}
+\author[inst1]{Jungen Chen\corref{cor1}}
+\ead{cjg18@mail.ustc.edu.cn}
+\cortext[cor1]{Corresponding authors.}
+\affiliation[inst1]{organization={Institute of Advanced Technology, University of Science and Technology of China},
+city={Hefei, Anhui}, postcode={230031}, country={China}}
+\affiliation[inst2]{organization={National Synchrotron Radiation Laboratory, University of Science and Technology of China},
+city={Hefei, Anhui}, postcode={230029}, country={China}}
 
 \begin{abstract}
 When document collections change, retrieval depends on where documents are
@@ -141,8 +142,8 @@ Model Context Protocol
 \input{n_back}
 
 {\ifdefined\HMRSReviewLayout\else\footnotesize\fi
-\renewcommand{\baselinestretch}{0.90}\selectfont
-\setlength{\bibsep}{-0.3pt plus 0.05ex}
+\renewcommand{\baselinestretch}{0.88}\selectfont
+\setlength{\bibsep}{-0.8pt plus 0.05ex}
 \urlstyle{same}
 \bibliographystyle{elsarticle-num}
 \bibliography{refs,refs_new_verified}

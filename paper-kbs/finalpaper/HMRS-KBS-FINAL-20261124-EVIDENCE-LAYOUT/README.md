@@ -30,4 +30,4 @@
 
 用 TeX Live 在 `04-source/source/` 运行 `latexmk -pdf main_20p.tex` 或 `latexmk -pdf main_20p_review.tex`；平铺包入口为 `latexmk -pdf manuscript.tex`。运行 `sha256sum -c SHA256SUMS.txt` 可校验交付文件。
 
-提交前请填写作者、单位、通信信息及 CRediT 占位符，确认生成式 AI 声明中各图的来源，并完成投稿系统要求的声明。若投稿系统要求双倍行距版，请按当前指南复核篇幅。
+作者、单位、通信邮箱和 CRediT 角色已按作者提供的信息填写；提交前请确认 CRediT 角色是否与实际贡献一致，确认生成式 AI 声明中各图的来源，并完成投稿系统要求的声明。若投稿系统要求双倍行距版，请按当前指南复核篇幅。
