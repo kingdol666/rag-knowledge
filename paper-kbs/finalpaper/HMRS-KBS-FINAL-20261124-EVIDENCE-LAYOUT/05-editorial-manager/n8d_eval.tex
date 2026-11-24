@@ -47,14 +47,41 @@ RRF-order answers came from the earlier four-arm grid, and the external arms
 were run separately; all 80 answers were scored together in the unified
 blind pass.
 
-For each question, a judge from another model family saw a gold excerpt and
-eight anonymised answers. At temperature 0, it scored factual accuracy,
-completeness, groundedness and attribution from 1 to 5 and assigned a
-correct, partial or incorrect verdict. It did not see the retrieved contexts
-and could not resolve baseline citation markers to sources. An honest report
-of missing evidence was not scored as fabrication. Identifier presence,
-keyword coverage and gold-document reach were recorded separately. These
-verdicts and rubric scores are not claim-level checks of source support.
+For each question, a judge from another model family saw a head-only excerpt
+of the gold paper and eight anonymised answers. It did not see the retrieved
+contexts, the system names or the passages behind baseline citation markers.
+At temperature 0, it scored each answer independently on the four dimensions
+in Table~\ref{tab:rubric}, from 1 to 5, with 2--4 denoting intermediate
+evidence. Scores were not curved across systems, and each dimension required
+textual justification. The overall score is the unweighted mean of the four
+dimensions. A separate holistic verdict (correct, partial or incorrect) and
+rationale were also recorded. An honest report of missing evidence was not
+scored as fabrication. Identifier presence, keyword coverage and
+gold-document reach were recorded separately. These verdicts and rubric
+scores are not claim-level checks of source support.
+
+\begin{table}[!t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.03}
+\caption{Answer-quality rubric applied by the blind judge in E2. Scores are
+integers 1--5; 2--4 are intermediate. Overall is the unweighted mean; a
+separate holistic verdict was recorded. The judge saw the question, a
+head-only gold excerpt and eight anonymised answers, not retrieved contexts
+or system names.}
+\label{tab:rubric}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.36\columnwidth}>{\raggedright\arraybackslash}p{0.20\columnwidth}>{\raggedright\arraybackslash}p{0.24\columnwidth}@{}}
+\toprule
+Dimension & Score 1 & Score 5\\
+\midrule
+Factual (claims vs.\ gold) & Mostly wrong & All correct; key facts match\\
+Completeness (all parts) & Misses the point & Fully answered\\
+Groundedness (support) & Substantial fabrication & No unsupported claims\\
+Attribution (source naming) & None or bogus & Clear and accurate\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{table*}[!tb]
 \centering

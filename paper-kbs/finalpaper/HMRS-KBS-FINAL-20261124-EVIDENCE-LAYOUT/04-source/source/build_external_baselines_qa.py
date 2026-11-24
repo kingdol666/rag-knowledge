@@ -23,7 +23,7 @@ consistent with the manuscript's wording:
   reported in the manuscript's threats section; the original string remains
   in ``answers-v3.jsonl``;
 * the metered cost of the native DeepRead arm is shown as not recorded, as in
-  Table 5 of the manuscript (its pipeline does not meter calls through the
+  Table 6 of the manuscript (its pipeline does not meter calls through the
   shared endpoint);
 * the HMRS-agent and native-DeepRead answers that were generated in Chinese
   are shown in a faithful English translation shipped in
@@ -187,7 +187,7 @@ def main() -> None:
         "",
         r"\textbf{Translations.} The HMRS agent and the native DeepRead pipeline ran their own multi-turn procedures and generated one or more of their answers in Chinese; the raw records keep that text verbatim. Because this PDF renders all text with ASCII escaping, those answers would otherwise be unreadable escape sequences. They are therefore shown as faithful English translations, shipped with this source under \path{experiment_data/external_baselines_v3/translation-en/} (11 of the 80 records; every verbatim quotation, number, formula and provenance note of the original is preserved). The judge scores apply to the original answers; the translations are a reading aid and alter no judged material. Chinese KB directory names in retrieval paths are shown via the English glosses of \path{strings-en.json}.",
         "",
-        r"\textbf{Judging.} Each entry reports the four dimension scores, the verdict, the overall arithmetic mean and the judge's rationale. For each question the judge saw the eight anonymised answers of this batch together with a head-only excerpt of the gold paper, never the retrieved context or a system name. The scores are reported in Table 5 of the main text and Supplementary Tables S19--S20; the earlier passes, corpus scopes and pipeline limitations are reported in Supplementary Tables S19--S21.",
+        r"\textbf{Judging.} Each entry reports the four dimension scores, the verdict, the overall arithmetic mean and the judge's rationale. For each question the judge saw the eight anonymised answers of this batch together with a head-only excerpt of the gold paper, never the retrieved context or a system name. The scores are reported in Table 6 of the main text and Supplementary Tables S19--S20; the earlier passes, corpus scopes and pipeline limitations are reported in Supplementary Tables S19--S21.",
         "",
         r"\tableofcontents",
         r"\clearpage",

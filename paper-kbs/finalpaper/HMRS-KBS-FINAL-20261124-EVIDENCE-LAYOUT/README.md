@@ -21,7 +21,7 @@
 | `02-manuscript/main_20p.pdf` | 双栏正文（15 页） |
 | `02-manuscript/main_20p_review.pdf` | 单栏双倍行距审稿版（37 页） |
 | `02-manuscript/highlights.docx` | 投稿亮点 |
-| `02-manuscript/figure-captions.docx` / `.md` | 投稿用图表说明（8 图、6 表、1 算法） |
+| `02-manuscript/figure-captions.docx` / `.md` | 投稿用图表说明（8 图、7 表、1 算法） |
 | `03-supplementary/` | 补充材料（10 页）、证据清单（40 页）、基线问答转录（78 页） |
 | `04-source/source/` | 完整源码、绘图脚本和实验工件 |
 | `04-source/HMRS-KBS-source-20261124-EVIDENCE-LAYOUT.zip` | 完整源码 ZIP；入口 `source/main_20p.tex` |
