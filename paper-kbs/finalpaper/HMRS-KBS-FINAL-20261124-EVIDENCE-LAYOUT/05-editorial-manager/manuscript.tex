@@ -95,23 +95,24 @@ city={Hefei, Anhui}, postcode={230029}, country={China}}
 Retrieval from a changing collection depends on how documents are placed,
 described and indexed. The Hierarchical Management Retrieval System (HMRS)
 exposes that managed state to retrieval agents through a catalogue, shelves,
-document views and source-linked passages. This design lets an operator
-check where a search went, what text reached the agent and which decision
-excluded a candidate. A lifecycle probe traced stale search results to
+document views and source-linked passages. It lets an operator
+check where a search went, what text reached the agent and which passages
+were admitted. A lifecycle probe traced stale results to
 index entries left under an old path. On 72 questions, a scripted
 selector identified the labelled collection in
 72 cases with description-bearing cards and 37 with nominally name-only
-cards. Combining scored document text with prioritised chunk windows
-raised target-string containment from 37 to 52 of 72 questions, the highest
-count among the six main evidence-pack configurations in the frozen run. The arm-specific counters recorded 309~kB per question for this configuration
-and 31.4~kB for the reference. Because the counters use different logging
-boundaries, the figures are not directly comparable. Both same-question reruns
-preserved the configuration's target-string containment advantage over the
-reference. In 16 fixed candidate pools,
+cards in the frozen run (49 in both reruns). A0h, which adds a second vector
+search and prioritised chunk windows to scored document text, reached 52 of
+72 target strings against 37 for A0, the highest count among the six main
+evidence-pack configurations. The arm-specific counters recorded 309~kB per question for A0h
+and 31.4~kB for A0. The counters use different logging
+boundaries, so the figures are not directly comparable. Both same-question reruns preserved
+the advantage over A0. In 16 fixed candidate pools,
 reordering by verifier score reduced top-five gold-document hits from 15
-to seven. In a separate native deployment comparison, a blind judge
-rated all ten HMRS answers correct. Search scope and source access differed,
-so this was not a controlled comparison of catalogue-first retrieval. The
+to seven. In a separate deployment comparison, a blind judge
+rated all ten HMRS answers correct, as did one baseline; no paired contrast
+survived Holm adjustment. Search scope and source access differed, so it
+did not test catalogue-first retrieval. The
 results motivate three checks for managed
 retrieval: verify collection selection, measure what reaches the evidence
 pack and evaluate passage admission separately from document ranking.

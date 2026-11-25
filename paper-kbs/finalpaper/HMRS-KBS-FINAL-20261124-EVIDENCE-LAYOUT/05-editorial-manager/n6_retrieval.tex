@@ -47,10 +47,10 @@ candidates for inspection.
 
 Separately, the MCP server provides \path{kb_hybrid_search}, which combines
 vector and catalogue candidates. When enabled, its gate sorts retained
-documents by admission score, as in the verifier-score ordering replay. That
-experiment used up to 30 vector candidates per collection at a cosine
-threshold of 0.35, added catalogue candidates and capped the fused pool at
-twelve (Section~\ref{sec:e6}).
+documents by admission score (the verifier score returned by Laya), as in the
+verifier-score ordering replay. The replay pools were built from up to 30 vector candidates per collection at a
+cosine threshold of 0.35, with catalogue candidates added and the fused pool
+capped at twelve (Section~\ref{sec:e6}).
 
 The local Laya classifier \cite{laya} is exposed as
 \path{kb_laya_judge}. In reference mode, it fetches candidate text, segments

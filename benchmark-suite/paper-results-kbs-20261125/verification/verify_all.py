@@ -180,10 +180,10 @@ def verify_routing_and_packs() -> None:
     for frag, cid, claim in (
             ("72 cases with description-bearing cards and 37",
              "E3-abs-route", "abstract: 72 vs 37 routing"),
-            ("raised target-string containment from 37 to 52 of 72 questions",
+            ("reached 52 of 72 target strings against 37 for A0",
              "E4-abs-contain", "abstract: containment 37 to 52"),
             ("309~kB per question", "E4-abs-kB1", "abstract: 309 kB"),
-            ("31.4~kB for the reference", "E4-abs-kB2", "abstract: 31.4 kB"),
+            ("31.4~kB for A0", "E4-abs-kB2", "abstract: 31.4 kB"),
             ("reduced top-five gold-document hits from 15 to seven", "E6-abs", "abstract: verifier 15 to seven"),
             ("a blind judge rated all ten HMRS answers correct", "E2-abs-10", "abstract: ten correct")):
         check(cid, "abstract", claim, "present", "present" if frag in tex else "MISSING",

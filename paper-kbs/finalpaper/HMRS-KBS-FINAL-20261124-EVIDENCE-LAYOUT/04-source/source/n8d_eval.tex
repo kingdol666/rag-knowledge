@@ -24,9 +24,9 @@ calls carried no effective restriction: 13 passed a list that the tools do
 not accept and six passed no collection argument. The unrestricted calls
 searched across collections. The scope audit reported 31 distinct
 collection-ID values; individual IDs were not retained in the audit export.
-Of 234 first-stage results, 139 had neither a
+Of 234 lexical first-stage results, 139 had neither a
 configured collection ID nor a recognised corpus identifier in their path;
-of 180 vector results, 77 were identifiable copies of corpus papers in
+of the 180 vector-search results, 77 were identifiable copies of corpus papers in
 other collections. These path-based counts are not semantic relevance
 judgments. Document reads were narrower: 20 of 21 used the five configured
 collections, and a path-based check identified all but one as gold reads.
@@ -52,8 +52,8 @@ RRF-order answers came from the earlier four-arm grid, and the external arms
 were run separately; all 80 answers were scored together in the unified
 blind pass.
 
-Each question was scored in one blind pass. The judge, from another model
-family, saw the question, a head-only gold excerpt and eight anonymised
+Each question was scored in one blind pass. The judge, a different model from the generator,
+saw the question, a head-only gold excerpt and eight anonymised
 answers, but not the retrieved contexts, system names or the passages behind
 citation markers. At temperature 0, it was instructed to score each answer
 on the four dimensions in Table~\ref{tab:rubric} (1--5, with 2--4
@@ -93,7 +93,7 @@ Attribution (source naming) & None or bogus & Clear and accurate\\
 \centering
 \caption{Blind answer scores for the eight configurations in the native
 deployment case study on BQ01--BQ10. Each configuration answered each
-question once. C/P/I denotes
+question once; dimension scores are 1--5 (Table~\ref{tab:rubric}). C/P/I denotes
 correct, partial and incorrect verdict counts. Time and cost are per
 question; time is end-to-end and cost is estimated for generator calls
 only. $\dagger$ Gold-paper subset; $\ddagger$ DeepRead's native corpus.
@@ -108,7 +108,7 @@ and their indexed corpora are not all matched.}
 \toprule
 Arm & Scope & Factual & Compl. & Ground. & Attrib. & Overall & C/P/I & Time (s) & Cost (\$)\\
 \midrule
-HMRS agent & Scope not enforced$^{a}$ & 5.0 & 5.0 & 5.0 & 5.0 & \textbf{5.00} & 10/0/0 & 75.1 & 0.060\\
+HMRS agent & Scope not fully enforced$^{a}$ & 5.0 & 5.0 & 5.0 & 5.0 & \textbf{5.00} & 10/0/0 & 75.1 & 0.060\\
 BM25 & Full 328 parts & 5.0 & 4.8 & 5.0 & 5.0 & 4.95 & 9/1/0 & 35.8 & 0.030\\
 Dense (BGE-M3) & Full 328 parts & 5.0 & 4.6 & 5.0 & 5.0 & 4.90 & 8/2/0 & 28.4 & 0.021\\
 RRF-order ($k=60$) & Full 328 parts & 5.0 & 4.4 & 5.0 & 4.9 & 4.83 & 8/1/1 & 25.7 & 0.022\\

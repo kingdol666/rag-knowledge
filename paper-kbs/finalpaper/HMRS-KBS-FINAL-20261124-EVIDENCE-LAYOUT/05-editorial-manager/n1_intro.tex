@@ -46,11 +46,12 @@ stale index entries
 agent navigate from collection and document descriptions to source text,
 or search the indices of specified collections directly
 (Section~\ref{sec:retrieval}).
-\item \textbf{An optional evidence gate that separates passage admission
-from document ordering.} The server-side gate fetches and scores candidate
+\item \textbf{An optional evidence gate that keeps passage admission a
+distinct decision from document ordering.} The server-side gate fetches and scores candidate
 passages, returns those that meet the threshold with source references, and
 distinguishes fetch or scoring failures from a completed review without
-support (Section~\ref{sec:gate}).
+support (Section~\ref{sec:gate}). The hybrid tool can reuse the same score
+for either role.
 \end{enumerate}
 
 Evaluation distinguishes what is indexed from what search returns,
@@ -65,7 +66,8 @@ catalogue-first tests.
 \looseness=-1 \textbf{RQ1} examines document acquisition, collection membership and
 lifecycle consistency. \textbf{RQ2} measures collection selection under
 catalogue-first access. \textbf{RQ3} compares target-string containment
-and retrieval text volume across the tested evidence configurations.
+and reports arm-specific text-volume counters across the tested evidence
+configurations.
 \textbf{RQ4} asks how verifier-score ordering changes gold-document
 Hit@5 in fixed candidate pools. \textbf{RQ5} examines abstention and
 operational failures. \textbf{RQ6} compares judged answer quality under

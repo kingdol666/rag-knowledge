@@ -333,9 +333,9 @@ crosswalk.}
 \toprule
 Campaign & Cohort detail & Provenance boundary \\
 \midrule
-E1 arXiv identifier probe & 100 papers; 328 parts in five collections; 10 questions & Filename-stem short-query probe, not scoped title retrieval or a matched before--after comparison; 72/100 probes were unscoped and 45 returned a chunk-copy name first. \\
+E1 arXiv identifier probe & 100 papers; 328 parts in five collections & Filename-stem short-query probe, not scoped title retrieval or a matched before--after comparison; 72/100 probes were unscoped and 45 returned a chunk-copy name first. \\
 E3/E4 follow-up & Same 72 in-domain questions; 138 documents and 879 parts in the frozen corpus, 906 parts in follow-up & Later corpus state; repeated questions are not an independent sample. \\
-E6 verifier replay & 42 documents in five collections; 16 questions; one workstation & Fixed-pool ordering replay; this cohort is distinct from the 191-score archive. \\
+E6 verifier replay & 42 documents in five collections; 16 questions; one workstation & Fixed-pool ordering replay over the same pools as the 191-score record; the files are distinct, not the cohort. \\
 Historical Wikipedia ingestion & English, Chinese and Japanese pages & Placement and self-retrieval records are unavailable in this snapshot; no result is claimed. \\
 \bottomrule
 \end{tabular}
@@ -361,7 +361,8 @@ E5; Table~S9 & \path{records/legacy/experience_smoke.json} (extraction smoke), \
 E6; Table~S17; Figures~S4--S5 & The score and ordering archives are \path{records/paired_diagnostics/redraw_verifier_scores.csv} and \path{records/paired_diagnostics/redraw_verifier_order.csv}; see \path{tables/e6_pool_hits.csv}. The relative-margin diagnostic is \path{records/legacy/exp3_abstention.json} (\texttt{cut\_replay}); Q2's single-call anatomy is \path{records/legacy/exp5_q2_anatomy.json}. The ten-question gate replay is \path{records/legacy/exp11_gate_ablation.json}. \\
 E7; Tables~S14--S16; Figures~S2--S3, S7 & In \path{records/legacy/}: \path{exp_r2_grade_corrected.json} (original grid), \path{exp_rerun5_grade.json} (common-substrate grid), \path{answers_fresh_summary.json} (separate post-repair run), \path{exp3_abstention.json} (tool probes) and \path{exp8b_absent_agent.json} (answer-workflow probes). The supplementary case compendium and answer records for S16 are in \path{records/legacy/deepseek-r1/}. The shelf failure and pagination check are report-level in \path{records/legacy/RETRIEVAL-E2E-REPORT.md} and \path{records/legacy/PRODUCTION-LADDER-INDEX.md}. \\
 E8 / operating checks & There is no E8 experiment in this manuscript. The separate historical load observation in Table~S10 is from \path{records/legacy/STRESS-REPORT.md}; stack recovery and scoped reindex diagnostics are documented in \path{records/legacy/ACCEPTANCE-REPORT-20261113.md} and \path{records/legacy/F1F2F3_REPORT.md}. \\
-Historical Tables~S1--S8 & Listed in the companion evidence inventory; they are not reproduced in this supplement. \\
+Historical Tables~S1--S8 & Documented in the archived evidence inventory
+(companion index, Part~B); they are not reproduced in this supplement. \\
 Supplementary Table~S10 & Summarises the experimental designs and headline results above. \\
 Supplementary Table~S11 & Provides related-work positioning; it is not empirical evidence. \\
 \bottomrule

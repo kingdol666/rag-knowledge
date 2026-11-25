@@ -30,7 +30,7 @@ compared with 37 under A3 in the frozen run (Figure~\ref{fig:routing}). The
 direction persisted on the two reruns.
 
 Reaching the right collection is only a first step. Even when A0 identified
-it correctly, A0 returned the target string on only 37 questions. Searching
+it correctly, A0 returned the target string on only 37 of the 72 questions. Searching
 in the right place does not ensure that the right passage reaches the reader.
 
 \begin{figure}[!t]
@@ -38,7 +38,11 @@ in the right place does not ensure that the right passage reaches the reader.
 \begin{minipage}{\columnwidth}
 \centering
 \includegraphics[width=0.96\linewidth]{fig_opt_route}
-\caption{Correct selection means choosing the labelled collection. The three runs use the same 72 questions. A3 was nominally name-only, but unlogged fallbacks to descriptions or searches outside the evaluated collections mean this contrast does not isolate a causal effect of descriptions.}
+\caption{Correct collection selection out of 72 for A0 (name and description)
+and A3 (nominal name-only) across the frozen, follow-up and 17 November runs.
+Unlogged fallbacks to descriptions or searches outside the evaluated
+collections mean this contrast does not isolate a causal effect of
+descriptions.}
 \label{fig:routing}
 \end{minipage}
 \end{figure}
@@ -85,21 +89,22 @@ A2 & All ten collections & Merge the same hits as A1b and concatenate their snip
 A0h had the highest target-string count among the six main evidence-pack
 configurations in the frozen run: 52 of 72 questions, up from 37 with A0.
 It found the target string on 15 questions where A0 missed it and lost no
-A0 hit (exact McNemar $p=6.1\times10^{-5}$). Both same-question reruns preserved the
-advantage over A0. A0h also led the unrouted vector union A1b, but its
+A0 hit (exact McNemar $p=6.1\times10^{-5}$). Both same-question reruns preserved that advantage: 51 versus 39 in the
+follow-up and 48 versus 36 on 17 November (Supplementary Table~S12). A0h also led the unrouted vector union A1b, but its
 difference from the unrouted per-document configuration PD was not
-significant (Figure~\ref{fig:content}).
+significant ($p=0.070$; Figure~\ref{fig:content}).
 
 \begin{figure*}[!tb]
 \centering
 \includegraphics[width=\textwidth]{fig_opt_content}
 \caption{Target-string containment on 72 in-domain questions. (a) Circles
 and Wilson 95\% intervals show the frozen run; open triangles show the
-same-question follow-up. The dashed line marks frozen A0. The columns give
+same-question follow-up. The dashed line marks frozen A0. The numbers give
 hit counts out of 72. A3 is the auxiliary routing control; read-all is a
-separate capped scan whose follow-up was incomplete. (b) For each frozen-run contrast, the symbols count questions
+separate capped scan whose follow-up was incomplete. (b) For the frozen-run contrasts shown, the symbols count questions
 on which only the first or only the second configuration hit. McNemar
-$p$ values are exact, two-sided and unadjusted.}
+$p$ values are exact, two-sided and unadjusted; values below 0.001 are
+displayed as $<0.001$.}
 \label{fig:content}
 \end{figure*}
 

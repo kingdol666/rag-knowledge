@@ -8,9 +8,9 @@ searchable, did the agent reach the intended collection, and did the intended
 text reach the evidence pack?
 
 The experiments show why these checks matter. A lifecycle probe found stale
-entries in the index. In the frozen search configurations, A0h, which combined
-document text with prioritised chunk windows, produced the highest target-string
-count; reaching the correct collection alone was not enough. A fixed-pool
+entries in the index. Among the six main configurations in the frozen run, A0h, which adds
+a second vector search to document text plus prioritised chunk windows,
+produced the highest target-string count; reaching the correct collection alone was not enough. A fixed-pool
 replay also showed that verifier-score ordering could displace gold documents
 from the top five, so passage admission and document ranking need separate
 tests. Together, these results support a practical conclusion: inspect the managed

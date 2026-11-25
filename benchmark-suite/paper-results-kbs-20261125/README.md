@@ -21,3 +21,8 @@ sha256sum -c verification/records-sha256.txt
 ```
 
 `verification/report.json` records the comparison inputs and the results of each check. A data replay confirms arithmetic and agreement with the printed manuscript and supplement for the listed claims; it does not rerun the models or prove claim-level support in the answers. See the supplement for archive limitations (for example, missing returned passages and unlogged route fallbacks).
+
+Rounding note: manuscript 2-dp summary values reproduce the archived summaries
+(round-half-even as stored); the derived `tables/` CSVs recompute from the
+per-question rows with half-up rounding, so five S19 cells can differ from the
+printed table by 0.01. The printed table is authoritative for the submission.

@@ -24,7 +24,7 @@ answers; the translation is a reading aid and does not alter any judged
 material. Anything not covered by this overlay is rendered exactly as
 recorded (with ASCII escapes where necessary).
 
-Translated records (11 of 80): hmrs-agent BQ01-BQ05 and BQ08-BQ10,
+Translated records (nine of 80): hmrs-agent BQ01-BQ05 and BQ08-BQ10,
 deepread-native BQ05. hmrs-agent BQ06/BQ07 need no translation (their
 original answers are English apart from KB path prefixes, which
 `strings-en.json` covers).

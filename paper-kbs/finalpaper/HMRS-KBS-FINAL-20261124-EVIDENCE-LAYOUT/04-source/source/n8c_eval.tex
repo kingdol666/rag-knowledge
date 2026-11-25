@@ -9,9 +9,10 @@ verifier-score order, the number of pools with a gold document in the top
 five fell from 15 to seven: eight pools lost a hit and none gained one
 (exact McNemar $p=0.0078$; Figure~\ref{fig:verifier}b).
 
-The admission question remains open. All 191 scores in a separate archive
-exceeded the 0.5 cutoff (Figure~\ref{fig:verifier}a), so that archive says
-little about the value of filtering. In a reconstructed replay with fixed
+The admission question remains open. All 191 recorded scores, in a separate
+file over the same pools, exceeded the 0.5 cutoff
+(Figure~\ref{fig:verifier}a), so that record says little about the value of
+filtering. In a reconstructed replay with fixed
 candidates, the filtered and unfiltered arms retained the same number of
 documents on nine of ten questions; the archive does not establish that they
 retained the same documents. The reordering result therefore does not show
@@ -21,8 +22,8 @@ whether filtering helps.
 \label{sec:e5}
 \label{sec:agentic}\label{sec:abstention}\label{sec:composition}\label{sec:eval-agent}
 \label{sec:sysarms}\label{sec:e7}\label{sec:exp-e7}
-On a shared five-collection corpus, each of three interfaces included
-citation markers in nine of ten answers. A marker records an attempt to
+On a shared five-collection corpus, each of three interfaces (platform, file
+and chunk-replica variants) included citation markers in nine of ten answers. A marker records an attempt to
 cite; it does not show that the source supports the claim. Abstention was
 not uniform. In three industrial-domain probes with no in-corpus answer, the
 instructed agent reported not found in all three completed runs; this is an
@@ -48,8 +49,9 @@ establishes that a cited passage supports the answer.
 \begin{figure*}[!tb]
 \centering
 \includegraphics[width=0.92\textwidth]{fig_opt_verifier}
-\caption{Verifier scores and same-pool ordering from separate archives.
-(a) Laya scores for 191 recorded candidates across 16 hybrid runs. Median
+\caption{Verifier scores and same-pool ordering from two records of the
+same pools. (a) Laya scores for 191 of the 192 candidates across the 16
+hybrid pools. Median
 scores were 0.88 for the 17 gold candidates and 0.86 for the 174 others.
 All recorded scores exceeded 0.5; one more candidate (Q14) had no recorded
 score. Horizontal jitter separates the marks. (b) In the separate ordering

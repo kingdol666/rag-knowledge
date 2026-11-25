@@ -90,8 +90,8 @@ is not part of this package.
 \caption{Earlier four-arm judging aggregate (sensitivity context for
 E2). The answers are the same as for HMRS, BM25, dense search and RRF-order
 in the unified batch; the HMRS searches were not consistently restricted
-to the five configured collections. The earlier pass scored one answer per isolated call,
-with a head-only gold prefix and without the unified rubric's
+to the five configured collections. The earlier pass scored one answer per isolated call and is distinct from
+the R1/R2 batches of Table~S19, with a head-only gold prefix and without the unified rubric's
 honest-absence anchor. Top: mean judged dimension scores (1--5), overall
 mean, verdict counts, gold-identifier presence, keyword coverage, and
 per-question wall time and generator cost. Bottom: paired per-question
@@ -122,6 +122,7 @@ Paired contrast & $\Delta$Groundedness & $\Delta$Attribution & Verdict discordan
 \midrule
 HMRS $-$ BM25 & $+1.4$ ($p=0.0078$) & $+2.0$ ($p=0.0039$) & 5--0 ($p=0.0625$)\\
 HMRS $-$ Dense & $+0.8$ ($p=0.125$) & $+1.2$ ($p=0.125$) & 5--0 ($p=0.0625$)\\
+HMRS $-$ RRF-order & $+1.5$ ($p=0.0078$) & $+2.0$ ($p=0.0039$) & 5--0 ($p=0.0625$)\\
 \bottomrule
 \end{tabular}
 \end{table*}
