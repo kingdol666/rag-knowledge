@@ -13,21 +13,20 @@ document files, tree registry and per-library metadata.
 \subsection{Management levels and the tiered access path}
 \label{sec:levels}
 
-Collections define ownership and scope, documents hold text and
-descriptive metadata, and segments are the text units used for passage
-retrieval or scoring. The implementation calls a collection a library
-(knowledge base); this paper says \emph{collection} for the object and
-keeps \emph{library} only in the implementation's own terms (sub-library,
-library registry, file names). A document can be stored in several
-parts; each part is split into segments, called chunks in the index. A
-passage is any text span returned or scored at query time. The evidence
-gate (the Laya passage scorer) admits passages by a query-conditioned
-admission score in $[0,1]$; in the evaluation, an unqualified
-\emph{judge} is the blind answer evaluator, never the gate. The catalogue lists collections, the shelf
-lists documents within a collection, the document view exposes the body
-and the segment view exposes passages with source references.
-Table~\ref{tab:levels} maps each level to the operations that maintain and
-check it.
+Collections define ownership and scope; documents contain text and
+descriptive metadata. A document may be stored in several parts, which the
+index splits into segments called chunks. At query time, a passage is any
+text span returned or scored. The catalogue lists collections, a shelf lists
+documents within one collection, the document view exposes the body, and the
+segment view exposes passages with source references. Table~\ref{tab:levels}
+maps each level to the operations that maintain and check it.
+
+In the implementation, a collection is called a library or knowledge base;
+this paper uses \emph{collection} for the managed object and retains
+\emph{library} only in implementation terms such as ``sub-library'' and
+``library registry.'' The evidence gate is the Laya passage scorer; an
+unqualified \emph{judge} in the evaluation refers to the blind answer
+evaluator, not the gate.
 
 \begin{table*}[t]
 \centering

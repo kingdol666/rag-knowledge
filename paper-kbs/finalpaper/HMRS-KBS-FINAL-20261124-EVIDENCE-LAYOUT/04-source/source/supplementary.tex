@@ -27,9 +27,9 @@
 grouped by evidence type, and each result retains the corpus and unit
 reported in the main text. Figure~S1 distinguishes index and cache failures
 that produce similar search symptoms. Figures~S2--S3 report answer-marker and out-of-corpus probe
-observations; Figures~S4--S5 replay verifier roles and illustrate one
-logged query; Figures~S6--S7 retain the two evidence-path cases and the
-two-grid marker matrix condensed out of the main text.
+observations. Figure~S4 quantifies the two verifier-score replays, and Figure~S5
+makes one logged query inspectable. Figure~S6 retains two evidence-path cases,
+and Figure~S7 shows the two-grid marker matrix condensed out of the main text.
 Table~S9 indexes the management checks, Table~S10 summarises
 the retrieval and answer designs, and Table~S11 positions representative
 research strands. Tables~S12--S13 give arm counts and paired contrasts for
@@ -42,8 +42,7 @@ then tested exact substring containment without other normalisation. The
 29 overlapping questions had frozen containment of 16/29 for A0 and 21/29
 for A0h; the other 43 had 21/43 and 31/43, respectively. These non-random
 subsets are descriptive, not a causal test, and other lexical cues may remain
-in the non-overlap group. Table~S17 records the design and provenance of
-selected campaigns; Table~S18 reports question-level scores from the
+in the non-overlap group. Table~S17 records cohort provenance for selected campaigns; Table~S18 reports question-level scores from the
 earlier judge pass of E2. Tables~S19--S20 compare judge batches and give the
 unified question-level scores; Table~S21 gives the earlier four-arm aggregate
 and its paired contrasts. Table~S22 reports the separate seven-comparison
@@ -325,25 +324,19 @@ Electricity cost & No electricity amount reported; distinguished the \$294K rent
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{Evaluation design and provenance. Each row is a separate corpus, run
-and unit; counts are not pooled into a system-level accuracy. The 72-question
-follow-up reuses the frozen questions and reports 906 stored parts. The
-November arXiv observation is a filename-stem short-query identifier probe,
-not scoped title retrieval or a matched before--after comparison. The answer
-grids use one run per arm and lexical proxies; the verifier score archive and
-ordering archive are separate records.}
+\caption{Additional cohort provenance not detailed in Table~S10. The
+question sets and corpus states listed here are not independent samples.
+Direct record paths and further availability limits are given in the evidence
+crosswalk.}
 \label{tab:eval-design}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.42\textwidth}@{}}
 \toprule
-Campaign and state & Material and unit & Comparison or observation & Measure and boundary\\
+Campaign & Cohort detail & Provenance boundary \\
 \midrule
-Industrial corpus, 2026-10-13 & 42 documents in five collections; 16 questions & Hybrid candidates; verifier ordering & Document Hit@5; same-pool replay; one workstation\\
-arXiv, 2026-10-13 & 100 papers; 322 parts in five collections; 10 questions & Platform, file and chunk-replica answer arms & Gold-ID, strict/alias keywords, markers; one run per arm\\
-arXiv, 2026-11-14/15 & 100 papers; 328 parts in five collections; 10 questions & Short-query ID probe and a scoped ten-question vector check & Target arXiv ID in result names; 72/100 probes unscoped, 45 chunk-copy-first; not a matched rerun\\
-Wikipedia ingestion (historical) & English, Chinese and Japanese pages & Ingestion into preassigned collections & Placement and self-retrieval records are unavailable in this snapshot\\
-Routing, frozen and follow-up & 72 in-domain questions; 138 documents; 879 parts (follow-up 906) & Description-layer and content-layer configurations & Gold-domain choice and annotated target-string containment in returned packs; multiple components; sibling matches may count; same questions, not independent\\
-Answer grids & 10 questions; 30 cells per grid & Platform, file and chunk-replica arms; common substrate & Gold-ID, strict/alias keywords, markers; one run per arm; lexical proxies, not semantic support\\
-Verifier archive & 191 scores from 16 hybrid runs; 17 gold and 174 non-gold & Score distribution and same-pool ordering & Medians and Hit@5; separate archives; exploratory $p$ values; filtering never activates\\
+E1 arXiv identifier probe & 100 papers; 328 parts in five collections; 10 questions & Filename-stem short-query probe, not scoped title retrieval or a matched before--after comparison; 72/100 probes were unscoped and 45 returned a chunk-copy name first. \\
+E3/E4 follow-up & Same 72 in-domain questions; 138 documents and 879 parts in the frozen corpus, 906 parts in follow-up & Later corpus state; repeated questions are not an independent sample. \\
+E6 verifier replay & 42 documents in five collections; 16 questions; one workstation & Fixed-pool ordering replay; this cohort is distinct from the 191-score archive. \\
+Historical Wikipedia ingestion & English, Chinese and Japanese pages & Placement and self-retrieval records are unavailable in this snapshot; no result is claimed. \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -360,15 +353,17 @@ Verifier archive & 191 scores from 16 hybrid runs; 17 gold and 174 non-gold & Sc
 \toprule
 Paper item & Evidence and limits \\
 \midrule
-E1; Fig.~S1; S9, S17 & In \path{records/legacy/}: \path{exp10_ingest_state.json}, \path{exp10_papers_toollayer.json}, \path{desc_audit.json}, \path{probe5_final.json}, \path{audit_manifest.json}, \path{o2_duplicates.json} and \path{ingest_report.json}. Historical campaign reports: \path{BENCHMARK.md}, \path{BENCHMARK-30000chunk-20260918.md} and \path{SKILL-E2E-REPORT.md}; tag-run record \path{tags_report.json}; lifecycle trace \path{skilltest-calls.jsonl}; sub-library acceptance \path{F4F5_REPORT.md}. The split-run parse time and lifecycle graph totals are report-level. The cross-lingual placement outputs and an earlier storage sample are not in the snapshot and are not used for the main results. \\
-E2; main Table 6; S18--S22 & In \path{records/external_baselines_v3/}: \path{answers-v3.jsonl}, \path{judgments-unified.jsonl}, \path{judgments-v4-sub.jsonl}, \path{summary-unified.json}, and \path{hmrs-search-scope-audit.json}. The S19 R1/R2 judgments are in \path{records/legacy/judgments-v3-round1.jsonl} and \path{records/legacy/judgments-v3.jsonl}. Derived: \path{tables/t6_external_baselines.csv}, \path{tables/s19_cross_batch.csv}, \path{tables/s20_question_level.csv}, and \path{tables/s22_unified_holm.csv}. The earlier four-arm pass (S18/S21) uses \path{records/baseline_quality_v2/answers-v2.jsonl} and \path{records/baseline_quality_v2/judgments-v2.jsonl}; see \path{tables/s18_baseline_quality_qlevel.csv} and \path{tables/s21_baseline_quality_v2.csv}. \\
-E3--E4; S12--S13, S17; Fig.~S6 & In \path{records/routing_content_traces/}: \path{supp_traces_frozen.csv}, \path{supp_traces_followup.csv}, \path{supp_traces_rerun_20261117.csv}, \path{redraw_route_summary.csv}, and \path{redraw_content_summary.csv}. The two figure cases link back to the archived captures through \path{records/legacy/case-anatomy-provenance.json}. \\
+E1; Figure~S1; Tables~S9, S17 & In \path{records/legacy/}: \path{exp10_ingest_state.json}, \path{exp10_papers_toollayer.json}, \path{desc_audit.json}, \path{probe5_final.json}, \path{audit_manifest.json}, \path{o2_duplicates.json} and \path{ingest_report.json}. Historical campaign reports: \path{BENCHMARK.md}, \path{BENCHMARK-30000chunk-20260918.md} and \path{SKILL-E2E-REPORT.md}; tag-run record \path{tags_report.json}; lifecycle trace \path{skilltest-calls.jsonl}; sub-library acceptance \path{F4F5_REPORT.md}. The split-run parse time and lifecycle graph totals are report-level. The cross-lingual placement outputs and an earlier storage sample are not in the snapshot and are not used for the main results. \\
+E2; main Table~6; Tables~S18--S22 & In \path{records/external_baselines_v3/}: \path{answers-v3.jsonl}, \path{judgments-unified.jsonl}, \path{judgments-v4-sub.jsonl}, \path{summary-unified.json}, and \path{hmrs-search-scope-audit.json}. The S19 R1/R2 judgments are in \path{records/legacy/judgments-v3-round1.jsonl} and \path{records/legacy/judgments-v3.jsonl}. Derived: \path{tables/t6_external_baselines.csv}, \path{tables/s19_cross_batch.csv}, \path{tables/s20_question_level.csv}, and \path{tables/s22_unified_holm.csv}. The earlier four-arm pass (S18/S21) uses \path{records/baseline_quality_v2/answers-v2.jsonl} and \path{records/baseline_quality_v2/judgments-v2.jsonl}; see \path{tables/s18_baseline_quality_qlevel.csv} and \path{tables/s21_baseline_quality_v2.csv}. \\
+E3--E4; Tables~S12--S13, S17; Figure~S6 & In \path{records/routing_content_traces/}: \path{supp_traces_frozen.csv}, \path{supp_traces_followup.csv}, \path{supp_traces_rerun_20261117.csv}, \path{redraw_route_summary.csv}, and \path{redraw_content_summary.csv}. The two figure cases link back to the archived captures through \path{records/legacy/case-anatomy-provenance.json}. \\
 Fig.~5 (separate trace) & \path{records/tiered_case/tiered-bq07.json} and \path{records/tiered_case/trace-evidence.json}, mirrored under \path{experiment_data/tiered_case/}. This is the 2026-11-25 catalogue-first BQ07 trace, not a case from the E2 judge batch or a measurement in E3. \\
-E5; S9 & \path{records/legacy/experience_smoke.json} (extraction smoke), \path{records/legacy/skilltest-calls.jsonl} (empty global search and drafts in a disposable fixture), and \path{records/legacy/FULLTEST-SUMMARY.md} (first-ranked lesson reported; successful response unavailable). \path{records/legacy/a6_global_search.json} is the earlier failed check, not the successful response. \\
-E6; S17; Figs.~S4--S5 & The score and ordering archives are \path{records/paired_diagnostics/redraw_verifier_scores.csv} and \path{records/paired_diagnostics/redraw_verifier_order.csv}; see \path{tables/e6_pool_hits.csv}. The relative-margin diagnostic is \path{records/legacy/exp3_abstention.json} (\texttt{cut\_replay}); Q2's single-call anatomy is \path{records/legacy/exp5_q2_anatomy.json}. The ten-question gate replay is \path{records/legacy/exp11_gate_ablation.json}. \\
-E7; S14--S17; Figs.~S2--S3, S7 & In \path{records/legacy/}: \path{exp_r2_grade_corrected.json} (original grid), \path{exp_rerun5_grade.json} (common-substrate grid), \path{answers_fresh_summary.json} (separate post-repair run), \path{exp3_abstention.json} (tool probes) and \path{exp8b_absent_agent.json} (answer-workflow probes). The supplementary case compendium and answer records for S16 are in \path{records/legacy/deepseek-r1/}. The shelf failure and pagination check are report-level in \path{records/legacy/RETRIEVAL-E2E-REPORT.md} and \path{records/legacy/PRODUCTION-LADDER-INDEX.md}. \\
-E8 / operating checks & There is no E8 experiment in this manuscript. The separate historical load observation in S10 is from \path{records/legacy/STRESS-REPORT.md}; stack recovery and scoped reindex diagnostics are documented in \path{records/legacy/ACCEPTANCE-REPORT-20261113.md} and \path{records/legacy/F1F2F3_REPORT.md}. \\
-S1--S8, S10--S11 & S1--S8 belong to the historical inventory, not the results in this supplement. S10 is a design/results summary of the experiments above; S11 is a related-work positioning table, not empirical evidence. \\
+E5; Table~S9 & \path{records/legacy/experience_smoke.json} (extraction smoke), \path{records/legacy/skilltest-calls.jsonl} (empty global search and drafts in a disposable fixture), and \path{records/legacy/FULLTEST-SUMMARY.md} (first-ranked lesson reported; successful response unavailable). \path{records/legacy/a6_global_search.json} is the earlier failed check, not the successful response. \\
+E6; Table~S17; Figures~S4--S5 & The score and ordering archives are \path{records/paired_diagnostics/redraw_verifier_scores.csv} and \path{records/paired_diagnostics/redraw_verifier_order.csv}; see \path{tables/e6_pool_hits.csv}. The relative-margin diagnostic is \path{records/legacy/exp3_abstention.json} (\texttt{cut\_replay}); Q2's single-call anatomy is \path{records/legacy/exp5_q2_anatomy.json}. The ten-question gate replay is \path{records/legacy/exp11_gate_ablation.json}. \\
+E7; Tables~S14--S16; Figures~S2--S3, S7 & In \path{records/legacy/}: \path{exp_r2_grade_corrected.json} (original grid), \path{exp_rerun5_grade.json} (common-substrate grid), \path{answers_fresh_summary.json} (separate post-repair run), \path{exp3_abstention.json} (tool probes) and \path{exp8b_absent_agent.json} (answer-workflow probes). The supplementary case compendium and answer records for S16 are in \path{records/legacy/deepseek-r1/}. The shelf failure and pagination check are report-level in \path{records/legacy/RETRIEVAL-E2E-REPORT.md} and \path{records/legacy/PRODUCTION-LADDER-INDEX.md}. \\
+E8 / operating checks & There is no E8 experiment in this manuscript. The separate historical load observation in Table~S10 is from \path{records/legacy/STRESS-REPORT.md}; stack recovery and scoped reindex diagnostics are documented in \path{records/legacy/ACCEPTANCE-REPORT-20261113.md} and \path{records/legacy/F1F2F3_REPORT.md}. \\
+Historical Tables~S1--S8 & Listed in the companion evidence inventory; they are not reproduced in this supplement. \\
+Supplementary Table~S10 & Summarises the experimental designs and headline results above. \\
+Supplementary Table~S11 & Provides related-work positioning; it is not empirical evidence. \\
 \bottomrule
 \end{tabular}
 \end{table*}

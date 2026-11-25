@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from unidecode import unidecode
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "experiment_data" / "external_baselines_v3"
@@ -92,8 +93,21 @@ def translated_answer(arm: str, qid: str, fallback: object) -> str:
 
 def ascii_safe(x: object) -> str:
     x = str(x or "").replace("\r", "").replace("\x00", "")
+    replacements = {
+        "—": "--", "–": "-", "‒": "-", "−": "-", "‑": "-",
+        "•": "*", "·": ".", "…": "...", "“": '"', "”": '"',
+        "‘": "'", "’": "'", "′": "'", "″": '"', "≤": "<=", "≥": ">=",
+        "≈": "~=", "≃": "~=", "×": "x", "÷": "/", "±": "+/-",
+        "→": "->", "←": "<-", "↔": "<->", "∼": "~", "°": " deg",
+        "⁻": "-", "⁺": "+", "⁰": "0", "¹": "1", "²": "2", "³": "3",
+        "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9",
+        "₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4",
+        "₅": "5", "₆": "6", "₇": "7", "₈": "8", "₉": "9",
+    }
+    for old, new in replacements.items():
+        x = x.replace(old, new)
     x = x.replace("\\end{Verbatim}", "[end-Verbatim token omitted]")
-    return x.encode("ascii", "backslashreplace").decode("ascii")
+    return unidecode(x)
 
 
 def latex_escape(x: object) -> str:
@@ -183,9 +197,9 @@ def main() -> None:
         r"\DefineVerbatimEnvironment{EvidenceText}{Verbatim}{fontsize=\tiny,breaklines=true,breakanywhere=true,frame=single,framesep=2pt}",
         r"\begin{document}",
         r"\begin{center}{\Large\bfseries External-baseline answer and evidence audit}\\[4pt]{\normalsize Unified batch: 8 arms $\times$ 10 questions = 80 answers}\end{center}",
-        r"\textbf{Purpose.} This companion appendix preserves the complete answer text and retrieval provenance for the external-baseline batch. It is an audit transcript, not an additional statistical analysis. The raw JSONL files in \path{experiment_data/external_baselines_v3/} are the exact machine-readable source; Unicode source paths are rendered with ASCII escapes in this PDF where necessary. Model identifiers are shown without their provider prefix.",
+        r"\textbf{Purpose.} This companion appendix preserves the complete answer text and retrieval provenance for the external-baseline batch. It is an audit transcript, not an additional statistical analysis. The raw JSONL files in \path{experiment_data/external_baselines_v3/} are the exact machine-readable source; non-ASCII text without a supplied English gloss is transliterated for display. Model identifiers are shown without their provider prefix.",
         "",
-        r"\textbf{Translations.} The HMRS agent and the native DeepRead pipeline ran their own multi-turn procedures and generated one or more of their answers in Chinese; the raw records keep that text verbatim. Because this PDF renders all text with ASCII escaping, those answers would otherwise be unreadable escape sequences. They are therefore shown as faithful English translations, shipped with this source under \path{experiment_data/external_baselines_v3/translation-en/} (11 of the 80 records; every verbatim quotation, number, formula and provenance note of the original is preserved). The judge scores apply to the original answers; the translations are a reading aid and alter no judged material. Chinese KB directory names in retrieval paths are shown via the English glosses of \path{strings-en.json}.",
+        r"\textbf{Translations.} The HMRS agent and the native DeepRead pipeline ran their own multi-turn procedures and generated one or more of their answers in Chinese; the raw records keep that text verbatim. The 11 available English translations are shown for readability. Any other non-ASCII fragments are transliterated for display; the raw JSONL retains the original text. The judge scores apply to the original answers; the translations are a reading aid and alter no judged material. Chinese KB directory names in retrieval paths are shown via the English glosses of \path{strings-en.json}.",
         "",
         r"\textbf{Judging.} Each entry reports the four dimension scores, the verdict, the overall arithmetic mean and the judge's rationale. For each question the judge saw the eight anonymised answers of this batch together with a head-only excerpt of the gold paper, never the retrieved context or a system name. The scores are reported in Table 6 of the main text and Supplementary Tables S19--S20; the earlier passes, corpus scopes and pipeline limitations are reported in Supplementary Tables S19--S21.",
         "",

@@ -13,13 +13,14 @@ governance \cite{paivarinta-ecm-2005,tyrvaainen-ecm-2006}, while metadata
 quality and tagging affect how users discover documents
 \cite{park-metadata-quality-2009,golder-tagging-2006}. Distributed
 information retrieval addresses the selection of collections
-\cite{callan1995searching,si2003redde}. Retrieval-augmented generation
-(RAG) uses ranked passages to inform generation, and modular retrieval
-workflows can expose evidence through interfaces such as the Model
-Context Protocol (MCP) \cite{rag-lewis,dpr,modular-rag,mcp,gao-rag-survey-2023}.
-This paper asks how management state can make retrieval decisions
-inspectable: whether a document is visible to search, whether an agent
-reaches it and which source text the workflow returns.
+\cite{callan1995searching,si2003redde}. Retrieval-augmented generation (RAG) uses retrieved passages to inform
+generation \cite{rag-lewis,gao-rag-survey-2023}. Dense passage retrieval is
+one approach to selecting those passages \cite{dpr}. Modular RAG describes
+how retrieval components can be combined \cite{modular-rag}; the Model
+Context Protocol (MCP) provides a standard interface for invoking tools
+\cite{mcp}. This paper asks how management state can make retrieval
+decisions inspectable: whether a document is visible to search, whether an
+agent reaches it and which source text the workflow returns.
 
 The Hierarchical Management Retrieval System (HMRS) is a self-hosted
 platform that exposes the collection membership and descriptions that
@@ -45,23 +46,18 @@ stale index entries
 agent navigate from collection and document descriptions to source text,
 or search the indices of specified collections directly
 (Section~\ref{sec:retrieval}).
-\item \textbf{An evidence gate that keeps admission and ordering as
-separate, inspectable decisions.} An optional server-side gate fetches
-candidate text, scores passages and returns those that meet the threshold
-with source references. It reports fetch and scoring failures separately
-so that the caller can report an incomplete review rather than an
-unsupported not-found result (Section~\ref{sec:gate}). Candidate order is
-controlled separately: in the replay, using verifier scores to rank
-candidates displaced gold documents from the top five
-(Section~\ref{sec:e6}).
+\item \textbf{An optional evidence gate that separates passage admission
+from document ordering.} The server-side gate fetches and scores candidate
+passages, returns those that meet the threshold with source references, and
+distinguishes fetch or scoring failures from a completed review without
+support (Section~\ref{sec:gate}).
 \end{enumerate}
 
-The evaluation tests what each checkpoint reveals. Index probes
-separate index visibility from the result seen by the caller. Routing and containment
-experiments separate reaching the right collection from delivering the
-right text. A fixed-pool replay tests document ordering without changing
-candidate membership. The native answer comparison supplies deployment
-context; it does not substitute for the catalogue-first tests.
+Evaluation distinguishes what is indexed from what search returns,
+measures collection selection separately from target-text containment, and
+replays document ordering with candidate membership held fixed. The native
+answer comparison supplies deployment context; it does not substitute for the
+catalogue-first tests.
 
 \subsection{Research questions and reading guide}
 \label{sec:rq}

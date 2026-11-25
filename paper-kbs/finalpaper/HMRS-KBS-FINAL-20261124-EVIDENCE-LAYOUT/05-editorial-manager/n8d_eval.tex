@@ -39,8 +39,10 @@ Dense search merged the top 30 BGE-M3 results per collection by score
 \citep{bge-m3}. RRF-order fused document ranks ($k=60$) and filled the
 resulting context from BM25 passages \citep{rrf-cormack}.
 
-RAPTOR, GraphRAG and LightRAG used the same capped prompt and BGE-M3
-embeddings. The first two indexed a 30-part gold-paper subset; LightRAG
+The external arms did not share one corpus representation, so their scores
+describe those deployments rather than a matched comparison
+(Section~\ref{sec:threats}). RAPTOR, GraphRAG and LightRAG used the same
+capped prompt and BGE-M3 embeddings. The first two indexed a 30-part gold-paper subset; LightRAG
 represented the full export in 699 chunks. DeepRead kept its own
 locate-then-read pipeline in full-document mode. Its answer-time index
 contained the gold papers, but parsing of the rest of its native corpus had

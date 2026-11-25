@@ -50,7 +50,7 @@ RAPTOR \citep{raptor} & cluster tree over document text & built offline at index
 GraphRAG \citep{graphrag} & entity--relation graph, community summaries & pre-generated offline & --- & graph retrieval; research system\\
 LightRAG \citep{lightrag} & low- and high-level graph retrieval & incremental graph updates & --- & graph retrieval; research system\\
 DeepRead \citep{deepread} & per-document structured Markdown, section coordinates & structure built at ingestion & agent locates then reads sections & agentic search system\\
-EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise corpus & --- & evidence-state diagnosis; abstention or clarification & enterprise retrieval\\
+EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise RAG & --- & action-selection framework & enterprise retrieval\\
 HMRS (this work) & managed collection--document--segment state & content-based placement; lifecycle operations; three-source reconciliation & optional gate, separate from ordering & self-hosted; MCP layer\\
 \bottomrule
 \end{tabular}
@@ -65,8 +65,9 @@ Hybrid search combines ranking signals, for example with reciprocal-rank
 fusion (RRF) \citep{rrf-cormack}, and BGE-M3 provides multilingual and
 multi-granularity embeddings \citep{bge-m3}. Neural rerankers score
 query--passage pairs with cross-encoders \citep{nogueira-monobert-2019} or
-late interaction \citep{khattab-colbert-2020}. Generators can combine
-information across retrieved passages, as in Fusion-in-Decoder
+late interaction \citep{khattab-colbert-2020}. Language models have also
+been studied as passage-reranking agents \citep{sun-urara}. Generators can
+combine information across retrieved passages, as in Fusion-in-Decoder
 \citep{izacard-grave}. HMRS makes a separate decision before generation:
 a server-side score determines which passages enter the pack without
 requiring the caller to use that score to order documents.
@@ -76,18 +77,17 @@ GraphRAG builds entity graphs and community
 summaries \citep{graphrag}. LightRAG searches an incrementally updated
 graph at two retrieval levels \citep{lightrag}, and RAPTOR recursively
 groups text into a cluster tree \citep{raptor}. RMR-SST represents multimodal engineering
-documents as semantic trees \citep{li-kbs-rmrsst-2026}. Dense X Retrieval
-indexes propositions \citep{chen2024dense}, while TEIE-RAG combines
-hierarchical semantic chunking with source highlighting for engineering
-information extraction \citep{shen-kbs-teierag-2026}.
+documents as semantic trees \citep{li-kbs-rmrsst-2026}; Dense X Retrieval
+indexes propositions \citep{chen2024dense}, while TEIE-RAG targets
+trustworthy engineering information extraction using RAG
+\citep{shen-kbs-teierag-2026}.
 These hierarchies are \emph{derived}---computed from content at index
 time, as is DeepRead's per-document section structure---whereas HMRS
 collections are \emph{declared}: operator-maintained membership and
 descriptions that scope search before ranking. The two kinds are
 orthogonal and could be composed.
-Table~\ref{tab:related-comparison} locates HMRS among these designs: it
-organises access around maintained collection membership and document
-structure.
+Table~\ref{tab:related-comparison} summarises the systems across the four
+comparison dimensions shown.
 
 Index maintenance complements this hierarchy by keeping passages reachable
 after document changes \citep{xu2023spfresh}. Content-level freshness is a
@@ -130,31 +130,33 @@ uncertainty reporting examines when to withhold an answer
 \citep{kamath,feng-abstain,yin-knowwhat}. Citation studies examine whether
 references support the statements in the answer
 \citep{liu-verifiability,gao-citations}.
-EPRAG diagnoses evidence states to choose among response, clarification and
-abstention in enterprise retrieval \citep{kinalioglu-kbs-eprag-2026}.
-HMRS provides an optional server-side passage-admission scorer. The gate
+EPRAG addresses action selection in multi-source enterprise RAG
+\citep{kinalioglu-kbs-eprag-2026}. HMRS provides an optional server-side
+passage-admission scorer. The gate
 fetches candidate text, scores passages and returns surviving text with
 provenance, so an agent can inspect the source material behind the result.
 The score does not itself establish claim-level support.
 
 Judge studies report preference bias, variable agreement and ranking
 instability, including position and verbosity effects
-\citep{zheng-llmjudge,sun-urara,panickssery-selfpref,wang-llmnotfair}.
-Logic-grounded metamorphic testing checks whether model decisions remain
-consistent under equivalent input transformations \citep{zhou2026lgmt}.
-The HMRS evaluation examines passage admission, candidate ordering and
-answer reporting separately. The blind answer-quality comparison in
-Section~\ref{sec:e10} reports the judge's protocol and limitations
-alongside its scores.
+\citep{zheng-llmjudge,panickssery-selfpref,wang-llmnotfair}. Automated RAG
+evaluation frameworks such as RAGAS and ARES assess retrieval and answer
+quality along multiple dimensions \citep{es-ragas-2024,saad-falcon-ares-2024}.
+Logic-grounded metamorphic testing examines consistency under equivalent
+input transformations \citep{zhou2026lgmt}. The HMRS blind answer-quality
+comparison instead uses an explicit rubric and reports its protocol and
+limits alongside the scores.
 
 \subsection{Research gap}
 \label{sec:gap}
 
-RMR-SST and TEIE-RAG structure document content for retrieval, EPRAG
-selects a response action once candidate evidence is available
-\citep{li-kbs-rmrsst-2026,shen-kbs-teierag-2026,kinalioglu-kbs-eprag-2026},
-and enterprise content management governs placement and description over
-time \citep{paivarinta-ecm-2005,park-metadata-quality-2009}. These lines of
+RMR-SST represents engineering documents as semantic trees
+\citep{li-kbs-rmrsst-2026}; TEIE-RAG targets trustworthy engineering
+information extraction using RAG \citep{shen-kbs-teierag-2026}; and EPRAG
+frames action selection in multi-source enterprise RAG
+\citep{kinalioglu-kbs-eprag-2026}. Enterprise content management governs
+placement and description over time
+\citep{paivarinta-ecm-2005,park-metadata-quality-2009}. These lines of
 work address different points in the path from organising documents to
 answering a question. HMRS connects two of those points: it exposes
 operator-maintained membership and descriptions to the retrieval agent,

@@ -24,11 +24,12 @@ whether filtering helps.
 On a shared five-collection corpus, each of three interfaces included
 citation markers in nine of ten answers. A marker records an attempt to
 cite; it does not show that the source supports the claim. Abstention was
-not uniform. In three industrial probes with no answer in the corpus, the
-instructed agent reported not-found, whereas other absent-answer probes
-still retrieved candidates above the threshold. These observations do not
-establish a server-side abstention guarantee, and they do not make the
-retrieval threshold a test of answerability.
+not uniform. In three industrial-domain probes with no in-corpus answer, the
+instructed agent reported not found in all three completed runs; this is an
+observation of instructed agent behaviour, not a server-side guarantee. In a
+separate probe family, the retrieval layer still returned candidates above
+the 0.35 threshold for absent topics, so the threshold is not a test of
+answerability.
 
 The deployment probes exposed a different ambiguity: global search could
 report success after skipping unreadable collections. Scoped search with

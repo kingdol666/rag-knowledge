@@ -4,14 +4,16 @@ HMRS makes the state used to manage documents available to the agents that
 retrieve them. A catalogue and shelves expose membership and descriptions;
 document and segment views expose text with source references. These views
 make three checks possible in the tested workflows: is the current document
-searchable, did the agent reach the intended collection, and what text
-reached the evidence pack?
+searchable, did the agent reach the intended collection, and did the intended
+text reach the evidence pack?
 
-The experiments show why these checks matter. A lifecycle probe located
-stale entries in the index. The highest target-string count in
-the frozen search configurations came from A0h, which combined document
-text and prioritised chunk windows; reaching the correct collection alone
-was not sufficient. The fixed-pool replay shows why admission scores should
-be tested separately from ranking. The next test is whether these practices
-improve claim-level support on independent questions when agents have the
-same search and reading budgets.
+The experiments show why these checks matter. A lifecycle probe found stale
+entries in the index. In the frozen search configurations, A0h, which combined
+document text with prioritised chunk windows, produced the highest target-string
+count; reaching the correct collection alone was not enough. A fixed-pool
+replay also showed that verifier-score ordering could displace gold documents
+from the top five, so passage admission and document ranking need separate
+tests. Together, these results support a practical conclusion: inspect the managed
+state and each retrieval decision rather than inferring evidence quality from
+the answer alone. A next step is to test claim-level support on independent
+questions under matched search and reading budgets.

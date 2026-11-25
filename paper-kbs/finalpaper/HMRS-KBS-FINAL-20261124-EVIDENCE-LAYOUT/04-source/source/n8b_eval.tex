@@ -20,15 +20,14 @@ observation in the native E2 comparison or the E3 routing audit.}
 \label{fig:tiered-case}
 \end{figure}
 
-To evaluate collection selection, we compared two catalogue-card variants
-with a scripted selector. A0 supplied the name and a
-description derived from the collection's contents; A3 was intended to
-supply the name alone. With
-descriptions, the selector chose the labelled collection on all 72
-questions, against 37 under A3 in the frozen run (Figure~\ref{fig:routing}).
-The direction persisted on the two reruns. A3 could fall back to
-descriptions or search outside the evaluated collections; those paths were
-not logged, so the contrast does not isolate the effect of descriptions.
+To assess collection selection, we ran a scripted selector with two
+catalogue-card variants. A0 supplied the collection name and a description
+derived from its contents; A3 was configured to supply the name alone. This
+was not a clean description ablation: A3 could fall back to descriptions or
+search outside the evaluated collections, and those paths were not logged.
+The selector chose the labelled collection on all 72 questions with A0,
+compared with 37 under A3 in the frozen run (Figure~\ref{fig:routing}). The
+direction persisted on the two reruns.
 
 Reaching the right collection is only a first step. Even when A0 identified
 it correctly, A0 returned the target string on only 37 questions. Searching
@@ -39,8 +38,7 @@ in the right place does not ensure that the right passage reaches the reader.
 \begin{minipage}{\columnwidth}
 \centering
 \includegraphics[width=0.96\linewidth]{fig_opt_route}
-\caption{Correct collection selections for the two route-card variants.
-All three runs use the same 72 questions. A3 is nominally name-only.}
+\caption{Correct selection means choosing the labelled collection. The three runs use the same 72 questions. A3 was nominally name-only, but unlogged fallbacks to descriptions or searches outside the evaluated collections mean this contrast does not isolate a causal effect of descriptions.}
 \label{fig:routing}
 \end{minipage}
 \end{figure}
@@ -109,13 +107,13 @@ These contrasts compare configurations rather than single components. A0h
 changes both what the system retrieves and what it puts first in the pack, so
 its comparison with A0f is not a test of window size alone. A2 removes
 document reads as well as the gate, so it does not isolate the gate's
-effect. The arm-specific trace counters were 309~kB per question for A0h,
-31.4~kB for A0 and 24.3~MB for the capped corpus scan, which found every
-target. The scan capped each document read at 60{,}000 characters. For A0h,
-the counter sums fetched candidate text, gate output and selected windows,
-so it can count text twice. For A0, it excludes the gate's internal
-reference-mode reads. These counters do not measure comparable system
-I/O or generator input. A0h's final pack has a separate
+effect. The arm-specific trace counters were 309~kB per question for A0h, 31.4~kB
+for A0 and 24.3~MB for the capped corpus scan, which found every target.
+These figures use different logging boundaries and are not comparable measures
+of I/O or generator input. The scan capped each document read at
+60{,}000 characters. A0h's counter sums fetched candidate text, gate output
+and selected windows, so it can count text twice; A0's counter excludes the
+gate's internal reference-mode reads. A0h's final pack has a separate
 60{,}000-character cap.
 
 \subsection{Storing and finding operational lessons (E5)}

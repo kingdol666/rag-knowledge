@@ -45,10 +45,9 @@ collection scopes, which fixes the collections being compared.
 
 An early rename-and-move trial in a disposable collection exposed stale
 chunks under the old document path until a forced reindex. The current rename
-path attempts to remove old index
-entries and index the new path, and records failures separately from the
-metadata update. A post-operation probe checks whether queries resolve to
-the new path.
+operation attempts to remove the old index entries and index the renamed
+document; indexing failures are recorded separately from the metadata update.
+A post-operation probe checks whether queries resolve to the new path.
 
 The document graph links collections, documents and tags for navigation and
 candidate expansion. Operational lessons are also stored as retrievable

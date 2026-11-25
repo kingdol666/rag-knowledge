@@ -10,7 +10,7 @@
 
 **Figure 5.** Catalogue-first retrieval on BQ07 in a separate captured run. The trace follows the query through the catalogue, paginated shelf and stored-part selection, then through a bounded evidence filter and one follow-up source read. This example illustrates the workflow; it is not an observation in the native E2 comparison or the E3 routing audit.
 
-**Figure 6.** Correct collection selections for the two route-card variants. All three runs use the same 72 questions. A3 is nominally name-only.
+**Figure 6.** Correct selection means choosing the labelled collection. All three runs use the same 72 questions. A3 was nominally name-only; because fallbacks to descriptions or searches outside the evaluated collections were not logged, this contrast does not isolate a causal effect of descriptions.
 
 **Figure 7.** Target-string containment on 72 in-domain questions. (a) Circles and Wilson 95% intervals show the frozen run; open triangles show the same-question follow-up. The dashed line marks frozen A0. The columns give hit counts out of 72. A3 is the auxiliary routing control; read-all is a separate capped scan whose follow-up was incomplete. (b) For each frozen-run contrast, the symbols count questions on which only the first or only the second configuration hit. McNemar *p* values are exact, two-sided and unadjusted.
 

@@ -34,38 +34,36 @@ report if it exhausts its call budget.
 \label{sec:gate-primitive}
 \label{sec:twostage}
 
-\looseness=-1 The knowledge-base chat interface defines two policies
-(Table~\ref{tab:lanes}). The search policy
-starts from pinned collections and calls two-stage or vector search. Each
-tool applies the scope from the single collection identifier it receives,
-so a call without one searches every collection
-(Section~\ref{sec:exp-e2}). The
-librarian policy starts from the full catalogue, uses shelf
-descriptions to choose document references and directs the agent to score
-them in sequential batches before reading the survivors. The two-stage
-tool uses lexical search and optional graph expansion to form a candidate
-pool, applies dense ranking and returns candidates for inspection.
+The knowledge-base chat interface defines two policies
+(Table~\ref{tab:lanes}). The search policy starts from pinned collections
+and calls two-stage or vector search. Each tool applies the scope from the
+single collection identifier it receives, so a call without one searches
+every collection (Section~\ref{sec:exp-e2}). The librarian policy instead
+starts from the full catalogue, uses shelf descriptions to choose document
+references and directs the agent to score them in sequential batches before
+reading the survivors. The two-stage tool uses lexical search, with optional
+graph expansion, to form a candidate pool; dense ranking then returns
+candidates for inspection.
 
-The MCP server also provides \path{kb_hybrid_search}. It combines vector
-and catalogue candidates and, when the gate is enabled, sorts retained
-documents by its admission score (the verifier score of the ordering
-records). The hybrid experiment used the top 30 vector
-candidates per collection at a cosine threshold of 0.35, added catalogue
-candidates and capped the fused pool at twelve. Section~\ref{sec:e6}
-compares fusion order and verifier-score order on historical pools.
+Separately, the MCP server provides \path{kb_hybrid_search}, which combines
+vector and catalogue candidates. When enabled, its gate sorts retained
+documents by admission score, as in the verifier-score ordering replay. That
+experiment used up to 30 vector candidates per collection at a cosine
+threshold of 0.35, added catalogue candidates and capped the fused pool at
+twelve (Section~\ref{sec:e6}).
 
-The local Laya classifier \cite{laya} is exposed as \path{kb_laya_judge}.
-In reference mode it fetches candidate text, segments it and assigns each
-passage an admission score in $[0,1]$ for the evidence question. Passages
-that meet the threshold (0.5 by default) are eligible for the returned
-pack. The gate orders them by source and position, deduplicates them and
-applies a character limit. It returns document coordinates and source
-spans alongside separate fetch and scoring errors, so valid passages can
-remain available after a partial failure. The score governs passage
-admission. The calling workflow or hybrid tool controls candidate fusion
+The local Laya classifier \cite{laya} is exposed as
+\path{kb_laya_judge}. In reference mode, it fetches candidate text, segments
+it and assigns each passage an admission score in $[0,1]$ for the evidence
+question. Passages meeting the threshold (0.5 by default) are eligible for
+the returned pack. The gate orders them by source and position, removes
+duplicates and applies a character limit. It returns document coordinates
+and source spans alongside separate fetch and scoring errors, so valid
+passages can remain available after a partial failure. This score governs
+passage admission; the workflow or hybrid tool controls candidate fusion
 and document order. Figure~\ref{fig:tiered-algorithm} shows where the
 workflow chooses between direct reading and scoring, and why an incomplete
-review is distinct from a completed review that found no support.
+review differs from a completed review that found no support.
 
 \begin{table*}[t]
 \centering

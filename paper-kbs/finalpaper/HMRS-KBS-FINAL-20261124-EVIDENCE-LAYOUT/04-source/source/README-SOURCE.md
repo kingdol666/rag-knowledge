@@ -13,7 +13,7 @@ latexmk -pdf supplementary.tex
 latexmk -pdf external-baselines-qa.tex
 ```
 
-The QA transcript source is regenerated from the shipped records with `python build_external_baselines_qa.py`; it embeds the verbatim prompt texts from `experiment_data/external_baselines_v3/protocol/` and shows the answers that were generated in Chinese (HMRS agent, native DeepRead) as English translations from `experiment_data/external_baselines_v3/translation-en/`; the raw JSONL records keep the original text verbatim. Regenerate Figure 5 with `python figure_scripts/build_fig5_tiered_case.py`.
+The QA transcript source is regenerated from the shipped records with `python build_external_baselines_qa.py`; it embeds the verbatim prompt texts from `experiment_data/external_baselines_v3/protocol/` and shows the answers that were generated in Chinese (HMRS agent, native DeepRead) using the shipped English translations where available. Other non-ASCII fragments are transliterated for display, while the raw JSONL records keep the original text verbatim. The external-baseline configuration is archived in the experiment records; adapter source code is not included in this package. Regenerate Figure 5 with `python figure_scripts/build_fig5_tiered_case.py`.
 
 ## Contents
 
