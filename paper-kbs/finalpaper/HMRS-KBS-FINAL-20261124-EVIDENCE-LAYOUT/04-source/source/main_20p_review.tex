@@ -10,11 +10,18 @@
 \AddToHook{env/frontmatter/after}{\doublespacing}
 \AddToHook{env/tabular/begin}{\footnotesize\setstretch{1}}
 \makeatletter
-%% Let review floats use dedicated pages when the double-spaced text
-%% leaves too little room.
+%% Preserve explicit [H] placements; other review floats may use dedicated pages.
 \AddToHook{begindocument/before}{%
   \let\hmrs@review@xfloat\@xfloat
-  \def\@xfloat#1[#2]{\hmrs@review@xfloat{#1}[#2p]}%
+  \def\@xfloat#1[#2]{%
+    \def\hmrs@placement{#2}%
+    \def\hmrs@H{H}%
+    \ifx\hmrs@placement\hmrs@H
+      \hmrs@review@xfloat{#1}[#2]%
+    \else
+      \hmrs@review@xfloat{#1}[#2p]%
+    \fi
+  }%
 }
 \makeatother
 \input{main_20p.tex}

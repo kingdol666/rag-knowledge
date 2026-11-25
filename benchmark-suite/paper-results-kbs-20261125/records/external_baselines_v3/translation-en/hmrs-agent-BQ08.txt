@@ -1,0 +1,27 @@
+**Conclusion: oxygen (anionic) redox is the source of the capacity beyond the transition-metal (TM) oxidation limit -- in lithium/sodium-excess layered oxides, non-bonding "orphan" O 2p states that are not hybridized with the TM rise to near the Fermi level; upon charging, O2- donates electrons (forming peroxo-like species or O holes), so alkali-metal extraction can continue after the TM has been oxidized to its limit, directly raising the usable capacity; but the same mechanism also brings O2 evolution, TM migration and voltage/capacity fade, and the two sides must be traded off.**
+
+**1. Why it is needed (the capacity gap)**
+
+In conventional LiTMO2, delithiation is carried entirely by changes in the TM oxidation state ($\mathrm{LiTM^{3+}O_2 \to Li_{(1-x)}TM_{(1-x)}^{3+}TM_x^{4+}O_2}$). In theory, 200-300 mAh/g would require full delithiation, "but in practice this rarely happens" -- phase transitions, interfacial diffusion barriers and oxygen evolution all limit the capacity. Yet "the capacities of practical cathode materials have reached or even exceeded this level, showing an overcapacity beyond the transition-metal redox limit". This is exactly where anionic redox contributes. [P0]
+
+**2. Mechanism (orbital picture)**
+
+- In the conventional structure O is coordinated by 3 TM + 3 Li; the TM s/p hybridization pulls the bonding O 2p states down to the bottom of the valence band (about 10 eV below the Fermi level), so oxidation takes place only on the TM t2g states.
+- Li-excess / Na-excess structures (in-plane TM sites substituted by Li/Na) leave some O coordinated on average by fewer than 3 TM, creating Li-O-Li (Na-O-Na) environments; the "non-hybridized orphaned O 2p states" lie energetically close to the non-bonding t2g states, and as a result "both O and the TM can give or accept electrons".
+- Reversible description upon charging: $\mathrm{O^{2-} \leftrightarrow (O_2)^{n-}}$; an alternative interpretation is the formation of holes on oxygen, which avoids the escape of harmful O2 gas. [P0]
+
+**3. Material examples and segmented contributions**
+
+- Li2MnO3: Mn stays at +4 and its t2g level is too low to be oxidized, yet 1.4 Li per formula unit can still be extracted; its performance "is attributed to oxygen redox activity". [P0]
+- Li4Mn2O5: $\mathrm{Li_4^+Mn_2^{3+}O_5^{2-} \to 4Li^+ + 4e^- + Mn_x^{4+}Mn_{2-x}^{5+}O_{5-x}^{2-}O_x^{1-}}$, where x is the degree of oxygen participation. DFT shows: first Mn3+ -> Mn4+, then the extra delithiation capacity is carried by O2- -> O1-, and only at low lithium content (x<1) does Mn4+ -> Mn5+ occur, accompanied by an octahedral -> tetrahedral coordination change. [P0]
+- Li-rich NMC, commonly of stoichiometry Li1.2Mn0.54Co0.13Ni0.13O2. [P0]
+
+**4. How to quantify it**
+
+Integrate the O 2p states over a narrow window below the Fermi level (typically 2.0-2.5 eV) to obtain the number of "labile oxygen electrons" available for redox; this requires HF hybrid functionals or GGA+U (GGA+U remains insufficient for 3d oxides; it works for 4d). [P0]
+
+**5. Costs and mitigation**
+
+Oxygen redox without sufficient M-O covalency causes TM diffusion and O2 release at particle surfaces; after the first cycle the irreversible reactions "degrade the cathode structure and capacity", accompanied by voltage fade, a layered-to-spinel transformation, first-cycle capacity loss and flammability risk. Surface fluorination suppresses oxygen evolution by strengthening the TM-O bonds, reducing Jahn-Teller distortion and raising the oxygen-vacancy formation energy, but the optimum must be struck between "initial capacity loss and long-term capacity retention". [P0]
+
+Provenance: `materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2)` (Assadi & Hanaor, *Oxygen redox in battery cathodes: A brief overview*), KB 8fa4db59 (Engineering and Energy). Retrieval covered the 5 pinned KBs; only this document returned relevant evidence (top score 0.77), the rest being irrelevant corpus.

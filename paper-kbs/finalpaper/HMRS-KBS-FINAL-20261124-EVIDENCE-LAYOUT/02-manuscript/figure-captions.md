@@ -8,7 +8,7 @@
 
 **Figure 4.** Tiered access workflow. Pinned search and catalogue navigation supply candidate references. The workflow reads selected evidence directly or calls Laya to fetch, score and admit passages. Failures or limits that prevent completion at any stage yield an incomplete report with the searched scope and any available evidence.
 
-**Figure 5.** One question of the native comparison (BQ07). (a) The HMRS agent's recorded tool calls: two searches issued in one turn, a read of the gold paper and the answer. (b) Two one-shot baselines; each received one prompt with twelve context units that did not include the gold paper, and both declined to answer. HIT/MISS marks whether the gold paper was in the evidence; the strips give the blind judge's verdict and overall score. Answer excerpts are verbatim, with "…" marking omitted words. The footer lists the overall score of all eight configurations on this question; † marks the BM25 answer that cited material beyond its supplied context.
+**Figure 5.** Catalogue-first retrieval on BQ07 in a separate captured run. The trace follows the query through the catalogue, paginated shelf and stored-part selection, then through a bounded evidence filter and one follow-up source read. This example illustrates the workflow; it is not an observation in the native E2 comparison or the E3 routing audit.
 
 **Figure 6.** Correct collection selections for the two route-card variants. All three runs use the same 72 questions. A3 is nominally name-only.
 
@@ -26,7 +26,7 @@
 
 **Table 5.** Answer-quality rubric applied by the blind judge in E2. Scores are integers 1–5; 2–4 are intermediate. Overall is the unweighted mean; the holistic verdict is separate, not a mean threshold. The judge saw the question, a head-only gold excerpt and eight anonymised answers, not retrieved contexts or system names.
 
-**Table 6.** Blind answer scores for the eight native configurations on BQ01–BQ10. Each configuration answered each question once. C/P/I denotes correct, partial and incorrect verdict counts. Time and cost are per question; time is end-to-end and cost is estimated for generator calls only. † Gold-paper subset; ‡ DeepRead's native corpus. ᵃ Configured for five collections, but in nine of ten questions at least one search lacked an effective restriction. The audited result lists contained items from 31 collections, including other copies of the corpus (Section 8.3). The configurations differ in source access, and their indexed corpora are not all matched.
+**Table 6.** Blind answer scores for the eight configurations in the native deployment case study on BQ01–BQ10. Each configuration answered each question once. C/P/I denotes correct, partial and incorrect verdict counts. Time and cost are per question; time is end-to-end and cost is estimated for generator calls only. † Gold-paper subset; ‡ DeepRead's native corpus. ᵃ Configured for five collections, but in nine of ten questions at least one search lacked an effective restriction. The audit reported 31 distinct collection-ID values in the result lists (Section 8.3). The configurations differ in source access, and their indexed corpora are not all matched.
 
 **Table 7.** Search scope and evidence construction for the six E4 configurations. Limits are in characters, not model tokens.
 

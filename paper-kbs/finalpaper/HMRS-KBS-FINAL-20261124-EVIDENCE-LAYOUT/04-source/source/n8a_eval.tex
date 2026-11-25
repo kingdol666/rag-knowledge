@@ -4,14 +4,16 @@ A document can appear in the catalogue yet be missing from the index. A
 search can reach the right collection yet miss the passage that answers the
 question. We test these faults separately, and we treat answer quality as a
 question of its own because it also depends on how much text the answering
-agent can read. Section~\ref{sec:exp-e1} asks whether changes to a stored
-document reach the index (RQ1). Section~\ref{sec:exp-e2} compares answer
-quality in the native configurations (RQ6). Sections~\ref{sec:exp-e3}, \ref{sec:exp-e4}
-and~\ref{sec:exp-e6} examine the stages that an answer depends on: collection
+agent can read. Section~\ref{sec:exp-e1} asks whether storage changes reach
+the index (RQ1). Section~\ref{sec:exp-e2} records answers from the deployed
+agent alongside baselines (RQ6), as a native case study rather than a
+controlled end-to-end test of catalogue-first access. Sections~\ref{sec:exp-e3},
+\ref{sec:exp-e4} and~\ref{sec:exp-e6} separately examine collection
 selection (RQ2), evidence-pack assembly (RQ3) and verifier-score ordering
 (RQ4). Section~\ref{sec:exp-e5} reports checks of the experience store, and
 Section~\ref{sec:exp-e7} examines answer traces, abstention and operational
-failures (RQ5).
+failures (RQ5). These are separate campaigns, not stages logged from one
+end-to-end query through all four access tiers.
 
 \subsection{Datasets and measures}\label{sec:eval-setup}
 The answer comparison uses ten developer-authored questions with annotated
@@ -37,16 +39,18 @@ runs use the same questions, so they do not add independent observations.
 \label{sec:e1}
 \label{sec:e2}
 \label{sec:exp-e1}
-We first checked the state that search depends on. After explicit indexing
-and reindexing, all 328 stored arXiv parts had content-derived descriptions,
-and search probes returned identifiers for all 100 papers. Of the 100
+We first checked the state that search depends on. A later 328-part
+recheck, distinct from an earlier reconciliation sample of 33/322 parts,
+found content-derived descriptions for all stored arXiv parts after explicit
+indexing and reindexing; search probes returned identifiers for all 100
+papers. Of the 100
 probes, 72 lacked collection scope and 45 returned a chunk-copy name first.
 This establishes identifier presence, not ranking within each collection. The controlled
 checks passed for document creation, moves, deletion and forced reindexing.
 
 Two observations show why a search result alone does not locate a fault. In
-an earlier test on a disposable collection, a rename left 18 vector entries
-instead of nine; forced reindexing restored the expected count, so the index
+an earlier test on a disposable collection, a rename and move left 18 vector
+entries instead of nine; forced reindexing restored the expected count, so the index
 was at fault. In a separate, later retest, an old label appeared in the
 search results although the index metadata was correct; the label came from
 the retrieval cache.

@@ -116,7 +116,31 @@ Paired contrast & $\Delta$Groundedness & $\Delta$Attribution & Verdict discordan
 \midrule
 HMRS $-$ BM25 & $+1.4$ ($p=0.0078$) & $+2.0$ ($p=0.0039$) & 5--0 ($p=0.0625$)\\
 HMRS $-$ Dense & $+0.8$ ($p=0.125$) & $+1.2$ ($p=0.125$) & 5--0 ($p=0.0625$)\\
-HMRS $-$ RRF-order & $+1.5$ ($p=0.0078$) & $+2.0$ ($p=0.0039$) & 5--0 ($p=0.0625$)\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\centering\small
+\caption{Unified E2 judge batch: seven exploratory comparisons of HMRS
+with its comparators on the ten paired questions. Wins and losses refer to
+HMRS's per-question overall score, the unweighted mean of four integer
+ratings. The exact two-sided sign test discards ties; the Holm adjustment
+uses all seven raw $p$ values. This is separate from the earlier four-arm
+sensitivity analyses in Table~S21. These comparisons do not imply matched
+search scope or source access.}
+\label{tab:unified-holm}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Comparator & Wins & Losses & Ties & Raw $p$ & Holm $p$ \\
+\midrule
+BM25 & 1 & 0 & 9 & 1.000000 & 1.000000 \\
+Dense (BGE-M3) & 3 & 0 & 7 & 0.250000 & 1.000000 \\
+RRF-order & 2 & 0 & 8 & 0.500000 & 1.000000 \\
+RAPTOR & 3 & 0 & 7 & 0.250000 & 1.000000 \\
+LightRAG & 7 & 0 & 3 & 0.015625 & 0.109375 \\
+DeepRead-native & 6 & 0 & 4 & 0.031250 & 0.156250 \\
+GraphRAG & 7 & 0 & 3 & 0.015625 & 0.109375 \\
 \bottomrule
 \end{tabular}
 \end{table*}

@@ -1,0 +1,134 @@
+{
+ "schema_version": "1.0",
+ "purpose": "Provenance for figs/fig_hmrs_vs_baseline: the recorded tool calls of the deployed HMRS agent on one E2 question. Derived from stored records; not a new experiment and no value is edited by hand.",
+ "question": {
+  "qid": "BQ07",
+  "question": "What is MameLoshnLM and what parameter scale does it have?",
+  "gold_arxiv": "2608.05850",
+  "gold_paper": "MameLoshnLM: Yiddish Language Model and Evaluation Benchmark",
+  "expected": "The first open-source 8B-parameter Yiddish language model with an evaluation benchmark.",
+  "gold_keywords": [
+   "yiddish",
+   "8b"
+  ]
+ },
+ "answer_record": {
+  "path": "experiment_data/external_baselines_v3/answers-v3.jsonl",
+  "sha256": "64857c960dffb16e59541546f79962197d83a93e19186f72af7c6dd075ccf508",
+  "row": "arm=hmrs-agent, qid=BQ07",
+  "wall_s": 53.5,
+  "cost_usd": 0.052864799999999997,
+  "turns": 3,
+  "tools": 3,
+  "tool_names": [
+   "kb_search_two_stage",
+   "kb_search_vector",
+   "kb_doc_read"
+  ]
+ },
+ "session": {
+  "store": "storage/claude-chat.db (platform chat store, opened read-only)",
+  "session_id": "01a1f998-f99a-7000-ab33-e78fb566cc25",
+  "engine": "omp",
+  "model": "deepseek-flash",
+  "permission_mode": "default",
+  "created_at": "2026-11-20 15:35:19",
+  "duration_ms": 53440,
+  "total_cost_usd": 0.052864799999999997,
+  "user_prompt": "What is MameLoshnLM and what parameter scale does it have?\n\n🔍 KB-enhanced: searching 5 KB(s)",
+  "turn_of_final_reply": 3,
+  "final_text_sha256": "54d9c289a5f1a261bfa939809b6c87e8886a2a9e9e58b746a46c1710d017d1a7",
+  "final_text_equals_stored_answer": true
+ },
+ "calls": [
+  {
+   "turn": 1,
+   "at": "2026-11-20 15:35:47",
+   "tool": "kb_search_two_stage",
+   "input": {
+    "query": "MameLoshnLM Yiddish language model parameters",
+    "kb_ids": [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "f5770687-6b05-4a8d-8645-af31686ca87e"
+    ],
+    "top_k": 20,
+    "slim": true
+   },
+   "result": {
+    "stage1_candidates": 20,
+    "stage1_gold_rank": 1,
+    "stage1_gold_score": 19.44,
+    "stage1_gold_sources": [
+     "keyword",
+     "graph"
+    ],
+    "stage1_in_requested_kbs": 6,
+    "stage1_distinct_kbs": 19,
+    "stage2_results": 5,
+    "stage2_gold_results": 5,
+    "stage2_score_min": 0.679,
+    "stage2_score_max": 0.721,
+    "total_results": 5
+   },
+   "is_error": false
+  },
+  {
+   "turn": 1,
+   "at": "2026-11-20 15:35:47",
+   "tool": "kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM",
+    "kb_ids": [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "f5770687-6b05-4a8d-8645-af31686ca87e"
+    ],
+    "top_k": 20,
+    "slim": true
+   },
+   "result": {
+    "results": 20,
+    "gold_results": 13,
+    "first_non_gold_rank": 14,
+    "top_score": 0.583,
+    "in_requested_kbs": 6,
+    "kb_distribution": {
+     "ce642f28": 13,
+     "b1199132": 6,
+     "12dfd50b": 1
+    }
+   },
+   "is_error": false
+  },
+  {
+   "turn": 2,
+   "at": "2026-11-20 15:35:54",
+   "tool": "kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+    "offset": 0,
+    "limit": 6000
+   },
+   "result": {
+    "path": "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+    "is_gold": true,
+    "returned_chars": 20000,
+    "total_lines": 145,
+    "truncated": true,
+    "evidence_quote": "the first open-source 8B-parameter language model built specifically for Yiddish.",
+    "quote_in_document": true
+   },
+   "is_error": false
+  }
+ ],
+ "notes": [
+  "kb_ids is not a parameter of the two search tools (their signature has the single kb_id); the counts under in_requested_kbs record how much of each result list came from the five collections named in the call.",
+  "Scores are the values returned by the tools, rounded to the displayed precision."
+ ]
+}

@@ -1,8 +1,8 @@
 \section{Discussion and lessons learned}
 \label{sec:discussion}
 A document operation is complete only when search reaches the right version
-and path. The early rename test
-found stale entries in the index; the later retest found stale labels only
+and path. An early test that combined a rename and move
+found stale entries in the index; a later rename retest found stale labels only
 in a cached response. A search probe checks what the agent can find, while
 an index inspection distinguishes these two failure modes. Neither
 replaces checks of the files, tree registry and library metadata
@@ -13,8 +13,8 @@ text reaches the reader. The description-bearing cards performed better
 on the scripted routing task than the nominally name-only cards, but A0
 still missed target strings in correctly selected collections. A0h closed
 part of that gap by adding a search lane and changing the pack order. The
-retrieval trace counted more text for A0h than for A0, and A0h did not
-significantly outperform the similarly costly unrouted PD configuration.
+retrieval counters use different accounting boundaries, and A0h did not
+significantly outperform the unrouted PD configuration.
 The result favours testing
 routing and evidence construction separately rather than crediting the
 whole gain to the hierarchy.
@@ -36,6 +36,7 @@ Finally, an answer should say which collections were searched. In E7,
 search returned success after skipping eight unreadable collections.
 The E2 agent shows the same need from the other side: it was configured
 for five collections but made unrestricted search calls in nine of ten
-questions; the recorded result lists include 31 collections.
+questions; the scope audit found copies of the intended papers outside the
+configured collections.
 Without that information, a user cannot tell whether the system looked
 and found nothing, or did not reach part of the corpus.

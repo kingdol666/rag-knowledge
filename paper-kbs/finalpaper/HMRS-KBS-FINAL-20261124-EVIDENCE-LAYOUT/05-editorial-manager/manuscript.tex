@@ -97,17 +97,19 @@ stored, how they are described and whether the search index reflects those
 changes. The Hierarchical Management Retrieval System (HMRS) links
 collection, document and segment management to agent retrieval. Its
 catalogue, shelf and document views let an agent narrow a search and
-inspect source passages through the Model Context Protocol. On 72
-questions, a scripted selector identified the labelled collection in
+inspect source passages through the Model Context Protocol. Lifecycle
+probes distinguished stale index entries from stale labels served by a
+retrieval cache. On 72 questions, a scripted selector identified the labelled
+collection in
 72 cases with description-bearing cards and 37 with nominally name-only
 cards. Correct routing did not guarantee that the evidence pack contained
 the target. Combining scored document text with prioritised chunk windows
 raised target-string containment from 37 to 52 of 72 questions. The
-retrieval trace counted 309~kB of text handled per question for this
-configuration, compared with 31.4~kB for the reference.
+arm-specific text counters recorded 309~kB per question for this
+configuration and 31.4~kB for the reference, at different logging boundaries.
 Both same-question reruns retained the gain. In 16 fixed candidate pools,
 reordering by verifier score reduced top-five gold-document hits from 15
-to seven. In the native eight-configuration comparison, a blind judge
+to seven. In the native eight-configuration deployment case study, a blind judge
 rated all ten HMRS answers correct, but no paired contrast with the three
 baselines indexed on the intended corpus was significant. The deployed
 agent read source documents and searched outside its configured
@@ -143,7 +145,7 @@ Model Context Protocol
 
 {\ifdefined\HMRSReviewLayout\else\footnotesize\fi
 \renewcommand{\baselinestretch}{0.88}\selectfont
-\setlength{\bibsep}{-0.8pt plus 0.05ex}
+\setlength{\bibsep}{-1.4pt plus 0.05ex}
 \urlstyle{same}
 \bibliographystyle{elsarticle-num}
 \bibliography{refs,refs_new_verified}

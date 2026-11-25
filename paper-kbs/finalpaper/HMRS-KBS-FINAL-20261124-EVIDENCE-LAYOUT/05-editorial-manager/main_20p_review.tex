@@ -1,0 +1,27 @@
+%% Single-column, double-spaced review layout for the same manuscript.
+\def\HMRSReviewLayout{}
+\AddToHook{class/elsarticle/after}{%
+  \RequirePackage{setspace,times,geometry}%
+  \geometry{margin=1in}%
+}
+\AddToHook{package/graphicx/after}{%
+  \setkeys{Gin}{height=.60\textheight,keepaspectratio}%
+}
+\AddToHook{env/frontmatter/after}{\doublespacing}
+\AddToHook{env/tabular/begin}{\footnotesize\setstretch{1}}
+\makeatletter
+%% Preserve explicit [H] placements; other review floats may use dedicated pages.
+\AddToHook{begindocument/before}{%
+  \let\hmrs@review@xfloat\@xfloat
+  \def\@xfloat#1[#2]{%
+    \def\hmrs@placement{#2}%
+    \def\hmrs@H{H}%
+    \ifx\hmrs@placement\hmrs@H
+      \hmrs@review@xfloat{#1}[#2]%
+    \else
+      \hmrs@review@xfloat{#1}[#2p]%
+    \fi
+  }%
+}
+\makeatother
+\input{manuscript.tex}

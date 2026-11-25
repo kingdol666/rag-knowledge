@@ -1,0 +1,20 @@
+**The Gene Ontology consists of three non-overlapping sub-ontologies: Molecular Function (MF), Biological Process (BP), and Cellular Component (CC).**
+
+Original text (P0 direct evidence):
+
+> "The terms are subdivided in three distinct ontologies that represent different biological aspects: **Molecular Function (MF), Biological Process (BP), and Cellular Component (CC)** (1). These ontologies are **non-redundant** and share a common space of identifiers and a well-specified syntax."
+> -- *Primer on the Gene Ontology*, S2 "What is the Gene Ontology?"
+
+Additional corroboration (same reference, S5.2, describing column 9 of the GAF format):
+
+> "field 9 denotes the **sub-ontology** of GO, either Molecular Function, Biological Process, or Cellular Component."
+
+That is: GO annotation files dedicate a column that explicitly marks which sub-ontology each annotation belongs to, making it easy to parse annotations by GO aspect.
+
+Provenance:
+
+- Document: `Life Sciences and Medicine/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md` (Gaudet, Skunca, Hu, Dessimoz, *Primer on the Gene Ontology*, Jan 2016)
+- Knowledge base: `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (Life Sciences and Medicine)
+- Credibility: P0 (the passage at chunk_index 9 retrieved by search, verified against a direct read of the full text; the two independent statements agree)
+
+One comparable piece of structural data (same section, Oct 2015 release): the whole ontology holds 43,835 terms, 73,776 `is_a` relations, 7,436 `part_of` relations and 8,263 `regulates`-type relations -- showing that the three sub-ontologies share one identifier space and syntax, divided by "biological aspect" rather than by identifier scheme.

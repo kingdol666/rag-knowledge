@@ -1,0 +1,97 @@
+{
+ "session_row": 2234,
+ "session_id": "01a2112b-39d1-7000-ab13-2547feb16e29",
+ "calls": [
+  {
+   "turn": 1,
+   "name": "kb_list",
+   "input": {
+    "path": "xd://mcp__kb_mcp_kb_list",
+    "content": "{\"lightweight\": true}",
+    "i": "Listing knowledge bases"
+   }
+  },
+  {
+   "turn": 2,
+   "name": "kb_get_documents",
+   "input": {
+    "content": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true, \"limit\": 200}",
+    "i": "Sweeping CS/AI shelf descriptions",
+    "path": "xd://mcp__kb_mcp_kb_get_documents"
+   }
+  },
+  {
+   "turn": 3,
+   "name": "kb_get_documents",
+   "input": {
+    "content": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true, \"page\": 2, \"page_size\": 40}",
+    "i": "Reading page 2 of CS shelf",
+    "path": "xd://mcp__kb_mcp_kb_get_documents"
+   }
+  },
+  {
+   "turn": 4,
+   "name": "kb_get_documents",
+   "input": {
+    "content": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"lightweight\": true, \"page\": 3, \"page_size\": 40}",
+    "i": "Reading page 3 of CS shelf",
+    "path": "xd://mcp__kb_mcp_kb_get_documents"
+   }
+  },
+  {
+   "turn": 5,
+   "name": "kb_laya_judge",
+   "input": {
+    "content": "{\"question\": \"What is MameLoshnLM and what parameter scale does it have?\", \"refs\": [{\"doc_id\": \"0fa05abd-cbed-4581-9d76-4053776fa697\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\"}, {\"doc_id\": \"be78c91e-b76d-403d-89dc-6edbaad32ed7\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\"}, {\"doc_id\": \"c3840de7-4bb7-436b-b69d-b3d067e3c204\", \"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\"}]}",
+    "i": "Judging MameLoshnLM passages",
+    "path": "xd://mcp__kb_mcp_kb_laya_judge"
+   }
+  },
+  {
+   "turn": 6,
+   "name": "kb_laya_judge",
+   "input": {
+    "content": "{\"query\": \"What is MameLoshnLM and what parameter scale does it have?\", \"criterion\": \"evidence\", \"documents\": [{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"doc_id\": \"0fa05abd-cbed-4581-9d76-4053776fa697\"}, {\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"doc_id\": \"be78c91e-b76d-403d-89dc-6edbaad32ed7\"}, {\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"doc_id\": \"c3840de7-4bb7-436b-b69d-b3d067e3c204\"}], \"max_evidence_chars\": 4000}",
+    "i": "Judging MameLoshnLM documents",
+    "path": "xd://mcp__kb_mcp_kb_laya_judge"
+   }
+  },
+  {
+   "turn": 7,
+   "name": "kb_doc_read",
+   "input": {
+    "content": "{\"kb_id\": \"b1199132-e4d4-4305-8c2e-82dc1753b0ba\", \"doc_id\": \"0fa05abd-cbed-4581-9d76-4053776fa697\", \"offset\": 1, \"limit\": 60}",
+    "i": "Reading survivor abstract",
+    "path": "xd://mcp__kb_mcp_kb_doc_read"
+   }
+  }
+ ],
+ "answer": "**MAMELOSHNLM 是一个专为意第绪语（Yiddish）构建的开源 8B 参数语言模型**——即\"first open-source 8B-parameter language model built specifically for Yiddish\"，由继续预训练 Llama 3.1 8B 得到（P0 强证据）。\n\n### 关键事实（逐条引用）\n\n1. **参数规模：8B**\n   - 摘要原文：\"We present MAMELOSHNLM, the first open-source **8B-parameter** language model built specifically for Yiddish.\"\n   - 构建方式：\"Using these resources, we **continue pretraining Llama 3.1 8B** to obtain MAMELOSHNLM.\"\n\n2. **配套资源（两者同时发布）**\n   - **Oytser**：高质量意第绪语预训练语料，\"combines contemporary web-native sources with literary materials\"。\n   - **Kashes**：多任务评测基准，\"spanning translation, linguistic analysis, information extraction, and language understanding\"。\n\n3. **动机（数据侧实证）**：对 mC4 意第绪语切分的审计显示，仅 **42.2%** 为\"genuine high-quality Yiddish from validated native sources\"；至少 **29.8%** 为机器翻译、另有 **21.9%** 实为希伯来语误判、6.2% 为其他。mC4 中意第绪语标注规模约 \"0.3B words and 0.1M pages\"（全库 6.6B pages / 6.3T tokens）。\n\n4. **效果**：在基准上优于同规模开源基线，尤其在英→意第绪语翻译上\"more than 11 COMET points improvement over the closest competitor\"；语言产出在形态与词汇上更自然，减少\"overly Germanized and translationese-like\"特征。\n\n### 出处\n- 《MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark》，Katz、Goldman、Limisiewicz、Tsarfaty、Smith（Bar-Ilan / Cambridge / UW / Allen AI）。\n- 所在库：**计算机与人工智能**（b1199132）；文档 `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu (part 1 of 4).md`（Abstract、§1 Introduction、§3.1）。作者单位与 §7.2 语言混合结论来自同一论文 part 2。\n\n### 盲点\n未读 part 2/3 全文的 §4–§7 细节（训练超参、token 预算、模型卡片链接等未在已读段落出现），故参数规模之外的训练配置未核实。",
+ "answer_turn": 8,
+ "qid": "BQ07",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "prompt": "You are answering a question strictly from a managed document library, accessed through MCP tools.\n\nRetrieval rules:\n- Use ONLY the tiered access path: kb_list, kb_get_documents, kb_laya_judge, kb_doc_read.\n- Do NOT call kb_search_vector, kb_search_two_stage or kb_search_stats.\n- The library has exactly five collections:\n   - 1e6199ea (Natural sciences and earth sciences)\n   - 8fa4db59 (Engineering and energy)\n   - b1199132 (Computer science and AI)\n   - b28f0a25 (Life sciences and medicine)\n   - f5770687 (Economy and society)\n\nWorkflow:\n1. kb_list: read the catalogue and pick the one collection whose description best fits the question.\n2. kb_get_documents on that collection: read the shelf description cards and shortlist the candidate documents (papers) most likely to answer the question.\n3. kb_laya_judge on the shortlisted documents: score their passages and keep the ones that actually bear on the question.\n4. kb_doc_read the surviving document(s) and answer ONLY from what you read. Cite the document and part you used. If nothing in the library answers the question, say so plainly.\n\nQuestion: What is MameLoshnLM and what parameter scale does it have?",
+ "envelope": {
+  "success": true,
+  "toolCalls": [
+   "mcp__kb-mcp__kb_list",
+   "mcp__kb-mcp__kb_get_documents",
+   "mcp__kb-mcp__kb_get_documents",
+   "mcp__kb-mcp__kb_get_documents",
+   "mcp__kb-mcp__kb_laya_judge",
+   "mcp__kb-mcp__kb_laya_judge",
+   "mcp__kb-mcp__kb_doc_read"
+  ],
+  "toolCallCount": 7,
+  "engine": "omp",
+  "sessionId": "01a2112b-39d1-7000-ab13-2547feb16e29",
+  "model": "ustc/deepseek-flash",
+  "subtype": "success",
+  "answer": "**MAMELOSHNLM 是一个专为意第绪语（Yiddish）构建的开源 8B 参数语言模型**——即\"first open-source 8B-parameter language model built specifically for Yiddish\"，由继续预训练 Llama 3.1 8B 得到（P0 强证据）。\n\n### 关键事实（逐条引用）\n\n1. **参数规模：8B**\n   - 摘要原文：\"We present MAMELOSHNLM, the first open-source **8B-parameter** language model built specifically for Yiddish.\"\n   - 构建方式：\"Using these resources, we **continue pretraining Llama 3.1 8B** to obtain MAMELOSHNLM.\"\n\n2. **配套资源（两者同时发布）**\n   - **Oytser**：高质量意第绪语预训练语料，\"combines contemporary web-native sources with literary materials\"。\n   - **Kashes**：多任务评测基准，\"spanning translation, linguistic analysis, information extraction, and language understanding\"。\n\n3. **动机（数据侧实证）**：对 mC4 意第绪语切分的审计显示，仅 **42.2%** 为\"genuine high-quality Yiddish from validated native sources\"；至少 **29.8%** 为机器翻译、另有 **21.9%** 实为希伯来语误判、6.2% 为其他。mC4 中意第绪语标注规模约 \"0.3B words and 0.1M pages\"（全库 6.6B pages / 6.3T tokens）。\n\n4. **效果**：在基准上优于同规模开源基线，尤其在英→意第绪语翻译上\"more than 11 COMET points improvement over the closest competitor\"；语言产出在形态与词汇上更自然，减少\"overly Germanized and translationese-like\"特征。\n\n### 出处\n- 《MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark》，Katz、Goldman、Limisiewicz、Tsarfaty、Smith（Bar-Ilan / Cambridge / UW / Allen AI）。\n- 所在库：**计算机与人工智能**（b1199132）；文档 `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu (part 1 of 4).md`（Abstract、§1 Introduction、§3.1）。作者单位与 §7.2 语言混合结论来自同一论文 part 2。\n\n### 盲点\n未读 part 2/3 全文的 §4–§7 细节（训练超参、token 预算、模型卡片链接等未在已读段落出现），故参数规模之外的训练配置未核实。",
+  "duration_ms": 56086,
+  "duration_api_ms": null,
+  "num_turns": 8,
+  "total_cost_usd": 0.0480516,
+  "elapsed_ms": 56357
+ }
+}

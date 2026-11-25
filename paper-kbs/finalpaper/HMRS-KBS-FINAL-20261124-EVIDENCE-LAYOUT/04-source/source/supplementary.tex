@@ -40,18 +40,16 @@ then tested exact substring containment without other normalisation. The
 29 overlapping questions had frozen containment of 16/29 for A0 and 21/29
 for A0h; the other 43 had 21/43 and 31/43, respectively. These non-random
 subsets are descriptive, not a causal test, and other lexical cues may remain
-in the non-overlap group. Table~S17 records the design
-and provenance of every campaign named in the main text; Table~S18 reports
-question-level scores from the earlier judge pass of E2.
-Tables~S19--S20 report the unified external-system aggregate and
-question-level audits, and Table~S21 retains the earlier four-arm
-judging aggregate with its paired contrasts. The complete 80-answer
-transcript is provided as the companion \path{external-baselines-qa.pdf} and as
-raw JSONL. Tables S1--S8 of
-the companion inventory document (shipped alongside this supplement)
-complete the campaign-level evidence index. Each trace CSV
-packages 76 question IDs per complete arm. The in-domain analyses exclude the
-four out-of-domain probes R1--R4.
+in the non-overlap group. Table~S17 records the design and provenance of
+selected campaigns; Table~S18 reports question-level scores from the
+earlier judge pass of E2. Tables~S19--S20 compare judge batches and give the
+unified question-level scores; Table~S21 gives the earlier four-arm aggregate
+and its paired contrasts. Table~S22 reports the separate seven-comparison
+Holm family for the unified batch. The complete 80-answer transcript is
+provided as the companion \path{external-baselines-qa.pdf} and as raw JSONL.
+The companion evidence index describes what is and is not available. Each
+trace CSV packages 76 question IDs per complete arm; the in-domain analyses
+exclude the four out-of-domain probes R1--R4.
 
 \medskip
 {\centering
@@ -168,17 +166,16 @@ stated scale, not that the function is exhaustively verified.}
 \toprule
 Function & Test and scale & Observed outcome & Where\\
 \midrule
-Parse and ingest & 100-paper campaign; state-file reconciliation & 91 names in the state file; a later run enumerated 79 catalogue records that it attempted to read (not matched target sets; companion inventory A.4); no per-paper parse status & E1\\
+Parse and ingest & 100-paper campaign; state-file reconciliation & 91 names in the state file; a later run enumerated 79 catalogue records that it attempted to read. These counts are not a matched funnel; no per-paper parse status is available. & E1\\
 Description audit & Later 100-paper re-check across five collections & 328/328 parts had content-derived descriptions (at least 60 characters, no placeholder names); a filename-stem-derived short-query identifier probe found all 100 target arXiv IDs in returned names after reindex, explicit indexing and probe correction, but 72 records were unscoped and 45 returned a chunk-copy name first & E1\\
-Parse quality & 50-paper, 26-domain campaign & 50/50 parsed and verified, all probes ok; 202 tags; 41 tag flags negative without blocking ingestion & E1\\
-Structural split & 50 papers at the 30{,}000-character tier & 165 stored parts (9 whole papers, 156 split parts); parsing took 2{,}672\,s; storage 50/50; descriptions and tags 165/165 & E1\\
-Near-duplicate review & 322-part corpus, 0.90 threshold & 35 candidate groups (0.90--0.975), zero true duplicates, nothing deleted & E1\\
-Campaign inventories & 100 arXiv papers and 400 Wikipedia pages per language & 322 parts recorded for arXiv. Expected titles in preassigned collections: 350/400 (en), 400/400 (zh, ja) & E1\\
-Content audit and three-source consistency & 322-part content audit; 33-part storage sample & 322/322 content; 33/33 sampled storage checks; separate historical rename defect in a disposable collection, corrected by reindexing & E1\\
-Lifecycle operations & 16 scenarios on two disposable collections & create, move, delete and forced re-index pass; two failures (task status, update check) & E1\\
-Sub-library hierarchy & Three-level disposable fixture & create, parent-to-child move, listing, reading and judging all pass & E1\\
-Tags and graph & 316-tag registry; 658-node graph & 165 stored parts pass the tag check in 47.6\,s; four tag edges on one document move 4{,}675 to 4{,}679 & E1\\
-Experience store & Draft smoke test and a separate case report & 13 candidate drafts but no global hits in the smoke test; the case report says one lesson ranked first. No answer trace or exercised approval path. & E5\\
+Parse quality & 50-paper, 26-domain campaign & 50/50 verified and 41 negative tag flags without blocking ingestion in the run JSON; the routing report separately reports 202 tags, not a count of distinct tag strings in the JSON & E1\\
+Structural split & 50 papers at the 30{,}000-character tier & Campaign report: 165 stored parts (9 whole papers, 156 split parts) and 2{,}672\,s total parsing; tag-run record: 165 successes & E1\\
+Near-duplicate review & 322-part corpus, 0.90 threshold & 35 candidate groups (0.90--0.975); no deletion reported & E1\\
+Content audit and three-source consistency & 322-part content audit; earlier storage reconciliation sample & 322/322 content audits recorded. Separate lifecycle log: after rename and move, 18 vector entries for one nine-chunk document; forced reindexing restored nine. & E1\\
+Lifecycle operations & 16 scenarios on disposable collections & Create, move, delete and forced reindex were exercised. Version/update checks failed or timed out and task status had a response-shape inconsistency; approval was not exercised. & E1\\
+Sub-library hierarchy & Disposable acceptance fixture & Sub-library creation, move and retrieval were exercised; parent-level forced reindex did not recurse to the sub-library. & E1\\
+Tags and graph & Two distinct campaigns & Tagging run: 165 successes in 47.6\,s. Lifecycle report: 316 tags and 658 graph nodes; four tag edges took the reported edge count from 4{,}675 to 4{,}679. & E1\\
+Experience store & Extraction smoke test, lifecycle checks and separate case report & The extraction smoke records 13 candidates. The disposable lifecycle fixture had no global hits and no drafts to approve. A separate report describes a first-ranked lesson; its successful raw search response has not been located. & E5\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -196,13 +193,13 @@ contrasts.}
 \toprule
 Exp & Corpus and scale & Metric and comparison & Headline result & Supports / limit\\
 \midrule
-E2 (RQ6) & 10 gold-annotated arXiv questions, five collections; eight arms, one generator shared by seven; unified blind subagent judge & Blind 1--5 judge scores (factual, completeness, groundedness, attribution), verdicts, paired exact sign and McNemar tests on the four retrieval-mode arms & HMRS 5.00, correct 10/10, at least tied with every comparator per question; BM25, dense and RRF 4.83--4.95; no significant paired contrast under the unified judge; earlier judge pass lower (S21) & Scope-asymmetric external corpora; HMRS search scope not consistently restricted; one run per arm; judge-pass sensitivity; gold document present in most baseline contexts\\
+E2 (RQ6) & 10 gold-annotated arXiv questions; eight arms, one generator shared by seven; unified blind subagent judge & Blind 1--5 scores and verdicts; paired exact sign tests on per-question mean scores & HMRS 5.00, correct 10/10, at least tied with every comparator per question; BM25, dense and RRF 4.83--4.95; none of these three contrasts reached unadjusted 0.05 and none of the seven survived Holm adjustment (S22) & Scope-asymmetric native deployments; effective HMRS search scope not matched; one run per arm; judge-pass sensitivity (S18--S21)\\
 E3 (RQ2) & Ten-domain 72 q; route cards with and without descriptions & Scripted gold-domain choice & A0 72/72 vs nominally name-only A3 37/72 in the frozen record and 49/72 in two reruns; frozen-run McNemar $p=5.82\times10^{-11}$ & Scripted probe, unlogged fallback; configuration contrast, not a causal description effect; end-to-end containment varied across runs\\
 E4 (RQ3) & 72 questions in ten domains across three campaigns & Target-string containment, text volume and paired exact McNemar tests & A0h vs A0: 52/72 vs 37/72 frozen, 51/72 vs 39/72 in the first follow-up, 48/72 vs 36/72 on November 17 & Configuration contrasts on the same set. A0h--PD remains unresolved in the frozen and first follow-up records.\\
 E7 (RQ5) & Two 30-cell grids, three interfaces; later 10-question run & Gold-ID in answer or trace, lexical coverage, citation markers & Gold-ID 60/60 at ceiling; markers 9/7/2 (original), 9/9/9 (common substrate), 10/10 in a separate post-repair tiered run & Questions omit the target IDs; ID mentions and markers do not establish source support; one run per arm\\
-E7 (RQ5) & Three arms $\times$ three questions, public API & Cost, refusal behaviour, transport & One question falsely refused on a 131-document shelf listing (74.9\,KB, over the tool budget); repaired by pagination & Transport and cost boundary; one campaign plus replication\\
+E7 (RQ5) & Public-API transport diagnostic and separate pagination check & Refusal and tool-output limit & The campaign report traces one false refusal to an over-budget 131-document shelf listing (74.9\,kB). A separate check paginated the 131-document shelf. & One observed failure and a separately checked repair; not refusal accuracy \\
 E6 (RQ4) & 191 logged scores and a separate ordering archive & Gold vs non-gold scores and same-pool Hit@5 & Median scores 0.88 vs 0.86. Hit@5 was 7/16 in verifier order and 15/16 in fusion order. & Historical wrapper and one corpus.\\
-E7 & 27-cell stability; read ladder and separate vector-only load probe; gate on/off $n=10$; pinned vs unscoped & Wall clock and observed completions; answer grades; Hit@5 under each scope & 159/270 vector-only requests completed within 30 s at 30 clients; no clear gate benefit in the ten-question diagnostic; gold-pinned Hit@5 1.0 (non-gold 0.0, unscoped 1.0) & Single-instance observations; unmatched unscoped probe; filename confound\\
+Operational checks & Separate vector-only load probe & Observed completions in a fixed window & The load report records 159/270 completions within 30 s at 30 clients. & Single instance; the remaining requests were unfinished in that window, not classified as errors or timeouts.\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -279,7 +276,7 @@ BQ10 & Tumour control under immune evasion & 2604.01385 & \yes & \yes & 3 & \yes
 common-substrate grids, plus a separate post-repair run. Lexical checks do
 not establish semantic support; each arm is one run. The post-repair run is
 a single current-state observation on a later stack and is not pooled with
-the grids.}
+the grids; its timing is mean end-to-end wall time and its cost is total.}
 \label{tab:s-answer-summary}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}*{4}{c}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\raggedright\arraybackslash}p{0.15\textwidth}@{}}
 \toprule
@@ -334,7 +331,7 @@ Campaign and state & Material and unit & Comparison or observation & Measure and
 Industrial corpus, 2026-10-13 & 42 documents in five collections; 16 questions & Hybrid candidates; verifier ordering & Document Hit@5; same-pool replay; one workstation\\
 arXiv, 2026-10-13 & 100 papers; 322 parts in five collections; 10 questions & Platform, file and chunk-replica answer arms & Gold-ID, strict/alias keywords, markers; one run per arm\\
 arXiv, 2026-11-14/15 & 100 papers; 328 parts in five collections; 10 questions & Short-query ID probe and a scoped ten-question vector check & Target arXiv ID in result names; 72/100 probes unscoped, 45 chunk-copy-first; not a matched rerun\\
-Wikipedia ingestion & 400 pages per language; 40 excerpt queries per language & Ingestion into preassigned English, Chinese and Japanese collections & Expected-title coverage and a top-three self-retrieval check\\
+Wikipedia ingestion (historical) & English, Chinese and Japanese pages & Ingestion into preassigned collections & Placement and self-retrieval records are unavailable in this snapshot\\
 Routing, frozen and follow-up & 72 in-domain questions; 138 documents; 879 parts (follow-up 906) & Description-layer and content-layer configurations & Gold-domain choice and annotated target-string containment in returned packs; multiple components; sibling matches may count; same questions, not independent\\
 Answer grids & 10 questions; 30 cells per grid & Platform, file and chunk-replica arms; common substrate & Gold-ID, strict/alias keywords, markers; one run per arm; lexical proxies, not semantic support\\
 Verifier archive & 191 scores from 16 hybrid runs; 17 gold and 174 non-gold & Score distribution and same-pool ordering & Medians and Hit@5; separate archives; exploratory $p$ values; filtering never activates\\
@@ -343,4 +340,30 @@ Verifier archive & 191 scores from 16 hybrid runs; 17 gold and 174 non-gold & Sc
 \end{table*}
 \input{supplementary-baseline-quality}
 \input{supplementary-external-baselines}
+\clearpage
+\begin{table*}[!t]
+\centering\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption*{\textbf{Evidence crosswalk.} Paths starting with \path{records/}
+ or \path{tables/} are relative to the repository directory
+ \path{benchmark-suite/paper-results-kbs-20261125/}. The corresponding
+ source-package data are under \path{experiment_data/}. CSVs under
+ \path{tables/} are derived, not new runs. The checks in
+ \path{verification/verify_all.py} cover specified claims, not the entire system.}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.19\textwidth}>{\raggedright\arraybackslash}p{0.77\textwidth}@{}}
+\toprule
+Paper item & Evidence and limits \\
+\midrule
+E1; S9, S17 & In \path{records/legacy/}: \path{exp10_ingest_state.json}, \path{exp10_papers_toollayer.json}, \path{desc_audit.json}, \path{probe5_final.json}, \path{audit_manifest.json}, \path{o2_duplicates.json} and \path{ingest_report.json}. Historical campaign reports: \path{BENCHMARK.md}, \path{BENCHMARK-30000chunk-20260918.md} and \path{SKILL-E2E-REPORT.md}; tag-run record \path{tags_report.json}; lifecycle trace \path{skilltest-calls.jsonl}; sub-library acceptance \path{F4F5_REPORT.md}. The split-run parse time and lifecycle graph totals are report-level. The cross-lingual placement outputs and the separate 33-part storage sample are not in the snapshot. \\
+E2; main Table 6; S18--S22 & In \path{records/external_baselines_v3/}: \path{answers-v3.jsonl}, \path{judgments-unified.jsonl}, \path{judgments-v4-sub.jsonl}, \path{summary-unified.json}, and \path{hmrs-search-scope-audit.json}. Derived: \path{tables/t6_external_baselines.csv}, \path{tables/s19_cross_batch.csv}, \path{tables/s20_question_level.csv}, and \path{tables/s22_unified_holm.csv}. The earlier four-arm pass (S18/S21) uses \path{records/baseline_quality_v2/answers-v2.jsonl} and \path{records/baseline_quality_v2/judgments-v2.jsonl}; see \path{tables/s18_baseline_quality_qlevel.csv} and \path{tables/s21_baseline_quality_v2.csv}. \\
+E3--E4; S12--S13, S17; Fig.~S6 & In \path{records/routing_content_traces/}: \path{supp_traces_frozen.csv}, \path{supp_traces_followup.csv}, \path{supp_traces_rerun_20261117.csv}, \path{redraw_route_summary.csv}, and \path{redraw_content_summary.csv}. The two figure cases link back to the archived captures through \path{records/legacy/case-anatomy-provenance.json}. \\
+Fig.~5 (separate trace) & \path{records/tiered_case/tiered-bq07.json} and \path{records/tiered_case/trace-evidence.json}, mirrored under \path{experiment_data/tiered_case/}. This is the 2026-11-25 catalogue-first BQ07 trace, not a case from the E2 judge batch or a measurement in E3. \\
+E5; S9 & \path{records/legacy/experience_smoke.json} (extraction smoke), \path{records/legacy/skilltest-calls.jsonl} (empty global search and drafts in a disposable fixture), and \path{records/legacy/FULLTEST-SUMMARY.md} (first-ranked lesson reported; successful response unavailable). \path{records/legacy/a6_global_search.json} is the earlier failed check, not the successful response. \\
+E6; S17; Figs.~S4--S5 & The score and ordering archives are \path{records/paired_diagnostics/redraw_verifier_scores.csv} and \path{records/paired_diagnostics/redraw_verifier_order.csv}; see \path{tables/e6_pool_hits.csv}. The relative-margin diagnostic is \path{records/legacy/exp3_abstention.json} (\texttt{cut\_replay}); Q2's single-call anatomy is \path{records/legacy/exp5_q2_anatomy.json}. The ten-question gate replay is \path{records/legacy/exp11_gate_ablation.json}. \\
+E7; S14--S17; Figs.~S2--S3, S7 & In \path{records/legacy/}: \path{exp_r2_grade_corrected.json} (original grid), \path{exp_rerun5_grade.json} (common-substrate grid), \path{answers_fresh_summary.json} (separate post-repair run), \path{exp3_abstention.json} (tool probes) and \path{exp8b_absent_agent.json} (answer-workflow probes). The supplementary case compendium and answer records for S16 are in \path{records/legacy/deepseek-r1/}. The shelf failure and pagination check are report-level in \path{records/legacy/RETRIEVAL-E2E-REPORT.md} and \path{records/legacy/PRODUCTION-LADDER-INDEX.md}. \\
+E8 / operating checks & There is no E8 experiment in this manuscript. The separate historical load observation in S10 is from \path{records/legacy/STRESS-REPORT.md}; stack recovery and scoped reindex diagnostics are documented in \path{records/legacy/ACCEPTANCE-REPORT-20261113.md} and \path{records/legacy/F1F2F3_REPORT.md}. \\
+S1--S8, S10--S11 & S1--S8 belong to the historical inventory, not the results in this supplement. S10 is a design/results summary of the experiments above; S11 is a related-work positioning table, not empirical evidence. \\
+\bottomrule
+\end{tabular}
+\end{table*}
 \end{document}

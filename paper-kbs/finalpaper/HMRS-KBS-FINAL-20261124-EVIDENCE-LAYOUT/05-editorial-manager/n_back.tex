@@ -32,14 +32,15 @@ data, or animals.
 
 \section*{Data availability}
 The implementation and benchmark scripts are available at
-\url{https://github.com/kingdol666/rag-knowledge}. The archived evaluation
-records contain question texts, gold annotations, route and containment
-traces, the verifier replay, and the answers, prompts, anonymisation maps
-and judgments for the native comparisons. The route
-and content traces omit returned passages and reference strings. Source
-restrictions limit redistribution of document bodies; the repository
-provides a recipe and synthetic sample for constructing a substitute for
-the 42-document industrial demonstration corpus.
+\url{https://github.com/kingdol666/rag-knowledge}. The submission's
+benchmark snapshot, \path{benchmark-suite/paper-results-kbs-20261125},
+provides the records underlying the reported results, together with a
+crosswalk and recomputation checks. It includes the separately captured
+workflow in Figure~\ref{fig:tiered-case}; that record is not pooled with the
+answer-quality comparison or the routing audit. The routing and containment
+traces omit returned passages and reference strings. The repository provides
+a recipe and synthetic sample for constructing a substitute for the
+42-document industrial demonstration corpus.
 
 \section*{Acknowledgments}
 The authors thank the maintainers of the open-source components the platform
@@ -52,8 +53,8 @@ Anthropic Claude Code, ZCode and OpenAI Codex assisted with language editing,
 manuscript revision and preparation of tables from archived results.
 OpenAI Codex assisted with the layout of the Figure~\ref{fig:tiered-algorithm}
 workflow, which was rendered with Matplotlib. ZCode assisted with the layout
-of Figure~\ref{fig:case-native}, which a Matplotlib script renders from the
-archived evaluation records. An AI image tool assisted
+of Figure~\ref{fig:tiered-case}, which was rendered from a recorded tool
+trace. An AI image tool assisted
 with initial figure concepts. The research uses of
 language models are described with the retrieval workflow and experimental
 design. The authors reviewed the manuscript and take responsibility for its

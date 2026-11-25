@@ -1,0 +1,26 @@
+{
+  "checks": {
+    "80_unique_paired_answer_judgment_ids": true,
+    "case_excluded_from_e2_and_e3": true,
+    "case_packaged": true,
+    "qa_transcript_present": true,
+    "native_scope_disclosed": true,
+    "earlier_judging_not_pooled": true,
+    "bm25:mean_and_verdicts": true,
+    "deepread-native:mean_and_verdicts": true,
+    "dense:mean_and_verdicts": true,
+    "graphrag:mean_and_verdicts": true,
+    "hmrs-agent:mean_and_verdicts": true,
+    "lightrag:mean_and_verdicts": true,
+    "raptor:mean_and_verdicts": true,
+    "rrf:mean_and_verdicts": true
+  },
+  "input_sha256": {
+    "experiment_data/external_baselines_v3/answers-v3.jsonl": "64857c960dffb16e59541546f79962197d83a93e19186f72af7c6dd075ccf508",
+    "experiment_data/external_baselines_v3/judgments-unified.jsonl": "afcf4aea323c02eb487d96de49359ed8f76efb68685fddf3e490cef908dc182b",
+    "experiment_data/external_baselines_v3/summary-unified.json": "6fbb2114db27d20c037b2dbe654a9f09adc815c92f0fe6f5c2807235d09faf58",
+    "n8b_eval.tex": "1fa5fa5cfe80dd88e24a2ef70bb3696b0c0f6f1a5990382a5cea94573bfaf6df",
+    "n8d_eval.tex": "a1334a5924805c185b36e5f33969da42798aaaa6981a688708111fe6a3ba2c47",
+    "supplementary-external-baselines.tex": "938940b1dbe444adad3b482d4d64e83dc5c89ed9af0f35594bedd3c12ca689da"
+  }
+}

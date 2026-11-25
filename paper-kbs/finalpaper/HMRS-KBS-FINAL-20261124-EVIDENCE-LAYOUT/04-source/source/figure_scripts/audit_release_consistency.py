@@ -1,86 +1,59 @@
-"""Release consistency audit: data vs manuscript headline values.
+"""Fail-closed audit of the bundled native E2 records and release disclosures.
 
-Checks the unified eight-arm batch (primary E2) against summary-unified.json,
-the paired-stats manifest, scope disclosures in the manuscript, and the
-presence of the companion QA transcript. Writes release/audit reports.
+Run after building all submission PDFs. The project benchmark verifier checks
+these and other experiments against the printed tables and original records.
 """
-import hashlib
+from hashlib import sha256
 import json
-import re
 from pathlib import Path
+import re
+from decimal import Decimal, ROUND_HALF_UP
 
-HERE = Path(__file__).resolve().parents[1]
-RELEASE = HERE.parent / "release"
-DATA = HERE / "experiment_data" / "external_baselines_v3"
-
-EXPECTED_OVERALL = {"hmrs-agent": 5.00, "bm25": 4.95, "dense": 4.90,
-                    "rrf": 4.83, "raptor": 4.80, "lightrag": 4.75,
-                    "deepread-native": 4.70, "graphrag": 4.28}
+SRC = Path(__file__).resolve().parents[1]
+PACKAGE = SRC.parents[1]
+DATA = SRC / "experiment_data/external_baselines_v3"
+OUT = SRC.parent / "release/audit"
+DIMS = ("factual", "completeness", "groundedness", "sources")
 
 
-def sha256(p):
-    return hashlib.sha256(p.read_bytes()).hexdigest()
+def rows(name):
+    return [json.loads(line) for line in (DATA / name).read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
 def main():
-    answers = [json.loads(l) for l in (DATA / "answers-v3.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
-    judgments = [json.loads(l) for l in (DATA / "judgments-unified.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+    answers = rows("answers-v3.jsonl")
+    judgments = rows("judgments-unified.jsonl")
     summary = json.loads((DATA / "summary-unified.json").read_text(encoding="utf-8"))["primary"]
-    paired = json.loads((DATA / "paired-unified.json").read_text(encoding="utf-8"))
-    n8d = (HERE / "n8d_eval.tex").read_text(encoding="utf-8")
-    n8d_body = "\n".join(l for l in n8d.splitlines() if not l.lstrip().startswith("%"))
-    threats = (HERE / "n10_threats.tex").read_text(encoding="utf-8")
-    supp_ext = (HERE / "supplementary-external-baselines.tex").read_text(encoding="utf-8")
-
-    checks = {}
-    checks["answers_80"] = len(answers) == 80
-    checks["judgments_80"] = len(judgments) == 80
-    for arm, want in EXPECTED_OVERALL.items():
-        checks[f"{arm}_overall_{want:.2f}"] = abs(summary[arm]["overall"] - want) < 0.005
-    checks["hmrs_verdict_10"] = summary["hmrs-agent"]["verdicts"]["correct"] == 10
-    checks["paired_manifest_crosscheck"] = paired.get("mean_cross_check") == "PASS"
-    checks["paired_no_significance"] = all(
-        c["overall"]["sign_p"] >= 0.25 and c["verdict"]["mcnemar_p"] >= 0.5
-        for c in paired["contrasts"].values())
-    body = n8d + threats + supp_ext
-    checks["scope_30_gold"] = ("30-part gold" in body or "30 gold parts" in body)
-    checks["scope_deepread_23_96"] = bool(re.search(r"23\s+of\s+(its\s+)?96|23/96", body))
-    checks["scope_lightrag_699"] = "699" in body
-    # The judge model is deliberately not named in the manuscript; the
-    # sensitivity of the effect size to the judge pass must still be stated.
-    checks["judge_pass_sensitivity_disclosed"] = bool(
-        re.search(r"judge-pass\s+sensitive", n8d_body))
-    checks["deepread_provenance_conflict_disclosed"] = "provenance" in threats
-    checks["eprag_excluded_disclosed"] = "EPRAG" in n8d
-    checks["qa_pdf_present"] = (RELEASE / "paper-package" / "external-baselines-qa.pdf").exists()
-    checks["main_no_stale_E11"] = not re.search(r"\bE11\b", n8d_body)
-
-    hashes = {str(p.relative_to(HERE)): sha256(p) for p in [
-        HERE / "main_20p.tex", HERE / "n8d_eval.tex", HERE / "supplementary.tex",
-        HERE / "supplementary-external-baselines.tex",
-        DATA / "answers-v3.jsonl", DATA / "judgments-unified.jsonl",
-        DATA / "summary-unified.json", DATA / "paired-unified.json"]}
-
-    report = {"checks": checks, "answers": len(answers), "judgments": len(judgments),
-              "source_sha256": hashes,
-              "notes": [
-                  "E2 merges the former E3 (four-arm) and E11 (eight-arm) campaigns; the unified batch is primary.",
-                  "Earlier local-judge passes retained as sensitivity (Tables S18/S21); not pooled.",
-                  "EPRAG remains qualitative: no public implementation identified.",
-                  "DeepRead generator provenance conflict disclosed in threats.",
-              ]}
-    (RELEASE / "audit").mkdir(parents=True, exist_ok=True)
-    (RELEASE / "audit" / "consistency-report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    lines = ["# Release consistency check (E2 unified comparison)", "",
-             f"- Answers: {len(answers)} (8 arms x 10 questions)",
-             f"- Unified judgments: {len(judgments)}",
-             "- Primary batch: summary-unified.json; paired stats: paired-unified.json.",
-             "- Scope caveats: RAPTOR/GraphRAG 30 gold parts; LightRAG 699-chunk full export; DeepRead 23/96.",
-             "", "## Checks"]
-    lines += [f"- {k}: {'PASS' if v else 'FAIL'}" for k, v in checks.items()]
-    (RELEASE / "audit" / "consistency-report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    failed = [k for k, v in checks.items() if not v]
-    print("FAILED:", failed if failed else "none")
+    by_id = lambda records: {(r["arm"], r["qid"]) for r in records}
+    main_text = (SRC / "n8d_eval.tex").read_text(encoding="utf-8")
+    supp = (SRC / "supplementary-external-baselines.tex").read_text(encoding="utf-8")
+    case = (SRC / "n8b_eval.tex").read_text(encoding="utf-8")
+    checks = {
+        "80_unique_paired_answer_judgment_ids": len(answers) == len(judgments) == len(by_id(answers)) == 80 and by_id(answers) == by_id(judgments),
+        "case_excluded_from_e2_and_e3": "not included in the E2 judging or the E3 routing counts" in " ".join(case.split()),
+        "case_packaged": (SRC / "figs/fig5_tiered_case.pdf").is_file() and any((SRC / "experiment_data/tiered_case").glob("*.json")),
+        "qa_transcript_present": (PACKAGE / "03-supplementary/external-baselines-qa.pdf").is_file(),
+        "native_scope_disclosed": "19 search" in main_text and "31 distinct collection-ID values" in " ".join(main_text.split()),
+        "earlier_judging_not_pooled": bool(re.search(r"Not pooled\s+with the unified\s+batch", supp)),
+    }
+    for arm, tab in summary.items():
+        rs = [r for r in judgments if r["arm"] == arm]
+        overall = (Decimal(sum(r[k] for r in rs for k in DIMS)) / max(1, len(rs) * len(DIMS))).quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
+        checks[f"{arm}:mean_and_verdicts"] = (len(rs) == 10 and
+            overall == Decimal(str(tab["overall"])) and
+            all(sum(r["verdict"] == v for r in rs) == tab["verdicts"].get(v, 0)
+                for v in ("correct", "partial", "incorrect")))
+    inputs = [DATA / f for f in ("answers-v3.jsonl", "judgments-unified.jsonl", "summary-unified.json")]
+    inputs += [SRC / f for f in ("n8b_eval.tex", "n8d_eval.tex", "supplementary-external-baselines.tex")]
+    report = {"checks": checks, "input_sha256": {p.relative_to(SRC).as_posix(): sha256(p.read_bytes()).hexdigest() for p in inputs}}
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "consistency-report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    lines = ["# Submission evidence checks", "", "The native E2 comparison and the separate BQ07 Figure 5 trace are distinct records.", ""]
+    lines += [f"- {name}: {'PASS' if ok else 'FAIL'}" for name, ok in checks.items()]
+    (OUT / "consistency-report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"PASS {sum(checks.values())}/{len(checks)}")
+    if not all(checks.values()):
+        raise SystemExit(f"Failed: {[k for k, ok in checks.items() if not ok]}")
 
 
 if __name__ == "__main__":

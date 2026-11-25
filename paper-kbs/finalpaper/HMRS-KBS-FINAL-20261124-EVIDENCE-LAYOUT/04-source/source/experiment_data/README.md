@@ -8,7 +8,7 @@ from `answers-v3.jsonl` and `judgments-unified.jsonl`.
 
 ## Arm names
 
-| `arm` in the records | Manuscript (Table 5) | Indexed scope at answer time |
+| `arm` in the records | Manuscript (Table 6) | Indexed scope at answer time |
 |---|---|---|
 | `hmrs-agent` | HMRS agent | full export, 328 parts |
 | `bm25` | BM25 | full export |
@@ -40,7 +40,7 @@ gold paper identifier and the annotated keywords of the question.
 | `parse_log.jsonl` | Native DeepRead parse log: the 96 documents and their parse durations. |
 | `protocol/` | Verbatim prompt texts: `answer-prompt.txt` is the one-shot prompt template of the retrieval-mode arms and `judge-instruction.txt` is the judge instruction of the unified pass, identical for all ten questions. |
 | `translation-en/` | Reading overlay of the companion transcript, not part of the records: faithful English translations of the 11 answers that were generated in Chinese (`hmrs-agent` BQ01–BQ05 and BQ08–BQ10, `deepread-native` BQ05) and English glosses of the Chinese collection names that occur in context paths. The answers and judgments above are unchanged. |
-| `fig-hmrs-case-provenance.json` | Tool-call trace of the HMRS agent on BQ07: the three recorded calls with their queries, result counts and scores, and the document that was read. Copied from the stored session transcript by `review/ext-baselines-20261121/adapters/extract_hmrs_case_trace.py` in the repository. Input of Figure 5. |
+| `fig-hmrs-case-provenance.json` | Tool-call trace of the deployed HMRS agent on E2 BQ07: the three calls with their queries, result counts and scores, and the document read. It supports the E2 narrative, not Figure 5. |
 
 Per-question judgments are shipped for the unified pass, the v4 batch and the
 earlier four-arm pass. The per-arm means of the two further earlier passes R1
@@ -72,11 +72,9 @@ counts are recomputed from the tables; no value is re-estimated.
   from `judgments-unified.jsonl`.
 - `figure_scripts/build_fig_external_baselines.py` derives the unified-pass
   scores of `figs/fig_external_baselines` from `judgments-unified.jsonl`. The
-  heat map repeats Table 5 and is kept in the package without being placed in
+  heat map repeats Table 6 and is kept in the package without being placed in
   the manuscript or the supplement.
-- `figure_scripts/build_fig_hmrs_vs_baseline.py` draws Figure 5 (BQ07) from
-  `answers-v3.jsonl`, `judgments-unified.jsonl` and
-  `fig-hmrs-case-provenance.json`.
+- `figure_scripts/build_fig5_tiered_case.py` draws Figure 5 from the independently captured BQ07 trace in `tiered_case/`. It is not part of either the E2 answer-quality or the E3 routing results.
 - `figure_scripts/build_baseline_quality_supplement.py` builds Table S18 from
   the hash-checked records of `baseline_quality_v2/`.
 - `build_external_baselines_qa.py` regenerates `external-baselines-qa.tex`,
