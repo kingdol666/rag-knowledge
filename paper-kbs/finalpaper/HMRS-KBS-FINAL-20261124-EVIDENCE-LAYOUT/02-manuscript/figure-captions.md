@@ -2,19 +2,19 @@
 
 **Figure 1.** Library analogy for a catalogue-first HMRS access path. The library catalogue, shelf, book and passage correspond to the collection catalogue, document listing, document body and segment. Evidence scoring is optional; pinned search may bypass the catalogue and shelf.
 
-**Figure 2.** HMRS service architecture. The browser and agent/CLI access the web and MCP interfaces. Parsing, management and retrieval operate on shared document files, the tree registry, library metadata and search indices. Laya scoring is optional, and the Neo4j graph supports navigation.
+**Figure 2.** HMRS service architecture. The browser and agent/CLI access the web and MCP interfaces. Parsing, management and retrieval operate on shared document files, the tree registry, library metadata and search indices. Laya scoring is optional; the Neo4j graph supports navigation and optional candidate expansion.
 
 **Figure 3.** Illustrative HMRS workflow from document acquisition to evidence-based reporting. Documents are parsed when needed, organised into collections and indexed according to the entry point. A question can use catalogue navigation or pinned search; optional Laya scoring precedes evidence inspection. A completed review without support is distinct from an incomplete search or tool failure, which may occur at any stage.
 
-**Figure 4.** Tiered access workflow. Pinned search and catalogue navigation supply candidate references. The workflow reads selected evidence directly or calls Laya to fetch, score and admit passages. Failures or limits that prevent completion at any stage yield an incomplete report with the searched scope and any available evidence.
+**Figure 4.** Tiered access workflow. Pinned search and catalogue navigation supply candidate references. The workflow can read candidates directly or use Laya to admit passages before checking source text. A failure or limit that prevents completion yields an incomplete report with the searched scope and any available evidence.
 
 **Figure 5.** Catalogue-first retrieval on BQ07 in a separate captured run. The trace follows the query through the catalogue, paginated shelf and stored-part selection, then through a bounded evidence filter and one follow-up source read. This example illustrates the workflow; it is not an observation in the native E2 comparison or the E3 routing audit.
 
 **Figure 6.** Correct collection selections for the two route-card variants. All three runs use the same 72 questions. A3 is nominally name-only.
 
-**Figure 7.** Target-string containment on 72 in-domain questions. (a) Circles and Wilson 95% intervals show the frozen run; open triangles show the same-question follow-up. The dashed line marks frozen A0. The columns give hit counts out of 72; a dash indicates that the read-all follow-up was incomplete. (b) For each frozen-run contrast, the symbols count questions on which only the first or only the second configuration hit. McNemar *p* values are exact, two-sided and unadjusted.
+**Figure 7.** Target-string containment on 72 in-domain questions. (a) Circles and Wilson 95% intervals show the frozen run; open triangles show the same-question follow-up. The dashed line marks frozen A0. The columns give hit counts out of 72. A3 is the auxiliary routing control; read-all is a separate capped scan whose follow-up was incomplete. (b) For each frozen-run contrast, the symbols count questions on which only the first or only the second configuration hit. McNemar *p* values are exact, two-sided and unadjusted.
 
-**Figure 8.** Verifier scores and same-pool ordering from separate archives. (a) Laya scores for 191 recorded candidates across 16 hybrid runs. Median scores were 0.88 for the 17 gold candidates and 0.86 for the 174 others. All recorded scores exceeded 0.5; one more candidate (Q14) had no recorded score. Horizontal jitter separates the marks. (b) The same 16 pools in the ordering archive, replayed in fusion and verifier-score order. Filled marks indicate a gold document among the first five.
+**Figure 8.** Verifier scores and same-pool ordering from separate archives. (a) Laya scores for 191 recorded candidates across 16 hybrid runs. Median scores were 0.88 for the 17 gold candidates and 0.86 for the 174 others. All recorded scores exceeded 0.5; one more candidate (Q14) had no recorded score. Horizontal jitter separates the marks. (b) In the separate ordering archive, each pool is replayed in fusion and verifier-score order. Filled marks indicate a gold document among the first five.
 
 **Table 1.** Representative systems compared along the dimensions examined here. A dash marks a dimension outside the cited work's main contribution.
 
@@ -28,7 +28,7 @@
 
 **Table 6.** Blind answer scores for the eight configurations in the native deployment case study on BQ01–BQ10. Each configuration answered each question once. C/P/I denotes correct, partial and incorrect verdict counts. Time and cost are per question; time is end-to-end and cost is estimated for generator calls only. † Gold-paper subset; ‡ DeepRead's native corpus. ᵃ Configured for five collections, but in nine of ten questions at least one search lacked an effective restriction. The audit reported 31 distinct collection-ID values in the result lists (Section 8.3). The configurations differ in source access, and their indexed corpora are not all matched.
 
-**Table 7.** Search scope and evidence construction for the six E4 configurations. Limits are in characters, not model tokens.
+**Table 7.** Six main E4 configurations. A3 and read-all are separate comparators. Limits are in characters, not tokens.
 
 **Algorithm 1.** Tiered access with optional evidence gate
 

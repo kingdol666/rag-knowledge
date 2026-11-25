@@ -9,17 +9,18 @@ collections and returns chunks from their segment indexes. Both entry
 points carry forward the
 source identifiers needed to trace the selected evidence.
 
-Algorithm~\ref{alg:tiered} specifies what the workflow reports at the end
-of the review.
+Figure~\ref{fig:tiered-algorithm} distinguishes how the workflow obtains
+candidate evidence from how it reports the outcome. Algorithm~\ref{alg:tiered}
+adds the reporting decisions and the option to check source text after scoring.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig_tiered_workflow_vector}
 \caption{Tiered access workflow. Pinned search and catalogue navigation
-supply candidate references. The workflow reads selected evidence directly
-or calls Laya to fetch, score and admit passages. Failures or limits that
-prevent completion at any stage yield an incomplete report with the
-searched scope and any available evidence.}
+supply candidate references. The workflow can read candidates directly or
+use Laya to admit passages before checking source text. A failure or limit
+that prevents completion yields an incomplete report with the searched
+scope and any available evidence.}
 \label{fig:tiered-algorithm}
 \end{figure}
 
@@ -98,6 +99,7 @@ remaining entries. Section~\ref{sec:eval} reports the repair check.
 \State $D \gets \textsc{GatherCandidates}(q,\mathcal{C})$ \Comment{chosen policy}
 \If{$g$}
   \State $S \gets \textsc{LayaJudge}(D,q,\tau)$ \Comment{admit passages}
+  \State Optionally check selected source spans and retain their references
 \Else
   \State $S \gets \textsc{ReadSelected}(D)$
 \EndIf

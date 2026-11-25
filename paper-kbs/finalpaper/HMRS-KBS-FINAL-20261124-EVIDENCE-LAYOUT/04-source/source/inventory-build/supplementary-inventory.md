@@ -5,7 +5,7 @@ subtitle: "Manuscript evidence and historical coverage for Knowledge-Based Syste
 
 This inventory is a reading guide, not another results table. Part A indexes selected records behind the current manuscript and supplement. Use the **evidence crosswalk in the supplement** for the full claim-to-record mapping and the **external-baseline QA companion** for answer texts and judging rationales. Part B covers older studies without carrying their results into the submission. The evidence units differ by study; they are not successive stages of a single end-to-end test.
 
-**How to locate the records.** Labels such as **E3/E4** resolve to exact repository paths and fields in `supplementary-inventory-source-map.md`, shipped with this Markdown source. The benchmark snapshot is `benchmark-suite/paper-results-kbs-20261125`.
+**How to locate the records.** Labels such as **E3/E4** resolve to exact repository paths and fields in `supplementary-inventory-source-map.md`, shipped with this Markdown source. The [frozen benchmark snapshot](https://github.com/kingdol666/rag-knowledge/tree/092e8bf2d65859dcd684071ed4169a40fbbc1563/benchmark-suite/paper-results-kbs-20261125) is at `benchmark-suite/paper-results-kbs-20261125` relative to the repository root.
 
 ## Part A. Evidence used in the manuscript and supplement
 

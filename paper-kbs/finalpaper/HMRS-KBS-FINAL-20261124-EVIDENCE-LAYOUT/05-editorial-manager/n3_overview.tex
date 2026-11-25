@@ -76,17 +76,15 @@ separately helps locate a missing collection or document.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{fig_service_architecture_vector}
-\caption{HMRS service architecture. The browser and agent/CLI access the web and MCP interfaces. Parsing, management and retrieval operate on shared document files, the tree registry, library metadata and search indices. Laya scoring is optional, and the Neo4j graph supports navigation.}
+\caption{HMRS service architecture. The browser and agent/CLI access the web and MCP interfaces. Parsing, management and retrieval operate on shared document files, the tree registry, library metadata and search indices. Laya scoring is optional; the Neo4j graph supports navigation and optional candidate expansion.}
 \label{fig:arch}
 \end{figure*}
 
-Hybrid retrieval combines ordinary search calls, while experience retrieval
-reuses the document infrastructure with its own selection procedure.
-
-Table~\ref{tab:functions} maps acquisition, organisation, lifecycle, query
-and experience operations to the interface or workflow that checks them.
-The ingest agent chooses a collection, the save service validates the
-destination identifier and an audit checks the stored result.
+Figure~\ref{fig:arch} shows which services write and expose the shared
+state. Table~\ref{tab:functions} then identifies where each management or
+retrieval operation is checked. The ingest agent chooses a collection,
+the save service validates the destination identifier, and an audit checks
+the result that was stored.
 
 \begin{table*}[t]
 \centering

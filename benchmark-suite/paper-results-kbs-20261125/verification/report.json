@@ -1,8 +1,8 @@
 {
  "checks": [
   {
-   "id": "E1-summary-route-A0",
-   "section": "E1",
+   "id": "E3-summary-route-A0",
+   "section": "E3",
    "claim": "summary route/A0: hits=72, mean=- MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -10,8 +10,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-route-A3",
-   "section": "E1",
+   "id": "E3-summary-route-A3",
+   "section": "E3",
    "claim": "summary route/A3: hits=37, mean=- MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -19,8 +19,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-containment-A0",
-   "section": "E1",
+   "id": "E4-summary-containment-A0",
+   "section": "E4",
    "claim": "summary containment/A0: hits=37, mean=- MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -28,8 +28,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-containment-A3",
-   "section": "E1",
+   "id": "E4-summary-containment-A3",
+   "section": "E4",
    "claim": "summary containment/A3: hits=33, mean=- MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -37,8 +37,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-containment-Read-all",
-   "section": "E1",
+   "id": "E4-summary-containment-Read-all",
+   "section": "E4",
    "claim": "summary containment/Read-all: hits=72, mean=- MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -46,8 +46,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-volume-A0",
-   "section": "E1",
+   "id": "E4-summary-volume-A0",
+   "section": "E4",
    "claim": "summary volume/A0: hits=37, mean=0.031409 MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -55,8 +55,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-volume-A0f",
-   "section": "E1",
+   "id": "E4-summary-volume-A0f",
+   "section": "E4",
    "claim": "summary volume/A0f: hits=45, mean=0.303449 MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -64,8 +64,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-volume-A0h",
-   "section": "E1",
+   "id": "E4-summary-volume-A0h",
+   "section": "E4",
    "claim": "summary volume/A0h: hits=52, mean=0.309143 MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -73,8 +73,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-volume-PD",
-   "section": "E1",
+   "id": "E4-summary-volume-PD",
+   "section": "E4",
    "claim": "summary volume/PD: hits=46, mean=0.308166 MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -82,8 +82,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-volume-A1b",
-   "section": "E1",
+   "id": "E4-summary-volume-A1b",
+   "section": "E4",
    "claim": "summary volume/A1b: hits=39, mean=0.038464 MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -91,8 +91,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-volume-A2",
-   "section": "E1",
+   "id": "E4-summary-volume-A2",
+   "section": "E4",
    "claim": "summary volume/A2: hits=25, mean=0.001787 MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -100,8 +100,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-volume-A3",
-   "section": "E1",
+   "id": "E4-summary-volume-A3",
+   "section": "E4",
    "claim": "summary volume/A3: hits=33, mean=0.023461 MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
@@ -109,12 +109,115 @@
    "status": "PASS"
   },
   {
-   "id": "E1-summary-volume-A1-readall",
-   "section": "E1",
+   "id": "E4-summary-volume-A1-readall",
+   "section": "E4",
    "claim": "summary volume/A1-readall: hits=72, mean=24.313972 MB",
    "expected": "reproduced",
    "recomputed": "reproduced",
    "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-best-search-config",
+   "section": "E4",
+   "claim": "A0h has the highest count of the six search configurations",
+   "expected": [
+    "A0h"
+   ],
+   "recomputed": [
+    "A0h"
+   ],
+   "source": "supp_traces_frozen.csv (read-all scan excluded)",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A0",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A0",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A0f",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A0f",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A0h",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A0h",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-PD",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for PD",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A1b",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A1b",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A2",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A2",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
    "status": "PASS"
   },
   {
@@ -208,8 +311,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-containment-A0",
-   "section": "E1",
+   "id": "E4-containment-A0",
+   "section": "E4",
    "claim": "containment hits A0 = 37",
    "expected": 37,
    "recomputed": 37,
@@ -217,8 +320,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-containment-A0h",
-   "section": "E1",
+   "id": "E4-containment-A0h",
+   "section": "E4",
    "claim": "containment hits A0h = 52",
    "expected": 52,
    "recomputed": 52,
@@ -226,8 +329,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-containment-A3",
-   "section": "E1",
+   "id": "E4-containment-A3",
+   "section": "E4",
    "claim": "containment hits A3 = 33",
    "expected": 33,
    "recomputed": 33,
@@ -235,8 +338,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-containment-A1-readall",
-   "section": "E1",
+   "id": "E4-containment-A1-readall",
+   "section": "E4",
    "claim": "containment hits A1-readall = 72",
    "expected": 72,
    "recomputed": 72,
@@ -244,26 +347,26 @@
    "status": "PASS"
   },
   {
-   "id": "E1-volume-A0-kB",
-   "section": "E1",
-   "claim": "A0 handles 31.4 kB/question",
+   "id": "E4-volume-A0-kB",
+   "section": "E4",
+   "claim": "A0 trace records 31.4 kB/question",
    "expected": 31.4,
    "recomputed": 31.409,
    "source": "redraw_route_summary.csv volume",
    "status": "PASS"
   },
   {
-   "id": "E1-volume-A0h-kB",
-   "section": "E1",
-   "claim": "A0h handles 309 kB/question",
+   "id": "E4-volume-A0h-kB",
+   "section": "E4",
+   "claim": "A0h trace records 309 kB/question",
    "expected": 309,
    "recomputed": 309.14300000000003,
    "source": "redraw_route_summary.csv volume",
    "status": "PASS"
   },
   {
-   "id": "E1-rerun-A0",
-   "section": "E1",
+   "id": "E4-rerun-A0",
+   "section": "E4",
    "claim": "A0 containment frozen=37, follow-up=39",
    "expected": [
     37,
@@ -277,8 +380,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-rerun-A0h",
-   "section": "E1",
+   "id": "E4-rerun-A0h",
+   "section": "E4",
    "claim": "A0h containment frozen=52, follow-up=51",
    "expected": [
     52,
@@ -292,8 +395,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-rerun-A0f",
-   "section": "E1",
+   "id": "E4-rerun-A0f",
+   "section": "E4",
    "claim": "A0f containment frozen=45, follow-up=44",
    "expected": [
     45,
@@ -307,8 +410,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-rerun-PD",
-   "section": "E1",
+   "id": "E4-rerun-PD",
+   "section": "E4",
    "claim": "PD containment frozen=46, follow-up=45",
    "expected": [
     46,
@@ -322,8 +425,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-rerun-A1b",
-   "section": "E1",
+   "id": "E4-rerun-A1b",
+   "section": "E4",
    "claim": "A1b containment frozen=39, follow-up=39",
    "expected": [
     39,
@@ -337,8 +440,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-rerun-A2",
-   "section": "E1",
+   "id": "E4-rerun-A2",
+   "section": "E4",
    "claim": "A2 containment frozen=25, follow-up=25",
    "expected": [
     25,
@@ -352,8 +455,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-rerun-A3",
-   "section": "E1",
+   "id": "E4-rerun-A3",
+   "section": "E4",
    "claim": "A3 containment frozen=33, follow-up=25",
    "expected": [
     33,
@@ -367,8 +470,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-sign-A0h-A1b",
-   "section": "E1",
+   "id": "E4-sign-A0h-A1b",
+   "section": "E4",
    "claim": "frozen paired A0h>A1b: 13-0, exact sign p",
    "expected": [
     13,
@@ -382,8 +485,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-signp-A0h-A1b",
-   "section": "E1",
+   "id": "E4-signp-A0h-A1b",
+   "section": "E4",
    "claim": "exact sign p for A0h vs A1b",
    "expected": 0.000244,
    "recomputed": 0.000244140625,
@@ -391,8 +494,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-sign-PD-A1b",
-   "section": "E1",
+   "id": "E4-sign-PD-A1b",
+   "section": "E4",
    "claim": "frozen paired PD>A1b: 7-0, exact sign p",
    "expected": [
     7,
@@ -406,8 +509,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-signp-PD-A1b",
-   "section": "E1",
+   "id": "E4-signp-PD-A1b",
+   "section": "E4",
    "claim": "exact sign p for PD vs A1b",
    "expected": 0.015625,
    "recomputed": 0.015625,
@@ -415,8 +518,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-sign-A0f-A0",
-   "section": "E1",
+   "id": "E4-sign-A0f-A0",
+   "section": "E4",
    "claim": "frozen paired A0f>A0: 8-0, exact sign p",
    "expected": [
     8,
@@ -430,8 +533,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-signp-A0f-A0",
-   "section": "E1",
+   "id": "E4-signp-A0f-A0",
+   "section": "E4",
    "claim": "exact sign p for A0f vs A0",
    "expected": 0.0078125,
    "recomputed": 0.0078125,
@@ -439,8 +542,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-sign-A0h-A0",
-   "section": "E1",
+   "id": "E4-sign-A0h-A0",
+   "section": "E4",
    "claim": "frozen paired A0h>A0: 15-0, exact sign p",
    "expected": [
     15,
@@ -454,8 +557,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-signp-A0h-A0",
-   "section": "E1",
+   "id": "E4-signp-A0h-A0",
+   "section": "E4",
    "claim": "exact sign p for A0h vs A0",
    "expected": 6.1035e-05,
    "recomputed": 6.103515625e-05,
@@ -463,8 +566,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-sign-A0h-PD",
-   "section": "E1",
+   "id": "E4-sign-A0h-PD",
+   "section": "E4",
    "claim": "frozen paired A0h>PD: 7-1, exact sign p",
    "expected": [
     7,
@@ -478,8 +581,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-signp-A0h-PD",
-   "section": "E1",
+   "id": "E4-signp-A0h-PD",
+   "section": "E4",
    "claim": "exact sign p for A0h vs PD",
    "expected": 0.0703125,
    "recomputed": 0.0703125,
@@ -487,8 +590,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-sign-A2-A0",
-   "section": "E1",
+   "id": "E4-sign-A2-A0",
+   "section": "E4",
    "claim": "frozen paired A2>A0: 6-18, exact sign p",
    "expected": [
     6,
@@ -502,8 +605,8 @@
    "status": "PASS"
   },
   {
-   "id": "E1-signp-A2-A0",
-   "section": "E1",
+   "id": "E4-signp-A2-A0",
+   "section": "E4",
    "claim": "exact sign p for A2 vs A0",
    "expected": 0.0226558,
    "recomputed": 0.022655844688415527,
@@ -6456,8 +6559,719 @@
    },
    "source": "redraw_verifier_scores.csv compared with redraw_verifier_order.csv (separate archives)",
    "status": "PASS"
+  },
+  {
+   "id": "records-source-exists",
+   "section": "record mirrors",
+   "claim": "source package has evidence files",
+   "expected": true,
+   "recomputed": true,
+   "source": "04-source/source/experiment_data/",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/answers-v2.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/answers-v2.jsonl vs records/baseline_quality_v2/answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/figure-values.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/figure-values.json vs records/baseline_quality_v2/figure-values.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/judgments-v2.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/judgments-v2.jsonl vs records/baseline_quality_v2/judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/mapping-v2.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/mapping-v2.json vs records/baseline_quality_v2/mapping-v2.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/summary-v2.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/summary-v2.json vs records/baseline_quality_v2/summary-v2.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/answers-v3.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/answers-v3.jsonl vs records/external_baselines_v3/answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/external-baselines-v3-derived.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/external-baselines-v3-derived.json vs records/external_baselines_v3/external-baselines-v3-derived.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/fig-hmrs-case-provenance.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/fig-hmrs-case-provenance.json vs records/external_baselines_v3/fig-hmrs-case-provenance.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/hmrs-search-scope-audit.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/hmrs-search-scope-audit.json vs records/external_baselines_v3/hmrs-search-scope-audit.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/judgments-unified.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/judgments-unified.jsonl vs records/external_baselines_v3/judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/judgments-v4-sub.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/judgments-v4-sub.jsonl vs records/external_baselines_v3/judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/mapping-unified.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/mapping-unified.json vs records/external_baselines_v3/mapping-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/paired-unified.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/paired-unified.json vs records/external_baselines_v3/paired-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/parse_log.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/parse_log.jsonl vs records/external_baselines_v3/parse_log.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/protocol/answer-prompt.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/protocol/answer-prompt.txt vs records/external_baselines_v3/protocol/answer-prompt.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/protocol/judge-instruction.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/protocol/judge-instruction.txt vs records/external_baselines_v3/protocol/judge-instruction.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/summary-unified.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/summary-unified.json vs records/external_baselines_v3/summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/deepread-native-BQ05.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/deepread-native-BQ05.txt vs records/external_baselines_v3/translation-en/deepread-native-BQ05.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ01.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ01.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ01.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ02.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ02.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ02.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ03.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ03.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ03.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ04.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ04.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ04.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ05.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ05.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ05.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ08.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ08.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ08.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ09.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ09.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ09.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ10.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ10.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ10.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/strings-en.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/strings-en.json vs records/external_baselines_v3/translation-en/strings-en.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/a6_global_search.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/a6_global_search.json vs records/legacy/a6_global_search.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/ACCEPTANCE-REPORT-20261113.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/ACCEPTANCE-REPORT-20261113.md vs records/legacy/ACCEPTANCE-REPORT-20261113.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/answers_fresh_summary.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/answers_fresh_summary.json vs records/legacy/answers_fresh_summary.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/audit_manifest.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/audit_manifest.json vs records/legacy/audit_manifest.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/BENCHMARK-30000chunk-20260918.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/BENCHMARK-30000chunk-20260918.md vs records/legacy/BENCHMARK-30000chunk-20260918.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/BENCHMARK.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/BENCHMARK.md vs records/legacy/BENCHMARK.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/case-anatomy-provenance.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/case-anatomy-provenance.json vs records/legacy/case-anatomy-provenance.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/QA-EVIDENCE-COMPENDIUM.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/QA-EVIDENCE-COMPENDIUM.md vs records/legacy/deepseek-r1/QA-EVIDENCE-COMPENDIUM.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_claude_Q1.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_claude_Q1.json vs records/legacy/deepseek-r1/qa_claude_Q1.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_claude_Q2.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_claude_Q2.json vs records/legacy/deepseek-r1/qa_claude_Q2.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_claude_Q3.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_claude_Q3.json vs records/legacy/deepseek-r1/qa_claude_Q3.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_claude_Q4-ood.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_claude_Q4-ood.json vs records/legacy/deepseek-r1/qa_claude_Q4-ood.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_omp_Q1.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_omp_Q1.json vs records/legacy/deepseek-r1/qa_omp_Q1.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_omp_Q2.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_omp_Q2.json vs records/legacy/deepseek-r1/qa_omp_Q2.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_omp_Q3.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_omp_Q3.json vs records/legacy/deepseek-r1/qa_omp_Q3.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_omp_Q4-ood.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_omp_Q4-ood.json vs records/legacy/deepseek-r1/qa_omp_Q4-ood.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/desc_audit.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/desc_audit.json vs records/legacy/desc_audit.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp10_ingest_state.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp10_ingest_state.json vs records/legacy/exp10_ingest_state.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp10_papers_toollayer.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp10_papers_toollayer.json vs records/legacy/exp10_papers_toollayer.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp11_gate_ablation.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp11_gate_ablation.json vs records/legacy/exp11_gate_ablation.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp3_abstention.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp3_abstention.json vs records/legacy/exp3_abstention.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp5_q2_anatomy.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp5_q2_anatomy.json vs records/legacy/exp5_q2_anatomy.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp8b_absent_agent.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp8b_absent_agent.json vs records/legacy/exp8b_absent_agent.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp_r2_grade_corrected.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp_r2_grade_corrected.json vs records/legacy/exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp_rerun5_grade.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp_rerun5_grade.json vs records/legacy/exp_rerun5_grade.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/experience_smoke.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/experience_smoke.json vs records/legacy/experience_smoke.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/F1F2F3_REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/F1F2F3_REPORT.md vs records/legacy/F1F2F3_REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/F4F5_REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/F4F5_REPORT.md vs records/legacy/F4F5_REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/FULLTEST-SUMMARY.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/FULLTEST-SUMMARY.md vs records/legacy/FULLTEST-SUMMARY.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/ingest_report.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/ingest_report.json vs records/legacy/ingest_report.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/judgments-v3-round1.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/judgments-v3-round1.jsonl vs records/legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/judgments-v3.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/judgments-v3.jsonl vs records/legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/o2_duplicates.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/o2_duplicates.json vs records/legacy/o2_duplicates.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/probe5_final.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/probe5_final.json vs records/legacy/probe5_final.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/PRODUCTION-LADDER-INDEX.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/PRODUCTION-LADDER-INDEX.md vs records/legacy/PRODUCTION-LADDER-INDEX.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/r2_ingest_report.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/r2_ingest_report.json vs records/legacy/r2_ingest_report.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/RETRIEVAL-E2E-REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/RETRIEVAL-E2E-REPORT.md vs records/legacy/RETRIEVAL-E2E-REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/SKILL-E2E-REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/SKILL-E2E-REPORT.md vs records/legacy/SKILL-E2E-REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/skilltest-calls.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/skilltest-calls.jsonl vs records/legacy/skilltest-calls.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/STRESS-REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/STRESS-REPORT.md vs records/legacy/STRESS-REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/tags_report.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/tags_report.json vs records/legacy/tags_report.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-paired_diagnostics/redraw_verifier_order.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/paired_diagnostics/redraw_verifier_order.csv vs records/paired_diagnostics/redraw_verifier_order.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-paired_diagnostics/redraw_verifier_scores.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/paired_diagnostics/redraw_verifier_scores.csv vs records/paired_diagnostics/redraw_verifier_scores.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/redraw_content_summary.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/redraw_content_summary.csv vs records/routing_content_traces/redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/redraw_route_summary.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/redraw_route_summary.csv vs records/routing_content_traces/redraw_route_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/supp_traces_floor.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/supp_traces_floor.csv vs records/routing_content_traces/supp_traces_floor.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/supp_traces_followup.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/supp_traces_followup.csv vs records/routing_content_traces/supp_traces_followup.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/supp_traces_frozen.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/supp_traces_frozen.csv vs records/routing_content_traces/supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/supp_traces_rerun_20261117.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/supp_traces_rerun_20261117.csv vs records/routing_content_traces/supp_traces_rerun_20261117.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-tiered_case/tiered-bq07.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/tiered_case/tiered-bq07.json vs records/tiered_case/tiered-bq07.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-tiered_case/trace-evidence.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/tiered_case/trace-evidence.json vs records/tiered_case/trace-evidence.json",
+   "status": "PASS"
   }
  ],
- "pass": 585,
+ "pass": 671,
  "fail": 0
 }

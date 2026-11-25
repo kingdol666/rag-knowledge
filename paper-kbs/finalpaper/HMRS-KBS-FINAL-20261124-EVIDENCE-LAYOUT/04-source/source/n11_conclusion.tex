@@ -1,22 +1,17 @@
 \section{Conclusion}
 \label{sec:conclusion}
-HMRS gives retrieval agents access to the same hierarchy that operators use
-to manage documents. Catalogue and shelf views expose membership and
-descriptions; document and segment views expose source text and passage
-locations. In an early rename-and-move test, forced reindexing removed stale
-entries. A later rename retest showed why old labels in search results do not
-necessarily indicate an index defect.
+HMRS makes the state used to manage documents available to the agents that
+retrieve them. A catalogue and shelves expose membership and descriptions;
+document and segment views expose text with source references. These views
+make three checks possible in the tested workflows: is the current document
+searchable, did the agent reach the intended collection, and what text
+reached the evidence pack?
 
-The experiments show why it matters to ask separately where a search ran,
-what it returned and how it ordered candidates. Compared with the routed
-reference, A0h covered more annotated text by adding a second vector search
-and changing pack assembly. The fixed-pool
-replay showed that verifier-score ordering can demote gold documents. The
-native HMRS agent led descriptively with flexible document access, but this
-comparison does not isolate retrieval-backend performance.
-
-These findings motivate three checks for similar systems: probe retrieval
-after changing a document, evaluate admission separately from ordering,
-and report any collections skipped during search. Independent questions
-and claim-level checks against cited text are needed to test how far the
-observed benefits transfer.
+The experiments show why these checks matter. A lifecycle probe located
+stale entries in the index. The highest target-string count in
+the frozen search configurations came from A0h, which combined document
+text and prioritised chunk windows; reaching the correct collection alone
+was not sufficient. The fixed-pool replay shows why admission scores should
+be tested separately from ranking. The next test is whether these practices
+improve claim-level support on independent questions when agents have the
+same search and reading budgets.

@@ -119,24 +119,19 @@ GraphRAG$^{\dagger}$ & 30 gold parts & 4.6 & 3.3 & 4.6 & 4.6 & 4.28 & 4/3/3 & 12
 }
 \end{table*}
 
-HMRS received ten correct verdicts and a mean of 5.00 in the unified pass
-(Table~\ref{tab:external-baselines}). BM25 was close at 4.95. Against the
-three baselines indexed on the intended corpus, the largest mean-score
-differences were in completeness; none of those three paired contrasts
-reached the unadjusted 0.05 level. None of the seven comparisons with HMRS
-survived Holm adjustment. Earlier judge passes changed some dimension
-scores and per-question comparisons.
+HMRS had the highest observed mean in the unified pass (5.00 versus
+4.95 for BM25) and tied DeepRead at ten correct verdicts
+(Table~\ref{tab:external-baselines}). Against the three baselines indexed
+on the intended corpus, the largest differences were in completeness,
+and none of the three paired contrasts reached the unadjusted 0.05 level.
+None of the seven comparisons with HMRS survived Holm adjustment. Earlier
+judge passes changed some dimension scores and per-question comparisons.
 
-Two questions show what the scores capture. On BQ01, BM25 received only
-part~1 of the Transformer paper, whereas HMRS read further and answered both
-parts of the question: finding a document differs from reading enough of it
-to answer. On BQ07, BM25 cited material beyond the context it had been
-supplied; we kept that answer as recorded. The HMRS agent issued two
-searches in its first turn, read the first part of the
-gold paper in the second and answered correctly. RRF-order and GraphRAG each
-received twelve context units that did not include the gold paper; both
-reported that they could not answer and were scored incorrect. The deployed
-HMRS agent could read source documents and search outside the five configured
-collections. Its estimated generator cost was higher than that of the three
-baselines indexed on the intended corpus. The native comparison therefore
-does not separate retrieval from differences in access.
+BQ01 illustrates what follow-up access buys: BM25 received only part~1
+of the Transformer paper, whereas HMRS read further and answered both
+parts of the question. BQ07 illustrates a different distinction: BM25
+cited beyond its supplied context, so the judge's verdict does not verify
+that source access. The HMRS agent did read the first part of the gold
+paper. The flexible reading and broader scope came with higher estimated
+generator costs than the three intended-corpus baselines. These are
+properties of the deployed workflows, not an isolated ranker comparison.

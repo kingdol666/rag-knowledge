@@ -2,10 +2,10 @@
 \label{sec:intro}
 
 Enterprise collections contain regulations, failure analyses and operating
-procedures. When an agent starts from a catalogue, a vague description can
-send it to the wrong collection. Even when the search scope is already
-known, a stale index can point to a document's former path. Both failures
-come from the state the retrieval system reads, not from the passage ranker.
+procedures. A missed answer can originate before passage ranking: a vague
+catalogue description sends the agent to the wrong collection, or a stale
+index points to a document's former path. The operator needs to tell these
+failures apart because they require different repairs.
 
 Document acquisition, organisation and retrieval are often studied
 separately. Enterprise content management studies document
@@ -17,17 +17,16 @@ information retrieval addresses the selection of collections
 (RAG) uses ranked passages to inform generation, and modular retrieval
 workflows can expose evidence through interfaces such as the Model
 Context Protocol (MCP) \cite{rag-lewis,dpr,modular-rag,mcp,gao-rag-survey-2023}.
-This paper asks how a retrieval workflow can use managed document state
-and how the platform exposes that state for operator inspection when
-relevant evidence is missed.
+This paper asks how management state can make retrieval decisions
+inspectable: whether a document is visible to search, whether an agent
+reaches it and which source text the workflow returns.
 
 The Hierarchical Management Retrieval System (HMRS) is a self-hosted
-platform that links document management to evidence access. During
-ingestion, the workflow records where a document belongs and what it
-contains. Search uses this state to select a collection and document or
-to start within a specified collection. The system exposes collection
-listings, document descriptions and source references so that the stages
-that supplied the candidates can be inspected.
+platform that exposes the collection membership and descriptions that
+operators maintain, rather than deriving a second hierarchy at query time.
+Agents use this state to navigate towards source text or search within a
+specified collection. Both paths expose source references so that
+operators can inspect the evidence rather than infer it from the answer.
 
 \noindent\textbf{Contributions.}
 \begin{enumerate}
@@ -57,16 +56,12 @@ candidates displaced gold documents from the top five
 (Section~\ref{sec:e6}).
 \end{enumerate}
 
-The evaluation checks three links in this design. First, we ask whether
-changes to a managed document are visible to search. Second, we compare
-answer quality in the native configurations. The HMRS agent in that
-comparison made no catalogue calls, and some searches lacked an effective
-restriction to the five configured collections, so it did not exercise
-collection selection; its gate calls did not succeed
-(Section~\ref{sec:e10}). Third, we test the component stages separately:
-whether the selector reaches the labelled collection, whether the evidence
-pack contains the required text, and whether the verifier's score is
-suitable for ordering candidates.
+The evaluation tests what each checkpoint reveals. Index probes
+separate index visibility from the result seen by the caller. Routing and containment
+experiments separate reaching the right collection from delivering the
+right text. A fixed-pool replay tests document ordering without changing
+candidate membership. The native answer comparison supplies deployment
+context; it does not substitute for the catalogue-first tests.
 
 \subsection{Research questions and reading guide}
 \label{sec:rq}

@@ -3,16 +3,15 @@
 \label{sec:exp-e3}
 The native deployment in E2 did not exercise catalogue-first routing.
 Figure~\ref{fig:tiered-case} instead illustrates a separately captured
-execution on BQ07. The reader reached the source by going from the catalogue
-through the catalogue and shelf metadata before invoking the evidence
-filter; the agent then read a bounded window of the first stored part.
-This one trace illustrates the execution path, not its frequency or effect
-on answer quality. It was not
-included in the E2 judging or the E3 routing counts.
+execution on BQ07. The agent used the catalogue and shelf descriptions to
+select stored parts for the evidence filter, then read a bounded window of
+the first part. The trace shows the steps the agent took, not how often this
+path succeeds or whether it improves answer quality. It was not included in
+the E2 judging or the E3 routing counts.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.98\columnwidth]{fig5_tiered_case}
+\includegraphics[width=0.965\columnwidth]{fig5_tiered_case}
 \caption{Catalogue-first retrieval on BQ07 in a separate captured run.
 The trace follows the query through the catalogue, paginated shelf and
 stored-part selection, then through a bounded evidence filter and one
@@ -35,7 +34,7 @@ Reaching the right collection is only a first step. Even when A0 identified
 it correctly, A0 returned the target string on only 37 questions. Searching
 in the right place does not ensure that the right passage reaches the reader.
 
-\begin{figure}[H]
+\begin{figure}[!t]
 \centering
 \begin{minipage}{\columnwidth}
 \centering
@@ -50,7 +49,11 @@ All three runs use the same 72 questions. A3 is nominally name-only.}
 \label{sec:ladder-opt}
 \label{sec:exp-e4}
 We next varied how evidence is assembled once a collection is chosen.
-Table~\ref{tab:ablation-configs} defines the six configurations. They differ
+Table~\ref{tab:ablation-configs} defines the six main configurations.
+A3 uses A0's downstream evidence construction but changes the route cards
+and collection setup. Figure~\ref{fig:content} shows its containment as an
+auxiliary routing diagnostic alongside the separate mechanical corpus scan.
+The six main configurations differ
 in search scope (one collection selected by name and description, or all
 ten), in whether documents are read and gated, and in how the pack is
 ordered. Routed vector search requests up to 30 candidates at a cosine
@@ -64,8 +67,8 @@ use the gold domain, but it did not determine the route-card choice
 \small
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.16}
-\caption{Search scope and evidence construction for the six E4 configurations.
-Limits are in characters, not model tokens.}
+\caption{Six main E4 configurations. A3 and read-all are separate
+comparators. Limits are in characters, not tokens.}
 \label{tab:ablation-configs}
 \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.23\columnwidth}>{\raggedright\arraybackslash}p{\dimexpr0.77\columnwidth-31pt\relax}@{}}
 \toprule
@@ -81,13 +84,13 @@ A2 & All ten collections & Merge the same hits as A1b and concatenate their snip
 \end{tabular}
 \end{table}
 
-In the frozen run, A0h retrieved the annotated string on 52 of 72 questions,
-up from 37 with A0. The gain came from questions that A0 had missed: A0h
-recovered 15 of them without losing any A0 hit (exact McNemar
-$p=6.1\times10^{-5}$). Both same-question reruns preserved the gain. A0h
-also led the unrouted vector union A1b, but its difference from the unrouted
-per-document configuration PD was not significant
-(Figure~\ref{fig:content}).
+A0h had the highest target-string count among the six main evidence-pack
+configurations in the frozen run: 52 of 72 questions, up from 37 with A0.
+It found the target string on 15 questions where A0 missed it and lost no
+A0 hit (exact McNemar $p=6.1\times10^{-5}$). Both same-question reruns preserved the
+advantage over A0. A0h also led the unrouted vector union A1b, but its
+difference from the unrouted per-document configuration PD was not
+significant (Figure~\ref{fig:content}).
 
 \begin{figure*}[!tb]
 \centering
@@ -95,8 +98,8 @@ per-document configuration PD was not significant
 \caption{Target-string containment on 72 in-domain questions. (a) Circles
 and Wilson 95\% intervals show the frozen run; open triangles show the
 same-question follow-up. The dashed line marks frozen A0. The columns give
-hit counts out of 72; a dash indicates that the read-all follow-up was
-incomplete. (b) For each frozen-run contrast, the symbols count questions
+hit counts out of 72. A3 is the auxiliary routing control; read-all is a
+separate capped scan whose follow-up was incomplete. (b) For each frozen-run contrast, the symbols count questions
 on which only the first or only the second configuration hit. McNemar
 $p$ values are exact, two-sided and unadjusted.}
 \label{fig:content}

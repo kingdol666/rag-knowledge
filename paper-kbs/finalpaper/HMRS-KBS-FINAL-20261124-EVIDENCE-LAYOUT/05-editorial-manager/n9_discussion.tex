@@ -1,42 +1,24 @@
 \section{Discussion and lessons learned}
 \label{sec:discussion}
-A document operation is complete only when search reaches the right version
-and path. An early test that combined a rename and move
-found stale entries in the index; a later rename retest found stale labels only
-in a cached response. A search probe checks what the agent can find, while
-an index inspection distinguishes these two failure modes. Neither
-replaces checks of the files, tree registry and library metadata
-\citep{park-metadata-quality-2009,paivarinta-ecm-2005}.
+The management and retrieval results point to three operational checks.
+\textbf{Check visibility after a write.} The rename-and-move probe found
+stale index entries. Comparing a retrieval probe with the index helps
+locate the fault; a stale response does not by itself establish an index
+problem. Neither check replaces reconciliation of the files, tree registry and
+library metadata \citep{park-metadata-quality-2009,paivarinta-ecm-2005}.
 
-Once search reaches the intended collection, the next question is which
-text reaches the reader. The description-bearing cards performed better
-on the scripted routing task than the nominally name-only cards, but A0
-still missed target strings in correctly selected collections. A0h closed
-part of that gap by adding a search lane and changing the pack order. The
-retrieval counters use different accounting boundaries, and A0h did not
-significantly outperform the unrouted PD configuration.
-The result favours testing
-routing and evidence construction separately rather than crediting the
-whole gain to the hierarchy.
+\textbf{Check the text as well as the route.} A0 reached the labelled
+collection on every question but missed many target strings. A0h recovered
+some of those misses by adding a search lane and changing pack assembly.
+Its advantage over A0 supports testing the pack directly; the comparison
+with PD does not isolate an effect of hierarchy. In the fixed-pool replay,
+verifier-score ranking displaced gold documents. Passage admission and
+document order therefore need separate tests.
 
-The verifier illustrates a related distinction. In fixed pools, sorting by
-score pushed some gold documents out of the top five. A separate archive
-had no recorded scores below the admission cutoff. It therefore tells us
-little about the value of filtering, even though the replay documents an
-ordering effect. An operator needs to be able to inspect both decisions.
-
-The native answer comparison allowed HMRS to revisit searches, search
-outside its five configured collections and read source text, unlike the
-capped one-shot baselines. Its higher score in the
-unified pass was sensitive to the judging protocol. This comparison does not
-isolate backend performance and did not measure the ability of the full
-catalogue-first workflow to support individual answer claims.
-
-Finally, an answer should say which collections were searched. In E7,
-search returned success after skipping eight unreadable collections.
-The E2 agent shows the same need from the other side: it was configured
-for five collections but made unrestricted search calls in nine of ten
-questions; the scope audit found copies of the intended papers outside the
-configured collections.
-Without that information, a user cannot tell whether the system looked
-and found nothing, or did not reach part of the corpus.
+\textbf{Report the actual scope.} The E7 search returned success after
+skipping eight unreadable collections. In the other direction, the E2
+agent sometimes searched beyond its configured collections and could
+follow up with source reads. Those capabilities are part of the deployed
+answering workflow, not an advantage attributable to the ranker. A scope
+report lets readers distinguish a completed search without evidence from
+one that never reached part of the corpus.

@@ -1,5 +1,7 @@
 \documentclass[final,5p,times,twocolumn]{elsarticle}
 \usepackage{stfloats}\usepackage{graphicx}\usepackage{booktabs}\usepackage{array}\usepackage{amsmath}\usepackage{amssymb}\usepackage{caption}\usepackage{url}\usepackage{xurl}\urlstyle{same}\usepackage[all]{nowidow}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\benchlink}{\href{https://github.com/kingdol666/rag-knowledge/tree/092e8bf2d65859dcd684071ed4169a40fbbc1563/benchmark-suite/paper-results-kbs-20261125}{\nolinkurl{benchmark-suite/paper-results-kbs-20261125/}}}
 \newcommand{\yes}{\checkmark}\newcommand{\no}{--}
 \graphicspath{{figs/}}\journal{Knowledge-Based Systems}
 % The supplement is almost entirely full-width floats: allow three per
@@ -23,8 +25,8 @@
 
 \noindent\textbf{Reading the supplementary material.} The material is
 grouped by evidence type, and each result retains the corpus and unit
-reported in the main text. Figure~S1 shows the service boundaries and
-shared state. Figures~S2--S3 report answer-marker and out-of-corpus probe
+reported in the main text. Figure~S1 distinguishes index and cache failures
+that produce similar search symptoms. Figures~S2--S3 report answer-marker and out-of-corpus probe
 observations; Figures~S4--S5 replay verifier roles and illustrate one
 logged query; Figures~S6--S7 retain the two evidence-path cases and the
 two-grid marker matrix condensed out of the main text.
@@ -52,12 +54,20 @@ trace CSV packages 76 question IDs per complete arm; the in-domain analyses
 exclude the four out-of-domain probes R1--R4.
 
 \medskip
-{\centering
-\includegraphics[width=\textwidth]{fig1_architecture_native}
-\par}
-\captionof{figure}{HMRS service boundaries and shared state. The browser
-reaches the Nuxt server, and agent tools use the MCP server. The evidence
-gate is an optional call.}
+{\centering\small
+\setlength{\fboxsep}{6pt}
+\fbox{\parbox{0.61\textwidth}{\centering\textbf{After a move or rename: the search result still refers to the old document state.}}}\par
+\vspace{4pt}$\downarrow$\par
+\fbox{\parbox{0.61\textwidth}{\centering Compare the returned result with the registered path and index metadata.}}\par
+\vspace{4pt}$\swarrow\hspace{0.51\textwidth}\searrow$\par
+\vspace{4pt}
+\fbox{\parbox[t]{0.38\textwidth}{\textbf{Old entries remain in the index.}\par The rename-and-move probe found stale entries; forced reindexing restored the expected count.}}
+\hfill
+\fbox{\parbox[t]{0.38\textwidth}{\textbf{The index already has the new state.}\par Check the response cache and requested scope before triggering a rebuild.}}\par}
+\captionof{figure}{Diagnosing stale search results after a lifecycle change.
+The left branch shows the report-backed E1 rename-and-move case; the right
+branch is a diagnostic check, not a separate benchmark result.
+See the evidence crosswalk for the E1 record.}
 \label{fig:softdesign}
 \end{minipage}
 \vspace{12pt}
@@ -81,8 +91,7 @@ are reported in Table~S15.}
 \centering
 \includegraphics[width=\columnwidth]{fig_exp_s3}
 \caption{Tool-layer out-of-corpus probes
-(file \protect\path{exp3_abstention.json} under
-\protect\path{paper-kbs/experiments/results/}) retained
+(\protect\path{records/legacy/exp3_abstention.json} in the benchmark archive) retained
 9--11 documents after the 12-candidate cap; the merged pool had 42--43
 candidates. Separately, dense-search chunks had scores above the 0.35
 threshold. The two counts use different units (documents versus chunks).
@@ -194,7 +203,7 @@ contrasts.}
 Exp & Corpus and scale & Metric and comparison & Headline result & Supports / limit\\
 \midrule
 E2 (RQ6) & 10 gold-annotated arXiv questions; eight arms, one generator shared by seven; unified blind subagent judge & Blind 1--5 scores and verdicts; paired exact sign tests on per-question mean scores & HMRS 5.00, correct 10/10, at least tied with every comparator per question; BM25, dense and RRF 4.83--4.95; none of these three contrasts reached unadjusted 0.05 and none of the seven survived Holm adjustment (S22) & Scope-asymmetric native deployments; effective HMRS search scope not matched; one run per arm; judge-pass sensitivity (S18--S21)\\
-E3 (RQ2) & Ten-domain 72 q; route cards with and without descriptions & Scripted gold-domain choice & A0 72/72 vs nominally name-only A3 37/72 in the frozen record and 49/72 in two reruns; frozen-run McNemar $p=5.82\times10^{-11}$ & Scripted probe, unlogged fallback; configuration contrast, not a causal description effect; end-to-end containment varied across runs\\
+E3 (RQ2) & Ten-domain 72 q; route cards with and without descriptions & Scripted collection choice compared with the labelled collection & A0 72/72 vs nominally name-only A3 37/72 in the frozen record and 49/72 in two reruns; frozen-run McNemar $p=5.82\times10^{-11}$ & Scripted probe, unlogged fallback; configuration contrast, not a causal description effect; end-to-end containment varied across runs\\
 E4 (RQ3) & 72 questions in ten domains across three campaigns & Target-string containment, text volume and paired exact McNemar tests & A0h vs A0: 52/72 vs 37/72 frozen, 51/72 vs 39/72 in the first follow-up, 48/72 vs 36/72 on November 17 & Configuration contrasts on the same set. A0h--PD remains unresolved in the frozen and first follow-up records.\\
 E7 (RQ5) & Two 30-cell grids, three interfaces; later 10-question run & Gold-ID in answer or trace, lexical coverage, citation markers & Gold-ID 60/60 at ceiling; markers 9/7/2 (original), 9/9/9 (common substrate), 10/10 in a separate post-repair tiered run & Questions omit the target IDs; ID mentions and markers do not establish source support; one run per arm\\
 E7 (RQ5) & Public-API transport diagnostic and separate pagination check & Refusal and tool-output limit & The campaign report traces one false refusal to an over-budget 131-document shelf listing (74.9\,kB). A separate check paginated the 131-document shelf. & One observed failure and a separately checked repair; not refusal accuracy \\
@@ -340,22 +349,19 @@ Verifier archive & 191 scores from 16 hybrid runs; 17 gold and 174 non-gold & Sc
 \end{table*}
 \input{supplementary-baseline-quality}
 \input{supplementary-external-baselines}
-\clearpage
 \begin{table*}[!t]
 \centering\footnotesize
 \setlength{\tabcolsep}{5pt}
-\caption*{\textbf{Evidence crosswalk.} Paths starting with \path{records/}
- or \path{tables/} are relative to the repository directory
- \path{benchmark-suite/paper-results-kbs-20261125/}. The corresponding
- source-package data are under \path{experiment_data/}. CSVs under
- \path{tables/} are derived, not new runs. The checks in
- \path{verification/verify_all.py} cover specified claims, not the entire system.}
+\caption*{\textbf{Evidence crosswalk.} Paths are relative to \benchlink.
+ The package mirrors records under \path{experiment_data/}. Files in
+ \path{tables/} are derived; \path{verification/verify_all.py} checks the
+ specified claims.}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.19\textwidth}>{\raggedright\arraybackslash}p{0.77\textwidth}@{}}
 \toprule
 Paper item & Evidence and limits \\
 \midrule
-E1; S9, S17 & In \path{records/legacy/}: \path{exp10_ingest_state.json}, \path{exp10_papers_toollayer.json}, \path{desc_audit.json}, \path{probe5_final.json}, \path{audit_manifest.json}, \path{o2_duplicates.json} and \path{ingest_report.json}. Historical campaign reports: \path{BENCHMARK.md}, \path{BENCHMARK-30000chunk-20260918.md} and \path{SKILL-E2E-REPORT.md}; tag-run record \path{tags_report.json}; lifecycle trace \path{skilltest-calls.jsonl}; sub-library acceptance \path{F4F5_REPORT.md}. The split-run parse time and lifecycle graph totals are report-level. The cross-lingual placement outputs and the separate 33-part storage sample are not in the snapshot. \\
-E2; main Table 6; S18--S22 & In \path{records/external_baselines_v3/}: \path{answers-v3.jsonl}, \path{judgments-unified.jsonl}, \path{judgments-v4-sub.jsonl}, \path{summary-unified.json}, and \path{hmrs-search-scope-audit.json}. Derived: \path{tables/t6_external_baselines.csv}, \path{tables/s19_cross_batch.csv}, \path{tables/s20_question_level.csv}, and \path{tables/s22_unified_holm.csv}. The earlier four-arm pass (S18/S21) uses \path{records/baseline_quality_v2/answers-v2.jsonl} and \path{records/baseline_quality_v2/judgments-v2.jsonl}; see \path{tables/s18_baseline_quality_qlevel.csv} and \path{tables/s21_baseline_quality_v2.csv}. \\
+E1; Fig.~S1; S9, S17 & In \path{records/legacy/}: \path{exp10_ingest_state.json}, \path{exp10_papers_toollayer.json}, \path{desc_audit.json}, \path{probe5_final.json}, \path{audit_manifest.json}, \path{o2_duplicates.json} and \path{ingest_report.json}. Historical campaign reports: \path{BENCHMARK.md}, \path{BENCHMARK-30000chunk-20260918.md} and \path{SKILL-E2E-REPORT.md}; tag-run record \path{tags_report.json}; lifecycle trace \path{skilltest-calls.jsonl}; sub-library acceptance \path{F4F5_REPORT.md}. The split-run parse time and lifecycle graph totals are report-level. The cross-lingual placement outputs and an earlier storage sample are not in the snapshot and are not used for the main results. \\
+E2; main Table 6; S18--S22 & In \path{records/external_baselines_v3/}: \path{answers-v3.jsonl}, \path{judgments-unified.jsonl}, \path{judgments-v4-sub.jsonl}, \path{summary-unified.json}, and \path{hmrs-search-scope-audit.json}. The S19 R1/R2 judgments are in \path{records/legacy/judgments-v3-round1.jsonl} and \path{records/legacy/judgments-v3.jsonl}. Derived: \path{tables/t6_external_baselines.csv}, \path{tables/s19_cross_batch.csv}, \path{tables/s20_question_level.csv}, and \path{tables/s22_unified_holm.csv}. The earlier four-arm pass (S18/S21) uses \path{records/baseline_quality_v2/answers-v2.jsonl} and \path{records/baseline_quality_v2/judgments-v2.jsonl}; see \path{tables/s18_baseline_quality_qlevel.csv} and \path{tables/s21_baseline_quality_v2.csv}. \\
 E3--E4; S12--S13, S17; Fig.~S6 & In \path{records/routing_content_traces/}: \path{supp_traces_frozen.csv}, \path{supp_traces_followup.csv}, \path{supp_traces_rerun_20261117.csv}, \path{redraw_route_summary.csv}, and \path{redraw_content_summary.csv}. The two figure cases link back to the archived captures through \path{records/legacy/case-anatomy-provenance.json}. \\
 Fig.~5 (separate trace) & \path{records/tiered_case/tiered-bq07.json} and \path{records/tiered_case/trace-evidence.json}, mirrored under \path{experiment_data/tiered_case/}. This is the 2026-11-25 catalogue-first BQ07 trace, not a case from the E2 judge batch or a measurement in E3. \\
 E5; S9 & \path{records/legacy/experience_smoke.json} (extraction smoke), \path{records/legacy/skilltest-calls.jsonl} (empty global search and drafts in a disposable fixture), and \path{records/legacy/FULLTEST-SUMMARY.md} (first-ranked lesson reported; successful response unavailable). \path{records/legacy/a6_global_search.json} is the earlier failed check, not the successful response. \\

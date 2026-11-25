@@ -1,6 +1,6 @@
 # HMRS companion evidence inventory: source map
 
-Paths below are relative to the repository root. For package paths written `SOURCE/...`, replace `SOURCE` with `paper-kbs/finalpaper/HMRS-KBS-FINAL-20261124-EVIDENCE-LAYOUT/04-source/source`. This is a lookup aid for the companion inventory. The full claim-to-record mapping belongs to the evidence crosswalk in `SOURCE/supplementary.tex`; the benchmark verification entry point is `benchmark-suite/paper-results-kbs-20261125/verification/verify_all.py`.
+Paths below are relative to the repository root. The [frozen benchmark archive](https://github.com/kingdol666/rag-knowledge/tree/092e8bf2d65859dcd684071ed4169a40fbbc1563/benchmark-suite/paper-results-kbs-20261125) contains the published record snapshot. For package paths written `SOURCE/...`, use the accompanying revised `04-source/source` directory in `paper-kbs/finalpaper/HMRS-KBS-FINAL-20261124-EVIDENCE-LAYOUT`. The evidence crosswalk is in `SOURCE/supplementary.tex`; the benchmark verification entry point is `benchmark-suite/paper-results-kbs-20261125/verification/verify_all.py`.
 
 ## Manuscript and supplement records
 
@@ -9,7 +9,7 @@ Paths below are relative to the repository root. For package paths written `SOUR
 - `benchmark-suite/paper-results-kbs-20261125/records/legacy/desc_audit.json` — stored-part description checks under `audit`.
 - `benchmark-suite/paper-results-kbs-20261125/records/legacy/probe5_final.json` — filename-stem identifier probes. Use each row's probe result and inspect the query scope before treating it as a collection-specific observation.
 - `benchmark-suite/paper-results-kbs-20261125/records/legacy/ingest_report.json` and `benchmark-suite/results/r2_organize/audit_manifest.json` — separate ingestion and reconciliation records. Do not use the earlier reconciliation sample as a denominator for the later description audit.
-- `SOURCE/n8a_eval.tex`, `sec:exp-e1` — manuscript scope, including the distinction between an index defect and a later stale cache label. Use the supplement's crosswalk for the underlying checks and which incidents are report-level.
+- `SOURCE/n8a_eval.tex`, `sec:exp-e1` — manuscript scope, including the reported stale-index incident and the distinction between index state and the response a caller sees. Use the supplement's crosswalk to distinguish reports from raw logs.
 
 ### E2 — Native answer quality and judging sensitivity
 

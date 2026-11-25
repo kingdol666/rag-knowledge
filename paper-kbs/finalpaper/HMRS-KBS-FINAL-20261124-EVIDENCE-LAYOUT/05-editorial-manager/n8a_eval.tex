@@ -1,19 +1,14 @@
 \section{Evaluation}
 \label{sec:eval}
-A document can appear in the catalogue yet be missing from the index. A
-search can reach the right collection yet miss the passage that answers the
-question. We test these faults separately, and we treat answer quality as a
-question of its own because it also depends on how much text the answering
-agent can read. Section~\ref{sec:exp-e1} asks whether storage changes reach
-the index (RQ1). Section~\ref{sec:exp-e2} records answers from the deployed
-agent alongside baselines (RQ6), as a native case study rather than a
-controlled end-to-end test of catalogue-first access. Sections~\ref{sec:exp-e3},
-\ref{sec:exp-e4} and~\ref{sec:exp-e6} separately examine collection
-selection (RQ2), evidence-pack assembly (RQ3) and verifier-score ordering
-(RQ4). Section~\ref{sec:exp-e5} reports checks of the experience store, and
-Section~\ref{sec:exp-e7} examines answer traces, abstention and operational
-failures (RQ5). These are separate campaigns, not stages logged from one
-end-to-end query through all four access tiers.
+The evaluation tests which checks locate specific retrieval failures.
+It follows the evidence from managed state to the answer, with separate
+checks for index visibility (E1), collection selection (E3), evidence-pack
+assembly (E4) and candidate ordering (E6). E2 provides deployment context:
+it compares the answers of eight deployments but does not test
+the full catalogue-first path. E5 checks the reuse of operational lessons;
+E7 examines what scope, interruptions and citation markers reveal. The
+campaigns test distinct decisions, not successive stages of one benchmark
+query. Figure~\ref{fig:tiered-case} illustrates the path on a separate trace.
 
 \subsection{Datasets and measures}\label{sec:eval-setup}
 The answer comparison uses ten developer-authored questions with annotated
@@ -39,21 +34,19 @@ runs use the same questions, so they do not add independent observations.
 \label{sec:e1}
 \label{sec:e2}
 \label{sec:exp-e1}
-We first checked the state that search depends on. A later 328-part
-recheck, distinct from an earlier reconciliation sample of 33/322 parts,
-found content-derived descriptions for all stored arXiv parts after explicit
-indexing and reindexing; search probes returned identifiers for all 100
-papers. Of the 100
+For the stored arXiv corpus, a 328-part recheck found content-derived
+descriptions for all parts after explicit indexing and reindexing; search
+probes returned identifiers for all 100 papers. Of the 100
 probes, 72 lacked collection scope and 45 returned a chunk-copy name first.
 This establishes identifier presence, not ranking within each collection. The controlled
 checks passed for document creation, moves, deletion and forced reindexing.
 
-Two observations show why a search result alone does not locate a fault. In
-an earlier test on a disposable collection, a rename and move left 18 vector
+A stale search result does not by itself locate the fault. In an earlier
+test on a disposable collection, a rename and move left 18 vector
 entries instead of nine; forced reindexing restored the expected count, so the index
-was at fault. In a separate, later retest, an old label appeared in the
-search results although the index metadata was correct; the label came from
-the retrieval cache.
+was at fault. If index metadata already shows the new path, a stale
+result alone does not establish an index defect; the response path and
+cache need checking separately.
 
 Not every check succeeded. Task-status and update checks failed, and merge
 and split were not tested. A historical tag audit also recorded orphan tags

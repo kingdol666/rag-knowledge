@@ -92,30 +92,28 @@ city={Hefei, Anhui}, postcode={230031}, country={China}}
 city={Hefei, Anhui}, postcode={230029}, country={China}}
 
 \begin{abstract}
-When document collections change, retrieval depends on where documents are
-stored, how they are described and whether the search index reflects those
-changes. The Hierarchical Management Retrieval System (HMRS) links
-collection, document and segment management to agent retrieval. Its
-catalogue, shelf and document views let an agent narrow a search and
-inspect source passages through the Model Context Protocol. Lifecycle
-probes distinguished stale index entries from stale labels served by a
-retrieval cache. On 72 questions, a scripted selector identified the labelled
-collection in
+Retrieval from a changing collection depends on how documents are placed,
+described and indexed. The Hierarchical Management Retrieval System (HMRS)
+exposes that managed state to retrieval agents through a catalogue, shelves,
+document views and source-linked passages. This design lets an operator
+check where a search went, what text reached the agent and which decision
+excluded a candidate. A lifecycle probe traced stale search results to
+index entries left under an old path. On 72 questions, a scripted
+selector identified the labelled collection in
 72 cases with description-bearing cards and 37 with nominally name-only
-cards. Correct routing did not guarantee that the evidence pack contained
-the target. Combining scored document text with prioritised chunk windows
-raised target-string containment from 37 to 52 of 72 questions. The
-arm-specific text counters recorded 309~kB per question for this
-configuration and 31.4~kB for the reference, at different logging boundaries.
-Both same-question reruns retained the gain. In 16 fixed candidate pools,
+cards. Combining scored document text with prioritised chunk windows
+raised target-string containment from 37 to 52 of 72 questions, the highest
+count among the six main evidence-pack configurations in the frozen run. The
+arm-specific counters recorded 309~kB per question for this configuration
+and 31.4~kB for the reference at different logging boundaries. Both
+same-question reruns retained the gain. In 16 fixed candidate pools,
 reordering by verifier score reduced top-five gold-document hits from 15
-to seven. In the native eight-configuration deployment case study, a blind judge
-rated all ten HMRS answers correct, but no paired contrast with the three
-baselines indexed on the intended corpus was significant. The deployed
-agent read source documents and searched outside its configured
-collections; the indexed corpora were not all matched. These results support
-separate evaluation of collection selection, target-string containment and
-candidate ordering. They do not establish better backend answer quality.
+to seven. In a separate native deployment comparison, a blind judge
+rated all ten HMRS answers correct. Search scope and source access differed,
+so this was not a controlled comparison of catalogue-first retrieval. The
+results motivate three checks for managed
+retrieval: verify collection selection, measure what reaches the evidence
+pack and evaluate passage admission separately from document ranking.
 \end{abstract}
 
 \begin{keyword}

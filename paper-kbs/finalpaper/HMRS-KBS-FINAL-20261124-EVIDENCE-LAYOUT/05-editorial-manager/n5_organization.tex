@@ -43,8 +43,8 @@ collection scopes, which fixes the collections being compared.
 \label{sec:org-graph}
 \label{sec:org-experience}
 
-An early rename trial in a disposable collection exposed stale chunks
-under the old document path until a forced reindex. The current rename
+An early rename-and-move trial in a disposable collection exposed stale
+chunks under the old document path until a forced reindex. The current rename
 path attempts to remove old index
 entries and index the new path, and records failures separately from the
 metadata update. A post-operation probe checks whether queries resolve to

@@ -81,8 +81,8 @@ def tex_rows(path: Path, label: str, ncols: int) -> list[list[str]]:
     return rows
 
 
-# ---------------------------------------------------------------- E1: routing
-def verify_e1() -> None:
+# ------------------------------------------------ E3/E4: routing and evidence packs
+def verify_routing_and_packs() -> None:
     rc = REC / "routing_content_traces"
     rs = read_csv(rc / "redraw_route_summary.csv")
     traces = {}
@@ -114,13 +114,22 @@ def verify_e1() -> None:
             ratio = p["bytes"] / p["n"] / 1e6
             if not mb or abs(ratio - float(mb)) < 1e-5:
                 matches.append(run)
-        check(f"E1-summary-{row['panel']}-{arm}", "E1",
+        campaign = "E3" if row["panel"] == "route" else "E4"
+        check(f"{campaign}-summary-{row['panel']}-{arm}", campaign,
               f"summary {row['panel']}/{arm}: hits={hits}, mean={mb or '-'} MB",
               "reproduced", "reproduced" if matches else "NO RUN MATCHES",
               f"redraw_route_summary.csv vs traces {matches or '-'}")
 
     # Verify the named run, not merely any run that happens to match a count.
     frozen = traces["frozen"]
+    search_arms = ("A0", "A0f", "A0h", "PD", "A1b", "A2")
+    counts = {arm: frozen[arm]["hits"] for arm in search_arms}
+    check("E4-frozen-best-search-config", "E4", "A0h has the highest count of the six search configurations",
+          ["A0h"], [arm for arm in search_arms if counts[arm] == max(counts.values())],
+          "supp_traces_frozen.csv (read-all scan excluded)")
+    for arm in search_arms:
+        check(f"E4-frozen-population-{arm}", "E4", f"72 distinct in-domain question IDs for {arm}",
+              (72, 72), (frozen[arm]["n"], len(frozen[arm]["q"])), "supp_traces_frozen.csv")
     for arm, want in (("A0", 72), ("A3", 37)):
         check(f"E3-route-{arm}", "E3", f"frozen routing hits {arm}", (want, 72),
               (frozen[arm]["route"], frozen[arm]["n"]), "supp_traces_frozen.csv")
@@ -133,11 +142,11 @@ def verify_e1() -> None:
     # 3) containment: A0 37, A0h 52, A3 33, read-all 72 (volume panel)
     vol = {r["arm"]: r for r in rs if r["panel"] == "volume"}
     for arm, want in (("A0", 37), ("A0h", 52), ("A3", 33), ("A1-readall", 72)):
-        check(f"E1-containment-{arm}", "E1", f"containment hits {arm} = {want}",
+        check(f"E4-containment-{arm}", "E4", f"containment hits {arm} = {want}",
               want, int(vol[arm]["hits"]), "redraw_route_summary.csv volume")
-    check("E1-volume-A0-kB", "E1", "A0 handles 31.4 kB/question", 31.4,
+    check("E4-volume-A0-kB", "E4", "A0 trace records 31.4 kB/question", 31.4,
           float(vol["A0"]["mean_mb"]) * 1000, "redraw_route_summary.csv volume", tol=0.05)
-    check("E1-volume-A0h-kB", "E1", "A0h handles 309 kB/question", 309,
+    check("E4-volume-A0h-kB", "E4", "A0h trace records 309 kB/question", 309,
           float(vol["A0h"]["mean_mb"]) * 1000, "redraw_route_summary.csv volume", tol=0.6)
 
     # 4) reruns keep the gain (frozen/follow-up counts) and paired exact tests
@@ -145,7 +154,7 @@ def verify_e1() -> None:
     agg = {r["arm"]: r for r in cs if r["panel"] == "aggregate"}
     for arm, frozen, follow in (("A0", 37, 39), ("A0h", 52, 51), ("A0f", 45, 44), ("PD", 46, 45),
                                 ("A1b", 39, 39), ("A2", 25, 25), ("A3", 33, 25)):
-        check(f"E1-rerun-{arm}", "E1", f"{arm} containment frozen={frozen}, follow-up={follow}",
+        check(f"E4-rerun-{arm}", "E4", f"{arm} containment frozen={frozen}, follow-up={follow}",
               (frozen, follow), (int(agg[arm]["frozen"]), int(agg[arm]["followup"])),
               "redraw_content_summary.csv")
     # per-question paired counts in the frozen traces
@@ -157,9 +166,9 @@ def verify_e1() -> None:
             qa, qb = frozen[a]["q"], frozen[b]["q"]
             only_a = sum(qa[q] and not qb[q] for q in qa if q in qb)
             only_b = sum(qb[q] and not qa[q] for q in qa if q in qb)
-            check(f"E1-sign-{a}-{b}", "E1", f"frozen paired {a}>{b}: {w1}-{w2}, exact sign p",
+            check(f"E4-sign-{a}-{b}", "E4", f"frozen paired {a}>{b}: {w1}-{w2}, exact sign p",
                   (w1, w2), (only_a, only_b), "frozen traces, per-question gold_hit")
-            check(f"E1-signp-{a}-{b}", "E1", f"exact sign p for {a} vs {b}",
+            check(f"E4-signp-{a}-{b}", "E4", f"exact sign p for {a} vs {b}",
                   pwant, sign_p(only_a, only_a + only_b), "recomputed", tol=5e-5)
 
     # canonical summaries land in tables/ unchanged
@@ -739,16 +748,34 @@ def write_csv(path: Path, rows: list) -> None:
         w.writerows(rows)
 
 
+def verify_record_mirrors() -> None:
+    source_records = SRC / "experiment_data"
+    files = sorted(f for f in source_records.rglob("*") if f.is_file()
+                   and f.name != "README.md"
+                   and not any(part.startswith(".") or part == "__pycache__"
+                               for part in f.relative_to(source_records).parts))
+    check("records-source-exists", "record mirrors", "source package has evidence files",
+          True, bool(files), "04-source/source/experiment_data/")
+    for source in files:
+        rel = source.relative_to(source_records)
+        mirror = REC / rel
+        same = mirror.is_file() and source.read_bytes() == mirror.read_bytes()
+        check(f"mirror-{rel.as_posix()}", "record mirrors", "package and project copies match exactly",
+              "identical", "identical" if same else "different or absent",
+              f"experiment_data/{rel.as_posix()} vs records/{rel.as_posix()}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report-dir", type=Path, default=HERE)
     report_dir = parser.parse_args().report_dir
     report_dir.mkdir(parents=True, exist_ok=True)
-    verify_e1()
+    verify_routing_and_packs()
     verify_e2()
     verify_s12_s13()
     verify_legacy()
     verify_e6()
+    verify_record_mirrors()
     npass = sum(c["status"] == "PASS" for c in CHECKS)
     fails = [c for c in CHECKS if c["status"] != "PASS"]
     (report_dir / "report.json").write_text(json.dumps(
