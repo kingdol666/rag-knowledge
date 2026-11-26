@@ -1,0 +1,560 @@
+{
+ "schema_version": "1.0",
+ "purpose": "Scope of the deployed HMRS agent's search calls in the E2 answer grid. Derived from stored session records; not a new experiment and no value is edited by hand.",
+ "store": "storage/claude-chat.db (platform chat store, opened read-only)",
+ "five_collections": [
+  "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+  "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+  "f5770687-6b05-4a8d-8645-af31686ca87e"
+ ],
+ "scope_argument": {
+  "list": "kb_ids passed; not a parameter of either search tool, so no restriction applied",
+  "single": "kb_id passed; search restricted to that collection",
+  "none": "no collection identifier passed; search ran across every collection"
+ },
+ "classes": {
+  "five_collections": "result belongs to one of the five collections",
+  "same_paper_other_collection": "result is a paper of the 328-part corpus stored in another collection",
+  "unrelated": "result is a document outside the corpus"
+ },
+ "per_question": [
+  {
+   "qid": "BQ01",
+   "session_id": "01a1f98a-92fb-7000-84a2-54155dcae084",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:19:33",
+   "wall_s": 97.6,
+   "cost_usd": 0.0566778,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 20,
+     "classes": {
+      "stage1:five_collections": 5,
+      "stage1:n": 20,
+      "stage1:unrelated": 14,
+      "stage1:same_paper_other_collection": 1,
+      "stage2:five_collections": 3,
+      "stage2:n": 5,
+      "stage2:unrelated": 2
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "list",
+     "results": 20,
+     "collections_in_results": 4,
+     "classes": {
+      "vector:unrelated": 4,
+      "vector:n": 20,
+      "vector:same_paper_other_collection": 10,
+      "vector:five_collections": 6
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  },
+  {
+   "qid": "BQ02",
+   "session_id": "01a1f98e-2df4-7000-821c-ff971fac8109",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:23:29",
+   "wall_s": 49.9,
+   "cost_usd": 0.047616,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "none",
+     "results": 25,
+     "collections_in_results": 19,
+     "classes": {
+      "stage1:five_collections": 6,
+      "stage1:n": 20,
+      "stage1:unrelated": 14,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "none",
+     "results": 20,
+     "collections_in_results": 2,
+     "classes": {
+      "vector:same_paper_other_collection": 13,
+      "vector:n": 20,
+      "vector:five_collections": 7
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  },
+  {
+   "qid": "BQ03",
+   "session_id": "01a1f990-22d1-7000-8dc8-f26ac936d3f4",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:25:39",
+   "wall_s": 76.0,
+   "cost_usd": 0.0602682,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 20,
+     "classes": {
+      "stage1:five_collections": 5,
+      "stage1:n": 20,
+      "stage1:unrelated": 15,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "list",
+     "results": 20,
+     "collections_in_results": 2,
+     "classes": {
+      "vector:same_paper_other_collection": 13,
+      "vector:n": 20,
+      "vector:five_collections": 7
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": false,
+     "is_gold": false
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  },
+  {
+   "qid": "BQ04",
+   "session_id": "01a1f992-186c-7000-86b4-7cf494855a56",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:27:46",
+   "wall_s": 30.1,
+   "cost_usd": 0.043136999999999995,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 15,
+     "classes": {
+      "stage1:five_collections": 8,
+      "stage1:n": 20,
+      "stage1:unrelated": 12,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  },
+  {
+   "qid": "BQ05",
+   "session_id": "01a1f993-3523-7000-8ec9-e85b00cd462a",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:29:02",
+   "wall_s": 119.9,
+   "cost_usd": 0.0623952,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 15,
+     "classes": {
+      "stage1:five_collections": 8,
+      "stage1:n": 20,
+      "stage1:unrelated": 12,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "list",
+     "results": 20,
+     "collections_in_results": 2,
+     "classes": {
+      "vector:five_collections": 7,
+      "vector:n": 20,
+      "vector:same_paper_other_collection": 13
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  },
+  {
+   "qid": "BQ06",
+   "session_id": "01a1f996-cac9-7000-87ab-2106cc87c527",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:32:53",
+   "wall_s": 44.0,
+   "cost_usd": 0.061153200000000005,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "single",
+     "results": 25,
+     "collections_in_results": 2,
+     "classes": {
+      "stage1:five_collections": 17,
+      "stage1:n": 20,
+      "stage1:same_paper_other_collection": 3,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "single",
+     "results": 20,
+     "collections_in_results": 1,
+     "classes": {
+      "vector:five_collections": 20,
+      "vector:n": 20
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "single",
+     "results": 20,
+     "collections_in_results": 1,
+     "classes": {
+      "vector:five_collections": 20,
+      "vector:n": 20
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "single",
+     "results": 15,
+     "collections_in_results": 1,
+     "classes": {
+      "vector:five_collections": 15,
+      "vector:n": 15
+     }
+    }
+   ]
+  },
+  {
+   "qid": "BQ07",
+   "session_id": "01a1f998-f99a-7000-ab33-e78fb566cc25",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:35:19",
+   "wall_s": 53.5,
+   "cost_usd": 0.052864799999999997,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 19,
+     "classes": {
+      "stage1:five_collections": 6,
+      "stage1:n": 20,
+      "stage1:unrelated": 13,
+      "stage1:same_paper_other_collection": 1,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "list",
+     "results": 20,
+     "collections_in_results": 3,
+     "classes": {
+      "vector:same_paper_other_collection": 12,
+      "vector:n": 20,
+      "vector:five_collections": 6,
+      "vector:unrelated": 2
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  },
+  {
+   "qid": "BQ08",
+   "session_id": "01a1f99b-2c79-7000-ad4f-31c2441967db",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:37:41",
+   "wall_s": 75.5,
+   "cost_usd": 0.060756000000000004,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "none",
+     "results": 0,
+     "collections_in_results": 0,
+     "classes": {}
+    },
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "none",
+     "results": 15,
+     "collections_in_results": 12,
+     "classes": {
+      "stage1:five_collections": 5,
+      "stage1:n": 12,
+      "stage1:unrelated": 7,
+      "stage2:five_collections": 3,
+      "stage2:n": 3
+     }
+    },
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "none",
+     "results": 15,
+     "collections_in_results": 12,
+     "classes": {
+      "stage1:five_collections": 4,
+      "stage1:n": 12,
+      "stage1:unrelated": 8,
+      "stage2:five_collections": 3,
+      "stage2:n": 3
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "none",
+     "results": 12,
+     "collections_in_results": 10,
+     "classes": {
+      "stage1:five_collections": 4,
+      "stage1:n": 10,
+      "stage1:unrelated": 6,
+      "stage2:five_collections": 2,
+      "stage2:n": 2
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  },
+  {
+   "qid": "BQ09",
+   "session_id": "01a1f99d-a80e-7000-a99f-76747205ac20",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:40:26",
+   "wall_s": 122.1,
+   "cost_usd": 0.058512,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 17,
+     "classes": {
+      "stage1:five_collections": 6,
+      "stage1:n": 20,
+      "stage1:unrelated": 14,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_search_vector",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 2,
+     "classes": {
+      "vector:five_collections": 9,
+      "vector:n": 25,
+      "vector:same_paper_other_collection": 16
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  },
+  {
+   "qid": "BQ10",
+   "session_id": "01a1f9a0-ddfe-7000-9193-d6fde7c78d2b",
+   "model": "deepseek-flash",
+   "created_at": "2026-11-20 15:44:01",
+   "wall_s": 82.7,
+   "cost_usd": 0.1014882,
+   "calls": [
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 14,
+     "classes": {
+      "stage1:five_collections": 9,
+      "stage1:n": 20,
+      "stage1:unrelated": 11,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_search_two_stage",
+     "scope_argument": "list",
+     "results": 25,
+     "collections_in_results": 10,
+     "classes": {
+      "stage1:five_collections": 7,
+      "stage1:n": 20,
+      "stage1:unrelated": 13,
+      "stage2:five_collections": 5,
+      "stage2:n": 5
+     }
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    },
+    {
+     "tool": "kb_doc_read",
+     "collection_in_five": true,
+     "is_gold": true
+    }
+   ]
+  }
+ ],
+ "totals": {
+  "stage1:five_collections": 90,
+  "stage1:gold": 19,
+  "stage1:gold_five_collections": 18,
+  "stage1:gold_same_paper_other_collection": 1,
+  "stage1:n": 234,
+  "stage1:same_paper_other_collection": 5,
+  "stage1:unrelated": 139,
+  "stage2:five_collections": 56,
+  "stage2:gold": 51,
+  "stage2:gold_five_collections": 51,
+  "stage2:n": 58,
+  "stage2:unrelated": 2,
+  "vector:five_collections": 97,
+  "vector:gold": 136,
+  "vector:gold_five_collections": 71,
+  "vector:gold_same_paper_other_collection": 65,
+  "vector:n": 180,
+  "vector:same_paper_other_collection": 77,
+  "vector:unrelated": 6
+ },
+ "distinct_collections_in_results": 31,
+ "results_per_root": {
+  "Corpus-Chunks800": 78,
+  "计算机与人工智能": 74,
+  "生命科学与医学": 64,
+  "自然科学与地球科学": 63,
+  "工程与能源": 22,
+  "经济与社会": 22,
+  "MD语料-科学-英文": 17,
+  "MD语料-医学-英文": 15,
+  "A3无描述-medicine-en": 14,
+  "A3无描述-literature-en": 10,
+  "MD语料-文学-英文": 10,
+  "MD语料-哲学-英文": 9,
+  "MD语料-经济-英文": 8,
+  "demo-qa-20260927": 7,
+  "A3无描述-science-en": 7,
+  "e2e-demo-0923-022632": 6,
+  "实机演示-多路入库-20261117-232320": 5,
+  "演示-WikiLLM-R2": 5,
+  "演示-R1论文-20261112": 5,
+  "验收-TinyBERT-1113": 4,
+  "演示-LoRA论文-R2": 4,
+  "演示-DistilBERT-R3": 4,
+  "演示-WikiRAG-R3": 4,
+  "MD语料-技术-英文": 4,
+  "实机演示-E2E-20261117-211320": 3,
+  "route-cards-bqcmp": 2,
+  "验收-WikiQA-1113": 2,
+  "aw-industrial": 2,
+  "自然��学与地球科学": 1,
+  "aw-docs": 1
+ }
+}

@@ -1,0 +1,151 @@
+{
+ "question": {
+  "qid": "Q2",
+  "kb": "光伏组件失效分析库",
+  "text": "EL检测发现光伏组件边缘脱层，可能的根因是什么？应采取什么纠正措施？",
+  "gloss": "EL edge delamination root cause and corrective actions",
+  "gold_doc_substrings": [
+   "EL-2025-0317"
+  ],
+  "fact_markers": [
+   "61",
+   "85",
+   "层压机"
+  ],
+  "exp2": true
+ },
+ "response": {
+  "success": true,
+  "query": "EL检测发现光伏组件边缘脱层，可能的根因是什么？应采取什么纠正措施？",
+  "lanes": {
+   "vector_docs": 16,
+   "catalog_docs": 42
+  },
+  "merge": {
+   "merged": 43,
+   "from_both": 15,
+   "from_vector_only": 1,
+   "from_catalog_only": 27,
+   "pre_filtered": 31,
+   "judged_candidates": [
+    "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+    "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+    "光伏电站运维知识库/组串失配分析方法.md",
+    "薄膜工艺知识库/EVA封装膜工艺要点.md",
+    "光伏电站运维知识库/电站运维经验教训.md",
+    "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md",
+    "aw-industrial/【演示线1-挤出主机PLC-disturb工况】哨兵批筛+扰动响应(regime_key=line1-extruder-disturb-20261006).md",
+    "aw-industrial/POE胶膜工艺要点.md",
+    "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)"
+   ]
+  },
+  "judge": {
+   "batches": 2,
+   "scored": 14,
+   "errors": [],
+   "real_engine": true
+  },
+  "cut": {
+   "kept": [
+    {
+     "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+     "doc_path": "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+     "score": 0.9261
+    },
+    {
+     "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+     "doc_path": "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+     "score": 0.9076
+    },
+    {
+     "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+     "doc_path": "aw-industrial/【演示线1-挤出主机PLC-disturb工况】哨兵批筛+扰动响应(regime_key=line1-extruder-disturb-20261006).md",
+     "score": 0.8961
+    },
+    {
+     "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+     "doc_path": "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+     "score": 0.895
+    },
+    {
+     "kb_id": "84207617-4e55-4c41-aaad-f795654d1246",
+     "doc_path": "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+     "score": 0.8943
+    },
+    {
+     "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+     "doc_path": "aw-industrial/【演示线1-挤出主机PLC-decay5跌落后180℃平台】11-36–12-36全窗哨兵批筛62条-TC=0死回路冻结期非受控指纹复核.md",
+     "score": 0.8874
+    },
+    {
+     "kb_id": "6c14dfbf-5197-4eaa-adfc-7be2c7ae6248",
+     "doc_path": "光伏组件失效分析库/EVA封装膜湿热老化失效物理机理.md",
+     "score": 0.8805
+    },
+    {
+     "kb_id": "6c14dfbf-5197-4eaa-adfc-7be2c7ae6248",
+     "doc_path": "光伏组件失效分析库/EL-2025-0317脱层批次根因分析报告.md",
+     "score": 0.8463
+    },
+    {
+     "kb_id": "84207617-4e55-4c41-aaad-f795654d1246",
+     "doc_path": "薄膜工艺知识库/EVA封装膜工艺要点.md",
+     "score": 0.8416
+    },
+    {
+     "kb_id": "a6eb3fae-75f6-4a7c-97f9-0425e3ca71dd",
+     "doc_path": "光伏电站运维知识库/电站运维经验教训.md",
+     "score": 0.8308
+    },
+    {
+     "kb_id": "a6eb3fae-75f6-4a7c-97f9-0425e3ca71dd",
+     "doc_path": "光伏电站运维知识库/组串失配分析方法.md",
+     "score": 0.8056
+    },
+    {
+     "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+     "doc_path": "aw-industrial/POE胶膜工艺要点.md",
+     "score": 0.7061
+    }
+   ],
+   "dropped": []
+  },
+  "reads": [
+   {
+    "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+    "doc_path": "aw-industrial/【演示线1-挤出主机PLC-disturb强化稳态】206纠偏后受控稳态复筛-GOAL护栏双过,SPC噪声告警仅归档不提案.md",
+    "score": 0.9261,
+    "content": "# 【演示线1|挤出主机PLC|disturb强化稳态】206纠偏后受控稳态复筛:GOAL/护栏双过,SPC噪声告警仅归档不提案\n\nregime_key=line1-extruder-disturb2-20261006\n巡检时间:2026-10-06 08:37–08:47(+08:00);巡检人:sentinel-patrol-lead(哨兵巡检→入库自动化工站);根任务 f74d14e2(巡检实战:disturb 强化工况下的哨兵闭环,GOAL≥205.5,晶点≤6)\n\n## 一、数据源\n- 导出:daqexp-20261006083713-6b3dcf(daq_export merge:true,无降采样),批次 rr-9b067(演示产品1 × 演示配方1);配方 v9 定义目标 z1=201.6/z2=205/z3=205℃,运行实值 z1=201.6/z2=206/z3=206℃(03:00:04 ap-ceaf31cd 整包方案「disturb纠偏·z2/z3联合+1.0℃/区(205→206)」HITL 批准后下发生效,此后无回退)\n- 节点:dn-0183240d 熔体温度(℃)、dn-a41c49cc 晶点计数(个/m²),2s 采样,5000 行/节点,窗 2026-10-06 05:44:20–08:37:12(+08:00),约 173 分钟\n- 工况:disturb 强化(heaterDecay 2.5/进料漂移 0.6,约 02:20 注入),本窗为其被 03:00 纠偏吸收后的时段\n- 工件:交换目录副本 D:\\codes\\industrial-deep-diagnostic\\workspace\\aw-exchange\\line1-disturb2-20261006-0837-merged.csv;快筛切片 line1-disturb2-20261006-0837-recent400.csv(400 行,08:23:26–08:37:12)\n\n## 二、告警统计\n- 基线:line1-extruder-206hold-20261006(prior v1.0.0,稳态 σ≈0.395)——已登记并直接命中,本轮未重建(扰动窗禁刷基线,方法学约束见 steady-step 文档)\n- sentinel_screen(400 行):8 条——high:熔体 R1×1+R5×1、晶点 R5×2+R6×2;warn:R2×2(熔体/晶点各1)\n- sentinel_watch(全窗 5000 行,task=SNW-20261006004417-9dlckg016):143 条,R1×18/R5×43/R6×41/R2×38/R3×3;按参数熔体 52/晶点 91;critical=0(无越规格);事件 25 起,最大两起均为晶点(跨度 1117/1140 行,各 24 条);防风暴合并 9 组同 key 重复\n- 历史对照(同产线):steady-step 41 条/3h(受控阶跃余波);disturb1 45 条/90min(非受控方差:均值锚定 205.09、GOAL 余量被压至 +0.013、R6×16 集中);206hold 纯稳态复筛 66 条(GOAL keep)。本轮 143 条/173min≈75 条/90min,数值密度偏高但结构完全不同(见下)\n- 局限:C2 漂移投影未启用(基线无 operating_windows),GOAL 余量按 3min 桶手工复核\n\n## 三、根因判读\n1. 非均值漂移:30min 分片均值 206.070/206.048/206.059/206.075℃(平台);全窗 3min 桶均值 min 205.990、last 206.084;R2 全部 warn 级零星,无同侧持续段\n2. 非方差强化:全窗 σ=0.402℃ ≈ 基线 σ0.395;分片 σ 0.394–0.414 稳定;|dev|>1.0℃ 占 1.30%(高斯 2.5σ 理论 1.24%)——heaterDecay 2.5 的强化扰动已被 03:00 +1.0℃/区 纠偏完全吸收\n3. 非传感器/数据质量异常:corr(熔体,晶点)=0.017;晶点 ≥8 的 36 个尖峰行熔体均值 206.17 vs 全局 206.06(无联动);晶点半趋势 3.96→4.00 个/m²(无漂移)——C 分支(传感器核查)排除\n4. R1 结构:熔体 11 点双向对称(上行 207.3–207.8,下行 204.7–204.8)=高斯噪声尾部(5000 点 3σ 外期望约 13 点);晶点 R1 7 点全部为计数上界 9\n5. 结构归因:143 条中 91 条(64%)在晶点——计数型数据(整数 0–9"
+   },
+   {
+    "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+    "doc_path": "aw-industrial/【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效.md",
+    "score": 0.9076,
+    "content": "# 【演示线1｜挤出主机PLC｜heaterDecay5跌落】根因修订与跨频道对齐：TC=0死回路定案,SP写入冻结约定生效\n\nregime_key: line1-extruder-decay5-20261006(decay5 系列第 4 篇,根因修订)\n\n# 一、根因修订(覆盖本系列前三篇的「heaterDecay 5.0 功率衰减」表述)\n跨频道协作(工况A-线1温度GOAL-lead,证据回执 a69a6cdd)定案:z2/z3 加热输出丢失(TC=0,2026-10-06 10:59:08 系统告警「加热区2SP/3SP temp-tc=0 低于下限 120」)为熔体 206→180℃ 崩落的设备级根因。TC 死回路下 SP→熔体通道增益=0,decay5 文档「衰减功率在新水平平衡、SP 上调可抬升平台」的原假设被 13:27 step1 实验证伪——两者表述合并为:模拟器注入的 heaterDecay 5.0 表现为 z2/z3 热输出丢失(TC 读 0),SP 写入无热输入。\n\n# 二、step1 零增益双窗实证(与工况A 独立取数互证)\n- 下发:ap-2f72fa5f,13:27:42,z2=dw-9bf10862、z3=dw-52ed421c 206→208.8℃(批次 rr-c446514a),PLC 实值已验 208.8\n- 窗1(13:31–13:46):熔体均值 180.12℃(178.91~181.87);窗2(13:45–13:53):均值 180.29℃(179.09~181.24)\n- 对照下发前平台 179.85~180.02℃(12:36–13:30 三窗):Δ≈+0.1~0.3℃,σ0.6~0.75 噪声带内;工况A 独立窗(13:24–13:34)均值 180.09℃ 一致\n- 晶点:65.98/66.01 个/m² 持平;预期增益 +3.2~4.6℃ 实测 ≈0,增益 < 预期 1/10\n\n# 三、跨频道冻结约定(13:48:55 协作单三点,我方已全承诺回执)\n1. TC=0 修复闭环前,冻结对 rc-bbab24bc 的一切参数写入(propose/trial/update/apply/rollback 全覆盖);单写者=工况A(绑定方)\n2. 208.8 清退与回路复活 sequencing 归工况A:修复获批后、回路复活前清退回 v9 205/205,避免复活瞬间 +2.8℃/区 叠加热输入致过冲;复活期门限:熔体升速 >1.5℃/min 或 >210℃ 即时报\n3. 不固化 v10:208.8 死回路写入零达标证据,不构成 recipe_update 候选\n4. 我方转只读哨兵监视,加晶点回落观察项(熔体恢复后 30min 内未回落至 ≤6 个/m² 单独立案)\n\n# 四、对历史文档的勘误指引\n- decay5 第 1 篇(d89ae5f5)与第 2 篇(c366b740)中「heaterDecay 5.0 功率衰减、衰减功率新水平平衡、SP 不动则恒驻 180 平台」的机理表述,应按本篇 TC=0 定案理解;「复测达标续 step2」条款作废\n- 第 3 篇(闭环停步篇,task kbt_muw9jjko_44ec893a)的停步判定与双窗数据不受影响,其「换杠杆」决策请求由本篇冻结约定承接\n\n# 五、工件与引用\n- 证据:10:59:08 告警(ops_log)、工况A 回执 a69a6cdd、双窗复测 daq_query 15s 桶、批筛 SNW-20261006053525-6zdjbn038\n- 协作对象:工况A-线1温度GOAL-lead(1b20baae-6ce3-46aa-b8f4-ffc1e358545f),协作单 12:56:07/13:35:30/13:48:55,回执 13:5x"
+   },
+   {
+    "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+    "doc_path": "aw-industrial/【演示线1-挤出主机PLC-disturb工况】哨兵批筛+扰动响应(regime_key=line1-extruder-disturb-20261006).md",
+    "score": 0.8961,
+    "content": "# 数据源\n- daq_export: daqexp-20261006024419-3ed413(merge:true, last_minutes:90)\n- 节点: dn-0183240d 熔体温度(℃)、dn-a41c49cc 晶点计数(个/m²)\n- 交换文件: D:\\codes\\industrial-deep-diagnostic\\workspace\\aw-exchange\\line1-disturb-0244.csv(原始列名)与 line1-disturb-0244-watch.csv(ASCII 列名 time,melt_temp,gels_count,批筛用)\n- 窗口: 2026-10-06 01:14:21~02:44:19(+08:00),2600 行,2s 采样;批次 rr-9b067,配方 演示配方1 v9(z1SP=201.6/z2SP=205/z3SP=205℃)\n- 窗内人工下发: 0 次(最后下发 10-05 23:18:20 v9 recipe.apply,ops_log 核验)\n\n# 哨兵筛查\n- 快筛 sentinel_screen(最近400行): status=ok 无异常(02:31~02:44 段平静)\n- 批筛 sentinel_watch: SNW-20261005184856-ra0mmh008,告警 45 条,基线 演示线1 prior v1.0.0\n- 规则分布: NELSON_R1×8(high,3σ单点)、R5×10(high,短窗>2σ)、R6×16(high,窗内>1σ同侧)、R2×9(warn,同侧均值漂移)、R3×1(warn,单调趋势)\n- 事件簇: EVT-001 rows118-402(01:18~01:28,6条)、EVT-002 rows528-1056(01:32~01:49,10条)、EVT-003 rows1206-2239(01:55~02:29,23条,含R3)、EVT-004 rows2376-2567(02:33~02:40,6条)\n- 产物: ...\\closedloop\\sentinel\\watch\\SNW-20261005184856-ra0mmh008\\watch_report.md 与 alert.json\n- 失败入档: 首发 SNW-20261005184452-gv5w91007 报「no usable numeric parameter columns」——中文+节点id长列名解析不兼容;ASCII 列名副本重试成功,后续导出建议直接附 ASCII 列名宽表\n\n# 数据统计(90min 窗)\n- 熔体: 均值 205.087℃,std 0.396,min 203.8,max 206.5;8 段分段均值 205.04~205.12,平稳无趋势性均值漂移\n- GOAL 合规: 28 个不重叠 3min 桶均值全部 ≥205.0℃,最小 205.013℃(02:02~02:05 桶,余量仅 +0.013℃)\n- 晶点: 均值 3.94 个/m²,窗内无 ≥10 样本(护栏 3min 均值>10 未触发)\n\n# 与历史对照\n- 历史结论: regime_key=line1-extruder-steady-step-20261006(2026-10-06 01:54 入库,doc_id 93203c35-5eb8-409c-bc1a-e708f2c51d4c):41 条告警,R1+R5 为主,无 R6,定性为 HITL 受控 SP 阶跃(z2/z3→205、z1→201.6、01:05 z1 试验 203.4)被 SPC 规则捕获的预期余波\n- 本次差异: ① R6×16 为历史未出现的新形态;② R2×9/R3×1 均值漂移/趋势型告警新增;③ 窗内零人工下发,告警簇贯穿全窗而非集中于阶跃边缘 → 判非历史阶跃余波\n\n# 根因判读\n非受控方差型扰动:均值仍锚定 205.09℃(分段平稳),但波动加大(σ=0.396,单点 203.8~206.5,极差 2.7℃),GOAL 余量在扰动谷被压至 +0.013℃。与「加热器老化+进料漂移」类慢变量叠加随机扰动形态一致;波动双侧对称、量程内、晶点无联动异常,不支持传感器故障。\n\n# 判定与响应\n按作业判据「R5/R6 持续波动 = 非受控扰动需纠偏」:成立。响应:提交纠偏提案 z2/z3 SP 205→206℃(+1.0℃/区,≤单步上限 2.8℃),引用增益标定 0.57~0.82℃熔/℃SP(工况C v4/v5 0.73~0.82,精调 v6 0.57),预期 3min 桶均值余量 +0.013 → +0.6~0.9℃;z1 杠杆已封存(增益 0.06<0.4 失效线)不动。提"
+   },
+   {
+    "kb_id": "2c353c50-5bd1-427d-9d80-4d741cea02d5",
+    "doc_path": "aw-industrial/【演示线1·挤出主机PLC·晶点计数从站·修复恢复态·R2全链巡检】TC0修复签名成立(熔体180→200℃平台30分钟),GOAL缺口-5.5℃+晶点传感器复冻——step2纠偏提案与归档定案(regime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006)",
+    "score": 0.895,
+    "content": "# R2 全链巡检结论(2026-10-06 17:42,批次 rr-9b067)\n\nregime_key=ln-d7e0a2a2-extruder-tc0repair-recovery-20261006(与历史 line1-extruder-<regime>-<date> 命名族对齐,接续 tc0revival/decay5 系列)\n\n## 一、数据源\n- daq_export merge 模式:export_id=daqexp-20261006174239-5d61dc,窗口 2026-10-05T21:42:39~2026-10-06T17:42:39(+08:00),merged.csv 4999 行秒对齐宽表(熔体温度 dn-0183240d / 晶点计数 dn-a41c49cc),列=节点名,time_col=time。\n- 交换目录副本:D:/codes/industrial-deep-diagnostic/workspace/aw-exchange/merged_ln-d7e0a2a2_rr-9b067_20261006T174239.csv;快筛子集 recent400_ln-d7e0a2a2_20261006T174239.csv(17:28:15~17:42:37,400 行)。\n- 基线:prior 模式 SNB-20261006015834(v1.0.0,center 熔体 205.993℃/σ_overall 0.405;晶点 center 3.988/σ 1.53),本窗直接复用,未重建。\n\n## 二、告警统计\n- sentinel_screen(最近400行,task 同步):9 条告警,熔体 R1/R5/R6(high)+R2(warn),晶点 R1/R5/R6(high)+R2(warn);熔体稳健 z|13.76|。\n- sentinel_watch(全窗批筛,task_id=SNW-20261006094329-ky9hqx042,107ms):总体 alert,56 条告警。构成:high×17(ROBUST_Z_OUTLIER×5、NELSON_R1×4、NELSON_R5×4、NELSON_R6×4)、warn×39(REGIME_CHANGE_NEW×9、NELSON_R2×6、NELSON_R3×22,其余 2);事件 22 个;C3 稳态映射 abnormal=48/marginal=12/steady=4841/transition=99;防风暴合并 8 组。\n- 告警簇时空定位:①行1086~1405 区 REGIME_CHANGE_NEW 群+R3 群=TC0 崩塌与 180℃ 平台(10:35~15:11,已定案史实,见 decay5/tc0revival 系列 7 篇);②行2415~3649 晶点 ROBUST_Z 69/R1/R5/R6=14:17~15:50 传感器冻结段;③**新变化点行4195/4206≈17:13=熔体修复回升暂态**;④行8~1264 早段 R1/R2=206℃ 稳态尾窗(受控,steady206 系列已归档)。\n\n## 三、根因判读\n1. **修复签名成立(本窗新事实)**:17:13 起熔体自 180℃ 故障平台回升,17:28~17:42 实测平台 200.0℃(198.8~201.0℃,400 行全稳态,块均值 200.00/200.00/200.00/199.97),持续≥30 分钟且高于 184℃ 触发线。ops_log 近 300 分钟零参数下发(13:27 ap-2f72fa5f 之后无任何 write),排除 Agent/用户写入 → **设备侧修复(加热输出恢复)为唯一解释**,与 tc0revival 终态定案的「重发唯一触发=熔体站上184℃ 或 TC≠0」吻合。\n2. **熔体未回窗**:当前 200.0℃ vs GOAL 205.5℃ 缺口 −5.5℃(工艺窗 120~260 内,GOAL 窗外);PLC 实值 z2/z3=208.8℃(13:27 下发已持久化)、z1=201.6℃,总 SP 419.2 已高于健康 206 时代总 SP 413.4(z1 203.4+z2/z3 205),平衡却停在 200 → 提示回路增益尚未完全恢复或热损失面改变,但修复方向确立,恢复调控条件已满足。\n3. **晶点传感器复冻(新异常)**:17:28~17:42 连续 400 行恒 65.5 个/m²(min=max=65.5),与 14:17~15:50:30 冻结段同型;当前读数不可信,护栏(≤6)与回退线(>10)判定悬置,需现场检修;异常门 >75 未触发系数值冻结巧合,不得据此判安。\n4. 历史受控阶跃比对:"
+   },
+   {
+    "kb_id": "84207617-4e55-4c41-aaad-f795654d1246",
+    "doc_path": "薄膜工艺知识库/PET双向拉伸薄膜工艺规程.md",
+    "score": 0.8943,
+    "content": "# PET 双向拉伸薄膜生产工艺规程（内部工艺文件QG/PET-2024-018）\n\n## 一、工艺概述\n\nPET（聚对苯二甲酸乙二醇酯）双向拉伸薄膜采用逐次拉伸法（LST）或同时双向拉伸法（TDO）生产。本工艺文件规定厚片预热温度、纵向拉伸比（MDO）、横向拉伸比（TDO）与热定型温度的控制范围。\n\n## 二、厚片制备\n\n铸片辊温度控制在 65-75 摄氏度，厚片厚度 350±10 微米，结晶度需低于5%，否则拉伸时易破膜。\n\n## 三、纵向拉伸（MDO）\n\n预热辊温度 85-95 摄氏度，拉伸辊温度 105-115 摄氏度，纵向拉伸比 3.2-3.6\n\n倍，拉伸速率梯度控制在 120%/s 以内。\n\n## 四、横向拉伸（TDO）\n\n烘箱预热区温度 95-105 摄氏度，拉伸区温度 105-115 摄氏度，横向拉伸比 3.5-4.0倍，夹持链轨宽度由 700mm 扩展至 2600mm。\n\n## 五、热定型与收卷\n\n热定型温度 220-235 摄氏度，时间 4-6 秒，定型后薄膜热收缩率（150 摄氏度、10min）需小于1.5%。收卷张力按锥度张力控制，芯部张力为表层张力的 85%。\n\n## 六、常见质量问题\n\n薄膜出现纵向条纹多为铸片辊局部粘料；横向厚度超差应检查 TDO 温区横断面温差是否超过 ±2摄氏度；破膜多因厚片结晶度过高或拉伸比超出工艺上限。"
+   }
+  ],
+  "elapsed_s": 1.08,
+  "report": "lanes vec=16 cat=42 → merged 43 (both 15/vec 1/cat 27) → judged 12 (2 batches) → kept 12, dropped 0 → read top 5; pre_filtered 31"
+ }
+}

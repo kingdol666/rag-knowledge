@@ -1,0 +1,1000 @@
+{
+ "run_dir": "rerun5-20261017",
+ "question_file": "qa_questions_e5_corrected.json",
+ "grades": {
+  "a2": {
+   "n": 10,
+   "gold_hit": 10,
+   "kw_ok": 7,
+   "kw_alias_ok": 9,
+   "pass": 7,
+   "pass_alias": 9,
+   "pass_rate": 0.7,
+   "pass_alias_rate": 0.9,
+   "cited": 9,
+   "cited_chunk": 8,
+   "avg_latency_s": 37.7,
+   "avg_tools": 8.2,
+   "avg_cost_usd": 0.6721,
+   "tokens_out_total": 36975
+  },
+  "b": {
+   "n": 10,
+   "gold_hit": 10,
+   "kw_ok": 7,
+   "kw_alias_ok": 9,
+   "pass": 7,
+   "pass_alias": 9,
+   "pass_rate": 0.7,
+   "pass_alias_rate": 0.9,
+   "cited": 9,
+   "cited_chunk": 0,
+   "avg_latency_s": 15.2,
+   "avg_tools": 5.9,
+   "avg_cost_usd": 0.3767,
+   "tokens_out_total": 18379
+  },
+  "c": {
+   "n": 10,
+   "gold_hit": 10,
+   "kw_ok": 8,
+   "kw_alias_ok": 10,
+   "pass": 8,
+   "pass_alias": 10,
+   "pass_rate": 0.8,
+   "pass_alias_rate": 1.0,
+   "cited": 9,
+   "cited_chunk": 8,
+   "avg_latency_s": 19.6,
+   "avg_tools": 5.8,
+   "avg_cost_usd": 0.5236,
+   "tokens_out_total": 26392
+  }
+ },
+ "rows": [
+  {
+   "qid": "BQ01",
+   "track": "a2",
+   "gold": "1706.03762",
+   "gold_hit": true,
+   "kw": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "kw_alias": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Table 1",
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 42.5,
+   "tools": 8,
+   "cost_usd": 0.6821429999999999,
+   "tokens_out": 3852,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ02",
+   "track": "a2",
+   "gold": "1801.00862",
+   "gold_hit": true,
+   "kw": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "kw_alias": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 1 of 4"
+   ],
+   "is_error": false,
+   "latency_s": 48.8,
+   "tools": 8,
+   "cost_usd": 0.6644049999999999,
+   "tokens_out": 3578,
+   "insufficient_evidence": true
+  },
+  {
+   "qid": "BQ03",
+   "track": "a2",
+   "gold": "2212.13138",
+   "gold_hit": true,
+   "kw": [
+    "multimedqa",
+    "67.6"
+   ],
+   "kw_alias": [
+    "multimedqa",
+    "67.6"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Table 1",
+    "Table 4",
+    "part 1 of 8",
+    "part 2 of 8",
+    "part 5 of 8",
+    "§3.1",
+    "§4.1"
+   ],
+   "is_error": false,
+   "latency_s": 37.7,
+   "tools": 8,
+   "cost_usd": 0.6362509999999999,
+   "tokens_out": 3643,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ04",
+   "track": "a2",
+   "gold": "1602.01876",
+   "gold_hit": true,
+   "kw": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "kw_alias": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 32.7,
+   "tools": 8,
+   "cost_usd": 0.566252,
+   "tokens_out": 2200,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ05",
+   "track": "a2",
+   "gold": "1512.08067",
+   "gold_hit": true,
+   "kw": [
+    "unified growth theory"
+   ],
+   "kw_alias": [
+    "unified growth theory"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
+   "is_error": false,
+   "latency_s": 19.8,
+   "tools": 7,
+   "cost_usd": 0.595388,
+   "tokens_out": 2332,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ06",
+   "track": "a2",
+   "gold": "1503.07557",
+   "gold_hit": true,
+   "kw": [
+    "thermodynamic"
+   ],
+   "kw_alias": [
+    "thermodynamic",
+    "saturation vapor pressure"
+   ],
+   "kw_ok": false,
+   "kw_alias_ok": true,
+   "pass": false,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 3"
+   ],
+   "is_error": false,
+   "latency_s": 42.3,
+   "tools": 7,
+   "cost_usd": 0.663409,
+   "tokens_out": 4377,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ07",
+   "track": "a2",
+   "gold": "2608.05850",
+   "gold_hit": true,
+   "kw": [
+    "yiddish",
+    "8b"
+   ],
+   "kw_alias": [
+    "yiddish",
+    "8b"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Section 5",
+    "part 1 of 4"
+   ],
+   "is_error": false,
+   "latency_s": 40.7,
+   "tools": 9,
+   "cost_usd": 0.686612,
+   "tokens_out": 3981,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ08",
+   "track": "a2",
+   "gold": "2408.09942",
+   "gold_hit": true,
+   "kw": [
+    "oxygen redox"
+   ],
+   "kw_alias": [
+    "oxygen redox"
+   ],
+   "kw_ok": false,
+   "kw_alias_ok": false,
+   "pass": false,
+   "pass_alias": false,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Section 4",
+    "Tables 1",
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 40.7,
+   "tools": 9,
+   "cost_usd": 0.7332059999999999,
+   "tokens_out": 4218,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ09",
+   "track": "a2",
+   "gold": "2410.10669",
+   "gold_hit": true,
+   "kw": [
+    "dynamic"
+   ],
+   "kw_alias": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "kw_ok": false,
+   "kw_alias_ok": true,
+   "pass": false,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Sections I",
+    "Tables II",
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 25.0,
+   "tools": 8,
+   "cost_usd": 0.6678919999999999,
+   "tokens_out": 3689,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ10",
+   "track": "a2",
+   "gold": "2604.01385",
+   "gold_hit": true,
+   "kw": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "kw_alias": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "Section 3.3",
+    "Sections 3.1",
+    "part 1 of 3",
+    "part 2 of 3",
+    "part 3 of 3"
+   ],
+   "is_error": false,
+   "latency_s": 46.7,
+   "tools": 10,
+   "cost_usd": 0.82507,
+   "tokens_out": 5105,
+   "insufficient_evidence": true
+  },
+  {
+   "qid": "BQ01",
+   "track": "b",
+   "gold": "1706.03762",
+   "gold_hit": true,
+   "kw": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "kw_alias": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Section 1",
+    "Section 3.2",
+    "Section 3.2.1",
+    "Section 3.2.2",
+    "Section 4",
+    "Section 7",
+    "Sections 1",
+    "Table 1",
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 21.0,
+   "tools": 8,
+   "cost_usd": 0.5244519999999999,
+   "tokens_out": 2986,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ02",
+   "track": "b",
+   "gold": "1801.00862",
+   "gold_hit": true,
+   "kw": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "kw_alias": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 2 of 3",
+    "§4.1",
+    "§6.4"
+   ],
+   "is_error": false,
+   "latency_s": 12.5,
+   "tools": 6,
+   "cost_usd": 0.308896,
+   "tokens_out": 1388,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ03",
+   "track": "b",
+   "gold": "2212.13138",
+   "gold_hit": true,
+   "kw": [
+    "multimedqa",
+    "67.6"
+   ],
+   "kw_alias": [
+    "multimedqa",
+    "67.6"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Table 1",
+    "Table 4",
+    "Table 6",
+    "Table 7",
+    "part 1 of 8",
+    "part 2 of 8",
+    "§3.1.1",
+    "§4.1"
+   ],
+   "is_error": false,
+   "latency_s": 11.5,
+   "tools": 5,
+   "cost_usd": 0.30075700000000005,
+   "tokens_out": 1466,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ04",
+   "track": "b",
+   "gold": "1602.01876",
+   "gold_hit": true,
+   "kw": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "kw_alias": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 11.4,
+   "tools": 5,
+   "cost_usd": 0.294201,
+   "tokens_out": 1032,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ05",
+   "track": "b",
+   "gold": "1512.08067",
+   "gold_hit": true,
+   "kw": [
+    "unified growth theory"
+   ],
+   "kw_alias": [
+    "unified growth theory"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
+   "is_error": false,
+   "latency_s": 16.9,
+   "tools": 4,
+   "cost_usd": 0.334651,
+   "tokens_out": 1657,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ06",
+   "track": "b",
+   "gold": "1503.07557",
+   "gold_hit": true,
+   "kw": [
+    "thermodynamic"
+   ],
+   "kw_alias": [
+    "thermodynamic",
+    "saturation vapor pressure"
+   ],
+   "kw_ok": false,
+   "kw_alias_ok": true,
+   "pass": false,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 2 of 3",
+    "§3",
+    "§4.1",
+    "§8"
+   ],
+   "is_error": false,
+   "latency_s": 14.6,
+   "tools": 7,
+   "cost_usd": 0.358623,
+   "tokens_out": 1762,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ07",
+   "track": "b",
+   "gold": "2608.05850",
+   "gold_hit": true,
+   "kw": [
+    "yiddish",
+    "8b"
+   ],
+   "kw_alias": [
+    "yiddish",
+    "8b"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Section 5",
+    "part 1 of 4"
+   ],
+   "is_error": false,
+   "latency_s": 12.6,
+   "tools": 6,
+   "cost_usd": 0.30039499999999997,
+   "tokens_out": 1329,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ08",
+   "track": "b",
+   "gold": "2408.09942",
+   "gold_hit": true,
+   "kw": [
+    "oxygen redox"
+   ],
+   "kw_alias": [
+    "oxygen redox"
+   ],
+   "kw_ok": false,
+   "kw_alias_ok": false,
+   "pass": false,
+   "pass_alias": false,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 2",
+    "part 2 of 2",
+    "§1",
+    "§3.2",
+    "§4",
+    "§5"
+   ],
+   "is_error": false,
+   "latency_s": 13.2,
+   "tools": 4,
+   "cost_usd": 0.335444,
+   "tokens_out": 1548,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ09",
+   "track": "b",
+   "gold": "2410.10669",
+   "gold_hit": true,
+   "kw": [
+    "dynamic"
+   ],
+   "kw_alias": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "kw_ok": false,
+   "kw_alias_ok": true,
+   "pass": false,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Tables II",
+    "part 1 of 2",
+    "part 2 of 2",
+    "§I",
+    "§V-C"
+   ],
+   "is_error": false,
+   "latency_s": 11.3,
+   "tools": 4,
+   "cost_usd": 0.32337499999999997,
+   "tokens_out": 1083,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ10",
+   "track": "b",
+   "gold": "2604.01385",
+   "gold_hit": true,
+   "kw": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "kw_alias": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "Table 2",
+    "part 1 of 3",
+    "part 2 of 3",
+    "part 3 of 3",
+    "§2.1",
+    "§3.1",
+    "§3.2",
+    "§3.3"
+   ],
+   "is_error": false,
+   "latency_s": 27.1,
+   "tools": 10,
+   "cost_usd": 0.686444,
+   "tokens_out": 4128,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ01",
+   "track": "c",
+   "gold": "1706.03762",
+   "gold_hit": true,
+   "kw": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "kw_alias": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 22.8,
+   "tools": 6,
+   "cost_usd": 0.5592400000000001,
+   "tokens_out": 3202,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ02",
+   "track": "c",
+   "gold": "1801.00862",
+   "gold_hit": true,
+   "kw": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "kw_alias": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 1 of 4"
+   ],
+   "is_error": false,
+   "latency_s": 16.6,
+   "tools": 5,
+   "cost_usd": 0.49551500000000004,
+   "tokens_out": 2677,
+   "insufficient_evidence": true
+  },
+  {
+   "qid": "BQ03",
+   "track": "c",
+   "gold": "2212.13138",
+   "gold_hit": true,
+   "kw": [
+    "multimedqa",
+    "67.6"
+   ],
+   "kw_alias": [
+    "multimedqa",
+    "67.6"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 8",
+    "part 2 of 8"
+   ],
+   "is_error": false,
+   "latency_s": 17.2,
+   "tools": 5,
+   "cost_usd": 0.484027,
+   "tokens_out": 2091,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ04",
+   "track": "c",
+   "gold": "1602.01876",
+   "gold_hit": true,
+   "kw": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "kw_alias": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 13.8,
+   "tools": 5,
+   "cost_usd": 0.45221999999999996,
+   "tokens_out": 1249,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ05",
+   "track": "c",
+   "gold": "1512.08067",
+   "gold_hit": true,
+   "kw": [
+    "unified growth theory"
+   ],
+   "kw_alias": [
+    "unified growth theory"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": false,
+   "cited_chunk": false,
+   "cite_markers": [],
+   "is_error": false,
+   "latency_s": 19.6,
+   "tools": 5,
+   "cost_usd": 0.48965499999999995,
+   "tokens_out": 2400,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ06",
+   "track": "c",
+   "gold": "1503.07557",
+   "gold_hit": true,
+   "kw": [
+    "thermodynamic"
+   ],
+   "kw_alias": [
+    "thermodynamic",
+    "saturation vapor pressure"
+   ],
+   "kw_ok": false,
+   "kw_alias_ok": true,
+   "pass": false,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 2 of 3"
+   ],
+   "is_error": false,
+   "latency_s": 17.0,
+   "tools": 5,
+   "cost_usd": 0.467336,
+   "tokens_out": 1819,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ07",
+   "track": "c",
+   "gold": "2608.05850",
+   "gold_hit": true,
+   "kw": [
+    "yiddish",
+    "8b"
+   ],
+   "kw_alias": [
+    "yiddish",
+    "8b"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 4"
+   ],
+   "is_error": false,
+   "latency_s": 16.4,
+   "tools": 5,
+   "cost_usd": 0.486912,
+   "tokens_out": 2116,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ08",
+   "track": "c",
+   "gold": "2408.09942",
+   "gold_hit": true,
+   "kw": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "kw_alias": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 25.0,
+   "tools": 7,
+   "cost_usd": 0.60101,
+   "tokens_out": 3814,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ09",
+   "track": "c",
+   "gold": "2410.10669",
+   "gold_hit": true,
+   "kw": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "kw_alias": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "kw_ok": true,
+   "kw_alias_ok": true,
+   "pass": true,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": false,
+   "cite_markers": [
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
+   "is_error": false,
+   "latency_s": 22.6,
+   "tools": 7,
+   "cost_usd": 0.60484,
+   "tokens_out": 3096,
+   "insufficient_evidence": false
+  },
+  {
+   "qid": "BQ10",
+   "track": "c",
+   "gold": "2604.01385",
+   "gold_hit": true,
+   "kw": [
+    "chemotherapy"
+   ],
+   "kw_alias": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "kw_ok": false,
+   "kw_alias_ok": true,
+   "pass": false,
+   "pass_alias": true,
+   "cited": true,
+   "cited_chunk": true,
+   "cite_markers": [
+    "part 1 of 3",
+    "part 2 of 3",
+    "part 3 of 3"
+   ],
+   "is_error": false,
+   "latency_s": 25.2,
+   "tools": 8,
+   "cost_usd": 0.5950610000000001,
+   "tokens_out": 3928,
+   "insufficient_evidence": true
+  }
+ ],
+ "citation_definition": "part/section/table markers present: \\bparts?\\s+\\d+\\s+of\\s+\\d+ | \\b(?:section|sections|table|tables|appendix|appendices)\\s+(?:\\d+(?:\\.\\d+)*(?:-[A-Z0-9]+)?|[IVXLCDM]+(?:-[A-Z0-9]+)?)\\b | §\\s*(?:\\d+(?:\\.\\d+)*(?:-[A-Z0-9]+)?|[IVXLCDM]+(?:-[A-Z0-9]+)?)\\b",
+ "citation_definition_dense": "dense chunk references (reported separately, NOT counted in the paper's cited numbers): \\bchunk[_ ]?(?:index|id)?\\s*\\d+",
+ "keyword_alias_policy": {
+  "BQ09": {
+   "multilayer perceptron": [
+    "\\bmlp(?:-slam)?\\b"
+   ]
+  },
+  "BQ10": {
+   "immune evasion": [
+    "\\bimmune[- ]resistant\\b",
+    "\\bimmune checkpoint (?:evasion|resistance|regulation)\\b",
+    "\\breduced antigen presentation\\b"
+   ]
+  }
+ }
+}

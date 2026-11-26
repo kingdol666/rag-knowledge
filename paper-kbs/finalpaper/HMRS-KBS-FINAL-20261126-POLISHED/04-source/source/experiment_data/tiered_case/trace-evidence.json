@@ -1,0 +1,286 @@
+{
+  "source": {
+    "capture_dir": "review/fig5-sketch-20261125",
+    "sha256": {
+      "tiered-bq07.json": "8b3075f24fa94f3d081398566fd8af8900dae601a13e806cf96ceaae09d81d2d",
+      "trace.json": "f98bf2c1eb1a46275efb83bfde8cc480d3676a028c55ea32469fbe27c6e3c1b1",
+      "trace-full.json": "601bd8983ea714e6ee1ea833ed0cad6f5f9d5e297254200637fc61f6fd4c3f20",
+      "run_tiered_bq07.py": "61a0db6cefe9b8d354bff1edd15b3d8324c6d1b290a23f0367b2a3a2ebb9d297"
+    },
+    "selection": "Figure-only extract, not a live replay corpus. Turns and args are from trace.json, verified against the unchanged tiered-bq07.json. Payload fields are from the first copy of each response in trace-full.json, or the preserved escaped trailer for shelf pagination. Retained verbatim text includes the validation error header and the returned abstract paragraph. Duplicate tool wrappers, unrelated catalogue entries and shelf cards, the gate evidence pack, and non-abstract read text are omitted. Shelf responses were already bridge-elided in the capture; counts are reported counts, not a claim that all cards were inspected."
+  },
+  "run": {
+    "qid": "BQ07",
+    "session_id": "01a2112b-39d1-7000-ab13-2547feb16e29",
+    "captured_on": "2026-11-25",
+    "purpose": "One illustrative tiered-lane execution; excluded from native E2 judging and E3 routing counts.",
+    "request_settings_source": "run_tiered_bq07.py, post()",
+    "request_settings": {
+      "kbEnhanced": true,
+      "engine": "omp",
+      "model": "ustc/deepseek-flash",
+      "permissionMode": "default",
+      "maxTurns": 24
+    },
+    "request_omissions": [
+      "kbIds"
+    ],
+    "scope_note": "The prompt names five intended collections, but kb_list returned 65 entries from the shared catalogue."
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "name": "kb_list",
+      "args": {
+        "lightweight": true
+      },
+      "result": {
+        "success": true,
+        "count": 65,
+        "parent_filter": "all",
+        "catalog": [
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "name": "计算机与人工智能",
+            "description": "Computer science and AI: algorithms, NLP/LLM, vision, robotics perception, data systems, speech, social computing",
+            "doc_count": 137,
+            "path": "计算机与人工智能",
+            "parent_id": null
+          }
+        ]
+      }
+    },
+    {
+      "turn": 2,
+      "name": "kb_get_documents",
+      "args": {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "lightweight": true,
+        "limit": 200
+      },
+      "result": {
+        "success": true,
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "view": "docs",
+        "count": 40,
+        "total": 137,
+        "page": 1,
+        "page_count": 4,
+        "page_size": 40,
+        "has_more": true,
+        "truncated": "budget_guard"
+      }
+    },
+    {
+      "turn": 3,
+      "name": "kb_get_documents",
+      "args": {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "lightweight": true,
+        "page": 2,
+        "page_size": 40
+      },
+      "result": {
+        "success": true,
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "view": "docs",
+        "count": 40,
+        "total": 137,
+        "page": 2,
+        "page_count": 4,
+        "page_size": 40,
+        "has_more": true
+      }
+    },
+    {
+      "turn": 4,
+      "name": "kb_get_documents",
+      "args": {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "lightweight": true,
+        "page": 3,
+        "page_size": 40
+      },
+      "result": {
+        "success": true,
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "view": "docs",
+        "count": 40,
+        "total": 137,
+        "page": 3,
+        "page_count": 4,
+        "page_size": 40,
+        "has_more": true,
+        "catalog": [
+          {
+            "doc_id": "0fa05abd-cbed-4581-9d76-4053776fa697",
+            "file_id": "0fa05abd-cbed-4581-9d76-4053776fa697",
+            "doc_path": "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+            "name": "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+            "description": "【1/4·MAMELOSHNLM: Yiddish Langu】MAMELOSHNLM：首个面向意第绪语的开源 8B 参数语言模型，配套高质量预训练语料 Oytser(当代网络+文学来源)与可靠评测基准，突破低资源语言数字文本稀缺与评测资源匮乏的瓶颈。可回答低资源语言建模与评测的问题。——Uri Katz1 Omer Goldman² Tomasz Limisiewicz³ Reut Tsarfaty1,Noah A. Smith3,4, 1Bar-Ila"
+          },
+          {
+            "doc_id": "be78c91e-b76d-403d-89dc-6edbaad32ed7",
+            "file_id": "be78c91e-b76d-403d-89dc-6edbaad32ed7",
+            "doc_path": "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md",
+            "name": "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md",
+            "description": "【2/4·MAMELOSHNLM: Yiddish Langu】MAMELOSHNLM：首个面向意第绪语的开源 8B 参数语言模型，配套高质量预训练语料 Oytser(当代网络+文学来源)与可靠评测基准，突破低资源语言数字文本稀缺与评测资源匮乏的瓶颈。可回答低资源语言建模与评测的问题。——## 8 Analysis Yiddish is a useful test case for analyzing what multilingual language"
+          },
+          {
+            "doc_id": "c3840de7-4bb7-436b-b69d-b3d067e3c204",
+            "file_id": "c3840de7-4bb7-436b-b69d-b3d067e3c204",
+            "doc_path": "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+            "name": "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+            "description": "【4/4·MAMELOSHNLM: Yiddish Langu】MAMELOSHNLM：首个面向意第绪语的开源 8B 参数语言模型，配套高质量预训练语料 Oytser(当代网络+文学来源)与可靠评测基准，突破低资源语言数字文本稀缺与评测资源匮乏的瓶颈。可回答低资源语言建模与评测的问题。——## D Auditing the Yiddish Split of mC4 This appendix details the analysis summarized"
+          }
+        ]
+      }
+    },
+    {
+      "turn": 5,
+      "name": "kb_laya_judge",
+      "args": {
+        "question": "What is MameLoshnLM and what parameter scale does it have?",
+        "refs": [
+          {
+            "doc_id": "0fa05abd-cbed-4581-9d76-4053776fa697",
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+          },
+          {
+            "doc_id": "be78c91e-b76d-403d-89dc-6edbaad32ed7",
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+          },
+          {
+            "doc_id": "c3840de7-4bb7-436b-b69d-b3d067e3c204",
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+          }
+        ]
+      },
+      "result": "Invalid args for xd://mcp__kb_mcp_kb_laya_judge: Validation failed for tool \"mcp__kb_mcp_kb_laya_judge\":\n  - query: is required\n  - documents: is required"
+    },
+    {
+      "turn": 6,
+      "name": "kb_laya_judge",
+      "args": {
+        "query": "What is MameLoshnLM and what parameter scale does it have?",
+        "criterion": "evidence",
+        "documents": [
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "0fa05abd-cbed-4581-9d76-4053776fa697"
+          },
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "be78c91e-b76d-403d-89dc-6edbaad32ed7"
+          },
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "c3840de7-4bb7-436b-b69d-b3d067e3c204"
+          }
+        ],
+        "max_evidence_chars": 4000
+      },
+      "result": {
+        "status": "ok",
+        "real_engine": true,
+        "real_jev": false,
+        "engine": "laya",
+        "backend": "laya_sdk",
+        "criterion": "evidence",
+        "threshold": 0.5,
+        "candidate_count": 26,
+        "scored_count": 26,
+        "survivor_count": 6,
+        "docs_with_yes": 1,
+        "survivors": [
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "0fa05abd-cbed-4581-9d76-4053776fa697",
+            "doc_path": null,
+            "candidate_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba/0fa05abd-cbed-4581-9d76-4053776fa697/part-0/segment-0001",
+            "part_index": 0,
+            "section_path": "",
+            "start_line": 24,
+            "end_line": 33,
+            "score": 0.9015
+          },
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "0fa05abd-cbed-4581-9d76-4053776fa697",
+            "doc_path": null,
+            "candidate_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba/0fa05abd-cbed-4581-9d76-4053776fa697/part-0/segment-0009",
+            "part_index": 0,
+            "section_path": "",
+            "start_line": 134,
+            "end_line": 142,
+            "score": 0.5059
+          },
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "be78c91e-b76d-403d-89dc-6edbaad32ed7",
+            "doc_path": null,
+            "candidate_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba/be78c91e-b76d-403d-89dc-6edbaad32ed7/part-0/segment-0002",
+            "part_index": 0,
+            "section_path": "",
+            "start_line": 18,
+            "end_line": 25,
+            "score": 0.7265
+          },
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "c3840de7-4bb7-436b-b69d-b3d067e3c204",
+            "doc_path": null,
+            "candidate_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba/c3840de7-4bb7-436b-b69d-b3d067e3c204/part-0/segment-0002",
+            "part_index": 0,
+            "section_path": "",
+            "start_line": 24,
+            "end_line": 56,
+            "score": 0.5513
+          },
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "c3840de7-4bb7-436b-b69d-b3d067e3c204",
+            "doc_path": null,
+            "candidate_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba/c3840de7-4bb7-436b-b69d-b3d067e3c204/part-0/segment-0003",
+            "part_index": 0,
+            "section_path": "",
+            "start_line": 57,
+            "end_line": 90,
+            "score": 0.7588
+          },
+          {
+            "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+            "doc_id": "c3840de7-4bb7-436b-b69d-b3d067e3c204",
+            "doc_path": null,
+            "candidate_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba/c3840de7-4bb7-436b-b69d-b3d067e3c204/part-0/segment-0004",
+            "part_index": 0,
+            "section_path": "",
+            "start_line": 92,
+            "end_line": 118,
+            "score": 0.7445
+          }
+        ],
+        "errors": [],
+        "note": "compact verdict (include_text=false): segment text and per-segment result_list omitted; re-run with include_text=true or kb_doc_read the survivors for text"
+      }
+    },
+    {
+      "turn": 7,
+      "name": "kb_doc_read",
+      "args": {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_id": "0fa05abd-cbed-4581-9d76-4053776fa697",
+        "offset": 1,
+        "limit": 60
+      },
+      "result": {
+        "success": true,
+        "path": "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+        "totalLines": 145,
+        "truncated": true,
+        "abstract": "We present MAMELOSHNLM,1 the first open-source 8B-parameter language model built specifically for Yiddish. Despite Yiddish's rich textual tradition, its limited digital presence and the scarcity of reliable evaluation resources have constrained progress in Yiddish language modeling. Existing multilingual corpora and benchmarks are often poor proxies for the language, containing substantial amounts of noisy, machinetranslated, and misclassified text. We address these gaps by introducing Oytser, a high-quality Yiddish pretraining corpus that combines contemporary web-native sources with literary materials, and Kashes, a multi-task benchmark spanning translation, linguistic analysis, information extraction, and language understanding. Using these resources, we continue pretraining Llama 3.1 8B to obtain MAMELOSHNLM. Across the tasks in the benchmark, MAMELOSHNLM outperforms open baselines of similar scale. Our analyses show that these gains are not only quantitative: relative to general-purpose multilingual models, MAMELOSHNLM better captures language-defining lexical and morphological patterns, pointing to a broader failure mode of noisy web-scale multilingual data for lowresource languages. Our results provide both a foundation for Yiddish NLP and a practical template for language model development in historically rich but digitally underrepresented languages.",
+        "returned_line_count": 60
+      }
+    }
+  ]
+}

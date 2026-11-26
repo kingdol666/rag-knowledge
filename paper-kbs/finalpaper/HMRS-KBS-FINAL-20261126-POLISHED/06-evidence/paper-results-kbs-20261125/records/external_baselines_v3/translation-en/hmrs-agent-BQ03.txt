@@ -1,0 +1,31 @@
+**Conclusion: MultiMedQA is the medical question-answering benchmark introduced by Google in "Large Language Models Encode Clinical Knowledge" (six existing open datasets plus the newly built HealthSearchQA, seven in total); Flan-PaLM 540B achieved 67.6% accuracy on its MedQA subset (USMLE four-option questions), surpassing the previous state of the art by more than 17%.**
+
+### 1. What MultiMedQA is
+
+- Definition (abstract verbatim): "we present MultiMedQA, a benchmark combining six existing open question answering datasets spanning professional medical exams, research, and consumer queries; and HealthSearchQA, a new free-response dataset of medical questions searched online."
+- Composition (listed explicitly in Section 1): the six existing datasets **MedQA, MedMCQA, PubMedQA, LiveQA, MedicationQA, MMLU clinical topics**, plus the newly built seventh, **HealthSearchQA** (3,375 common health questions collected from web search).
+- Design purpose: to cover the three scenarios "medical exam / medical research / consumer medical questions", together with a **human evaluation framework** (clinicians + lay users) that assesses axes such as factuality, agreement with scientific consensus, potential harm, bias, readability, and retrieval-and-reasoning evidence (Table 2, 12 axes in total; Table 3 adds 2 axes for lay users) -- because multiple-choice accuracy cannot reflect real clinical usability.
+
+### 2. Flan-PaLM's performance on MedQA
+
+- **Core number**: "On the MedQA dataset consisting of USMLE style questions with 4 options, our Flan-PaLM 540B model achieved a multiple-choice question (MCQ) accuracy of **67.6%**, surpassing the DRAGON model by 20.1%." (S4.1)
+- Relative-improvement wording: the text elsewhere states the previous best model stood at **50.3%** and "Flan-PaLM 540B exceeded this by **17.3%**"; the section heading itself reads "Flan-PaLM exceeds previous state-of-the-art on MedQA (USMLE) by over 17%". The two percentages correspond to different comparison baselines (DRAGON and the 50.3% SOTA record) and must be distinguished when cited.
+- How it was achieved: the **few-shot + chain-of-thought + self-consistency** combination of prompting (no fine-tuning), hence "prompting strategies alone".
+- Multiple-choice results in the same batch: MedMCQA **57.6%**, PubMedQA **79.0%**, and SOTA on the MMLU clinical topics as well ("state-of-the-art accuracy on every MultiMedQA multiple-choice dataset").
+
+### 3. The limitations that must be stated alongside (the paper's key point)
+
+Strong multiple-choice performance does not mean clinically usable. In the human evaluation of Flan-PaLM's long-form answers:
+
+- only **61.9%** agreed with scientific consensus (Med-PaLM 92.6%, clinicians 92.9%);
+- **29.7%** were judged as potentially leading to harmful outcomes (Med-PaLM 5.8%, physicians 6.5%);
+- only 60.6% were considered helpful by lay users (Med-PaLM 80.1%, physicians 90.8%).
+
+Exactly for this reason the authors propose **instruction prompt tuning** (40 clinician-authored exemplars), which yields Med-PaLM.
+
+**Provenance**
+
+- "Large Language Models Encode Clinical Knowledge" (arXiv 2212.13138), KB `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` / path `Life Sciences and Medicine/clinical-medicine__2212.13138__...md`, part 1/8 (abstract, Section 1 contribution list), part 2/8 (S3.2-S4.1), part 3/8 (S4.5 human-evaluation data).
+- Cross-confirmation: the chunked copy of the same paper, `Corpus-Chunks800/...__k30.md`, `k31.md` (KB `ce642f28-e157-48af-b669-49862cd73b23`), contains the same MedQA table fragment "Flan-PaLM (540 B)...".
+
+Evidence grade: P0 (direct statement in the original text, with concrete numbers and section headings). Note: `kb_laya_judge` was unavailable in this round because the backend `laya` module is missing; the judging step was completed by direct reading of the original text, which does not affect the reliability of the quotes above.

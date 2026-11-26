@@ -1,0 +1,9 @@
+arm,record_arm,scope,factual,completeness,groundedness,attribution,overall,correct,partial,incorrect,time_s,cost_usd,n
+HMRS agent,hmrs-agent,Scope not fully enforced,5,5,5,5,5.0,10,0,0,75.1,0.06,10
+BM25,bm25,Full 328 parts,5,4.8,5,5,4.95,9,1,0,35.8,0.03,10
+Dense (BGE-M3),dense,Full 328 parts,5,4.6,5,5,4.9,8,2,0,28.4,0.021,10
+RRF-order (),rrf,Full 328 parts,5,4.4,5,4.9,4.83,8,1,1,25.7,0.022,10
+RAPTOR,raptor,30 gold parts,4.9,4.5,4.9,4.9,4.8,7,2,1,93.3,0.021,10
+LightRAG,lightrag,Full (699 chunks),5,4,5,5,4.75,7,3,0,98.1,0.022,10
+DeepRead,deepread-native,Native corpus,5,5,4.9,3.9,4.7,10,0,0,36.6,,10
+GraphRAG,graphrag,30 gold parts,4.6,3.3,4.6,4.6,4.28,4,3,3,127.2,0.027,10

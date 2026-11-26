@@ -1,0 +1,54 @@
+\section{Evaluation}
+\label{sec:eval}
+The evaluation tests which checks locate specific retrieval failures.
+It follows the evidence from managed state to the answer, with separate
+checks for index visibility (E1), collection selection (E3), evidence-pack
+assembly (E4) and candidate ordering (E6). E2 provides deployment context:
+it compares the answers of eight configurations but does not test
+the full catalogue-first path. E5 checks the reuse of operational lessons;
+E7 examines what scope, interruptions and citation markers reveal. The
+campaigns test distinct decisions, not successive stages of one benchmark
+query. Figure~\ref{fig:tiered-case} illustrates the path on a separate trace.
+
+\subsection{Datasets and measures}\label{sec:eval-setup}
+The answer comparison uses ten developer-authored questions with annotated
+reference papers in five arXiv collections. The routing and evidence-pack
+experiments use 72 in-domain questions across ten collections (138 documents
+in the frozen run); out-of-domain probes are analysed separately. The
+verifier diagnostics use a separate industrial corpus of 42 documents in
+five collections. None of the saved questions contains a gold document
+identifier.
+
+Routing and evidence packs use different notions of a hit. For routing, a
+hit means that the selector chose the labelled collection. For evidence
+packs, it means that the annotated target string occurs in the returned text.
+The second measure does not verify a claim, and it can count a match in a
+document other than the annotated source. Hit@5 records whether a gold
+document appears among the first five results. Answer scores and verdicts
+are defined in Section~\ref{sec:e10}.
+
+The paired sign and McNemar tests are two-sided and exploratory. Repeated
+runs use the same questions, so they do not add independent observations.
+
+\subsection{Do changes in storage reach the index? (E1)}
+\label{sec:e1}
+\label{sec:e2}
+\label{sec:exp-e1}
+For the stored arXiv corpus, a 328-part recheck found content-derived
+descriptions for all parts after explicit indexing and reindexing; search
+probes returned identifiers for all 100 papers. Of the 100
+probes, 72 lacked collection scope and 45 returned a chunk-copy name first.
+This establishes identifier presence, not ranking within each collection. The controlled
+checks passed for document creation, moves, deletion and forced reindexing.
+
+A stale search result does not by itself locate the fault. In an earlier
+test on a disposable collection, a rename and move left 18 vector
+entries instead of nine; forced reindexing restored the expected count. The probe did not establish
+why the excess entries persisted. If index metadata already shows the new path, a stale
+result alone does not establish an index defect; the response path and
+cache need checking separately.
+
+Not every check succeeded. Task-status and update checks failed, and merge
+and split were not tested. A historical tag audit also recorded orphan tags
+and a cross-collection registry anomaly. Together, the checks distinguish
+what is stored, what is indexed and what the search interface returns.

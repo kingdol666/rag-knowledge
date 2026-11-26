@@ -1,0 +1,72 @@
+\section{Threats to validity}
+\label{sec:threats}
+
+\noindent\textbf{Data and scope.} The collections represent local
+demonstration and benchmark workloads. Developers authored or expanded the
+questions and gold annotations. The routing audit uses a local in-domain
+question set, not an independent test of transfer to new domains.
+Same-question reruns show whether the paired direction persists as the
+corpus and service state change. Transfer requires an independent question
+set. Storage reconciliation was sampled, and the out-of-domain probes
+characterise individual responses rather than a population failure rate.
+
+\noindent\textbf{Measurement and comparisons.} The content metric counts a
+literal target string anywhere in the pack, including in a sibling
+document. A post-hoc split by case-insensitive question--target overlap
+gives frozen A0 and A0h containment of
+16/29 and 21/29 on overlapping questions, and 21/43 and 31/43 on the
+remainder. The subsets describe exact overlap and leave other lexical
+cues unmeasured. E7 checks identifiers,
+keywords and citation markers with one model and one run per arm.
+Evaluating claim support calls for resolving the cited passages and judging
+their relation to the claims.
+
+\noindent\textbf{Configuration contrasts.} The read-all comparator scans the
+corpus mechanically, and the content arms vary candidate construction,
+reading scope and pack assembly. A0, A1b and A3 can use the gold domain for
+reference resolution; A3 can also fall back to descriptions or retrieve
+outside the evaluated collections. The archives do not record how often
+these paths occur, so the E4 contrasts quantify configuration differences
+rather than isolated component effects.
+
+\noindent\textbf{Answer-quality protocol.} E2 reuses the ten questions from
+the E7 development grids and post-repair validation. The agent made no
+catalogue or shelf calls, so E2 did not test catalogue-first selection. The HMRS agent
+was configured for the five collections, but the search tools take one
+collection identifier. In nine of ten questions, at least one search ran
+without that restriction, so the HMRS row searched a wider space than the
+one-shot baselines. The archived tool-name records
+contain no returned passages or source coordinates. A flat agent with
+equivalent tools and reading budget would
+help separate the effect of the interface from the effect of agent access.
+In each call, the unified judge saw the question, a prefix of the gold
+reference and eight anonymised answers. It could not resolve baseline
+\texttt{[S\#]} markers to passages; arm names were masked, but language,
+length and citation style remained visible. Earlier passes produced lower
+baseline scores and individual reversals (for example, dense scored 5.00
+against HMRS's 3.75 on BQ07 in the one-answer-per-call pass). Judge--human
+and judge--judge agreement remain unmeasured.
+
+\noindent\textbf{External-system comparison.} The external arms of E2 used
+one unified blind judge over 80 answers, but answer-time corpus scope was
+not uniform. RAPTOR and GraphRAG used 30 gold parts, LightRAG used a
+different 699-chunk representation of the full export. DeepRead's native
+answer-time index included the gold papers but not the full set of
+distractors; the full parse completed after the answer round. This smaller
+search space may favour DeepRead. Its answer record also carries conflicting
+generator metadata between its top-level field and its native provenance
+note. The E2 scores therefore describe the observed
+configurations and should not be interpreted as a matched-corpus
+leaderboard.
+
+\noindent\textbf{Statistical and operational validity.} The paired
+comparisons are exploratory. Wilson intervals are nominal binomial intervals for observed hit
+proportions; they do not capture variation across runs. Section~\ref{sec:e10} summarises the E2
+paired-test outcomes; Supplementary Tables~S18--S22 report the tests and
+their sensitivity to the judge pass and the post-hoc comparison family. Candidate- and span-level tests can
+understate uncertainty when they treat observations from the same query as
+independent. The ordering analysis replays records from a historical
+wrapper. Some earlier reference-mode and judge inputs and code hashes are
+missing. Lifecycle and concurrency checks cover one installation.
+Competing lifecycle writes, experience approval, multi-host reliability
+and crash recovery remain open.

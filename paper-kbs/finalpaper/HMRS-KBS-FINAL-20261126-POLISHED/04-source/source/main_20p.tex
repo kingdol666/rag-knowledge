@@ -1,0 +1,156 @@
+%% HMRS platform — Knowledge-Based Systems submission (elsarticle)
+%% v3 restructure 2026-11-11: hierarchical *management* framing — the system
+%% manages documents at three levels (collection / document / segment) and
+%% serves a tiered access path; retrieval algorithms are supporting components.
+%% Compile: pdflatex main_20p && bibtex main_20p && pdflatex main_20p && pdflatex main_20p
+%% AUTHOR ACTION: confirm the CRediT roles in n_back.tex and the
+%% declarations before submission.
+%% Default: double-column journal layout. main_20p_review.tex selects
+%% a double-spaced layout from these same sources.
+\ifdefined\HMRSReviewLayout
+\documentclass[review,12pt]{elsarticle}
+\usepackage{needspace}
+\else
+\documentclass[final,5p,times,twocolumn]{elsarticle}
+\usepackage{stfloats}
+\usepackage{flushend} % balance the two columns of the last page
+\fi
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\pdfstringdefDisableCommands{\def\corref#1{}}
+\usepackage{xurl}
+\urlstyle{same}
+% DOIs are emitted by the .bst as \path{...}; re-declare it so they
+% typeset in the ambient roman face at 7.2 pt instead of 6.97 pt typewriter.
+\DeclareUrlCommand\path{\urlstyle{same}}
+\usepackage{caption}
+\usepackage{placeins}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newcommand{\yes}{\checkmark}
+\newcommand{\no}{--}
+
+\graphicspath{{figs/}}
+\setlength{\emergencystretch}{1.5em}
+% Cross-reference labels stay unbroken across lines (no "Ta-ble 4").
+\hyphenation{Table Tables Figure Figures Section Sections Algorithm Algorithms}
+
+%% Allow figures and tables to stay near their first discussion.
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dbltopfraction}{0.90}
+\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{3}
+
+%% Spacing for the double-column layout.
+\ifdefined\HMRSReviewLayout\else
+\setlength{\floatsep}{7pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
+\setlength{\intextsep}{7pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{7pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{9pt plus 2pt minus 2pt}
+\fi
+
+%% Ragged bottoms: with nine floats the flushbottom setting stretches
+%% underfull columns into heading-sized gaps (visible under the Threats and
+%% Conclusion headings). Ragged bottoms leave the slack at the column foot
+%% instead, which is the usual journal appearance for float-heavy pages.
+\raggedbottom
+
+\journal{Knowledge-Based Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{HMRS: Hierarchical document management for evidence-traced retrieval}
+
+\author[inst1]{Haozheng Zhang}
+\author[inst2]{Bo Fu}
+\author[inst2]{Liangbin Li\corref{cor1}}
+\ead{lbli@ustc.edu.cn}
+\author[inst1]{Jungen Chen\corref{cor1}}
+\ead{cjg18@mail.ustc.edu.cn}
+\cortext[cor1]{Corresponding authors.}
+\affiliation[inst1]{organization={Institute of Advanced Technology, University of Science and Technology of China},
+city={Hefei, Anhui}, postcode={230031}, country={China}}
+\affiliation[inst2]{organization={National Synchrotron Radiation Laboratory, University of Science and Technology of China},
+city={Hefei, Anhui}, postcode={230029}, country={China}}
+
+\begin{abstract}
+In changing document collections, a passage can resemble a query without
+coming from a source that applies to the task. The Hierarchical Management
+Retrieval System (HMRS) uses the same collection hierarchy to file and
+retrieve documents. At ingestion, an agent uses recovered text for placement
+and description. In catalogue-first mode, the query agent chooses a
+collection, consults its document listing and reads selected sources. Lexical
+and vector search can retrieve candidates in a specified scope, and an
+optional scorer can filter passages without reordering documents. A
+rename-and-move probe exposed stale index entries. In scripted routing tests,
+the configuration with descriptive cards reached the labelled collection more
+often, but the comparison did not isolate the effect of descriptions. Even
+correct routing did not ensure that the returned evidence contained the
+literal target string. A configuration combining scored document text, extra
+vector search and prioritised windows contained more target strings than the
+reference configuration in three runs on the same questions. On fixed candidate
+pools, verifier-score ordering yielded fewer top-five gold-document hits than
+fused ranking. The blind deployment comparison did not use catalogue-first
+routing and found no statistically significant paired difference after
+correction for multiple comparisons. HMRS makes it possible to check where an
+agent searched and which source passages it returned; neither check establishes
+that the passages support the answer.
+\end{abstract}
+
+\begin{keyword}
+Knowledge document management \sep Agentic retrieval \sep
+Hierarchical organisation \sep Tiered retrieval \sep Evidence verification \sep
+Model Context Protocol
+\end{keyword}
+
+\end{frontmatter}
+
+%% ============================================================ body (v2 order)
+\input{n1_intro}
+\input{n2_related}
+\input{n3_overview}
+\input{n4_acquisition}
+\input{n5_organization}
+\input{n6_retrieval}
+\input{n7_implementation}
+\input{n8a_eval}
+\input{n8d_eval}
+\input{n8b_eval}
+\input{n8c_eval}
+\input{n9_discussion}
+\input{n10_threats}
+\input{n11_conclusion}
+\input{n_back}
+
+{\ifdefined\HMRSReviewLayout\else\footnotesize\fi
+\ifdefined\HMRSReviewLayout
+\renewcommand{\baselinestretch}{0.88}\selectfont
+\else
+\renewcommand{\baselinestretch}{0.85}\selectfont
+\fi
+\setlength{\bibsep}{-1.4pt plus 0.05ex}
+\urlstyle{same}
+\bibliographystyle{elsarticle-num}
+\bibliography{refs,refs_new_verified}
+}
+
+\end{document}

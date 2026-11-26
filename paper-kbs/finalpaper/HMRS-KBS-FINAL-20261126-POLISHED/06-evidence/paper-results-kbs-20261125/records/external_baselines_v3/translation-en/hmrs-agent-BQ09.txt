@@ -1,0 +1,35 @@
+**Conclusion: MLP-SLAM addresses the accuracy degradation of visual SLAM in dynamic environments -- in particular the loss of static information caused by approaches such as DynaSLAM that "discard all features inside the bounding box of an entire candidate dynamic object". The approach turns dynamic/static feature-point discrimination into a supervised-learning classification problem: the image intensity error $e_I$, the epipolar error $e_D$ and the reprojection error $e_{Re}$ form a 3-dimensional input feature, and an MLP discriminator replaces hand-crafted thresholds, avoiding both information loss and manual parameter tuning.**
+
+## 1. The problems identified
+
+- Its starting point is that most SLAM systems (ORB-SLAM2/3, LSD-SLAM, DSO) **rely on the static-world assumption** and "their precision tends to deteriorate when deployed in dynamic environments" (Introduction).
+- Three classes of defects in existing solutions: Type I, purely geometric; Type II, like DynaSLAM, use semantic masks to discard all features inside potentially dynamic object classes as outliers, so **stationary vehicles parked at the roadside are wrongly removed** -- "leading to information loss"; Type III, the mainstream (CFP-SLAM, PointSLOT, VDO-SLAM, D-SLAM), uses only **partial geometric information** (only the epipolar error or only the reprojection error) and "often require manual parameter tuning, lack generality" (Introduction / Related Work).
+- Secondary gap: no public dataset directly evaluates dynamic/static discrimination, so only indirect metrics such as ATE are available, subject to RANSAC randomness.
+
+## 2. Method (Section III-D / IV)
+
+On top of ORB-SLAM2, a dynamic-static discrimination module is added, in four stages:
+
+1. **Preprocessing**: stereo ORB feature extraction; the left image is handled by **YOLOv7 + Deep Sort** for detection and tracking (lower latency than semantic segmentation).
+2. **Depth Filtering Module (DFM)**: since detection boxes are less precise than segmentation masks, points inside a box are filtered by the mean depth $\mu_d$ and standard deviation $\delta_d$: points outside $[\mu_d-\eta\delta_d,\ \mu_d+\eta\delta_d]$ are removed, and those inside are judged static ($\eta=1.2$).
+3. **Coarse estimation**: static points outside boxes + in-box background points certified by the DFM; the coarse pose minimizes the reprojection error.
+4. **MLP discrimination + fine estimation**: in-box points not filtered by the DFM generate $v_i=\{e_I,e_D,e_{Re}\}$, which are zero-mean normalized and fed in batches to an MLP that outputs $c_i=\arg\max M(v_i)$ (0 static / 1 dynamic); the pose is then re-optimized with "out-of-box points + DFM-static points + MLP-static points".
+
+The paper emphasizes that this is **the first use of a machine-learned method for dynamic/static feature-point discrimination in SLAM**. A public dataset is also built: 50k+ points, dynamic/static 1:1, manually labeled (KITTI 00/01, 70/20/10 split); training used 150 epochs, batch 8, lr 0.1, MultiStepLR(gamma=0.1), Adam, and TensorRT with fixed input (200,3).
+
+## 3. Results (P0 direct evidence)
+
+| Metric | MLP-SLAM | Comparison |
+|---|---|---|
+| Discrimination Accuracy / F1 | **87.71 / 87.64** | SVM 84.19/84.58; PointSLOT-style 81.36; CFP-SLAM-style 73.61; $e_D$ only 60.10 |
+| KITTI Odometry mean ATE | **1.48** | ORB-SLAM2 1.99, DynaSLAM 2.43, DynaSLAM II 1.77 |
+| KITTI360 mean ATE | **3.42** | ORB-SLAM2 3.92, VDO-SLAM (modified) 8.83 |
+| Tracking latency | **62.81 ms** (only +17.50 ms/frame over ORB-SLAM2; MLP inference 0.18 ms) | DynaSLAM 519.37, DynaSLAM II 80.15, PointSLOT 73.6 |
+
+Ablation: object tracking only 2.67 -> MLP only 1.97 -> combined **1.48** (mean ATE), showing that the MLP discriminator is the main contributor. On sequence 00, which is dense with parked vehicles, it achieves the best result (0.79 vs DynaSLAM 1.40), confirming that it "recognizes genuinely dynamic objects" rather than discarding whole classes.
+
+## Provenance
+
+- Primary source: "MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping" (Taozhe Li, Wei Sun; arXiv 2410.10669), KB "Computer Science and Artificial Intelligence" `b1199132...b0ba`, docs `robotics__2410.10669__mlp-slam...(part 1/2).md`, `(part 2/2).md`. Part 1 contains Introduction/Related Work/III OverView/IV method/Table I; part 2 contains the experiments (Tables II-VI) and the conclusion.
+- The other 4 pinned KBs (seismology, power systems, medical imaging, economics) had no relevant hits; the duplicated chunked copy of the same paper in `Corpus-Chunks800` (another KB `ce642f28...`) is identical in content and was not cited separately.
+- Credibility: all of the above is P0 (verbatim quotes from the main text + numbers from the original tables).

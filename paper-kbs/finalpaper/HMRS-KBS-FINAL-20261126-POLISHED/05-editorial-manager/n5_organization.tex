@@ -1,0 +1,65 @@
+\section{Collection management and document lifecycle}
+\label{sec:organization}
+
+Collection membership determines where a document is listed and defines the
+intended search scope when a collection identifier is supplied. Parts of a
+split document retain the collection assignment, and descriptions help the
+agent select documents before opening their bodies. The operations in
+Table~\ref{tab:levels} maintain these records as the corpus changes.
+
+\subsection{Classification, metadata, tags and duplicate review}
+\label{sec:org-placement}
+\label{sec:org-registries}
+\label{sec:org-tags}
+\label{sec:org-dedup}
+
+The catalogue returns collections and sub-libraries with descriptions.
+Each shelf shows document titles and descriptions within its selected scope.
+The ingest agent compares the parsed text with collection descriptions
+to choose a destination, then derives document descriptions and tags
+from the body. Duplicate review
+presents candidate pairs for inspection. Adjacent parts can describe
+the same document while containing distinct source sections.
+Figure~\ref{fig:workflow} shows how placement and indexing make the
+stored material available to a later query, through catalogue navigation
+or directly within a specified scope.
+
+HMRS supports library and sub-library creation, metadata edits, moves,
+renames, deletion and forced reindexing. A move updates the document path
+and registry entries, while reindexing updates the searchable representation.
+\looseness=-1 Integrity checks compare document existence and path across the files on
+disk, the \texttt{.tree-fs.json} registry and the library's
+\texttt{.knowledge-base.yml}, and inspect index metadata.
+
+Sub-libraries keep their descriptions and indices at their own tree nodes.
+When the caller supplies a parent scope, the vector service resolves the
+parent and its descendants into the collections searched. The lexical stage
+of the two-stage service likewise resolves descendant identifiers. The
+evaluation's flat arms (Section~\ref{sec:ladder-opt}) pass explicit collection identifiers rather than relying on a global
+search call.
+
+\subsection{Lifecycle operations, graph and operational knowledge}
+\label{sec:org-lifecycle}
+\label{sec:org-graph}
+\label{sec:org-experience}
+
+An early rename-and-move trial in a disposable collection exposed stale
+chunks under the old document path until a forced reindex. The current rename
+operation attempts to remove the old index entries and index the renamed
+document; indexing failures are recorded separately from the metadata update.
+A post-operation probe checks whether queries resolve to the new path.
+
+The document graph links collections, documents and tags for navigation and
+candidate expansion. Operational lessons are also stored as retrievable
+documents. Experience tools track reviews, use and freshness and use
+credibility tiers to order results. Section~\ref{sec:eval} reports
+operational-experience cases alongside the management experiments.
+
+\subsection{Organisation contract}
+\label{sec:org-integrity}
+\label{sec:org-summary}
+
+The organisation contract links each document to its current owning
+collection, descriptive metadata and indexed path. For selected lifecycle
+operations, Section~\ref{sec:e2} checks these relationships through file
+and metadata reconciliation, description review and retrieval probes.

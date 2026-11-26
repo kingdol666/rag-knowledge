@@ -1,0 +1,88 @@
+%% Cover letter for the Knowledge-Based Systems submission of
+%% "HMRS: Hierarchical document management for evidence-traced retrieval".
+%% Scope follows Elsevier's cover-letter guidance: under one page; aim and
+%% main findings; fit with the journal's aims and scope; novelty and wider
+%% implications. Funding, author declarations and reviewer suggestions are
+%% entered in Editorial Manager and are not repeated here.
+%% AUTHOR ACTION: confirm the all-author approval, originality and
+%% no-concurrent-submission statements before upload.
+%% A line that starts with "[" must follow "\\{}" (else LaTeX reads it as
+%% the optional argument of \\).
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newtxtext}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\pagestyle{empty}
+
+\begin{document}
+
+\textbf{Liangbin Li, Ph.D.}\\
+{}National Synchrotron Radiation Laboratory, University of Science and Technology of China\\
+{}Hefei, Anhui 230029, China\\
+Email: lbli@ustc.edu.cn
+
+\today
+
+The Editors-in-Chief\\
+Knowledge-Based Systems
+
+Dear Editors,
+
+\textbf{Re: ``HMRS: Hierarchical document management for evidence-traced retrieval''}
+
+On behalf of all authors, I submit this manuscript for consideration as a
+regular paper in Knowledge-Based Systems. The work is original, has not
+been published elsewhere and is not under consideration by another
+journal; all authors have approved this submission.
+
+In a changing, multi-domain document collection, the passage most similar
+ to a query need not come from the source that applies to the task. HMRS,
+ the Hierarchical Management Retrieval System, uses the same hierarchy for
+ document management and retrieval. An ingest agent uses the recovered text
+ for placement and description. A query agent consults the collection
+ catalogue and document listings before reading selected source passages,
+ while lexical and vector search remain available for candidate retrieval.
+ Post-operation probes check index visibility, and an optional scorer
+ admits passages without requiring the same score for document ranking.
+
+The paper's main findings are as follows.
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt,topsep=2pt,parsep=0pt]
+\item A rename-and-move probe exposed stale index entries. In scripted
+routing runs, the configuration with descriptive cards reached the labelled
+collection more often than the nominally name-only configuration. The
+comparison does not isolate the effect of descriptions.
+\item Reaching the labelled collection did not guarantee target-text
+coverage. Combining scored document text with an additional vector search
+and prioritised windows improved literal containment across three runs on
+the same questions.
+\item In the fixed-pool replay, fused ordering kept gold documents in the
+top five more often than verifier-score ordering. A separate blind
+comparison found no statistically significant paired difference after
+correction; search scope and source access differed across deployments.
+\end{itemize}
+
+The manuscript addresses the journal's interest in knowledge-based systems
+by showing how an agent can use managed document organisation to choose
+where to search and what to read. The contribution is the connection
+between content-informed filing and task-directed evidence access, not a
+new ranking algorithm. It makes index visibility, collection choice and
+returned text separately inspectable.
+
+Code and data are available at \url{https://github.com/kingdol666/rag-knowledge}.
+
+The submission includes the \LaTeX{} source, highlights and supplementary
+material. Thank you for considering our manuscript.
+
+Yours sincerely,
+
+\medskip
+\textbf{Liangbin Li}, on behalf of all authors\\
+{}National Synchrotron Radiation Laboratory, University of Science and Technology of China\\
+{}Email: lbli@ustc.edu.cn
+
+\end{document}

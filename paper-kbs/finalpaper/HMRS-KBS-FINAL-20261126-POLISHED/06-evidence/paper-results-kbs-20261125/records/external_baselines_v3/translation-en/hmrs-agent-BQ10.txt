@@ -1,0 +1,25 @@
+**Conclusion: the most viable strategy is to first determine the dominant phenotype from the pretreatment tumor composition and immune-evasion mechanism, and then choose the drugs and their scheduling accordingly -- with "immunotherapy + chemotherapy" combinations as the main line, prioritizing pushing the system into a tumor-free equilibrium (TFE) or a low-burden equilibrium, rather than pursuing maximum-dose killing with a single therapy.** Among the five pinned KBs only one paper is genuinely on topic (the hits in the other 4 KBs are all irrelevant content, a consequence of the cross-KB supplementary search; this is disclosed as-is): "Strategies for tumor elimination and control under immune evasion and chemotherapy resistance" (arXiv 2604.01385, Mokari & Morsky, FSU), in KB "Life Sciences and Medicine" `b28f0a25...`, in three parts 1/3-3/3; the quotes below all come from S3.3 and S4 (P0, direct evidence).
+
+**1. Combination beats monotherapy, and the discrimination comes from parameter regions**
+
+"immune dynamics alone are generally insufficient to fully eliminate the tumor", while "chemotherapy significantly enlarges the parameter region corresponding to tumor control or tumor-free equilibria". Chemotherapy shrinks the tumor burden and acts directly on the resistant subpopulations; immunotherapy strengthens the immune-mediated suppression. Used together, the parameter regions of both the tumor-free equilibrium and the low-burden equilibrium widen; "combination immuno-chemotherapy provides greater flexibility and improved tumor control compared to single-therapy approaches" (P0).
+
+**2. Choosing the immunotherapy drug by immune-evasion mechanism (bifurcation analysis over chi, delta, sigma, theta_1, mu, rho)**
+
+- **Immune-checkpoint evasion (PD-L1 up)**: control efficacy is "highly sensitive to the immune exhaustion rate" -> the optimal strategy is a **checkpoint inhibitor + moderate-intensity chemotherapy**, targeting a lower immune-exhaustion rate mu, a higher activation rate rho and a higher recruitment rate sigma.
+- **Downgraded antigen presentation**: more tolerant of weak chemotherapy ("reduced antigen presentation is more robust against relatively weak chemotherapy"), with stability depending more on effector-cell activation and exhaustion -> **checkpoint inhibitors, CAR-T, tumor vaccines** combined with chemotherapy.
+- **Immune-sensitive phenotype dominant**: the key is raising effector-cell recruitment and survival (sigma up, delta down) -> **adoptive T-cell infusion or cytotoxic therapy**.
+
+The authors thereby assert: "non-personalized, uniform treatment often fails" (P0).
+
+**3. Scheduling by tumor composition (the sequential strategies explicitly proposed in S4)**
+
+- T1 dominant (immune-resistant): **chemotherapy first to reduce the burden -> immunotherapy to maintain**; or the reverse, immunotherapy first to shrink the tumor, then chemotherapy to clear the residual resistant cells.
+- T2 dominant (chemotherapy-resistant): chemotherapy reduces the burden but "can also lead to resistant escape" -> **immunotherapy must follow chemotherapy to stabilize the system**.
+- The two types coexisting: **chemotherapy first to clear T1**, landing at a low-burden T2-only equilibrium, where immunotherapy may then clear it; if it is only controlled, "the emergence of T1 mutants could result in resurgence".
+
+**4. Control logic and risks**
+
+The traditional MTD (maximum tolerated dose) thinking should give way to adaptive therapy ("control rather than eliminate"), exploiting the competition between sensitive and resistant subpopulations. The bifurcation analysis shows bistable regions and thresholds (baseline chi=0.818, zeta=0.4908; a small theta_2 means a high resistance benefit, so T2 dominates); **"modest parameter changes can induced qualitative transitions between immune control and tumor escape"** -- that is, small parameter drift can flip control into escape, so biomarkers and tumor composition must dynamically guide drug switching and stopping (P0). Future directions: optimal-control scheduling, oncolytic viruses, machine-learning-based individualized adaptive therapy.
+
+**Retrieval facts**: `kb_search_two_stage` in two rounds (tumor control/immune evasion/chemo resistance; overcoming resistance + microenvironment + combination), 25 candidates across the 5 pinned KBs; after deduplication only this paper's 3 shards are relevant (stage-2 scores 0.70-0.82); the other 4 pinned KBs (computer science, quantum physics, engineering & energy, economics) had no medically relevant hits.

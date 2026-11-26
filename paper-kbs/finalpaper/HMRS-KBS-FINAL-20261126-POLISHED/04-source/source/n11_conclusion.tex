@@ -1,0 +1,31 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+HMRS addresses how an agent finds applicable evidence in a changing,
+multi-domain document corpus. It makes the hierarchy used to manage the
+corpus available at query time: content-informed placement and descriptions
+help the agent choose a collection and document, and source references let
+it inspect the returned text. The hierarchy makes scope an explicit choice,
+not a replacement for lexical or vector retrieval and not a guarantee that
+every call stays within the intended scope.
+
+The evaluation shows where this design helps and what it does not yet
+establish. A rename-and-move probe exposed stale index entries, so correct
+filing did not guarantee current index visibility. In the routing tests,
+the configuration with descriptive cards reached the labelled collection
+more often than the nominally name-only configuration, although those
+runs do not isolate the effect of descriptions. Correct routing still
+left some evidence packs without the literal target string. Combining
+scored document text with an extra vector search and prioritised windows
+improved containment relative to the reference configuration across three
+runs on the same questions. In the fixed-pool replay, ordering by verifier
+score instead of fused rank reduced top-five gold-document hits. Neither
+literal containment nor a top-five hit establishes support for an answer.
+
+The blind deployment comparison found no statistically significant paired
+difference after correction. The deployments differed in search scope and
+source access, so this was not a matched test of answer quality. The supported conclusion is
+narrower: HMRS gives operators and agents separate ways to check document
+visibility, where the agent searched and what text it reached. A next test
+should measure claim-level support on independent questions under matched
+search scopes and reading budgets.

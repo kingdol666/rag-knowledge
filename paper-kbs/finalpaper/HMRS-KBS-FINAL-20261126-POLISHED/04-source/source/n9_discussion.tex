@@ -1,0 +1,28 @@
+\section{Discussion and lessons learned}
+\label{sec:discussion}
+The catalogue records where a document should be found, the index determines
+whether search can retrieve it, and the evidence pack shows which text
+actually reached the agent. Agreement at one stage does not establish
+success at the next.
+
+\textbf{Check visibility after a write.} The rename-and-move probe found
+stale index entries. Comparing a retrieval probe with the index helps
+locate the fault; a stale response does not by itself establish an index
+problem. Neither check replaces reconciliation of the files, tree registry and
+library metadata \citep{park-metadata-quality-2009,paivarinta-ecm-2005}.
+
+\textbf{Check the text as well as the route.} A0 reached the labelled
+collection on every question but missed many target strings. Under the same route,
+A0h contained more target strings than A0. The comparison does not isolate
+which changes to evidence retrieval and assembly account for the difference.
+The contrast with PD does not isolate an effect of hierarchy either. In the fixed-pool replay,
+verifier-score ranking displaced gold documents. Passage admission and
+document order therefore need separate tests.
+
+\textbf{Report the actual scope.} The E7 search returned success after
+skipping eight unreadable collections. In the other direction, the E2
+agent sometimes searched beyond its configured collections and could
+follow up with source reads. Those capabilities are part of the deployed
+answering workflow, not an advantage attributable to the ranker. A scope
+report lets readers distinguish a completed search without evidence from
+one that never reached part of the corpus.

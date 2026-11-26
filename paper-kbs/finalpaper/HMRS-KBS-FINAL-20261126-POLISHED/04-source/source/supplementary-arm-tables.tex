@@ -1,0 +1,70 @@
+\begin{table*}[t]
+\centering\small
+\caption{Annotated target-string containment in returned evidence packs on 72
+in-domain questions across three recorded campaigns. A target
+occurrence in a sibling document may count, so this is a lexical proxy rather
+than gold-document retrieval or answer correctness. Wilson intervals describe
+the frozen counts. Agreement compares the first follow-up with the frozen
+run. The November 17 run used the live corpus after a service restart and
+reused the existing route-card collections for A3. A3 is the E3 routing
+control with A0's downstream evidence construction, not one of the six
+main E4 configurations. Read-all is a separate capped corpus scan; it was
+incomplete in the first follow-up and omitted on November 17. Arms
+differ in more than one component and some reference lookups may use the gold
+domain.}
+\label{tab:s-arm-data}
+\begin{tabular}{lrrrrrr}
+\toprule
+Configuration & Frozen & Frozen rate & Wilson 95\% CI & Follow-up & Agreement & Nov.\ 17 \\
+\midrule
+A0 & 37/72 & 51.4\% & [40.1, 62.6]\% & 39/72 & 68/72 & 36/72 \\
+A0f & 45/72 & 62.5\% & [51.0, 72.8]\% & 44/72 & 71/72 & 41/72 \\
+A0h & 52/72 & 72.2\% & [61.0, 81.2]\% & 51/72 & 71/72 & 48/72 \\
+PD & 46/72 & 63.9\% & [52.4, 74.0]\% & 45/72 & 71/72 & 42/72 \\
+A1b & 39/72 & 54.2\% & [42.7, 65.2]\% & 39/72 & 72/72 & 36/72 \\
+A2 & 25/72 & 34.7\% & [24.8, 46.2]\% & 25/72 & 72/72 & 23/72 \\
+A3 & 33/72 & 45.8\% & [34.8, 57.3]\% & 25/72 & 54/72 & 26/72 \\
+Read-all & 72/72 & 100.0\% & [94.9, 100.0]\% & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+\begin{table*}[t]
+\centering\small
+\caption{Exploratory paired annotated target-string containment contrasts in
+returned evidence packs on the 72 in-domain questions (two-sided exact
+McNemar tests, unadjusted; no familywise inference). The follow-up repeats the
+same questions and is not an independent sample; the same-question follow-up
+agreed with the frozen records on 71/72 questions for A0f, A0h and PD and
+on 68/72 for A0 (Table~S12). A0 versus A3 is included as a
+secondary check of how the routing control affected containment rather
+than collection selection. A target occurrence
+may be in a sibling document; arms differ in multiple components and some
+lookups may use the gold domain.}
+\label{tab:s-paired-data}
+\begin{tabular}{llrrr}
+\toprule
+Run & Contrast & First only & Second only & $p$ \\
+\midrule
+Frozen & A0h vs. A0 & 15 & 0 & 0.000061 \\
+Frozen & A0h vs. A1b & 13 & 0 & 0.00024 \\
+Frozen & A0h vs. PD & 7 & 1 & 0.07031 \\
+Frozen & A0h vs. A0f & 7 & 0 & 0.01563 \\
+Frozen & PD vs. A1b & 7 & 0 & 0.01563 \\
+Frozen & A0f vs. A0 & 8 & 0 & 0.00781 \\
+Frozen & A1b vs. A0 & 4 & 2 & 0.6875 \\
+Frozen & A2 vs. A0 & 6 & 18 & 0.0227 \\
+Frozen & A0 vs. A3 & 10 & 6 & 0.4545 \\
+Follow-up & A0h vs. A0 & 12 & 0 & 0.00049 \\
+Follow-up & A0h vs. A1b & 12 & 0 & 0.00049 \\
+Follow-up & A0h vs. PD & 7 & 1 & 0.07031 \\
+Follow-up & A0h vs. A0f & 7 & 0 & 0.01563 \\
+Follow-up & PD vs. A0 & 6 & 0 & 0.03125 \\
+Follow-up & A0f vs. A0 & 5 & 0 & 0.0625 \\
+Follow-up & A1b vs. A0 & 1 & 1 & 1.0 \\
+Follow-up & A2 vs. A0 & 5 & 19 & 0.0066 \\
+Follow-up & A0 vs. A3 & 17 & 3 & 0.0026 \\
+Nov.\ 17 & A0h vs. A0 & 12 & 0 & 0.00049 \\
+Nov.\ 17 & A0 vs. A3 & 14 & 4 & 0.0309 \\
+\bottomrule
+\end{tabular}
+\end{table*}

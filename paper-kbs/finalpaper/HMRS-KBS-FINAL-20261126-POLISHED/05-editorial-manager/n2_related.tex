@@ -1,0 +1,105 @@
+\section{Related work}
+\label{sec:related}
+
+\subsection{Document management and content-based organisation}
+
+Enterprise content management addresses the governance of documents over
+time, including how they are described, stored and shared
+\citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006}. Metadata quality and tagging
+affect what can be found \citep{park-metadata-quality-2009,golder-tagging-2006};
+SKOS and Dublin Core supply conventions for vocabularies and descriptions
+\citep{skos,dcmi-terms}. Text categorisation addresses the assignment of
+documents to classes \citep{sebastiani2002machine}, while layout-aware parsing
+recovers text and structure for downstream operations
+\citep{zhong-publaynet-layout-2019,huang-layoutlmv3-docai-2022,mineru}.
+In HMRS, placement is not only an ingest outcome: it determines which
+collection and shelf show the document to a later query agent. The workflow
+uses recovered content to assist placement and description, and checks
+whether managed files remain reachable after selected lifecycle operations.
+These checks concern whether a stored document is visible to search after
+a write. SPFresh addresses a complementary problem: maintaining a vector
+index incrementally
+\citep{xu2023spfresh}.
+
+\subsection{Collection selection and structured retrieval}
+
+Distributed information retrieval distinguishes collection selection from
+ranking and merging results \citep{callan1995searching,si2003redde,shokouhi-federated-2011}.
+CORI and ReDDE use representations of collection contents to decide where
+to search; HMRS likewise represents collections, but exposes their managed
+descriptions and membership to an agent that can then inspect descriptions
+of documents on the selected shelf. A known scope can instead be passed to
+pinned search. Thus explicit scoping is not an alternative to BM25, dense
+retrieval or rank fusion: those methods can rank candidates once the search
+scope has been selected \citep{bm25,dpr,rrf-cormack,bge-m3}.
+
+\begin{table*}[!t]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.02}
+\caption{Representative systems compared by the structure they search and
+how that structure is maintained and used. A dash indicates that the table does not
+characterise the system on that dimension.}
+\label{tab:related-comparison}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.245\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.215\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
+\toprule
+System & Hierarchy and scope & Construction and lifecycle & Evidence handling & Access surface\\
+\midrule
+RAPTOR \citep{raptor} & cluster tree over document text & built offline at index time & --- & tree retrieval\\
+GraphRAG \citep{graphrag} & entity--relation graph, community summaries & pre-generated offline & --- & graph retrieval\\
+LightRAG \citep{lightrag} & low- and high-level graph retrieval & incremental graph updates & --- & graph retrieval\\
+DeepRead \citep{deepread} & per-document structured Markdown, section coordinates & structure built at ingestion & agent locates then reads sections & agentic search\\
+EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise RAG & --- & --- & enterprise retrieval\\
+HMRS (this work) & managed collection--document--segment hierarchy & content-informed placement and lifecycle checks & source reading; optional passage gate & self-hosted; MCP layer\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Hierarchies and graphs need not represent the same objects. RAPTOR clusters
+text into a tree for retrieval \citep{raptor}, and GraphRAG and LightRAG
+provide graph-based access to content \citep{graphrag,lightrag}. RMR-SST
+represents engineering documents as semantic trees
+\citep{li-kbs-rmrsst-2026}. DeepRead allows agents to locate and read
+sections using document structure \citep{deepread}. HMRS shares the goal of
+structure-aware access, but its upper levels are managed collections and
+the documents assigned to them. It uses that maintained organisation to
+choose where to look and which documents to open before reaching particular
+passages. These choices can coexist with content-derived structures for
+finding passages. Table~\ref{tab:related-comparison} contrasts the objects
+organised and searched by these systems.
+
+\subsection{Agentic retrieval and source verification}
+
+RAG draws on retrieved text during generation \citep{rag-lewis,gao-rag-survey-2023}.
+Tool-using and adaptive retrieval workflows choose retrieval actions or
+interleave search with reasoning \citep{react-yao,toolformer,ircot,adaptive-rag,modular-rag}.
+EPRAG studies action selection across sources in enterprise RAG
+\citep{kinalioglu-kbs-eprag-2026}; TEIE-RAG focuses on trustworthy engineering
+information extraction \citep{shen-kbs-teierag-2026}. HMRS exposes catalogue,
+shelf and source access through MCP \citep{mcp}; its contribution concerns
+the managed state those actions use, not a new protocol or general agent
+planner.
+
+Neural rerankers score candidates to improve ordering
+\citep{nogueira-monobert-2019,khattab-colbert-2020,sun-urara}. Self-RAG and
+CRAG assess evidence or correct retrieval during generation
+\citep{selfrag,crag}. HMRS distinguishes ordering documents from deciding
+which passages enter an evidence pack; its optional gate scores source
+text and returns admitted passages with references. A reference identifies
+where to check the text, not whether it supports a generated claim
+\citep{liu-verifiability,gao-citations}. Likewise, an interrupted search
+must be distinguished from a completed search that found no support. Our
+answer-quality comparison is separate from those retrieval checks, with
+its judging protocol and limitations reported alongside the results
+\citep{zheng-llmjudge,panickssery-selfpref,wang-llmnotfair,es-ragas-2024,saad-falcon-ares-2024}.
+
+\subsection{Position of this work}
+\label{sec:gap}
+
+HMRS combines content-informed filing with collection and document
+selection over the same maintained hierarchy. This gives the agent a way
+from task scope to source passages and gives operators a way to check
+whether a document remains visible after its managed state changes. The
+contribution is this connection between organisation and retrieval, not the
+invention of hierarchical search, scoped indexing or passage scoring.

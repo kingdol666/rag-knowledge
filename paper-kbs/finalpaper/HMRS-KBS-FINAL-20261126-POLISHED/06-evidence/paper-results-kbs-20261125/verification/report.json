@@ -1,0 +1,7283 @@
+{
+ "checks": [
+  {
+   "id": "E3-summary-route-A0",
+   "section": "E3",
+   "claim": "summary route/A0: hits=72, mean=- MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['followup', 'frozen', 'rerun_20261117']",
+   "status": "PASS"
+  },
+  {
+   "id": "E3-summary-route-A3",
+   "section": "E3",
+   "claim": "summary route/A3: hits=37, mean=- MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-containment-A0",
+   "section": "E4",
+   "claim": "summary containment/A0: hits=37, mean=- MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-containment-A3",
+   "section": "E4",
+   "claim": "summary containment/A3: hits=33, mean=- MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-containment-Read-all",
+   "section": "E4",
+   "claim": "summary containment/Read-all: hits=72, mean=- MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-volume-A0",
+   "section": "E4",
+   "claim": "summary volume/A0: hits=37, mean=0.031409 MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-volume-A0f",
+   "section": "E4",
+   "claim": "summary volume/A0f: hits=45, mean=0.303449 MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-volume-A0h",
+   "section": "E4",
+   "claim": "summary volume/A0h: hits=52, mean=0.309143 MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-volume-PD",
+   "section": "E4",
+   "claim": "summary volume/PD: hits=46, mean=0.308166 MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-volume-A1b",
+   "section": "E4",
+   "claim": "summary volume/A1b: hits=39, mean=0.038464 MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['followup', 'frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-volume-A2",
+   "section": "E4",
+   "claim": "summary volume/A2: hits=25, mean=0.001787 MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['followup', 'frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-volume-A3",
+   "section": "E4",
+   "claim": "summary volume/A3: hits=33, mean=0.023461 MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-summary-volume-A1-readall",
+   "section": "E4",
+   "claim": "summary volume/A1-readall: hits=72, mean=24.313972 MB",
+   "expected": "reproduced",
+   "recomputed": "reproduced",
+   "source": "redraw_route_summary.csv vs traces ['frozen']",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-best-search-config",
+   "section": "E4",
+   "claim": "A0h has the highest count of the six search configurations",
+   "expected": [
+    "A0h"
+   ],
+   "recomputed": [
+    "A0h"
+   ],
+   "source": "supp_traces_frozen.csv (read-all scan excluded)",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A0",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A0",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A0f",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A0f",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A0h",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A0h",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-PD",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for PD",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A1b",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A1b",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-frozen-population-A2",
+   "section": "E4",
+   "claim": "72 distinct in-domain question IDs for A2",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E3-route-A0",
+   "section": "E3",
+   "claim": "frozen routing hits A0",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E3-route-A3",
+   "section": "E3",
+   "claim": "frozen routing hits A3",
+   "expected": [
+    37,
+    72
+   ],
+   "recomputed": [
+    37,
+    72
+   ],
+   "source": "supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E3-rerunroute-followup-A0",
+   "section": "E3",
+   "claim": "followup route hits A0",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_followup.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E3-rerunroute-followup-A3",
+   "section": "E3",
+   "claim": "followup route hits A3",
+   "expected": [
+    49,
+    72
+   ],
+   "recomputed": [
+    49,
+    72
+   ],
+   "source": "supp_traces_followup.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E3-rerunroute-rerun_20261117-A0",
+   "section": "E3",
+   "claim": "rerun_20261117 route hits A0",
+   "expected": [
+    72,
+    72
+   ],
+   "recomputed": [
+    72,
+    72
+   ],
+   "source": "supp_traces_rerun_20261117.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E3-rerunroute-rerun_20261117-A3",
+   "section": "E3",
+   "claim": "rerun_20261117 route hits A3",
+   "expected": [
+    49,
+    72
+   ],
+   "recomputed": [
+    49,
+    72
+   ],
+   "source": "supp_traces_rerun_20261117.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-containment-A0",
+   "section": "E4",
+   "claim": "containment hits A0 = 37",
+   "expected": 37,
+   "recomputed": 37,
+   "source": "redraw_route_summary.csv volume",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-containment-A0h",
+   "section": "E4",
+   "claim": "containment hits A0h = 52",
+   "expected": 52,
+   "recomputed": 52,
+   "source": "redraw_route_summary.csv volume",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-containment-A3",
+   "section": "E4",
+   "claim": "containment hits A3 = 33",
+   "expected": 33,
+   "recomputed": 33,
+   "source": "redraw_route_summary.csv volume",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-containment-A1-readall",
+   "section": "E4",
+   "claim": "containment hits A1-readall = 72",
+   "expected": 72,
+   "recomputed": 72,
+   "source": "redraw_route_summary.csv volume",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-volume-A0-kB",
+   "section": "E4",
+   "claim": "A0 trace records 31.4 kB/question",
+   "expected": 31.4,
+   "recomputed": 31.409,
+   "source": "redraw_route_summary.csv volume",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-volume-A0h-kB",
+   "section": "E4",
+   "claim": "A0h trace records 309 kB/question",
+   "expected": 309,
+   "recomputed": 309.14300000000003,
+   "source": "redraw_route_summary.csv volume",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-rerun-A0",
+   "section": "E4",
+   "claim": "A0 containment frozen=37, follow-up=39",
+   "expected": [
+    37,
+    39
+   ],
+   "recomputed": [
+    37,
+    39
+   ],
+   "source": "redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-rerun-A0h",
+   "section": "E4",
+   "claim": "A0h containment frozen=52, follow-up=51",
+   "expected": [
+    52,
+    51
+   ],
+   "recomputed": [
+    52,
+    51
+   ],
+   "source": "redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-rerun-A0f",
+   "section": "E4",
+   "claim": "A0f containment frozen=45, follow-up=44",
+   "expected": [
+    45,
+    44
+   ],
+   "recomputed": [
+    45,
+    44
+   ],
+   "source": "redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-rerun-PD",
+   "section": "E4",
+   "claim": "PD containment frozen=46, follow-up=45",
+   "expected": [
+    46,
+    45
+   ],
+   "recomputed": [
+    46,
+    45
+   ],
+   "source": "redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-rerun-A1b",
+   "section": "E4",
+   "claim": "A1b containment frozen=39, follow-up=39",
+   "expected": [
+    39,
+    39
+   ],
+   "recomputed": [
+    39,
+    39
+   ],
+   "source": "redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-rerun-A2",
+   "section": "E4",
+   "claim": "A2 containment frozen=25, follow-up=25",
+   "expected": [
+    25,
+    25
+   ],
+   "recomputed": [
+    25,
+    25
+   ],
+   "source": "redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-rerun-A3",
+   "section": "E4",
+   "claim": "A3 containment frozen=33, follow-up=25",
+   "expected": [
+    33,
+    25
+   ],
+   "recomputed": [
+    33,
+    25
+   ],
+   "source": "redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-sign-A0h-A1b",
+   "section": "E4",
+   "claim": "frozen paired A0h>A1b: 13-0, exact sign p",
+   "expected": [
+    13,
+    0
+   ],
+   "recomputed": [
+    13,
+    0
+   ],
+   "source": "frozen traces, per-question gold_hit",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-signp-A0h-A1b",
+   "section": "E4",
+   "claim": "exact sign p for A0h vs A1b",
+   "expected": 0.000244,
+   "recomputed": 0.000244140625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-sign-PD-A1b",
+   "section": "E4",
+   "claim": "frozen paired PD>A1b: 7-0, exact sign p",
+   "expected": [
+    7,
+    0
+   ],
+   "recomputed": [
+    7,
+    0
+   ],
+   "source": "frozen traces, per-question gold_hit",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-signp-PD-A1b",
+   "section": "E4",
+   "claim": "exact sign p for PD vs A1b",
+   "expected": 0.015625,
+   "recomputed": 0.015625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-sign-A0f-A0",
+   "section": "E4",
+   "claim": "frozen paired A0f>A0: 8-0, exact sign p",
+   "expected": [
+    8,
+    0
+   ],
+   "recomputed": [
+    8,
+    0
+   ],
+   "source": "frozen traces, per-question gold_hit",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-signp-A0f-A0",
+   "section": "E4",
+   "claim": "exact sign p for A0f vs A0",
+   "expected": 0.0078125,
+   "recomputed": 0.0078125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-sign-A0h-A0",
+   "section": "E4",
+   "claim": "frozen paired A0h>A0: 15-0, exact sign p",
+   "expected": [
+    15,
+    0
+   ],
+   "recomputed": [
+    15,
+    0
+   ],
+   "source": "frozen traces, per-question gold_hit",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-signp-A0h-A0",
+   "section": "E4",
+   "claim": "exact sign p for A0h vs A0",
+   "expected": 6.1035e-05,
+   "recomputed": 6.103515625e-05,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-sign-A0h-PD",
+   "section": "E4",
+   "claim": "frozen paired A0h>PD: 7-1, exact sign p",
+   "expected": [
+    7,
+    1
+   ],
+   "recomputed": [
+    7,
+    1
+   ],
+   "source": "frozen traces, per-question gold_hit",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-signp-A0h-PD",
+   "section": "E4",
+   "claim": "exact sign p for A0h vs PD",
+   "expected": 0.0703125,
+   "recomputed": 0.0703125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-sign-A2-A0",
+   "section": "E4",
+   "claim": "frozen paired A2>A0: 6-18, exact sign p",
+   "expected": [
+    6,
+    18
+   ],
+   "recomputed": [
+    6,
+    18
+   ],
+   "source": "frozen traces, per-question gold_hit",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-signp-A2-A0",
+   "section": "E4",
+   "claim": "exact sign p for A2 vs A0",
+   "expected": 0.0226558,
+   "recomputed": 0.022655844688415527,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "E1-abs-index",
+   "section": "abstract",
+   "claim": "abstract: lifecycle probe identified stale index entries",
+   "expected": "present",
+   "recomputed": "present",
+   "source": "main_20p.tex",
+   "status": "PASS"
+  },
+  {
+   "id": "E3-abs-scope",
+   "section": "abstract",
+   "claim": "abstract: routing result is not a description ablation",
+   "expected": "present",
+   "recomputed": "present",
+   "source": "main_20p.tex",
+   "status": "PASS"
+  },
+  {
+   "id": "E4-abs-reruns",
+   "section": "abstract",
+   "claim": "abstract: containment advantage on repeated questions",
+   "expected": "present",
+   "recomputed": "present",
+   "source": "main_20p.tex",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-abs-order",
+   "section": "abstract",
+   "claim": "abstract: lower Hit@5 under verifier-score order",
+   "expected": "present",
+   "recomputed": "present",
+   "source": "main_20p.tex",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-abs-correction",
+   "section": "abstract",
+   "claim": "abstract: no corrected paired answer-quality difference",
+   "expected": "present",
+   "recomputed": "present",
+   "source": "main_20p.tex",
+   "status": "PASS"
+  },
+  {
+   "id": "abs-format",
+   "section": "abstract",
+   "claim": "abstract is within 250 words and free of arm labels",
+   "expected": [
+    true,
+    []
+   ],
+   "recomputed": [
+    true,
+    []
+   ],
+   "source": "main_20p.tex",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-bm25-wins",
+   "section": "S22",
+   "claim": "bm25: wins",
+   "expected": 1.0,
+   "recomputed": 1,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-bm25-losses",
+   "section": "S22",
+   "claim": "bm25: losses",
+   "expected": 0.0,
+   "recomputed": 0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-bm25-ties",
+   "section": "S22",
+   "claim": "bm25: ties",
+   "expected": 9.0,
+   "recomputed": 9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-bm25-raw_p",
+   "section": "S22",
+   "claim": "bm25: raw_p",
+   "expected": 1.0,
+   "recomputed": 1.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-bm25-holm_p",
+   "section": "S22",
+   "claim": "bm25: holm_p",
+   "expected": 1.0,
+   "recomputed": 1.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-dense-wins",
+   "section": "S22",
+   "claim": "dense: wins",
+   "expected": 3.0,
+   "recomputed": 3,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-dense-losses",
+   "section": "S22",
+   "claim": "dense: losses",
+   "expected": 0.0,
+   "recomputed": 0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-dense-ties",
+   "section": "S22",
+   "claim": "dense: ties",
+   "expected": 7.0,
+   "recomputed": 7,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-dense-raw_p",
+   "section": "S22",
+   "claim": "dense: raw_p",
+   "expected": 0.25,
+   "recomputed": 0.25,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-dense-holm_p",
+   "section": "S22",
+   "claim": "dense: holm_p",
+   "expected": 1.0,
+   "recomputed": 1.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-rrf-wins",
+   "section": "S22",
+   "claim": "rrf: wins",
+   "expected": 2.0,
+   "recomputed": 2,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-rrf-losses",
+   "section": "S22",
+   "claim": "rrf: losses",
+   "expected": 0.0,
+   "recomputed": 0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-rrf-ties",
+   "section": "S22",
+   "claim": "rrf: ties",
+   "expected": 8.0,
+   "recomputed": 8,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-rrf-raw_p",
+   "section": "S22",
+   "claim": "rrf: raw_p",
+   "expected": 0.5,
+   "recomputed": 0.5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-rrf-holm_p",
+   "section": "S22",
+   "claim": "rrf: holm_p",
+   "expected": 1.0,
+   "recomputed": 1.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-raptor-wins",
+   "section": "S22",
+   "claim": "raptor: wins",
+   "expected": 3.0,
+   "recomputed": 3,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-raptor-losses",
+   "section": "S22",
+   "claim": "raptor: losses",
+   "expected": 0.0,
+   "recomputed": 0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-raptor-ties",
+   "section": "S22",
+   "claim": "raptor: ties",
+   "expected": 7.0,
+   "recomputed": 7,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-raptor-raw_p",
+   "section": "S22",
+   "claim": "raptor: raw_p",
+   "expected": 0.25,
+   "recomputed": 0.25,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-raptor-holm_p",
+   "section": "S22",
+   "claim": "raptor: holm_p",
+   "expected": 1.0,
+   "recomputed": 1.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-lightrag-wins",
+   "section": "S22",
+   "claim": "lightrag: wins",
+   "expected": 7.0,
+   "recomputed": 7,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-lightrag-losses",
+   "section": "S22",
+   "claim": "lightrag: losses",
+   "expected": 0.0,
+   "recomputed": 0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-lightrag-ties",
+   "section": "S22",
+   "claim": "lightrag: ties",
+   "expected": 3.0,
+   "recomputed": 3,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-lightrag-raw_p",
+   "section": "S22",
+   "claim": "lightrag: raw_p",
+   "expected": 0.015625,
+   "recomputed": 0.015625,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-lightrag-holm_p",
+   "section": "S22",
+   "claim": "lightrag: holm_p",
+   "expected": 0.109375,
+   "recomputed": 0.109375,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-deepread-native-wins",
+   "section": "S22",
+   "claim": "deepread-native: wins",
+   "expected": 6.0,
+   "recomputed": 6,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-deepread-native-losses",
+   "section": "S22",
+   "claim": "deepread-native: losses",
+   "expected": 0.0,
+   "recomputed": 0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-deepread-native-ties",
+   "section": "S22",
+   "claim": "deepread-native: ties",
+   "expected": 4.0,
+   "recomputed": 4,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-deepread-native-raw_p",
+   "section": "S22",
+   "claim": "deepread-native: raw_p",
+   "expected": 0.03125,
+   "recomputed": 0.03125,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-deepread-native-holm_p",
+   "section": "S22",
+   "claim": "deepread-native: holm_p",
+   "expected": 0.15625,
+   "recomputed": 0.15625,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-graphrag-wins",
+   "section": "S22",
+   "claim": "graphrag: wins",
+   "expected": 7.0,
+   "recomputed": 7,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-graphrag-losses",
+   "section": "S22",
+   "claim": "graphrag: losses",
+   "expected": 0.0,
+   "recomputed": 0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-graphrag-ties",
+   "section": "S22",
+   "claim": "graphrag: ties",
+   "expected": 3.0,
+   "recomputed": 3,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-graphrag-raw_p",
+   "section": "S22",
+   "claim": "graphrag: raw_p",
+   "expected": 0.015625,
+   "recomputed": 0.015625,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S22-graphrag-holm_p",
+   "section": "S22",
+   "claim": "graphrag: holm_p",
+   "expected": 0.109375,
+   "recomputed": 0.109375,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-no-Holm-rejections",
+   "section": "E2",
+   "claim": "none of the seven paired comparisons survives Holm at 0.05",
+   "expected": true,
+   "recomputed": true,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-no-matched-corpus-rejections",
+   "section": "E2",
+   "claim": "BM25, Dense and RRF do not reach unadjusted 0.05",
+   "expected": true,
+   "recomputed": true,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-factual",
+   "section": "E2-T6",
+   "claim": "Table 6 HMRS agent factual",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-compl",
+   "section": "E2-T6",
+   "claim": "Table 6 HMRS agent completeness",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-ground",
+   "section": "E2-T6",
+   "claim": "Table 6 HMRS agent groundedness",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-attrib",
+   "section": "E2-T6",
+   "claim": "Table 6 HMRS agent attribution",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-overall",
+   "section": "E2-T6",
+   "claim": "Table 6 HMRS agent overall",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-cpi",
+   "section": "E2-T6",
+   "claim": "Table 6 HMRS agent C/P/I",
+   "expected": "10/0/0",
+   "recomputed": "10/0/0",
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-time",
+   "section": "E2-T6",
+   "claim": "Table 6 HMRS agent time",
+   "expected": 75.1,
+   "recomputed": 75.13,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-cost",
+   "section": "E2-T6",
+   "claim": "Table 6 HMRS agent cost",
+   "expected": 0.06,
+   "recomputed": 0.06048684,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-hmrs-agent-summary",
+   "section": "E2-T6",
+   "claim": "summary primary HMRS agent overall",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-factual",
+   "section": "E2-T6",
+   "claim": "Table 6 BM25 factual",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-compl",
+   "section": "E2-T6",
+   "claim": "Table 6 BM25 completeness",
+   "expected": 4.8,
+   "recomputed": 4.8,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-ground",
+   "section": "E2-T6",
+   "claim": "Table 6 BM25 groundedness",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-attrib",
+   "section": "E2-T6",
+   "claim": "Table 6 BM25 attribution",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-overall",
+   "section": "E2-T6",
+   "claim": "Table 6 BM25 overall",
+   "expected": 4.95,
+   "recomputed": 4.95,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-cpi",
+   "section": "E2-T6",
+   "claim": "Table 6 BM25 C/P/I",
+   "expected": "9/1/0",
+   "recomputed": "9/1/0",
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-time",
+   "section": "E2-T6",
+   "claim": "Table 6 BM25 time",
+   "expected": 35.8,
+   "recomputed": 35.84,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-cost",
+   "section": "E2-T6",
+   "claim": "Table 6 BM25 cost",
+   "expected": 0.03,
+   "recomputed": 0.030096420000000002,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-bm25-summary",
+   "section": "E2-T6",
+   "claim": "summary primary BM25 overall",
+   "expected": 4.95,
+   "recomputed": 4.95,
+   "source": "summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-factual",
+   "section": "E2-T6",
+   "claim": "Table 6 Dense (BGE-M3) factual",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-compl",
+   "section": "E2-T6",
+   "claim": "Table 6 Dense (BGE-M3) completeness",
+   "expected": 4.6,
+   "recomputed": 4.6,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-ground",
+   "section": "E2-T6",
+   "claim": "Table 6 Dense (BGE-M3) groundedness",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-attrib",
+   "section": "E2-T6",
+   "claim": "Table 6 Dense (BGE-M3) attribution",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-overall",
+   "section": "E2-T6",
+   "claim": "Table 6 Dense (BGE-M3) overall",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-cpi",
+   "section": "E2-T6",
+   "claim": "Table 6 Dense (BGE-M3) C/P/I",
+   "expected": "8/2/0",
+   "recomputed": "8/2/0",
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-time",
+   "section": "E2-T6",
+   "claim": "Table 6 Dense (BGE-M3) time",
+   "expected": 28.4,
+   "recomputed": 28.45,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-cost",
+   "section": "E2-T6",
+   "claim": "Table 6 Dense (BGE-M3) cost",
+   "expected": 0.021,
+   "recomputed": 0.02096688,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-dense-summary",
+   "section": "E2-T6",
+   "claim": "summary primary Dense (BGE-M3) overall",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-factual",
+   "section": "E2-T6",
+   "claim": "Table 6 RRF-order () factual",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-compl",
+   "section": "E2-T6",
+   "claim": "Table 6 RRF-order () completeness",
+   "expected": 4.4,
+   "recomputed": 4.4,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-ground",
+   "section": "E2-T6",
+   "claim": "Table 6 RRF-order () groundedness",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-attrib",
+   "section": "E2-T6",
+   "claim": "Table 6 RRF-order () attribution",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-overall",
+   "section": "E2-T6",
+   "claim": "Table 6 RRF-order () overall",
+   "expected": 4.83,
+   "recomputed": 4.825,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-cpi",
+   "section": "E2-T6",
+   "claim": "Table 6 RRF-order () C/P/I",
+   "expected": "8/1/1",
+   "recomputed": "8/1/1",
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-time",
+   "section": "E2-T6",
+   "claim": "Table 6 RRF-order () time",
+   "expected": 25.7,
+   "recomputed": 25.68,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-cost",
+   "section": "E2-T6",
+   "claim": "Table 6 RRF-order () cost",
+   "expected": 0.022,
+   "recomputed": 0.021892560000000002,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-rrf-summary",
+   "section": "E2-T6",
+   "claim": "summary primary RRF-order () overall",
+   "expected": 4.83,
+   "recomputed": 4.825,
+   "source": "summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-factual",
+   "section": "E2-T6",
+   "claim": "Table 6 RAPTOR factual",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-compl",
+   "section": "E2-T6",
+   "claim": "Table 6 RAPTOR completeness",
+   "expected": 4.5,
+   "recomputed": 4.5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-ground",
+   "section": "E2-T6",
+   "claim": "Table 6 RAPTOR groundedness",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-attrib",
+   "section": "E2-T6",
+   "claim": "Table 6 RAPTOR attribution",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-overall",
+   "section": "E2-T6",
+   "claim": "Table 6 RAPTOR overall",
+   "expected": 4.8,
+   "recomputed": 4.8,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-cpi",
+   "section": "E2-T6",
+   "claim": "Table 6 RAPTOR C/P/I",
+   "expected": "7/2/1",
+   "recomputed": "7/2/1",
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-time",
+   "section": "E2-T6",
+   "claim": "Table 6 RAPTOR time",
+   "expected": 93.3,
+   "recomputed": 93.28,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-cost",
+   "section": "E2-T6",
+   "claim": "Table 6 RAPTOR cost",
+   "expected": 0.021,
+   "recomputed": 0.02085816,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-raptor-summary",
+   "section": "E2-T6",
+   "claim": "summary primary RAPTOR overall",
+   "expected": 4.8,
+   "recomputed": 4.8,
+   "source": "summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-factual",
+   "section": "E2-T6",
+   "claim": "Table 6 LightRAG factual",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-compl",
+   "section": "E2-T6",
+   "claim": "Table 6 LightRAG completeness",
+   "expected": 4.0,
+   "recomputed": 4,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-ground",
+   "section": "E2-T6",
+   "claim": "Table 6 LightRAG groundedness",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-attrib",
+   "section": "E2-T6",
+   "claim": "Table 6 LightRAG attribution",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-overall",
+   "section": "E2-T6",
+   "claim": "Table 6 LightRAG overall",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-cpi",
+   "section": "E2-T6",
+   "claim": "Table 6 LightRAG C/P/I",
+   "expected": "7/3/0",
+   "recomputed": "7/3/0",
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-time",
+   "section": "E2-T6",
+   "claim": "Table 6 LightRAG time",
+   "expected": 98.1,
+   "recomputed": 98.1,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-cost",
+   "section": "E2-T6",
+   "claim": "Table 6 LightRAG cost",
+   "expected": 0.022,
+   "recomputed": 0.021512220000000002,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-lightrag-summary",
+   "section": "E2-T6",
+   "claim": "summary primary LightRAG overall",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-factual",
+   "section": "E2-T6",
+   "claim": "Table 6 DeepRead factual",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-compl",
+   "section": "E2-T6",
+   "claim": "Table 6 DeepRead completeness",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-ground",
+   "section": "E2-T6",
+   "claim": "Table 6 DeepRead groundedness",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-attrib",
+   "section": "E2-T6",
+   "claim": "Table 6 DeepRead attribution",
+   "expected": 3.9,
+   "recomputed": 3.9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-overall",
+   "section": "E2-T6",
+   "claim": "Table 6 DeepRead overall",
+   "expected": 4.7,
+   "recomputed": 4.7,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-cpi",
+   "section": "E2-T6",
+   "claim": "Table 6 DeepRead C/P/I",
+   "expected": "10/0/0",
+   "recomputed": "10/0/0",
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-time",
+   "section": "E2-T6",
+   "claim": "Table 6 DeepRead time",
+   "expected": 36.6,
+   "recomputed": 36.59,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-cost",
+   "section": "E2-T6",
+   "claim": "Table 6 DeepRead cost",
+   "expected": null,
+   "recomputed": null,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-deepread-native-summary",
+   "section": "E2-T6",
+   "claim": "summary primary DeepRead overall",
+   "expected": 4.7,
+   "recomputed": 4.7,
+   "source": "summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-factual",
+   "section": "E2-T6",
+   "claim": "Table 6 GraphRAG factual",
+   "expected": 4.6,
+   "recomputed": 4.6,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-compl",
+   "section": "E2-T6",
+   "claim": "Table 6 GraphRAG completeness",
+   "expected": 3.3,
+   "recomputed": 3.3,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-ground",
+   "section": "E2-T6",
+   "claim": "Table 6 GraphRAG groundedness",
+   "expected": 4.6,
+   "recomputed": 4.6,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-attrib",
+   "section": "E2-T6",
+   "claim": "Table 6 GraphRAG attribution",
+   "expected": 4.6,
+   "recomputed": 4.6,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-overall",
+   "section": "E2-T6",
+   "claim": "Table 6 GraphRAG overall",
+   "expected": 4.28,
+   "recomputed": 4.275,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-cpi",
+   "section": "E2-T6",
+   "claim": "Table 6 GraphRAG C/P/I",
+   "expected": "4/3/3",
+   "recomputed": "4/3/3",
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-time",
+   "section": "E2-T6",
+   "claim": "Table 6 GraphRAG time",
+   "expected": 127.2,
+   "recomputed": 127.24000000000001,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-cost",
+   "section": "E2-T6",
+   "claim": "Table 6 GraphRAG cost",
+   "expected": 0.027,
+   "recomputed": 0.02657994,
+   "source": "answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-T6-graphrag-summary",
+   "section": "E2-T6",
+   "claim": "summary primary GraphRAG overall",
+   "expected": 4.28,
+   "recomputed": 4.275,
+   "source": "summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-scope-list-none",
+   "section": "E2",
+   "claim": "13 list arguments and six missing restrictions",
+   "expected": [
+    13,
+    6
+   ],
+   "recomputed": [
+    13,
+    6
+   ],
+   "source": "hmrs-search-scope-audit.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-scope-questions",
+   "section": "E2",
+   "claim": "nine of ten questions had an unscoped search",
+   "expected": 9,
+   "recomputed": 9,
+   "source": "hmrs-search-scope-audit.json per_question calls",
+   "status": "PASS"
+  },
+  {
+   "id": "E2-scope-collections",
+   "section": "audit transcription",
+   "claim": "scope audit reports 31 distinct collection-ID values",
+   "expected": 31,
+   "recomputed": 31,
+   "source": "hmrs-search-scope-audit.json (reported aggregate; individual IDs not shipped)",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-hmrs-agent-unified",
+   "section": "S19",
+   "claim": "S19 HMRS unified",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-hmrs-agent-v4",
+   "section": "S19",
+   "claim": "S19 HMRS v4",
+   "expected": 4.95,
+   "recomputed": 4.95,
+   "source": "judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-hmrs-agent-r1",
+   "section": "S19",
+   "claim": "S19 HMRS R1",
+   "expected": 4.55,
+   "recomputed": 4.55,
+   "source": "legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-hmrs-agent-r2",
+   "section": "S19",
+   "claim": "S19 HMRS R2",
+   "expected": 4.55,
+   "recomputed": 4.55,
+   "source": "legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-bm25-unified",
+   "section": "S19",
+   "claim": "S19 BM25 unified",
+   "expected": 4.95,
+   "recomputed": 4.95,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-bm25-v4",
+   "section": "S19",
+   "claim": "S19 BM25 v4",
+   "expected": 4.85,
+   "recomputed": 4.85,
+   "source": "judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-bm25-r1",
+   "section": "S19",
+   "claim": "S19 BM25 R1",
+   "expected": 3.3,
+   "recomputed": 3.3,
+   "source": "legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-bm25-r2",
+   "section": "S19",
+   "claim": "S19 BM25 R2",
+   "expected": 3.3,
+   "recomputed": 3.3,
+   "source": "legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-dense-unified",
+   "section": "S19",
+   "claim": "S19 Dense (BGE-M3) unified",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-dense-v4",
+   "section": "S19",
+   "claim": "S19 Dense (BGE-M3) v4",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-dense-r1",
+   "section": "S19",
+   "claim": "S19 Dense (BGE-M3) R1",
+   "expected": 3.6,
+   "recomputed": 3.6,
+   "source": "legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-dense-r2",
+   "section": "S19",
+   "claim": "S19 Dense (BGE-M3) R2",
+   "expected": 3.55,
+   "recomputed": 3.55,
+   "source": "legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-rrf-unified",
+   "section": "S19",
+   "claim": "S19 RRF-order unified",
+   "expected": 4.83,
+   "recomputed": 4.825,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-rrf-v4",
+   "section": "S19",
+   "claim": "S19 RRF-order v4",
+   "expected": 4.62,
+   "recomputed": 4.625,
+   "source": "judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-rrf-r1",
+   "section": "S19",
+   "claim": "S19 RRF-order R1",
+   "expected": 3.12,
+   "recomputed": 3.125,
+   "source": "legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-rrf-r2",
+   "section": "S19",
+   "claim": "S19 RRF-order R2",
+   "expected": 3.12,
+   "recomputed": 3.125,
+   "source": "legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-raptor-unified",
+   "section": "S19",
+   "claim": "S19 RAPTOR unified",
+   "expected": 4.8,
+   "recomputed": 4.8,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-raptor-v4",
+   "section": "S19",
+   "claim": "S19 RAPTOR v4",
+   "expected": 4.42,
+   "recomputed": 4.425,
+   "source": "judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-raptor-r1",
+   "section": "S19",
+   "claim": "S19 RAPTOR R1",
+   "expected": 3.4,
+   "recomputed": 3.4,
+   "source": "legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-raptor-r2",
+   "section": "S19",
+   "claim": "S19 RAPTOR R2",
+   "expected": 2.95,
+   "recomputed": 2.95,
+   "source": "legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-lightrag-unified",
+   "section": "S19",
+   "claim": "S19 LightRAG unified",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-lightrag-v4",
+   "section": "S19",
+   "claim": "S19 LightRAG v4",
+   "expected": 4.83,
+   "recomputed": 4.825,
+   "source": "judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-lightrag-r1",
+   "section": "S19",
+   "claim": "S19 LightRAG R1",
+   "expected": 3.25,
+   "recomputed": 3.25,
+   "source": "legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-lightrag-r2",
+   "section": "S19",
+   "claim": "S19 LightRAG R2",
+   "expected": 3.38,
+   "recomputed": 3.375,
+   "source": "legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-deepread-native-unified",
+   "section": "S19",
+   "claim": "S19 DeepRead-native unified",
+   "expected": 4.7,
+   "recomputed": 4.7,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-deepread-native-v4",
+   "section": "S19",
+   "claim": "S19 DeepRead-native v4",
+   "expected": 4.67,
+   "recomputed": 4.675,
+   "source": "judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-deepread-native-r1",
+   "section": "S19",
+   "claim": "S19 DeepRead-native R1",
+   "expected": 3.6,
+   "recomputed": 3.6,
+   "source": "legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-deepread-native-r2",
+   "section": "S19",
+   "claim": "S19 DeepRead-native R2",
+   "expected": 3.58,
+   "recomputed": 3.575,
+   "source": "legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-graphrag-unified",
+   "section": "S19",
+   "claim": "S19 GraphRAG unified",
+   "expected": 4.28,
+   "recomputed": 4.275,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-graphrag-v4",
+   "section": "S19",
+   "claim": "S19 GraphRAG v4",
+   "expected": 3.98,
+   "recomputed": 3.975,
+   "source": "judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-graphrag-r1",
+   "section": "S19",
+   "claim": "S19 GraphRAG R1",
+   "expected": 2.55,
+   "recomputed": 2.55,
+   "source": "legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-graphrag-r2",
+   "section": "S19",
+   "claim": "S19 GraphRAG R2",
+   "expected": 2.58,
+   "recomputed": 2.575,
+   "source": "legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ01-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ01 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ01-bm25",
+   "section": "S20",
+   "claim": "S20 BQ01 BM25",
+   "expected": 4.5,
+   "recomputed": 4.5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ01-dense",
+   "section": "S20",
+   "claim": "S20 BQ01 Dense",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ01-rrf",
+   "section": "S20",
+   "claim": "S20 BQ01 RRF",
+   "expected": 4.5,
+   "recomputed": 4.5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ01-raptor",
+   "section": "S20",
+   "claim": "S20 BQ01 RAPTOR",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ01-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ01 LightRAG",
+   "expected": 4.25,
+   "recomputed": 4.25,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ01-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ01 DeepRead",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ01-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ01 GraphRAG",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ02-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ02 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ02-bm25",
+   "section": "S20",
+   "claim": "S20 BQ02 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ02-dense",
+   "section": "S20",
+   "claim": "S20 BQ02 Dense",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ02-rrf",
+   "section": "S20",
+   "claim": "S20 BQ02 RRF",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ02-raptor",
+   "section": "S20",
+   "claim": "S20 BQ02 RAPTOR",
+   "expected": 4.0,
+   "recomputed": 4.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ02-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ02 LightRAG",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ02-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ02 DeepRead",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ02-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ02 GraphRAG",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ03-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ03 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ03-bm25",
+   "section": "S20",
+   "claim": "S20 BQ03 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ03-dense",
+   "section": "S20",
+   "claim": "S20 BQ03 Dense",
+   "expected": 4.5,
+   "recomputed": 4.5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ03-rrf",
+   "section": "S20",
+   "claim": "S20 BQ03 RRF",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ03-raptor",
+   "section": "S20",
+   "claim": "S20 BQ03 RAPTOR",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ03-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ03 LightRAG",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ03-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ03 DeepRead",
+   "expected": 4.25,
+   "recomputed": 4.25,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ03-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ03 GraphRAG",
+   "expected": 2.0,
+   "recomputed": 2.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ04-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ04 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ04-bm25",
+   "section": "S20",
+   "claim": "S20 BQ04 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ04-dense",
+   "section": "S20",
+   "claim": "S20 BQ04 Dense",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ04-rrf",
+   "section": "S20",
+   "claim": "S20 BQ04 RRF",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ04-raptor",
+   "section": "S20",
+   "claim": "S20 BQ04 RAPTOR",
+   "expected": 4.25,
+   "recomputed": 4.25,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ04-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ04 LightRAG",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ04-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ04 DeepRead",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ04-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ04 GraphRAG",
+   "expected": 4.0,
+   "recomputed": 4.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ05-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ05 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ05-bm25",
+   "section": "S20",
+   "claim": "S20 BQ05 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ05-dense",
+   "section": "S20",
+   "claim": "S20 BQ05 Dense",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ05-rrf",
+   "section": "S20",
+   "claim": "S20 BQ05 RRF",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ05-raptor",
+   "section": "S20",
+   "claim": "S20 BQ05 RAPTOR",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ05-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ05 LightRAG",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ05-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ05 DeepRead",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ05-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ05 GraphRAG",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ06-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ06 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ06-bm25",
+   "section": "S20",
+   "claim": "S20 BQ06 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ06-dense",
+   "section": "S20",
+   "claim": "S20 BQ06 Dense",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ06-rrf",
+   "section": "S20",
+   "claim": "S20 BQ06 RRF",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ06-raptor",
+   "section": "S20",
+   "claim": "S20 BQ06 RAPTOR",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ06-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ06 LightRAG",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ06-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ06 DeepRead",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ06-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ06 GraphRAG",
+   "expected": 4.5,
+   "recomputed": 4.5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ07-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ07 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ07-bm25",
+   "section": "S20",
+   "claim": "S20 BQ07 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ07-dense",
+   "section": "S20",
+   "claim": "S20 BQ07 Dense",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ07-rrf",
+   "section": "S20",
+   "claim": "S20 BQ07 RRF",
+   "expected": 3.75,
+   "recomputed": 3.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ07-raptor",
+   "section": "S20",
+   "claim": "S20 BQ07 RAPTOR",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ07-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ07 LightRAG",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ07-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ07 DeepRead",
+   "expected": 4.25,
+   "recomputed": 4.25,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ07-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ07 GraphRAG",
+   "expected": 3.75,
+   "recomputed": 3.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ08-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ08 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ08-bm25",
+   "section": "S20",
+   "claim": "S20 BQ08 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ08-dense",
+   "section": "S20",
+   "claim": "S20 BQ08 Dense",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ08-rrf",
+   "section": "S20",
+   "claim": "S20 BQ08 RRF",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ08-raptor",
+   "section": "S20",
+   "claim": "S20 BQ08 RAPTOR",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ08-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ08 LightRAG",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ08-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ08 DeepRead",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ08-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ08 GraphRAG",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ09-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ09 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ09-bm25",
+   "section": "S20",
+   "claim": "S20 BQ09 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ09-dense",
+   "section": "S20",
+   "claim": "S20 BQ09 Dense",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ09-rrf",
+   "section": "S20",
+   "claim": "S20 BQ09 RRF",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ09-raptor",
+   "section": "S20",
+   "claim": "S20 BQ09 RAPTOR",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ09-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ09 LightRAG",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ09-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ09 DeepRead",
+   "expected": 4.25,
+   "recomputed": 4.25,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ09-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ09 GraphRAG",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ10-hmrs-agent",
+   "section": "S20",
+   "claim": "S20 BQ10 HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ10-bm25",
+   "section": "S20",
+   "claim": "S20 BQ10 BM25",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ10-dense",
+   "section": "S20",
+   "claim": "S20 BQ10 Dense",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ10-rrf",
+   "section": "S20",
+   "claim": "S20 BQ10 RRF",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ10-raptor",
+   "section": "S20",
+   "claim": "S20 BQ10 RAPTOR",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ10-lightrag",
+   "section": "S20",
+   "claim": "S20 BQ10 LightRAG",
+   "expected": 4.5,
+   "recomputed": 4.5,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ10-deepread-native",
+   "section": "S20",
+   "claim": "S20 BQ10 DeepRead",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S20-BQ10-graphrag",
+   "section": "S20",
+   "claim": "S20 BQ10 GraphRAG",
+   "expected": 4.0,
+   "recomputed": 4.0,
+   "source": "judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-text-bm25",
+   "section": "S19",
+   "claim": "context characters per question bm25",
+   "expected": 9.6,
+   "recomputed": 9.5572,
+   "source": "answers-v3.jsonl sources",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-text-dense",
+   "section": "S19",
+   "claim": "context characters per question dense",
+   "expected": 5.7,
+   "recomputed": 5.6941999999999995,
+   "source": "answers-v3.jsonl sources",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-text-rrf",
+   "section": "S19",
+   "claim": "context characters per question rrf",
+   "expected": 9.6,
+   "recomputed": 9.5572,
+   "source": "answers-v3.jsonl sources",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-text-raptor",
+   "section": "S19",
+   "claim": "context characters per question raptor",
+   "expected": 9.6,
+   "recomputed": 9.554,
+   "source": "answers-v3.jsonl sources",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-text-lightrag",
+   "section": "S19",
+   "claim": "context characters per question lightrag",
+   "expected": 6.6,
+   "recomputed": 6.6043,
+   "source": "answers-v3.jsonl sources",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-text-graphrag",
+   "section": "S19",
+   "claim": "context characters per question graphrag",
+   "expected": 9.3,
+   "recomputed": 9.28,
+   "source": "answers-v3.jsonl sources",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-text-deepread",
+   "section": "S19",
+   "claim": "DeepRead 6.8k over ten / 7.6k over nine recorded",
+   "expected": [
+    6.8,
+    7.6
+   ],
+   "recomputed": [
+    6.8,
+    7.6
+   ],
+   "source": "answers-v3.jsonl sources",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-deepread-docs",
+   "section": "S19",
+   "claim": "DeepRead native corpus 96 documents",
+   "expected": 96,
+   "recomputed": 96,
+   "source": "parse_log.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-deepread-gold",
+   "section": "S19",
+   "claim": "gold paper present in all nine recorded contexts",
+   "expected": 9,
+   "recomputed": 9,
+   "source": "answers-v3.jsonl sources",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-factual",
+   "section": "S21",
+   "claim": "S21 HMRS agent factual",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-compl",
+   "section": "S21",
+   "claim": "S21 HMRS agent completeness",
+   "expected": 5.0,
+   "recomputed": 5,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-ground",
+   "section": "S21",
+   "claim": "S21 HMRS agent groundedness",
+   "expected": 4.3,
+   "recomputed": 4.3,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-attrib",
+   "section": "S21",
+   "claim": "S21 HMRS agent attribution",
+   "expected": 4.0,
+   "recomputed": 4,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-overall",
+   "section": "S21",
+   "claim": "S21 HMRS agent overall",
+   "expected": 4.55,
+   "recomputed": 4.55,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-cpi",
+   "section": "S21",
+   "claim": "S21 HMRS agent C/P/I",
+   "expected": "10/0/0",
+   "recomputed": "10/0/0",
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-goldid",
+   "section": "S21",
+   "claim": "S21 HMRS agent gold-ID presence",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-kwcov",
+   "section": "S21",
+   "claim": "S21 HMRS agent keyword coverage",
+   "expected": 0.97,
+   "recomputed": 0.9666666666666667,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-time",
+   "section": "S21",
+   "claim": "S21 HMRS agent time",
+   "expected": 75.1,
+   "recomputed": 75.13,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-hmrs-agent-cost",
+   "section": "S21",
+   "claim": "S21 HMRS agent cost",
+   "expected": 0.06,
+   "recomputed": 0.06048684,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-factual",
+   "section": "S21",
+   "claim": "S21 BM25 factual",
+   "expected": 4.3,
+   "recomputed": 4.3,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-compl",
+   "section": "S21",
+   "claim": "S21 BM25 completeness",
+   "expected": 4.4,
+   "recomputed": 4.4,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-ground",
+   "section": "S21",
+   "claim": "S21 BM25 groundedness",
+   "expected": 2.9,
+   "recomputed": 2.9,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-attrib",
+   "section": "S21",
+   "claim": "S21 BM25 attribution",
+   "expected": 2.0,
+   "recomputed": 2,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-overall",
+   "section": "S21",
+   "claim": "S21 BM25 overall",
+   "expected": 3.4,
+   "recomputed": 3.4,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-cpi",
+   "section": "S21",
+   "claim": "S21 BM25 C/P/I",
+   "expected": "5/4/1",
+   "recomputed": "5/4/1",
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-goldid",
+   "section": "S21",
+   "claim": "S21 BM25 gold-ID presence",
+   "expected": "1/10",
+   "recomputed": "1/10",
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-kwcov",
+   "section": "S21",
+   "claim": "S21 BM25 keyword coverage",
+   "expected": 0.85,
+   "recomputed": 0.85,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-time",
+   "section": "S21",
+   "claim": "S21 BM25 time",
+   "expected": 35.8,
+   "recomputed": 35.84,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-bm25-cost",
+   "section": "S21",
+   "claim": "S21 BM25 cost",
+   "expected": 0.03,
+   "recomputed": 0.030096420000000002,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-factual",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) factual",
+   "expected": 4.4,
+   "recomputed": 4.4,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-compl",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) completeness",
+   "expected": 4.3,
+   "recomputed": 4.3,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-ground",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) groundedness",
+   "expected": 3.5,
+   "recomputed": 3.5,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-attrib",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) attribution",
+   "expected": 2.8,
+   "recomputed": 2.8,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-overall",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) overall",
+   "expected": 3.75,
+   "recomputed": 3.75,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-cpi",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) C/P/I",
+   "expected": "5/5/0",
+   "recomputed": "5/5/0",
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-goldid",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) gold-ID presence",
+   "expected": "0/10",
+   "recomputed": "0/10",
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-kwcov",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) keyword coverage",
+   "expected": 0.87,
+   "recomputed": 0.8666666666666667,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-time",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) time",
+   "expected": 28.4,
+   "recomputed": 28.45,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-dense-cost",
+   "section": "S21",
+   "claim": "S21 Dense (BGE-M3) cost",
+   "expected": 0.021,
+   "recomputed": 0.02096688,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-factual",
+   "section": "S21",
+   "claim": "S21 RRF-order () factual",
+   "expected": 3.8,
+   "recomputed": 3.8,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-compl",
+   "section": "S21",
+   "claim": "S21 RRF-order () completeness",
+   "expected": 4.1,
+   "recomputed": 4.1,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-ground",
+   "section": "S21",
+   "claim": "S21 RRF-order () groundedness",
+   "expected": 2.8,
+   "recomputed": 2.8,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-attrib",
+   "section": "S21",
+   "claim": "S21 RRF-order () attribution",
+   "expected": 2.0,
+   "recomputed": 2,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-overall",
+   "section": "S21",
+   "claim": "S21 RRF-order () overall",
+   "expected": 3.18,
+   "recomputed": 3.175,
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-cpi",
+   "section": "S21",
+   "claim": "S21 RRF-order () C/P/I",
+   "expected": "5/3/2",
+   "recomputed": "5/3/2",
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-goldid",
+   "section": "S21",
+   "claim": "S21 RRF-order () gold-ID presence",
+   "expected": "0/10",
+   "recomputed": "0/10",
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-kwcov",
+   "section": "S21",
+   "claim": "S21 RRF-order () keyword coverage",
+   "expected": 0.7,
+   "recomputed": 0.7,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-time",
+   "section": "S21",
+   "claim": "S21 RRF-order () time",
+   "expected": 25.7,
+   "recomputed": 25.68,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S21-rrf-cost",
+   "section": "S21",
+   "claim": "S21 RRF-order () cost",
+   "expected": 0.022,
+   "recomputed": 0.021892560000000002,
+   "source": "answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ01-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ01 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ06-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ06 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ01-bm25",
+   "section": "S18",
+   "claim": "S18 BQ01 BM25: dims/overall/verdict",
+   "expected": [
+    2,
+    1,
+    1,
+    1,
+    1.25,
+    "incorrect"
+   ],
+   "recomputed": [
+    2,
+    1,
+    1,
+    1,
+    1.25,
+    "incorrect"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ06-bm25",
+   "section": "S18",
+   "claim": "S18 BQ06 BM25: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ01-dense",
+   "section": "S18",
+   "claim": "S18 BQ01 Dense: dims/overall/verdict",
+   "expected": [
+    3,
+    4,
+    2,
+    2,
+    2.75,
+    "partial"
+   ],
+   "recomputed": [
+    3,
+    4,
+    2,
+    2,
+    2.75,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ06-dense",
+   "section": "S18",
+   "claim": "S18 BQ06 Dense: dims/overall/verdict",
+   "expected": [
+    5,
+    3,
+    4,
+    2,
+    3.5,
+    "partial"
+   ],
+   "recomputed": [
+    5,
+    3,
+    4,
+    2,
+    3.5,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ01-rrf",
+   "section": "S18",
+   "claim": "S18 BQ01 RRF-order: dims/overall/verdict",
+   "expected": [
+    2,
+    1,
+    1,
+    1,
+    1.25,
+    "incorrect"
+   ],
+   "recomputed": [
+    2,
+    1,
+    1,
+    1,
+    1.25,
+    "incorrect"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ06-rrf",
+   "section": "S18",
+   "claim": "S18 BQ06 RRF-order: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ02-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ02 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ07-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ07 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ02-bm25",
+   "section": "S18",
+   "claim": "S18 BQ02 BM25: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "partial"
+   ],
+   "recomputed": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ07-bm25",
+   "section": "S18",
+   "claim": "S18 BQ07 BM25: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ02-dense",
+   "section": "S18",
+   "claim": "S18 BQ02 Dense: dims/overall/verdict",
+   "expected": [
+    4,
+    5,
+    3,
+    2,
+    3.5,
+    "partial"
+   ],
+   "recomputed": [
+    4,
+    5,
+    3,
+    2,
+    3.5,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ07-dense",
+   "section": "S18",
+   "claim": "S18 BQ07 Dense: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ02-rrf",
+   "section": "S18",
+   "claim": "S18 BQ02 RRF-order: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ07-rrf",
+   "section": "S18",
+   "claim": "S18 BQ07 RRF-order: dims/overall/verdict",
+   "expected": [
+    1,
+    1,
+    1,
+    1,
+    1.0,
+    "incorrect"
+   ],
+   "recomputed": [
+    1,
+    1,
+    1,
+    1,
+    1.0,
+    "incorrect"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ03-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ03 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ08-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ08 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ03-bm25",
+   "section": "S18",
+   "claim": "S18 BQ03 BM25: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    2,
+    4.0,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    2,
+    4.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ08-bm25",
+   "section": "S18",
+   "claim": "S18 BQ08 BM25: dims/overall/verdict",
+   "expected": [
+    4,
+    5,
+    2,
+    1,
+    3.0,
+    "partial"
+   ],
+   "recomputed": [
+    4,
+    5,
+    2,
+    1,
+    3.0,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ03-dense",
+   "section": "S18",
+   "claim": "S18 BQ03 Dense: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ08-dense",
+   "section": "S18",
+   "claim": "S18 BQ08 Dense: dims/overall/verdict",
+   "expected": [
+    4,
+    3,
+    2,
+    1,
+    2.5,
+    "partial"
+   ],
+   "recomputed": [
+    4,
+    3,
+    2,
+    1,
+    2.5,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ03-rrf",
+   "section": "S18",
+   "claim": "S18 BQ03 RRF-order: dims/overall/verdict",
+   "expected": [
+    2,
+    5,
+    3,
+    2,
+    3.0,
+    "partial"
+   ],
+   "recomputed": [
+    2,
+    5,
+    3,
+    2,
+    3.0,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ08-rrf",
+   "section": "S18",
+   "claim": "S18 BQ08 RRF-order: dims/overall/verdict",
+   "expected": [
+    5,
+    4,
+    2,
+    1,
+    3.0,
+    "partial"
+   ],
+   "recomputed": [
+    5,
+    4,
+    2,
+    1,
+    3.0,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ04-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ04 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ09-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ09 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ04-bm25",
+   "section": "S18",
+   "claim": "S18 BQ04 BM25: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    4,
+    4.5,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ09-bm25",
+   "section": "S18",
+   "claim": "S18 BQ09 BM25: dims/overall/verdict",
+   "expected": [
+    4,
+    5,
+    3,
+    2,
+    3.5,
+    "partial"
+   ],
+   "recomputed": [
+    4,
+    5,
+    3,
+    2,
+    3.5,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ04-dense",
+   "section": "S18",
+   "claim": "S18 BQ04 Dense: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    2,
+    4.0,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    2,
+    4.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ09-dense",
+   "section": "S18",
+   "claim": "S18 BQ09 Dense: dims/overall/verdict",
+   "expected": [
+    4,
+    5,
+    3,
+    2,
+    3.5,
+    "correct"
+   ],
+   "recomputed": [
+    4,
+    5,
+    3,
+    2,
+    3.5,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ04-rrf",
+   "section": "S18",
+   "claim": "S18 BQ04 RRF-order: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    3,
+    2,
+    3.75,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ09-rrf",
+   "section": "S18",
+   "claim": "S18 BQ09 RRF-order: dims/overall/verdict",
+   "expected": [
+    4,
+    5,
+    4,
+    3,
+    4.0,
+    "correct"
+   ],
+   "recomputed": [
+    4,
+    5,
+    4,
+    3,
+    4.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ05-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ05 HMRS: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ10-hmrs-agent",
+   "section": "S18",
+   "claim": "S18 BQ10 HMRS: dims/overall/verdict",
+   "expected": [
+    4,
+    5,
+    4,
+    3,
+    4.0,
+    "correct"
+   ],
+   "recomputed": [
+    4,
+    5,
+    4,
+    3,
+    4.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ05-bm25",
+   "section": "S18",
+   "claim": "S18 BQ05 BM25: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ10-bm25",
+   "section": "S18",
+   "claim": "S18 BQ10 BM25: dims/overall/verdict",
+   "expected": [
+    3,
+    3,
+    2,
+    1,
+    2.25,
+    "partial"
+   ],
+   "recomputed": [
+    3,
+    3,
+    2,
+    1,
+    2.25,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ05-dense",
+   "section": "S18",
+   "claim": "S18 BQ05 Dense: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    5,
+    5,
+    5.0,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ10-dense",
+   "section": "S18",
+   "claim": "S18 BQ10 Dense: dims/overall/verdict",
+   "expected": [
+    4,
+    3,
+    3,
+    3,
+    3.25,
+    "partial"
+   ],
+   "recomputed": [
+    4,
+    3,
+    3,
+    3,
+    3.25,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ05-rrf",
+   "section": "S18",
+   "claim": "S18 BQ05 RRF-order: dims/overall/verdict",
+   "expected": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "recomputed": [
+    5,
+    5,
+    4,
+    3,
+    4.25,
+    "correct"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-BQ10-rrf",
+   "section": "S18",
+   "claim": "S18 BQ10 RRF-order: dims/overall/verdict",
+   "expected": [
+    4,
+    5,
+    2,
+    1,
+    3.0,
+    "partial"
+   ],
+   "recomputed": [
+    4,
+    5,
+    2,
+    1,
+    3.0,
+    "partial"
+   ],
+   "source": "judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S18-rowcount",
+   "section": "S18",
+   "claim": "S18 has 40 arm-question rows",
+   "expected": 40,
+   "recomputed": 40,
+   "source": "supplementary-baseline-quality.tex",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-T6-hmrs-agent",
+   "section": "cross",
+   "claim": "S19 unified == T6 overall for HMRS",
+   "expected": 5.0,
+   "recomputed": 5.0,
+   "source": "T6 vs S19",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-T6-bm25",
+   "section": "cross",
+   "claim": "S19 unified == T6 overall for BM25",
+   "expected": 4.95,
+   "recomputed": 4.95,
+   "source": "T6 vs S19",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-T6-dense",
+   "section": "cross",
+   "claim": "S19 unified == T6 overall for Dense (BGE-M3)",
+   "expected": 4.9,
+   "recomputed": 4.9,
+   "source": "T6 vs S19",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-T6-rrf",
+   "section": "cross",
+   "claim": "S19 unified == T6 overall for RRF-order",
+   "expected": 4.83,
+   "recomputed": 4.83,
+   "source": "T6 vs S19",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-T6-raptor",
+   "section": "cross",
+   "claim": "S19 unified == T6 overall for RAPTOR",
+   "expected": 4.8,
+   "recomputed": 4.8,
+   "source": "T6 vs S19",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-T6-lightrag",
+   "section": "cross",
+   "claim": "S19 unified == T6 overall for LightRAG",
+   "expected": 4.75,
+   "recomputed": 4.75,
+   "source": "T6 vs S19",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-T6-deepread-native",
+   "section": "cross",
+   "claim": "S19 unified == T6 overall for DeepRead-native",
+   "expected": 4.7,
+   "recomputed": 4.7,
+   "source": "T6 vs S19",
+   "status": "PASS"
+  },
+  {
+   "id": "S19-T6-graphrag",
+   "section": "cross",
+   "claim": "S19 unified == T6 overall for GraphRAG",
+   "expected": 4.28,
+   "recomputed": 4.28,
+   "source": "T6 vs S19",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0-frozen",
+   "section": "S12",
+   "claim": "S12 A0 frozen count",
+   "expected": "37/72",
+   "recomputed": "37/72",
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0-rate",
+   "section": "S12",
+   "claim": "S12 A0 frozen rate",
+   "expected": 51.4,
+   "recomputed": 51.388888888888886,
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0-wilson-lo",
+   "section": "S12",
+   "claim": "S12 A0 Wilson low",
+   "expected": 40.1,
+   "recomputed": 40.06975451990116,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0-wilson-hi",
+   "section": "S12",
+   "claim": "S12 A0 Wilson high",
+   "expected": 62.6,
+   "recomputed": 62.5673255541126,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0-follow",
+   "section": "S12",
+   "claim": "S12 A0 follow-up count",
+   "expected": "39/72",
+   "recomputed": "39/72",
+   "source": "follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0-agree",
+   "section": "S12",
+   "claim": "S12 A0 agreement",
+   "expected": "68/72",
+   "recomputed": "68/72",
+   "source": "frozen vs follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0-nov17",
+   "section": "S12",
+   "claim": "S12 A0 Nov 17 count",
+   "expected": "36/72",
+   "recomputed": "36/72",
+   "source": "Nov 17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0f-frozen",
+   "section": "S12",
+   "claim": "S12 A0f frozen count",
+   "expected": "45/72",
+   "recomputed": "45/72",
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0f-rate",
+   "section": "S12",
+   "claim": "S12 A0f frozen rate",
+   "expected": 62.5,
+   "recomputed": 62.5,
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0f-wilson-lo",
+   "section": "S12",
+   "claim": "S12 A0f Wilson low",
+   "expected": 51.0,
+   "recomputed": 50.952898935442114,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0f-wilson-hi",
+   "section": "S12",
+   "claim": "S12 A0f Wilson high",
+   "expected": 72.8,
+   "recomputed": 72.78082173068178,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0f-follow",
+   "section": "S12",
+   "claim": "S12 A0f follow-up count",
+   "expected": "44/72",
+   "recomputed": "44/72",
+   "source": "follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0f-agree",
+   "section": "S12",
+   "claim": "S12 A0f agreement",
+   "expected": "71/72",
+   "recomputed": "71/72",
+   "source": "frozen vs follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0f-nov17",
+   "section": "S12",
+   "claim": "S12 A0f Nov 17 count",
+   "expected": "41/72",
+   "recomputed": "41/72",
+   "source": "Nov 17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0h-frozen",
+   "section": "S12",
+   "claim": "S12 A0h frozen count",
+   "expected": "52/72",
+   "recomputed": "52/72",
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0h-rate",
+   "section": "S12",
+   "claim": "S12 A0h frozen rate",
+   "expected": 72.2,
+   "recomputed": 72.22222222222221,
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0h-wilson-lo",
+   "section": "S12",
+   "claim": "S12 A0h Wilson low",
+   "expected": 61.0,
+   "recomputed": 60.95356698101694,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0h-wilson-hi",
+   "section": "S12",
+   "claim": "S12 A0h Wilson high",
+   "expected": 81.2,
+   "recomputed": 81.23971420320329,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0h-follow",
+   "section": "S12",
+   "claim": "S12 A0h follow-up count",
+   "expected": "51/72",
+   "recomputed": "51/72",
+   "source": "follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0h-agree",
+   "section": "S12",
+   "claim": "S12 A0h agreement",
+   "expected": "71/72",
+   "recomputed": "71/72",
+   "source": "frozen vs follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A0h-nov17",
+   "section": "S12",
+   "claim": "S12 A0h Nov 17 count",
+   "expected": "48/72",
+   "recomputed": "48/72",
+   "source": "Nov 17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-PD-frozen",
+   "section": "S12",
+   "claim": "S12 PD frozen count",
+   "expected": "46/72",
+   "recomputed": "46/72",
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-PD-rate",
+   "section": "S12",
+   "claim": "S12 PD frozen rate",
+   "expected": 63.9,
+   "recomputed": 63.888888888888886,
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-PD-wilson-lo",
+   "section": "S12",
+   "claim": "S12 PD Wilson low",
+   "expected": 52.4,
+   "recomputed": 52.352480375384935,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-PD-wilson-hi",
+   "section": "S12",
+   "claim": "S12 PD Wilson high",
+   "expected": 74.0,
+   "recomputed": 74.01832036475271,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-PD-follow",
+   "section": "S12",
+   "claim": "S12 PD follow-up count",
+   "expected": "45/72",
+   "recomputed": "45/72",
+   "source": "follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-PD-agree",
+   "section": "S12",
+   "claim": "S12 PD agreement",
+   "expected": "71/72",
+   "recomputed": "71/72",
+   "source": "frozen vs follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-PD-nov17",
+   "section": "S12",
+   "claim": "S12 PD Nov 17 count",
+   "expected": "42/72",
+   "recomputed": "42/72",
+   "source": "Nov 17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1b-frozen",
+   "section": "S12",
+   "claim": "S12 A1b frozen count",
+   "expected": "39/72",
+   "recomputed": "39/72",
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1b-rate",
+   "section": "S12",
+   "claim": "S12 A1b frozen rate",
+   "expected": 54.2,
+   "recomputed": 54.166666666666664,
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1b-wilson-lo",
+   "section": "S12",
+   "claim": "S12 A1b Wilson low",
+   "expected": 42.7,
+   "recomputed": 42.73986719881113,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1b-wilson-hi",
+   "section": "S12",
+   "claim": "S12 A1b Wilson high",
+   "expected": 65.2,
+   "recomputed": 65.17137302323015,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1b-follow",
+   "section": "S12",
+   "claim": "S12 A1b follow-up count",
+   "expected": "39/72",
+   "recomputed": "39/72",
+   "source": "follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1b-agree",
+   "section": "S12",
+   "claim": "S12 A1b agreement",
+   "expected": "72/72",
+   "recomputed": "72/72",
+   "source": "frozen vs follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1b-nov17",
+   "section": "S12",
+   "claim": "S12 A1b Nov 17 count",
+   "expected": "36/72",
+   "recomputed": "36/72",
+   "source": "Nov 17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A2-frozen",
+   "section": "S12",
+   "claim": "S12 A2 frozen count",
+   "expected": "25/72",
+   "recomputed": "25/72",
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A2-rate",
+   "section": "S12",
+   "claim": "S12 A2 frozen rate",
+   "expected": 34.7,
+   "recomputed": 34.72222222222222,
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A2-wilson-lo",
+   "section": "S12",
+   "claim": "S12 A2 Wilson low",
+   "expected": 24.8,
+   "recomputed": 24.75342293900267,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A2-wilson-hi",
+   "section": "S12",
+   "claim": "S12 A2 Wilson high",
+   "expected": 46.2,
+   "recomputed": 46.238696246845905,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A2-follow",
+   "section": "S12",
+   "claim": "S12 A2 follow-up count",
+   "expected": "25/72",
+   "recomputed": "25/72",
+   "source": "follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A2-agree",
+   "section": "S12",
+   "claim": "S12 A2 agreement",
+   "expected": "72/72",
+   "recomputed": "72/72",
+   "source": "frozen vs follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A2-nov17",
+   "section": "S12",
+   "claim": "S12 A2 Nov 17 count",
+   "expected": "23/72",
+   "recomputed": "23/72",
+   "source": "Nov 17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A3-frozen",
+   "section": "S12",
+   "claim": "S12 A3 frozen count",
+   "expected": "33/72",
+   "recomputed": "33/72",
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A3-rate",
+   "section": "S12",
+   "claim": "S12 A3 frozen rate",
+   "expected": 45.8,
+   "recomputed": 45.83333333333333,
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A3-wilson-lo",
+   "section": "S12",
+   "claim": "S12 A3 Wilson low",
+   "expected": 34.8,
+   "recomputed": 34.82862697676984,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A3-wilson-hi",
+   "section": "S12",
+   "claim": "S12 A3 Wilson high",
+   "expected": 57.3,
+   "recomputed": 57.26013280118886,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A3-follow",
+   "section": "S12",
+   "claim": "S12 A3 follow-up count",
+   "expected": "25/72",
+   "recomputed": "25/72",
+   "source": "follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A3-agree",
+   "section": "S12",
+   "claim": "S12 A3 agreement",
+   "expected": "54/72",
+   "recomputed": "54/72",
+   "source": "frozen vs follow-up traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A3-nov17",
+   "section": "S12",
+   "claim": "S12 A3 Nov 17 count",
+   "expected": "26/72",
+   "recomputed": "26/72",
+   "source": "Nov 17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1-readall-frozen",
+   "section": "S12",
+   "claim": "S12 Read-all frozen count",
+   "expected": "72/72",
+   "recomputed": "72/72",
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1-readall-rate",
+   "section": "S12",
+   "claim": "S12 Read-all frozen rate",
+   "expected": 100.0,
+   "recomputed": 100.0,
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1-readall-wilson-lo",
+   "section": "S12",
+   "claim": "S12 Read-all Wilson low",
+   "expected": 94.9,
+   "recomputed": 94.93488266449553,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S12-A1-readall-wilson-hi",
+   "section": "S12",
+   "claim": "S12 Read-all Wilson high",
+   "expected": 100.0,
+   "recomputed": 99.99999999999999,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0h-A0-counts",
+   "section": "S13",
+   "claim": "S13 Frozen A0h vs A0 discordant",
+   "expected": [
+    15,
+    0
+   ],
+   "recomputed": [
+    15,
+    0
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0h-A0-p",
+   "section": "S13",
+   "claim": "S13 Frozen A0h vs A0 exact p",
+   "expected": 6.1e-05,
+   "recomputed": 6.103515625e-05,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0h-A1b-counts",
+   "section": "S13",
+   "claim": "S13 Frozen A0h vs A1b discordant",
+   "expected": [
+    13,
+    0
+   ],
+   "recomputed": [
+    13,
+    0
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0h-A1b-p",
+   "section": "S13",
+   "claim": "S13 Frozen A0h vs A1b exact p",
+   "expected": 0.00024,
+   "recomputed": 0.000244140625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0h-PD-counts",
+   "section": "S13",
+   "claim": "S13 Frozen A0h vs PD discordant",
+   "expected": [
+    7,
+    1
+   ],
+   "recomputed": [
+    7,
+    1
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0h-PD-p",
+   "section": "S13",
+   "claim": "S13 Frozen A0h vs PD exact p",
+   "expected": 0.07031,
+   "recomputed": 0.0703125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0h-A0f-counts",
+   "section": "S13",
+   "claim": "S13 Frozen A0h vs A0f discordant",
+   "expected": [
+    7,
+    0
+   ],
+   "recomputed": [
+    7,
+    0
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0h-A0f-p",
+   "section": "S13",
+   "claim": "S13 Frozen A0h vs A0f exact p",
+   "expected": 0.01563,
+   "recomputed": 0.015625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-PD-A1b-counts",
+   "section": "S13",
+   "claim": "S13 Frozen PD vs A1b discordant",
+   "expected": [
+    7,
+    0
+   ],
+   "recomputed": [
+    7,
+    0
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-PD-A1b-p",
+   "section": "S13",
+   "claim": "S13 Frozen PD vs A1b exact p",
+   "expected": 0.01563,
+   "recomputed": 0.015625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0f-A0-counts",
+   "section": "S13",
+   "claim": "S13 Frozen A0f vs A0 discordant",
+   "expected": [
+    8,
+    0
+   ],
+   "recomputed": [
+    8,
+    0
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0f-A0-p",
+   "section": "S13",
+   "claim": "S13 Frozen A0f vs A0 exact p",
+   "expected": 0.00781,
+   "recomputed": 0.0078125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A1b-A0-counts",
+   "section": "S13",
+   "claim": "S13 Frozen A1b vs A0 discordant",
+   "expected": [
+    4,
+    2
+   ],
+   "recomputed": [
+    4,
+    2
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A1b-A0-p",
+   "section": "S13",
+   "claim": "S13 Frozen A1b vs A0 exact p",
+   "expected": 0.6875,
+   "recomputed": 0.6875,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A2-A0-counts",
+   "section": "S13",
+   "claim": "S13 Frozen A2 vs A0 discordant",
+   "expected": [
+    6,
+    18
+   ],
+   "recomputed": [
+    6,
+    18
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A2-A0-p",
+   "section": "S13",
+   "claim": "S13 Frozen A2 vs A0 exact p",
+   "expected": 0.0227,
+   "recomputed": 0.022655844688415527,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0-A3-counts",
+   "section": "S13",
+   "claim": "S13 Frozen A0 vs A3 discordant",
+   "expected": [
+    10,
+    6
+   ],
+   "recomputed": [
+    10,
+    6
+   ],
+   "source": "frozen traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-frozen-A0-A3-p",
+   "section": "S13",
+   "claim": "S13 Frozen A0 vs A3 exact p",
+   "expected": 0.4545,
+   "recomputed": 0.454498291015625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0h-A0-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up A0h vs A0 discordant",
+   "expected": [
+    12,
+    0
+   ],
+   "recomputed": [
+    12,
+    0
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0h-A0-p",
+   "section": "S13",
+   "claim": "S13 Follow-up A0h vs A0 exact p",
+   "expected": 0.00049,
+   "recomputed": 0.00048828125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0h-A1b-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up A0h vs A1b discordant",
+   "expected": [
+    12,
+    0
+   ],
+   "recomputed": [
+    12,
+    0
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0h-A1b-p",
+   "section": "S13",
+   "claim": "S13 Follow-up A0h vs A1b exact p",
+   "expected": 0.00049,
+   "recomputed": 0.00048828125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0h-PD-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up A0h vs PD discordant",
+   "expected": [
+    7,
+    1
+   ],
+   "recomputed": [
+    7,
+    1
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0h-PD-p",
+   "section": "S13",
+   "claim": "S13 Follow-up A0h vs PD exact p",
+   "expected": 0.07031,
+   "recomputed": 0.0703125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0h-A0f-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up A0h vs A0f discordant",
+   "expected": [
+    7,
+    0
+   ],
+   "recomputed": [
+    7,
+    0
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0h-A0f-p",
+   "section": "S13",
+   "claim": "S13 Follow-up A0h vs A0f exact p",
+   "expected": 0.01563,
+   "recomputed": 0.015625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-PD-A0-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up PD vs A0 discordant",
+   "expected": [
+    6,
+    0
+   ],
+   "recomputed": [
+    6,
+    0
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-PD-A0-p",
+   "section": "S13",
+   "claim": "S13 Follow-up PD vs A0 exact p",
+   "expected": 0.03125,
+   "recomputed": 0.03125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0f-A0-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up A0f vs A0 discordant",
+   "expected": [
+    5,
+    0
+   ],
+   "recomputed": [
+    5,
+    0
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0f-A0-p",
+   "section": "S13",
+   "claim": "S13 Follow-up A0f vs A0 exact p",
+   "expected": 0.0625,
+   "recomputed": 0.0625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A1b-A0-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up A1b vs A0 discordant",
+   "expected": [
+    1,
+    1
+   ],
+   "recomputed": [
+    1,
+    1
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A1b-A0-p",
+   "section": "S13",
+   "claim": "S13 Follow-up A1b vs A0 exact p",
+   "expected": 1.0,
+   "recomputed": 1.0,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A2-A0-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up A2 vs A0 discordant",
+   "expected": [
+    5,
+    19
+   ],
+   "recomputed": [
+    5,
+    19
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A2-A0-p",
+   "section": "S13",
+   "claim": "S13 Follow-up A2 vs A0 exact p",
+   "expected": 0.0066,
+   "recomputed": 0.006610751152038574,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0-A3-counts",
+   "section": "S13",
+   "claim": "S13 Follow-up A0 vs A3 discordant",
+   "expected": [
+    17,
+    3
+   ],
+   "recomputed": [
+    17,
+    3
+   ],
+   "source": "followup traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-followup-A0-A3-p",
+   "section": "S13",
+   "claim": "S13 Follow-up A0 vs A3 exact p",
+   "expected": 0.0026,
+   "recomputed": 0.0025768280029296875,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-nov17-A0h-A0-counts",
+   "section": "S13",
+   "claim": "S13 Nov.\\ 17 A0h vs A0 discordant",
+   "expected": [
+    12,
+    0
+   ],
+   "recomputed": [
+    12,
+    0
+   ],
+   "source": "nov17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-nov17-A0h-A0-p",
+   "section": "S13",
+   "claim": "S13 Nov.\\ 17 A0h vs A0 exact p",
+   "expected": 0.00049,
+   "recomputed": 0.00048828125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-nov17-A0-A3-counts",
+   "section": "S13",
+   "claim": "S13 Nov.\\ 17 A0 vs A3 discordant",
+   "expected": [
+    14,
+    4
+   ],
+   "recomputed": [
+    14,
+    4
+   ],
+   "source": "nov17 traces",
+   "status": "PASS"
+  },
+  {
+   "id": "S13-nov17-A0-A3-p",
+   "section": "S13",
+   "claim": "S13 Nov.\\ 17 A0 vs A3 exact p",
+   "expected": 0.0309,
+   "recomputed": 0.0308837890625,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ01-P",
+   "section": "S14",
+   "claim": "S14 BQ01 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    6
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    6
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ01-F",
+   "section": "S14",
+   "claim": "S14 BQ01 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ01-C",
+   "section": "S14",
+   "claim": "S14 BQ01 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    5
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    5
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ01-gold",
+   "section": "S14",
+   "claim": "S14 BQ01 gold identifier",
+   "expected": "1706.03762",
+   "recomputed": "1706.03762",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ02-P",
+   "section": "S14",
+   "claim": "S14 BQ02 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    4
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    4
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ02-F",
+   "section": "S14",
+   "claim": "S14 BQ02 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    3
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    3
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ02-C",
+   "section": "S14",
+   "claim": "S14 BQ02 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ02-gold",
+   "section": "S14",
+   "claim": "S14 BQ02 gold identifier",
+   "expected": "1801.00862",
+   "recomputed": "1801.00862",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ03-P",
+   "section": "S14",
+   "claim": "S14 BQ03 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    4
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    4
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ03-F",
+   "section": "S14",
+   "claim": "S14 BQ03 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    1
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    1
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ03-C",
+   "section": "S14",
+   "claim": "S14 BQ03 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    1
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    1
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ03-gold",
+   "section": "S14",
+   "claim": "S14 BQ03 gold identifier",
+   "expected": "2212.13138",
+   "recomputed": "2212.13138",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ04-P",
+   "section": "S14",
+   "claim": "S14 BQ04 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    1
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    1
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ04-F",
+   "section": "S14",
+   "claim": "S14 BQ04 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    1
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    1
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ04-C",
+   "section": "S14",
+   "claim": "S14 BQ04 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ04-gold",
+   "section": "S14",
+   "claim": "S14 BQ04 gold identifier",
+   "expected": "1602.01876",
+   "recomputed": "1602.01876",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ05-P",
+   "section": "S14",
+   "claim": "S14 BQ05 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ05-F",
+   "section": "S14",
+   "claim": "S14 BQ05 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ05-C",
+   "section": "S14",
+   "claim": "S14 BQ05 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ05-gold",
+   "section": "S14",
+   "claim": "S14 BQ05 gold identifier",
+   "expected": "1512.08067",
+   "recomputed": "1512.08067",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ06-P",
+   "section": "S14",
+   "claim": "S14 BQ06 P: s/a/m",
+   "expected": [
+    "no",
+    "yes",
+    6
+   ],
+   "recomputed": [
+    "no",
+    "yes",
+    6
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ06-F",
+   "section": "S14",
+   "claim": "S14 BQ06 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    4
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    4
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ06-C",
+   "section": "S14",
+   "claim": "S14 BQ06 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ06-gold",
+   "section": "S14",
+   "claim": "S14 BQ06 gold identifier",
+   "expected": "1503.07557",
+   "recomputed": "1503.07557",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ07-P",
+   "section": "S14",
+   "claim": "S14 BQ07 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    1
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    1
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ07-F",
+   "section": "S14",
+   "claim": "S14 BQ07 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    2
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    2
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ07-C",
+   "section": "S14",
+   "claim": "S14 BQ07 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ07-gold",
+   "section": "S14",
+   "claim": "S14 BQ07 gold identifier",
+   "expected": "2608.05850",
+   "recomputed": "2608.05850",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ08-P",
+   "section": "S14",
+   "claim": "S14 BQ08 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    2
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    2
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ08-F",
+   "section": "S14",
+   "claim": "S14 BQ08 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ08-C",
+   "section": "S14",
+   "claim": "S14 BQ08 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ08-gold",
+   "section": "S14",
+   "claim": "S14 BQ08 gold identifier",
+   "expected": "2408.09942",
+   "recomputed": "2408.09942",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ09-P",
+   "section": "S14",
+   "claim": "S14 BQ09 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    2
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    2
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ09-F",
+   "section": "S14",
+   "claim": "S14 BQ09 F: s/a/m",
+   "expected": [
+    "no",
+    "yes",
+    6
+   ],
+   "recomputed": [
+    "no",
+    "yes",
+    6
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ09-C",
+   "section": "S14",
+   "claim": "S14 BQ09 C: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ09-gold",
+   "section": "S14",
+   "claim": "S14 BQ09 gold identifier",
+   "expected": "2410.10669",
+   "recomputed": "2410.10669",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ10-P",
+   "section": "S14",
+   "claim": "S14 BQ10 P: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    3
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    3
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ10-F",
+   "section": "S14",
+   "claim": "S14 BQ10 F: s/a/m",
+   "expected": [
+    "yes",
+    "yes",
+    6
+   ],
+   "recomputed": [
+    "yes",
+    "yes",
+    6
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ10-C",
+   "section": "S14",
+   "claim": "S14 BQ10 C: s/a/m",
+   "expected": [
+    "no",
+    "yes",
+    0
+   ],
+   "recomputed": [
+    "no",
+    "yes",
+    0
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-BQ10-gold",
+   "section": "S14",
+   "claim": "S14 BQ10 gold identifier",
+   "expected": "2604.01385",
+   "recomputed": "2604.01385",
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S14-totals",
+   "section": "S14",
+   "claim": "S14 totals s/a/m for P, F, C",
+   "expected": [
+    9,
+    10,
+    29,
+    9,
+    10,
+    23,
+    9,
+    10,
+    6
+   ],
+   "recomputed": [
+    9,
+    10,
+    29,
+    9,
+    10,
+    23,
+    9,
+    10,
+    6
+   ],
+   "source": "exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, P-gold",
+   "section": "S15",
+   "claim": "S15 Original, P gold-ID",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, P-strict",
+   "section": "S15",
+   "claim": "S15 Original, P strict",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, P-alias",
+   "section": "S15",
+   "claim": "S15 Original, P alias",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, P-markers",
+   "section": "S15",
+   "claim": "S15 Original, P markers",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, P-time",
+   "section": "S15",
+   "claim": "S15 Original, P time",
+   "expected": 52.6,
+   "recomputed": 52.61,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, P-cost",
+   "section": "S15",
+   "claim": "S15 Original, P cost",
+   "expected": 0.711,
+   "recomputed": 0.710963,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, F-gold",
+   "section": "S15",
+   "claim": "S15 Original, F gold-ID",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, F-strict",
+   "section": "S15",
+   "claim": "S15 Original, F strict",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, F-alias",
+   "section": "S15",
+   "claim": "S15 Original, F alias",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, F-markers",
+   "section": "S15",
+   "claim": "S15 Original, F markers",
+   "expected": "7/10",
+   "recomputed": "7/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, F-time",
+   "section": "S15",
+   "claim": "S15 Original, F time",
+   "expected": 22.2,
+   "recomputed": 22.169999999999998,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, F-cost",
+   "section": "S15",
+   "claim": "S15 Original, F cost",
+   "expected": 0.487,
+   "recomputed": 0.4866775,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, C-gold",
+   "section": "S15",
+   "claim": "S15 Original, C gold-ID",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, C-strict",
+   "section": "S15",
+   "claim": "S15 Original, C strict",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, C-alias",
+   "section": "S15",
+   "claim": "S15 Original, C alias",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, C-markers",
+   "section": "S15",
+   "claim": "S15 Original, C markers",
+   "expected": "2/10",
+   "recomputed": "2/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, C-time",
+   "section": "S15",
+   "claim": "S15 Original, C time",
+   "expected": 24.5,
+   "recomputed": 24.52,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Original, C-cost",
+   "section": "S15",
+   "claim": "S15 Original, C cost",
+   "expected": 0.527,
+   "recomputed": 0.526896,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, P-gold",
+   "section": "S15",
+   "claim": "S15 Common, P gold-ID",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, P-strict",
+   "section": "S15",
+   "claim": "S15 Common, P strict",
+   "expected": "7/10",
+   "recomputed": "7/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, P-alias",
+   "section": "S15",
+   "claim": "S15 Common, P alias",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, P-markers",
+   "section": "S15",
+   "claim": "S15 Common, P markers",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, P-time",
+   "section": "S15",
+   "claim": "S15 Common, P time",
+   "expected": 37.7,
+   "recomputed": 37.69,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, P-cost",
+   "section": "S15",
+   "claim": "S15 Common, P cost",
+   "expected": 0.672,
+   "recomputed": 0.6720628,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, F-gold",
+   "section": "S15",
+   "claim": "S15 Common, F gold-ID",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, F-strict",
+   "section": "S15",
+   "claim": "S15 Common, F strict",
+   "expected": "7/10",
+   "recomputed": "7/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, F-alias",
+   "section": "S15",
+   "claim": "S15 Common, F alias",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, F-markers",
+   "section": "S15",
+   "claim": "S15 Common, F markers",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, F-time",
+   "section": "S15",
+   "claim": "S15 Common, F time",
+   "expected": 15.2,
+   "recomputed": 15.21,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, F-cost",
+   "section": "S15",
+   "claim": "S15 Common, F cost",
+   "expected": 0.377,
+   "recomputed": 0.3767238,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, C-gold",
+   "section": "S15",
+   "claim": "S15 Common, C gold-ID",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, C-strict",
+   "section": "S15",
+   "claim": "S15 Common, C strict",
+   "expected": "8/10",
+   "recomputed": "8/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, C-alias",
+   "section": "S15",
+   "claim": "S15 Common, C alias",
+   "expected": "10/10",
+   "recomputed": "10/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, C-markers",
+   "section": "S15",
+   "claim": "S15 Common, C markers",
+   "expected": "9/10",
+   "recomputed": "9/10",
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, C-time",
+   "section": "S15",
+   "claim": "S15 Common, C time",
+   "expected": 19.6,
+   "recomputed": 19.62,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-Common, C-cost",
+   "section": "S15",
+   "claim": "S15 Common, C cost",
+   "expected": 0.524,
+   "recomputed": 0.5235816,
+   "source": "grid rows",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-post-repair-proxies",
+   "section": "S15",
+   "claim": "post-repair gold-ID, strict keyword and marker coverage",
+   "expected": [
+    "10/10",
+    "9/10",
+    "10/10"
+   ],
+   "recomputed": [
+    "10/10",
+    "9/10",
+    "10/10"
+   ],
+   "source": "answers_fresh_summary.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-post-repair-wall",
+   "section": "S15",
+   "claim": "post-repair mean wall time (seconds)",
+   "expected": 131.0,
+   "recomputed": 131.0,
+   "source": "answers_fresh_summary.json (wall_s, not latency_s)",
+   "status": "PASS"
+  },
+  {
+   "id": "S15-post-repair-cost",
+   "section": "S15",
+   "claim": "post-repair total cost (USD)",
+   "expected": 3.1,
+   "recomputed": 3.1,
+   "source": "answers_fresh_summary.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-desc-total",
+   "section": "S9",
+   "claim": "328/328 parts had descriptions",
+   "expected": 328,
+   "recomputed": 328,
+   "source": "desc_audit.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-desc-ok",
+   "section": "S9",
+   "claim": "all descriptions pass the audit",
+   "expected": 328,
+   "recomputed": 328,
+   "source": "desc_audit.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-desc-min",
+   "section": "S9",
+   "claim": "descriptions at least 60 characters",
+   "expected": true,
+   "recomputed": true,
+   "source": "desc_audit.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-probe-hit",
+   "section": "S9",
+   "claim": "identifier probe finds all 100 target arXiv IDs",
+   "expected": 100,
+   "recomputed": 100,
+   "source": "probe5_final.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-probe-unscoped",
+   "section": "S9",
+   "claim": "72 probes unscoped",
+   "expected": 72,
+   "recomputed": 72,
+   "source": "probe5_final.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-probe-chunkcopy",
+   "section": "S9",
+   "claim": "45 returned a chunk-copy name first",
+   "expected": 45,
+   "recomputed": 45,
+   "source": "probe5_final.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-parse-ok",
+   "section": "S9",
+   "claim": "50/50 parsed and verified",
+   "expected": [
+    50,
+    50
+   ],
+   "recomputed": [
+    50,
+    50
+   ],
+   "source": "ingest_report.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-tagflags",
+   "section": "S9",
+   "claim": "41 tag flags negative",
+   "expected": 41,
+   "recomputed": 41,
+   "source": "ingest_report.json routed",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-dups",
+   "section": "S9",
+   "claim": "35 candidate groups",
+   "expected": 35,
+   "recomputed": 35,
+   "source": "o2_duplicates.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-dups-range",
+   "section": "S9",
+   "claim": "similarities 0.90-0.975",
+   "expected": true,
+   "recomputed": true,
+   "source": "o2_duplicates.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-content-audit",
+   "section": "S9",
+   "claim": "322/322 content audited",
+   "expected": [
+    322,
+    322
+   ],
+   "recomputed": [
+    322,
+    322
+   ],
+   "source": "benchmark-suite/results/r2_organize/audit_manifest.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-state-enumeration",
+   "section": "S9",
+   "claim": "91 saved names and 79 enumerated records (unmatched)",
+   "expected": [
+    91,
+    79
+   ],
+   "recomputed": [
+    91,
+    79
+   ],
+   "source": "exp10_ingest_state.json; exp10_papers_toollayer.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-apply-tags",
+   "section": "S9",
+   "claim": "165 tags applied successfully in 47.6 s",
+   "expected": [
+    165,
+    47.6
+   ],
+   "recomputed": [
+    165,
+    47.6
+   ],
+   "source": "tags_report.json",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-graph",
+   "section": "S9",
+   "claim": "lifecycle run: 316 tags, 658 nodes, 4675 to 4679 edges",
+   "expected": [
+    316,
+    658,
+    4675,
+    4679
+   ],
+   "recomputed": [
+    316,
+    658,
+    4675,
+    4679
+   ],
+   "source": "skilltest-calls.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E1-rename",
+   "section": "E1",
+   "claim": "rename/move residue and forced reindex: 9, 18, 9",
+   "expected": [
+    9,
+    18,
+    9
+   ],
+   "recomputed": [
+    9,
+    18,
+    9
+   ],
+   "source": "skilltest-calls.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "E5-candidates",
+   "section": "E5",
+   "claim": "separate extraction smoke test records 13 candidates",
+   "expected": 13,
+   "recomputed": 13,
+   "source": "experience_smoke.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E5-disposable-empty",
+   "section": "E5",
+   "claim": "disposable fixture: no global hits and no pending drafts",
+   "expected": [
+    0,
+    0
+   ],
+   "recomputed": [
+    0,
+    0
+   ],
+   "source": "skilltest-calls.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-routing-report",
+   "section": "report transcription",
+   "claim": "routing campaign reports 202 tags",
+   "expected": true,
+   "recomputed": true,
+   "source": "BENCHMARK.md",
+   "status": "PASS"
+  },
+  {
+   "id": "S9-split-report",
+   "section": "report transcription",
+   "claim": "campaign report: 165 parts, 9 whole, 156 split, 2672 s",
+   "expected": true,
+   "recomputed": true,
+   "source": "BENCHMARK-30000chunk-20260918.md",
+   "status": "PASS"
+  },
+  {
+   "id": "S10-load-report",
+   "section": "report transcription",
+   "claim": "vector-only report: 159/270 in 30 seconds",
+   "expected": true,
+   "recomputed": true,
+   "source": "STRESS-REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "E7-shelf-report",
+   "section": "report transcription",
+   "claim": "shelf-output report: 131 documents and 74.9 kB",
+   "expected": true,
+   "recomputed": true,
+   "source": "RETRIEVAL-E2E-REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "E7-pagination-report",
+   "section": "report transcription",
+   "claim": "pagination report: 131 documents in four pages",
+   "expected": true,
+   "recomputed": true,
+   "source": "PRODUCTION-LADDER-INDEX.md",
+   "status": "PASS"
+  },
+  {
+   "id": "FigS3-probes",
+   "section": "Fig S3",
+   "claim": "tool-probe ranges: kept documents and merged candidates",
+   "expected": [
+    9,
+    11,
+    42,
+    43
+   ],
+   "recomputed": [
+    9,
+    11,
+    42,
+    43
+   ],
+   "source": "exp3_abstention.json",
+   "status": "PASS"
+  },
+  {
+   "id": "FigS4-cut-replay",
+   "section": "Fig S4",
+   "claim": "relative-margin replay: candidate means and preserved gold instances",
+   "expected": [
+    6.4,
+    11.9,
+    16,
+    17,
+    17,
+    17
+   ],
+   "recomputed": [
+    6.4,
+    11.9,
+    16,
+    17,
+    17,
+    17
+   ],
+   "source": "exp3_abstention.json cut_replay",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-gate-equal-count",
+   "section": "E6",
+   "claim": "gate replay has equal final document counts in nine of ten pairs",
+   "expected": [
+    9,
+    10
+   ],
+   "recomputed": [
+    9,
+    10
+   ],
+   "source": "exp11_gate_ablation.json (counts, not document-set identity)",
+   "status": "PASS"
+  },
+  {
+   "id": "E7-probes",
+   "section": "E7",
+   "claim": "three absent-answer probes",
+   "expected": 3,
+   "recomputed": 3,
+   "source": "exp8b_absent_agent.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E7-probes-tier",
+   "section": "E7",
+   "claim": "all three are absent-tier probes",
+   "expected": true,
+   "recomputed": true,
+   "source": "exp8b_absent_agent.json",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-pools",
+   "section": "E6",
+   "claim": "16 fixed candidate pools",
+   "expected": 16,
+   "recomputed": 16,
+   "source": "redraw_verifier_order.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-fusion",
+   "section": "E6",
+   "claim": "fusion keeps gold in top five in 15 pools",
+   "expected": 15,
+   "recomputed": 15,
+   "source": "redraw_verifier_order.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-verifier",
+   "section": "E6",
+   "claim": "verifier order keeps 7",
+   "expected": 7,
+   "recomputed": 7,
+   "source": "redraw_verifier_order.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-discordant",
+   "section": "E6",
+   "claim": "eight pools lost a hit, none gained",
+   "expected": [
+    8,
+    0
+   ],
+   "recomputed": [
+    8,
+    0
+   ],
+   "source": "redraw_verifier_order.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-p",
+   "section": "E6",
+   "claim": "exact McNemar p for the ordering change",
+   "expected": 0.0078125,
+   "recomputed": 0.0078125,
+   "source": "recomputed",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-scores",
+   "section": "E6",
+   "claim": "191 recorded scores",
+   "expected": 191,
+   "recomputed": 191,
+   "source": "redraw_verifier_scores.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-gold-n",
+   "section": "E6",
+   "claim": "17 gold candidates scored",
+   "expected": 17,
+   "recomputed": 17,
+   "source": "redraw_verifier_scores.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-nongold-n",
+   "section": "E6",
+   "claim": "174 non-gold candidates scored",
+   "expected": 174,
+   "recomputed": 174,
+   "source": "redraw_verifier_scores.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-median-gold",
+   "section": "E6",
+   "claim": "gold score median 0.8759",
+   "expected": 0.8759,
+   "recomputed": 0.8759,
+   "source": "redraw_verifier_scores.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-median-non",
+   "section": "E6",
+   "claim": "non-gold median 0.8627",
+   "expected": 0.8627,
+   "recomputed": 0.86265,
+   "source": "redraw_verifier_scores.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-min",
+   "section": "E6",
+   "claim": "no recorded score at or below 0.5",
+   "expected": ">0.5",
+   "recomputed": ">0.5",
+   "source": "redraw_verifier_scores.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-q14",
+   "section": "E6",
+   "claim": "one candidate (Q14... pool) has no recorded score",
+   "expected": 1,
+   "recomputed": 1,
+   "source": "redraw_verifier_scores.csv (12 per pool except one)",
+   "status": "PASS"
+  },
+  {
+   "id": "E6-score-order-agreement",
+   "section": "E6",
+   "claim": "sorting the recorded scores yields the same verifier flags",
+   "expected": {
+    "Q1": 1,
+    "Q2": 0,
+    "Q3": 1,
+    "Q4": 0,
+    "Q5": 0,
+    "Q6": 0,
+    "Q7": 1,
+    "Q8": 0,
+    "Q9": 0,
+    "Q10": 1,
+    "Q11": 0,
+    "Q12": 0,
+    "Q13": 1,
+    "Q14": 1,
+    "Q15": 1,
+    "Q16": 0
+   },
+   "recomputed": {
+    "Q1": 1,
+    "Q2": 0,
+    "Q3": 1,
+    "Q4": 0,
+    "Q5": 0,
+    "Q6": 0,
+    "Q7": 1,
+    "Q8": 0,
+    "Q9": 0,
+    "Q10": 1,
+    "Q11": 0,
+    "Q12": 0,
+    "Q13": 1,
+    "Q14": 1,
+    "Q15": 1,
+    "Q16": 0
+   },
+   "source": "redraw_verifier_scores.csv compared with redraw_verifier_order.csv (separate archives)",
+   "status": "PASS"
+  },
+  {
+   "id": "records-source-exists",
+   "section": "record mirrors",
+   "claim": "source package has evidence files",
+   "expected": true,
+   "recomputed": true,
+   "source": "04-source/source/experiment_data/",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/answers-v2.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/answers-v2.jsonl vs records/baseline_quality_v2/answers-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/figure-values.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/figure-values.json vs records/baseline_quality_v2/figure-values.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/judgments-v2.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/judgments-v2.jsonl vs records/baseline_quality_v2/judgments-v2.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/mapping-v2.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/mapping-v2.json vs records/baseline_quality_v2/mapping-v2.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-baseline_quality_v2/summary-v2.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/baseline_quality_v2/summary-v2.json vs records/baseline_quality_v2/summary-v2.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/answers-v3.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/answers-v3.jsonl vs records/external_baselines_v3/answers-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/external-baselines-v3-derived.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/external-baselines-v3-derived.json vs records/external_baselines_v3/external-baselines-v3-derived.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/fig-hmrs-case-provenance.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/fig-hmrs-case-provenance.json vs records/external_baselines_v3/fig-hmrs-case-provenance.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/hmrs-search-scope-audit.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/hmrs-search-scope-audit.json vs records/external_baselines_v3/hmrs-search-scope-audit.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/judgments-unified.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/judgments-unified.jsonl vs records/external_baselines_v3/judgments-unified.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/judgments-v4-sub.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/judgments-v4-sub.jsonl vs records/external_baselines_v3/judgments-v4-sub.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/mapping-unified.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/mapping-unified.json vs records/external_baselines_v3/mapping-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/paired-unified.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/paired-unified.json vs records/external_baselines_v3/paired-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/parse_log.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/parse_log.jsonl vs records/external_baselines_v3/parse_log.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/protocol/answer-prompt.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/protocol/answer-prompt.txt vs records/external_baselines_v3/protocol/answer-prompt.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/protocol/judge-instruction.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/protocol/judge-instruction.txt vs records/external_baselines_v3/protocol/judge-instruction.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/summary-unified.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/summary-unified.json vs records/external_baselines_v3/summary-unified.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/deepread-native-BQ05.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/deepread-native-BQ05.txt vs records/external_baselines_v3/translation-en/deepread-native-BQ05.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ01.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ01.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ01.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ02.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ02.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ02.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ03.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ03.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ03.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ04.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ04.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ04.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ05.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ05.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ05.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ08.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ08.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ08.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ09.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ09.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ09.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/hmrs-agent-BQ10.txt",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/hmrs-agent-BQ10.txt vs records/external_baselines_v3/translation-en/hmrs-agent-BQ10.txt",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-external_baselines_v3/translation-en/strings-en.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/external_baselines_v3/translation-en/strings-en.json vs records/external_baselines_v3/translation-en/strings-en.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/a6_global_search.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/a6_global_search.json vs records/legacy/a6_global_search.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/ACCEPTANCE-REPORT-20261113.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/ACCEPTANCE-REPORT-20261113.md vs records/legacy/ACCEPTANCE-REPORT-20261113.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/answers_fresh_summary.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/answers_fresh_summary.json vs records/legacy/answers_fresh_summary.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/audit_manifest.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/audit_manifest.json vs records/legacy/audit_manifest.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/BENCHMARK-30000chunk-20260918.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/BENCHMARK-30000chunk-20260918.md vs records/legacy/BENCHMARK-30000chunk-20260918.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/BENCHMARK.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/BENCHMARK.md vs records/legacy/BENCHMARK.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/case-anatomy-provenance.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/case-anatomy-provenance.json vs records/legacy/case-anatomy-provenance.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/QA-EVIDENCE-COMPENDIUM.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/QA-EVIDENCE-COMPENDIUM.md vs records/legacy/deepseek-r1/QA-EVIDENCE-COMPENDIUM.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_claude_Q1.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_claude_Q1.json vs records/legacy/deepseek-r1/qa_claude_Q1.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_claude_Q2.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_claude_Q2.json vs records/legacy/deepseek-r1/qa_claude_Q2.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_claude_Q3.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_claude_Q3.json vs records/legacy/deepseek-r1/qa_claude_Q3.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_claude_Q4-ood.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_claude_Q4-ood.json vs records/legacy/deepseek-r1/qa_claude_Q4-ood.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_omp_Q1.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_omp_Q1.json vs records/legacy/deepseek-r1/qa_omp_Q1.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_omp_Q2.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_omp_Q2.json vs records/legacy/deepseek-r1/qa_omp_Q2.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_omp_Q3.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_omp_Q3.json vs records/legacy/deepseek-r1/qa_omp_Q3.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/deepseek-r1/qa_omp_Q4-ood.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/deepseek-r1/qa_omp_Q4-ood.json vs records/legacy/deepseek-r1/qa_omp_Q4-ood.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/desc_audit.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/desc_audit.json vs records/legacy/desc_audit.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp10_ingest_state.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp10_ingest_state.json vs records/legacy/exp10_ingest_state.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp10_papers_toollayer.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp10_papers_toollayer.json vs records/legacy/exp10_papers_toollayer.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp11_gate_ablation.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp11_gate_ablation.json vs records/legacy/exp11_gate_ablation.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp3_abstention.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp3_abstention.json vs records/legacy/exp3_abstention.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp5_q2_anatomy.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp5_q2_anatomy.json vs records/legacy/exp5_q2_anatomy.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp8b_absent_agent.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp8b_absent_agent.json vs records/legacy/exp8b_absent_agent.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp_r2_grade_corrected.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp_r2_grade_corrected.json vs records/legacy/exp_r2_grade_corrected.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/exp_rerun5_grade.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/exp_rerun5_grade.json vs records/legacy/exp_rerun5_grade.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/experience_smoke.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/experience_smoke.json vs records/legacy/experience_smoke.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/F1F2F3_REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/F1F2F3_REPORT.md vs records/legacy/F1F2F3_REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/F4F5_REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/F4F5_REPORT.md vs records/legacy/F4F5_REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/FULLTEST-SUMMARY.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/FULLTEST-SUMMARY.md vs records/legacy/FULLTEST-SUMMARY.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/ingest_report.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/ingest_report.json vs records/legacy/ingest_report.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/judgments-v3-round1.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/judgments-v3-round1.jsonl vs records/legacy/judgments-v3-round1.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/judgments-v3.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/judgments-v3.jsonl vs records/legacy/judgments-v3.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/o2_duplicates.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/o2_duplicates.json vs records/legacy/o2_duplicates.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/probe5_final.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/probe5_final.json vs records/legacy/probe5_final.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/PRODUCTION-LADDER-INDEX.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/PRODUCTION-LADDER-INDEX.md vs records/legacy/PRODUCTION-LADDER-INDEX.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/r2_ingest_report.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/r2_ingest_report.json vs records/legacy/r2_ingest_report.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/RETRIEVAL-E2E-REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/RETRIEVAL-E2E-REPORT.md vs records/legacy/RETRIEVAL-E2E-REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/SKILL-E2E-REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/SKILL-E2E-REPORT.md vs records/legacy/SKILL-E2E-REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/skilltest-calls.jsonl",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/skilltest-calls.jsonl vs records/legacy/skilltest-calls.jsonl",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/STRESS-REPORT.md",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/STRESS-REPORT.md vs records/legacy/STRESS-REPORT.md",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-legacy/tags_report.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/legacy/tags_report.json vs records/legacy/tags_report.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-paired_diagnostics/redraw_verifier_order.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/paired_diagnostics/redraw_verifier_order.csv vs records/paired_diagnostics/redraw_verifier_order.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-paired_diagnostics/redraw_verifier_scores.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/paired_diagnostics/redraw_verifier_scores.csv vs records/paired_diagnostics/redraw_verifier_scores.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/redraw_content_summary.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/redraw_content_summary.csv vs records/routing_content_traces/redraw_content_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/redraw_route_summary.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/redraw_route_summary.csv vs records/routing_content_traces/redraw_route_summary.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/supp_traces_floor.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/supp_traces_floor.csv vs records/routing_content_traces/supp_traces_floor.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/supp_traces_followup.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/supp_traces_followup.csv vs records/routing_content_traces/supp_traces_followup.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/supp_traces_frozen.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/supp_traces_frozen.csv vs records/routing_content_traces/supp_traces_frozen.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-routing_content_traces/supp_traces_rerun_20261117.csv",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/routing_content_traces/supp_traces_rerun_20261117.csv vs records/routing_content_traces/supp_traces_rerun_20261117.csv",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-tiered_case/tiered-bq07.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/tiered_case/tiered-bq07.json vs records/tiered_case/tiered-bq07.json",
+   "status": "PASS"
+  },
+  {
+   "id": "mirror-tiered_case/trace-evidence.json",
+   "section": "record mirrors",
+   "claim": "package and project copies match exactly",
+   "expected": "identical",
+   "recomputed": "identical",
+   "source": "experiment_data/tiered_case/trace-evidence.json vs records/tiered_case/trace-evidence.json",
+   "status": "PASS"
+  }
+ ],
+ "pass": 671,
+ "fail": 0
+}

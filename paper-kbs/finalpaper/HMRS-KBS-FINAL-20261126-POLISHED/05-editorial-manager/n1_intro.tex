@@ -1,0 +1,75 @@
+\section{Introduction}
+\label{sec:intro}
+
+Consider an engineer asking whether a device can return to service after a
+failed calibration. A current operating procedure, a past incident report and
+a manual for a similar device can all contain relevant-looking text. They do
+not answer the same question: the applicable procedure governs the decision,
+whereas the report explains what happened in an earlier case. An agent must
+identify the collection that covers the task, find the applicable document
+and read the passage that addresses the question. Even if the right document
+has been filed correctly, a stale index or an incomplete source read can
+keep that passage out of the answer's evidence.
+
+Dense retrieval ranks text by learned relevance to a query \citep{dpr}, and
+collection selection and scoped search have long been studied in distributed
+information retrieval \citep{callan1995searching,si2003redde}. A ranked list from an unscoped
+index offers candidate passages, but it does not show whether the agent
+searched the intended collection, whether the applicable document was
+visible to search, or which source passages the agent read. Enterprise content management already maintains
+membership and descriptive records \citep{paivarinta-ecm-2005,tyrvaainen-ecm-2006},
+but those records are only useful to the agent if it can consult them when
+choosing where and what to search.
+
+We present the Hierarchical Management Retrieval System (HMRS), a self-hosted
+platform that uses the same document organisation for both maintenance and
+retrieval. During ingestion, an agent consults collection descriptions and
+uses the recovered content to select a destination and derive document
+descriptions and tags. The catalogue and document listings then expose that
+placement and metadata to the query agent. In catalogue-first access, the
+agent selects a collection for the task, inspects its document listing
+(the shelf), and opens selected documents or parts to obtain passages with
+source references. An optional passage scorer can filter that evidence.
+When the scope is known, a pinned search can start directly in the specified
+collections. The hierarchy guides where to look; lexical and vector search
+remain available to find candidate text.
+
+\ifdefined\HMRSReviewLayout\Needspace{5\baselineskip}\fi
+\noindent\textbf{Contributions.}
+\begin{enumerate}
+\item \textbf{Content-informed organisation that serves retrieval.} HMRS
+maintains collections, documents or parts, and indexed segments in a shared
+management model. The ingestion workflow uses source content for placement
+and description, and lifecycle checks distinguish stored state from what is
+visible to search (Sections~\ref{sec:system}--\ref{sec:organization}).
+\item \textbf{Task-directed navigation to source passages.} The retrieval
+agent uses catalogue and shelf descriptions to choose a collection and its
+documents before reading selected source text. That path complements pinned
+search over the same managed collection state. A separate, optional evidence
+gate can admit passages without treating its score as a document ranking
+(Section~\ref{sec:retrieval}).
+\item \textbf{Evaluation of distinct failure points.} Lifecycle probes,
+scripted routing tests, evidence-pack comparisons and a fixed-pool replay
+separate index visibility, collection choice, target-text coverage and
+document order. A logged case illustrates the catalogue-first path, while
+a separate blind comparison describes answer quality under native deployment
+conditions (Section~\ref{sec:eval}).
+\end{enumerate}
+
+\subsection{Research questions and reading guide}
+\label{sec:rq}
+
+\textbf{RQ1} examines acquisition, collection membership and lifecycle
+consistency. \textbf{RQ2} asks which collections the catalogue-first policy
+selects under the tested routing configurations. \textbf{RQ3} compares
+literal target-string containment and reports configuration-specific text
+counters. \textbf{RQ4} compares top-five gold-document hits under
+verifier-score ordering and fused ranking on fixed candidate pools. \textbf{RQ5} examines abstention
+and operational failures. \textbf{RQ6} compares judged answer quality under
+native deployments.
+
+Section~\ref{sec:related} relates HMRS to document management, collection
+selection and structured retrieval. Sections~\ref{sec:system}--\ref{sec:implementation}
+explain how the shared hierarchy is maintained and queried. Section~\ref{sec:eval}
+reports the evaluation, followed by the discussion, limitations and conclusion
+in Sections~\ref{sec:discussion}--\ref{sec:conclusion}.

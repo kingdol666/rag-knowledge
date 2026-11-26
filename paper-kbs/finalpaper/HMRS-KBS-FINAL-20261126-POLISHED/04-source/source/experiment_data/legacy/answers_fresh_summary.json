@@ -1,0 +1,325 @@
+[
+ {
+  "qid": "BQ01",
+  "arxiv": "1706.03762",
+  "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+  "http": 200,
+  "error": "",
+  "wall_s": 155.2,
+  "latency_s": 151.87,
+  "turns": 4,
+  "cost_usd": 0.43157804,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 3,
+   "kw_total": 3,
+   "kw_list_hit": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "cited": true,
+   "n_markers": 5,
+   "markers_head": [
+    "1706.03762",
+    "Table 1",
+    "Table 1",
+    "part 1 of 2",
+    "Table 1"
+   ],
+   "false_abstain": false,
+   "chars": 4226
+  }
+ },
+ {
+  "qid": "BQ02",
+  "arxiv": "1801.00862",
+  "question": "What defines NISQ technology and what is its central limitation?",
+  "http": 200,
+  "error": "",
+  "wall_s": 91.1,
+  "latency_s": 89.521,
+  "turns": 4,
+  "cost_usd": 0.22606486,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 2,
+   "kw_total": 2,
+   "kw_list_hit": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "cited": true,
+   "n_markers": 6,
+   "markers_head": [
+    "1801.00862",
+    "1801.00862",
+    "§4.1",
+    "§6.2",
+    "2303.00445",
+    "2303.00445"
+   ],
+   "false_abstain": false,
+   "chars": 1816
+  }
+ },
+ {
+  "qid": "BQ03",
+  "arxiv": "2212.13138",
+  "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+  "http": 200,
+  "error": "",
+  "wall_s": 108.9,
+  "latency_s": 106.809,
+  "turns": 6,
+  "cost_usd": 0.25302356,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 2,
+   "kw_total": 2,
+   "kw_list_hit": [
+    "multimedqa",
+    "67.6"
+   ],
+   "cited": true,
+   "n_markers": 13,
+   "markers_head": [
+    "2212.13138",
+    "[33]",
+    "[64]",
+    "[34]",
+    "[1]",
+    "[2]",
+    "[29]",
+    "Table 2"
+   ],
+   "false_abstain": false,
+   "chars": 2204
+  }
+ },
+ {
+  "qid": "BQ04",
+  "arxiv": "1602.01876",
+  "question": "Which three independent ontologies subdivide the Gene Ontology?",
+  "http": 200,
+  "error": "",
+  "wall_s": 58.0,
+  "latency_s": 56.243,
+  "turns": 7,
+  "cost_usd": 0.17585876,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 3,
+   "kw_total": 3,
+   "kw_list_hit": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "cited": true,
+   "n_markers": 1,
+   "markers_head": [
+    "1602.01876"
+   ],
+   "false_abstain": false,
+   "chars": 1277
+  }
+ },
+ {
+  "qid": "BQ05",
+  "arxiv": "1512.08067",
+  "question": "Why does historical European economic growth contradict Unified Growth Theory?",
+  "http": 200,
+  "error": "",
+  "wall_s": 142.4,
+  "latency_s": 140.683,
+  "turns": 7,
+  "cost_usd": 0.33201516,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 1,
+   "kw_total": 1,
+   "kw_list_hit": [
+    "unified growth theory"
+   ],
+   "cited": true,
+   "n_markers": 2,
+   "markers_head": [
+    "1512.08067",
+    "1512.08067"
+   ],
+   "false_abstain": false,
+   "chars": 1768
+  }
+ },
+ {
+  "qid": "BQ06",
+  "arxiv": "1503.07557",
+  "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+  "http": 200,
+  "error": "",
+  "wall_s": 264.9,
+  "latency_s": 262.365,
+  "turns": 12,
+  "cost_usd": 0.50653946,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 1,
+   "kw_total": 1,
+   "kw_list_hit": [
+    "precipitation efficiency"
+   ],
+   "cited": true,
+   "n_markers": 10,
+   "markers_head": [
+    "1503.07557",
+    "part 1 of 3",
+    "§3",
+    "§1",
+    "§4.1",
+    "§3",
+    "§8",
+    "§2"
+   ],
+   "false_abstain": false,
+   "chars": 2831
+  }
+ },
+ {
+  "qid": "BQ07",
+  "arxiv": "2608.05850",
+  "question": "What is MameLoshnLM and what parameter scale does it have?",
+  "http": 200,
+  "error": "",
+  "wall_s": 147.0,
+  "latency_s": 144.785,
+  "turns": 5,
+  "cost_usd": 0.24502056000000003,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 2,
+   "kw_total": 2,
+   "kw_list_hit": [
+    "yiddish",
+    "8b"
+   ],
+   "cited": true,
+   "n_markers": 6,
+   "markers_head": [
+    "2608.05850",
+    "part 1 of 4",
+    "§1",
+    "§5",
+    "part 4 of 4",
+    "§7.2"
+   ],
+   "false_abstain": false,
+   "chars": 1657
+  }
+ },
+ {
+  "qid": "BQ08",
+  "arxiv": "2408.09942",
+  "question": "How does oxygen redox contribute to the capacity of battery cathodes?",
+  "http": 200,
+  "error": "",
+  "wall_s": 143.0,
+  "latency_s": 140.189,
+  "turns": 6,
+  "cost_usd": 0.3455743600000001,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 2,
+   "kw_total": 2,
+   "kw_list_hit": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "cited": true,
+   "n_markers": 9,
+   "markers_head": [
+    "2408.09942",
+    "§2",
+    "§4",
+    "§3",
+    "§4",
+    "§3.1",
+    "§5",
+    "§3.2"
+   ],
+   "false_abstain": false,
+   "chars": 2662
+  }
+ },
+ {
+  "qid": "BQ09",
+  "arxiv": "2410.10669",
+  "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+  "http": 200,
+  "error": "",
+  "wall_s": 68.1,
+  "latency_s": 66.04,
+  "turns": 4,
+  "cost_usd": 0.21182396,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 1,
+   "kw_total": 2,
+   "kw_list_hit": [
+    "dynamic"
+   ],
+   "cited": true,
+   "n_markers": 7,
+   "markers_head": [
+    "2410.10669",
+    "[10]",
+    "[11]",
+    "Fig. 1",
+    "2410.10669",
+    "part 1 of 2",
+    "part 2 of 2"
+   ],
+   "false_abstain": false,
+   "chars": 3810
+  }
+ },
+ {
+  "qid": "BQ10",
+  "arxiv": "2604.01385",
+  "question": "What strategies for tumor control emerge under immune evasion and chemotherapy resistance?",
+  "http": 200,
+  "error": "",
+  "wall_s": 133.0,
+  "latency_s": 130.887,
+  "turns": 6,
+  "cost_usd": 0.37732136,
+  "success": true,
+  "grade": {
+   "gold_id_in_answer": true,
+   "kw_hits": 2,
+   "kw_total": 2,
+   "kw_list_hit": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "cited": true,
+   "n_markers": 3,
+   "markers_head": [
+    "2604.01385",
+    "§3.3",
+    "§3.1"
+   ],
+   "false_abstain": false,
+   "chars": 4094
+  }
+ }
+]

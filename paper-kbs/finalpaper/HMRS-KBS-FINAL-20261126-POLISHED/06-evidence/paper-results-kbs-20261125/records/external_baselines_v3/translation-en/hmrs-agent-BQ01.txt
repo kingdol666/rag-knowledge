@@ -1,0 +1,33 @@
+**Conclusion: the Transformer's attention computes the dot products of Q with all keys, divides by $\sqrt{d_k}$, applies a softmax to obtain the weights and returns a weighted sum over V; it replaces recurrence and convolution because a single matrix multiplication connects any two positions directly -- per-layer complexity $O(n^2 d)$, number of parallel steps $O(1)$, maximum path length $O(1)$ -- whereas an RNN needs $O(n)$ sequential steps and an $O(n)$ path, and convolution needs stacked layers to connect the whole sequence.**
+
+## 1. How attention is computed (S3.2-3.2.2, P0 direct evidence)
+
+The definition of attention is "mapping a query and a set of key-value pairs to an output": the output is a weighted sum of the values, and the weights come from a compatibility function of the query with the corresponding keys. Specifically, "Scaled Dot-Product Attention":
+
+- Inputs: query/key dimension $d_k$, value dimension $d_v$;
+- "We compute the dot products of the query with all keys, divide each by $\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values."
+- Matrix form (Eq. 1): $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right)V$
+- Reason for the scaling: when $d_k$ is large the dot products grow large in magnitude, "pushing the softmax function into regions where it has extremely small gradients", hence multiplying by $1/\sqrt{d_k}$; relative to additive attention, "dot-product attention is much faster and more space-efficient in practice, since it can be implemented using highly optimized matrix multiplication code".
+
+Multi-head attention (S3.2.2): project Q/K/V with $h$ different learnable linear projections to $d_k,d_k,d_v$, compute the attentions in parallel, concatenate and project with $W^O$: $\mathrm{MultiHead}=\mathrm{Concat}(\mathrm{head}_1,\dots,\mathrm{head}_h)W^O$, $\mathrm{head}_i=\mathrm{Attention}(QW_i^Q,KW_i^K,VW_i^V)$. The paper takes $h=8$, $d_k=d_v=d_{model}/h=64$, with a total computational cost similar to that of single-head attention with full dimensionality. Why it is necessary: "Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions. With a single attention head, averaging inhibits this." The decoder's self-attention uses a mask (softmax inputs set to $-\infty$) to block future positions and preserve the autoregressive property.
+
+## 2. Why it replaces recurrence and convolution (S4 "Why Self-Attention", P0)
+
+The paper compares along three criteria: per-layer computational complexity, the minimum number of sequential operations, and the maximum path length between any two positions ("The shorter these paths..., the easier it is to learn long-range dependencies"). Table 1:
+
+| Layer Type | Complexity/Layer | Sequential Ops | Max Path Length |
+|---|---|---|---|
+| Self-Attention | $O(n^2\cdot d)$ | $O(1)$ | $O(1)$ |
+| Recurrent | $O(n\cdot d^2)$ | $O(n)$ | $O(n)$ |
+| Convolutional | $O(k\cdot n\cdot d^2)$ | $O(1)$ | $O(\log_k(n))$ |
+| Self-Attention (restricted) | $O(r\cdot n\cdot d)$ | $O(1)$ | $O(n/r)$ |
+
+- **Against recurrence**: an RNN decomposes computation along symbol positions; "This inherently sequential nature precludes parallelization within training examples", and $h_t$ depends on $h_{t-1}$ (Introduction, P0). Self-attention "connects all positions with a constant number of sequentially executed operations, whereas a recurrent layer requires $O(n)$ sequential operations"; when $n<d$ (the common case for wordpiece/BPE representations) self-attention is faster.
+- **Against convolution**: a single convolution layer with $k<n$ does not connect all input-output pairs; stacking $O(n/k)$ layers (contiguous kernels) or $O(\log_k n)$ layers (dilated convolutions) is required, "increasing the length of the longest paths"; and a convolutional layer is generally $k$ times more expensive than a recurrent layer. Even with $k=n$, a separable convolution costs about the same as the combination of "a self-attention layer and a point-wise feed-forward layer" -- exactly the structure adopted by this model.
+- **Cost and remedy**: global attention brings position averaging and hence a "reduced effective resolution", offset by multi-head attention (S2); long sequences can use restricted self-attention with a neighborhood of size $r$, reducing the cost to $O(rnd)$. Because there is no recurrence and no convolution, positional information must be injected explicitly -- sinusoidal position encodings (S3.5).
+
+## 3. Supporting results (P1)
+
+The base model trains for 12 hours on 8xP100 (100k steps); EN-DE BLEU 27.3, big 28.4; EN-FR 41.8; training FLOPs $3.3\cdot10^{18}$, far below the $10^{19}$-$10^{20}$ range of GNMT/ConvS2S (Table 2).
+
+**Provenance**: `Computer Science and Artificial Intelligence/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md` -- "Attention Is All You Need" (1706.03762), KB `b1199132-...` (the Computer Science and Artificial Intelligence library). Note: the Laya evidence gate was unavailable in this round (`ModuleNotFoundError: No module named 'laya'`); the quotes above were obtained by reading the raw document in that library directly.
