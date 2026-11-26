@@ -174,17 +174,30 @@ def verify_routing_and_packs() -> None:
     for f in ("redraw_route_summary.csv", "redraw_content_summary.csv"):
         (TAB / ("e1_" + f)).write_text((rc / f).read_text(encoding="utf-8"), encoding="utf-8")
 
-    # Abstract wording checks are separate from the numerical checks above.
+    # Tie the abstract's counts to the named frozen run and the same-question reruns.
     tex = (SRC / "main_20p.tex").read_text(encoding="utf-8")
     abstract = tex.split(r"\begin{abstract}", 1)[1].split(r"\end{abstract}", 1)[0]
     abstract = " ".join(abstract.split())
+    ref, hybrid = traces["frozen"]["A0"], traces["frozen"]["A0h"]
+    route = (f"on {ref['n']} in-domain questions, the reference configuration "
+             "reached the labelled collection for every question")
+    check("E3-abs-route", "abstract", "abstract: frozen reference route count",
+          (True, True), (route in abstract, ref["route"] == ref["n"]),
+          "main_20p.tex vs supp_traces_frozen.csv")
+    containment = (f"evidence packs contained the literal target string for only {ref['hits']}.",
+                   f"returned the target string for {hybrid['hits']} questions.",
+                   "The coverage advantage persisted in two reruns on the same questions.")
+    reruns = [traces[name] for name in ("followup", "rerun_20261117")]
+    direction = all(run["A0h"]["hits"] > run["A0"]["hits"] for run in [traces["frozen"], *reruns])
+    same_questions = all(cell["q"].keys() == ref["q"].keys()
+                         for run in [traces["frozen"], *reruns]
+                         for cell in (run["A0"], run["A0h"]))
+    check("E4-abs-reruns", "abstract", "abstract: frozen containment counts and same-question advantage",
+          (True, True, True), (all(frag in abstract for frag in containment), direction, same_questions),
+          "main_20p.tex vs three routing/content traces")
     for frag, cid, claim in (
             ("A rename-and-move probe exposed stale index entries",
              "E1-abs-index", "abstract: lifecycle probe identified stale index entries"),
-            ("comparison did not isolate the effect of descriptions",
-             "E3-abs-scope", "abstract: routing result is not a description ablation"),
-            ("contained more target strings than the reference configuration in three runs on the same questions",
-             "E4-abs-reruns", "abstract: containment advantage on repeated questions"),
             ("verifier-score ordering yielded fewer top-five gold-document hits than fused ranking",
              "E6-abs-order", "abstract: lower Hit@5 under verifier-score order"),
             ("no statistically significant paired difference after correction for multiple comparisons",

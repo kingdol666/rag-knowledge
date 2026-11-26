@@ -614,27 +614,41 @@
    "status": "PASS"
   },
   {
-   "id": "E1-abs-index",
+   "id": "E3-abs-route",
    "section": "abstract",
-   "claim": "abstract: lifecycle probe identified stale index entries",
-   "expected": "present",
-   "recomputed": "present",
-   "source": "main_20p.tex",
-   "status": "PASS"
-  },
-  {
-   "id": "E3-abs-scope",
-   "section": "abstract",
-   "claim": "abstract: routing result is not a description ablation",
-   "expected": "present",
-   "recomputed": "present",
-   "source": "main_20p.tex",
+   "claim": "abstract: frozen reference route count",
+   "expected": [
+    true,
+    true
+   ],
+   "recomputed": [
+    true,
+    true
+   ],
+   "source": "main_20p.tex vs supp_traces_frozen.csv",
    "status": "PASS"
   },
   {
    "id": "E4-abs-reruns",
    "section": "abstract",
-   "claim": "abstract: containment advantage on repeated questions",
+   "claim": "abstract: frozen containment counts and same-question advantage",
+   "expected": [
+    true,
+    true,
+    true
+   ],
+   "recomputed": [
+    true,
+    true,
+    true
+   ],
+   "source": "main_20p.tex vs three routing/content traces",
+   "status": "PASS"
+  },
+  {
+   "id": "E1-abs-index",
+   "section": "abstract",
+   "claim": "abstract: lifecycle probe identified stale index entries",
    "expected": "present",
    "recomputed": "present",
    "source": "main_20p.tex",

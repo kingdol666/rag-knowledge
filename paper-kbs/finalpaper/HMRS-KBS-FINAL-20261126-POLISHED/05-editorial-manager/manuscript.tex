@@ -93,27 +93,28 @@ city={Hefei, Anhui}, postcode={230031}, country={China}}
 city={Hefei, Anhui}, postcode={230029}, country={China}}
 
 \begin{abstract}
-In changing document collections, a passage can resemble a query without
+In changing document collections, a passage can match a query without
 coming from a source that applies to the task. The Hierarchical Management
-Retrieval System (HMRS) uses the same collection hierarchy to file and
-retrieve documents. At ingestion, an agent uses recovered text for placement
-and description. In catalogue-first mode, the query agent chooses a
-collection, consults its document listing and reads selected sources. Lexical
-and vector search can retrieve candidates in a specified scope, and an
-optional scorer can filter passages without reordering documents. A
-rename-and-move probe exposed stale index entries. In scripted routing tests,
-the configuration with descriptive cards reached the labelled collection more
-often, but the comparison did not isolate the effect of descriptions. Even
-correct routing did not ensure that the returned evidence contained the
-literal target string. A configuration combining scored document text, extra
-vector search and prioritised windows contained more target strings than the
-reference configuration in three runs on the same questions. On fixed candidate
-pools, verifier-score ordering yielded fewer top-five gold-document hits than
-fused ranking. The blind deployment comparison did not use catalogue-first
-routing and found no statistically significant paired difference after
-correction for multiple comparisons. HMRS makes it possible to check where an
-agent searched and which source passages it returned; neither check establishes
-that the passages support the answer.
+Retrieval System (HMRS) uses the same collection hierarchy to organise
+documents and guide retrieval. At ingestion, an agent uses document text
+to assign documents to collections and write descriptions. At query time,
+an agent can consult the catalogue, browse the selected collection and
+retrieve passages linked to their sources. A rename-and-move probe exposed
+stale index entries. In a frozen run on 72 in-domain questions, the
+reference configuration reached the labelled collection for every
+question, but its evidence packs contained the literal target string for
+only 37. With the same routing policy, a configuration combining scored
+document text, an additional vector search and prioritised passage windows
+returned the target string for 52 questions. The coverage advantage
+persisted in two reruns on the same questions. In fixed candidate pools,
+verifier-score ordering yielded fewer top-five gold-document hits than
+fused ranking. A separate blind comparison of deployments with different
+search scopes and source access did not test catalogue-first routing. It
+found no statistically significant paired difference after correction for
+multiple comparisons. The results show why collection choice and evidence
+coverage need separate checks: reaching the right collection does not
+ensure retrieval of the target text, and retrieving it does not establish
+that it supports the answer.
 \end{abstract}
 
 \begin{keyword}
