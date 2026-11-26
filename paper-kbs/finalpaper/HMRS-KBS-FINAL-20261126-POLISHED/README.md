@@ -24,3 +24,7 @@
 用 TeX Live 在 `04-source/source/` 运行 `latexmk -pdf main_20p.tex` 或 `latexmk -pdf main_20p_review.tex`；平铺包入口为 `latexmk -pdf manuscript.tex`。在本目录运行 `sha256sum -c SHA256SUMS.txt` 可校验交付文件。
 
 投稿前请作者确认 CRediT 实际分工、投稿声明、AI 辅助说明及 Editorial Manager 当前对上传格式和篇幅的要求。AI 声明按作者提供的拼写保留 `CPT-6`；请核对正式名称，并确认精简后的声明完整反映实际使用（旧稿曾提到其他工具、从归档结果制表及初期图件构思）。旧稿 §10 的 52/47 题描述未注明可核对的批次或子集，本轮只保留可支持的域内测试和外推局限，未改 §8.4、图 6 或每轮 72 题的分母。
+
+## 旧版去向
+
+2026-11-26 之前的各轮投稿包与 Overleaf ZIP 已移至 `paper-kbs/finalpaper/_rollback-archive/2026-11-26-pre-polish/`，需要回溯时按原目录名查找。包内部分构建说明与冻结证据的 README 仍沿用早期路径，例如 `HMRS-KBS-FINAL-20261124-EVIDENCE-LAYOUT`；这些是历史出处记录，不是当前构建依赖，本包自包含。
