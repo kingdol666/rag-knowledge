@@ -10,6 +10,17 @@ E7 examines what scope, interruptions and citation markers reveal. The
 campaigns test distinct decisions, not successive stages of one benchmark
 query. Figure~\ref{fig:tiered-case} illustrates the path on a separate trace.
 
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.965\columnwidth]{fig5_tiered_case}
+\caption{Catalogue-first retrieval on BQ07 in a separate captured run.
+The trace follows the query through the catalogue, paginated shelf and
+stored-part selection, then through a bounded evidence filter and one
+follow-up source read. This example illustrates the workflow; it is not an
+observation in the native E2 comparison or the E3 routing audit.}
+\label{fig:tiered-case}
+\end{figure}
+
 \subsection{Datasets and measures}\label{sec:eval-setup}
 The answer comparison uses ten developer-authored questions with annotated
 reference papers in five arXiv collections. The routing and evidence-pack
