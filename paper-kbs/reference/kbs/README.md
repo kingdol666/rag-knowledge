@@ -1,7 +1,7 @@
 # KBS 本刊参考文献包 —— HMRS 专用
 
 > **生成日期 / 最后更新**：2026-11-14  
-> **服务对象**：投稿正本 **`paper-kbs/tex/journal_20p/main_20p.tex`**（*HMRS: A hierarchical management-and-retrieval system for tiered knowledge document organisation and evidence-traced access*，投 Knowledge-Based Systems, ISSN 0950-7051）。根目录 `paper-kbs/tex/` 是历史稿件，本次未改。  
+> **服务对象**：投稿正本 **`paper-kbs/finalpaper/HMRS-KBS-FINAL-20261126-POLISHED/04-source/source/main_20p.tex`**（*HMRS: A hierarchical management-and-retrieval system for tiered knowledge document organisation and evidence-traced access*，投 Knowledge-Based Systems, ISSN 0950-7051）。历史草稿目录已于 2026-11-26 清理，git 历史可追溯。  
 > **交付规模**：**29 个已验证 PDF（约 59.2 MB）** = 28 篇 KBS 正式文章 + 1 篇 CEUR-WS 配套前驱论文；`kbs_refs.bib` **29 条 BibTeX**（28 × `@article` + 1 × `@inproceedings`）  
 > **筛选漏斗**：OpenAlex 全刊扫描 1787 篇（2023+，OA）→ 191 篇主题匹配且有可下载 PDF → 121 篇初筛候选 → 36 篇 KBS shortlist（+1 篇 CEUR 配套）→ **28 篇 KBS + 1 篇配套下载成功，8 篇 KBS 未获取**  
 > **整合状态（2026-11-14 已完成）**：29 条中 2 条与正本已有 DOI 重复，净并入 **27 条**；27 条**全部在正文引用并出现在参考文献列表**；`main_20p.pdf` 完整编译为 **20 页 / 0 错误 / 0 未定义引用**。详见第 5 节。  
@@ -13,7 +13,7 @@
 
 ## 0. 为什么专门补这一批
 
-审计起点是历史稿 `paper-kbs/tex/refs.bib`（39 条，无 KBS 本刊文章）。**口径更正（2026-11-14）**：当前投稿正本是 `paper-kbs/tex/journal_20p/main_20p.tex`，其 `refs.bib` + `refs_new_verified.bib` 共 70 条，**已含 5 篇 KBS 本刊文章**（`yang-kbs-llm-2025`、`ghali-kbs-retrieval-2025`、`li-kbs-rmrsst-2026`、`shen-kbs-teierag-2026`、`kinalioglu-kbs-eprag-2026`）。所以本包的价值不是"从零补本刊引用"，而是把本刊近三年**系统 / 平台 / 架构 / 部署类**工作成体系补齐，让参考文献列表真正反映稿件"知识管理系统"的文体归属——这正是 KBS 审稿人判断 fit 的依据。
+审计起点是历史稿 `paper-kbs/tex/refs.bib`（39 条，无 KBS 本刊文章）。**口径更正（2026-11-14）**：当前投稿正本是 `paper-kbs/finalpaper/HMRS-KBS-FINAL-20261126-POLISHED/04-source/source/main_20p.tex`，其 `refs.bib` + `refs_new_verified.bib` 共 70 条，**已含 5 篇 KBS 本刊文章**（`yang-kbs-llm-2025`、`ghali-kbs-retrieval-2025`、`li-kbs-rmrsst-2026`、`shen-kbs-teierag-2026`、`kinalioglu-kbs-eprag-2026`）。所以本包的价值不是"从零补本刊引用"，而是把本刊近三年**系统 / 平台 / 架构 / 部署类**工作成体系补齐，让参考文献列表真正反映稿件"知识管理系统"的文体归属——这正是 KBS 审稿人判断 fit 的依据。
 
 这批文献按**两个筛选条件**挑，正好对应用户的要求：
 
@@ -155,10 +155,9 @@
 
 ## 5. 整合结果与编译验证（2026-11-14 已完成）
 
-整合目标**不是**根目录 `tex/refs.bib`（历史稿），而是投稿正本加载的
-`paper-kbs/tex/journal_20p/refs.bib`（`main_20p.tex` 里是
-`\bibliography{refs,refs_new_verified}`）。脚本
-`paper-kbs/notes/integrate_kbs_refs.py` 幂等执行，产出
+整合目标**不是**历史稿的 `tex/refs.bib`（该目录已于 2026-11-26 清理），而是投稿正本加载的
+`paper-kbs/finalpaper/HMRS-KBS-FINAL-20261126-POLISHED/04-source/source/refs.bib`（`main_20p.tex` 里是
+`\bibliography{refs,refs_new_verified}`）。整合脚本已在清理时移除，结果保留在
 `paper-kbs/notes/kbs_integration_report.json`；包内 `kbs_refs.bib` 保持原样
 （留着 `note` 本地路径便于阅读），投稿 bib 里的副本已做投稿级清洗：
 
@@ -169,7 +168,7 @@
 | 字符转义 | `Gallofr{\'e}` / `Oca{\~n}a` / `{\i}` / `{\c{s}}` / U+2010→`-` 等，保证 pdflatex 不炸 |
 | 页码 | Elsevier article number 已规范化为单个值 `{112410}`，不再是 `{112410--112410}` |
 
-**编译链**（TeX Live 2025，在 `paper-kbs/tex/journal_20p/` 下执行）：
+**编译链**（TeX Live 2025，在 `paper-kbs/finalpaper/HMRS-KBS-FINAL-20261126-POLISHED/04-source/source/` 下执行）：
 
 ```bash
 pdflatex -interaction=nonstopmode main_20p.tex
@@ -194,10 +193,11 @@ Vol-2978 官方目录不标页码，因此**不编造** `pages` 字段，保留�
 它与既有 4 条同类，不影响输出。`supplementary.tex` 不含 `\bibliography`，
 不受本次整合影响。
 
-审计证据链：`notes/audit_citation_evidence.py` → `kbs_abstract_evidence.json`
+审计证据链：`kbs_abstract_evidence.json`
 （29 篇 PDF 摘要）、`bib_titles.json`（97 条题名）、`citation_contexts.json`
 （88 个引用点上下文）→ `CITATION-CONSISTENCY-AUDIT-2026-11-14.md`
-（逐条判定）→ `verify_citation_fix.py`（修正后约束复核）。
+（逐条判定）。抽取脚本 `audit_citation_evidence.py` 已于 2026-11-26 清理，
+其输出保留在 `notes/`。
 
 ---
 

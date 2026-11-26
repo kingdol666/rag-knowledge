@@ -1,24 +1,18 @@
-# finalpaper — HMRS 投稿初稿最终交付（2026-11-19）
+# finalpaper — HMRS 投稿包
 
-投 *Knowledge-Based Systems*（Elsevier）的 17 页初稿，经五席盲审修复、
-paper-audit 裁决修复、re-review 终裁（满足提交质量、无阻断）、阅读流终审
-（总体 YES，5 项可修项已全部修复）后定稿。
-
-## 内容
+投 *Knowledge-Based Systems*（Elsevier）的 **HMRS** 论文。当前投稿版本为
+`HMRS-KBS-FINAL-20261126-POLISHED/`，为自包含目录：正文、审稿版、补充材料、
+LaTeX 源码、图件脚本、投稿信、亮点、两个上传 ZIP、`06-evidence/` 实验记录
+与复算脚本均在其中。上传入口为 `05-editorial-manager/manuscript.tex`。
 
 | 路径 | 说明 |
 |---|---|
-| `HMRS-KBS-overleaf-20261119.zip` | **可导入 Overleaf 的初稿源码包**（扁平结构，上传后直接编译 `main_20p.tex`：pdflatex→bibtex→pdflatex×2） |
-| `overleaf-source/` | 同内容的展开目录（主稿 LaTeX + 章节 + 双 bib + figs/ 14 张矢量图 + 补充材料源 + highlights） |
-| `compiled/main_20p.pdf` | **17 页双栏投稿终稿**（0 错误 / 0 未定义 / 0 overfull） |
-| `compiled/main_20p_review.pdf` | 42 页单栏评审版 |
-| `compiled/supplementary.pdf` | 补充材料（S9–S17） |
-| `compiled/supplementary-inventory.pdf` | 补充清单（S1–S8，42 页） |
-| `supplementary-source/` | 补充材料 LaTeX 源（supplementary.tex + supplementary-arm-tables.tex + inventory 构建件） |
+| `HMRS-KBS-FINAL-20261126-POLISHED/` | **当前投稿包**；见其 `README.md` |
+| `HMRS-KBS-FINAL-20261124-EVIDENCE-LAYOUT/` | 上一轮证据版式包；仓库冻结校验器的源码路径仍指向它 |
 
-## 投稿前唯一待办
+2026-11-19 的 17 页交付目录（`compiled/`、`overleaf-source/`、
+`supplementary-source/`、Overleaf ZIP）已于 2026-11-26 清理，
+内容在 git 历史中可追溯。
 
-作者占位符：`main_20p.tex` frontmatter 与 `n_back.tex` 的 AUTHOR ACTION
-注释处（姓名/单位/通讯邮箱/ORCID、CRediT 姓名、资助与致谢措辞）。
-其余全部就绪（声明齐备、highlights 5×≤85 字符、elsarticle-num、KBS
-Guide for Authors 逐项核过）。
+投稿前仅需作者确认：CRediT 分工、AI 声明中的工具名称、§10 旧版题量描述的去向
+（已在当前包 README 说明）。其余材料齐备。
