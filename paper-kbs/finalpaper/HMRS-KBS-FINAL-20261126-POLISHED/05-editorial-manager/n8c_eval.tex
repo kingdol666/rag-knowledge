@@ -7,15 +7,15 @@ both roles, so we tested the second one directly. We took 16 candidate pools
 from the historical hybrid wrapper and changed only their order. Under
 verifier-score order, the number of pools with a gold document in the top
 five fell from 15 to seven: eight pools lost a hit and none gained one
-(exact McNemar $p=0.0078$; Figure~\ref{fig:verifier}b).
+(exact McNemar $p=0.0078$).
 
-All 191 recorded scores in the separate archive exceeded the 0.5 cutoff
-(Figure~\ref{fig:verifier}a), so this record provides little evidence about
-the value of filtering. In a reconstructed replay with fixed
-candidates, the filtered and unfiltered arms retained the same number of
-documents on nine of ten questions; the archive does not establish that they
-retained the same documents. The reordering result therefore does not show
-whether filtering helps.
+All 191 recorded scores in the separate archive exceeded the 0.5 cutoff,
+so this record provides little evidence about the value of filtering. In a
+reconstructed replay with fixed candidates, the filtered and unfiltered arms
+retained the same number of documents on nine of ten questions; the archive
+does not establish that they retained the same documents. Figure~\ref{fig:verifier}
+shows the score distributions alongside the paired ordering outcomes. The
+reordering result does not show whether filtering helps.
 
 \subsection{What answer traces and success status reveal (E7)}
 \label{sec:e5}
@@ -32,11 +32,13 @@ the 0.35 threshold for absent topics, so the threshold is not a test of
 answerability.
 
 The deployment probes exposed a different ambiguity: global search could
-report success after skipping unreadable collections. Scoped search with
-forced reindexing recovered a missing hit, and pagination recovered a shelf
-listing cut off by the output limit. Reporting the scope searched and any
-skipped collections makes it possible to distinguish incomplete search from
-a completed search that found no evidence.
+report success after skipping unreadable collections. In the reindex
+diagnostic, scoped search already found the affected document, whereas
+global search omitted it until the affected collection was forcibly
+reindexed; global search then returned the document. Pagination recovered a
+shelf listing cut off by the output limit. Reporting the scope searched and
+any skipped collections makes it possible to distinguish incomplete search
+from a completed search that found no evidence.
 
 The earlier retrieval measures answer narrower questions: target-string containment measures text coverage
 (Figure~\ref{fig:content}), and a top-five hit measures document position

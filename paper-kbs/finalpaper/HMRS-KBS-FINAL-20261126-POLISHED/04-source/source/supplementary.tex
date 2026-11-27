@@ -105,19 +105,19 @@ instructed agent behaviour, not a server-side guarantee.}
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{fig_opt_s_margin}
-\caption{Two replays over the logged hybrid pools analysed in the main
-paper's verifier section; both reuse recorded candidate pools and
-verifier scores rather than retrieving again. (a)~A relative-margin replay: keep the
-top five plus every candidate within $m$ of the pool's best score, $m$
-swept 0.05--0.35; the curve counts gold instances kept of the 17 that
-entered a pool; dashed rules mark $m=0.15$ (16 of 17) and $m=0.20$ (all
-17); the mean candidate count rises from 6.4 to 11.9 of the twelve
-submitted. (b)~Roles of the verifier score on identical candidates and
-identical scores: fusion order, verifier order and verifier filter; only
-the role differs, which makes the panel an attribution rather than a
-benchmark; the verifier-order role loses the gold, while the filter role
-leaves the fusion order intact.
-Hit@5 is 0.94, 0.44 and 0.94.}
+\caption{Two replays over logged hybrid pools analysed in the main paper's
+verifier section. Both reuse recorded candidate pools and verifier scores
+rather than retrieving again. (a)~A relative-margin replay: keep the top five
+plus every candidate within $m$ of the pool's best score, $m$ swept 0.05--0.35;
+the curve counts gold instances kept of the 17 that entered a pool; dashed
+rules mark $m=0.15$ (16 of 17) and $m=0.20$ (all 17); the mean candidate count
+rises from 6.4 to 11.9 of the twelve submitted. (b)~Historical summary of
+fusion order, verifier order and verifier filtering on the hybrid pools.
+The reported Hit@5 values are 0.94, 0.44 and 0.94. The ordering archive
+supports the first two values; it does not contain the filter outcomes or
+show how the unrecorded Q14 score was handled in filtering. The third bar is
+therefore report-level context, not an independently reproducible admission
+result. The ten-question arXiv gate replay is a separate experiment.}
 \label{fig:marginvariants}
 \end{figure*}
 \begin{figure*}[t]
@@ -358,7 +358,7 @@ E2; main Table~6; Tables~S18--S22 & In \path{records/external_baselines_v3/}: \p
 E3--E4; Tables~S12--S13, S17; Figure~S6 & In \path{records/routing_content_traces/}: the frozen, first follow-up and later-rerun trace CSVs, together with \path{redraw_route_summary.csv} and \path{redraw_content_summary.csv}. The two figure cases link back to the archived captures through \path{records/legacy/case-anatomy-provenance.json}. \\
 Fig.~5 (separate trace) & \path{records/tiered_case/tiered-bq07.json} and \path{records/tiered_case/trace-evidence.json}, mirrored under \path{experiment_data/tiered_case/}. This is a separately captured catalogue-first BQ07 trace, not a case from the E2 judge batch or a measurement in E3. \\
 E5; Table~S9 & \path{records/legacy/experience_smoke.json} (extraction smoke), \path{records/legacy/skilltest-calls.jsonl} (empty global search and drafts in a disposable fixture), and \path{records/legacy/FULLTEST-SUMMARY.md} (first-ranked lesson reported; successful response unavailable). \path{records/legacy/a6_global_search.json} is the earlier failed check, not the successful response. \\
-E6; Table~S17; Figures~S4--S5 & The score and ordering archives are \path{records/paired_diagnostics/redraw_verifier_scores.csv} and \path{records/paired_diagnostics/redraw_verifier_order.csv}; see \path{tables/e6_pool_hits.csv}. The relative-margin diagnostic is \path{records/legacy/exp3_abstention.json} (\texttt{cut\_replay}); Q2's single-call anatomy is \path{records/legacy/exp5_q2_anatomy.json}. The ten-question gate replay is \path{records/legacy/exp11_gate_ablation.json}. \\
+E6; Table~S17; Figures~S4--S5 & The score and ordering archives are \path{records/paired_diagnostics/redraw_verifier_scores.csv} and \path{records/paired_diagnostics/redraw_verifier_order.csv}; see \path{tables/e6_pool_hits.csv}. The relative-margin diagnostic is \path{records/legacy/exp3_abstention.json} (\texttt{cut\_replay}); Q2's single-call anatomy is \path{records/legacy/exp5_q2_anatomy.json}. The ten-question gate replay is \path{records/legacy/exp11_gate_ablation.json}, a separate historical run on the 100-paper, 322-part arXiv corpus; it is not part of the 42-document, 16-pool ordering archive. \\
 E7; Tables~S14--S16; Figures~S2--S3, S7 & In \path{records/legacy/}: \path{exp_r2_grade_corrected.json} (original grid), \path{exp_rerun5_grade.json} (common-substrate grid), \path{answers_fresh_summary.json} (separate post-repair run), \path{exp3_abstention.json} (tool probes) and \path{exp8b_absent_agent.json} (answer-workflow probes). The supplementary case compendium and answer records for S16 are in \path{records/legacy/deepseek-r1/}. The shelf failure and pagination check are report-level in \path{records/legacy/RETRIEVAL-E2E-REPORT.md} and \path{records/legacy/PRODUCTION-LADDER-INDEX.md}. \\
 E8 / operating checks & There is no E8 experiment in this manuscript. The separate historical load observation in Table~S10 is from \path{records/legacy/STRESS-REPORT.md}; stack recovery and scoped reindex diagnostics are documented in \path{records/legacy/ACCEPTANCE-REPORT-20261113.md} and \path{records/legacy/F1F2F3_REPORT.md}. \\
 Historical Tables~S1--S8 & Documented in the archived evidence inventory

@@ -70,16 +70,19 @@ tool-matched flat or faceted retriever, and it does not establish claim-level
 evidence support. The native answer-quality comparison is a deployment case
 study; its configurations did not use matched search scopes or source access.
 We therefore examine management state, collection choice, target-text coverage,
-candidate ordering and answer quality separately.
+candidate ordering and answer quality separately; operational traces are used
+to assess what can be reported about search scope and completion.
 
 \subsection{Research questions and reading guide}
 \label{sec:rq}
 
 \textbf{RQ1} asks whether HMRS can distinguish stored state, indexed state
-and retrievable state after acquisition and lifecycle operations.
+and query visibility under the tested probes after acquisition and selected
+lifecycle operations.
 \textbf{RQ2} asks how the tested catalogue-card configurations affect
 collection selection and which conclusions can be drawn from the routing result.
-\textbf{RQ3} asks how evidence-assembly configurations affect literal target-string hits (a proxy for text coverage) in the evidence pack once a route is chosen.
+\textbf{RQ3} asks how often the evidence pack contains the literal target
+string as search scope and evidence assembly vary.
 \textbf{RQ4} asks whether a passage-verifier score is suitable for document
 ordering on fixed candidate pools. \textbf{RQ5} examines what operational
 traces, interruption reports and instructed abstention reveal about search

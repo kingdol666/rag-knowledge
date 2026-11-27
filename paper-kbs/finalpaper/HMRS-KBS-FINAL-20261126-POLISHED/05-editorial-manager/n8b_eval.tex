@@ -84,9 +84,8 @@ A2 & All ten collections & Merge the same hits as A1b and concatenate their snip
 \end{tabular}
 \end{table*}
 
-We next varied how evidence is assembled once a collection is chosen.
-A3 uses A0's downstream evidence construction but changes the route cards
-and collection setup. It is an auxiliary routing diagnostic; the mechanical
+We next varied search scope and evidence assembly. A3 uses A0's downstream
+evidence construction but changes the route cards and collection setup. It is an auxiliary routing diagnostic; the mechanical
 corpus scan is a separate comparator. The six main configurations differ
 in search scope (one collection selected by name and description, or all
 ten), in whether documents are read and gated, and in how the pack is
@@ -120,21 +119,18 @@ gate's internal reference-mode reads. A0h's final pack has a separate
 60{,}000-character cap. Table~\ref{tab:ablation-configs} gives the limits by
 configuration; Figure~\ref{fig:content} shows the containment contrasts.
 
-\begin{figure*}[!t]
+\begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{fig_opt_verifier}
-\caption{Verifier scores and same-pool ordering from two records over the
-same 16 candidate pools. (a) Each point is one of 191 recorded Laya scores
-(17 gold and 174 non-gold candidates); the vertical jitter separates points
-only for display. Black ticks mark the group medians (0.8759 and 0.86265),
-the dashed line marks the 0.5 cutoff, and Q14 has one candidate without a
-recorded score. (b) Each row is one pool in the separate ordering replay:
-filled circles mark a gold document in Fusion's top five and filled diamonds
-mark a gold document in verifier-score order; open symbols mark a miss. The
-replay changes ordering only: Fusion retains 15/16 Hit@5 pools, whereas
-verifier-score order retains 7/16, with eight losses and no gains (exact
-McNemar $p=0.0078$). The panels do not test the admission benefit of the
-score.}
+\caption{Ordering by verifier score lost eight top-five hits and gained none
+in a replay of 16 fixed candidate pools. (a) Empirical cumulative distributions
+of the 191 recorded Laya scores (17 gold and 174 non-gold; medians 0.8759 and
+0.86265, respectively). All recorded scores exceeded the 0.5 cutoff; Q14
+had one unrecorded score. (b) Each matrix cell gives the count and IDs of
+pools with the indicated combination of hit or miss under the two orders.
+A hit means that at least one gold document was in the top five. Fusion hit
+in 15/16 pools and verifier-score order in 7/16 (exact McNemar $p=0.0078$).
+The replay tests ordering, not passage admission.}
 \label{fig:verifier}
 \end{figure*}
 

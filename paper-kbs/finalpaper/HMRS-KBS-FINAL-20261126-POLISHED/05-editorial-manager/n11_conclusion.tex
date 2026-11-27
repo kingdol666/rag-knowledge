@@ -2,12 +2,12 @@
 \label{sec:conclusion}
 
 HMRS gives agents a workflow for managing changing documents and inspecting
-scoped candidate passages and their source references. It makes the corpus
+candidate passages together with their source references. It makes the corpus
 hierarchy available at query time: content-informed placement and descriptions
-help agents choose a collection and document, while source references locate
-returned text for inspection. The hierarchy makes scope explicit; it neither
-replaces lexical or vector retrieval nor guarantees that every call stays within
-the intended scope.
+provide information that agents can use to choose a collection and document,
+while source references locate returned text for inspection. The hierarchy
+makes requested scope explicit; it neither replaces lexical or vector retrieval
+nor guarantees that every call stays within the intended scope.
 
 The evaluation shows what this design provides and what it leaves unresolved.
 A rename-and-move probe found stale index entries, so correct filing did not
@@ -25,12 +25,13 @@ ordering by verifier score instead of fused rank reduced top-five
 gold-document hits. Neither literal containment nor a top-five hit establishes
 support for an answer.
 
-The blind deployment comparison found no statistically significant paired
-difference after correction. Because the deployments differed in search scope
+The unified blind deployment pass found no significant HMRS-versus-comparator
+overall-score contrast after Holm adjustment across its seven comparisons. Because the deployments differed in search scope
 and source access, it was not a matched test of answer quality. HMRS therefore
 provides an integrated management--retrieval workflow with separate checks for
 document visibility, searched scope and retrieved text. It does not yet establish
 improved claim-level grounding or end-to-end answer quality over a tool-matched
-flat alternative. A follow-up study should measure claim-level support on
-independent questions under matched search scopes, reading budgets and
-source-access conditions.
+flat alternative. A follow-up should compare catalogue-first HMRS with
+such an alternative on independent questions, matching search scopes,
+reading budgets and source access. It should assess answer quality and
+check claim support against the cited passages as separate outcomes.

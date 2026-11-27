@@ -3,9 +3,9 @@
 \label{sec:external-baselines}
 \label{sec:exp-e2}
 An agent can follow up a search by reading the source document, whereas a
-one-shot baseline must answer from the passages in its prompt. We use this
-comparison as a native deployment case study, not as a controlled test of the
-full catalogue-first workflow. The comparison used BQ01--BQ10 and the
+one-shot baseline was instructed to answer from the passages supplied in its
+prompt. We use this comparison as a native deployment case study, not as a
+controlled test of the full catalogue-first workflow. The comparison used BQ01--BQ10 and the
 four-dimension rubric in Table~\ref{tab:rubric}. The questions were
 drawn from a five-collection
 arXiv corpus (100 papers, 328 stored parts and 9{,}504 passages). These
@@ -48,7 +48,7 @@ calls carried no effective restriction: 13 passed a list that the tools do
 not accept and six passed no collection argument. The unrestricted calls
 searched across collections. The scope audit reported 31 distinct
 collection-ID values; individual IDs were not retained in the audit export.
-Of 234 lexical first-stage results, 139 had neither a
+Of 234 first-stage results from the two-stage tool, 139 had neither a
 configured collection ID nor a recognised corpus identifier in their path;
 of the 180 vector-search results, 77 were identifiable copies of corpus papers in
 other collections. These path-based counts are not semantic relevance
@@ -127,8 +127,9 @@ HMRS had the highest observed mean in the unified pass (5.00 versus
 (Table~\ref{tab:external-baselines}). Against the three baselines indexed
 on the intended corpus, the largest differences were in completeness,
 and none of the three paired contrasts reached the unadjusted 0.05 level.
-None of the seven comparisons with HMRS survived Holm adjustment. Earlier
-judge passes changed some dimension scores and per-question comparisons.
+None of the seven paired overall-score contrasts with HMRS was significant
+after Holm adjustment (Supplementary Table~S22). Earlier judge passes
+changed some dimension scores and per-question comparisons.
 
 BQ01 illustrates the difference in source access: BM25 received only part~1
 of the Transformer paper, whereas HMRS read further and answered both

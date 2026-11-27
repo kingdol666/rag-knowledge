@@ -3,10 +3,10 @@
 \label{sec:lanes}
 
 A query can reach the evidence through two entry points. Catalogue-first
-search selects a collection, examines shelf descriptions and opens
-selected documents or passages. Pinned search starts in specified
-collections and returns chunks from their segment indexes. Both paths retain the source identifiers needed to locate the selected
-passages.
+search selects a collection, examines shelf descriptions and opens selected
+documents or passages. Pinned search starts with a supplied collection
+identifier and returns candidate chunks through the selected retrieval path.
+Both paths retain source identifiers for locating returned candidates.
 Figure~\ref{fig:workflow} summarises the broader acquisition-to-report path;
 this section focuses on its retrieval and evidence-reporting stages.
 
@@ -17,15 +17,17 @@ The workflow separates obtaining candidate evidence from reporting the outcome.
 \includegraphics[width=\columnwidth]{fig_tiered_workflow_vector}
 \caption{Tiered access workflow. Pinned search and catalogue navigation
 supply candidate references. The workflow can read candidates directly or
-use Laya to admit passages before checking source text. A failure or limit
-that prevents completion yields an incomplete report with the searched
-scope and any available evidence.}
+use Laya to admit passages before checking source text. When an interruption
+is detected and the workflow reaches its reporting step, the agent is
+instructed to report incomplete status, searched scope and available evidence;
+an endpoint timeout may terminate the turn before that report is produced.}
 \label{fig:tiered-algorithm}
 \end{figure}
 
 The chat endpoint sets timeouts and turn limits. Workflow instructions
-specify the retrieval sequence, batch sizes and what the agent should
-report if it exhausts its call budget.
+specify the retrieval sequence and batch sizes and ask the agent to report
+an exhausted call budget. An endpoint-level timeout can terminate the turn
+before the agent produces a final scope or evidence report.
 
 \subsection{Tier policies and the evidence gate}
 \label{sec:trace}
@@ -33,10 +35,12 @@ report if it exhausts its call budget.
 \label{sec:gate-primitive}
 \label{sec:twostage}
 
-The knowledge-base chat interface defines two policies. The search policy starts from pinned collections
-and calls two-stage or vector search. Each tool applies the scope from the
-single collection identifier it receives, so a call without one searches
-every collection (Section~\ref{sec:exp-e2}). The librarian policy instead
+The knowledge-base chat interface defines two policies. The search policy
+can pass a collection identifier to two-stage or vector search; a call
+without an effective identifier may search across collections
+(Section~\ref{sec:exp-e2}). Hierarchical resolution and optional graph
+expansion also affect which candidates are returned, so the requested scope
+is not a server-enforced access boundary. The librarian policy instead
 starts from the full catalogue, uses shelf descriptions to choose document
 references and directs the agent to score them in sequential batches before
 reading the survivors. The two-stage tool uses lexical search, with optional
@@ -54,12 +58,14 @@ The local Laya classifier \cite{laya} is exposed as
 \path{kb_laya_judge}. In reference mode, it fetches candidate text, segments
 it and assigns each passage an admission score in $[0,1]$ for the evidence
 question. Passages meeting the threshold (0.5 by default) are eligible for
-the returned pack. The gate orders them by source and position, removes
-duplicates and applies a character limit. It returns document coordinates
-and source spans alongside separate fetch and scoring errors, so valid
-passages can remain available after a partial failure. This score governs
-passage admission; the workflow or hybrid tool controls candidate fusion
-and document order. Figure~\ref{fig:tiered-algorithm} and
+the returned pack. The gate orders eligible passages by source and position, removes duplicates
+and applies its character limit. It returns coordinates for admitted source
+spans alongside separate fetch and scoring errors, so valid passages can
+remain available after a partial failure. A search-result chunk locator, a
+gate-reported source span and the text ultimately included in a capped prompt
+refer to different stages; a locator alone does not show how much evidence
+reached the agent. This score governs passage admission; the workflow or
+hybrid tool controls candidate fusion and document order. Figure~\ref{fig:tiered-algorithm} and
 Algorithm~\ref{alg:tiered} distinguish direct reading from scoring, and an
 incomplete review from a completed review that found no support.
 
@@ -74,8 +80,8 @@ The hybrid row describes the experimental composition used in the evaluation.}
 \toprule
 Policy & Tiers traversed & Retrieval affordance & Budget type & Intended terminal report\\
 \midrule
-Search & pinned collections, segment & Two-stage or vector search & Endpoint turn limit & Answer or scoped not-found\\
-Librarian & catalogue, shelf, document, segment & Catalogue navigation and passage scoring & Workflow instructions & Answer or searched scope\\
+Search & pinned collections, segment & Two-stage or vector search & Endpoint turn limit & Agent answer or reported scoped not-found\\
+Librarian & catalogue, shelf, document, segment & Catalogue navigation and passage scoring & Workflow instructions & Agent answer or reported searched scope\\
 Hybrid & catalogue and segment & Combined vector and catalogue candidates & Configuration-specific candidate cap & Candidates or judged survivors\\
 \bottomrule
 \end{tabular}
@@ -107,8 +113,10 @@ property is not evaluated here.
 \Else
   \State $S \gets \textsc{ReadSelected}(D)$
 \EndIf
-\If{execution incomplete}
+\If{execution incomplete and the reporting step is reached}
   \State \Return incomplete status, scope and available evidence
+\ElsIf{execution incomplete}
+  \State \Return interruption status
 \ElsIf{completed review finds no support}
   \State \Return scoped not-found with blind spots
 \Else
@@ -118,8 +126,9 @@ property is not evaluated here.
 \end{algorithm}
 
 \subsection{Reporting search outcomes}
-The workflow instructs the agent to cite sources when the evidence
-supports an answer. After a completed review without support, it reports
-the searched scope and remaining blind spots. If a failure or timeout
-prevents completion, it reports the interruption and any usable evidence.
-Section~\ref{sec:eval} evaluates these outcomes in observed agent trials.
+The workflow instructs the agent to cite sources when the evidence supports
+an answer. After the agent reaches the reporting step for a completed review
+without support, it reports the searched scope and remaining blind spots. If a
+failure or timeout prevents that step, the outer endpoint may return an
+interruption status without scope or evidence. Section~\ref{sec:eval}
+evaluates these outcomes in observed agent trials.

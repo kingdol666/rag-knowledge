@@ -9,14 +9,14 @@ its description helps the agent decide whether to open it; its index entries
 make passages available to lexical and dense search. HMRS distinguishes
 several operational states: a document is \textbf{stored} when its file exists,
 \textbf{registered} when the tree and collection metadata point to it,
-\textbf{indexed} when a corresponding index entry exists, \textbf{query-visible}
-when a scoped query returns an identifier for it, and \textbf{traceable} when
-returned text resolves to document and span coordinates. An observation at one
+\textbf{indexed} when a corresponding index entry exists, \textbf{query-visible} when a query with a specified collection scope
+returns an identifier for it, and \textbf{traceable} when returned text
+resolves to document and span coordinates. An observation at one
 state does not establish the next. The document files, tree registry and
 collection metadata constitute the managed state; lexical and dense indices,
-and the optional graph, are derived projections. File and metadata writes and
-index or graph updates are separate, sometimes asynchronous operations, so the
-system is operationally eventually consistent across these projections.
+and the optional graph, are derived projections. File and metadata writes are separate from index and graph updates, which
+can be asynchronous or fail; these projections may therefore diverge and
+require later reconciliation or reindexing.
 Reconciliation checks compare document files, the tree registry and
 per-library metadata after selected operations.
 

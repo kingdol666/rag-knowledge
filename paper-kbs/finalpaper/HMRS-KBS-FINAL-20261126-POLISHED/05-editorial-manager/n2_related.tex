@@ -31,8 +31,9 @@ CORI and ReDDE use representations of collection contents to decide where
 to search; HMRS likewise represents collections, but exposes their managed
 descriptions and membership to an agent that can then inspect descriptions
 of documents on the selected shelf. A known scope can instead be passed to
-pinned search. Explicit scoping complements BM25, dense retrieval and rank fusion: those
-methods rank candidates after the search scope has been selected
+pinned search. Within a workflow that has selected a scope, BM25, dense
+retrieval and rank fusion can rank candidates from that scope; these methods
+can also be applied to unscoped indexes
 \citep{bm25,dpr,rrf-cormack,bge-m3}.
 
 \begin{table*}[!t]
@@ -64,14 +65,16 @@ text into a tree for retrieval \citep{raptor}, and GraphRAG and LightRAG
 provide graph-based access to content \citep{graphrag,lightrag}. RMR-SST
 represents engineering documents as semantic trees
 \citep{li-kbs-rmrsst-2026}. DeepRead allows agents to locate and read
-sections using document structure \citep{deepread}. HMRS shares the goal of
-structure-aware access, but its upper levels are managed collections and
-the documents assigned to them. It uses that maintained organisation to
-choose where to look and which documents to open before reaching particular
-passages. The contrast is between content-derived structures for finding
-passages and a maintained ownership hierarchy for selecting where to look.
+sections using document structure \citep{deepread}. These systems use
+content-derived structures or in-document coordinates to navigate text.
+HMRS instead exposes the maintained collection assignments and descriptions
+used in document management to the query agent, and checks search visibility
+after selected lifecycle operations. This distinction concerns the level and
+continuity of managed state, not a contrast between content-based and
+non-content-based organisation: HMRS itself uses recovered content to assist
+filing.
 
-\subsection{Agentic retrieval and source verification}
+\subsection{Agentic retrieval and evidence inspection}
 
 RAG draws on retrieved text during generation \citep{rag-lewis,gao-rag-survey-2023}.
 Tool-using and adaptive retrieval workflows choose retrieval actions or

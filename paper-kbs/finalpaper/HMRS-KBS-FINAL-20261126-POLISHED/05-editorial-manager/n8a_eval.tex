@@ -23,10 +23,10 @@ observation in the native E2 comparison or the E3 routing audit.}
 The answer comparison uses ten developer-authored questions with annotated
 reference papers in five arXiv collections. The routing and evidence-pack
 experiments use 72 in-domain questions across ten collections (138 documents
-in the frozen run); out-of-domain probes are analysed separately. The
-verifier diagnostics use a separate industrial corpus of 42 documents in
-five collections. None of the saved questions contains a gold document
-identifier.
+in the frozen run); out-of-domain probes are analysed separately. The main verifier score and ordering diagnostics use a separate industrial corpus of 42 documents in
+five collections. A separate ten-question gate replay used a 100-paper,
+322-part arXiv corpus (Section~\ref{sec:e6}). None of the saved questions
+contains a gold document identifier.
 
 Routing and evidence packs use different notions of a hit. For routing, a
 hit means that the selector chose the labelled collection. For evidence

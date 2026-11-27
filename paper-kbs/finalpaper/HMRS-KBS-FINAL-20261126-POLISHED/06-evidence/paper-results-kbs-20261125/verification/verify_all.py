@@ -199,8 +199,8 @@ def verify_routing_and_packs() -> None:
              "E1-abs-index", "abstract: lifecycle probe identified stale index entries"),
             ("verifier-score ordering yielded fewer top-five gold-document hits than fused ranking",
              "E6-abs-order", "abstract: lower Hit@5 under verifier-score order"),
-            ("no corrected paired difference was significant",
-             "E2-abs-correction", "abstract: no corrected paired answer-quality difference")):
+            ("none of the seven Holm-adjusted overall-score contrasts was significant",
+             "E2-abs-correction", "abstract: no Holm-adjusted paired answer-quality contrast")):
         check(cid, "abstract", claim, "present", "present" if frag in abstract else "MISSING",
               "main_20p.tex")
     labels = re.findall(r"\b(?:A[0-3][a-z]*|PD)\b", abstract)
