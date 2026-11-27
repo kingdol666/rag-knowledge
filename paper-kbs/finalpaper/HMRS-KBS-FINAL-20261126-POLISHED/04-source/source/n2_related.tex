@@ -12,29 +12,22 @@ SKOS and Dublin Core supply conventions for vocabularies and descriptions
 documents to classes \citep{sebastiani2002machine}, while layout-aware parsing
 recovers text and structure for downstream operations
 \citep{zhong-publaynet-layout-2019,huang-layoutlmv3-docai-2022,mineru}.
-In HMRS, placement is not only an ingest outcome: it determines which
-collection and shelf show the document to a later query agent. The workflow
-uses recovered content to assist placement and description, and checks
-whether managed files remain reachable after selected lifecycle operations.
-These checks concern whether a stored document is visible to search after a
-write. HMRS does not implement the resource-selection scoring of CORI or
-ReDDE; it exposes workflow-mediated placement, managed descriptions and
-membership to the agent. SPFresh addresses a complementary problem:
-maintaining a vector index incrementally
+In HMRS, recovered content informs placement and description. Placement
+then determines where the document is listed, and lifecycle probes
+check whether it remains visible to search. SPFresh addresses a
+complementary problem: maintaining a vector index incrementally
 \citep{xu2023spfresh}.
 
 \subsection{Collection selection and structured retrieval}
 
 Distributed information retrieval distinguishes collection selection from
 ranking and merging results \citep{callan1995searching,si2003redde,shokouhi-federated-2011}.
-CORI and ReDDE use representations of collection contents to decide where
-to search; HMRS likewise represents collections, but exposes their managed
-descriptions and membership to an agent that can then inspect descriptions
-of documents on the selected shelf. A known scope can instead be passed to
-pinned search. Within a workflow that has selected a scope, BM25, dense
-retrieval and rank fusion can rank candidates from that scope; these methods
-can also be applied to unscoped indexes
-\citep{bm25,dpr,rrf-cormack,bge-m3}.
+CORI and ReDDE represent collection contents to decide where to search.
+Rather than implement either resource-selection score, HMRS exposes managed
+descriptions and membership so an agent can select a collection and inspect
+its shelf. A known scope can instead be passed to pinned search. BM25, dense
+retrieval and rank fusion can rank candidates with or without a designated
+scope \citep{bm25,dpr,rrf-cormack,bge-m3}.
 
 \begin{table*}[!t]
 \centering

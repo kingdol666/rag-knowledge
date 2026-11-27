@@ -35,15 +35,12 @@ oversized indivisible units where applicable. Structure recognition covers
 Markdown units, with formula-heavy pages depending on the quality of the
 parsed representation.
 
-The web and MCP entry points share the parsing and storage services, but
-their save paths do not initiate indexing in the same way. The web parsed-file
-route persists Markdown and images. The MCP save tool can also schedule vector
-and lexical indexing in the background. Graph construction is a separate
-operation. In the reference ingestion workflow, material is treated as
-retrieval-ready only after the relevant indexing operation and a successful
-content-based probe; the web parsed-file route and the MCP save path do not
-initiate or report indexing identically. Post-index checks compare expected
-identifiers with recorded chunks and probe retrieval for saved document
-content. Figure~\ref{fig:arch} shows these service boundaries and separates
-managed files, tree and collection metadata from derived indices and graph
-projections.
+The web and MCP entry points share parsing and storage, but differ at
+indexing. The web parsed-file route saves Markdown and images; indexing
+is separate. The MCP save tool can schedule vector and lexical indexing in
+the background. Graph construction is separate in both cases. The reference
+workflow treats material as retrieval-ready only after the relevant indexing
+operation and a successful content-based probe. Post-index checks compare
+expected identifiers with recorded chunks and query for saved content.
+Figure~\ref{fig:arch} separates managed files and metadata from their
+index and graph projections.

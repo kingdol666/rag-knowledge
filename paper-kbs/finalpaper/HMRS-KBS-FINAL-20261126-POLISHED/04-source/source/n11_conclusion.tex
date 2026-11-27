@@ -1,37 +1,26 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-HMRS gives agents a workflow for managing changing documents and inspecting
-candidate passages together with their source references. It makes the corpus
-hierarchy available at query time: content-informed placement and descriptions
-provide information that agents can use to choose a collection and document,
-while source references locate returned text for inspection. The hierarchy
-makes requested scope explicit; it neither replaces lexical or vector retrieval
-nor guarantees that every call stays within the intended scope.
+HMRS makes maintained collection assignments and document descriptions
+available to the query agent. The hierarchy states where to look, while
+lexical or vector search finds candidates and source references let the
+agent inspect the returned text. Requested scope is explicit but is not a
+hard boundary for every call.
 
-The evaluation shows what this design provides and what it leaves unresolved.
-A rename-and-move probe found stale index entries, so correct filing did not
-guarantee current index visibility. In the routing tests,
-the configuration with descriptive cards reached the labelled collection
-more often than the nominally name-only configuration, although those
-runs do not isolate the effect of descriptions. Correct routing still
-left some evidence packs without the literal target string. Combining
-scored document text with an extra vector search and prioritised windows
-increased target-string containment, a text-coverage proxy, relative to the
-reference configuration across three runs on the same questions. The
-configuration changes were not isolated, and the result does not establish
-that the hierarchy itself caused the increase. In the fixed-pool replay,
-ordering by verifier score instead of fused rank reduced top-five
-gold-document hits. Neither literal containment nor a top-five hit establishes
-support for an answer.
+The probes separated failures that an end-to-end score would conflate.
+Correct filing did not prevent stale index entries after a rename and move.
+The descriptive-card configuration chose the labelled collection more
+often than the nominally name-only configuration, without isolating the
+effect of descriptions. Correct routing still left packs without the target
+string. The configuration combining scored document text, an extra vector
+search and prioritised windows raised literal containment over the reference
+configuration in three runs on the same questions. This comparison does not
+isolate a hierarchy effect.
+Ordering by verifier score reduced top-five gold-document hits in the
+fixed-pool replay. Neither coverage nor document position verifies an answer.
 
-The unified blind deployment pass found no significant HMRS-versus-comparator
-overall-score contrast after Holm adjustment across its seven comparisons. Because the deployments differed in search scope
-and source access, it was not a matched test of answer quality. HMRS therefore
-provides an integrated management--retrieval workflow with separate checks for
-document visibility, searched scope and retrieved text. It does not yet establish
-improved claim-level grounding or end-to-end answer quality over a tool-matched
-flat alternative. A follow-up should compare catalogue-first HMRS with
-such an alternative on independent questions, matching search scopes,
-reading budgets and source access. It should assess answer quality and
-check claim support against the cited passages as separate outcomes.
+The seven Holm-adjusted overall-score contrasts in the native blind pass
+were not significant, and deployments did not share search scope and source
+access. A controlled comparison with a flat agent should match those
+conditions and reading budgets, use independent questions, and score answer
+quality separately from whether cited passages support individual claims.

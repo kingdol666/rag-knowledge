@@ -4,7 +4,7 @@
 
 **投稿入口：** [Knowledge-Based Systems · Editorial Manager](https://submit.elsevier.com/KNOSYS)
 
-本版在上一轮投稿包基础上进行新一轮系统与方法审读，重写题目、摘要、引言、相关工作、状态模型、评价解释、讨论和结论，并删除可见实验叙述中的日历日期。核心主张收敛为管理—检索一体化和故障可观测性，不主张层级结构带来端到端答案质量优势。实验原始记录及结果数字未改；复算脚本同步更新了摘要断言，图表、补充材料和投稿信按新表述重建。图 5 仍是独立的 BQ07 执行轨迹，不计入 E2 或 E3。
+本包以 **15 页双栏主稿（含参考文献）**为准。双倍行距版供审阅参考；投稿时请使用 Editorial Manager 中的可编辑 LaTeX 文件，并保留独立图件。本文的主张是管理—检索一体化和故障可观测性，不主张层级结构带来端到端答案质量优势。原始记录和结果数字未改，图 5 仍是独立的 BQ07 执行轨迹，不计入 E2 或 E3。
 
 | 文件或目录 | 内容 |
 |---|---|
@@ -24,7 +24,17 @@
 
 用 TeX Live 在 `04-source/source/` 运行 `latexmk -pdf main_20p.tex` 或 `latexmk -pdf main_20p_review.tex`；平铺包入口为 `latexmk -pdf manuscript.tex`。在本目录运行 `sha256sum -c SHA256SUMS.txt` 可校验交付文件。
 
-投稿前请作者确认 CRediT 实际分工、投稿声明、AI 辅助说明及 Editorial Manager 当前对上传格式和篇幅的要求。AI 声明按作者提供的拼写保留 `CPT-6`；请核对正式名称，并确认精简后的声明完整反映实际使用（旧稿曾提到其他工具、从归档结果制表及初期图件构思）。旧稿 §10 的 52/47 题描述未注明可核对的批次或子集，本轮只保留可支持的域内测试和外推局限，未改 §8.4、图 6 或每轮 72 题的分母。
+## 投稿上传清单
+
+- **Manuscript / source：** 使用 `05-editorial-manager/` 的可编辑 LaTeX 源码，入口 `manuscript.tex`。15 页 PDF 用来核对系统生成的稿件，不替代源码。双倍行距审稿参考版不是默认上传文件。[KBS 作者指南](https://www.sciencedirect.com/journal/knowledge-based-systems/publish/guide-for-authors)允许双栏 LaTeX，同时建议研究稿不超过 20 个双倍行距页（含图表）；当前 35 页双倍行距参考版超出这项建议，不把 15 个双栏页等同为 20 个双倍行距页。若系统或编辑另要求双倍行距，以其要求为准。
+- **Cover letter / Highlights：** 分别用 `01-cover-letter/cover-letter.pdf` 和 `02-manuscript/highlights.docx`。通讯信息、原创性、全体作者同意及无一稿多投由作者确认。
+- **Figures / Figure captions：** 按编号分别上传 `05-editorial-manager/figures/Figure_1.pdf` 至 `Figure_8.pdf` 及 `figure-captions.docx`。表格留在可编辑的 LaTeX 主稿内。
+- **Supplementary material：** 以下三份 PDF 已在正文 Data availability 点名；可使用对应的英文说明作为上传 caption：
+  - `supplementary.pdf` — Supplementary methods, experiment configurations, results and evidence crosswalk.
+  - `supplementary-inventory.pdf` — Companion inventory mapping the experiments to archived records and verification material. 它指向的 `supplementary-inventory-source-map.md` 随完整源码包提供，位于 `04-source/source/inventory-build/`。
+  - `external-baselines-qa.pdf` — Question-by-question audit transcript of the external-baseline comparison, including prompts and answers.
+- **作者确认和系统生成项：** 按 KBS 指南指定一名与期刊联系的通讯作者；当前稿面保留作者给定的两位通讯标注。上传前确认系统和稿面所需的署名方式、CRediT 分工及 AI 辅助说明（`CPT-6` 按原拼写保留，请核对正式名称与披露范围）。通过 Elsevier declarations tool 填报并上传生成的利益冲突声明 `.doc/.docx`；正文中的声明不替代此文件。
+- **不上传为正文：** `04-source` 的完整源码 ZIP、`06-evidence` 的复现档案及校验清单留作归档及复现。不要将完整源码 ZIP 和 Editorial Manager ZIP 同时提交为两份主稿。
 
 ## 旧版去向
 
