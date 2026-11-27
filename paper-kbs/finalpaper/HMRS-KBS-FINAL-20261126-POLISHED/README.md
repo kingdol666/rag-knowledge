@@ -33,7 +33,7 @@
   - `supplementary.pdf` — Supplementary methods, experiment configurations, results and evidence crosswalk.
   - `supplementary-inventory.pdf` — Companion inventory mapping the experiments to archived records and verification material. 它指向的 `supplementary-inventory-source-map.md` 随完整源码包提供，位于 `04-source/source/inventory-build/`。
   - `external-baselines-qa.pdf` — Question-by-question audit transcript of the external-baseline comparison, including prompts and answers.
-- **作者确认和系统生成项：** 按 KBS 指南指定一名与期刊联系的通讯作者；当前稿面保留作者给定的两位通讯标注。上传前确认系统和稿面所需的署名方式、CRediT 分工及 AI 辅助说明（`CPT-6` 按原拼写保留，请核对正式名称与披露范围）。通过 Elsevier declarations tool 填报并上传生成的利益冲突声明 `.doc/.docx`；正文中的声明不替代此文件。
+- **作者确认和系统生成项：** KBS 投稿系统和稿面均应指定 Liangbin Li 为唯一通讯作者；投稿信也由 Liangbin Li 代表全体作者署名。上传前确认系统和稿面所需的署名方式、CRediT 分工及 AI 辅助说明（`CPT-6` 按原拼写保留，请核对正式名称与披露范围）。通过 Elsevier declarations tool 填报并上传生成的利益冲突声明 `.doc/.docx`；正文中的声明不替代此文件。全体作者须确认同意投稿、稿件原创且未同时投往其他期刊。
 - **不上传为正文：** `04-source` 的完整源码 ZIP、`06-evidence` 的复现档案及校验清单留作归档及复现。不要将完整源码 ZIP 和 Editorial Manager ZIP 同时提交为两份主稿。
 
 ## 旧版去向
