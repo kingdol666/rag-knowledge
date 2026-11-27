@@ -74,3 +74,7 @@ entries; selected probes are needed to detect duplicate, stale or unscoped
 representations. For selected lifecycle operations, Section~\ref{sec:e2}
 checks these relationships through file and metadata reconciliation,
 description review and retrieval probes.
+The contract is therefore an expected-state and reconciliation device, not a
+guarantee that every returned entry maps one-to-one to a document. File, tree
+and metadata checks establish managed state; retrieval probes test the derived
+representation exposed to search.
