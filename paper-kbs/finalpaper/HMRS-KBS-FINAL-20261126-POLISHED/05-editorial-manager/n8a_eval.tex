@@ -6,9 +6,7 @@ checks for index visibility (E1), collection selection (E3), evidence-pack
 assembly (E4) and candidate ordering (E6). E2 provides deployment context:
 it compares the answers of eight configurations but does not test
 the full catalogue-first path. E5 checks the reuse of operational lessons;
-E7 examines what scope, interruptions and citation markers reveal. The
-campaigns test distinct decisions, not successive stages of one benchmark
-query. Figure~\ref{fig:tiered-case} illustrates the path on a separate trace.
+E7 examines what scope, interruptions and citation markers reveal. The separately captured BQ07 trace (Figure~\ref{fig:tiered-case}) illustrates the workflow, not a shared benchmark run.
 
 \begin{figure}[!ht]
 \centering
@@ -47,10 +45,12 @@ runs use the same questions, so they do not add independent observations.
 \label{sec:exp-e1}
 For the stored arXiv corpus, a 328-part recheck found content-derived
 descriptions for all parts after explicit indexing and reindexing; search
-probes returned identifiers for all 100 papers. Of the 100
+probes returned identifiers for all 100 papers. These probes establish index
+presence under the tested calls, not complete scoped visibility, ranking
+quality, freshness or claim support. Of the 100
 probes, 72 lacked collection scope and 45 returned a chunk-copy name first.
-This establishes identifier presence, not ranking within each collection. The controlled
-checks passed for document creation, moves, deletion and forced reindexing.
+The controlled checks passed for document creation, moves, deletion and forced
+reindexing.
 
 A stale search result does not by itself locate the fault. In an earlier
 test on a disposable collection, a rename and move left 18 vector

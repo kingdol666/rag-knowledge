@@ -1,9 +1,10 @@
 # HMRS — Knowledge-Based Systems 投稿包
 
-**题目：** HMRS: Hierarchical document management for evidence-traced retrieval  
+**题目：** HMRS: Content-informed hierarchical document management for scoped, source-aware retrieval
+
 **投稿入口：** [Knowledge-Based Systems · Editorial Manager](https://submit.elsevier.com/KNOSYS)
 
-本版在 `HMRS-KBS-FINAL-20261126-NARRATIVE` 基础上进行投稿前审读，对摘要、引言、相关工作、系统设计、实验表述、讨论和结论作语言、论证及版式校准。实验记录、派生表、图件和补充材料未改动；生成式 AI 声明保留。图 5 仍是独立的 BQ07 执行轨迹，不计入 E2 或 E3。
+本版在上一轮投稿包基础上进行新一轮系统与方法审读，重写题目、摘要、引言、相关工作、状态模型、评价解释、讨论和结论，并删除可见实验叙述中的日历日期。核心主张收敛为管理—检索一体化和故障可观测性，不主张层级结构带来端到端答案质量优势。实验原始记录及结果数字未改；复算脚本同步更新了摘要断言，图表、补充材料和投稿信按新表述重建。图 5 仍是独立的 BQ07 执行轨迹，不计入 E2 或 E3。
 
 | 文件或目录 | 内容 |
 |---|---|
@@ -27,4 +28,4 @@
 
 ## 旧版去向
 
-2026-11-26 之前的各轮投稿包与 Overleaf ZIP 已移至 `paper-kbs/finalpaper/_rollback-archive/2026-11-26-pre-polish/`，需要回溯时按原目录名查找。包内部分构建说明与冻结证据的 README 仍沿用早期路径，例如 `HMRS-KBS-FINAL-20261124-EVIDENCE-LAYOUT`；这些是历史出处记录，不是当前构建依赖，本包自包含。
+当前工作区不包含旧版投稿包副本；需要核对早期修订时，请从 Git 历史按文件路径追溯。本包自包含构建源码与证据快照，旧目录名仅作为历史出处记录。

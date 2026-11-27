@@ -179,14 +179,13 @@ def verify_routing_and_packs() -> None:
     abstract = tex.split(r"\begin{abstract}", 1)[1].split(r"\end{abstract}", 1)[0]
     abstract = " ".join(abstract.split())
     ref, hybrid = traces["frozen"]["A0"], traces["frozen"]["A0h"]
-    route = (f"on {ref['n']} in-domain questions, the reference configuration "
-             "reached the labelled collection for every question")
+    route = (f"reference route selected the labelled collection on all {ref['n']} questions")
     check("E3-abs-route", "abstract", "abstract: frozen reference route count",
           (True, True), (route in abstract, ref["route"] == ref["n"]),
           "main_20p.tex vs supp_traces_frozen.csv")
-    containment = (f"evidence packs contained the literal target string for only {ref['hits']}.",
-                   f"returned the target string for {hybrid['hits']} questions.",
-                   "The coverage advantage persisted in two reruns on the same questions.")
+    containment = (f"evidence packs contained the literal target string on only {ref['hits']}.",
+                   f"reached {hybrid['hits']} target-string hits.",
+                   "text-coverage proxy remained higher in two same-question reruns")
     reruns = [traces[name] for name in ("followup", "rerun_20261117")]
     direction = all(run["A0h"]["hits"] > run["A0"]["hits"] for run in [traces["frozen"], *reruns])
     same_questions = all(cell["q"].keys() == ref["q"].keys()
@@ -196,11 +195,11 @@ def verify_routing_and_packs() -> None:
           (True, True, True), (all(frag in abstract for frag in containment), direction, same_questions),
           "main_20p.tex vs three routing/content traces")
     for frag, cid, claim in (
-            ("A rename-and-move probe exposed stale index entries",
+            ("A rename-and-move probe found 18 vector entries where nine were expected",
              "E1-abs-index", "abstract: lifecycle probe identified stale index entries"),
             ("verifier-score ordering yielded fewer top-five gold-document hits than fused ranking",
              "E6-abs-order", "abstract: lower Hit@5 under verifier-score order"),
-            ("no statistically significant paired difference after correction for multiple comparisons",
+            ("no corrected paired difference was significant",
              "E2-abs-correction", "abstract: no corrected paired answer-quality difference")):
         check(cid, "abstract", claim, "present", "present" if frag in abstract else "MISSING",
               "main_20p.tex")
@@ -489,7 +488,7 @@ def verify_s12_s13() -> None:
             per.setdefault(r["arm"], {})[r["qid"]] = r["gold_hit"] == "True"
         runs[name] = per
 
-    # S12 rows: Configuration, Frozen, Frozen rate, Wilson CI, Follow-up, Agreement, Nov 17
+    # S12 rows: Configuration, Frozen, Frozen rate, Wilson CI, Follow-up, Agreement, Later rerun
     s12 = tex_rows(SRC / "supplementary-arm-tables.tex", "tab:s-arm-data", 7)
     assert len(s12) == 8, s12
     alias = {"Read-all": "A1-readall"}
@@ -514,8 +513,8 @@ def verify_s12_s13() -> None:
             check(f"S12-{arm}-agree", "S12", f"S12 {cells[0]} agreement", cells[5],
                   f"{agree}/{len(fz)}", "frozen vs follow-up traces")
         if nov is not None:
-            check(f"S12-{arm}-nov17", "S12", f"S12 {cells[0]} Nov 17 count", cells[6],
-                  f"{sum(nov.values())}/{len(nov)}", "Nov 17 traces")
+            check(f"S12-{arm}-nov17", "S12", f"S12 {cells[0]} later-rerun count", cells[6],
+                  f"{sum(nov.values())}/{len(nov)}", "later-rerun traces")
 
     # S13 rows: Run, Contrast, first-only, second-only, p (exact McNemar = sign test)
     s13 = tex_rows(SRC / "supplementary-arm-tables.tex", "tab:s-paired-data", 5)

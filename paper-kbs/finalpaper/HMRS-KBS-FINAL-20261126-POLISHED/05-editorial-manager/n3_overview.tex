@@ -6,9 +6,19 @@ retrieval. The parsing service recovers document content, the web application
 maintains collections and their files, and the MCP server exposes the managed
 state to agents \cite{mcp}. Placement determines where a document is listed;
 its description helps the agent decide whether to open it; its index entries
-make passages available to lexical and dense search. Since changes to these
-records are not equivalent, reconciliation checks compare document files,
-the tree registry and per-library metadata after selected operations.
+make passages available to lexical and dense search. HMRS distinguishes
+several operational states: a document is \textbf{stored} when its file exists,
+\textbf{registered} when the tree and collection metadata point to it,
+\textbf{indexed} when a corresponding index entry exists, \textbf{query-visible}
+when a scoped query returns an identifier for it, and \textbf{traceable} when
+returned text resolves to document and span coordinates. An observation at one
+state does not establish the next. The document files, tree registry and
+collection metadata constitute the managed state; lexical and dense indices,
+and the optional graph, are derived projections. File and metadata writes and
+index or graph updates are separate, sometimes asynchronous operations, so the
+system is operationally eventually consistent across these projections.
+Reconciliation checks compare document files, the tree registry and
+per-library metadata after selected operations.
 
 \subsection{Management levels and the tiered access path}
 \label{sec:levels}
@@ -16,10 +26,10 @@ the tree registry and per-library metadata after selected operations.
 Collections define ownership and scope; documents contain text and
 descriptive metadata. An oversized document can be stored in several parts. The index divides
 whole documents or their stored parts into segments called chunks. At query time, a passage is any
-text span returned or scored. The catalogue lists collections, a shelf lists
-documents within one collection, the document view exposes the body, and the
-segment view exposes passages with source references. Table~\ref{tab:levels}
-maps each level to the operations that maintain and check it.
+text span returned or scored. The catalogue lists collections, a shelf lists documents within one
+collection, the document view exposes the body, and the segment view exposes
+passages with source references. Each level has its own operations and
+state checks.
 
 In the implementation, a collection is called a library or knowledge base;
 this paper uses \emph{collection} for the managed object and retains
@@ -71,19 +81,17 @@ separately helps locate a missing collection or document.
 \label{fig:levels}
 \end{figure}
 
-\setcounter{dbltopnumber}{2}
-\begin{figure*}[t]
+The service architecture separates interfaces used to mutate managed files
+and metadata from retrieval components that consume derived projections. The
+ingest agent chooses a collection, the save service validates the destination
+identifier, and an audit checks the result that was stored.
+
+\begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{fig_service_architecture_vector}
-\caption{HMRS service architecture. The browser and agent/CLI access the web and MCP interfaces. Parsing, management and retrieval operate on shared document files, the tree registry, library metadata and search indices. Laya scoring is optional; the Neo4j graph supports navigation and optional candidate expansion.}
+\caption{HMRS service architecture. The browser and agent/CLI access the web and MCP interfaces. Parsing and management operate on shared document files, the tree registry and library metadata; lexical and dense indices and the optional Neo4j graph are derived projections used for retrieval and navigation. Laya scoring is optional.}
 \label{fig:arch}
 \end{figure*}
-
-Figure~\ref{fig:arch} shows which services write and expose the shared
-state. Table~\ref{tab:functions} then identifies where each management or
-retrieval operation is checked. The ingest agent chooses a collection,
-the save service validates the destination identifier, and an audit checks
-the result that was stored.
 
 \begin{table*}[t]
 \centering
@@ -108,13 +116,6 @@ Experience & extract, approve, tier, search & experience tools apply their own r
 \end{tabular}
 \end{table*}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{fig_workflow_vector}
-\caption{\looseness=-1 Illustrative HMRS workflow from document acquisition to evidence-based reporting. Documents are parsed when needed, organised into collections and indexed according to the entry point. A question can use catalogue navigation or pinned search; optional Laya scoring precedes evidence inspection. A completed review without support is distinct from an incomplete search or tool failure, which may occur at any stage.}
-\label{fig:workflow}
-\end{figure*}
-
 \subsection{Data model and object lifecycle}
 \label{sec:datamodel}
 \label{sec:lifecycle}
@@ -122,11 +123,12 @@ Experience & extract, approve, tier, search & experience tools apply their own r
 Documents are stored as Markdown with associated assets. A managed
 collection's state spans the document files, \texttt{.tree-fs.json} and the
 library's \texttt{.knowledge-base.yml}. The ingest workflow distinguishes
-parsed, stored and indexed content and records completion after a retrieval
-probe. The MCP save path can start background indexing; the web parsed-file
-save path exposes indexing as a separate operation. After a move, rename
-or reindex, the file path and metadata show the stored state and a
-retrieval probe checks which path the index returns.
-Sections~\ref{sec:acquisition}--\ref{sec:implementation} describe these
-layers in turn: acquisition, organisation and lifecycle, tiered access
-and the evidence gate, and the implementation.
+parsed and stored content from indexed content and, in the reference workflow,
+treats material as retrieval-ready only after the relevant indexing operation
+and a successful content-based probe. The MCP save path can start background
+indexing; the web parsed-file save path exposes indexing as a separate
+operation. Graph construction is separate. After a move, rename or reindex,
+the file path and metadata show the stored state and a retrieval probe checks
+which path the index returns. Sections~\ref{sec:acquisition}--\ref{sec:implementation}
+describe these layers in turn: acquisition, organisation and lifecycle, tiered
+access and the evidence gate, and the implementation.

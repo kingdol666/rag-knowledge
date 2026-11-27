@@ -1,5 +1,6 @@
 %% Cover letter for the Knowledge-Based Systems submission of
-%% "HMRS: Hierarchical document management for evidence-traced retrieval".
+%% "HMRS: Content-informed hierarchical document management for scoped,
+%% source-aware retrieval".
 %% Scope follows Elsevier's cover-letter guidance: under one page; aim and
 %% main findings; fit with the journal's aims and scope; novelty and wider
 %% implications. Funding, author declarations and reviewer suggestions are
@@ -33,45 +34,46 @@ Knowledge-Based Systems
 
 Dear Editors,
 
-\textbf{Re: ``HMRS: Hierarchical document management for evidence-traced retrieval''}
+\textbf{Re: ``HMRS: Content-informed hierarchical document management for scoped, source-aware retrieval''}
 
 On behalf of all authors, I submit this manuscript for consideration as a
 regular paper in Knowledge-Based Systems. The work is original, has not
 been published elsewhere and is not under consideration by another
 journal; all authors have approved this submission.
 
-In a changing, multi-domain document collection, the passage most similar
- to a query need not come from the source that applies to the task. HMRS,
- the Hierarchical Management Retrieval System, uses the same hierarchy for
- document management and retrieval. An ingest agent uses the recovered text
- for placement and description. A query agent consults the collection
- catalogue and document listings before reading selected source passages,
- while lexical and vector search remain available for candidate retrieval.
- Post-operation probes check index visibility, and an optional scorer
- admits passages without requiring the same score for document ranking.
+In changing, multi-domain document collections, a passage that resembles a
+query need not come from a source relevant to the task. HMRS, the Hierarchical
+Management Retrieval System, uses the same hierarchy for document management
+and retrieval. An ingest agent uses recovered text to inform placement and
+description. A query agent can consult the collection catalogue and document
+listings before reading selected source passages, while lexical and vector
+search remain available for candidate retrieval. Post-operation probes check
+index visibility; an optional scorer admits passages but is not assumed to be
+a suitable document-ranking score.
 
 The paper's main findings are as follows.
 \begin{itemize}[leftmargin=1.5em,itemsep=1pt,topsep=2pt,parsep=0pt]
-\item A rename-and-move probe exposed stale index entries. In scripted
-routing runs, the configuration with descriptive cards reached the labelled
-collection more often than the nominally name-only configuration. The
-comparison does not isolate the effect of descriptions.
-\item Reaching the labelled collection did not guarantee target-text
-coverage. Combining scored document text with an additional vector search
-and prioritised windows improved literal containment across three runs on
-the same questions.
-\item In the fixed-pool replay, fused ordering kept gold documents in the
-top five more often than verifier-score ordering. A separate blind
+\item A rename-and-move probe found 18 vector entries where nine were
+expected; forced reindexing restored the expected count, but the probe did
+not isolate the underlying fault.
+\item In scripted tests on 72 questions, the reference route selected the
+labelled collection on all 72, while the target string appeared in only 37
+evidence packs. A multi-component configuration reached 52 target-string
+hits and retained a higher count in two reruns on the same questions; these
+are repeated observations on one cohort and do not isolate component effects.
+\item In the fixed-pool replay, fused ordering kept gold documents in the top
+five more often than verifier-score ordering. A separate native-deployment
 comparison found no statistically significant paired difference after
 correction; search scope and source access differed across deployments.
 \end{itemize}
 
-The manuscript addresses the journal's interest in knowledge-based systems
-by showing how an agent can use managed document organisation to choose
-where to search and what to read. The contribution is the connection
-between content-informed filing and task-directed evidence access, not a
-new ranking algorithm. It makes index visibility, collection choice and
-returned text separately inspectable.
+The manuscript presents a system-integration and observability contribution:
+it links managed document state to agent-visible scope navigation and
+post-mutation index checks, then distinguishes failures in placement, index
+visibility, collection choice, text coverage and answer evaluation. It does
+not claim a new ranking algorithm or a causal benefit over a tool-matched flat
+retriever. The 72-question containment measure is a text-coverage proxy, not
+claim-level support or answer accuracy.
 
 Code and data are available at \url{https://github.com/kingdol666/rag-knowledge}.
 

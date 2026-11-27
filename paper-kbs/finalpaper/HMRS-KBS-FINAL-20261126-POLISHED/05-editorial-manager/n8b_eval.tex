@@ -15,15 +15,14 @@ derived from its contents; A3 was configured to supply the name alone. This
 was not a clean description ablation: A3 could fall back to descriptions or
 search outside the evaluated collections, and those paths were not logged.
 The selector chose the labelled collection on all 72 questions with A0,
-versus 37 with A3 in the frozen run (Figure~\ref{fig:routing}). On the same
-72 questions, A0 remained at 72 while A3 reached 49 in each rerun. The
-routing difference is therefore repeatable across these runs, but it does
-not isolate the effect of descriptions.
+versus 37 with A3 in the frozen run (Figure~\ref{fig:routing}). On the same 72 questions, A0 remained at 72 while A3 reached 49 in each rerun.
+The routing difference recurred, but the design does not isolate the effect of
+descriptions.
 
 Reaching the right collection is only a first step. Even with perfect A0
-routing, the target string appeared in returned text on only 37 of the 72
-questions. Correct collection selection alone therefore did not ensure that
-the evidence pack contained the literal target string.
+routing, the target string appeared in returned text on only 37 of 72
+questions; correct collection selection alone did not ensure that the evidence
+pack contained it.
 
 \begin{figure}[!t]
 \centering
@@ -32,7 +31,7 @@ the evidence pack contained the literal target string.
 \includegraphics[width=0.96\linewidth]{fig_opt_route}
 \caption{Correct collection selections out of 72 for A0 (name and description)
 and A3 (nominally name-only) in the frozen, same-question follow-up and
-17 November rerun. Bars give the number of questions in which the selector
+later rerun. Bars give the number of questions in which the selector
 chose the labelled collection; the denominator is fixed at 72 in every run.
 A0 remains at 72/72, whereas A3 rises from 37/72 to 49/72 in both reruns.
 Because fallbacks to descriptions or searches outside the evaluated collections
@@ -76,7 +75,7 @@ comparators. Limits are in characters, not tokens.}
 Arm & Search scope & Candidate selection and evidence\\
 \midrule
 A0 & One collection, selected by name and description & Retrieve vector hits. The reference-mode gate reads up to six distinct documents, with a nominal 40{,}000-character window per document.\\
-A0f & Same route as A0 & Use the same candidates with an inline gate. Allow up to 250{,}000 characters per candidate and in the gate pack.\\
+A0f & Same route and initial search policy as A0 & Apply an inline gate to the candidates returned by that policy. Allow up to 250{,}000 characters per candidate and in the gate pack.\\
 A0h & Same route as A0 & Keep the A0f gate and add a second vector search. Place up to eight chunk windows first, then add gate-retained text up to a final limit of 60{,}000 characters.\\
 PD & All ten collections & Keep the six highest-scoring distinct collection/path pairs and use the A0f inline gate.\\
 A1b & All ten collections & Merge vector hits and use the A0 reference-mode gate, including document reads.\\
@@ -86,11 +85,9 @@ A2 & All ten collections & Merge the same hits as A1b and concatenate their snip
 \end{table*}
 
 We next varied how evidence is assembled once a collection is chosen.
-Table~\ref{tab:ablation-configs} defines the six main configurations.
 A3 uses A0's downstream evidence construction but changes the route cards
-and collection setup. Figure~\ref{fig:content} shows its containment as an
-auxiliary routing diagnostic alongside the separate mechanical corpus scan.
-The six main configurations differ
+and collection setup. It is an auxiliary routing diagnostic; the mechanical
+corpus scan is a separate comparator. The six main configurations differ
 in search scope (one collection selected by name and description, or all
 ten), in whether documents are read and gated, and in how the pack is
 ordered. Routed vector search requests up to 30 candidates at a cosine
@@ -102,14 +99,16 @@ the gold domain to resolve document references, but not to choose a route card
 A0h had the highest target-string count among the six main evidence-pack
 configurations in the frozen run: 52 of 72 questions, up from 37 with A0.
 It found the target string on 15 questions where A0 missed it and lost no
-A0 hit (exact McNemar $p=6.1\times10^{-5}$). Both same-question reruns preserved that advantage: 51 versus 39 in the
-follow-up and 48 versus 36 on 17 November (Supplementary Table~S12). A0h also led the unrouted vector union A1b, but its
-difference from the unrouted per-document configuration PD was not
-significant ($p=0.070$; Figure~\ref{fig:content}).
+A0 hit (exact McNemar $p=6.1\times10^{-5}$). Both reruns on the same questions retained this advantage: 51 versus 39 in
+the follow-up and 48 versus 36 in the later rerun (Supplementary Table~S12).
+A0h also led the unrouted vector union A1b. Its difference from the unrouted
+per-document configuration PD was not significant ($p=0.070$).
 
-These contrasts compare configurations rather than single components. A0h
-changes both what the system retrieves and what it puts first in the pack, so
-its comparison with A0f is not a test of window size alone. A2 removes
+These contrasts compare configurations rather than single components. The
+route and initial search policy are shared by A0, A0f and A0h, but the
+realised candidate lists can still differ. A0h changes both what the system
+retrieves and what it puts first in the pack, so its comparison with A0f is
+not a test of window size alone. A2 removes
 document reads as well as the gate, so it does not isolate the gate's
 effect. The arm-specific trace counters were 309~kB per question for A0h, 31.4~kB
 for A0 and 24.3~MB for the capped corpus scan, which found every target.
@@ -118,7 +117,26 @@ of I/O or generator input. The scan capped each document read at
 60{,}000 characters. A0h's counter sums fetched candidate text, gate output
 and selected windows, so it can count text twice; A0's counter excludes the
 gate's internal reference-mode reads. A0h's final pack has a separate
-60{,}000-character cap.
+60{,}000-character cap. Table~\ref{tab:ablation-configs} gives the limits by
+configuration; Figure~\ref{fig:content} shows the containment contrasts.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{fig_opt_verifier}
+\caption{Verifier scores and same-pool ordering from two records over the
+same 16 candidate pools. (a) Each point is one of 191 recorded Laya scores
+(17 gold and 174 non-gold candidates); the vertical jitter separates points
+only for display. Black ticks mark the group medians (0.8759 and 0.86265),
+the dashed line marks the 0.5 cutoff, and Q14 has one candidate without a
+recorded score. (b) Each row is one pool in the separate ordering replay:
+filled circles mark a gold document in Fusion's top five and filled diamonds
+mark a gold document in verifier-score order; open symbols mark a miss. The
+replay changes ordering only: Fusion retains 15/16 Hit@5 pools, whereas
+verifier-score order retains 7/16, with eight losses and no gains (exact
+McNemar $p=0.0078$). The panels do not test the admission benefit of the
+score.}
+\label{fig:verifier}
+\end{figure*}
 
 \subsection{Storing and finding operational lessons (E5)}
 \label{sec:e3}

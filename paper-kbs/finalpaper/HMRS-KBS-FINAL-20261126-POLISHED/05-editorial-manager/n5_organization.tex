@@ -4,8 +4,8 @@
 Collection membership determines where a document is listed and defines the
 intended search scope when a collection identifier is supplied. Parts of a
 split document retain the collection assignment, and descriptions help the
-agent select documents before opening their bodies. The operations in
-Table~\ref{tab:levels} maintain these records as the corpus changes.
+agent select documents before opening their bodies. Table~\ref{tab:functions} pairs the management operations with their
+platform or workflow checks.
 
 \subsection{Classification, metadata, tags and duplicate review}
 \label{sec:org-placement}
@@ -20,9 +20,15 @@ to choose a destination, then derives document descriptions and tags
 from the body. Duplicate review
 presents candidate pairs for inspection. Adjacent parts can describe
 the same document while containing distinct source sections.
-Figure~\ref{fig:workflow} shows how placement and indexing make the
-stored material available to a later query, through catalogue navigation
-or directly within a specified scope.
+The placement and indexing steps connect managed documents to later query
+access, whether through catalogue navigation or within a specified scope.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{fig_workflow_vector}
+\caption{\looseness=-1 Illustrative HMRS workflow from document acquisition to evidence-based reporting. Documents are parsed when needed, organised into collections and indexed according to the entry point. A question can use catalogue navigation or pinned search; optional Laya scoring precedes evidence inspection. A completed review without support is distinct from an incomplete search or tool failure, which may occur at any stage.}
+\label{fig:workflow}
+\end{figure*}
 
 HMRS supports library and sub-library creation, metadata edits, moves,
 renames, deletion and forced reindexing. A move updates the document path
@@ -59,7 +65,10 @@ operational-experience cases alongside the management experiments.
 \label{sec:org-integrity}
 \label{sec:org-summary}
 
-The organisation contract links each document to its current owning
-collection, descriptive metadata and indexed path. For selected lifecycle
-operations, Section~\ref{sec:e2} checks these relationships through file
-and metadata reconciliation, description review and retrieval probes.
+The organisation contract records each document's current owning
+collection, descriptive metadata and expected index representation. It does
+not assert a one-to-one correspondence between a document and returned search
+entries; selected probes are needed to detect duplicate, stale or unscoped
+representations. For selected lifecycle operations, Section~\ref{sec:e2}
+checks these relationships through file and metadata reconciliation,
+description review and retrieval probes.

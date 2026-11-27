@@ -55,7 +55,7 @@
 \setcounter{topnumber}{3}
 \setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{4}
-\setcounter{dbltopnumber}{3}
+\setcounter{dbltopnumber}{1}
 
 %% Spacing for the double-column layout.
 \ifdefined\HMRSReviewLayout\else
@@ -78,7 +78,7 @@
 
 \begin{frontmatter}
 
-\title{HMRS: Hierarchical document management for evidence-traced retrieval}
+\title{HMRS: Content-informed hierarchical document management for scoped, source-aware retrieval}
 
 \author[inst1]{Haozheng Zhang}
 \author[inst2]{Bo Fu}
@@ -98,23 +98,24 @@ coming from a source that applies to the task. The Hierarchical Management
 Retrieval System (HMRS) uses the same collection hierarchy to organise
 documents and guide retrieval. At ingestion, an agent uses document text
 to assign documents to collections and write descriptions. At query time,
-an agent can consult the catalogue, browse the selected collection and
-retrieve passages linked to their sources. A rename-and-move probe exposed
-stale index entries. In a frozen run on 72 in-domain questions, the
-reference configuration reached the labelled collection for every
-question, but its evidence packs contained the literal target string for
-only 37. With the same routing policy, a configuration combining scored
-document text, an additional vector search and prioritised passage windows
-returned the target string for 52 questions. The coverage advantage
-persisted in two reruns on the same questions. In fixed candidate pools,
-verifier-score ordering yielded fewer top-five gold-document hits than
-fused ranking. A separate blind comparison of deployments with different
-search scopes and source access did not test catalogue-first routing. It
-found no statistically significant paired difference after correction for
-multiple comparisons. The results show why collection choice and evidence
-coverage need separate checks: reaching the right collection does not
-ensure retrieval of the target text, and retrieving it does not establish
-that it supports the answer.
+an agent can consult the catalogue, inspect the selected collection and
+retrieve source-linked passages. A rename-and-move probe found 18
+vector entries where nine were expected; forced reindexing restored the
+expected count, although the probe did not isolate the underlying fault. In
+a scripted test on 72 in-domain questions, the reference route selected the
+labelled collection on all 72 questions, but its evidence packs contained the
+literal target string on only 37. Under the same route and initial search
+policy, a configuration that combined scored document text, an additional
+vector search and prioritised passage windows reached 52 target-string hits.
+The text-coverage proxy remained higher in two same-question reruns,
+although the configuration's components were not isolated. In fixed candidate pools,
+verifier-score ordering yielded fewer top-five gold-document hits than fused
+ranking. In a separate native-deployment comparison, the search scopes and
+source access differed; the comparison did not test catalogue-first routing,
+and no corrected paired difference was significant. Taken together, these
+results support an auditable management--retrieval path. They do not establish
+improved claim-level grounding: collection choice, index presence, query
+visibility, text coverage and answer support require separate checks.
 \end{abstract}
 
 \begin{keyword}
@@ -145,10 +146,11 @@ Model Context Protocol
 {\ifdefined\HMRSReviewLayout\else\footnotesize\fi
 \ifdefined\HMRSReviewLayout
 \renewcommand{\baselinestretch}{0.88}\selectfont
+\setlength{\bibsep}{-2pt plus 0.05ex}
 \else
 \renewcommand{\baselinestretch}{0.85}\selectfont
-\fi
 \setlength{\bibsep}{-1.4pt plus 0.05ex}
+\fi
 \urlstyle{same}
 \bibliographystyle{elsarticle-num}
 \bibliography{refs,refs_new_verified}

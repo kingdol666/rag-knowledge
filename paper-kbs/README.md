@@ -7,7 +7,7 @@
 
 | 路径 | 内容 | 状态 |
 |---|---|---|
-| `finalpaper/HMRS-KBS-FINAL-20261126-POLISHED/` | **当前投稿包**：双栏正文 14 页、审稿版 34 页、补充材料、源码、投稿信、亮点、两个上传 ZIP、`06-evidence/` 证据快照与复算脚本 | ✅ 投稿用 |
+| `finalpaper/HMRS-KBS-FINAL-20261126-POLISHED/` | **当前投稿包**：双栏正文 15 页、审稿版 36 页、11 页补充材料、源码、投稿信、亮点、两个上传 ZIP、`06-evidence/` 证据快照与复算脚本 | ✅ 投稿用 |
 | `finalpaper/HMRS-KBS-FINAL-20261124-EVIDENCE-LAYOUT/` | 上一轮证据版式包；仓库冻结校验器 `benchmark-suite/…/verification/verify_all.py` 的源码路径仍指向它 | 🗄 校验依赖 |
 | `experiments/` | 实验脚本与结果 JSON，补充材料证据索引依赖 | ✅ 复现用 |
 | `reference/kbs/` | 29 篇 KBS 已发表文章 PDF、BibTeX 与图库 | ✅ 保留 |

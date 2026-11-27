@@ -1,6 +1,6 @@
 # HMRS companion evidence inventory: source map
 
-Paths below are relative to the repository root. The [frozen benchmark archive](https://github.com/kingdol666/rag-knowledge/tree/092e8bf2d65859dcd684071ed4169a40fbbc1563/benchmark-suite/paper-results-kbs-20261125) contains the published record snapshot. For package paths written `SOURCE/...`, use the accompanying revised `04-source/source` directory in `paper-kbs/finalpaper/HMRS-KBS-FINAL-20261124-EVIDENCE-LAYOUT`. The evidence crosswalk is in `SOURCE/supplementary.tex`; the benchmark verification entry point is `benchmark-suite/paper-results-kbs-20261125/verification/verify_all.py`.
+Paths below are relative to the repository root. The [frozen benchmark archive](https://github.com/kingdol666/rag-knowledge/tree/092e8bf2d65859dcd684071ed4169a40fbbc1563/benchmark-suite/paper-results-kbs-20261125) contains the published record snapshot. For package paths written `SOURCE/...`, use the accompanying `04-source/source` directory. The evidence crosswalk is in `SOURCE/supplementary.tex`. To check this release against its frozen records, use the package verifier at `06-evidence/paper-results-kbs-20261125/verification/verify_all.py`.
 
 ## Manuscript and supplement records
 
@@ -25,8 +25,7 @@ Paths below are relative to the repository root. The [frozen benchmark archive](
 
 ### E3/E4 — Collection routing and evidence-pack containment
 
-- `benchmark-suite/paper-results-kbs-20261125/records/routing_content_traces/supp_traces_frozen.csv` — select `is_refusal=False`; count `route_correct=True` by `arm` for A0 and A3, and `gold_hit=True` for containment for A0 and A0h. `bytes_ingested` is the trace text counter. Neither passage text nor the matched reference strings are included in the released traces.
-- `benchmark-suite/paper-results-kbs-20261125/records/routing_content_traces/supp_traces_followup.csv` and `benchmark-suite/paper-results-kbs-20261125/records/routing_content_traces/supp_traces_rerun_20261117.csv` — same-question reruns; compare matching question IDs within each run.
+- `benchmark-suite/paper-results-kbs-20261125/records/routing_content_traces/` — the frozen, first-follow-up and later-rerun CSVs. Select `is_refusal=False`; count `route_correct=True` by `arm` for A0 and A3, and `gold_hit=True` for containment for A0 and A0h. `bytes_ingested` is the trace text counter. Compare matching question IDs within each run. Neither passage text nor the matched reference strings are included in the released traces. The underlying filenames and checksums remain in the evidence snapshot for reproducibility.
 - `SOURCE/n8b_eval.tex`, `sec:exp-e3` and `sec:exp-e4` — possible A3 fallback, definitions of the scoped configurations and interpretation of the text counter. `SOURCE/n8a_eval.tex`, `sec:eval-setup` — metric definitions.
 
 ### E5 — Operational lessons

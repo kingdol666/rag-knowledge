@@ -4214,10 +4214,10 @@
   {
    "id": "S12-A0-nov17",
    "section": "S12",
-   "claim": "S12 A0 Nov 17 count",
+   "claim": "S12 A0 later-rerun count",
    "expected": "36/72",
    "recomputed": "36/72",
-   "source": "Nov 17 traces",
+   "source": "later-rerun traces",
    "status": "PASS"
   },
   {
@@ -4277,10 +4277,10 @@
   {
    "id": "S12-A0f-nov17",
    "section": "S12",
-   "claim": "S12 A0f Nov 17 count",
+   "claim": "S12 A0f later-rerun count",
    "expected": "41/72",
    "recomputed": "41/72",
-   "source": "Nov 17 traces",
+   "source": "later-rerun traces",
    "status": "PASS"
   },
   {
@@ -4340,10 +4340,10 @@
   {
    "id": "S12-A0h-nov17",
    "section": "S12",
-   "claim": "S12 A0h Nov 17 count",
+   "claim": "S12 A0h later-rerun count",
    "expected": "48/72",
    "recomputed": "48/72",
-   "source": "Nov 17 traces",
+   "source": "later-rerun traces",
    "status": "PASS"
   },
   {
@@ -4403,10 +4403,10 @@
   {
    "id": "S12-PD-nov17",
    "section": "S12",
-   "claim": "S12 PD Nov 17 count",
+   "claim": "S12 PD later-rerun count",
    "expected": "42/72",
    "recomputed": "42/72",
-   "source": "Nov 17 traces",
+   "source": "later-rerun traces",
    "status": "PASS"
   },
   {
@@ -4466,10 +4466,10 @@
   {
    "id": "S12-A1b-nov17",
    "section": "S12",
-   "claim": "S12 A1b Nov 17 count",
+   "claim": "S12 A1b later-rerun count",
    "expected": "36/72",
    "recomputed": "36/72",
-   "source": "Nov 17 traces",
+   "source": "later-rerun traces",
    "status": "PASS"
   },
   {
@@ -4529,10 +4529,10 @@
   {
    "id": "S12-A2-nov17",
    "section": "S12",
-   "claim": "S12 A2 Nov 17 count",
+   "claim": "S12 A2 later-rerun count",
    "expected": "23/72",
    "recomputed": "23/72",
-   "source": "Nov 17 traces",
+   "source": "later-rerun traces",
    "status": "PASS"
   },
   {
@@ -4592,10 +4592,10 @@
   {
    "id": "S12-A3-nov17",
    "section": "S12",
-   "claim": "S12 A3 Nov 17 count",
+   "claim": "S12 A3 later-rerun count",
    "expected": "26/72",
    "recomputed": "26/72",
-   "source": "Nov 17 traces",
+   "source": "later-rerun traces",
    "status": "PASS"
   },
   {
@@ -5069,7 +5069,7 @@
   {
    "id": "S13-nov17-A0h-A0-counts",
    "section": "S13",
-   "claim": "S13 Nov.\\ 17 A0h vs A0 discordant",
+   "claim": "S13 Later rerun A0h vs A0 discordant",
    "expected": [
     12,
     0
@@ -5084,7 +5084,7 @@
   {
    "id": "S13-nov17-A0h-A0-p",
    "section": "S13",
-   "claim": "S13 Nov.\\ 17 A0h vs A0 exact p",
+   "claim": "S13 Later rerun A0h vs A0 exact p",
    "expected": 0.00049,
    "recomputed": 0.00048828125,
    "source": "recomputed",
@@ -5093,7 +5093,7 @@
   {
    "id": "S13-nov17-A0-A3-counts",
    "section": "S13",
-   "claim": "S13 Nov.\\ 17 A0 vs A3 discordant",
+   "claim": "S13 Later rerun A0 vs A3 discordant",
    "expected": [
     14,
     4
@@ -5108,7 +5108,7 @@
   {
    "id": "S13-nov17-A0-A3-p",
    "section": "S13",
-   "claim": "S13 Nov.\\ 17 A0 vs A3 exact p",
+   "claim": "S13 Later rerun A0 vs A3 exact p",
    "expected": 0.0309,
    "recomputed": 0.0308837890625,
    "source": "recomputed",

@@ -5,11 +5,35 @@
 An agent can follow up a search by reading the source document, whereas a
 one-shot baseline must answer from the passages in its prompt. We use this
 comparison as a native deployment case study, not as a controlled test of the
-full catalogue-first workflow. The configurations were compared on BQ01--BQ10,
+full catalogue-first workflow. The comparison used BQ01--BQ10 and the
+four-dimension rubric in Table~\ref{tab:rubric}. The questions were
 drawn from a five-collection
 arXiv corpus (100 papers, 328 stored parts and 9{,}504 passages). These
 developer-authored questions were also used in development grids and
 post-repair validation; they are not a held-out test set.
+
+\begin{table}[!tb]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.03}
+\caption{Answer-quality rubric applied by the blind judge in E2. Scores are
+integers 1--5; 2--4 are intermediate. Overall is the unweighted mean; the
+holistic verdict is separate, not a mean threshold. The judge saw the
+question, a head-only gold excerpt and eight anonymised answers, not
+retrieved contexts or system names.}
+\label{tab:rubric}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.36\columnwidth}>{\raggedright\arraybackslash}p{0.20\columnwidth}>{\raggedright\arraybackslash}p{0.24\columnwidth}@{}}
+\toprule
+Dimension & Score 1 & Score 5\\
+\midrule
+Factual (claims vs.\ gold) & Mostly wrong & All correct; key facts match\\
+Completeness (all parts) & Misses the point & Fully answered\\
+Apparent groundedness & Substantial fabrication & No unsupported claims apparent\\
+Attribution (source naming) & None or bogus & Clear and accurate\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsubsection{Native configurations}
 Configured for five collections, the deployed agent chose 2--7 MCP calls per
@@ -52,44 +76,7 @@ RRF-order answers came from the earlier four-arm grid, and the external arms
 were run separately; all 80 answers were scored together in the unified
 blind pass.
 
-Each question was scored in one blind pass. The judge, a different model from the generator,
-saw the question, a head-only gold excerpt and eight anonymised
-answers, but not the retrieved contexts, system names or the passages behind
-citation markers. At temperature 0, it was instructed to score each answer
-on the four dimensions in Table~\ref{tab:rubric} (1--5, with 2--4
-intermediate) without curving against the packet, and to justify every
-score. Some saved rationales nevertheless refer to other answers in the
-packet. The overall score is the unweighted mean. The judge also recorded a
-holistic verdict (correct, partial or incorrect) and a rationale, separately
-from the mean. An honest ``not in the material'' answer was not treated as
-fabrication. Identifier presence, keyword coverage and gold-document reach
-were recorded separately. These scores are not claim-level checks of source
-support.
-
-\begin{table}[!t]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\renewcommand{\arraystretch}{1.03}
-\caption{Answer-quality rubric applied by the blind judge in E2. Scores are
-integers 1--5; 2--4 are intermediate. Overall is the unweighted mean; the
-holistic verdict is separate, not a mean threshold. The judge saw the
-question, a head-only gold excerpt and eight anonymised answers, not
-retrieved contexts or system names.}
-\label{tab:rubric}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.36\columnwidth}>{\raggedright\arraybackslash}p{0.20\columnwidth}>{\raggedright\arraybackslash}p{0.24\columnwidth}@{}}
-\toprule
-Dimension & Score 1 & Score 5\\
-\midrule
-Factual (claims vs.\ gold) & Mostly wrong & All correct; key facts match\\
-Completeness (all parts) & Misses the point & Fully answered\\
-Apparent groundedness & Substantial fabrication & No unsupported claims apparent\\
-Attribution (source naming) & None or bogus & Clear and accurate\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table*}[!t]
+\begin{table*}[!tb]
 \centering
 \caption{Blind answer scores for the eight configurations in the native
 deployment case study on BQ01--BQ10. Each configuration answered each
@@ -120,6 +107,20 @@ GraphRAG$^{\dagger}$ & 30 gold parts & 4.6 & 3.3 & 4.6 & 4.6 & 4.28 & 4/3/3 & 12
 \end{tabular}%
 }
 \end{table*}
+
+Each question was scored in one blind pass. The judge, a different model from the generator,
+saw the question, a head-only gold excerpt and eight anonymised
+answers, but not the retrieved contexts, system names or the passages behind
+citation markers. At temperature 0, it was instructed to score each answer
+on four dimensions (1--5, with 2--4
+intermediate) without curving against the packet, and to justify every
+score. Some saved rationales nevertheless refer to other answers in the
+packet. The overall score is the unweighted mean. The judge also recorded a
+holistic verdict (correct, partial or incorrect) and a rationale, separately
+from the mean. An honest ``not in the material'' answer was not treated as
+fabrication. Identifier presence, keyword coverage and gold-document reach
+were recorded separately. These scores are not claim-level checks of source
+support.
 
 HMRS had the highest observed mean in the unified pass (5.00 versus
 4.95 for BM25) and tied DeepRead at ten correct verdicts

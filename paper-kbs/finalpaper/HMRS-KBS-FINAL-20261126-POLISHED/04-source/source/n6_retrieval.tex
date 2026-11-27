@@ -7,10 +7,10 @@ search selects a collection, examines shelf descriptions and opens
 selected documents or passages. Pinned search starts in specified
 collections and returns chunks from their segment indexes. Both paths retain the source identifiers needed to locate the selected
 passages.
+Figure~\ref{fig:workflow} summarises the broader acquisition-to-report path;
+this section focuses on its retrieval and evidence-reporting stages.
 
-Figure~\ref{fig:tiered-algorithm} distinguishes how the workflow obtains
-candidate evidence from how it reports the outcome. Algorithm~\ref{alg:tiered}
-adds the reporting decisions and the option to check source text after scoring.
+The workflow separates obtaining candidate evidence from reporting the outcome.
 
 \begin{figure}[t]
 \centering
@@ -33,8 +33,7 @@ report if it exhausts its call budget.
 \label{sec:gate-primitive}
 \label{sec:twostage}
 
-The knowledge-base chat interface defines two policies
-(Table~\ref{tab:lanes}). The search policy starts from pinned collections
+The knowledge-base chat interface defines two policies. The search policy starts from pinned collections
 and calls two-stage or vector search. Each tool applies the scope from the
 single collection identifier it receives, so a call without one searches
 every collection (Section~\ref{sec:exp-e2}). The librarian policy instead
@@ -60,9 +59,9 @@ duplicates and applies a character limit. It returns document coordinates
 and source spans alongside separate fetch and scoring errors, so valid
 passages can remain available after a partial failure. This score governs
 passage admission; the workflow or hybrid tool controls candidate fusion
-and document order. Figure~\ref{fig:tiered-algorithm} shows where the
-workflow chooses between direct reading and scoring, and why an incomplete
-review differs from a completed review that found no support.
+and document order. Figure~\ref{fig:tiered-algorithm} and
+Algorithm~\ref{alg:tiered} distinguish direct reading from scoring, and an
+incomplete review from a completed review that found no support.
 
 \begin{table*}[t]
 \centering
@@ -83,10 +82,18 @@ Hybrid & catalogue and segment & Combined vector and catalogue candidates & Conf
 \end{table*}
 
 Response transport also determines which candidates the agent can see.
-A recorded October 2026 incident truncated a document listing before the
+A recorded transport incident truncated a document listing before the
 agent could inspect the whole shelf. The shelf tool now caps its response and
 supplies grouped and paginated views, allowing the caller to request the
 remaining entries. Section~\ref{sec:eval} reports the repair check.
+
+In this paper, evidence tracing means retaining document, part and span
+coordinates for retrieved text, together with relevant fetch or scoring
+errors. These references locate text for inspection; they are not immutable,
+versioned citations and do not establish claim-level entailment. Durable
+resolution after rename, reparse or replacement would additionally require a
+content fingerprint or version identifier to be carried in the trace; that
+property is not evaluated here.
 
 \begin{algorithm}[tbp]
 \caption{Tiered access with optional evidence gate}

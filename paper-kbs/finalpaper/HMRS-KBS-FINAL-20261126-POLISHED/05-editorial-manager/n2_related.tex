@@ -16,9 +16,11 @@ In HMRS, placement is not only an ingest outcome: it determines which
 collection and shelf show the document to a later query agent. The workflow
 uses recovered content to assist placement and description, and checks
 whether managed files remain reachable after selected lifecycle operations.
-These checks concern whether a stored document is visible to search after
-a write. SPFresh addresses a complementary problem: maintaining a vector
-index incrementally
+These checks concern whether a stored document is visible to search after a
+write. HMRS does not implement the resource-selection scoring of CORI or
+ReDDE; it exposes workflow-mediated placement, managed descriptions and
+membership to the agent. SPFresh addresses a complementary problem:
+maintaining a vector index incrementally
 \citep{xu2023spfresh}.
 
 \subsection{Collection selection and structured retrieval}
@@ -29,29 +31,30 @@ CORI and ReDDE use representations of collection contents to decide where
 to search; HMRS likewise represents collections, but exposes their managed
 descriptions and membership to an agent that can then inspect descriptions
 of documents on the selected shelf. A known scope can instead be passed to
-pinned search. Thus explicit scoping is not an alternative to BM25, dense
-retrieval or rank fusion: those methods can rank candidates once the search
-scope has been selected \citep{bm25,dpr,rrf-cormack,bge-m3}.
+pinned search. Explicit scoping complements BM25, dense retrieval and rank fusion: those
+methods rank candidates after the search scope has been selected
+\citep{bm25,dpr,rrf-cormack,bge-m3}.
 
 \begin{table*}[!t]
 \centering
 \small
-\setlength{\tabcolsep}{3.5pt}
-\renewcommand{\arraystretch}{1.02}
-\caption{Representative systems compared by the structure they search and
-how that structure is maintained and used. A dash indicates that the table does not
-characterise the system on that dimension.}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\caption{Representative systems by the objects they search and their reported
+retrieval workflows. This is an architectural comparison, not an exhaustive
+inventory of capabilities or a performance comparison.}
 \label{tab:related-comparison}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.245\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.215\textwidth}>{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}>{\raggedright\arraybackslash}p{0.49\textwidth}@{}}
 \toprule
-System & Hierarchy and scope & Construction and lifecycle & Evidence handling & Access surface\\
+System & Retrieval object or scope & Reported construction and retrieval workflow\\
 \midrule
-RAPTOR \citep{raptor} & cluster tree over document text & built offline at index time & --- & tree retrieval\\
-GraphRAG \citep{graphrag} & entity--relation graph, community summaries & pre-generated offline & --- & graph retrieval\\
-LightRAG \citep{lightrag} & low- and high-level graph retrieval & incremental graph updates & --- & graph retrieval\\
-DeepRead \citep{deepread} & per-document structured Markdown, section coordinates & structure built at ingestion & agent locates then reads sections & agentic search\\
-EPRAG \citep{kinalioglu-kbs-eprag-2026} & multi-source enterprise RAG & --- & --- & enterprise retrieval\\
-HMRS (this work) & managed collection--document--segment hierarchy & content-informed placement and lifecycle checks & source reading; optional passage gate & self-hosted; MCP layer\\
+RAPTOR \citep{raptor} & Cluster tree over document text & Builds the tree offline at indexing time, then retrieves over the cluster hierarchy.\\
+GraphRAG \citep{graphrag} & Entity and relation graph with community summaries & Constructs the graph and summaries offline, then uses them to retrieve context.\\
+LightRAG \citep{lightrag} & Graph representation of document content & Updates its graph incrementally and supports retrieval at low and high levels.\\
+DeepRead \citep{deepread} & Structured Markdown and section coordinates within each document & Builds the structure at ingestion; an agent locates sections by coordinate and reads them.\\
+RMR-SST \citep{li-kbs-rmrsst-2026} & Semantic trees over engineering documents & Builds semantic trees for retrieval and uses them to access document content.\\
+EPRAG \citep{kinalioglu-kbs-eprag-2026} & Multiple enterprise information sources & Selects retrieval actions across sources under an epistemic policy.\\
+HMRS (this work) & Managed hierarchy of collections, documents and segments & Assigns documents to managed collections using recovered content and checks search visibility after selected lifecycle operations. It exposes collection and document descriptions for scope selection, supports pinned collection search and provides source access through MCP. Operators can deploy the service within their own environment; passage admission is optional.\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -65,9 +68,8 @@ sections using document structure \citep{deepread}. HMRS shares the goal of
 structure-aware access, but its upper levels are managed collections and
 the documents assigned to them. It uses that maintained organisation to
 choose where to look and which documents to open before reaching particular
-passages. These choices can coexist with content-derived structures for
-finding passages. Table~\ref{tab:related-comparison} contrasts the objects
-organised and searched by these systems.
+passages. The contrast is between content-derived structures for finding
+passages and a maintained ownership hierarchy for selecting where to look.
 
 \subsection{Agentic retrieval and source verification}
 
@@ -89,10 +91,8 @@ which passages enter an evidence pack; its optional gate scores source
 text and returns admitted passages with references. A reference identifies
 where to check the text, not whether it supports a generated claim
 \citep{liu-verifiability,gao-citations}. Likewise, an interrupted search
-must be distinguished from a completed search that found no support. Our
-answer-quality comparison is separate from those retrieval checks, with
-its judging protocol and limitations reported alongside the results
-\citep{zheng-llmjudge,panickssery-selfpref,wang-llmnotfair,es-ragas-2024,saad-falcon-ares-2024}.
+must be distinguished from a completed search that found no support. We report answer quality separately, together with its judging protocol and
+limitations \citep{zheng-llmjudge,panickssery-selfpref,wang-llmnotfair,es-ragas-2024,saad-falcon-ares-2024}.
 
 \subsection{Position of this work}
 \label{sec:gap}
@@ -102,4 +102,6 @@ selection over the same maintained hierarchy. This gives the agent a way
 from task scope to source passages and gives operators a way to check
 whether a document remains visible after its managed state changes. The
 contribution is this connection between organisation and retrieval, not the
-invention of hierarchical search, scoped indexing or passage scoring.
+invention of hierarchical search, scoped indexing or passage scoring. Table~\ref{tab:related-comparison}
+places this distinction alongside representative systems that organise
+retrieval trees, graphs, structured documents or enterprise sources.

@@ -1,6 +1,6 @@
 # KBS submission — HMRS experiment results
 
-This is the benchmark snapshot for *HMRS: Hierarchical document management for evidence-traced retrieval*, in `paper-kbs/finalpaper/HMRS-KBS-FINAL-20261124-EVIDENCE-LAYOUT`. The supplement contains a claim-to-record crosswalk; its companion evidence index explains which quantities can be recomputed and which observations are documented only in campaign reports. The publication snapshot does not replace historical experiment archives.
+This is the benchmark snapshot for *HMRS: Content-informed hierarchical document management for scoped, source-aware retrieval*, in the current POLISHED submission package. The supplement contains a claim-to-record crosswalk; its companion evidence index explains which quantities can be recomputed and which observations are documented only in campaign reports. The publication snapshot does not replace historical experiment archives.
 
 | Submission item | Records under `records/` | Scope |
 |---|---|---|

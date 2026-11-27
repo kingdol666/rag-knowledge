@@ -9,10 +9,9 @@ verifier-score order, the number of pools with a gold document in the top
 five fell from 15 to seven: eight pools lost a hit and none gained one
 (exact McNemar $p=0.0078$; Figure~\ref{fig:verifier}b).
 
-The admission question remains open. All 191 recorded scores, in a separate
-file over the same pools, exceeded the 0.5 cutoff
-(Figure~\ref{fig:verifier}a), so that record says little about the value of
-filtering. In a reconstructed replay with fixed
+All 191 recorded scores in the separate archive exceeded the 0.5 cutoff
+(Figure~\ref{fig:verifier}a), so this record provides little evidence about
+the value of filtering. In a reconstructed replay with fixed
 candidates, the filtered and unfiltered arms retained the same number of
 documents on nine of ten questions; the archive does not establish that they
 retained the same documents. The reordering result therefore does not show
@@ -43,23 +42,3 @@ The earlier retrieval measures answer narrower questions: target-string containm
 (Figure~\ref{fig:content}), and a top-five hit measures document position
 (Figure~\ref{fig:verifier}); neither establishes that a cited passage
 supports the answer.
-
-% The verifier result remains a full-width float after E7 so that its
-% caption stays adjacent to the paired score plot.
-\begin{figure*}[!tb]
-\centering
-\includegraphics[width=\textwidth]{fig_opt_verifier}
-\caption{Verifier scores and same-pool ordering from two records over the
-same 16 candidate pools. (a) Each point is one of 191 recorded Laya scores
-(17 gold and 174 non-gold candidates); the vertical jitter separates points
-only for display. Black ticks mark the group medians (0.8759 and 0.86265),
-the dashed line marks the 0.5 cutoff, and Q14 has one candidate without a
-recorded score. (b) Each row is one pool in the separate ordering replay:
-filled circles mark a gold document in Fusion's top five and filled diamonds
-mark a gold document in verifier-score order; open symbols mark a miss. The
-replay changes ordering only: Fusion retains 15/16 Hit@5 pools, whereas
-verifier-score order retains 7/16, with eight losses and no gains (exact
-McNemar $p=0.0078$). The panels do not test the admission benefit of the
-score.}
-\label{fig:verifier}
-\end{figure*}

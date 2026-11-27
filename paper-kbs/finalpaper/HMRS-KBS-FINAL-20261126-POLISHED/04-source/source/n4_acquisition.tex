@@ -5,7 +5,9 @@ HMRS parses PDFs, scanned images, Word and Excel files through
 an asynchronous MinerU service \citep{mineru}. The MCP parse tools return
 pollable task identifiers. Markdown and plain text take the direct save
 path. For parsed inputs, the ingest agent reviews the recovered text
-before selecting a collection by topic.
+before selecting a collection by topic. The collection, document and segment
+levels are listed in Table~\ref{tab:levels}; Figure~\ref{fig:levels}
+illustrates the catalogue-to-passage path after material has been stored.
 
 The ingestion workflow connects parsing, review, optional splitting,
 placement, storage and indexing. Depending on the operations performed,
@@ -33,10 +35,15 @@ oversized indivisible units where applicable. Structure recognition covers
 Markdown units, with formula-heavy pages depending on the quality of the
 parsed representation.
 
-The web and MCP entry points share the parsing and storage services in
-Figure~\ref{fig:arch}, but the two save paths do not initiate indexing in
-the same way. The web parsed-file route persists Markdown and images. The
-MCP save tool can also schedule vector and lexical indexing in the
-background. Graph construction is a separate operation. Post-index checks
-can compare expected identifiers with the recorded chunks and probe
-retrieval for content from the saved document.
+The web and MCP entry points share the parsing and storage services, but
+their save paths do not initiate indexing in the same way. The web parsed-file
+route persists Markdown and images. The MCP save tool can also schedule vector
+and lexical indexing in the background. Graph construction is a separate
+operation. In the reference ingestion workflow, material is treated as
+retrieval-ready only after the relevant indexing operation and a successful
+content-based probe; the web parsed-file route and the MCP save path do not
+initiate or report indexing identically. Post-index checks compare expected
+identifiers with recorded chunks and probe retrieval for saved document
+content. Figure~\ref{fig:arch} shows these service boundaries and separates
+managed files, tree and collection metadata from derived indices and graph
+projections.
